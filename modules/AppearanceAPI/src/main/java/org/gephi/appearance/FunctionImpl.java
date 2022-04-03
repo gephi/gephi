@@ -71,6 +71,7 @@ public abstract class FunctionImpl implements Function {
     protected final AtomicInteger version;
     // Version
     protected WeakReference<Graph> lastGraph;
+    protected boolean lastTransformNullValues;
 
     protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
@@ -90,8 +91,10 @@ public abstract class FunctionImpl implements Function {
         this.transformerUI = transformerUI;
         this.partition = partition;
         this.ranking = ranking;
-        this.version = new AtomicInteger(partition != null ? partition.getVersion(model.getPartitionGraph()) : Integer.MIN_VALUE);
+        this.version =
+            new AtomicInteger(partition != null ? partition.getVersion(model.getPartitionGraph()) : Integer.MIN_VALUE);
         this.lastGraph = partition != null ? new WeakReference<>(model.getPartitionGraph()) : null;
+        this.lastTransformNullValues = model.isTransformNullValues();
     }
 
     @Override
@@ -100,12 +103,9 @@ public abstract class FunctionImpl implements Function {
         if (isSimple()) {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
-            Number val = ranking.getValue(element, graph);
-            float normalizedValue = ranking.getNormalizedValue(element, graph);
-            ((RankingTransformer) transformer).transform(element, ranking, val, normalizedValue);
+            transformRanking(element, graph, ranking.getMinValue(graph), ranking.getMaxValue(graph));
         } else if (isPartition()) {
-            Object val = partition.getValue(element, graph);
-            ((PartitionTransformer) transformer).transform(element, partition, val);
+            transformPartition(element, graph);
         }
     }
 
@@ -117,16 +117,26 @@ public abstract class FunctionImpl implements Function {
         } else if (isRanking()) {
             final Number minValue = ranking.getMinValue(graph);
             final Number maxValue = ranking.getMaxValue(graph);
-            elementIterable.forEach(e -> {
-                Number val = ranking.getValue(e, graph);
-                float normalizedValue = ranking.normalize(val, ranking.getInterpolator(), minValue, maxValue);
-                ((RankingTransformer) transformer).transform(e, ranking, val, normalizedValue);
-            });
+            elementIterable.forEach(e -> transformRanking(e, graph, minValue, maxValue));
         } else if (isPartition()) {
-            elementIterable.forEach(e -> {
-                Object val = partition.getValue(e, graph);
-                ((PartitionTransformer) transformer).transform(e, partition, val);
-            });
+            elementIterable.forEach(e -> transformPartition(e, graph));
+        }
+    }
+
+    private void transformPartition(Element element, Graph graph) {
+        Object val = partition.getValue(element, graph);
+        if (val != null || model.isTransformNullValues()) {
+            ((PartitionTransformer) transformer).transform(element, partition, val);
+        }
+    }
+
+    private void transformRanking(Element element, Graph graph, Number minValue, Number maxValue) {
+        Number val = ranking.getValue(element, graph);
+        if (val != null) {
+            float normalizedValue = ranking.normalize(val, ranking.getInterpolator(), minValue, maxValue);
+            ((RankingTransformer) transformer).transform(element, ranking, val, normalizedValue);
+        } else if (model.isTransformNullValues()) {
+            ((RankingTransformer) transformer).transform(element, ranking, null, 0f);
         }
     }
 
@@ -147,6 +157,12 @@ public abstract class FunctionImpl implements Function {
                         lastGraph = new WeakReference<>(graph);
                     }
                 }
+
+                // Check if transformNullValues was changed
+                if (lastTransformNullValues != model.isTransformNullValues()) {
+                    viewChanged = true;
+                }
+                lastTransformNullValues = model.isTransformNullValues();
             }
 
             int newVersion = partition.getVersion(graph);

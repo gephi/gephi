@@ -84,6 +84,14 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler = (CompatibilityScheduler) VizController.getInstance().getScheduler();
         vizEventManager = VizController.getInstance().getVizEventManager();
 
+        initOctree();
+    }
+
+    private synchronized void initOctree() {
+        if (octree != null) {
+            octree.clear();
+        }
+
         //Init
         octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth());
         octree.initArchitecture();
@@ -133,6 +141,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (reinit) {
             VizController.getInstance().refreshWorkspace();
             dataBridge.reset();
+            initOctree();
             graphDrawable.initConfig(gl);
             graphDrawable.setCameraLocation(vizController.getVizModel().getCameraPosition());
             graphDrawable.setCameraTarget(vizController.getVizModel().getCameraTarget());
@@ -458,7 +467,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<NodeModel> getSelectedNodes() {
         List<NodeModel> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(false); itr.hasNext(); ) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel);
@@ -482,7 +491,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<Node> getSelectedUnderlyingNodes() {
         List<Node> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(false); itr.hasNext(); ) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel.getNode());

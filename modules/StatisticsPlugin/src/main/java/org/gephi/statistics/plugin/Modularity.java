@@ -82,6 +82,7 @@ public class Modularity implements Statistics, LongTask {
     private boolean isRandomized = false;
     private boolean useWeight = true;
     private double resolution = 1.;
+    private int initialModularityClassIndex = 0;
 
     public boolean getRandom() {
         return isRandomized;
@@ -105,6 +106,14 @@ public class Modularity implements Statistics, LongTask {
 
     public void setResolution(double resolution) {
         this.resolution = resolution;
+    }
+
+    public int getInitialModularityClassIndex(){
+        return initialModularityClassIndex;
+    }
+
+    public void setInitialModularityClassIndex(int initialModularityClassIndex){
+        this.initialModularityClassIndex = initialModularityClassIndex;
     }
 
     @Override
@@ -142,6 +151,9 @@ public class Modularity implements Statistics, LongTask {
                 modularityResolution = 0;
             }
 
+            for(int i = 0; i < comStructure.length; i++){
+                comStructure[i] = comStructure[i] + initialModularityClassIndex;
+            }
             saveValues(comStructure, graph, structure);
         } finally {
             graph.readUnlock();

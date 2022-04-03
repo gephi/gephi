@@ -112,19 +112,28 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         formatter.setMaximumFractionDigits(2);
         Partition partition = function.getPartition();
 
+        boolean ignoreNull = !function.getModel().isTransformNullValues();
         values = partition.getSortedValues(function.getGraph());
 
+        int valuesSize = 0;
+        int nullElements = 0;
         List<Object> nullColors = new ArrayList<>();
         for (Object val : values) {
-            Color c = partition.getColor(val);
-            if (c == null) {
-                nullColors.add(val);
+            if(!ignoreNull || val != null) {
+                Color c = partition.getColor(val);
+                if (c.equals(Partition.DEFAULT_COLOR)) {
+                    nullColors.add(val);
+                }
+                valuesSize++;
+            } else {
+                // Will be used firther for the percentage calculation
+                nullElements = function.getPartition().count(null, function.getGraph());
             }
         }
 
-        int valuesWithColors = values.size() - nullColors.size();
+        int valuesWithColors = valuesSize - nullColors.size();
         if (!nullColors.isEmpty() && valuesWithColors < 8) {
-            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, values.size()), 5, new Random(42l));
+            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, valuesSize), 5, new Random(42L));
             int i = 0;
             for (Object val : nullColors) {
                 int index = valuesWithColors + i++;
@@ -136,7 +145,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         //Model
         String[] columnNames = new String[] {"Color", "Partition", "Percentage"};
-        DefaultTableModel model = new DefaultTableModel(columnNames, values.size()) {
+        DefaultTableModel model = new DefaultTableModel(columnNames, valuesSize) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 0;
@@ -163,15 +172,17 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         int j = 0;
         for (Object value : values) {
-            String displayName = value == null ? "null" :
-                value.getClass().isArray() ? AttributeUtils.printArray(value) : value.toString();
-            int count = function.getPartition().count(value, function.getGraph());
-            float percentage = function.getPartition().percentage(value, function.getGraph()) / 100f;
-            model.setValueAt(value, j, 0);
-            model.setValueAt(displayName, j, 1);
-            String percCount = count + "_(" + formatter.format(percentage) + ")";
-            model.setValueAt(percCount, j, 2);
-            j++;
+            if(!ignoreNull || value != null) {
+                String displayName = value == null ? "null" :
+                    value.getClass().isArray() ? AttributeUtils.printArray(value) : value.toString();
+                int count = function.getPartition().count(value, function.getGraph());
+                float percentage = (float) count / (function.getPartition().getElementCount(function.getGraph()) - nullElements);
+                model.setValueAt(value, j, 0);
+                model.setValueAt(displayName, j, 1);
+                String percCount = count + "_(" + formatter.format(percentage) + ")";
+                model.setValueAt(percCount, j, 2);
+                j++;
+            }
         }
     }
 
@@ -179,9 +190,12 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         PaletteManager.getInstance().addRecentPalette(palette);
         Color[] colors = palette.getColors();
         int i = 0;
+        boolean ignoreNull = !function.getModel().isTransformNullValues();
         for (Object value : values) {
-            Color col = colors[i++];
-            function.getPartition().setColor(value, col);
+            if(!ignoreNull || value != null) {
+                Color col = colors[i++];
+                function.getPartition().setColor(value, col);
+            }
         }
         table.revalidate();
         table.repaint();

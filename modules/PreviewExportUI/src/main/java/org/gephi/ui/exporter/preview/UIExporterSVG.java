@@ -47,7 +47,6 @@ import org.gephi.io.exporter.preview.SVGExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -56,13 +55,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterSVG implements ExporterUI {
 
+    private final ExporterSVGSettings settings = new ExporterSVGSettings();
     private UIExporterSVGPanel panel;
     private SVGExporter exporterSVG;
 
     @Override
     public void setup(Exporter exporter) {
         exporterSVG = (SVGExporter) exporter;
-        loadPreferences();
+        settings.load(exporterSVG);
         panel.setup(exporterSVG);
     }
 
@@ -70,7 +70,7 @@ public class UIExporterSVG implements ExporterUI {
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterSVG);
-            savePreferences();
+            settings.save(exporterSVG);
         }
         panel = null;
         exporterSVG = null;
@@ -92,12 +92,22 @@ public class UIExporterSVG implements ExporterUI {
         return NbBundle.getMessage(UIExporterPDF.class, "UIExporterSVG.name");
     }
 
-    private void loadPreferences() {
-        boolean strokeScale = NbPreferences.forModule(UIExporterSVG.class).getBoolean("ScaleStrokeWidth", false);
-        exporterSVG.setScaleStrokes(strokeScale);
-    }
+    private static class ExporterSVGSettings extends AbstractExporterSettings {
 
-    private void savePreferences() {
-        NbPreferences.forModule(UIExporterSVG.class).putBoolean("ScaleStrokeWidth", exporterSVG.isScaleStrokes());
+        // Preference names
+        private final static String SCALE_STROKES = "SVG_strokeScale";
+        private final static String MARGIN = "SVG_margin";
+        // Default
+        private final static SVGExporter DEFAULT = new SVGExporter();
+
+        void load(SVGExporter exporter) {
+            exporter.setScaleStrokes(get(SCALE_STROKES, DEFAULT.isScaleStrokes()));
+            exporter.setMargin(get(MARGIN, DEFAULT.getMargin()));
+        }
+
+        void save(SVGExporter exporter) {
+            put(SCALE_STROKES, exporter.isScaleStrokes());
+            put(MARGIN, exporter.getMargin());
+        }
     }
 }

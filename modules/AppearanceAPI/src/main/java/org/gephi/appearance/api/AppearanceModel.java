@@ -42,6 +42,7 @@
 
 package org.gephi.appearance.api;
 
+import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
@@ -81,6 +82,16 @@ public interface AppearanceModel {
     boolean isPartitionLocalScale();
 
     /**
+     * Returns <code>true</code> if null values are considered in functions. If <code>false</code> elements with null
+     * values will be transformed as well. Default value is <code>false</code>.
+     * <p>
+     * When using a ranking function, null values will receive the lowest normalised value.
+     *
+     * @return <code>true</code> if null values are transformed, <code>false</code> otherwise
+     */
+    boolean isTransformNullValues();
+
+    /**
      * Returns the node partition for thid column.
      *
      * @param column column
@@ -102,6 +113,24 @@ public interface AppearanceModel {
      * @return all node functions
      */
     Function[] getNodeFunctions();
+
+    /**
+     * Returns the node function for the given column and transformer.
+     *
+     * @param column column
+     * @param transformer transformer
+     * @return node function or null if not found
+     */
+    Function getNodeFunction(Column column, Class<? extends Transformer> transformer);
+
+    /**
+     * Returns the edge function for the given column and transformer.
+     *
+     * @param column column
+     * @param transformer transformer
+     * @return edge function or null if not found
+     */
+    Function getEdgeFunction(Column column, Class<? extends Transformer> transformer);
 
     /**
      * Returns all edge functions for the given graph.

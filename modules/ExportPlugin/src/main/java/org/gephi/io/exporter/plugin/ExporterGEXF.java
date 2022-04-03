@@ -92,22 +92,19 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     //GEXF
     private static final String GEXF = "gexf";
-    private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.3";
-    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd";
+    private static final String GEXF_NAMESPACE = "http://gexf.net/1.3";
+    private static final String GEXF_NAMESPACE_LOCATION = "http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd";
     private static final String VIZ = "viz";
-    private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.3/viz";
+    private static final String VIZ_NAMESPACE = "http://gexf.net/1.3/viz";
     private static final String GEXF_VERSION = "version";
     private static final String GRAPH = "graph";
     private static final String GRAPH_MODE = "mode";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
-    private static final String GRAPH_START = "start";
-    private static final String GRAPH_END = "end";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String GRAPH_TIMEREPRESENTATION = "timerepresentation";
+    private static final String GRAPH_TIMEZONE = "timezone";
     private static final String GRAPH_IDTYPE = "idtype";
     private static final String TIMESTAMP = "timestamp";
-    private static final String TIMESTAMPS = "timestamps";
-    private static final String INTERVALS = "intervals";
     private static final String META = "meta";
     private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
     private static final String META_CREATOR = "creator";
@@ -241,6 +238,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             TimeRepresentation timeRepresentation = graphConfig.getTimeRepresentation();
             xmlWriter.writeAttribute(GRAPH_TIMEREPRESENTATION, timeRepresentation.toString().toLowerCase());
+
+            DateTimeZone timeZone = graph.getModel().getTimeZone();
+            xmlWriter.writeAttribute(GRAPH_TIMEZONE, timeZone.getID());
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
 
@@ -258,7 +258,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
             xmlWriter.writeStartElement(META_CREATOR);
-            xmlWriter.writeCharacters("Gephi 0.9");
+            xmlWriter.writeCharacters("Gephi 0.9.3");
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);

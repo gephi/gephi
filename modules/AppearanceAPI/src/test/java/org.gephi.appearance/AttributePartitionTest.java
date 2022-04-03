@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import java.awt.Color;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
@@ -120,15 +121,57 @@ public class AttributePartitionTest {
         Assert.assertNotEquals(version, p.getVersion(graph));
     }
 
-//    @Test
-//    public void testVersionDynamic() {
-//        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
-//        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
-//        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
-//
-//        AttributePartitionImpl p = new AttributePartitionImpl(column);
-//        int version = p.getVersion(graph);
-//        n1.setAttribute(column, 99.0, 2000);
-//        Assert.assertNotEquals(version, p.getVersion(graph));
-//    }
+    @Test
+    public void testVersionDynamic() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        int version = p.getVersion(graph);
+        n1.setAttribute(column, 99.0, 2000);
+        Assert.assertNotEquals(version, p.getVersion(graph));
+    }
+
+    @Test
+    public void testNullValues() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertEquals(AttributePartitionImpl.DEFAULT_COLOR, p.getColor(null));
+
+        p.setColor(null, Color.BLUE);
+        Assert.assertEquals(Color.BLUE, p.getColor(null));
+    }
+
+    @Test
+    public void testNullValuesValues() {
+        Graph graph = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        n1.setAttribute(column, null);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.getValues(graph).contains(null));
+        Assert.assertTrue(p.getSortedValues(graph).contains(null));
+    }
+
+    @Test
+    public void testSetColors() {
+        Graph graph = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
+
+        n1.setAttribute(column, 42);
+        n2.setAttribute(column, 42);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        p.setColors(graph, new Color[] {Color.MAGENTA, Color.BLUE});
+
+        Assert.assertEquals(Color.MAGENTA, p.getColor(42));
+    }
 }

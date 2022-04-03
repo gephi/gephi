@@ -142,6 +142,8 @@ public class AppearanceUIModel {
         return appearanceModel.isPartitionLocalScale();
     }
 
+    public boolean isTransformNullValues() { return appearanceModel.isTransformNullValues(); }
+
     public void saveTransformerProperties() {
         Function func = getSelectedFunction();
         if (func != null) {

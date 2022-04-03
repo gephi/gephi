@@ -70,9 +70,9 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private static final double INCH = 72.0;
     private static final double MM = 2.8346456692895527;
     private final String customSizeString;
-    private boolean millimeter = true;
     private final NumberFormat sizeFormatter;
     private final NumberFormat marginFormatter;
+    private boolean millimeter = true;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bottomMarginTextField;
     private javax.swing.JTextField heightTextField;

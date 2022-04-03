@@ -108,6 +108,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JToggleButton enableAutoButton;
     private javax.swing.JToggleButton rankingLocalScaleButton;
     private javax.swing.JToggleButton partitionLocalScaleButton;
+    private javax.swing.JToggleButton transformNullValuesButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
@@ -154,6 +155,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.ATTRIBUTE_LIST)) {
             refreshCombo();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.REFRESH_FUNCTION)) {
+            refreshCenterPanel();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_TRANSFORM_NULL_VALUES)) {
+            refreshControls();
             refreshCenterPanel();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
@@ -338,6 +342,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     }
                     rankingLocalScaleButton.setSelected(model.isRankingLocalScale());
                     partitionLocalScaleButton.setSelected(model.isPartitionLocalScale());
+                    transformNullValuesButton.setSelected(model.isTransformNullValues());
                     return;
                 }
                 //Disable
@@ -352,11 +357,13 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-        toolbar.addRankingControl(rankingLocalScaleButton);
         toolbar.addRankingControl(splineButton);
+        toolbar.addRankingControl(rankingLocalScaleButton);
+        toolbar.addRankingControl(transformNullValuesButton);
 
         //Add partition controls
         toolbar.addPartitionControl(partitionLocalScaleButton);
+        toolbar.addPartitionControl(transformNullValuesButton);
 
         //Actions
         rankingLocalScaleButton.addActionListener(new ActionListener() {
@@ -369,6 +376,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.getAppearanceController().setUsePartitionLocalScale(partitionLocalScaleButton.isSelected());
+            }
+        });
+        transformNullValuesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.getAppearanceController().setTransformNullValues(transformNullValuesButton.isSelected());
             }
         });
         splineButton.addActionListener(new ActionListener() {
@@ -508,6 +521,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlToolbar = toolbar.getControlToolbar();
         rankingLocalScaleButton = new javax.swing.JToggleButton();
         partitionLocalScaleButton = new javax.swing.JToggleButton();
+        transformNullValuesButton = new javax.swing.JToggleButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
@@ -591,12 +605,25 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         partitionLocalScaleButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
         partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
+            .getMessage(AppearanceTopComponent.class,
+                "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
         partitionLocalScaleButton.setFocusable(false);
         partitionLocalScaleButton
             .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
                 getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
         controlToolbar.add(partitionLocalScaleButton);
+
+        transformNullValuesButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/appearance/resources/transformNull.png"))); // NOI18N
+        transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(AppearanceTopComponent.class,
+                "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
+        transformNullValuesButton.setFocusable(false);
+        transformNullValuesButton
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+                getClass().getResource("/org/gephi/desktop/appearance/resources/transformNull.png"))
+                .getImage())))); // NOI18N
+        controlToolbar.add(transformNullValuesButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N

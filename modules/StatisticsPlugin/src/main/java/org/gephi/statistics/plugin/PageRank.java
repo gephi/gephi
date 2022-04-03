@@ -436,7 +436,7 @@ public class PageRank implements Statistics, LongTask {
             + imageFile
             + "<br /><br />" + "<h2> Algorithm: </h2>"
             +
-            "Sergey Brin, Lawrence Page, <i>The Anatomy of a Large-Scale Hypertextual Web Search Engine</i>, in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117<br />"
+            "Page, Lawrence and Brin, Sergey and Motwani, Rajeev and Winograd, Terry (1999) <i>The PageRank Citation Ranking: Bringing Order to the Web.</i> Technical Report. Stanford InfoLab.<br />"
             + "</BODY> </HTML>";
 
         return report;

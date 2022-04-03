@@ -55,9 +55,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterPajek implements ExporterUI {
 
+    private final ExporterPajekSettings settings = new ExporterPajekSettings();
     private UIExporterPajekPanel panel;
     private ExporterPajek exporterPajek;
-    private final ExporterPajekSettings settings = new ExporterPajekSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -92,19 +92,22 @@ public class UIExporterPajek implements ExporterUI {
         return NbBundle.getMessage(UIExporterPajek.class, "UIExporterPajek.name");
     }
 
-    private static class ExporterPajekSettings {
+    private static class ExporterPajekSettings extends AbstractExporterSettings {
 
-        private boolean exportPosition = true;
-        private boolean exportEdgeWeight = true;
+        // Preferences name
+        private final static String EXPORT_POSITION = "Pajek_exportPosition";
+        private final static String EXPORT_EDGE_WEIGHT = "Pajek_exportEdgeWeight";
+        // Default
+        private final static ExporterPajek DEFAULT = new ExporterPajek();
 
         private void save(ExporterPajek exporterPajek) {
-            this.exportPosition = exporterPajek.isExportPosition();
-            this.exportEdgeWeight = exporterPajek.isExportEdgeWeight();
+            put(EXPORT_POSITION, exporterPajek.isExportPosition());
+            put(EXPORT_EDGE_WEIGHT, exporterPajek.isExportEdgeWeight());
         }
 
         private void load(ExporterPajek exporterPajek) {
-            exporterPajek.setExportPosition(exportPosition);
-            exporterPajek.setExportEdgeWeight(exportEdgeWeight);
+            exporterPajek.setExportPosition(get(EXPORT_POSITION, DEFAULT.isExportPosition()));
+            exporterPajek.setExportEdgeWeight(get(EXPORT_EDGE_WEIGHT, DEFAULT.isExportEdgeWeight()));
         }
     }
 }

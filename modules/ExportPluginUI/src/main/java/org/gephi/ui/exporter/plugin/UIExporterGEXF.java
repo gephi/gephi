@@ -92,31 +92,37 @@ public class UIExporterGEXF implements ExporterUI {
         return NbBundle.getMessage(UIExporterGEXF.class, "UIExporterGEXF.name");
     }
 
-    private static class ExporterGEXFSettings {
+    private static class ExporterGEXFSettings extends AbstractExporterSettings {
 
-        private boolean normalize = false;
-        private boolean exportColors = true;
-        private boolean exportPosition = true;
-        private boolean exportSize = true;
-        private boolean exportAttributes = true;
-        private boolean exportDynamics = true;
+        // Preference names
+        private final static String NORMALIZE = "GEXF_normalize";
+        private final static String EXPORT_COLORS = "GEXF_exportColors";
+        private final static String EXPORT_POSITION = "GEXF_exportPosition";
+        private final static String EXPORT_ATTRIBUTES = "GEXF_exportAttributes";
+        private final static String EXPORT_SIZE = "GEXF_exportSize";
+        private final static String EXPORT_DYNAMICS = "GEXF_exportDynamics";
+        private final static String EXPORT_META = "GEXF_exportMeta";
+        // Default
+        private final static ExporterGEXF DEFAULT = new ExporterGEXF();
 
         private void save(ExporterGEXF exporterGEXF) {
-            this.normalize = exporterGEXF.isNormalize();
-            this.exportColors = exporterGEXF.isExportColors();
-            this.exportPosition = exporterGEXF.isExportPosition();
-            this.exportSize = exporterGEXF.isExportSize();
-            this.exportAttributes = exporterGEXF.isExportAttributes();
-            this.exportDynamics = exporterGEXF.isExportDynamic();
+            put(NORMALIZE, exporterGEXF.isNormalize());
+            put(EXPORT_COLORS, exporterGEXF.isExportColors());
+            put(EXPORT_POSITION, exporterGEXF.isExportPosition());
+            put(EXPORT_SIZE, exporterGEXF.isExportSize());
+            put(EXPORT_ATTRIBUTES, exporterGEXF.isExportAttributes());
+            put(EXPORT_DYNAMICS, exporterGEXF.isExportDynamic());
+            put(EXPORT_META, exporterGEXF.isExportMeta());
         }
 
         private void load(ExporterGEXF exporterGEXF) {
-            exporterGEXF.setNormalize(normalize);
-            exporterGEXF.setExportColors(exportColors);
-            exporterGEXF.setExportAttributes(exportAttributes);
-            exporterGEXF.setExportPosition(exportPosition);
-            exporterGEXF.setExportSize(exportSize);
-            exporterGEXF.setExportDynamic(exportDynamics);
+            exporterGEXF.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
+            exporterGEXF.setExportColors(get(EXPORT_COLORS, DEFAULT.isExportColors()));
+            exporterGEXF.setExportAttributes(get(EXPORT_ATTRIBUTES, DEFAULT.isExportAttributes()));
+            exporterGEXF.setExportPosition(get(EXPORT_POSITION, DEFAULT.isExportPosition()));
+            exporterGEXF.setExportSize(get(EXPORT_SIZE, DEFAULT.isExportSize()));
+            exporterGEXF.setExportDynamic(get(EXPORT_DYNAMICS, DEFAULT.isExportDynamic()));
+            exporterGEXF.setExportMeta(get(EXPORT_META, DEFAULT.isExportMeta()));
         }
     }
 }

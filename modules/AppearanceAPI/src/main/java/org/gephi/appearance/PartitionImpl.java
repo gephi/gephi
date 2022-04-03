@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.gephi.appearance.api.Partition;
@@ -64,15 +65,24 @@ public abstract class PartitionImpl implements Partition {
 
     @Override
     public Color getColor(Object value) {
-        return colorMap.get(value);
+        return colorMap.getOrDefault(value, Partition.DEFAULT_COLOR);
     }
 
     @Override
     public void setColor(Object value, Color color) {
-        if(color.equals(Partition.DEFAULT_COLOR)) {
+        if (color.equals(Partition.DEFAULT_COLOR)) {
             colorMap.remove(value);
         } else {
             colorMap.put(value, color);
+        }
+    }
+
+    @Override
+    public void setColors(Graph graph, Color[] colors) {
+        Collection sortedValues = getSortedValues(graph);
+        Iterator itr = sortedValues.iterator();
+        for (int i = 0; i < colors.length && itr.hasNext(); i++) {
+            setColor(itr.next(), colors[i]);
         }
     }
 

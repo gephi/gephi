@@ -13,14 +13,12 @@ public class TableObserverExecutor implements Runnable {
 
     private static final long DEFAULT_DELAY = 1000;  //ms
     private final AppearanceUIModel model;
-    private final AppearanceUIController controller;
     private ScheduledExecutorService executor;
     private TableObserver nodeTableObserver;
     private TableObserver edgeTableObserver;
 
     public TableObserverExecutor(AppearanceUIModel model) {
         this.model = model;
-        this.controller = Lookup.getDefault().lookup(AppearanceUIController.class);
     }
 
     public void start() {
@@ -56,12 +54,12 @@ public class TableObserverExecutor implements Runnable {
                 String selectedElementClass = model.selectedElementClass;
                 if (nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
                     if (nodeTableObserver.hasTableChanged()) {
-                        controller.refreshColumnsList();
+                        Lookup.getDefault().lookup(AppearanceUIController.class).refreshColumnsList();
                     }
                 } else if (edgeTableObserver != null &&
                     selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
                     if (edgeTableObserver.hasTableChanged()) {
-                        controller.refreshColumnsList();
+                        Lookup.getDefault().lookup(AppearanceUIController.class).refreshColumnsList();
                     }
                 }
             } catch (Exception e) {

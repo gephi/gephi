@@ -117,6 +117,10 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         dateFormatComboBox.addItem("yyyy/MM/dd HH:mm:ss");
         dateFormatComboBox.addItem("dd-MM-yyyy HH:mm:ss");
         dateFormatComboBox.addItem("dd/MM/yyyy HH:mm:ss");
+        dateFormatComboBox.addItem("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormatComboBox.addItem("yyyy/MM/dd'T'HH:mm:ss");
+        dateFormatComboBox.addItem("dd-MM-yyyy'T'HH:mm:ss");
+        dateFormatComboBox.addItem("dd/MM/yyyy'T'HH:mm:ss");
         dateFormatComboBox.setSelectedIndex(0);
     }
 

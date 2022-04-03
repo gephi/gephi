@@ -1,7 +1,10 @@
 package org.gephi.appearance;
 
 import java.util.Arrays;
+import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
+import org.gephi.appearance.api.GraphFunction;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.PartitionTransformer;
@@ -37,8 +40,6 @@ public class AppearanceModelTest {
         MockServices.setServices(DummyTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
-
-        model.getNodeFunctions();
 
         Column ageCol = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
         Assert.assertNotNull(model.getNodePartition(ageCol));
@@ -77,6 +78,45 @@ public class AppearanceModelTest {
         model.setPartitionLocalScale(true);
         Assert.assertTrue(function.hasChanged());
         Assert.assertFalse(function.hasChanged());
+    }
+
+    @Test
+    public void testNodeFunctionsDegree() {
+        MockServices.setServices(DummyTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+
+        Column col = generator.getGraphModel().defaultColumns().degree();
+        Function function = model.getNodeFunction(col, DummyTransformer.class);
+        Assert.assertNotNull(function);
+        Assert.assertTrue(function instanceof GraphFunction);
+        Assert
+            .assertEquals(AppearanceModel.GraphFunction.NODE_DEGREE, ((GraphFunctionImpl) function).getGraphFunction());
+    }
+
+    @Test
+    public void testNodeFunctionsAttribute() {
+        MockServices.setServices(DummyTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+
+        Column col = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        Function function = model.getNodeFunction(col, DummyTransformer.class);
+        Assert.assertNotNull(function);
+        Assert.assertTrue(function.isAttribute());
+        Assert.assertEquals(col, ((AttributeFunction) function).getColumn());
+    }
+
+    @Test
+    public void testEdgeFunctionsWeight() {
+        MockServices.setServices(DummyTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+
+        Column col = generator.getGraphModel().getEdgeTable().getColumn("weight");
+        Function function = model.getEdgeFunction(col, DummyTransformer.class);
+        Assert
+            .assertEquals(AppearanceModel.GraphFunction.EDGE_WEIGHT, ((GraphFunctionImpl) function).getGraphFunction());
     }
 
     public static class DummyTransformer implements Transformer, RankingTransformer, PartitionTransformer,

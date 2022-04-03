@@ -213,6 +213,10 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     @Override
+    public void postProcess(PreviewModel previewModel, RenderTarget renderTarget, PreviewProperties properties) {
+    }
+
+    @Override
     public CanvasSize getCanvasSize(
         final Item item,
         final PreviewProperties properties) {
@@ -287,7 +291,7 @@ public class NodeLabelRenderer implements Renderer {
 
             //Trick to center text vertically on node:
             SVGRect rect = ((SVGLocatable) outlineElem).getBBox();
-            outlineElem.setAttribute("y", String.valueOf(y + rect.getHeight() / 4f));
+            outlineElem.setAttribute("y", String.valueOf(y + (rect != null ? rect.getHeight() / 4f : 0)));
         }
 
         Element labelElem = target.createElement("text");
@@ -303,7 +307,7 @@ public class NodeLabelRenderer implements Renderer {
 
         //Trick to center text vertically on node:
         SVGRect rect = ((SVGLocatable) labelElem).getBBox();
-        labelElem.setAttribute("y", String.valueOf(y + rect.getHeight() / 4f));
+        labelElem.setAttribute("y", String.valueOf(y + (rect != null ? rect.getHeight() / 4f : 0)));
 
         //Box
         if (showBox) {

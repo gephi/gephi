@@ -95,37 +95,41 @@ public class UIExporterGML implements ExporterUI {
         return NbBundle.getMessage(UIExporterGEXF.class, "UIExporterGML.name");
     }
 
-    private static class ExporterGMLSettings {
+    private static class ExporterGMLSettings extends AbstractExporterSettings {
 
-        private boolean exportLabel = true;
-        private boolean exportCoordinates = true;
-        private boolean exportNodeSize = true;
-        private boolean exportEdgeSize = true;
-        private boolean exportColor = true;
-        private boolean exportNotRecognizedElements = true;
-        private boolean normalize = false;
-        private int spaces = 2;
+        // Preference names
+        private final static String EXPORT_LABEL = "GML_exportLabel";
+        private final static String EXPORT_COORDINATES = "GML_exportCoordinates";
+        private final static String EXPORT_NODE_SIZE = "GML_exportNodeSize";
+        private final static String EXPORT_EDGE_SIZE = "GML_exportEdgeSize";
+        private final static String EXPORT_COLOR = "GML_exportColor";
+        private final static String EXPORT_UNKNOWNS = "GML_exportNotRecognizedElements";
+        private final static String NORMALIZE = "GML_normalize";
+        private final static String SPACES = "GML_spaces";
+        // Default
+        private final static ExporterGML DEFAULT = new ExporterGML();
 
         private void load(ExporterGML exporter) {
-            exporter.setExportColor(exportColor);
-            exporter.setExportCoordinates(exportCoordinates);
-            exporter.setExportEdgeSize(exportEdgeSize);
-            exporter.setExportLabel(exportLabel);
-            exporter.setExportNodeSize(exportNodeSize);
-            exporter.setExportNotRecognizedElements(exportNotRecognizedElements);
-            exporter.setNormalize(normalize);
-            exporter.setSpaces(spaces);
+            exporter.setExportColor(get(EXPORT_COLOR, DEFAULT.isExportColor()));
+            exporter.setExportCoordinates(get(EXPORT_COORDINATES, DEFAULT.isExportCoordinates()));
+            exporter.setExportEdgeSize(get(EXPORT_EDGE_SIZE, DEFAULT.isExportEdgeSize()));
+            exporter.setExportLabel(get(EXPORT_LABEL, DEFAULT.isExportLabel()));
+            exporter.setExportNodeSize(get(EXPORT_NODE_SIZE, DEFAULT.isExportNodeSize()));
+            exporter.setExportNotRecognizedElements(get(EXPORT_UNKNOWNS,
+                DEFAULT.isExportNotRecognizedElements()));
+            exporter.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
+            exporter.setSpaces(get(SPACES, DEFAULT.getSpaces()));
         }
 
         private void save(ExporterGML exporter) {
-            exportColor = exporter.isExportColor();
-            exportCoordinates = exporter.isExportCoordinates();
-            exportEdgeSize = exporter.isExportEdgeSize();
-            exportLabel = exporter.isExportLabel();
-            exportNodeSize = exporter.isExportNodeSize();
-            exportNotRecognizedElements = exporter.isExportNotRecognizedElements();
-            normalize = exporter.isNormalize();
-            spaces = exporter.getSpaces();
+            put(EXPORT_COLOR, exporter.isExportColor());
+            put(EXPORT_COORDINATES, exporter.isExportCoordinates());
+            put(EXPORT_EDGE_SIZE, exporter.isExportEdgeSize());
+            put(EXPORT_LABEL, exporter.isExportLabel());
+            put(EXPORT_NODE_SIZE, exporter.isExportNodeSize());
+            put(EXPORT_UNKNOWNS, exporter.isExportNotRecognizedElements());
+            put(NORMALIZE, exporter.isNormalize());
+            put(SPACES, exporter.getSpaces());
         }
     }
 }

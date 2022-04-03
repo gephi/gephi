@@ -39,7 +39,13 @@ jobs:
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      
+
+      - name: Get NBM Keystore
+        shell: bash
+        run: |
+          echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
+          gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
+
       - name: Build and publish package Linux
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
         if: runner.os == 'Linux'
@@ -47,7 +53,7 @@ jobs:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          
+
       - name: Build and publish package Windows
         run: mvn -T 4 --batch-mode '-Djava.awt.headless=true' '-Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }}' clean deploy -P deployment,replace-windows-icon,create-exe
         if: runner.os == 'Windows'
@@ -70,3 +76,27 @@ jobs:
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
+  update-site:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build and publish package Linux
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true package -P create-autoupdate
+
+      - name: Configure Git user
+        run: |
+          git config --global user.email "github-action@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Update autoupdate content on gh-pages
+        run: mvn validate scm-publish:publish-scm -P push-site
+        working-directory: modules/application
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

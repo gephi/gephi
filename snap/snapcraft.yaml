@@ -27,7 +27,7 @@ parts:
       - desktop-glib-only
     plugin: dump
     source:
-      - on amd64: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=linux&p=tar.gz
+      - on amd64: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=$SNAPCRAFT_PROJECT_VERSION&c=linux&p=tar.gz
     source-type: tar
   desktop-glib-only:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git

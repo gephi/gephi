@@ -164,6 +164,9 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                         workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(this);
                     }
                 }
+
+                add(tabbedContainer, BorderLayout.CENTER);
+                getParent().revalidate();
                 return;
             }
         }

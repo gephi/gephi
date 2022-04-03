@@ -112,6 +112,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
     private int selfLoops = 0;
+    private int mutualEdgesCount = 0;
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
@@ -452,6 +453,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public int getMutualEdgeCount() {
+        return mutualEdgesCount;
+    }
+
+    @Override
     public TimeFormat getTimeFormat() {
         return timeFormat;
     }
@@ -596,14 +602,14 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 start = Double.NEGATIVE_INFINITY;
             } else {
                 start = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
-                    AttributeUtils.parseDateTime(startDateTime);
+                    AttributeUtils.parseDateTime(startDateTime, getTimeZone());
             }
             if (endDateTime == null || endDateTime.trim().isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
                 "infinity".equalsIgnoreCase(endDateTime)) {
                 end = Double.POSITIVE_INFINITY;
             } else {
                 end = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
-                    AttributeUtils.parseDateTime(endDateTime);
+                    AttributeUtils.parseDateTime(endDateTime, getTimeZone());
             }
             this.interval = new Interval(start, end);
         } catch (Exception e) {
@@ -630,7 +636,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setTimestamp(String timestamp) {
         try {
             double t = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(timestamp) :
-                AttributeUtils.parseDateTime(timestamp);
+                AttributeUtils.parseDateTime(timestamp, getTimeZone());
             this.timestamp = t;
         } catch (Exception e) {
             report.logIssue(new Issue(NbBundle
@@ -679,6 +685,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
             setEdgeDefault(EdgeDirectionDefault.MIXED);
+        }
+
+        //Count mutual edges
+        if (directedEdgesCount > 0) {
+            for (EdgeDraftImpl edge : edgeList) {
+                if (isEdgeDirected(edge) && getOpposite(edge) != null) {
+                    mutualEdgesCount++;
+                }
+            }
+            mutualEdgesCount /= 2;
         }
 
         //IdType
@@ -794,7 +810,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 final boolean notAlreadyRemoved = edge != null
                     && edgeMap.containsKey(edge.getId());
 
-                if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
+                if (notAlreadyRemoved && edge.getDirection() != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
                     if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);

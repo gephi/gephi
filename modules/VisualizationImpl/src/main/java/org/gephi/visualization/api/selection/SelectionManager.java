@@ -42,10 +42,6 @@
 
 package org.gephi.visualization.api.selection;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
@@ -53,6 +49,11 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.AbstractEngine;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mathieu Bastian
@@ -131,6 +132,7 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setCustomSelection() {
+        engine.setRectangleSelection(false);
         vizConfig.setSelectionEnable(false);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
@@ -148,6 +150,10 @@ public class SelectionManager implements VizArchitecture {
 
     public List<Node> getSelectedNodes() {
         return engine.getSelectedUnderlyingNodes();
+    }
+
+    public List<Edge> getSelectedEdges() {
+        return engine.getSelectedUnderlyingEdges();
     }
 
     public void selectNode(Node node) {

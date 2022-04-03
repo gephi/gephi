@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.NotifyDescriptor;
+import org.openide.modules.Places;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -63,10 +64,14 @@ public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
     private final static List<String> VERSION_TO_CHECK
-        = Arrays.asList("0.9.0");
+        = Arrays.asList("0.9.0", "0.9.1", "0.9.2");
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();
+        if (currentVersion.equalsIgnoreCase("target") || currentVersion.contains("SNAPSHOT")) {
+            // Development version
+            return;
+        }
         Logger.getLogger("").log(Level.INFO, "Current Version is {0}", currentVersion);
 
         String lastVersion = NbPreferences.forModule(Upgrader.class).get(UPGRADER_LAST_VERSION, null);
@@ -75,7 +80,8 @@ public class Upgrader {
             if (latestPreviousVersion != null &&
                 !latestPreviousVersion.getName().replace(".", "").equals(currentVersion)) {
                 File source = new File(latestPreviousVersion, "dev");
-                File dest = new File(System.getProperty("netbeans.user"));
+                source = source.exists() ? source : latestPreviousVersion;
+                File dest = Places.getUserDirectory();
                 if (source.exists() && dest.exists()) {
                     NbPreferences.forModule(Upgrader.class).put(UPGRADER_LAST_VERSION, currentVersion);
 
@@ -117,7 +123,7 @@ public class Upgrader {
     }
 
     private String getCurrentVersion() {
-        File userDir = new File(System.getProperty("netbeans.user"));
+        File userDir = Places.getUserDirectory();
         if (userDir.getName().equalsIgnoreCase("testuserdir")) {
             return userDir.getName();
         }
@@ -125,15 +131,15 @@ public class Upgrader {
     }
 
     private File checkPrevious() {
-        File userDir = new File(System.getProperty("netbeans.user"));
+        File userDir = Places.getUserDirectory();
         File sourceFolder = null;
 
         if (userDir.exists()) {
             File userHomeFile;
-            if (userDir.getName().equalsIgnoreCase("userdir")) {
-                userHomeFile = userDir.getParentFile();
-            } else {
+            if (userDir.getParentFile().getName().equalsIgnoreCase("dev")) {
                 userHomeFile = userDir.getParentFile().getParentFile();
+            } else {
+                userHomeFile = userDir.getParentFile();
             }
             Iterator<String> it = VERSION_TO_CHECK.iterator();
             String ver;

@@ -90,16 +90,16 @@ Root: HKCR; Subkey: "PajekGraphFile\shell\open\command"; ValueType: string; Valu
 Root: HKCR; Subkey: "PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associatenet; Check: Is64BitInstallMode
 
 [InstallDelete]
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Modules"; Tasks: cleanuserdir
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Preferences"; Tasks: cleanuserdir
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Windows2Local"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Windows2Local-datalab"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Windows2Local-overview"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Windows2Local-preview"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\config\Preferences.properties"; Tasks: cleanuserdir
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\modules"; Tasks: cleanuserdir
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\update_tracking"; Tasks: cleanuserdir
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\var"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\lock"
-Type: filesandordirs; Name: "{userappdata}\gephi\${project.version}\update"
-Type: filesandordirs; Name: "{localappdata}\gephi\Cache\${project.version}"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Modules"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Preferences"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Windows2Local"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Windows2Local-datalab"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Windows2Local-overview"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Windows2Local-preview"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\config\Preferences.properties"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\modules"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\update_tracking"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\var"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\lock"
+Type: filesandordirs; Name: "{userappdata}\gephi\${gephi.minor.version}\update"
+Type: filesandordirs; Name: "{localappdata}\gephi\Cache\${gephi.minor.version}"

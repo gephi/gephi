@@ -6,6 +6,7 @@
 
 package org.gephi.appearance;
 
+import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.GraphFunction;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.PartitionFunction;
@@ -20,17 +21,27 @@ import org.gephi.graph.api.Element;
 public class GraphFunctionImpl extends FunctionImpl implements GraphFunction, RankingFunction, PartitionFunction {
 
     private final String displayName;
+    private final AppearanceModel.GraphFunction graphFunction;
 
-    public GraphFunctionImpl(AppearanceModelImpl model, String name, String displayName, Class<? extends Element> elementClass,
+    public GraphFunctionImpl(AppearanceModelImpl model, AppearanceModel.GraphFunction graphFunction, String name,
+                             String displayName, Class<? extends Element> elementClass,
                              Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
         super(model, name, elementClass, null, transformer, transformerUI, null, ranking);
         this.displayName = displayName;
+        this.graphFunction = graphFunction;
     }
 
-    public GraphFunctionImpl(AppearanceModelImpl model, String name, String displayName, Class<? extends Element> elementClass,
+    public GraphFunctionImpl(AppearanceModelImpl model, AppearanceModel.GraphFunction graphFunction, String name,
+                             String displayName, Class<? extends Element> elementClass,
                              Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
         super(model, name, elementClass, null, transformer, transformerUI, partition, null);
         this.displayName = displayName;
+        this.graphFunction = graphFunction;
+    }
+
+    @Override
+    public AppearanceModel.GraphFunction getGraphFunction() {
+        return graphFunction;
     }
 
     @Override

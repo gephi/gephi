@@ -70,6 +70,13 @@ public interface ContainerUnloader {
 
     int getEdgeCount();
 
+    /**
+     * Returns the number of mutual (directed) edges in the container;
+     *
+     * @return mutual edge count
+     */
+    int getMutualEdgeCount();
+
     boolean hasNodeColumn(String key);
 
     boolean hasEdgeColumn(String key);

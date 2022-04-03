@@ -77,6 +77,13 @@ public interface AppearanceController {
     void setUsePartitionLocalScale(boolean useLocalScale);
 
     /**
+     * Sets whether elements with <code>null</code> values are also transformed. Default value is <code>false</code>/
+     *
+     * @param transformNullValues <code>true</code> to transform also null values, <code>false</code> to ignore
+     */
+    void setTransformNullValues(boolean transformNullValues);
+
+    /**
      * Apply the function's transformer. If the function is for nodes all nodes
      * in the visible graph will be transformed. Similarly for edges.
      *

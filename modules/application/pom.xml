@@ -29,7 +29,7 @@
     <distributionManagement>
         <site>
             <id>github</id>
-            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
+            <url>scm:git:https://github.com/gephi/gephi.git</url>
         </site>
     </distributionManagement>
 
@@ -62,10 +62,6 @@
                 </exclusion>
                 <exclusion>
                     <artifactId>org-netbeans-core-osgi</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-core-output2</artifactId>
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
@@ -155,6 +151,14 @@
                 <exclusion>
                     <groupId>org.netbeans.html</groupId>
                     <artifactId>xhr4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-netbeans-libs-junit5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-htmlui</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -439,6 +443,8 @@
                 <configuration>
                     <!-- Set up the gephi.conf for the final artifact -->
                     <etcConfFile>${basedir}/target/${brandingToken}.conf</etcConfFile>
+                    <!-- Source of the NBMs for auto update -->
+                    <distBase>central::default::${gephi.update.center.source}</distBase>
                 </configuration>
                 <executions>
                     <execution>
@@ -585,7 +591,7 @@
                                 <configuration>
                                     <target name="downloadJRE" description="Download JRE">
                                         <!-- Download JRE (Mac OS X) -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="curl">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
@@ -595,7 +601,7 @@
                                         </exec>
 
                                         <!-- Download JRE (Windows x64) -->
-                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl">
+                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
@@ -604,18 +610,8 @@
                                             <arg line="${gephi.bundle.jre.windows.x64}"/>
                                         </exec>
 
-                                        <!-- Download JRE (Windows x86) -->
-                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl">
-                                            <arg line="-L"/>
-                                            <arg line="-C"/>
-                                            <arg line="-"/>
-                                            <arg line="-o"/>
-                                            <arg line="jre-x86.zip"/>
-                                            <arg line="${gephi.bundle.jre.windows.x86}"/>
-                                        </exec>
-
-                                        <!-- Download JRE (Linux) -->
-                                        <exec dir="${project.build.directory}" os="Linux" executable="curl">
+                                        <!-- Download JRE (Linux x64) -->
+                                        <exec dir="${project.build.directory}" os="Linux" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
@@ -630,14 +626,6 @@
                                             <arg line="-zxf"/>
                                             <arg line="jre-x64.zip"/>
                                             <arg line="-C &quot;${brandingToken}/jre-x64&quot;"/>
-                                        </exec>
-
-                                        <!-- Unzip archive (x86) -->
-                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-x86"/>
-                                        <exec dir="${project.build.directory}" osfamily="windows" executable="tar">
-                                            <arg line="-zxf"/>
-                                            <arg line="jre-x86.zip"/>
-                                            <arg line="-C &quot;${brandingToken}/jre-x86&quot;"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -655,7 +643,6 @@
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
                                         <delete file="${project.artifactId}-${project.version}-x64.setup.exe" failonerror="false"/>
-                                        <delete file="${project.artifactId}-${project.version}-x86.setup.exe" failonerror="false"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
@@ -668,12 +655,8 @@
                                         <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x64\${bundle.jre.name}&quot;"/>
                                         <chmod file="${project.build.directory}/${brandingToken}/jre-x64/**" perm="+x" type="both"/>
 
-                                        <!-- Same but for x86 -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x86\${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x86/**" perm="+x" type="both"/>
-
                                         <!-- Windows -->
-                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
+                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows" failonerror="true">
                                             <arg line="/cc &quot;${brandingToken}.iss&quot;" />
                                         </exec>
                                     </target>
@@ -694,19 +677,19 @@
                                         <delete includeEmptyDirs="true" failonerror="false" removeNotFollowedSymlinks="true">
                                             <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app" followsymlinks="false"/>
                                             <fileset dir="${project.build.directory}/${gephi.app.title}" followsymlinks="false"/>
-                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg" followsymlinks="false"/>
                                         </delete>
-                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}.dmg" failonerror="false"/>
+                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg" failonerror="false"/>
                                         
                                         <!-- Codesign Gephi modules with native librairies -->
-                                        <exec executable="/bin/bash" os="Mac OS X">
+                                        <exec executable="/bin/bash" os="Mac OS X" failonerror="true">
                                             <arg value="src/main/app-resources/codesign.sh" />
                                             <arg value="${project.build.directory}/${brandingToken}/${brandingToken}/modules/ext" />
                                             <arg value="${gephi.codesign.identity}" />
                                         </exec>
                                         
                                         <!-- Codesign Netbeans native librairies -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign" failonerror="true">
                                             <arg value="--entitlements" />
                                             <arg value="${project.build.directory}/Entitlements.plist" />
                                             <arg value="--sign"/>
@@ -718,7 +701,7 @@
                                             <arg value="runtime"/>
                                             <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/x86_64/libjnidispatch-nb.jnilib" />
                                         </exec>
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign" failonerror="true">
                                             <arg value="--entitlements" />
                                             <arg value="${project.build.directory}/Entitlements.plist" />
                                             <arg value="--sign"/>
@@ -751,15 +734,15 @@
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Move the JRE in the /Contents/PlugIns folder and cleanup -->
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-x64/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
                                         <delete includeEmptyDirs="true">
-                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre"/>
+                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-x64"/>
                                         </delete>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
@@ -814,7 +797,7 @@
                                             <arg value="zlib-level=9"/>
                                             <arg value="-srcfolder"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
                                         </exec>
 
                                         <!-- Create DMG (Linux), only for testing -->
@@ -830,7 +813,7 @@
                                             <arg value="-no-iso-translate"/>
                                             <arg value="-r"/>
                                             <arg value="-o"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
                                             <arg value="-root"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
@@ -850,10 +833,10 @@
                                     <skip>${skipAppleNotarization}</skip>
                                     <target>
                                         <!-- Send DMG file to Apple's notarization service -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="notarytool"/>
                                             <arg value="submit"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
                                             <arg value="--apple-id"/>
                                             <arg value="${gephi.apple.notarization.username}"/>
                                             <arg value="--password"/>
@@ -866,10 +849,10 @@
                                         </exec>
 
                                         <!-- Staple the notarization ticket to the DMG bundle -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="stapler"/>
                                             <arg value="staple"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -887,14 +870,14 @@
                                     <target>
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre/${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x64/${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x64/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -914,7 +897,7 @@
                                 <configuration>
                                     <skipAssembly>${skipCreateTargz}</skipAssembly>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>${brandingToken}-${project.version}</finalName>
+                                    <finalName>${brandingToken}-${project.version}-x64</finalName>
                                     <descriptors>
                                         <descriptor>src/assemble/linux.xml</descriptor>
                                     </descriptors>
@@ -939,9 +922,9 @@
                                     <skipAttach>${skipCreateTargz}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux.tar.gz</file>
+                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux-x64.tar.gz</file>
                                             <type>tar.gz</type>
-                                            <classifier>linux</classifier>
+                                            <classifier>linux-x64</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -958,9 +941,9 @@
                                     <skipAttach>${skipCreateExe}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-x64.setup.exe</file>
                                             <type>exe</type>
-                                            <classifier>windows</classifier>
+                                            <classifier>windows-x64</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -977,9 +960,9 @@
                                     <skipAttach>${skipCreateDmg}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg</file>
                                             <type>dmg</type>
-                                            <classifier>macos</classifier>
+                                            <classifier>macos-x64</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -1005,9 +988,29 @@
                                 <goals>
                                     <goal>autoupdate</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Copy only update.xml and update.xml.gz to a custom autoupdate_site folder -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                    <target>
+                                        <copy todir="${project.build.directory}/autoupdate_site">
+                                            <fileset dir="${project.build.directory}/netbeans_site">
+                                                <include name="updates.xml*"/>
+                                                <type type="file"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -1127,7 +1130,7 @@
             </properties>
         </profile>
 
-        <!-- Profile that pushes the /site folder to GitHub's gh-pages -->
+        <!-- Profile that pushes the /autoupdate_site folder to GitHub's gephi-repository -->
         <profile>
             <id>push-site</id>
             <build>
@@ -1137,9 +1140,11 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
+                            <content>${project.build.directory}/autoupdate_site</content>
                             <scmBranch>gh-pages</scmBranch>
-                            <checkinComment>Creating site for ${project.version}</checkinComment>
-                            <subDirectory>${project.version}</subDirectory>
+                            <checkinComment>Autoupdate update for ${project.version}</checkinComment>
+                            <subDirectory>${gephi.minor.version}/autoupdate</subDirectory>
+                            <serverId>github</serverId>
                         </configuration>
                     </plugin>
                 </plugins>
