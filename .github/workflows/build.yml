@@ -1,7 +1,6 @@
 name: build
 
 on:
-  pull_request:
   push:
     branches-ignore:
       - 0.9.3
