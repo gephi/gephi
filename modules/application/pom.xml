@@ -897,7 +897,7 @@
                                 <configuration>
                                     <skipAssembly>${skipCreateTargz}</skipAssembly>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>${brandingToken}-${project.version}-x64</finalName>
+                                    <finalName>${brandingToken}-${project.version}</finalName>
                                     <descriptors>
                                         <descriptor>src/assemble/linux.xml</descriptor>
                                     </descriptors>
