@@ -92,7 +92,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private transient PreviewUIModel model;
     private transient G2DTarget target;
     private transient PreviewSketch sketch;
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton backgroundButton;
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
@@ -167,23 +167,36 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      *
      * @return true if retina, false otherwise
      */
-    protected static boolean isRetina() {
+    protected static float getScaleFactor() {
 
-        boolean isRetina = false;
         try {
             GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            Field field = graphicsDevice.getClass().getDeclaredField("scale");
+            Field field = retrieveField(graphicsDevice, "scale");
+            if (field == null) {
+                field = retrieveField(graphicsDevice, "scaleX");
+            }
             if (field != null) {
                 field.setAccessible(true);
                 Object scale = field.get(graphicsDevice);
-                if (scale instanceof Integer && ((Integer) scale).intValue() == 2) {
-                    isRetina = true;
+                if (scale instanceof Number) {
+                    return ((Number)scale).floatValue();
                 }
             }
+
+        } catch (Exception e) {
+            //Ignore
+            e.printStackTrace();
+        }
+        return 1f;
+    }
+    
+    protected static Field retrieveField(GraphicsDevice graphicsDevice, String name) {
+        try {
+             return graphicsDevice.getClass().getDeclaredField(name);
         } catch (Exception e) {
             //Ignore
         }
-        return isRetina;
+        return null;
     }
 
     @Override
@@ -224,9 +237,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         int width = sketchPanel.getWidth();
         int height = sketchPanel.getHeight();
         if (width > 1 && height > 1) {
-            if (isRetina()) {
-                width = (int) (width * 2.0);
-                height = (int) (height * 2.0);
+            float scaleFactor = getScaleFactor();
+            if (scaleFactor > 1f) {
+                width = (int) (width * scaleFactor);
+                height = (int) (height * scaleFactor);
             }
             return new Dimension(width, height);
         }
@@ -424,7 +438,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.weightx = 1.0;
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
     private void refreshButtonActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
