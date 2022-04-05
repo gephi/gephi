@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-<!--- Cannot find Java 1.8? Please check this https://github.com/gephi/gephi/issues/1787 and don't create a new issue -->
-
 <!-- Want to try the latest development version and see if the issue persists? Check https://github.com/gephi/gephi#nightly-builds -->
 
 ## Expected Behavior
@@ -32,8 +30,7 @@ assignees: ''
 
 ## Your Environment
 
-* Version used: Gephi 0.9.2
-* Java version: 
+* Version used: Gephi 0.9.3
 * Operating System: 
 
 <!--- Or preferably, include a copy of your messages.log file in your user directory (see https://github.com/gephi/gephi/wiki/Troubleshooting) -->
