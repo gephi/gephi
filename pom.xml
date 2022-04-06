@@ -1243,7 +1243,7 @@
                             <detectOfflineLinks>true</detectOfflineLinks>   
                             <quiet>false</quiet>
                             <doclint>none</doclint>
-                            <source>8</source>
+                            <source>11</source>
                         </configuration>
                         <executions>
                             <execution> 
