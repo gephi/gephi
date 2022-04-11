@@ -689,7 +689,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         //Count mutual edges
         if (directedEdgesCount > 0) {
-            for (EdgeDraftImpl edge : edgeList) {
+            for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
                 if (isEdgeDirected(edge) && getOpposite(edge) != null) {
                     mutualEdgesCount++;
                 }
@@ -707,7 +707,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         Long.parseLong(node.getId());
                     }
                 }
-                for (EdgeDraftImpl edge : edgeList) {
+                for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
                     if (elementIdType.equals(ElementIdType.INTEGER)) {
                         Integer.parseInt(edge.getId());
                     } else if (elementIdType.equals(ElementIdType.LONG)) {
@@ -733,14 +733,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             }
         }
-        for (EdgeDraftImpl edge : edgeList) {
-            if (edge != null) {
-                if (edge.isDynamic()) {
-                    dynamicGraph = true;
-                }
-                if (edge.hasDynamicAttributes()) {
-                    dynamicAttributes = true;
-                }
+        for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
+            if (edge.isDynamic()) {
+                dynamicGraph = true;
+            }
+            if (edge.hasDynamicAttributes()) {
+                dynamicAttributes = true;
             }
         }
 
