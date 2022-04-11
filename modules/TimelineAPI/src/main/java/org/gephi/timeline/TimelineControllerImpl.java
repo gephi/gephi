@@ -80,12 +80,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimelineControllerImpl implements TimelineController {
 
     private final List<TimelineModelListener> listeners;
+    private final FilterController filterController;
     private TimelineModelImpl model;
     private GraphObserverThread observerThread;
     private GraphModel graphModel;
     private ScheduledExecutorService playExecutor;
     private FilterModel filterModel;
-    private final FilterController filterController;
 
     public TimelineControllerImpl() {
         listeners = new ArrayList<>();
@@ -110,8 +110,8 @@ public class TimelineControllerImpl implements TimelineController {
                 }
                 observerThread = new GraphObserverThread(TimelineControllerImpl.this, model);
                 setup();
-                observerThread.start();
                 filterModel = filterController.getModel(workspace);
+                observerThread.start();
             }
 
             @Override
@@ -140,12 +140,14 @@ public class TimelineControllerImpl implements TimelineController {
         });
 
         if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class);
-            graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(pc.getCurrentWorkspace());
+            Workspace workspace = pc.getCurrentWorkspace();
+            model = workspace.getLookup().lookup(TimelineModelImpl.class);
+            graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
             if (model == null) {
                 model = new TimelineModelImpl(graphModel);
                 pc.getCurrentWorkspace().add(model);
             }
+            filterModel = filterController.getModel(workspace);
             setup();
         }
     }
@@ -280,7 +282,7 @@ public class TimelineControllerImpl implements TimelineController {
 
     @Override
     public void setInterval(double from, double to) {
-        if (model != null) {
+        if (model != null && filterModel != null) {
             if (model.getIntervalStart() != from || model.getIntervalEnd() != to) {
                 if (from >= to) {
                     throw new IllegalArgumentException("from should be less than to");
