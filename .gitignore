@@ -118,3 +118,11 @@ dev_id.cer
 **/.factorypath
 modules/DesktopBranding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
 modules/DesktopBranding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/
+build.sh
+*.asc
+**/keystore/**
+src/macosx-launcher/.build
+src/macosx-launcher/.swiftpm
+src/macosx-launcher/Packages
+src/macosx-launcher/*.xcodeproj
+xcuserdata/

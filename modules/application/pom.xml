@@ -688,7 +688,7 @@
                                             <arg value="${gephi.codesign.identity}" />
                                         </exec>
                                         
-                                        <!-- Codesign Netbeans native librairies -->
+                                        <!-- Codesign Netbeans native libraries -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign" failonerror="true">
                                             <arg value="--entitlements" />
                                             <arg value="${project.build.directory}/Entitlements.plist" />
@@ -714,6 +714,10 @@
                                             <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/aarch64/libjnidispatch-nb.jnilib" />
                                         </exec>
 
+                                        <!-- Delete Windows Executables -->
+                                        <delete file="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe" failonerror="false"/>
+                                        <delete file="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe" failonerror="false"/>
+
                                         <!-- Create folders -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
@@ -727,10 +731,10 @@
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}.icns" file="src/main/app-resources/${brandingToken}.icns" />
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Info.plist" file="${project.build.directory}/Info.plist"/>
 
-                                        <!-- Move bin/gephi script into MacOS/gephi and modify the script so it founds its resources -->
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
-                                        <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/${brandingToken}/bin&quot;"/>
+                                        <!-- Move Native Launcher into MacOS/gephi and modify the exec script to be runable -->
+                                        <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" file="../../src/macosx-launcher/Binaries/AppLauncher_x86_64" />
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
+                                        <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" perm="ugo+rx"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
