@@ -6,6 +6,7 @@ import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.GraphFunction;
 import org.gephi.appearance.api.Partition;
+import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
@@ -60,6 +61,20 @@ public class AppearanceModelTest {
         System.runFinalization();
 
         Assert.assertEquals(0, model.countNodeAttributeRanking());
+    }
+
+    @Test
+    public void testRemoveColumn() {
+        MockServices.setServices(DummyTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Column col = model.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        Function function = Arrays.stream(model.getNodeFunctions()).filter(f -> f.isPartition()).findFirst().get();
+        Partition partition = ((PartitionFunction)function).getPartition();
+
+        Assert.assertFalse(partition.getValues(model.getGraphModel().getGraph()).isEmpty());
+        model.getGraphModel().getNodeTable().removeColumn(col);
+        Assert.assertFalse(function.isValid());
     }
 
     @Test

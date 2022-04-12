@@ -52,6 +52,7 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import javax.swing.AbstractCellEditor;
@@ -113,7 +114,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         Partition partition = function.getPartition();
 
         boolean ignoreNull = !function.getModel().isTransformNullValues();
-        values = partition.getSortedValues(function.getGraph());
+        values = function.isValid() ? partition.getSortedValues(function.getGraph()) : Collections.EMPTY_LIST;
 
         int valuesSize = 0;
         int nullElements = 0;

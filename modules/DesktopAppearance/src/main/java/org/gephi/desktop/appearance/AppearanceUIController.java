@@ -268,6 +268,10 @@ public class AppearanceUIController {
 
     public void refreshColumnsList() {
         if (model != null) {
+            Function function = model.getSelectedFunction();
+            if (function != null && !function.isValid()) {
+                setSelectedFunction(null);
+            }
             firePropertyChangeEvent(AppearanceUIModelEvent.ATTRIBUTE_LIST, null, null);
         }
     }

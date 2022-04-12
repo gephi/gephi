@@ -156,4 +156,11 @@ public interface Function {
      * @return function id
      */
     String getId();
+
+    /**
+     * Returns true if the function is valid. A function may not be valid if the underlying column has been removed for instance.
+     *
+     * @return true if valid, false otherwise
+     */
+    boolean isValid();
 }

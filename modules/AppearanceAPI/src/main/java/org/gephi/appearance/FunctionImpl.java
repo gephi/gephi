@@ -171,6 +171,7 @@ public abstract class FunctionImpl implements Function {
         return false;
     }
 
+    @Override
     public boolean isValid() {
         if (isRanking()) {
             return ranking.isValid(getGraph());

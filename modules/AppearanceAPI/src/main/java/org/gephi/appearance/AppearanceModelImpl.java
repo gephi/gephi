@@ -294,7 +294,19 @@ public class AppearanceModelImpl implements AppearanceModel {
             .flatMap(t -> getDegreeFunctions(t).stream()).collect(Collectors.toList());
     }
 
+    private void cleanAttributeRankingsAndPartitions(Table table) {
+        if (table.isNodeTable()) {
+            nodeAttributeRankings.keySet().removeIf(c -> !c.exists());
+            nodeAttributePartitions.keySet().removeIf(c -> !c.exists());
+        } else {
+            edgeAttributeRankings.keySet().removeIf(c -> !c.exists());
+            edgeAttributePartitions.keySet().removeIf(c -> !c.exists());
+        }
+    }
+
     private List<AttributeFunctionImpl> getAttributeFunctions(Table table) {
+        cleanAttributeRankingsAndPartitions(table);
+
         List<AttributeFunctionImpl> res = new ArrayList<>();
         List<Transformer> transformers = table.isNodeTable() ? nodeTransformers : edgeTransformers;
         for (Column column : table) {

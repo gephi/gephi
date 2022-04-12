@@ -80,12 +80,10 @@ public class AppearanceControllerImpl implements AppearanceController {
                     model = new AppearanceModelImpl(workspace);
                     workspace.add(model);
                 }
-//                model.select();
             }
 
             @Override
             public void unselect(Workspace workspace) {
-//                model.unselect();
                 model = null;
             }
 
@@ -110,6 +108,9 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void transform(Function function) {
+        if (!function.isValid()) {
+            return;
+        }
         GraphModel graphModel = function.getGraph().getModel();
         Graph graph = graphModel.getGraphVisible();
         ElementIterable<? extends Element> iterable;
