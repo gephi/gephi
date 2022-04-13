@@ -52,9 +52,9 @@ import org.gephi.utils.progress.ProgressTicket;
 public interface LongTask {
 
     /**
-     * Cancel the task. Returns <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise.
+     * Cancel the task. Returns <code>true</code> if the task has been successfully cancelled, <code>false</code> otherwise.
      *
-     * @return <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise
+     * @return <code>true</code> if the task has been successfully cancelled, <code>false</code> otherwise
      */
     boolean cancel();
 

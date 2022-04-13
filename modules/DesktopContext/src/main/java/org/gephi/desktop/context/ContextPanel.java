@@ -44,6 +44,7 @@ package org.gephi.desktop.context;
 
 import java.awt.Font;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -135,7 +136,8 @@ public class ContextPanel extends javax.swing.JPanel {
         add(commandToolbar, gridBagConstraints);
 
         labelNodes.setText(
-            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelNodes.text")); // NOI18N
+            org.openide.util.NbBundle
+                .getMessage(ContextPanel.class, "ContextPanel.labelNodes.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -144,7 +146,8 @@ public class ContextPanel extends javax.swing.JPanel {
         add(labelNodes, gridBagConstraints);
 
         nodeLabel
-            .setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.nodeLabel.text")); // NOI18N
+            .setText(org.openide.util.NbBundle
+                .getMessage(ContextPanel.class, "ContextPanel.nodeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -155,7 +158,8 @@ public class ContextPanel extends javax.swing.JPanel {
         add(nodeLabel, gridBagConstraints);
 
         labelEdges.setText(
-            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
+            org.openide.util.NbBundle
+                .getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
         labelEdges.setToolTipText("Number of edges, without meta-edges"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -165,7 +169,8 @@ public class ContextPanel extends javax.swing.JPanel {
         add(labelEdges, gridBagConstraints);
 
         edgeLabel
-            .setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.edgeLabel.text")); // NOI18N
+            .setText(org.openide.util.NbBundle
+                .getMessage(ContextPanel.class, "ContextPanel.edgeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -176,7 +181,8 @@ public class ContextPanel extends javax.swing.JPanel {
         add(edgeLabel, gridBagConstraints);
 
         graphTypeLabel.setText(
-            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
+            org.openide.util.NbBundle
+                .getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -200,33 +206,49 @@ public class ContextPanel extends javax.swing.JPanel {
 
     private class RefreshRunnable implements Runnable {
 
+        private int[] data = new int[] {-1, -1, -1, -1, -1};
+
         @Override
         public void run() {
             Graph visibleGraph = model.getGraphVisible();
             Graph fullGraph = model.getGraph();
+
+            fullGraph.readLock();
             final int nodesFull = fullGraph.getNodeCount();
             final int nodesVisible = visibleGraph.getNodeCount();
             final int edgesFull = fullGraph.getEdgeCount();
             final int edgesVisible = visibleGraph.getEdgeCount();
             final GraphType graphType =
-                model.isDirected() ? GraphType.DIRECTED : model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
-                    String nodeText = String.valueOf(nodesVisible);
-                    String edgeText = String.valueOf(edgesVisible);
-                    if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
-                        nodeText += nodesFull > 0 ?
-                            " (" + formatter.format(nodesVisible / (double) nodesFull) + " " + visible + ")" : "";
-                        edgeText += edgesFull > 0 ?
-                            " (" + formatter.format(edgesVisible / (double) edgesFull) + " " + visible + ")" : "";
+                model.isDirected() ? GraphType.DIRECTED :
+                    model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
+
+            fullGraph.readUnlock();
+
+            int[] newData =
+                new int[] {nodesFull, nodesVisible, edgesFull, edgesVisible, graphType.ordinal()};
+            if (!Arrays.equals(data, newData)) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        String visible =
+                            NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
+                        String nodeText = String.valueOf(nodesVisible);
+                        String edgeText = String.valueOf(edgesVisible);
+                        if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
+                            nodeText += nodesFull > 0 ?
+                                " (" + formatter.format(nodesVisible / (double) nodesFull) + " " +
+                                    visible + ")" : "";
+                            edgeText += edgesFull > 0 ?
+                                " (" + formatter.format(edgesVisible / (double) edgesFull) + " " +
+                                    visible + ")" : "";
+                        }
+                        nodeLabel.setText(nodeText);
+                        edgeLabel.setText(edgeText);
+                        graphTypeLabel.setText(graphType.type);
                     }
-                    nodeLabel.setText(nodeText);
-                    edgeLabel.setText(edgeText);
-                    graphTypeLabel.setText(graphType.type);
-                }
-            });
+                });
+                this.data = newData;
+            }
         }
     }
     // End of variables declaration//GEN-END:variables

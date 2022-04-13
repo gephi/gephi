@@ -45,6 +45,7 @@ package org.gephi.io.processor.plugin;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -78,9 +79,11 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
             }
             processConfiguration(containers[0], workspace);
 
+            Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
                 process(container, workspace);
             }
+            Progress.finish(progressTicket);
         } finally {
             clean();
         }

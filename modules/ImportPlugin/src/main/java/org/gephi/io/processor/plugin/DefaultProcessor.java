@@ -103,7 +103,9 @@ public class DefaultProcessor extends AbstractProcessor {
                 pc.setSource(workspace, container.getSource());
             }
 
+            Progress.start(progressTicket, calculateWorkUnits());
             process(container, workspace);
+            Progress.finish(progressTicket);
         } finally {
             clean();
         }
@@ -170,9 +172,6 @@ public class DefaultProcessor extends AbstractProcessor {
         //Time Format & Time zone
         graphModel.setTimeFormat(container.getTimeFormat());
         graphModel.setTimeZone(container.getTimeZone());
-
-        //Progress
-        Progress.start(progressTicket, container.getNodeCount() + container.getEdgeCount());
 
         //Attributes - Creates columns for properties
         flushColumns(container);
@@ -294,8 +293,6 @@ public class DefaultProcessor extends AbstractProcessor {
             Logger.getLogger(getClass().getSimpleName())
                 .log(Level.INFO, "# Edges loaded: {0}", new Object[] {touchedEdges});
         }
-
-        Progress.finish(progressTicket);
     }
 
     private Edge findIncompatibleEdge(Graph graph, Node source, Node target, boolean directed, int edgeType) {

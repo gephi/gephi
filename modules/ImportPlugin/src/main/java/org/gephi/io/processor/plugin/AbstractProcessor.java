@@ -44,6 +44,7 @@ package org.gephi.io.processor.plugin;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.gephi.graph.api.Column;
@@ -73,10 +74,11 @@ import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.Attributes;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
-public abstract class AbstractProcessor implements Processor {
+public abstract class AbstractProcessor implements Processor, LongTask {
 
     private final Set<Column> columnsTypeMismatchAlreadyWarned = new HashSet<>();
     private final Object2IntOpenHashMap<Edge> edgeCountForAverage = new Object2IntOpenHashMap<>();
@@ -97,6 +99,10 @@ public abstract class AbstractProcessor implements Processor {
         reportAfterDone = report;
         report = new Report();
         edgeCountForAverage.clear();
+    }
+
+    protected int calculateWorkUnits() {
+        return Arrays.stream(containers).map(c -> c.getNodeCount() + c.getEdgeCount()).reduce(0, Integer::sum);
     }
 
     protected void flushColumns(ContainerUnloader container) {
@@ -488,5 +494,10 @@ public abstract class AbstractProcessor implements Processor {
     @Override
     public Report getReport() {
         return reportAfterDone;
+    }
+
+    @Override
+    public boolean cancel() {
+        return false;
     }
 }
