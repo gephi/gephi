@@ -91,7 +91,7 @@ public final class LongTaskExecutor {
         this.inBackground = doInBackground;
         this.name = name;
         this.interruptCancel = true;
-        this.interruptDelay = interruptDelay * 1000;
+        this.interruptDelay = interruptDelay * 1000L;
     }
 
     /**
@@ -245,9 +245,9 @@ public final class LongTaskExecutor {
 
         private final LongTask task;
         private final Runnable runnable;
+        private final LongTaskErrorHandler errorHandler;
         private Future<?> future;
         private ProgressTicket progress;
-        private final LongTaskErrorHandler errorHandler;
 
         public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
             this.task = task;
@@ -264,14 +264,15 @@ public final class LongTaskExecutor {
                 });
                 if (task != null) {
                     task.setProgressTicket(progress);
-                } else {
-                    progress.start();
                 }
             }
         }
 
         @Override
         public void run() {
+            if (task == null && progress != null) {
+                progress.start();
+            }
             currentTask = this;
             try {
                 runnable.run();

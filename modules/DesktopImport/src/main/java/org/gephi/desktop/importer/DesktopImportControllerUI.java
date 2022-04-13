@@ -307,9 +307,12 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             final List<Container> results = new ArrayList<>();
             for (int i = 0; i < importers.length; i++) {
-                doImport(results, readers[i], files[i], importers[i]);
+                doImport(results, readers[i], fileObjects != null ? fileObjects[i] : null, files[i], importers[i]);
             }
 
+            String taskName = NbBundle
+                .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.multiImport.finishingImport",
+                    importers.length);
             executor.execute(null, new Runnable() {
 
                 @Override
@@ -318,13 +321,14 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         finishImport(results.toArray(new Container[0]));
                     }
                 }
-            });
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private void doImport(final List<Container> results, final Reader reader, final File file,
+    private void doImport(final List<Container> results, final Reader reader, final FileObject fileObject,
+                          final File file,
                           final FileImporter importer) {
         LongTask task = null;
         if (importer instanceof LongTask) {
@@ -340,7 +344,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
 
         //Execute task
-        final String containerSource = NbBundle
+        final String containerSource = fileObject != null ? fileObject.getNameExt() : NbBundle
             .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource",
                 importer.getClass().getSimpleName());
         String taskName =
