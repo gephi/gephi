@@ -45,6 +45,7 @@ package org.gephi.io.processor.plugin;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -77,6 +78,7 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
                 workspace = pc.newWorkspace(pc.getCurrentProject());
             }
 
+            Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
                 processConfiguration(container, workspace);
 
@@ -86,6 +88,7 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
 
                 process(container, workspace);
             }
+            Progress.finish(progressTicket);
         } finally {
             clean();
         }
