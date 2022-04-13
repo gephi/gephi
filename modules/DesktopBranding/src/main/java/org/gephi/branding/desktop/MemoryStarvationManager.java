@@ -213,20 +213,31 @@ public class MemoryStarvationManager implements NotificationListener {
         File confFile = new File(etc, APPNAME + ".conf");
         StringBuilder outputBuilder = new StringBuilder();
         String match = "-J-Xmx";
+        String alternativeMatch = "-J-Dsun.java2d.metal";
 
         //In
         BufferedReader reader = new BufferedReader(new FileReader(confFile));
         String strLine;
         while ((strLine = reader.readLine()) != null) {
             int i = 0;
-            if ((i = strLine.indexOf(match)) != -1) {
-                String xmx = strLine.substring(i + match.length());
-                xmx = xmx.substring(0, xmx.indexOf(" "));
-                String before = strLine.substring(0, i + match.length());
-                String after = strLine.substring(i + match.length() + xmx.length());
-                outputBuilder.append(before);
-                outputBuilder.append(newXmx);
-                outputBuilder.append(after);
+            if (strLine.startsWith("default_options")) {
+                if ((i = strLine.indexOf(match)) != -1) {
+                    String xmx = strLine.substring(i + match.length());
+                    xmx = xmx.substring(0, xmx.indexOf(" "));
+                    String before = strLine.substring(0, i + match.length());
+                    String after = strLine.substring(i + match.length() + xmx.length());
+                    outputBuilder.append(before);
+                    outputBuilder.append(newXmx);
+                    outputBuilder.append(after);
+                } else if ((i = strLine.indexOf(alternativeMatch)) != -1) {
+                    String before = strLine.substring(0, i);
+                    String after = strLine.substring(i);
+                    outputBuilder.append(before);
+                    outputBuilder.append(match).append(newXmx).append(" ");
+                    outputBuilder.append(after);
+                } else {
+                    outputBuilder.append(strLine);
+                }
             } else {
                 outputBuilder.append(strLine);
             }
