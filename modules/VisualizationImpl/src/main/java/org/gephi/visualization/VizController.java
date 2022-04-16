@@ -42,6 +42,8 @@
 
 package org.gephi.visualization;
 
+import java.util.Collections;
+import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -69,9 +71,6 @@ import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Mathieu Bastian
@@ -269,16 +268,34 @@ public class VizController implements VisualizationController {
 
     @Override
     public Column[] getEdgeTextColumns() {
-        if(currentModel != null) {
+        if (currentModel != null) {
             return currentModel.textModel.getEdgeTextColumns();
         }
         return new Column[0];
     }
 
     @Override
+    public Column[] getEdgeTextColumns(Workspace workspace) {
+        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel != null) {
+            return vizModel.textModel.getEdgeTextColumns();
+        }
+        return new Column[0];
+    }
+
+    @Override
     public Column[] getNodeTextColumns() {
-        if(currentModel != null) {
+        if (currentModel != null) {
             return currentModel.textModel.getNodeTextColumns();
+        }
+        return new Column[0];
+    }
+
+    @Override
+    public Column[] getNodeTextColumns(Workspace workspace) {
+        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel != null) {
+            return vizModel.textModel.getNodeTextColumns();
         }
         return new Column[0];
     }

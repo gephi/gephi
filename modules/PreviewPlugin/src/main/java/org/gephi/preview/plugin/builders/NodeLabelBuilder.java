@@ -53,6 +53,7 @@ import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -67,7 +68,8 @@ public class NodeLabelBuilder implements ItemBuilder {
     public Item[] getItems(Graph graph) {
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
+        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
+        Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns(workspace) : null;
 
         List<Item> items = new ArrayList<>();
         for (Node n : graph.getNodes()) {

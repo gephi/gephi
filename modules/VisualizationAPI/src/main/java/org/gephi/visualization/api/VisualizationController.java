@@ -46,6 +46,7 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import java.util.List;
+import org.gephi.project.api.Workspace;
 
 /**
  * @author Mathieu Bastian
@@ -65,6 +66,10 @@ public interface VisualizationController {
     public Column[] getEdgeTextColumns();
 
     public Column[] getNodeTextColumns();
+
+    public Column[] getEdgeTextColumns(Workspace workspace);
+
+    public Column[] getNodeTextColumns(Workspace workspace);
 
     public List<Node> getSelectedNodes();
 

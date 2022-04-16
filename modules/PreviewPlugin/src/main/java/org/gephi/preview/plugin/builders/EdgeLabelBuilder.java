@@ -47,11 +47,15 @@ import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -66,7 +70,8 @@ public class EdgeLabelBuilder implements ItemBuilder {
     public Item[] getItems(Graph graph) {
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns() : null;
+        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
+        Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns(workspace) : null;
 
         List<Item> items = new ArrayList<>();
         for (Edge e : graph.getEdges()) {
@@ -93,24 +98,24 @@ public class EdgeLabelBuilder implements ItemBuilder {
     }
 
     private String getLabel(Edge e, Column[] cols, GraphView view) {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         if (cols != null) {
             int i = 0;
             for (Column c : cols) {
                 if (i++ > 0) {
-                    str += " - ";
+                    str.append(" - ");
                 }
                 Object val = e.getAttribute(c, view);
-                str += val != null ? val : "";
+                str.append(val != null ? val : "");
             }
         }
-        if (str.isEmpty()) {
-            str = e.getLabel();
+        if (str.length() == 0) {
+            str = new StringBuilder(e.getLabel());
         }
         if (str == null) {
-            str = "";
+            str = new StringBuilder();
         }
-        return str;
+        return str.toString();
     }
 
     @Override
