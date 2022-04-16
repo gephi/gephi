@@ -112,14 +112,16 @@ public abstract class FunctionImpl implements Function {
     @Override
     public void transformAll(Iterable<? extends Element> elementIterable) {
         Graph graph = getGraph();
-        if (isSimple()) {
-            elementIterable.forEach(((SimpleTransformer) transformer)::transform);
-        } else if (isRanking()) {
-            final Number minValue = ranking.getMinValue(graph);
-            final Number maxValue = ranking.getMaxValue(graph);
-            elementIterable.forEach(e -> transformRanking(e, graph, minValue, maxValue));
-        } else if (isPartition()) {
-            elementIterable.forEach(e -> transformPartition(e, graph));
+        if (!graph.getView().isDestroyed()) {
+            if (isSimple()) {
+                elementIterable.forEach(((SimpleTransformer) transformer)::transform);
+            } else if (isRanking()) {
+                final Number minValue = ranking.getMinValue(graph);
+                final Number maxValue = ranking.getMaxValue(graph);
+                elementIterable.forEach(e -> transformRanking(e, graph, minValue, maxValue));
+            } else if (isPartition()) {
+                elementIterable.forEach(e -> transformPartition(e, graph));
+            }
         }
     }
 
@@ -173,10 +175,14 @@ public abstract class FunctionImpl implements Function {
 
     @Override
     public boolean isValid() {
+        Graph graph = getGraph();
+        if (graph.getView().isDestroyed()) {
+            return false;
+        }
         if (isRanking()) {
-            return ranking.isValid(getGraph());
+            return ranking.isValid(graph);
         } else if (isPartition()) {
-            return partition.isValid(getGraph());
+            return partition.isValid(graph);
         }
         return true;
     }
