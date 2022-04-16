@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.9.4-SNAPSHOT</version>
+        <version>0.9.4</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.4</version>
     <name>gephi-app</name>
     
     <properties>
