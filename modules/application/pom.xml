@@ -1001,6 +1001,7 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>copy-autoupdate</id>
                                 <phase>package</phase>
                                 <configuration>
                                     <target>

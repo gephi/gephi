@@ -46,6 +46,14 @@ jobs:
           echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
           gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
 
+      - name: Cache autoupdate output
+        id: cache-autoupdate-output
+        uses: actions/cache@v3
+        with:
+          path: modules/application/target/autoupdate_site
+          key: autoupdate-output
+        if: runner.os == 'Linux'
+
       - name: Build and publish package Linux
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
         if: runner.os == 'Linux'
@@ -87,8 +95,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Build and publish package Linux
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true package -P create-autoupdate
+      - name: Retrieve autoupdate output
+        id: retrieve-autoupdate-output
+        uses: actions/cache@v3
+        with:
+          path: modules/application/target/autoupdate_site
+          key: autoupdate-output
 
       - name: Configure Git user
         run: |
