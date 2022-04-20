@@ -5,13 +5,8 @@ on:
     branches: [ 0.9.5 ]
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-11]
-    runs-on: ${{ matrix.os }}
+  build-base:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Maven Central Repository
@@ -24,21 +19,7 @@ jobs:
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE 
-      
-      - name: Install MacOS requirements
-        run: brew install gnupg@1.4
-        if: runner.os == 'macOS'
-        
-      - name: Apple Developer Certificates
-        run: |
-          gpg1 --output .github/workflows/release/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/release/certs/dev_id.cer.enc
-          gpg1 --output .github/workflows/release/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/release/certs/dev_id.p12.enc
-          ./.github/workflows/release/add-key.sh
-        if: runner.os == 'macOS'
-        env:
-          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          gpg-passphrase: GPG_PASSPHRASE
 
       - name: Get NBM Keystore
         shell: bash
@@ -52,27 +33,74 @@ jobs:
         with:
           path: modules/application/target/autoupdate_site
           key: autoupdate-output
-        if: runner.os == 'Linux'
 
-      - name: Build and publish package Linux
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
-        if: runner.os == 'Linux'
+      - name: Cache modules output
+        id: cache-modules-output
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository/org/gephi/
+          key: modules-output
+
+      - name: Build and publish modules
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-      - name: Build and publish package Windows
-        run: mvn -T 4 --batch-mode '-Djava.awt.headless=true' '-Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }}' clean deploy -P deployment,replace-windows-icon,create-exe
-        if: runner.os == 'Windows'
-        env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      
-      - name: Build and publish package MacOS
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID clean deploy -P deployment,create-dmg,notarize-dmg
+  bundle:
+    needs: build-base
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-11 ]
+        include:
+          - task: create-targz
+            os: ubuntu-latest
+          - task: replace-windows-icon,create-exe
+            os: windows-latest
+          - task: create-dmg,notarize-dmg
+            os: macos-11
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          server-id: ossrh
+          cache: 'maven'
+          server-username: OSSRH_USER
+          server-password: OSSRH_PASS
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Install MacOS requirements
+        run: brew install gnupg@1.4
         if: runner.os == 'macOS'
+
+      - name: Apple Developer Certificates
+        run: |
+          gpg1 --output .github/workflows/release/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/release/certs/dev_id.cer.enc
+          gpg1 --output .github/workflows/release/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/release/certs/dev_id.p12.enc
+          ./.github/workflows/release/add-key.sh
+        if: runner.os == 'macOS'
+        env:
+          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Retrieve modules output
+        id: retrieve-modules-output
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository/org/gephi/
+          key: modules-output
+
+      - name: Build and publish bundle
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID deploy -P deployment,${{ matrix.task }}
+        working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
@@ -84,8 +112,9 @@ jobs:
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
+
   update-site:
-    needs: build
+    needs: bundle
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
