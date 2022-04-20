@@ -596,36 +596,36 @@
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre-x64.zip"/>
-                                            <arg line="${gephi.bundle.jre.macos.x64}"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
+                                            <arg line="${gephi.bundle.jre.macos}"/>
                                         </exec>
 
-                                        <!-- Download JRE (Windows x64) -->
+                                        <!-- Download JRE (Windows) -->
                                         <exec dir="${project.build.directory}" osfamily="windows" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre-x64.zip"/>
-                                            <arg line="${gephi.bundle.jre.windows.x64}"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
+                                            <arg line="${gephi.bundle.jre.windows}"/>
                                         </exec>
 
-                                        <!-- Download JRE (Linux x64) -->
+                                        <!-- Download JRE (Linux) -->
                                         <exec dir="${project.build.directory}" os="Linux" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre-x64.zip"/>
-                                            <arg line="${gephi.bundle.jre.linux.x64}"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
+                                            <arg line="${gephi.bundle.jre.linux}"/>
                                         </exec>
 
-                                        <!-- Unzip archive (x64) -->
-                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-x64"/>
+                                        <!-- Unzip archive -->
+                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}"/>
                                         <exec dir="${project.build.directory}" executable="tar">
                                             <arg line="-zxf"/>
-                                            <arg line="jre-x64.zip"/>
-                                            <arg line="-C &quot;${brandingToken}/jre-x64&quot;"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
+                                            <arg line="-C &quot;${brandingToken}/jre-${gephi.bundle.arch}&quot;"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -642,18 +642,18 @@
                                     <skip>${skipCreateExe}</skip>
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
-                                        <delete file="${project.artifactId}-${project.version}-x64.setup.exe" failonerror="false"/>
+                                        <delete file="${project.artifactId}-${project.version}-${gephi.bundle.arch}.setup.exe" failonerror="false"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x64\${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x64/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}\${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
 
                                         <!-- Windows -->
                                         <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows" failonerror="true">
@@ -677,9 +677,9 @@
                                         <delete includeEmptyDirs="true" failonerror="false" removeNotFollowedSymlinks="true">
                                             <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app" followsymlinks="false"/>
                                             <fileset dir="${project.build.directory}/${gephi.app.title}" followsymlinks="false"/>
-                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg" followsymlinks="false"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" followsymlinks="false"/>
                                         </delete>
-                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg" failonerror="false"/>
+                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" failonerror="false"/>
                                         
                                         <!-- Codesign Gephi modules with native librairies -->
                                         <exec executable="/bin/bash" os="Mac OS X" failonerror="true">
@@ -738,15 +738,15 @@
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Move the JRE in the /Contents/PlugIns folder and cleanup -->
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-x64/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-${gephi.bundle.arch}/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
                                         <delete includeEmptyDirs="true">
-                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-x64"/>
+                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-${gephi.bundle.arch}"/>
                                         </delete>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
@@ -801,7 +801,7 @@
                                             <arg value="zlib-level=9"/>
                                             <arg value="-srcfolder"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
-                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
 
                                         <!-- Create DMG (Linux), only for testing -->
@@ -817,7 +817,7 @@
                                             <arg value="-no-iso-translate"/>
                                             <arg value="-r"/>
                                             <arg value="-o"/>
-                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                             <arg value="-root"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
@@ -840,7 +840,7 @@
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="notarytool"/>
                                             <arg value="submit"/>
-                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                             <arg value="--apple-id"/>
                                             <arg value="${gephi.apple.notarization.username}"/>
                                             <arg value="--password"/>
@@ -856,7 +856,7 @@
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="stapler"/>
                                             <arg value="staple"/>
-                                            <arg value="${project.artifactId}-${project.version}-x64.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -874,14 +874,14 @@
                                     <target>
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x64/${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x64/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}/${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -926,9 +926,9 @@
                                     <skipAttach>${skipCreateTargz}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux-x64.tar.gz</file>
+                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux-${gephi.bundle.arch}.tar.gz</file>
                                             <type>tar.gz</type>
-                                            <classifier>linux-x64</classifier>
+                                            <classifier>linux-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -945,9 +945,9 @@
                                     <skipAttach>${skipCreateExe}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-x64.setup.exe</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.setup.exe</file>
                                             <type>exe</type>
-                                            <classifier>windows-x64</classifier>
+                                            <classifier>windows-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -964,9 +964,9 @@
                                     <skipAttach>${skipCreateDmg}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-x64.dmg</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg</file>
                                             <type>dmg</type>
-                                            <classifier>macos-x64</classifier>
+                                            <classifier>macos-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
