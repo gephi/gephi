@@ -1123,6 +1123,43 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- Enables GPG and NBM signing, to be used alongside deployment profile -->
+        <profile>
+            <id>sign-artifacts</id>
+
+            <build>
+                <plugins>
+                    <!-- NBM Signing -->
+                    <plugin>
+                        <groupId>org.apache.netbeans.utilities</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- Keystore location -->
+                            <keystore>keystore.ks</keystore>
+                            <keystorealias>gephi</keystorealias>
+                            <keystorepassword>${keystore.password}</keystorepassword>
+                        </configuration>
+                    </plugin>
+
+                    <!-- GPG Signed Components -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-gpg-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         
         <!-- Profile for nightly builds and releases -->
         <profile>
@@ -1168,34 +1205,6 @@
                             <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
                             <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
                         </configuration>
-                    </plugin>
-
-                    <!-- NBM Signing -->
-                    <plugin>
-                        <groupId>org.apache.netbeans.utilities</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <!-- Keystore location -->
-                            <keystore>keystore.ks</keystore>
-                            <keystorealias>gephi</keystorealias>
-                            <keystorepassword>${keystore.password}</keystorepassword>
-                        </configuration>
-                    </plugin>
-
-                    <!-- GPG Signed Components -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
