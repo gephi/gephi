@@ -42,7 +42,7 @@ jobs:
           key: modules-output
 
       - name: Build and publish modules
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
