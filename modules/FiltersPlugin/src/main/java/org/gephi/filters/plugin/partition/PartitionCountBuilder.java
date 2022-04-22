@@ -162,9 +162,15 @@ public class PartitionCountBuilder implements CategoryBuilder {
         public PartitionCountFilter(Partition partition) {
             super(NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
                 partition.getColumn());
+            this.partition = partition;
 
             //Add property
             addProperty(Range.class, "range");
+        }
+
+        @Override
+        public boolean init(Graph graph) {
+            return partition != null && partition.getColumn() != null;
         }
 
         @Override
@@ -211,22 +217,12 @@ public class PartitionCountBuilder implements CategoryBuilder {
             public Node(Partition partition) {
                 super(partition);
             }
-
-            @Override
-            public boolean init(Graph graph) {
-                return partition != null && partition.getColumn() != null;
-            }
         }
 
         public static class Edge extends PartitionCountFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
 
             public Edge(Partition partition) {
                 super(partition);
-            }
-
-            @Override
-            public boolean init(Graph graph) {
-                return partition != null && partition.getColumn() != null;
             }
         }
     }
