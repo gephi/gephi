@@ -58,10 +58,16 @@ jobs:
         include:
           - task: create-targz
             os: ubuntu-latest
+            arch: x64
           - task: create-exe
             os: windows-latest
+            arch: x64
+          - task: create-exe
+            os: windows-latest
+            arch: x32
           - task: create-dmg,notarize-dmg
             os: macos-11
+            arch: x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -100,7 +106,7 @@ jobs:
 
       - name: Build and publish bundle
         shell: bash
-        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID deploy -P deployment,${{ matrix.task }}
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} deploy -P deployment,${{ matrix.task }}
         working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
