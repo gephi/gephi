@@ -58,7 +58,7 @@ jobs:
         include:
           - task: create-targz
             os: ubuntu-latest
-          - task: replace-windows-icon,create-exe
+          - task: create-exe
             os: windows-latest
           - task: create-dmg,notarize-dmg
             os: macos-11

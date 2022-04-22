@@ -19,7 +19,6 @@
     <properties>
         <jarGoalPhase>package</jarGoalPhase>
         <skipCreateTargz>true</skipCreateTargz>
-        <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
         <skipCreateExe>true</skipCreateExe>
         <skipCreateDmg>true</skipCreateDmg>
         <skipAppleNotarization>true</skipAppleNotarization>
@@ -546,7 +545,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <skip>${skipReplaceWindowsIcon}</skip>
+                                    <skip>${skipCreateExe}</skip>
                                     <!-- Target that replaces the icon for the launcher exe with our own icon. -->
                                     <target name="replaceWindowsLauncherIcon" description="Replace the icon for the Windows launcher exe">
                                         <!-- Windows -->
@@ -561,21 +560,6 @@
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
                                         </exec>
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
-                                        </exec>
-
-                                        <!-- Linux (assuming the right wine configuration) -->
-                                        <echo message="Replacing icon of Windows launcher executable."/>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
                                         </exec>
                                     </target>
@@ -1061,14 +1045,6 @@
             <id>create-targz</id>
             <properties>
                 <skipCreateTargz>false</skipCreateTargz>
-            </properties>
-        </profile>
-        
-        <!-- Profile used along with targz and windows exe to replace the windows icon -->
-        <profile>
-            <id>replace-windows-icon</id>
-            <properties>
-                <skipReplaceWindowsIcon>false</skipReplaceWindowsIcon>
             </properties>
         </profile>
 
