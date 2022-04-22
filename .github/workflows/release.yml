@@ -32,14 +32,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: modules/application/target/autoupdate_site
-          key: autoupdate-output
+          key: autoupdate-output-${{env.GITHUB_RUN_ID}}
 
       - name: Cache modules output
         id: cache-modules-output
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository/org/gephi/
-          key: modules-output
+          key: modules-output-${{env.GITHUB_RUN_ID}}
 
       - name: Build and publish modules
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
@@ -96,7 +96,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository/org/gephi/
-          key: modules-output
+          key: modules-output-${{env.GITHUB_RUN_ID}}
 
       - name: Build and publish bundle
         shell: bash
@@ -130,7 +130,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: modules/application/target/autoupdate_site
-          key: autoupdate-output
+          key: autoupdate-output-${{env.GITHUB_RUN_ID}}
 
       - name: Configure Git user
         run: |
