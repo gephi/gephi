@@ -77,6 +77,20 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator addNodeLabels() {
+        for (Node n : graphModel.getGraph().getNodes()) {
+            n.setLabel(n.getId().toString());
+        }
+        return this;
+    }
+
+    public GraphGenerator addEdgeLabels() {
+        for (Edge e : graphModel.getGraph().getEdges()) {
+            e.setLabel(e.getId().toString());
+        }
+        return this;
+    }
+
     public GraphGenerator generateTinyMultiGraph() {
         Node n1 = graphModel.factory().newNode(FIRST_NODE);
         Node n2 = graphModel.factory().newNode(SECOND_NODE);
