@@ -59,15 +59,19 @@ jobs:
           - task: create-targz
             os: ubuntu-latest
             arch: x64
+            modules: ~/.m2/repository/org/gephi/
           - task: create-exe
             os: windows-latest
             arch: x64
+            modules: ~\.m2\repository\org\gephi\
           - task: create-exe
             os: windows-latest
             arch: x32
+            modules: ~\.m2\repository\org\gephi\
           - task: create-dmg,notarize-dmg
             os: macos-11
             arch: x64
+            modules: ~/.m2/repository/org/gephi/
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -100,7 +104,7 @@ jobs:
         id: retrieve-modules-output
         uses: actions/cache@v3
         with:
-          path: ~/.m2/repository/org/gephi/
+          path: ${{ matrix.modules }}
           key: modules-output-${{ github.run_id }}
 
       - name: Build and publish bundle
