@@ -57,6 +57,7 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.ErrorSheet;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheets.csv.CSVSheetParser;
 import org.gephi.utils.CharsetToolkit;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -115,8 +116,14 @@ public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
     }
 
     private void autoDetectFieldDelimiter() {
+        FileObject fileObject = FileUtil.toFileObject(file);
+        //Return if file is empty
+        if (fileObject.getSize() == 0) {
+            return;
+        }
+
         //Very simple naive detector but should work in most cases:
-        try (LineNumberReader reader = ImportUtils.getTextReader(FileUtil.toFileObject(file))) {
+        try (LineNumberReader reader = ImportUtils.getTextReader(fileObject)) {
             String line = reader.readLine().trim()
                 .replaceAll(" , ", ",").replaceAll(" ; ", ";");
 
