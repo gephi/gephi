@@ -15,7 +15,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           server-id: ossrh
-          cache: 'maven'
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -78,7 +77,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           server-id: ossrh
-          cache: 'maven'
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
