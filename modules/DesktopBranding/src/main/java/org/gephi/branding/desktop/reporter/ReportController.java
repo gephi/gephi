@@ -42,6 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.branding.desktop.reporter;
 
+import io.sentry.Attachment;
+import io.sentry.protocol.User;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -53,6 +55,7 @@ import java.io.StringReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.MissingResourceException;
@@ -85,10 +88,20 @@ public class ReportController {
 
     private static final String POST_URL =
         "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.sentry.io/85815";
-    
+
     public ReportController() {
         Sentry.init(options -> {
+            String gephiVersion = System.getProperty("netbeans.productversion");
+            if (!gephiVersion.contains("SNAPSHOT")) {
+                // Strip build
+                gephiVersion = gephiVersion.substring(0, gephiVersion.length() - 13);
+            }
+
             options.setDsn(POST_URL);
+            options.setRelease(gephiVersion);
+            options.setDiagnosticLevel(SentryLevel.ERROR);
+            options.setServerName("Gephi Desktop");
+            options.setEnvironment(gephiVersion.contains("SNAPSHOT") ? "development" : "production");
         });
     }
 
@@ -125,26 +138,40 @@ public class ReportController {
     }
 
     private void sendSentryReport(Report report) {
-        SentryEvent event = new SentryEvent();
-        event.setLevel(SentryLevel.ERROR);
-        event.setRelease(report.getVersion());
-        event.setServerName("Gephi Desktop");
-        event.setExtra("OS", report.getOs());
-        event.setExtra("Heap memory usage", report.getHeapMemoryUsage());
-        event.setExtra("Non heap memory usage", report.getNonHeapMemoryUsage());
-        event.setExtra("Processors", report.getNumberOfProcessors());
-        event.setExtra("Screen devices", report.getScreenDevices());
-        event.setExtra("Screen size", report.getScreenSize());
-        event.setExtra("VM", report.getVm());
-        event.setExtra("OpenGL Vendor", report.getGlVendor());
-        event.setExtra("OpenGL Renderer", report.getGlRenderer());
-        event.setExtra("OpenGL Version", report.getGlVersion());
-        // The user email is okay to store privacy-wise, because it is provided by the user voluntarily
-        event.setExtra("User email", report.getUserEmail());
-        event.setExtra("Log", anonymizeLog(report.getLog()));
-        event.setThrowable(report.getThrowable());
+        final User user = !report.getUserEmail().isEmpty() ? new User() : null;
+        if (user != null) {
+            user.setEmail(report.getUserEmail());
+        }
 
-        Sentry.captureEvent(event);
+        Sentry.withScope(scope -> {
+            // Main
+            scope.setLevel(SentryLevel.ERROR);
+
+            // Extra
+            scope.setContexts("OS", report.getOs());
+            scope.setContexts("Heap memory usage", report.getHeapMemoryUsage());
+            scope.setContexts("Non heap memory usage", report.getNonHeapMemoryUsage());
+            scope.setContexts("Processors", report.getNumberOfProcessors());
+            scope.setContexts("Screen devices", report.getScreenDevices());
+            scope.setContexts("Screen size", report.getScreenSize());
+            scope.setContexts("VM", report.getVm());
+            scope.setContexts("OpenGL Vendor", report.getGlVendor());
+            scope.setContexts("OpenGL Renderer", report.getGlRenderer());
+            scope.setContexts("OpenGL Version", report.getGlVersion());
+            scope.setContexts("Description", report.getUserDescription());
+
+            //User
+            scope.setUser(user);
+
+            // Log
+            Attachment log =
+                new Attachment(anonymizeLog(report.getLog()).getBytes(StandardCharsets.UTF_8), "messages.log",
+                    "text/plain");
+            scope.addAttachment(log);
+
+            // Send
+            Sentry.captureException(report.getThrowable());
+        });
     }
 
     public Document buildReportDocument(Report report) {
@@ -209,15 +236,8 @@ public class ReportController {
     }
 
     private void logVersion(Report report) {
-        String str = ""; // NOI18N
-        try {
-            str = MessageFormat.format(
-                NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                // NOI18N
-                System.getProperty("netbeans.buildnumber"));
-            report.setVersion(str);
-        } catch (MissingResourceException ex) {
-        }
+        String str = System.getProperty("netbeans.productversion");
+        report.setVersion(str);
     }
 
     private void logGLInfo(Report report) {
@@ -280,7 +300,7 @@ public class ReportController {
      */
     protected static String anonymizeLog(String log) {
         return log.replaceAll(
-                "(/((home)|(Users))/[^/\n]*)|(\\\\Users\\\\[^\\\\\n]*)",
-                "/ANONYMIZED_HOME_DIR"); // NOI18N
+            "(/((home)|(Users))/[^/\n]*)|(\\\\Users\\\\[^\\\\\n]*)",
+            "/ANONYMIZED_HOME_DIR"); // NOI18N
     }
 }

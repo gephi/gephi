@@ -228,8 +228,10 @@ public class Report {
     }
 
     public Element writeXml(Document document) {
+        String gephiVersion = System.getProperty("netbeans.productversion");
+
         Element reportE = document.createElement("report");
-        reportE.setAttribute("version", "0.9.3");
+        reportE.setAttribute("version", gephiVersion);
 
         //Date
         Element dateE = document.createElement("date");
