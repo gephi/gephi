@@ -14,6 +14,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: 'maven'
           server-id: ossrh
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
@@ -26,26 +27,31 @@ jobs:
           echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
           gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
 
-      - name: Cache autoupdate output
-        id: cache-autoupdate-output
-        uses: actions/cache@v3
-        with:
-          path: modules/application/target/autoupdate_site
-          key: autoupdate-output-${{ github.run_id }}
-
-      - name: Cache modules output
-        id: cache-modules-output
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository/org/gephi/
-          key: modules-output-${{ github.run_id }}
-
       - name: Build and publish modules
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Upload autoupdate output
+        uses: actions/upload-artifact@v3
+        with:
+          name: autoupdate-output
+          path: modules/application/target/autoupdate_site
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Prepare modules output
+        run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst ~/.m2/repository/org/gephi/
+
+      - name: Upload modules output
+        uses: actions/upload-artifact@v3
+        with:
+          name: modules-output
+          path: /tmp/modules.tar.zst
+          if-no-files-found: error
+          retention-days: 1
 
   bundle:
     needs: build-base
@@ -59,19 +65,15 @@ jobs:
           - task: create-targz
             os: ubuntu-latest
             arch: x64
-            modules: ~/.m2/repository/org/gephi/
           - task: create-exe
             os: windows-latest
             arch: x64
-            modules: ~\.m2\repository\org\gephi\
           - task: create-exe
             os: windows-latest
             arch: x32
-            modules: ~\.m2\repository\org\gephi\
           - task: create-dmg,notarize-dmg
             os: macos-11
             arch: x64
-            modules: ~/.m2/repository/org/gephi/
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -101,11 +103,28 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Retrieve modules output
-        id: retrieve-modules-output
-        uses: actions/cache@v3
+        uses: actions/download-artifact@v3
         with:
-          path: ${{ matrix.modules }}
-          key: modules-output-${{ github.run_id }}
+          name: modules-output
+
+      - name: Extract artifacts Linux
+        run: |
+          mkdir ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C mkdir ~/.m2/repository/org/gephi/
+        if: runner.os == 'Linux'
+
+      - name: Extract artifacts Mac OS
+        run: |
+          mkdir ~/.m2/repository/org/gephi/
+          unzstd -c modules.tar.zst | tar -x -C ~/.m2/repository/org/gephi/
+        if: runner.os == 'macOS'
+
+      - name: Extract artifacts Windows
+        shell: bash
+        run: |
+          mkdir ~\.m2\repository\org\gephi\
+          tar --zstd -xf modules.tar.zst -C ~\.m2\repository\org\gephi\
+        if: runner.os == 'Windows'
 
       - name: Build and publish bundle
         shell: bash
@@ -135,11 +154,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Retrieve autoupdate output
-        id: retrieve-autoupdate-output
-        uses: actions/cache@v3
+        uses: actions/download-artifact@v3
         with:
+          name: autoupdate-output
           path: modules/application/target/autoupdate_site
-          key: autoupdate-output-${{ github.run_id }}
 
       - name: Configure Git user
         run: |
