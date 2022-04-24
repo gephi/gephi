@@ -109,20 +109,20 @@ jobs:
 
       - name: Extract artifacts Linux
         run: |
-          mkdir ~/.m2/repository/org/gephi/
-          tar --zstd -xf modules.tar.zst -C mkdir ~/.m2/repository/org/gephi/
+          mkdir -p ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi/
         if: runner.os == 'Linux'
 
       - name: Extract artifacts Mac OS
         run: |
-          mkdir ~/.m2/repository/org/gephi/
+          mkdir -p ~/.m2/repository/org/gephi/
           unzstd -c modules.tar.zst | tar -x -C ~/.m2/repository/org/gephi/
         if: runner.os == 'macOS'
 
       - name: Extract artifacts Windows
         shell: bash
         run: |
-          mkdir ~\.m2\repository\org\gephi\
+          mkdir -p ~\.m2\repository\org\gephi\
           tar --zstd -xf modules.tar.zst -C ~\.m2\repository\org\gephi\
         if: runner.os == 'Windows'
 
