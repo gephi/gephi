@@ -122,8 +122,8 @@ jobs:
       - name: Extract artifacts Windows
         shell: bash
         run: |
-          mkdir -p ~\.m2\repository\org\gephi\
-          tar --zstd -xf modules.tar.zst -C ~\.m2\repository\org\gephi
+          mkdir -p ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi
         if: runner.os == 'Windows'
 
       - name: Build and publish bundle
