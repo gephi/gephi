@@ -43,7 +43,7 @@ jobs:
           retention-days: 1
 
       - name: Prepare modules output
-        run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst ~/.m2/repository/org/gephi/
+        run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst -C ~/.m2/repository/org/gephi .
 
       - name: Upload modules output
         uses: actions/upload-artifact@v3
@@ -110,20 +110,20 @@ jobs:
       - name: Extract artifacts Linux
         run: |
           mkdir -p ~/.m2/repository/org/gephi/
-          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi
         if: runner.os == 'Linux'
 
       - name: Extract artifacts Mac OS
         run: |
           mkdir -p ~/.m2/repository/org/gephi/
-          unzstd -c modules.tar.zst | tar -x -C ~/.m2/repository/org/gephi/
+          unzstd -c modules.tar.zst | tar -x -C ~/.m2/repository/org/gephi
         if: runner.os == 'macOS'
 
       - name: Extract artifacts Windows
         shell: bash
         run: |
           mkdir -p ~\.m2\repository\org\gephi\
-          tar --zstd -xf modules.tar.zst -C ~\.m2\repository\org\gephi\
+          tar --zstd -xf modules.tar.zst -C ~\.m2\repository\org\gephi
         if: runner.os == 'Windows'
 
       - name: Build and publish bundle
