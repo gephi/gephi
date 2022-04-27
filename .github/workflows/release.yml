@@ -7,6 +7,8 @@ on:
 jobs:
   build-base:
     runs-on: ubuntu-latest
+    outputs:
+      staging-repository-id: ${{ steps.create-nexus-staging.outputs.repository_id }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Maven Central Repository
@@ -27,8 +29,23 @@ jobs:
           echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
           gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
 
+      - name: Create Nexus Staging Repository
+        id: create-nexus-staging
+        run: |
+          stagingRepositoryId=$(mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:1.6.12:rc-open -DstagingProfileId=$OSSRH_STAGING_PROFILE_ID -DnexusUrl=https://oss.sonatype.org/ -DserverId=ossrh -DopenedRepositoryMessageFormat='stagingRepositoryId=%s' | grep -o 'stagingRepositoryId=.*' | cut -f2 -d=)
+          echo "Created Nexus Staging Repository Id: $stagingRepositoryId"
+          
+          if [ "$(echo $stagingRepositoryId | grep -o "\-" | wc -l)" != "1" ]; then
+            echo "Nexus repository creation failed"
+            exit 1
+          fi
+          echo "staging_repository_id=$stagingRepositoryId" >> $GITHUB_ENV
+          echo "::set-output name=staging-repository-id::$stagingRepositoryId"
+        env:
+          OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
+
       - name: Build and publish modules
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -D=$stagingRepositoryId=${{ env.staging_repository_id }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
@@ -128,7 +145,7 @@ jobs:
 
       - name: Build and publish bundle
         shell: bash
-        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} deploy -P deployment,${{ matrix.task }}
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,${{ matrix.task }}
         working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
