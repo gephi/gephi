@@ -42,6 +42,8 @@ jobs:
           echo "staging_repository_id=$stagingRepositoryId" >> $GITHUB_ENV
           echo "::set-output name=staging-repository-id::$stagingRepositoryId"
         env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
 
       - name: Build and publish modules
