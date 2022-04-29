@@ -116,7 +116,7 @@ public class GiantComponentBuilder implements FilterBuilder {
 
             column = graph.getModel().getNodeTable().getColumn(GIANT_COMPONENT_FILTER);
             if (column == null) {
-                column = graph.getModel().getEdgeTable().addColumn(GIANT_COMPONENT_FILTER, Integer.class);
+                column = graph.getModel().getNodeTable().addColumn(GIANT_COMPONENT_FILTER, Integer.class);
             }
             graph.readLock();
             try {
