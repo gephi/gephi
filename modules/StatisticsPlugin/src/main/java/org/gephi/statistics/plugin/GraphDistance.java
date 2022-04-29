@@ -43,11 +43,13 @@
 package org.gephi.statistics.plugin;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -324,6 +326,8 @@ public class GraphDistance implements Statistics, LongTask {
 
     private void initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {ECCENTRICITY, CLOSENESS, HARMONIC_CLOSENESS, BETWEENNESS}, Double.class);
+
         if (!nodeTable.hasColumn(ECCENTRICITY)) {
             nodeTable.addColumn(ECCENTRICITY, "Eccentricity", Double.class, new Double(0));
         }

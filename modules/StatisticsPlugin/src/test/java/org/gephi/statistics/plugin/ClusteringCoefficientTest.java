@@ -13,6 +13,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -469,5 +470,25 @@ public class ClusteringCoefficientTest extends TestCase {
         double diff = 0.01;
 
         assertTrue(Math.abs(avClusteringCoefficient - res) < diff);
+    }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(ClusteringCoefficient.CLUSTERING_COEFF));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(ClusteringCoefficient.CLUSTERING_COEFF, String.class);
+
+        ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.execute(graphModel);
     }
 }

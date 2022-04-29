@@ -520,6 +520,26 @@ public class HitsTest extends TestCase {
         assertEquals(authority[index4], 0.6280);
     }
 
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        Hits h = new Hits();
+        h.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(Hits.HUB));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(Hits.HUB, String.class);
+
+        Hits h = new Hits();
+        h.execute(graphModel);
+    }
+
     private void assertEquals(double a, double b) {
         Assert.assertEquals(a, b, EPSILON);
     }

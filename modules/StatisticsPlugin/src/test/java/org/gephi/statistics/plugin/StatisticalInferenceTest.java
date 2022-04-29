@@ -51,6 +51,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -807,6 +808,26 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
 
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
+    }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        StatisticalInferenceClustering h = new StatisticalInferenceClustering();
+        h.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(StatisticalInferenceClustering.STAT_INF_CLASS));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(StatisticalInferenceClustering.STAT_INF_CLASS, String.class);
+
+        StatisticalInferenceClustering h = new StatisticalInferenceClustering();
+        h.execute(graphModel);
     }
 }
 

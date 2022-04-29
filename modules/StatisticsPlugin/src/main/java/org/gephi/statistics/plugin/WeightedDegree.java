@@ -169,6 +169,8 @@ public class WeightedDegree implements Statistics, LongTask {
     private void initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
         if (isDirected) {
+            ColumnUtils.cleanUpColumns(nodeTable, new String[] {WINDEGREE, WOUTDEGREE}, Double.class);
+
             if (!nodeTable.hasColumn(WINDEGREE)) {
                 nodeTable.addColumn(WINDEGREE,
                     NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.InDegree"), Double.class, 0.0);
@@ -179,6 +181,7 @@ public class WeightedDegree implements Statistics, LongTask {
                     0.0);
             }
         }
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {WDEGREE}, Double.class);
         if (!nodeTable.hasColumn(WDEGREE)) {
             nodeTable.addColumn(WDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.Degree"),
                 Double.class, 0.0);

@@ -156,6 +156,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
     private Column initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {EIGENVECTOR}, Double.class);
+
         Column eigenCol = nodeTable.getColumn(EIGENVECTOR);
         if (eigenCol == null) {
             eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", Double.class, new Double(0));

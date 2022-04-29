@@ -2083,4 +2083,30 @@ public class GraphDistanceTest extends TestCase {
         assertEquals(harmonic[index1], (1.0 + 1.0 / 2.0) / 2.0, TOLERANCE);
         assertEquals(harmonic[index4], 1.0, TOLERANCE);
     }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        GraphDistance d = new GraphDistance();
+        d.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(GraphDistance.BETWEENNESS));
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(GraphDistance.ECCENTRICITY));
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(GraphDistance.CLOSENESS));
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(GraphDistance.HARMONIC_CLOSENESS));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(GraphDistance.HARMONIC_CLOSENESS, String.class);
+        graphModel.getNodeTable().addColumn(GraphDistance.ECCENTRICITY, String.class);
+        graphModel.getNodeTable().addColumn(GraphDistance.CLOSENESS, String.class);
+        graphModel.getNodeTable().addColumn(GraphDistance.BETWEENNESS, String.class);
+
+        GraphDistance d = new GraphDistance();
+        d.execute(graphModel);
+    }
 }

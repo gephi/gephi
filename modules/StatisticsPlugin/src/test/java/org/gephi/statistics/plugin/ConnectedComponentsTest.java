@@ -489,4 +489,24 @@ public class ConnectedComponentsTest extends TestCase {
 
         assertEquals(giantComponent, componentNumber5);
     }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        ConnectedComponents cc = new ConnectedComponents();
+        cc.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(ConnectedComponents.WEAKLY));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(ConnectedComponents.WEAKLY, String.class);
+
+        ConnectedComponents cc = new ConnectedComponents();
+        cc.execute(graphModel);
+    }
 }

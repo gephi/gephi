@@ -450,4 +450,24 @@ public class EigenvectorCentralityTest extends TestCase {
         assertEquals(ec1, 0.0);
         assertEquals(ec4, 1.0);
     }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        EigenvectorCentrality ec = new EigenvectorCentrality();
+        ec.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(EigenvectorCentrality.EIGENVECTOR));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(EigenvectorCentrality.EIGENVECTOR, String.class);
+
+        EigenvectorCentrality ec = new EigenvectorCentrality();
+        ec.execute(graphModel);
+    }
 }

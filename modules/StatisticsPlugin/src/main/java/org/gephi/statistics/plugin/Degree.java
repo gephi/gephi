@@ -183,6 +183,7 @@ public class Degree implements Statistics, LongTask {
     private void initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
         if (isDirected) {
+            ColumnUtils.cleanUpColumns(nodeTable, new String[] {INDEGREE, OUTDEGREE}, Integer.class);
             if (!nodeTable.hasColumn(INDEGREE)) {
                 nodeTable
                     .addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), Integer.class,
@@ -193,6 +194,7 @@ public class Degree implements Statistics, LongTask {
                     Integer.class, 0);
             }
         }
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {DEGREE}, Integer.class);
         if (!nodeTable.hasColumn(DEGREE)) {
             nodeTable
                 .addColumn(DEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.Degree"), Integer.class, 0);

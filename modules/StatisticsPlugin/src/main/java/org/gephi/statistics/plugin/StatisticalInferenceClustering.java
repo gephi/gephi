@@ -107,6 +107,14 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     public void execute(Graph graph) {
         isCanceled = false;
 
+        Table nodeTable = graph.getModel().getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {STAT_INF_CLASS}, Integer.class);
+
+        Column modCol = nodeTable.getColumn(STAT_INF_CLASS);
+        if (modCol == null) {
+            nodeTable.addColumn(STAT_INF_CLASS, "Inferred Class", Integer.class, 0);
+        }
+
         graph.readLock();
         try {
             structure = new StatisticalInferenceClustering.CommunityStructure(graph);
@@ -431,10 +439,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     private void saveValues(int[] struct, Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
         Table nodeTable = graph.getModel().getNodeTable();
+
         Column modCol = nodeTable.getColumn(STAT_INF_CLASS);
-        if (modCol == null) {
-            modCol = nodeTable.addColumn(STAT_INF_CLASS, "Inferred Class", Integer.class, 0);
-        }
         for (Node n : graph.getNodes()) {
             int n_index = theStructure.map.get(n);
             n.setAttribute(modCol, struct[n_index]);

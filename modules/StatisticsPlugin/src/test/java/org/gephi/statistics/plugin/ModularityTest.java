@@ -279,4 +279,24 @@ public class ModularityTest extends TestCase {
         assertEquals(class7, class8);
         Assert.assertNotEquals(class4, class5);
     }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        Modularity h = new Modularity();
+        h.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(Modularity.MODULARITY_CLASS));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(Modularity.MODULARITY_CLASS, String.class);
+
+        Modularity h = new Modularity();
+        h.execute(graphModel);
+    }
 }

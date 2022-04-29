@@ -152,6 +152,8 @@ public class PageRank implements Statistics, LongTask {
 
     private Column initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {PAGERANK}, Double.class);
+
         Column pagerankCol = nodeTable.getColumn(PAGERANK);
 
         if (pagerankCol == null) {
