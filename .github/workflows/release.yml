@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       staging-repository-id: ${{ steps.create-nexus-staging.outputs.repository_id }}
+      project-version: ${{ steps.project.outputs.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Maven Central Repository
@@ -23,12 +24,17 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Extract Maven project version
+        id: project
+        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
       - name: Get NBM Keystore
         run: |
           echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
           gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
 
       - name: Create Nexus Staging Repository
+        if:  ${{ !endsWith(steps.project.outputs.version, '-SNAPSHOT') }}
         id: create-nexus-staging
         run: |
           stagingRepositoryId=$(mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:1.6.12:rc-open -DstagingProfileId=$OSSRH_STAGING_PROFILE_ID -DnexusUrl=https://oss.sonatype.org/ -DserverId=ossrh -DopenedRepositoryMessageFormat='stagingRepositoryId=%s' | grep -o 'stagingRepositoryId=.*' | cut -f2 -d=)
