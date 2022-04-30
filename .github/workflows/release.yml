@@ -8,7 +8,7 @@ jobs:
   build-base:
     runs-on: ubuntu-latest
     outputs:
-      staging-repository-id: ${{ steps.create-nexus-staging.outputs.repository_id }}
+      staging-repository-id: ${{ steps.create-nexus-staging.outputs.staging-repository-id }}
       project-version: ${{ steps.project.outputs.version }}
     steps:
       - uses: actions/checkout@v2
