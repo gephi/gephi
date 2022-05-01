@@ -183,7 +183,8 @@ public final class LanguageAction extends CallableSystemAction {
         PT_BR("pt", "BR", "Português do Brasil"),
         RU_RU("ru", "Русский"),
         ZH_CN("zh", "CN", "中文"),
-        JA_JA("ja", "日本語");
+        JA_JA("ja", "日本語"),
+        RO_RO("ro", "Română");
         private final String language;
         private String country = null;
         private final String name;
