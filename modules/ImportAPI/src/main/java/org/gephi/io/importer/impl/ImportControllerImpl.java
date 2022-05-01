@@ -213,6 +213,7 @@ public class ImportControllerImpl implements ImportController {
         } finally {
             try {
                 reader.close();
+                report.close();
             } catch (IOException ex) {
                 //NOOP
             }
@@ -263,6 +264,8 @@ public class ImportControllerImpl implements ImportController {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            report.close();
         }
         return null;
     }
