@@ -198,23 +198,11 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
         Thread thread = new Thread(fillingThreads, new Runnable() {
             @Override
             public void run() {
-                Iterator<Issue> itr = report.getIssues(ISSUES_LIMIT);
-                final StringBuilder sb = new StringBuilder(report.getText());
-                while (itr.hasNext()) {
-                    Issue issue = itr.next();
-                    sb
-                        .append('[')
-                        .append(issue.getLevel().name())
-                        .append("] ")
-                        .append(issue.getMessage())
-                        .append('\n');
-                }
-                final String text = sb.toString();
-
+                final String str = report.getText(true);
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        reportEditor.setText(text);
+                        reportEditor.setText(str);
                     }
                 });
             }
