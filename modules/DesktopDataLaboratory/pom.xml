@@ -4,12 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.5-SNAPSHOT</version>
+        <version>0.9.5</version>
 		<relativePath>../..</relativePath>
     </parent>
 
     <artifactId>desktop-datalab</artifactId>
-    <version>0.9.5-SNAPSHOT</version>
+    <version>0.9.5</version>
     <packaging>nbm</packaging>
 
     <name>DesktopDataLaboratory</name>
