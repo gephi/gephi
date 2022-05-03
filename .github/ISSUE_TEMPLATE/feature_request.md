@@ -13,7 +13,7 @@ assignees: ''
 <!-- If you have a proposal for how this need could be met, please provide a clear and concise description of what you want to happen. -->
 
 ### Alternatives considered
-<!-- If there alternative solutions that you have considered or think should be considered, please list them here -->
+<!-- If there are alternative solutions that you have considered or think should be considered, please list them here -->
 
 ### Additional context
 <!-- Add any other context or screenshots about the feature request here. -->
