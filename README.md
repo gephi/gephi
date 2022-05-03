@@ -33,17 +33,17 @@ If you run into any trouble or have questions consult our [forum](http://forum-g
 
 ### Nightly builds
 
-Current version is 0.9.5-SNAPSHOT
+Current version is 0.9.6-SNAPSHOT
 
-- [gephi-0.9.5-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.5-SNAPSHOT&c=windows-x64&p=exe) (Windows)
+- [gephi-0.9.6-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.6-SNAPSHOT&c=windows-x64&p=exe) (Windows)
 
-- [gephi-0.9.5-SNAPSHOT-windows-x32.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.5-SNAPSHOT&c=windows-x32&p=exe) (Windows x32)
+- [gephi-0.9.6-SNAPSHOT-windows-x32.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.6-SNAPSHOT&c=windows-x32&p=exe) (Windows x32)
 
-- [gephi-0.9.5-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.5-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
+- [gephi-0.9.6-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.6-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
 
-- [gephi-0.9.5-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.5-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
+- [gephi-0.9.6-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.6-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
 
-- [gephi-0.9.5-SNAPSHOT-sources.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.5-SNAPSHOT&c=sources&p=tar.gz) (Sources)
+- [gephi-0.9.6-SNAPSHOT-sources.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.6-SNAPSHOT&c=sources&p=tar.gz) (Sources)
 
 ## Developer Introduction
 
