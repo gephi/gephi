@@ -664,39 +664,6 @@
                                             <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" followsymlinks="false"/>
                                         </delete>
                                         <delete file="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" failonerror="false"/>
-                                        
-                                        <!-- Codesign Gephi modules with native librairies -->
-                                        <exec executable="/bin/bash" os="Mac OS X" failonerror="true">
-                                            <arg value="src/main/app-resources/codesign.sh" />
-                                            <arg value="${project.build.directory}/${brandingToken}/${brandingToken}/modules/ext" />
-                                            <arg value="${gephi.codesign.identity}" />
-                                        </exec>
-                                        
-                                        <!-- Codesign Netbeans native libraries -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign" failonerror="true">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/x86_64/libjnidispatch-nb.jnilib" />
-                                        </exec>
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign" failonerror="true">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/aarch64/libjnidispatch-nb.jnilib" />
-                                        </exec>
 
                                         <!-- Delete Windows Executables -->
                                         <delete file="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe" failonerror="false"/>
@@ -744,32 +711,11 @@
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../../PlugIns/${bundle.jre.name}/Contents/Home&quot;"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/**" perm="+x" type="both"/>
 
-                                        <!-- Codesign JRE -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib" />
-                                        </exec>
-                                        
-                                        <!-- Codesign app -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
+                                        <!-- Codesign -->
+                                        <exec executable="/bin/bash" os="Mac OS X" failonerror="true">
+                                            <arg value="src/main/app-resources/codesign.sh" />
+                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app" />
+                                            <arg value="${gephi.codesign.identity}" />
                                         </exec>
 
                                         <!-- Create application folder and add Applications dynamic link -->
@@ -788,23 +734,14 @@
                                             <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
 
-                                        <!-- Create DMG (Linux), only for testing -->
-                                        <exec dir="${project.build.directory}" os="Linux" executable="genisoimage">
-                                            <arg value="-V"/>
-                                            <arg value="${gephi.appbundle.name}"/>
-                                            <arg value="-U"/>
-                                            <arg value="-D"/>
-                                            <arg value="-l"/>
-                                            <arg value="-allow-multidot"/>
-                                            <arg value="-max-iso9660-filenames"/>
-                                            <arg value="-relaxed-filenames"/>
-                                            <arg value="-no-iso-translate"/>
-                                            <arg value="-r"/>
-                                            <arg value="-o"/>
+                                        <!-- Codesign dmg -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                            <arg value="--sign"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="-i"/>
+                                            <arg value="org.gephi"/>
                                             <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
-                                            <arg value="-root"/>
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
                                         </exec>
                                     </target>
                                 </configuration>
