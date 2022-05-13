@@ -62,5 +62,8 @@ codesignDir "${1}/Contents/Resources/gephi/platform/modules/lib" "${2}"
 # Sign JRE
 codesignDir "${1}/Contents/PlugIns" "${2}"
 
+# Sign launcher script
+codesignFile "${1}/Contents/Resources/gephi/bin/gephi" "${2}"
+
 # Sign app
 codesignFile "${1}" "${2}"
