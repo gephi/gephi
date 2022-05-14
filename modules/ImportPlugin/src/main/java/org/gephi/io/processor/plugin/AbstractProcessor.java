@@ -146,16 +146,21 @@ public abstract class AbstractProcessor implements Processor, LongTask {
         }
     }
 
+    protected void flushLabel(ElementDraft elementDraft, Element element) {
+        if (elementDraft.getLabel() != null) {
+                // Do not override existing label with autofilled label
+                if (!(element.getLabel() != null && elementDraft.getLabel().equals(elementDraft.getId()))) {
+                    element.setLabel(elementDraft.getLabel());
+                }
+        }
+    }
+
     protected void flushToNode(ContainerUnloader container, NodeDraft nodeDraft, Node node) {
         if (nodeDraft.getColor() != null) {
             node.setColor(nodeDraft.getColor());
         }
 
-        if (nodeDraft.getLabel() != null) {
-            if (node.getLabel() == null || !nodeDraft.isCreatedAuto()) {
-                node.setLabel(nodeDraft.getLabel());
-            }
-        }
+        flushLabel(nodeDraft, node);
 
         if (node.getTextProperties() != null) {
             node.getTextProperties().setVisible(nodeDraft.isLabelVisible());
@@ -289,9 +294,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
                 edge.setAlpha(0f);
             }
 
-            if (edgeDraft.getLabel() != null) {
-                edge.setLabel(edgeDraft.getLabel());
-            }
+            flushLabel(edgeDraft, edge);
 
             if (edge.getTextProperties() != null) {
                 edge.getTextProperties().setVisible(edgeDraft.isLabelVisible());
