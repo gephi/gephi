@@ -300,7 +300,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS:
+                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
                     if (!xmlReader.isWhiteSpace()) {
                         value += xmlReader.getText();
                     }
@@ -390,7 +390,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS:
+                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
                     if (!xmlReader.isWhiteSpace()) {
                         value.append(xmlReader.getText());
                     }
@@ -510,7 +510,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS:
+                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
                     if (!xmlReader.isWhiteSpace()) {
                         value += xmlReader.getText();
                     }
