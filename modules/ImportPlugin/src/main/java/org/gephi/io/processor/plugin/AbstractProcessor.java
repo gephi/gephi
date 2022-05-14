@@ -148,10 +148,10 @@ public abstract class AbstractProcessor implements Processor, LongTask {
 
     protected void flushLabel(ElementDraft elementDraft, Element element) {
         if (elementDraft.getLabel() != null) {
-                // Do not override existing label with autofilled label
-                if (!(element.getLabel() != null && elementDraft.getLabel().equals(elementDraft.getId()))) {
-                    element.setLabel(elementDraft.getLabel());
-                }
+            // Do not override existing label with autofilled label
+            if (!(element.getLabel() != null && elementDraft.getLabel().equals(elementDraft.getId()))) {
+                element.setLabel(elementDraft.getLabel());
+            }
         }
     }
 

@@ -49,6 +49,7 @@ import java.util.HashMap;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
@@ -300,7 +301,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
+                case XMLStreamReader.CDATA:
+                case XMLStreamReader.CHARACTERS:
                     if (!xmlReader.isWhiteSpace()) {
                         value += xmlReader.getText();
                     }
@@ -390,7 +392,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
+                case XMLStreamReader.CDATA:
+                case XMLStreamReader.CHARACTERS:
                     if (!xmlReader.isWhiteSpace()) {
                         value.append(xmlReader.getText());
                     }
@@ -510,7 +513,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
             int xmltype = reader.next();
 
             switch (xmltype) {
-                case XMLStreamReader.CHARACTERS | XMLStreamReader.CDATA:
+                case XMLStreamReader.CDATA:
+                case XMLStreamReader.CHARACTERS:
                     if (!xmlReader.isWhiteSpace()) {
                         value += xmlReader.getText();
                     }
