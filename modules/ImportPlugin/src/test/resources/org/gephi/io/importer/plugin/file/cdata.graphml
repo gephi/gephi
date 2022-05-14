@@ -4,14 +4,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
 http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
     <graph edgedefault="directed">
+        <key attr.name="label" attr.type="string" for="node" id="lbl"/>
+        <key attr.name="label" attr.type="string" for="edge" id="lbl"/>
         <node id="n0">
-            <desc>Node Zero</desc>
+            <data key="lbl"><![CDATA[foo]]></data>
         </node>
         <node id="n1">
-             <desc><![CDATA[Node One]]></desc>
+             <data key="lbl"><![CDATA[bar]]></data>
         </node>
         <edge id="e0" source="n0" target="n1">
-            <desc>Edge Zero</desc>
+            <data key="lbl"><![CDATA[foobar]]></data>
         </edge>
     </graph>
 </graphml>
