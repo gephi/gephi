@@ -645,8 +645,12 @@ public class ImporterGraphML implements FileImporter, LongTask {
         }
 
         if (!property) {
-            //Class type
-            if (forStr.isEmpty() || !(forStr.equalsIgnoreCase("node") || forStr.equalsIgnoreCase("edge") ||
+            //Graph attributes not supported
+            if (forStr.equalsIgnoreCase("graph")) {
+                report.logIssue(
+                    new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_graphattributes", title),
+                        Issue.Level.WARNING));
+            } else if (forStr.isEmpty() || !(forStr.equalsIgnoreCase("node") || forStr.equalsIgnoreCase("edge") ||
                 forStr.equalsIgnoreCase("all"))) {
                 report.logIssue(
                     new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributeclass", title),
