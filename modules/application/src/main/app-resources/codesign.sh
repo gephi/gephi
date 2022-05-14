@@ -7,7 +7,7 @@ function codesignDir {
   # Codesign all all relevant files
   while IFS= read -r -d $'\0' libfile; do
     echo "Codesigning file $(basename "${libfile}")"
-    codesign --verbose --entitlements src/main/resources/Entitlements.plist --force --timestamp -i org.gephi --sign "$2" --options runtime $libfile
+    codesign --verbose --entitlements src/main/resources/Entitlements.plist --deep --force --timestamp -i org.gephi --sign "$2" --options runtime $libfile
   done < <(find -E "$dir" -regex '.*\.(dylib|jnilib)' -print0)
 }
 
@@ -48,7 +48,7 @@ function codesignJarsInDir {
 function codesignFile {
   local file="$1"
   echo "Codesigning $(basename "${file}")"
-  codesign --verbose --entitlements src/main/resources/Entitlements.plist --force --timestamp -i org.gephi --sign "$2" --options runtime $file
+  codesign --verbose --entitlements src/main/resources/Entitlements.plist --deep --force --timestamp -i org.gephi --sign "$2" --options runtime $file
 }
 
 # Sign external JARs
