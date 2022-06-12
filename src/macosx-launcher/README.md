@@ -20,13 +20,24 @@
 -->
 # macOS NetBeans Platform Launcher
 
-[Native macOS NetBeans Platform launcher](https://github.com/apache/netbeans/tree/master/harness/apisupport.harness/macosx-launcher-src) for app bundle. It wraps a call to `platform/lib/nbexec`
+[Native macOS NetBeans Platform launcher](https://github.com/apache/netbeans/tree/master/harness/apisupport.harness/macosx-launcher-src) for app bundle. It wraps a call to `Contents/Resources/gephi/gephi`
 * Requires macOS with swift to build
 
 
 Manually build with the following command:
 ```shell
 % swift build -c release
+```
+
+Then, run the two following commands to fix some erroneous rpath added automatically (more details [here](https://developer.apple.com/forums/thread/706414)):
+```shell
+install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx .build/release/AppLauncher
+install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx .build/release/AppLauncher
+```
+
+Finally, copy the binary to the right folder.
+```shell
+cp .build/release/AppLauncher Binaries/AppLauncher_x86_64
 ```
 
 Binaries are stored in the `Binaries` folder.
