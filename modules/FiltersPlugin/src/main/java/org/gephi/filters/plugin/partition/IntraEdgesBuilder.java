@@ -166,7 +166,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public boolean init(Graph graph) {
-            this.graph = graph;
+            this.graph = graph.getModel().getGraph();
             return partition != null && partition.getColumn() != null;
         }
 
