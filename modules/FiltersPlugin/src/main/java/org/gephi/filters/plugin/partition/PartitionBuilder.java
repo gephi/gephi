@@ -182,7 +182,7 @@ public class PartitionBuilder implements CategoryBuilder {
 
         @Override
         public boolean init(Graph graph) {
-            this.graph = graph;
+            this.graph = graph.getModel().getGraph();
             return partition != null && partition.getColumn() != null;
         }
     }
@@ -195,7 +195,7 @@ public class PartitionBuilder implements CategoryBuilder {
 
         @Override
         public boolean init(Graph graph) {
-            this.graph = graph;
+            this.graph = graph.getModel().getGraph();;
             return partition != null && partition.getColumn() != null;
         }
     }
@@ -238,7 +238,6 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            this.graph = null;
         }
 
         public void addPart(Object value) {
