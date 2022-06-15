@@ -153,10 +153,11 @@ public class PartitionBuilder implements CategoryBuilder {
 
         @Override
         public PartitionFilter getFilter(Workspace workspace) {
+            AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
             if (AttributeUtils.isNodeColumn(partition.getColumn())) {
-                return new NodePartitionFilter(partition);
+                return new NodePartitionFilter(am, partition);
             } else {
-                return new EdgePartitionFilter(partition);
+                return new EdgePartitionFilter(am, partition);
             }
         }
 
@@ -176,8 +177,8 @@ public class PartitionBuilder implements CategoryBuilder {
 
     public static class NodePartitionFilter extends PartitionFilter implements NodeFilter {
 
-        public NodePartitionFilter(Partition partition) {
-            super(partition);
+        public NodePartitionFilter(AppearanceModel appearanceModel, Partition partition) {
+            super(appearanceModel, partition);
         }
 
         @Override
@@ -185,12 +186,23 @@ public class PartitionBuilder implements CategoryBuilder {
             this.graph = graph.getModel().getGraph();
             return partition != null && partition.getColumn() != null;
         }
+
+        @Override
+        public void setColumn(Column column) {
+            // Bugfix #2519
+            // Persistence provider doesn't grab the correct builder when using category builder
+            // This method assigns the proper partition based on the column parameter
+            if(partition == null || partition.getColumn() != column) {
+                appearanceModel.getNodeFunctions();
+                this.partition = appearanceModel.getNodePartition(column);
+            }
+        }
     }
 
     public static class EdgePartitionFilter extends PartitionFilter implements EdgeFilter {
 
-        public EdgePartitionFilter(Partition partition) {
-            super(partition);
+        public EdgePartitionFilter(AppearanceModel appearanceModel, Partition partition) {
+            super(appearanceModel, partition);
         }
 
         @Override
@@ -198,18 +210,35 @@ public class PartitionBuilder implements CategoryBuilder {
             this.graph = graph.getModel().getGraph();;
             return partition != null && partition.getColumn() != null;
         }
+
+        @Override
+        public void setColumn(Column column) {
+            // Bugfix #2519
+            // Persistence provider doesn't grab the correct builder when using category builder
+            // This method assigns the proper partition based on the column parameter
+            if(partition == null || partition.getColumn() != column) {
+                appearanceModel.getEdgeFunctions();
+                this.partition = appearanceModel.getEdgePartition(column);
+            }
+        }
     }
 
     public static abstract class PartitionFilter implements Filter {
 
         protected static final Object NULL = new Object();
         protected Partition partition;
+        protected final AppearanceModel appearanceModel;
         protected FilterProperty[] filterProperties;
         protected Set<Object> parts;
         protected Graph graph;
 
         public PartitionFilter(Partition partition) {
+            this(null, partition);
+        }
+
+        public PartitionFilter(AppearanceModel appearanceModel, Partition partition) {
             this.partition = partition;
+            this.appearanceModel = appearanceModel;
             parts = new HashSet<>();
         }
 
