@@ -136,10 +136,11 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         @Override
         public PartitionCountFilter getFilter(Workspace workspace) {
+            AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
             if (AttributeUtils.isNodeColumn(column)) {
-                return new PartitionCountFilter.Node(partition);
+                return new PartitionCountFilter.Node(am, partition);
             } else {
-                return new PartitionCountFilter.Edge(partition);
+                return new PartitionCountFilter.Edge(am, partition);
             }
         }
 
@@ -156,13 +157,15 @@ public class PartitionCountBuilder implements CategoryBuilder {
     public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K>
         implements RangeFilter {
 
+        protected final AppearanceModel appearanceModel;
         protected Partition partition;
         private Range range;
 
-        public PartitionCountFilter(Partition partition) {
+        public PartitionCountFilter(AppearanceModel appearanceModel, Partition partition) {
             super(NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
                 partition.getColumn());
             this.partition = partition;
+            this.appearanceModel = appearanceModel;
 
             //Add property
             addProperty(Range.class, "range");
@@ -212,17 +215,43 @@ public class PartitionCountBuilder implements CategoryBuilder {
             this.range = range;
         }
 
+        public Column getColumn() {
+            return partition.getColumn();
+        }
+
+        @Override
+        public void setColumn(Column column) {
+        }
+
         public static class Node extends PartitionCountFilter<org.gephi.graph.api.Node> implements NodeFilter {
 
-            public Node(Partition partition) {
-                super(partition);
+            public Node(AppearanceModel appearanceModel, Partition partition) {
+                super(appearanceModel, partition);
+            }
+
+            @Override
+            public void setColumn(Column column) {
+                // Bugfix #2519
+                if(partition == null || partition.getColumn() != column) {
+                    appearanceModel.getNodeFunctions();
+                    this.partition = appearanceModel.getNodePartition(column);
+                }
             }
         }
 
         public static class Edge extends PartitionCountFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
 
-            public Edge(Partition partition) {
-                super(partition);
+            public Edge(AppearanceModel appearanceModel, Partition partition) {
+                super(appearanceModel, partition);
+            }
+
+            @Override
+            public void setColumn(Column column) {
+                // Bugfix #2519
+                if(partition == null || partition.getColumn() != column) {
+                    appearanceModel.getEdgeFunctions();
+                    this.partition = appearanceModel.getEdgePartition(column);
+                }
             }
         }
     }
