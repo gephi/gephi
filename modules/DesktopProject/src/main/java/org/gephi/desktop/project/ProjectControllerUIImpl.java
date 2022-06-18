@@ -634,9 +634,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public void closeProject() {
-        if (closeCurrentProject()) {
-            controller.closeCurrentProject();
-        }
+        closeCurrentProject();
     }
 
     @Override
@@ -646,6 +644,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public void deleteWorkspace() {
+        deleteWorkspace(controller.getCurrentWorkspace());
+    }
+
+    @Override
+    public void deleteWorkspace(Workspace workspace) {
         if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length == 1) {
             //Close project
             //Actions
@@ -658,6 +661,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             duplicateWorkspace = false;
             renameWorkspace = false;
 
+            controller.closeCurrentProject();
+
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -668,8 +673,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     frame.setTitle(title);
                 }
             });
+        } else {
+            controller.deleteWorkspace(workspace);
         }
-        controller.deleteWorkspace(controller.getCurrentWorkspace());
     }
 
     @Override

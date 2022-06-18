@@ -76,6 +76,8 @@ public interface ProjectControllerUI {
 
     void deleteWorkspace();
 
+    void deleteWorkspace(Workspace workspace);
+
     void closeProject();
 
     void renameWorkspace(final String name);
