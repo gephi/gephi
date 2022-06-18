@@ -123,7 +123,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
                 HashMap<String, Double> computedStatInfMetrics =
                     computePartition(graph, structure, comStructure, useWeight);
-                descriptionLength = computedStatInfMetrics.get("descriptionLength");
+                descriptionLength = computedStatInfMetrics.getOrDefault("descriptionLength", 0.0);
             } else {
                 descriptionLength = 0;
             }
