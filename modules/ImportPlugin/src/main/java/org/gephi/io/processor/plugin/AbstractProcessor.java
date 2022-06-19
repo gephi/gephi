@@ -87,7 +87,6 @@ public abstract class AbstractProcessor implements Processor, LongTask {
     protected ContainerUnloader[] containers;
     protected GraphModel graphModel;
     protected Report report = new Report();
-    protected Report reportAfterDone = new Report();
 
     protected void clean() {
         workspace = null;
@@ -95,9 +94,6 @@ public abstract class AbstractProcessor implements Processor, LongTask {
         containers = null;
         progressTicket = null;
         columnsTypeMismatchAlreadyWarned.clear();
-        //Flush report and create a new one for next process:
-        reportAfterDone = report;
-        report = new Report();
         edgeCountForAverage.clear();
     }
 
@@ -487,6 +483,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
     @Override
     public void setContainers(ContainerUnloader[] containers) {
         this.containers = containers;
+        this.report = new Report();
     }
 
     @Override
@@ -496,7 +493,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
 
     @Override
     public Report getReport() {
-        return reportAfterDone;
+        return report;
     }
 
     @Override

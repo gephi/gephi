@@ -800,22 +800,33 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             for (EdgeDraftImpl e : l) {
                 removeEdge(e);
             }
+
+            report.logIssue(new Issue(NbBundle.getMessage(
+                ImportContainerImpl.class, "ImportContainerClose_SelfLoopRemoved", l.size()
+            ), Level.WARNING));
         }
 
         if (directedEdgesCount > 0 && edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED)) {
+            int mutualEdgesRemoved = 0;
+
             //Force undirected
             for (EdgeDraftImpl edge : edgeList.toArray(new EdgeDraftImpl[0])) {
                 final boolean notAlreadyRemoved = edge != null
                     && edgeMap.containsKey(edge.getId());
 
-                if (notAlreadyRemoved && edge.getDirection() != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
+                if (notAlreadyRemoved && !edge.isSelfLoop() && edge.getDirection() != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
                     if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);
                         removeEdge(opposite);
+                        mutualEdgesRemoved++;
                     }
                 }
             }
+
+            report.logIssue(new Issue(NbBundle.getMessage(
+                ImportContainerImpl.class, "ImportContainerClose_MutualEdgesRemoved", mutualEdgesRemoved
+            ), Level.WARNING));
         }
         //TODO check when mixed is forced
 
