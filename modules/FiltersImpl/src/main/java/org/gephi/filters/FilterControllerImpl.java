@@ -377,6 +377,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                 Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject());
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(newWorkspace);
+                graphModel.setConfiguration(graphView.getModel().getConfiguration());
                 graphModel.bridge().copyNodes(graphView.getNodes().toArray());
                 Graph graph = graphModel.getGraph();
                 List<Edge> edgesToRemove = new ArrayList<>();
