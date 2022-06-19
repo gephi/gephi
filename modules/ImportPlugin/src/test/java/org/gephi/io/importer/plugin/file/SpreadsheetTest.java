@@ -604,7 +604,7 @@ public class SpreadsheetTest {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(result, expected);
+        Assert.assertEquals(expected, result);
     }
 
     private void checkNodesSpreadsheet() throws IOException {
@@ -630,6 +630,6 @@ public class SpreadsheetTest {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(result, expected);
+        Assert.assertEquals(expected, result);
     }
 }
