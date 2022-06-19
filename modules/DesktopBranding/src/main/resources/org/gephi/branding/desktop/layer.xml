@@ -197,4 +197,14 @@
             </file>
         </folder>
     </folder>
+    <!-- Used to turn off Janitor by default -->
+    <folder name="Preferences">
+        <folder name="org">
+            <folder name="netbeans">
+                <folder name="modules">
+                    <file name="janitor.properties" url="janitor.properties"/>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
 </filesystem>
