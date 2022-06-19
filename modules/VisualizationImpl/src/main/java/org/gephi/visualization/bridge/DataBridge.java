@@ -146,14 +146,14 @@ public class DataBridge implements VizArchitecture {
         }
 
         if (visibleViewChanged || (observer != null && observer.isDestroyed())) {
-            if (observer != null && !observer.isDestroyed()) {
-                observer.destroy();
-            }
-
-            observer = null;
-
             graphModel.getGraph().writeLock();
             try {
+                if (observer != null && !observer.isDestroyed()) {
+                    observer.destroy();
+                }
+
+                observer = null;
+
                 graph = graphModel.getGraphVisible();
                 observer = graphModel.createGraphObserver(graph, false);
                 force = true;
