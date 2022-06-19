@@ -449,6 +449,14 @@ public class ReportPanel extends javax.swing.JPanel {
                     //NOOP
                 }
 
+                // Make sure containers have the right parameter values
+                for (Container container : containers) {
+                    container.getLoader().setAllowSelfLoop(selfLoopPref);
+                    container.getLoader().setAutoScale(autoscalePref);
+                    container.getLoader().setAllowAutoNode(createMissingNodesPref);
+                    container.getLoader().setEdgesMergeStrategy(strategyPref);
+                }
+
                 // Create Missing Nodes Checkbox should be disabled if no missing nodes found
                 createMissingNodesCheckbox.setEnabled(containers[0].getUnloader().containsAutoNodes());
 
