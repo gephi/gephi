@@ -156,10 +156,8 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         controller.addPropertyChangeListener(this);
 
         PreviewUIModel m = controller.getModel();
-        if (m != null) {
-            this.model = m;
-            initTarget(model);
-        }
+        this.model = m;
+        initTarget(model);
     }
 
     /**
@@ -179,7 +177,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 field.setAccessible(true);
                 Object scale = field.get(graphicsDevice);
                 if (scale instanceof Number) {
-                    return ((Number)scale).floatValue();
+                    return ((Number) scale).floatValue();
                 }
             }
 
@@ -189,10 +187,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         }
         return 1f;
     }
-    
+
     protected static Field retrieveField(GraphicsDevice graphicsDevice, String name) {
         try {
-             return graphicsDevice.getClass().getDeclaredField(name);
+            return graphicsDevice.getClass().getDeclaredField(name);
         } catch (Exception e) {
             //Ignore
         }
@@ -249,7 +247,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     public void initTarget(PreviewUIModel previewUIModel) {
         // inits the preview applet
-        if (previewUIModel != null && target == null) {
+        if (previewUIModel != null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
             PreviewModel previewModel = previewUIModel.getPreviewModel();
 
@@ -262,14 +260,30 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             previewModel.getProperties().putValue("width", (int) dimensions.getWidth());
             previewModel.getProperties().putValue("height", (int) dimensions.getHeight());
 
+            if (sketch != null) {
+                sketchPanel.remove(sketch);
+                sketch = null;
+            }
+
             target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             if (target != null) {
                 sketch = new PreviewSketch(target);
                 sketchPanel.add(sketch, BorderLayout.CENTER);
             }
+            plusButton.setEnabled(true);
+            minusButton.setEnabled(true);
+            backgroundButton.setEnabled(true);
+            resetZoomButton.setEnabled(true);
         } else if (previewUIModel == null) {
-            sketchPanel.remove(sketch);
+            if (sketch != null) {
+                sketchPanel.remove(sketch);
+                sketch = null;
+            }
             target = null;
+            plusButton.setEnabled(false);
+            minusButton.setEnabled(false);
+            backgroundButton.setEnabled(false);
+            resetZoomButton.setEnabled(false);
         }
     }
 
