@@ -1,7 +1,7 @@
 name: gephi
 title: Gephi
 base: core18
-version: 0.9.6-SNAPSHOT
+version: 0.9.7-SNAPSHOT
 summary: The Open Graph Viz Platform
 description: |
   **Gephi is the leading open-source platform for visualizing and manipulating large graphs.**
