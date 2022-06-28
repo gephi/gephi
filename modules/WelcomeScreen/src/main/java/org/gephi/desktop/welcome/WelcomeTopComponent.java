@@ -196,15 +196,17 @@ public final class WelcomeTopComponent extends JPanel {
         migLayout1.setColumnConstraints("[pref]");
         samplesPanel.setLayout(migLayout1);
 
-        String[] samplePath = new String[3];
+        String[] samplePath = new String[4];
         samplePath[0] = "/org/gephi/desktop/welcome/samples/Les Miserables.gexf";
         samplePath[1] = "/org/gephi/desktop/welcome/samples/Java.gexf";
         samplePath[2] = "/org/gephi/desktop/welcome/samples/Power Grid.gml";
+        samplePath[3] = "/org/gephi/desktop/welcome/samples/US Airports.gexf";
 
-        String[] sampleTooltip = new String[3];
+        String[] sampleTooltip = new String[4];
         sampleTooltip[0] = "Coappearance Network of Characters in 'Les Miserables' (D. E. Knuth)";
         sampleTooltip[1] = "Java Programming Language Dependency graph (V. Batagelj)";
         sampleTooltip[2] = "Topology of the Western States Power Grid of the US (D. Watts & S. Strogatz)";
+        sampleTooltip[3] = "Example of a geographical network with latitude/longitude attributes";
 
         try {
             for (int i = 0; i < samplePath.length; i++) {
