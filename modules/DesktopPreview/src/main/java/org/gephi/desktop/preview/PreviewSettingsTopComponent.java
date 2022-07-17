@@ -83,7 +83,7 @@ import org.openide.windows.TopComponent;
     autostore = false)
 @TopComponent.Description(preferredID = "PreviewSettingsTopComponent",
     iconBase = "org/gephi/desktop/preview/resources/settings.png",
-    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewSettingsTopComponent")
 @ActionReference(path = "Menu/Window", position = 1000)
