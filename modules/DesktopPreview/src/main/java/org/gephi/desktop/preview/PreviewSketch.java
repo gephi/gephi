@@ -207,6 +207,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
         Vector modelPos = new Vector(screenPos.x, screenPos.y);
         modelPos.sub(scaledTrans);
+        modelPos.mult(scaleFactor);
         modelPos.div(target.getScaling());
         modelPos.sub(target.getTranslate());
         return modelPos;
