@@ -43,6 +43,7 @@
 package org.gephi.appearance;
 
 import java.awt.Color;
+import java.util.Collection;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
@@ -103,6 +104,17 @@ public class AttributePartitionTest {
 
         clearNodeAttributes(graph);
         Assert.assertFalse(p.isValid(graph));
+    }
+
+    @Test
+    public void testStringArrayColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addStringArrayNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.STRING_ARRAY_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertEquals(graph.getNodeCount(), p.getElementCount(graph));
+        Assert.assertEquals(graph.getNodeCount(), p.getValues(graph).size());
+        Assert.assertArrayEquals(GraphGenerator.STRING_ARRAY_COLUMN_VALUES, p.getValues(graph).toArray());
     }
 
     @Test
