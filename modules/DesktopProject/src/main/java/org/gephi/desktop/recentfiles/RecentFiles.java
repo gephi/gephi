@@ -44,45 +44,55 @@ package org.gephi.desktop.recentfiles;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.openide.awt.DynamicMenuContent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.CallableSystemAction;
 
 /**
  * @author Sébastien Heymann
  */
-public class RecentFiles extends CallableSystemAction {
+public class RecentFiles extends AbstractAction implements DynamicMenuContent {
 
     private static final String GEPHI_EXTENSION = "gephi";
 
     @Override
-    public void performAction() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void actionPerformed(ActionEvent e) {
+        // does nothing, this is a popup menu
     }
 
     @Override
-    public String getName() {
-        return "recentfiles";
+    public JComponent[] getMenuPresenters() {
+        return createMenu();
     }
 
     @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+    public JComponent[] synchMenuPresenters(JComponent[] items) {
+        return createMenu();
     }
 
-    @Override
-    public JMenuItem getMenuPresenter() {
+    private JComponent[] createMenu() {
         JMenu menu = new JMenu(NbBundle.getMessage(RecentFiles.class, "CTL_OpenRecentFiles"));
+        JComponent[] menuItems = createSubMenus();
+        for (JComponent item : menuItems) {
+            menu.add(item);
+        }
+        return new JComponent[] {menu};
+    }
+
+    private JComponent[] createSubMenus() {
+        List<JComponent> items = new ArrayList<>();
 
         MostRecentFiles mru = Lookup.getDefault().lookup(MostRecentFiles.class);
         for (String filePath : mru.getMRUFileList()) {
@@ -109,9 +119,9 @@ public class RecentFiles extends CallableSystemAction {
                         }
                     }
                 });
-                menu.add(menuItem);
+                items.add(menuItem);
             }
         }
-        return menu;
+        return items.toArray(new JComponent[0]);
     }
 }
