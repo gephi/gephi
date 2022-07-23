@@ -254,7 +254,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, double timestamp) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        ColumnDraft column = getColumn(key, AttributeUtils.getTimestampMapType(value.getClass()));
         try {
             setAttributeValue(column, value, timestamp);
         } catch (Exception ex) {
@@ -287,7 +287,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, double start, double end) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        ColumnDraft column = getColumn(key, AttributeUtils.getIntervalMapType(value.getClass()));
         try {
             setAttributeValue(column, value, start, end);
         } catch (Exception ex) {

@@ -42,13 +42,75 @@
 
 package org.gephi.io.importer.impl;
 
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.TimestampStringMap;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.EdgeDirection;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ImportContainerImplTest {
+
+    @Test
+    public void testAddColumn() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        ColumnDraft col = importContainer.addNodeColumn("foo", String.class);
+        Assert.assertNotNull(col);
+        Assert.assertEquals(String.class, col.getTypeClass());
+        Assert.assertSame(col, importContainer.getNodeColumn("foo"));
+    }
+
+    @Test
+    public void testAddDynamicColumn() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        importContainer.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
+        ColumnDraft col = importContainer.addNodeColumn("foo", String.class, true);
+        Assert.assertNotNull(col);
+        Assert.assertEquals(String.class, col.getTypeClass());
+        Assert.assertEquals(TimestampStringMap.class, col.getResolvedTypeClass(importContainer));
+    }
+
+    @Test
+    public void testEdgeExists() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        generateTinyGraph(importContainer);
+        Assert.assertTrue(importContainer.edgeExists("1"));
+        Assert.assertTrue(importContainer.edgeExists("1", "2"));
+        Assert.assertTrue(importContainer.edgeExists("2", "1"));
+    }
+
+    @Test
+    public void testEdgeExistsUndirectedWithDefault() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        importContainer.setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+        generateTinyUndirectedGraph(importContainer);
+        Assert.assertTrue(importContainer.edgeExists("1"));
+        Assert.assertTrue(importContainer.edgeExists("1", "2"));
+        Assert.assertTrue(importContainer.edgeExists("2", "1"));
+    }
+
+    @Test
+    public void testEdgeExistsUndirected() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        generateTinyUndirectedGraph(importContainer);
+        Assert.assertTrue(importContainer.edgeExists("1"));
+        Assert.assertTrue(importContainer.edgeExists("1", "2"));
+        Assert.assertTrue(importContainer.edgeExists("2", "1"));
+    }
+
+    @Test
+    public void testEdgeExistsSelfLoop() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        generateTinyGraphWithSelfLoop(importContainer, EdgeDirection.DIRECTED);
+        Assert.assertTrue(importContainer.edgeExists("1", "1"));
+
+        importContainer = new ImportContainerImpl();
+        generateTinyGraphWithSelfLoop(importContainer, EdgeDirection.UNDIRECTED);
+        Assert.assertTrue(importContainer.edgeExists("1", "1"));
+    }
 
     @Test
     public void testRemoveEdge() {
@@ -58,6 +120,32 @@ public class ImportContainerImplTest {
 
         Assert.assertTrue(importContainer.verify());
         Assert.assertEquals(1, importContainer.getUnloader().getEdgeCount());
+    }
+
+    // Utility
+
+    private void generateTinyUndirectedGraph(ImportContainerImpl container) {
+        NodeDraft node1 = container.factory().newNodeDraft("1");
+        NodeDraft node2 = container.factory().newNodeDraft("2");
+        EdgeDraft edge1 = container.factory().newEdgeDraft("1");
+        edge1.setDirection(EdgeDirection.UNDIRECTED);
+        edge1.setSource(node1);
+        edge1.setTarget(node2);
+
+        container.addNode(node1);
+        container.addNode(node2);
+        container.addEdge(edge1);
+    }
+
+    private void generateTinyGraphWithSelfLoop(ImportContainerImpl container, EdgeDirection edgeDirection) {
+        NodeDraft node1 = container.factory().newNodeDraft("1");
+        EdgeDraft edge1 = container.factory().newEdgeDraft("1");
+        edge1.setDirection(edgeDirection);
+        edge1.setSource(node1);
+        edge1.setTarget(node1);
+
+        container.addNode(node1);
+        container.addEdge(edge1);
     }
 
     private void generateTinyGraph(ImportContainerImpl container) {
