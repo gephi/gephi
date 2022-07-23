@@ -68,6 +68,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
+import org.gephi.graph.api.AttributeUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
@@ -281,8 +282,10 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         @Override
         public String toString() {
+            String displayName = part == null ? "null" :
+                part.getClass().isArray() ? AttributeUtils.printArray(part) : part.toString();
             String percentageStr = FORMATTER.format(percentage / 100f);
-            return (part == null ? "null" : part.toString()) + " (" + percentageStr + ")";
+            return displayName + " (" + percentageStr + ")";
         }
 
         public boolean isEnabled() {
