@@ -8,6 +8,7 @@
 AppId={{51722911-C391-4118-97BF-B50100D2AB15}
 AppName=Gephi
 AppVerName=${gephi.menu.app.name}
+AppVersion=${project.version}
 AppPublisher=Gephi
 AppPublisherURL=http://gephi.org
 AppSupportURL=http://gephi.org
