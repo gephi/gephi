@@ -103,7 +103,7 @@ public class AttributePartitionTest {
         Assert.assertTrue(p.isValid(graph));
 
         clearNodeAttributes(graph);
-        Assert.assertFalse(p.isValid(graph));
+        Assert.assertTrue(p.isValid(graph));
     }
 
     @Test
