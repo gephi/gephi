@@ -66,6 +66,48 @@ public class ElementDraftTest {
         Assert.assertEquals(i, edge.getValue("foo"));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testSetValueNull() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetValueNullIntervalStringMap() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", null, 1.0, 2.0);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetValueNullTimestampStringMap() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", null, 1.0);
+    }
+
+    @Test
+    public void testParseAndSetValue() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.parseAndSetValue("foo", "bar");
+        Assert.assertEquals("bar", edge.getValue("foo"));
+    }
+
+    @Test
+    public void testParseAndSetValueEmpty() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.container.addEdgeColumn("foo", String.class);
+        edge.parseAndSetValue("foo", "");
+        Assert.assertNull(edge.getValue("foo"));
+    }
+
+    @Test
+    public void testParseAndSetValueNull() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.container.addEdgeColumn("foo", String.class);
+        edge.parseAndSetValue("foo", null);
+        Assert.assertNull(edge.getValue("foo"));
+    }
+
+
     // Utility
 
     private static void assertContainerIssues(Report report, Issue.Level level, String message) {
