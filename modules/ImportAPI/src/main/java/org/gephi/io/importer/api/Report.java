@@ -49,7 +49,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.gephi.io.importer.api.Issue.Level;
 import org.openide.util.Exceptions;
 
@@ -209,6 +212,21 @@ public final class Report {
             }
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * Returns all issues written in the report as a collection
+     *
+     * @param limit maximum number of issuers
+     * @return a collection of all issues written in the report
+     */
+    public synchronized Collection<Issue> getIssuesList(int limit) {
+        List<Issue> issues = new ArrayList<>();
+        Iterator<Issue> itr = getIssues(limit);
+        while (itr.hasNext()) {
+            issues.add(itr.next());
+        }
+        return issues;
     }
 
     /**
