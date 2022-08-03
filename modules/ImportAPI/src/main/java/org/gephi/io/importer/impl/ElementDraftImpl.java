@@ -228,7 +228,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value) {
         if (value == null) {
-            throw new NullPointerException("Value can't be null");
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
         }
 
         Class type = value.getClass();
@@ -254,6 +254,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, double timestamp) {
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
         ColumnDraft column = getColumn(key, AttributeUtils.getTimestampMapType(value.getClass()));
         try {
             setAttributeValue(column, value, timestamp);
@@ -267,6 +270,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, String startDateTime, String endDateTime) {
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
         double start, end;
         if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) ||
             "-infinity".equalsIgnoreCase(startDateTime)) {
@@ -287,6 +293,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, double start, double end) {
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
         ColumnDraft column = getColumn(key, AttributeUtils.getIntervalMapType(value.getClass()));
         try {
             setAttributeValue(column, value, start, end);
@@ -316,7 +325,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
             }
         }
 
-        setValue(key, parseValue(value, column.getResolvedTypeClass(container)));
+        if (value != null) {
+            Object obj = parseValue(value, column.getResolvedTypeClass(container));
+            if (obj != null) {
+                setValue(key, obj);
+            }
+        }
     }
 
     @Override

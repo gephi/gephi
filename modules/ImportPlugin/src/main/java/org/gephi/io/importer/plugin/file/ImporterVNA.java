@@ -112,10 +112,10 @@ public class ImporterVNA implements FileImporter, LongTask {
 
     private void importData(LineNumberReader reader) throws Exception {
         List<String> lines = new ArrayList<>();
-        while (reader.ready()) {
-            String line = reader.readLine();
-            if (line != null && !line.isEmpty()) {
-                lines.add(line);
+        String lineToRead;
+        while ((lineToRead = reader.readLine()) != null) {
+            if (!lineToRead.isEmpty()) {
+                lines.add(lineToRead);
             }
         }
 
