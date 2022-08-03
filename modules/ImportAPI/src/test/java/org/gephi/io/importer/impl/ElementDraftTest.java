@@ -87,6 +87,7 @@ public class ElementDraftTest {
     @Test
     public void testParseAndSetValue() {
         EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.container.addEdgeColumn("foo", String.class);
         edge.parseAndSetValue("foo", "bar");
         Assert.assertEquals("bar", edge.getValue("foo"));
     }
