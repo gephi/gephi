@@ -1,7 +1,7 @@
 # Gephi - The Open Graph Viz Platform
 
 [![build](https://github.com/gephi/gephi/actions/workflows/build.yml/badge.svg)](https://github.com/gephi/gephi/actions/workflows/build.yml)
-[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.6/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.6)
+[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.7/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.7)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/total.svg)](https://github.com/gephi/gephi/releases/)
 [![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
 
