@@ -54,8 +54,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class UniqueLabelSizeTransformer extends AbstractUniqueSizeTransformer implements SimpleTransformer<Element> {
 
     @Override
-    public void transform(Element elmt) {
-        elmt.getTextProperties().setSize(size);
+    public void transform(Element element) {
+        element.getTextProperties().setSize(size);
     }
 
     @Override

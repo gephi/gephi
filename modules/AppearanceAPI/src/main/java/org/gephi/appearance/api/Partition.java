@@ -61,36 +61,42 @@ import org.gephi.graph.api.Graph;
  */
 public interface Partition {
 
+    public static Color DEFAULT_COLOR = Color.LIGHT_GRAY;
+
     /**
      * Returns the collection of values this partition represents. Each value
      * has at least one element.
      *
+     * @param graph graph this partition applies to
      * @return values
      */
-    Collection getValues();
+    Collection getValues(Graph graph);
 
     /**
-     * Returns the same collection as {@link #getValues() } but sorted
+     * Returns the same collection as {@link #getValues(Graph graph) } but sorted
      * descendant in counts.
      *
+     * @param graph graph this partition applies to
      * @return sorted values
      */
-    Collection getSortedValues();
+    Collection getSortedValues(Graph graph);
 
     /**
      * Returns the number of elements that have a value in this partition.
      *
+     * @param graph graph this partition applies to
      * @return element count
      */
-    int getElementCount();
+    int getElementCount(Graph graph);
 
     /**
      * Returns the number of elements for the given value.
      *
      * @param value value
+     * @param graph graph this partition applies to
      * @return value count
      */
-    int count(Object value);
+    int count(Object value, Graph graph);
 
     /**
      * Returns the element's value for this partition.
@@ -118,12 +124,12 @@ public interface Partition {
     void setColor(Object value, Color color);
 
     /**
-     * Sets the colors for all values. The size of <code>colors</code> must be
-     * equal to <code>size()</code>.
+     * Sets the colors for all values. It uses the descending value count as order from <code>getSortedValues()</code>.
      *
+     * @param graph  graph this partition applies to
      * @param colors colors to set
      */
-    void setColors(Color[] colors);
+    void setColors(Graph graph, Color[] colors);
 
     /**
      * Returns the percentage of elements with the given value.
@@ -131,14 +137,15 @@ public interface Partition {
      * @param value value
      * @return percentage, between zero and 100
      */
-    float percentage(Object value);
+    float percentage(Object value, Graph graph);
 
     /**
      * Returns the number of values this partition represents.
      *
+     * @param graph this element belongs to
      * @return value count
      */
-    int size();
+    int size(Graph graph);
 
     /**
      * Returns the column associated with this partition.

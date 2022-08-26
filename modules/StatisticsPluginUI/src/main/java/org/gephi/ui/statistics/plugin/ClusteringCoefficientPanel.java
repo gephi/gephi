@@ -53,6 +53,7 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup algorithmButtonGroup;
     private javax.swing.ButtonGroup directedButtonGroup;
+    // End of variables declaration//GEN-END:variables
 
     // public boolean isBruteForce() {
     //     return bruteRadioButton.isSelected();
@@ -140,5 +141,4 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
                     .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

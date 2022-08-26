@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>statistics-plugin</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>StatisticsPlugin</name>
@@ -47,6 +47,19 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
+        </dependency>
+
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io-importer-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io-importer-plugin</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -42,10 +42,10 @@
 
 package org.gephi.appearance;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -60,29 +60,29 @@ import org.gephi.graph.api.Graph;
  */
 public abstract class FunctionImpl implements Function {
 
-    protected final String id;
+    protected final AppearanceModelImpl model;
     protected final Class<? extends Element> elementClass;
     protected final String name;
-    protected final Graph graph;
     protected final Column column;
     protected final Transformer transformer;
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
-    protected Interpolator interpolator;
+    protected final AtomicInteger version;
+    // Version
+    protected WeakReference<Graph> lastGraph;
+    protected boolean lastTransformNullValues;
 
-    protected FunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Column column,
+    protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
-                           RankingImpl ranking, Interpolator interpolator) {
-        if (id == null) {
-            throw new NullPointerException("The id can't be null");
+                           RankingImpl ranking) {
+        if (name == null) {
+            throw new NullPointerException("The name can't be null");
         }
-        this.id = id;
+        this.model = model;
         this.name = name;
         this.elementClass = elementClass;
         this.column = column;
-        this.graph = graph;
-        this.interpolator = interpolator;
         try {
             this.transformer = transformer.getClass().newInstance();
         } catch (Exception ex) {
@@ -91,25 +91,110 @@ public abstract class FunctionImpl implements Function {
         this.transformerUI = transformerUI;
         this.partition = partition;
         this.ranking = ranking;
+        this.version =
+            new AtomicInteger(partition != null ? partition.getVersion(model.getPartitionGraph()) : Integer.MIN_VALUE);
+        this.lastGraph = partition != null ? new WeakReference<>(model.getPartitionGraph()) : null;
+        this.lastTransformNullValues = model.isTransformNullValues();
     }
 
     @Override
-    public void transform(Element element, Graph graph) {
+    public void transform(Element element) {
+        Graph graph = getGraph();
         if (isSimple()) {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
-            Number val = ranking.getValue(element, graph);
-            if (val == null) {
-                Logger.getLogger("")
-                    .log(Level.WARNING, "The element with id ''{0}'' has a null value for ranking. Using 0 instead",
-                        element.getId());
-                val = 0;
-            }
-            ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);
+            transformRanking(element, graph, ranking.getMinValue(graph), ranking.getMaxValue(graph));
         } else if (isPartition()) {
-            Object val = partition.getValue(element, graph);
+            transformPartition(element, graph);
+        }
+    }
+
+    @Override
+    public void transformAll(Iterable<? extends Element> elementIterable) {
+        Graph graph = getGraph();
+        if (!graph.getView().isDestroyed()) {
+            if (isSimple()) {
+                elementIterable.forEach(((SimpleTransformer) transformer)::transform);
+            } else if (isRanking()) {
+                final Number minValue = ranking.getMinValue(graph);
+                final Number maxValue = ranking.getMaxValue(graph);
+                elementIterable.forEach(e -> transformRanking(e, graph, minValue, maxValue));
+            } else if (isPartition()) {
+                elementIterable.forEach(e -> transformPartition(e, graph));
+            }
+        }
+    }
+
+    private void transformPartition(Element element, Graph graph) {
+        Object val = partition.getValue(element, graph);
+        if (val != null || model.isTransformNullValues()) {
             ((PartitionTransformer) transformer).transform(element, partition, val);
         }
+    }
+
+    private void transformRanking(Element element, Graph graph, Number minValue, Number maxValue) {
+        Number val = ranking.getValue(element, graph);
+        if (val != null) {
+            float normalizedValue = ranking.normalize(val, ranking.getInterpolator(), minValue, maxValue);
+            ((RankingTransformer) transformer).transform(element, ranking, val, normalizedValue);
+        } else if (model.isTransformNullValues()) {
+            ((RankingTransformer) transformer).transform(element, ranking, null, 0f);
+        }
+    }
+
+    public boolean hasChanged() {
+        if (isPartition()) {
+            Graph graph = model.getPartitionGraph();
+
+            // Check if view has changed
+            boolean viewChanged = false;
+            synchronized (this) {
+                if (lastGraph == null) {
+                    lastGraph = new WeakReference<>(graph);
+                } else {
+                    Graph lg = lastGraph.get();
+                    lastGraph = null;
+                    if (lg == null || lg != graph) {
+                        viewChanged = true;
+                        lastGraph = new WeakReference<>(graph);
+                    }
+                }
+
+                // Check if transformNullValues was changed
+                if (lastTransformNullValues != model.isTransformNullValues()) {
+                    viewChanged = true;
+                }
+                lastTransformNullValues = model.isTransformNullValues();
+            }
+
+            int newVersion = partition.getVersion(graph);
+            return version.getAndSet(newVersion) != newVersion || viewChanged;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isValid() {
+        Graph graph = getGraph();
+        if (graph.getView().isDestroyed()) {
+            return false;
+        }
+        if (isRanking()) {
+            return ranking.isValid(graph);
+        } else if (isPartition()) {
+            return partition.isValid(graph);
+        }
+        return true;
+    }
+
+    @Override
+    public Graph getGraph() {
+        if (isRanking()) {
+            return model.getRankingGraph();
+        } else if (isPartition()) {
+            return model.getPartitionGraph();
+        }
+        return model.getGraphModel().getGraph();
     }
 
     @Override
@@ -143,31 +228,29 @@ public abstract class FunctionImpl implements Function {
     }
 
     @Override
-    public Graph getGraph() {
-        return graph;
-    }
-
-    @Override
     public Class<? extends Element> getElementClass() {
         return elementClass;
     }
 
     @Override
-    public String toString() {
-        if (name != null) {
-            return name;
-        }
-        return id;
+    public AppearanceModelImpl getModel() {
+        return model;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
     public String getId() {
-        return id;
+        return name;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 
@@ -183,6 +266,6 @@ public abstract class FunctionImpl implements Function {
             return false;
         }
         final FunctionImpl other = (FunctionImpl) obj;
-        return (this.id == null) ? (other.id == null) : this.id.equals(other.id);
+        return Objects.equals(this.name, other.name);
     }
 }

@@ -49,6 +49,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -448,5 +449,25 @@ public class PageRankTest extends TestCase {
         assertTrue(Math.abs(pr2 - pr3) < diff);
         assertTrue(pr1 < pr2);
         assertTrue(pr1 < pr6);
+    }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        PageRank pr = new PageRank();
+        pr.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(PageRank.PAGERANK));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(PageRank.PAGERANK, String.class);
+
+        PageRank pr = new PageRank();
+        pr.execute(graphModel);
     }
 }

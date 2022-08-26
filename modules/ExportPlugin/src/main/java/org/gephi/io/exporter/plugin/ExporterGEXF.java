@@ -92,22 +92,19 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     //GEXF
     private static final String GEXF = "gexf";
-    private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.3";
-    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd";
+    private static final String GEXF_NAMESPACE = "http://gexf.net/1.3";
+    private static final String GEXF_NAMESPACE_LOCATION = "http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd";
     private static final String VIZ = "viz";
-    private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.3/viz";
+    private static final String VIZ_NAMESPACE = "http://gexf.net/1.3/viz";
     private static final String GEXF_VERSION = "version";
     private static final String GRAPH = "graph";
     private static final String GRAPH_MODE = "mode";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
-    private static final String GRAPH_START = "start";
-    private static final String GRAPH_END = "end";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String GRAPH_TIMEREPRESENTATION = "timerepresentation";
+    private static final String GRAPH_TIMEZONE = "timezone";
     private static final String GRAPH_IDTYPE = "idtype";
     private static final String TIMESTAMP = "timestamp";
-    private static final String TIMESTAMPS = "timestamps";
-    private static final String INTERVALS = "intervals";
     private static final String META = "meta";
     private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
     private static final String META_CREATOR = "creator";
@@ -158,6 +155,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportSize = true;
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
+    private boolean exportMeta = true;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -240,6 +238,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             TimeRepresentation timeRepresentation = graphConfig.getTimeRepresentation();
             xmlWriter.writeAttribute(GRAPH_TIMEREPRESENTATION, timeRepresentation.toString().toLowerCase());
+
+            DateTimeZone timeZone = graph.getModel().getTimeZone();
+            xmlWriter.writeAttribute(GRAPH_TIMEZONE, timeZone.getID());
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
 
@@ -252,18 +253,20 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeMeta(XMLStreamWriter xmlWriter) throws Exception {
-        xmlWriter.writeStartElement(META);
-        xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
+        if(exportMeta) {
+            xmlWriter.writeStartElement(META);
+            xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
-        xmlWriter.writeStartElement(META_CREATOR);
-        xmlWriter.writeCharacters("Gephi 0.9");
-        xmlWriter.writeEndElement();
+            xmlWriter.writeStartElement(META_CREATOR);
+            xmlWriter.writeCharacters("Gephi 0.9.3");
+            xmlWriter.writeEndElement();
 
-        xmlWriter.writeStartElement(META_DESCRIPTION);
-        xmlWriter.writeCharacters("");
-        xmlWriter.writeEndElement();
+            xmlWriter.writeStartElement(META_DESCRIPTION);
+            xmlWriter.writeCharacters("");
+            xmlWriter.writeEndElement();
 
-        xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
@@ -376,21 +379,22 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeEndElement();
     }
 
+    private String getValue(Object val, Column column) {
+        if(column.isNumber()) {
+            return replaceInfinity(AttributeUtils.print(val));
+        } else {
+            return AttributeUtils.print(val);
+        }
+    }
+
     private void writeAttValue(XMLStreamWriter xmlWriter, Graph graph, Column column, Element element)
         throws Exception {
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
             if (val != null) {
-                xmlWriter.writeStartElement(ATTVALUE);
+                xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
-                String valString;
-                if (column.isArray()) {
-                    valString = AttributeUtils.printArray(val);
-                } else {
-                    valString = val.toString();
-                }
-                xmlWriter.writeAttribute(ATTVALUE_VALUE, valString);
-                xmlWriter.writeEndElement();
+                xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
             }
         } else if (exportDynamic) {
             Interval visibleInterval = graph.getView().getTimeInterval();
@@ -405,9 +409,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                             final Object defaultValue = null;
                             final Object value = timeMap.get(interval, defaultValue);
                             if (value != null) {
-                                xmlWriter.writeStartElement(ATTVALUE);
+                                xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
-                                xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
+                                xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
                                 if (!Double.isInfinite(interval.getLow())) {
                                     String intervalLow =
                                         AttributeUtils.printTimestampInFormat(interval.getLow(), timeFormat, timeZone);
@@ -418,7 +422,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                         AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
                                     xmlWriter.writeAttribute(END, intervalHigh);
                                 }
-                                xmlWriter.writeEndElement();
                             }
                         }
                     }
@@ -431,12 +434,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                             final Object defaultValue = null;
                             final Object value = timeMap.get(timestamp, defaultValue);
                             if (value != null) {
-                                xmlWriter.writeStartElement(ATTVALUE);
+                                xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
-                                xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
+                                xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
                                 xmlWriter.writeAttribute(TIMESTAMP,
                                     AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
-                                xmlWriter.writeEndElement();
                             }
                         }
                     }
@@ -445,10 +447,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         } else {
             Object value = element.getAttribute(column, graph.getView());
             if (value != null) {
-                xmlWriter.writeStartElement(ATTVALUE);
+                xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
-                xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
-                xmlWriter.writeEndElement();
+                xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
             }
         }
     }
@@ -496,13 +497,15 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodeSize(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
         float size = node.size();
         if (normalize) {
             size = (size - minSize) / (maxSize - minSize);
         }
-        xmlWriter.writeAttribute("value", "" + size);
-        xmlWriter.writeEndElement();
+        if(size != 0) {
+            xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
+            xmlWriter.writeAttribute("value", "" + size);
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeNodeColor(XMLStreamWriter xmlWriter, Node node) throws Exception {
@@ -678,6 +681,10 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
     }
 
+    private static String replaceInfinity(String str) {
+        return str.replace("-Infinity", "-INF").replace("Infinity", "INF");
+    }
+
     @Override
     public boolean cancel() {
         cancel = true;
@@ -726,6 +733,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public void setExportPosition(boolean exportPosition) {
         this.exportPosition = exportPosition;
+    }
+
+    public boolean isExportMeta() {
+        return exportMeta;
+    }
+
+    public void setExportMeta(boolean exportMeta) {
+        this.exportMeta = exportMeta;
     }
 
     public boolean isExportSize() {

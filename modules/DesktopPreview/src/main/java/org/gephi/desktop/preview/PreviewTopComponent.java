@@ -92,7 +92,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private transient PreviewUIModel model;
     private transient G2DTarget target;
     private transient PreviewSketch sketch;
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton backgroundButton;
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
@@ -156,10 +156,8 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         controller.addPropertyChangeListener(this);
 
         PreviewUIModel m = controller.getModel();
-        if (m != null) {
-            this.model = m;
-            initTarget(model);
-        }
+        this.model = m;
+        initTarget(model);
     }
 
     /**
@@ -167,23 +165,36 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      *
      * @return true if retina, false otherwise
      */
-    protected static boolean isRetina() {
+    protected static float getScaleFactor() {
 
-        boolean isRetina = false;
         try {
             GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            Field field = graphicsDevice.getClass().getDeclaredField("scale");
+            Field field = retrieveField(graphicsDevice, "scale");
+            if (field == null) {
+                field = retrieveField(graphicsDevice, "scaleX");
+            }
             if (field != null) {
                 field.setAccessible(true);
                 Object scale = field.get(graphicsDevice);
-                if (scale instanceof Integer && ((Integer) scale).intValue() == 2) {
-                    isRetina = true;
+                if (scale instanceof Number) {
+                    return ((Number) scale).floatValue();
                 }
             }
+
+        } catch (Exception e) {
+            //Ignore
+            e.printStackTrace();
+        }
+        return 1f;
+    }
+
+    protected static Field retrieveField(GraphicsDevice graphicsDevice, String name) {
+        try {
+            return graphicsDevice.getClass().getDeclaredField(name);
         } catch (Exception e) {
             //Ignore
         }
-        return isRetina;
+        return null;
     }
 
     @Override
@@ -224,9 +235,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         int width = sketchPanel.getWidth();
         int height = sketchPanel.getHeight();
         if (width > 1 && height > 1) {
-            if (isRetina()) {
-                width = (int) (width * 2.0);
-                height = (int) (height * 2.0);
+            float scaleFactor = getScaleFactor();
+            if (scaleFactor > 1f) {
+                width = (int) (width * scaleFactor);
+                height = (int) (height * scaleFactor);
             }
             return new Dimension(width, height);
         }
@@ -235,7 +247,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     public void initTarget(PreviewUIModel previewUIModel) {
         // inits the preview applet
-        if (previewUIModel != null && target == null) {
+        if (previewUIModel != null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
             PreviewModel previewModel = previewUIModel.getPreviewModel();
 
@@ -248,14 +260,30 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             previewModel.getProperties().putValue("width", (int) dimensions.getWidth());
             previewModel.getProperties().putValue("height", (int) dimensions.getHeight());
 
+            if (sketch != null) {
+                sketchPanel.remove(sketch);
+                sketch = null;
+            }
+
             target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             if (target != null) {
                 sketch = new PreviewSketch(target);
                 sketchPanel.add(sketch, BorderLayout.CENTER);
             }
+            plusButton.setEnabled(true);
+            minusButton.setEnabled(true);
+            backgroundButton.setEnabled(true);
+            resetZoomButton.setEnabled(true);
         } else if (previewUIModel == null) {
-            sketchPanel.remove(sketch);
+            if (sketch != null) {
+                sketchPanel.remove(sketch);
+                sketch = null;
+            }
             target = null;
+            plusButton.setEnabled(false);
+            minusButton.setEnabled(false);
+            backgroundButton.setEnabled(false);
+            resetZoomButton.setEnabled(false);
         }
     }
 
@@ -424,7 +452,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.weightx = 1.0;
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
     private void refreshButtonActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed

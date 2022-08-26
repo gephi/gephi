@@ -71,6 +71,7 @@ public class ModularityUI implements StatisticsUI {
             panel.setRandomize(mod.getRandom());
             panel.setUseWeight(mod.getUseWeight());
             panel.setResolution(mod.getResolution());
+            panel.setInitialModularityClassIndex(mod.getInitialModularityClassIndex());
         }
     }
 
@@ -80,6 +81,7 @@ public class ModularityUI implements StatisticsUI {
             mod.setRandom(panel.isRandomize());
             mod.setUseWeight(panel.useWeight());
             mod.setResolution(panel.resolution());
+            mod.setInitialModularityClassIndex(panel.getInitialModularityClassIndex());
             settings.save(mod);
         }
         mod = null;
@@ -104,7 +106,7 @@ public class ModularityUI implements StatisticsUI {
 
     @Override
     public String getCategory() {
-        return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
+        return StatisticsUI.CATEGORY_COMMUNITY_DETECTION;
     }
 
     @Override

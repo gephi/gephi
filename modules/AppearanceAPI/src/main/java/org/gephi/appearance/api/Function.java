@@ -61,9 +61,15 @@ public interface Function {
      * Transforms the given element.
      *
      * @param element element to transform
-     * @param graph   the graph this element belongs to
      */
-    void transform(Element element, Graph graph);
+    void transform(Element element);
+
+    /**
+     * Transforms all the given elements.
+     *
+     * @param elementIterable element iterable to tranform
+     */
+    void transformAll(Iterable<? extends Element> elementIterable);
 
     /**
      * Returns the transformer associated with this function.
@@ -117,16 +123,44 @@ public interface Function {
     boolean isPartition();
 
     /**
-     * Returns the graph this function is based on.
+     * Returns the element class this function will be applied to.
+     *
+     * @return element class
+     */
+    Class<? extends Element> getElementClass();
+
+    /**
+     * Returns the graph this function is being applied on.
      *
      * @return graph
      */
     Graph getGraph();
 
     /**
-     * Returns the element class this function will be applied to.
+     * Returns the model this function belongs to.
      *
-     * @return element class
+     * @return model
      */
-    Class<? extends Element> getElementClass();
+    AppearanceModel getModel();
+
+    /**
+     * Returns true if the underlying partition or ranking changed its boundaries or values since last time checked.
+     *
+     * @return true if changed, false otherwise
+     */
+    boolean hasChanged();
+
+    /**
+     * Returns the function's unique identifier.
+     *
+     * @return function id
+     */
+    String getId();
+
+    /**
+     * Returns true if the function is valid. A function may not be valid if the underlying column has been removed for instance.
+     *
+     * @return true if valid, false otherwise
+     */
+    boolean isValid();
 }

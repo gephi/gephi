@@ -157,6 +157,7 @@ public class Hits implements Statistics, LongTask {
 
     private void initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {AUTHORITY, HUB}, Float.class);
 
         if (!nodeTable.hasColumn(AUTHORITY)) {
             nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));

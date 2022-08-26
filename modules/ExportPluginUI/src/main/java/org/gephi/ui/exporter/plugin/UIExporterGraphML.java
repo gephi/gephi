@@ -55,9 +55,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterGraphML implements ExporterUI {
 
+    private final ExporterGraphMLSettings settings = new ExporterGraphMLSettings();
     private UIExporterGraphMLPanel panel;
     private ExporterGraphML exporterGraphML;
-    private final ExporterGraphMLSettings settings = new ExporterGraphMLSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -92,29 +92,31 @@ public class UIExporterGraphML implements ExporterUI {
         return NbBundle.getMessage(UIExporterGraphML.class, "UIExporterGraphML.name");
     }
 
-    private static class ExporterGraphMLSettings {
+    private static class ExporterGraphMLSettings extends AbstractExporterSettings {
 
-        private boolean normalize = false;
-        private boolean exportColors = true;
-        private boolean exportPosition = true;
-        private boolean exportSize = true;
-        private boolean exportAttributes = true;
-        private final boolean exportHierarchy = false;
+        // Preference names
+        private final static String NORMALIZE = "GraphML_normalize";
+        private final static String EXPORT_COLORS = "GraphML_exportColors";
+        private final static String EXPORT_POSITION = "GraphML_exportPosition";
+        private final static String EXPORT_ATTRIBUTES = "GraphML_exportAttributes";
+        private final static String EXPORT_SIZE = "GraphML_exportSize";
+        // Default
+        private final static ExporterGraphML DEFAULT = new ExporterGraphML();
 
         private void save(ExporterGraphML exporterGraphML) {
-            this.normalize = exporterGraphML.isNormalize();
-            this.exportColors = exporterGraphML.isExportColors();
-            this.exportPosition = exporterGraphML.isExportPosition();
-            this.exportSize = exporterGraphML.isExportSize();
-            this.exportAttributes = exporterGraphML.isExportAttributes();
+            put(NORMALIZE, exporterGraphML.isNormalize());
+            put(EXPORT_COLORS, exporterGraphML.isExportColors());
+            put(EXPORT_POSITION, exporterGraphML.isExportPosition());
+            put(EXPORT_SIZE, exporterGraphML.isExportSize());
+            put(EXPORT_ATTRIBUTES, exporterGraphML.isExportAttributes());
         }
 
         private void load(ExporterGraphML exporterGraphML) {
-            exporterGraphML.setNormalize(normalize);
-            exporterGraphML.setExportColors(exportColors);
-            exporterGraphML.setExportAttributes(exportAttributes);
-            exporterGraphML.setExportPosition(exportPosition);
-            exporterGraphML.setExportSize(exportSize);
+            exporterGraphML.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
+            exporterGraphML.setExportColors(get(EXPORT_COLORS, DEFAULT.isExportColors()));
+            exporterGraphML.setExportAttributes(get(EXPORT_ATTRIBUTES, DEFAULT.isExportAttributes()));
+            exporterGraphML.setExportPosition(get(EXPORT_POSITION, DEFAULT.isExportPosition()));
+            exporterGraphML.setExportSize(get(EXPORT_SIZE, DEFAULT.isExportSize()));
         }
     }
 }

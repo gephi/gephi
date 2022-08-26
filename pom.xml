@@ -5,7 +5,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi-parent</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>gephi</name>
@@ -135,22 +135,30 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
 
         <!-- Netbeans Platform version -->
-        <netbeans.version>RELEASE126</netbeans.version>
 
         <!-- GraphStore version -->
         <graphstore.version>0.6.1-SNAPSHOT</graphstore.version>
 
         <!-- VizEngine version -->
         <gephi.viz-engine.version>1.0.0-SNAPSHOT</gephi.viz-engine.version>
-        <gephi.lwjgl.version>3.3.0</gephi.lwjgl.version>
+        <gephi.lwjgl.version>3.3.1</gephi.lwjgl.version>
         <gephi.lwjgl3-awt.version>0.1.9-SNAPSHOT</gephi.lwjgl3-awt.version>
-        <gephi.joml.version>1.10.2</gephi.joml.version>
+        <gephi.joml.version>1.10.4</gephi.joml.version>
+        <netbeans.version>RELEASE140</netbeans.version>
+        
+        <!-- GraphStore version -->
+        <graphstore.version>0.6.11-viz-engine-SNAPSHOT</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
 
         <!-- Modules specification version, overrides project version -->
-        <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
+        <!--suppress UnresolvedMavenProperty -->
+        <gephi.modules.specification.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</gephi.modules.specification.version>
+
+        <!-- Gephi's minor version, used for auto update and user directory -->
+        <!--suppress UnresolvedMavenProperty -->
+        <gephi.minor.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}</gephi.minor.version>
 
         <!-- Java compilation settings -->
         <gephi.javac.release>11</gephi.javac.release>
@@ -168,15 +176,20 @@
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
         <gephi.app.title>Gephi ${project.version}</gephi.app.title>
+        
+        <!-- Update centers settings -->
+        <gephi.update.center.source>https://repo1.maven.org/maven2</gephi.update.center.source>
+        <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi/gh-pages/${gephi.minor.version}/autoupdate/updates.xml</gephi.update.center.official.url>
+        <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${gephi.minor.version}/updates.xml</gephi.update.center.thirdparty.url>
 
-        <!-- Update centers URLs -->
-        <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi/gh-pages/${project.version}/netbeans_site/updates.xml</gephi.update.center.official.url>
-        <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
+        <!-- Architecture, defining which JRE is embedded -->
+        <gephi.bundle.arch>x64</gephi.bundle.arch>
 
         <!-- JRE locations -->
-        <gephi.bundle.jre.macos>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_mac_hotspot_11.0.13_8.tar.gz</gephi.bundle.jre.macos>
-        <gephi.bundle.jre.windows>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_windows_hotspot_11.0.13_8.zip</gephi.bundle.jre.windows>
-        <gephi.bundle.jre.linux>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_linux_hotspot_11.0.13_8.tar.gz</gephi.bundle.jre.linux>
+        <!-- for more details about the parameters supported by this API, see https://api.adoptium.net/q/swagger-ui/#/Binary/getBinary -->
+        <gephi.bundle.jre.macos>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/mac/${gephi.bundle.arch}/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.macos>
+        <gephi.bundle.jre.windows>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/${gephi.bundle.arch}/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows>
+        <gephi.bundle.jre.linux>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/linux/${gephi.bundle.arch}/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.linux>
 
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
@@ -208,10 +221,9 @@
         <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
 
         <!--==== Dependency Versions ==================================================================================-->
-
-        <gephi.slf4j.version>1.7.32</gephi.slf4j.version>
-        <gephi.sentry.version>5.4.2</gephi.sentry.version>
-        <gephi.gson.version>2.8.5</gephi.gson.version>
+        <gephi.slf4j.version>1.7.36</gephi.slf4j.version>
+        <gephi.sentry.version>5.7.3</gephi.sentry.version>
+        <gephi.gson.version>2.9.0</gephi.gson.version>
         <!--==== Plugin Versions ==================================================================================-->
 
         <gephi.maven-antrun-plugin.version>3.0.0</gephi.maven-antrun-plugin.version>
@@ -220,7 +232,7 @@
 
         <gephi.maven-clean-plugin.version>3.1.0</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.8.1</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.10.0</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>3.2.0</gephi.maven-dependency-plugin.version>
 
@@ -232,11 +244,11 @@
 
         <gephi.maven-install-plugin.version>2.5.2</gephi.maven-install-plugin.version>
 
-        <gephi.maven-jar-plugin.version>3.2.0</gephi.maven-jar-plugin.version>
+        <gephi.maven-jar-plugin.version>3.2.2</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.3.1</gephi.maven-javadoc-plugin.version>
+        <gephi.maven-javadoc-plugin.version>3.3.2</gephi.maven-javadoc-plugin.version>
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
@@ -244,27 +256,27 @@
 
         <gephi.maven-resources-plugin.version>3.2.0</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.9.1</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.11.0</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>3.2.1</gephi.maven-source-plugin.version>
 
         <gephi.maven-surefire-plugin.version>2.22.2</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>3.2.0</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>3.3.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
-
-        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>
-
-        <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
-
-        <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
-
-        <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
+        
+        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
+        
+        <gephi.nexus-staging-maven-plugin.version>1.6.12</gephi.nexus-staging-maven-plugin.version>
+        
+        <gephi.scm-publish-plugin.version>3.1.0</gephi.scm-publish-plugin.version>
+        
+        <gephi.versions-maven-plugin.version>2.9.0</gephi.versions-maven-plugin.version>
 
         <gephi.maven-checkstyle-plugin.version>3.1.2</gephi.maven-checkstyle-plugin.version>
 
-        <gephi.checkstyle.version>9.1</gephi.checkstyle.version>
+        <gephi.checkstyle.version>9.3</gephi.checkstyle.version>
     </properties>
 
     <!-- Maven required version -->
@@ -413,9 +425,9 @@
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>graphstore</artifactId>
-                <version>${graphstore.version}</version>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
+                <version>${netbeans.version}</version>
             </dependency>
 
             <!-- Viz engine -->
@@ -571,8 +583,8 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>gephi-branding</artifactId>
-                <version>${project.version}</version>
+                <artifactId>graphstore</artifactId>
+                <version>${graphstore.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -602,11 +614,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>io-exporter-preview</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>lib.validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -642,21 +649,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>io-importer-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>io-processor-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>processor-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>project-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -706,11 +698,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>gleem</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>mostrecentfiles-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -737,11 +724,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-context</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-progress</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -782,11 +764,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>filters-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-propertyeditor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -836,11 +813,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-recent-files</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-io-export</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -856,7 +828,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-banner</artifactId>
+                <artifactId>desktop-window</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -944,7 +916,8 @@
                 <artifactId>sentry</artifactId>
                 <version>${gephi.sentry.version}</version>
             </dependency>
-                <dependency> <!-- required by Sentry -->
+            <!-- required by Sentry -->
+	        <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gephi.gson.version}</version>
@@ -960,6 +933,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>graph-api</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-importer-api</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
             </dependency>
@@ -1095,9 +1074,9 @@
                     <version>${gephi.nexus-staging-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.github.github</groupId>
-                    <artifactId>site-maven-plugin</artifactId>
-                    <version>${gephi.site-maven-plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-publish-plugin</artifactId>
+                    <version>${gephi.scm-publish-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1168,6 +1147,20 @@
                 </executions>
             </plugin>
 
+            <!-- Extracts detailed version properties -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Jar plugin, required for NBM -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1224,6 +1217,7 @@
                         <phase>site</phase>
                         <goals>
                             <goal>site</goal>
+                            <goal>stage</goal>
                         </goals>
                         <configuration>
                             <skip>true</skip>
@@ -1243,6 +1237,8 @@
                     <failsOnError>true</failsOnError>
                     <consoleOutput>false</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <!-- Skipped in non-deployment -->
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -1259,6 +1255,8 @@
 
     <!-- Profiles -->
     <profiles>
+
+        <!-- Profile to enable tests (disabled by default in non-deployment) -->
         <profile>
             <id>enableTests</id>
 
@@ -1270,6 +1268,60 @@
                         <configuration>
                             <skipTests>false</skipTests>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile to enable checkstyle (disabled by default in non-deployment) -->
+        <profile>
+            <id>enableCheckStyle</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Enables GPG and NBM signing, to be used alongside deployment profile -->
+        <profile>
+            <id>sign-artifacts</id>
+
+            <build>
+                <plugins>
+                    <!-- NBM Signing -->
+                    <plugin>
+                        <groupId>org.apache.netbeans.utilities</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- Keystore location -->
+                            <keystore>keystore.ks</keystore>
+                            <keystorealias>gephi</keystorealias>
+                            <keystorepassword>${keystore.password}</keystorepassword>
+                        </configuration>
+                    </plugin>
+
+                    <!-- GPG Signed Components -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-gpg-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -1288,11 +1340,21 @@
 
             <build>
                 <plugins>
+                    <!-- Enable tests -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Enable checkstyle -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
                         </configuration>
                     </plugin>
 
@@ -1304,38 +1366,11 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
                             <!-- The create-modules profile overrides this -->
                             <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                            <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
                         </configuration>
-                    </plugin>
-
-                    <!-- NBM Signing -->
-                    <plugin>
-                        <groupId>org.apache.netbeans.utilities</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <!-- Keystore location -->
-                            <keystore>src/keystore/keystore.ks</keystore>
-                            <keystorealias>gephi</keystorealias>
-                            <keystorepassword>${keystore.password}</keystorepassword>
-                        </configuration>
-                    </plugin>
-
-                    <!-- GPG Signed Components -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -1385,7 +1420,8 @@
                             <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>
                             <quiet>false</quiet>
-                            <source>8</source>
+                            <doclint>none</doclint>
+                            <source>11</source>
                         </configuration>
                         <executions>
                             <execution>
@@ -1526,7 +1562,6 @@
 
     <!-- List of modules -->
     <modules>
-        <module>modules/branding</module>
         <module>modules/application</module>
         <module>modules/AlgorithmsPlugin</module>
         <module>modules/AppearanceAPI</module>
@@ -1536,7 +1571,7 @@
         <module>modules/DataLaboratoryAPI</module>
         <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
-        <module>modules/DesktopBanner</module>
+        <module>modules/DesktopWindow</module>
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
         <module>modules/DesktopDataLaboratory</module>
@@ -1547,9 +1582,7 @@
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPreview</module>
-        <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
-        <module>modules/DesktopRecentFiles</module>
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>
@@ -1564,7 +1597,6 @@
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
-        <module>modules/Gleem</module>
         <module>modules/GraphAPI</module>
         <module>modules/ImportAPI</module>
         <module>modules/ImportPlugin</module>
@@ -1577,10 +1609,7 @@
         <module>modules/PreviewExport</module>
         <module>modules/PreviewExportUI</module>
         <module>modules/PreviewPlugin</module>
-        <module>modules/ProcessorPlugin</module>
-        <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
-        <module>modules/ProjectUI</module>
         <module>modules/SettingsUpgrader</module>
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
@@ -1589,10 +1618,8 @@
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
-        <module>modules/UIPropertyEditor</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
-        <module>modules/ValidationAPI</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>

@@ -43,14 +43,12 @@ Portions Copyrighted 2017 Gephi Consortium.
 package org.gephi.io.importer.plugin.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -606,7 +604,7 @@ public class SpreadsheetTest {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(result, expected);
+        Assert.assertEquals(expected, result);
     }
 
     private void checkNodesSpreadsheet() throws IOException {
@@ -632,6 +630,6 @@ public class SpreadsheetTest {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(result, expected);
+        Assert.assertEquals(expected, result);
     }
 }

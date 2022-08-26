@@ -2,14 +2,102 @@ name: release
 
 on:
   push:
-    branches: [ 0.9.3 ]
+    branches: [ 0.9.7 ]
 
 jobs:
-  build:
+  build-base:
+    runs-on: ubuntu-latest
+    outputs:
+      staging-repository-id: ${{ steps.create-nexus-staging.outputs.staging-repository-id }}
+      project-version: ${{ steps.project.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: OSSRH_USER
+          server-password: OSSRH_PASS
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Extract Maven project version
+        id: project
+        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+      - name: Get NBM Keystore
+        run: |
+          echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
+          gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
+
+      - name: Create Nexus Staging Repository
+        if:  ${{ !endsWith(steps.project.outputs.version, '-SNAPSHOT') }}
+        id: create-nexus-staging
+        run: |
+          stagingRepositoryId=$(mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:1.6.12:rc-open -DstagingProfileId=$OSSRH_STAGING_PROFILE_ID -DnexusUrl=https://oss.sonatype.org/ -DserverId=ossrh -DopenedRepositoryMessageFormat='stagingRepositoryId=%s' | grep -o 'stagingRepositoryId=.*' | cut -f2 -d=)
+          echo "Created Nexus Staging Repository Id: $stagingRepositoryId"
+          
+          if [ "$(echo $stagingRepositoryId | grep -o "\-" | wc -l)" != "1" ]; then
+            echo "Nexus repository creation failed"
+            exit 1
+          fi
+          echo "staging_repository_id=$stagingRepositoryId" >> $GITHUB_ENV
+          echo "::set-output name=staging-repository-id::$stagingRepositoryId"
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
+
+      - name: Build and publish modules
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -DstagingRepositoryId=${{ env.staging_repository_id }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Upload autoupdate output
+        uses: actions/upload-artifact@v3
+        with:
+          name: autoupdate-output
+          path: modules/application/target/autoupdate_site
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Prepare modules output
+        run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst -C ~/.m2/repository/org/gephi .
+
+      - name: Upload modules output
+        uses: actions/upload-artifact@v3
+        with:
+          name: modules-output
+          path: /tmp/modules.tar.zst
+          if-no-files-found: error
+          retention-days: 1
+
+  bundle:
+    needs: build-base
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-11]
+        os: [ ubuntu-latest, windows-latest, macos-11 ]
+        arch: [ x64 ]
+        include:
+          - task: create-targz
+            os: ubuntu-latest
+            arch: x64
+          - task: create-exe
+            os: windows-latest
+            arch: x64
+          - task: create-exe
+            os: windows-latest
+            arch: x32
+          - task: create-dmg,notarize-dmg
+            os: macos-11
+            arch: x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -19,16 +107,15 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           server-id: ossrh
-          cache: 'maven'
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE 
-      
+          gpg-passphrase: GPG_PASSPHRASE
+
       - name: Install MacOS requirements
         run: brew install gnupg@1.4
         if: runner.os == 'macOS'
-        
+
       - name: Apple Developer Certificates
         run: |
           gpg1 --output .github/workflows/release/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/release/certs/dev_id.cer.enc
@@ -38,26 +125,35 @@ jobs:
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      
-      - name: Build and publish package Linux
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
+
+      - name: Retrieve modules output
+        uses: actions/download-artifact@v3
+        with:
+          name: modules-output
+
+      - name: Extract artifacts Linux
+        run: |
+          mkdir -p ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi
         if: runner.os == 'Linux'
-        env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          
-      - name: Build and publish package Windows
-        run: mvn -T 4 --batch-mode '-Djava.awt.headless=true' '-Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }}' clean deploy -P deployment,replace-windows-icon,create-exe
-        if: runner.os == 'Windows'
-        env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      
-      - name: Build and publish package MacOS
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID clean deploy -P deployment,create-dmg,notarize-dmg
+
+      - name: Extract artifacts Mac OS
+        run: |
+          mkdir -p ~/.m2/repository/org/gephi/
+          unzstd -c modules.tar.zst | tar -x -C ~/.m2/repository/org/gephi
         if: runner.os == 'macOS'
+
+      - name: Extract artifacts Windows
+        shell: bash
+        run: |
+          mkdir -p ~/.m2/repository/org/gephi/
+          tar --zstd -xf modules.tar.zst -C ~/.m2/repository/org/gephi
+        if: runner.os == 'Windows'
+
+      - name: Build and publish bundle
+        shell: bash
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
+        working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
@@ -69,3 +165,31 @@ jobs:
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
+
+  update-site:
+    needs: bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Retrieve autoupdate output
+        uses: actions/download-artifact@v3
+        with:
+          name: autoupdate-output
+          path: modules/application/target/autoupdate_site
+
+      - name: Configure Git user
+        run: |
+          git config --global user.email "github-action@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Update autoupdate content on gh-pages
+        run: mvn validate scm-publish:publish-scm -P push-site
+        working-directory: modules/application
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -101,6 +101,8 @@ public class GiantComponentBuilder implements FilterBuilder {
 
     public static class GiantComponentFilter implements NodeFilter {
 
+        private static final String GIANT_COMPONENT_FILTER = "giantcomponent";
+
         private int componentId;
         private Column column;
 
@@ -112,9 +114,17 @@ public class GiantComponentBuilder implements FilterBuilder {
             ConnectedComponents cc = new ConnectedComponents();
             UndirectedGraph undirectedGraph = graph.getModel().getUndirectedGraph(graph.getView());
 
-            cc.weaklyConnected(undirectedGraph);
+            column = graph.getModel().getNodeTable().getColumn(GIANT_COMPONENT_FILTER);
+            if (column == null) {
+                column = graph.getModel().getNodeTable().addColumn(GIANT_COMPONENT_FILTER, Integer.class);
+            }
+            graph.readLock();
+            try {
+                cc.weaklyConnected(undirectedGraph, column);
+            } finally {
+                graph.readUnlock();
+            }
             componentId = cc.getGiantComponent();
-            column = graph.getModel().getNodeTable().getColumn(ConnectedComponents.WEAKLY);
 
             return column != null && componentId != -1;
         }
@@ -130,6 +140,7 @@ public class GiantComponentBuilder implements FilterBuilder {
 
         @Override
         public void finish() {
+            column.getTable().removeColumn(column);
         }
 
         @Override

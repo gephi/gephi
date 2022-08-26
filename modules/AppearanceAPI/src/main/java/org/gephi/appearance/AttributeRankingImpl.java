@@ -42,95 +42,51 @@
 
 package org.gephi.appearance;
 
-import org.gephi.graph.api.AttributeUtils;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.ElementIterable;
-import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
-import org.gephi.graph.api.types.TimeMap;
 
 /**
  * @author mbastian
  */
 public class AttributeRankingImpl extends RankingImpl {
 
-    protected final Index index;
-    protected final Column column;
-    protected final Graph graph;
+    protected final WeakReference<Column> column;
 
-    public AttributeRankingImpl(Column column, Graph graph, Index index) {
+    public AttributeRankingImpl(Column column) {
         super();
-        this.column = column;
-        this.graph = graph;
-        this.index = index;
+        this.column = new WeakReference<>(column);
     }
 
     @Override
-    protected void refresh() {
-        if (index != null && index.isSortable(column)) {
-            min = index.getMinValue(column);
-            max = index.getMaxValue(column);
-        } else {
-            ElementIterable<? extends Element> iterable =
-                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-
-            if (column.isDynamic()) {
-                refreshDynamic(iterable);
-            } else {
-                refreshNotIndexed(iterable);
-            }
-        }
-    }
-
-    protected void refreshDynamic(ElementIterable<? extends Element> iterable) {
-        double minN = Double.POSITIVE_INFINITY;
-        double maxN = Double.NEGATIVE_INFINITY;
-
-        for (Element el : iterable) {
-            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
-                TimeMap timeMap = (TimeMap) el.getAttribute(column);
-                if (timeMap != null) {
-                    double numMin =
-                        ((Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN)).doubleValue();
-                    double numMax =
-                        ((Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX)).doubleValue();
-                    if (numMin < minN) {
-                        minN = numMin;
-                    }
-                    if (numMax > maxN) {
-                        maxN = numMax;
-                    }
-                }
-            }
-        }
-
-        min = minN;
-        max = maxN;
-    }
-
-    protected void refreshNotIndexed(ElementIterable<? extends Element> iterable) {
-        double minN = Double.POSITIVE_INFINITY;
-        double maxN = Double.NEGATIVE_INFINITY;
-
-        for (Element el : iterable) {
-            double num = ((Number) el.getAttribute(column)).doubleValue();
-            if (num < minN) {
-                minN = num;
-            }
-            if (num > maxN) {
-                maxN = num;
-            }
-        }
-
-        min = minN;
-        max = maxN;
+    public Number getMinValue(Graph graph) {
+        return getIndex(graph).getMinValue(column.get());
     }
 
     @Override
-    public Number getValue(Element element, Graph gr) {
-        return (Number) element.getAttribute(column, gr.getView());
+    public Number getMaxValue(Graph graph) {
+        return getIndex(graph).getMaxValue(column.get());
+    }
+
+    private Index<Element> getIndex(Graph graph) {
+        return graph.getModel().getElementIndex(column.get().getTable(), graph.getView());
+    }
+
+    @Override
+    public Number getValue(Element element, Graph graph) {
+        return (Number) element.getAttribute(column.get(), graph.getView());
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        Column col = column.get();
+        if (col != null && col.getIndex() != -1) {
+            return col.isNumber() && !col.isArray();
+        }
+        return false;
     }
 
     @Override
@@ -149,6 +105,11 @@ public class AttributeRankingImpl extends RankingImpl {
             return false;
         }
         final AttributeRankingImpl other = (AttributeRankingImpl) obj;
-        return this.column == other.column || (this.column != null && this.column.equals(other.column));
+        return Objects.equals(this.column, other.column);
+    }
+
+    @Override
+    public Column getColumn() {
+        return column.get();
     }
 }

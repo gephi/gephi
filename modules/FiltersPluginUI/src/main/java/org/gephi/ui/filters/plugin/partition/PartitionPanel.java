@@ -68,6 +68,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
+import org.gephi.graph.api.AttributeUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
@@ -177,16 +178,17 @@ public class PartitionPanel extends javax.swing.JPanel {
         this.filter = filter;
         final Partition partition = filter.getPartition();
         if (partition != null) {
-            refresh(partition, filter.getParts());
+            refresh(partition, filter);
         }
     }
 
-    private void refresh(Partition partition, Set<Object> currentParts) {
+    private void refresh(Partition partition, PartitionFilter filter) {
         final DefaultListModel model = new DefaultListModel();
+        Set<Object> currentParts = filter.getParts();
 
         int i = 0;
-        for (Object p : partition.getSortedValues()) {
-            PartWrapper pw = new PartWrapper(p, partition.percentage(p), partition.getColor(p));
+        for (Object p : partition.getSortedValues(filter.getGraph())) {
+            PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
             pw.setEnabled(currentParts.contains(p));
             model.add(i++, pw);
         }
@@ -212,7 +214,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.selectAll();
-                refresh(filter.getPartition(), new HashSet<>(filter.getParts()));
+                refresh(filter.getPartition(), filter);
             }
         });
         popupMenu.add(selectItem);
@@ -223,7 +225,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.unselectAll();
-                refresh(filter.getPartition(), new HashSet<>());
+                refresh(filter.getPartition(), filter);
             }
         });
         popupMenu.add(unselectItem);
@@ -280,8 +282,10 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         @Override
         public String toString() {
+            String displayName = part == null ? "null" :
+                part.getClass().isArray() ? AttributeUtils.printArray(part) : part.toString();
             String percentageStr = FORMATTER.format(percentage / 100f);
-            return (part == null ? "null" : part.toString()) + " (" + percentageStr + ")";
+            return displayName + " (" + percentageStr + ")";
         }
 
         public boolean isEnabled() {

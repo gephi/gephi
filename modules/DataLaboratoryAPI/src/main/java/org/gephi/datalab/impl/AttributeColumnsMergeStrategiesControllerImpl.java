@@ -247,6 +247,9 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         Column timeIntervalColumn = getTimeIntervalColumn(table);
+        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+        dateFormat.setTimeZone(timeZone.toTimeZone());
+
         final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
         final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
         double defaultStart = parseDateToDouble(dateFormat, defaultStartDate, Double.NEGATIVE_INFINITY);

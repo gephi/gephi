@@ -68,7 +68,7 @@ public class Toolbar extends JToolBar {
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        setOpaque(false);
+        setOpaque(true);
     }
 
     @Override

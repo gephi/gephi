@@ -46,7 +46,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphObserver;
 
 /**
  * @author mbastian
@@ -57,7 +56,7 @@ public class ContextRefreshThread extends TimerTask {
     private final Timer timer;
     private final GraphModel graphModel;
     private final Runnable listener;
-    private GraphObserver observer;
+    private int previousVersion = -1;
 
     public ContextRefreshThread(GraphModel graphModel, Runnable listener) {
         this.timer = new Timer("Context Refresh Thread", true);
@@ -68,53 +67,17 @@ public class ContextRefreshThread extends TimerTask {
         timer.schedule(this, PERIOD, PERIOD);
     }
 
-    private boolean initObserver() {
-        if (observer == null || observer.isDestroyed() ||
-            observer.getGraph().getView() != graphModel.getVisibleView()) {
-            if (observer != null && !observer.isDestroyed()) {
-                observer.destroy();
-            }
-            observer = graphModel.createGraphObserver(graphModel.getGraphVisible(), false);
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public void run() {
-        Graph graph = graphModel.getGraph();
-        boolean runListener = false;
-
-        graph.writeLock();
-        try {
-            runListener = initObserver();
-        } finally {
-            graph.writeUnlock();
-            graph.readUnlockAll();
+        Graph graph = graphModel.getGraphVisible();
+        int graphVersion = graph.getVersion();
+        if (graphVersion != previousVersion) {
+            listener.run();
         }
-
-        if (!runListener) {
-            runListener = observer.hasGraphChanged();
-        }
-        if (runListener) {
-            graph.readLock();
-            try {
-                listener.run();
-            } finally {
-                graph.readUnlockAll();
-            }
-        }
+        previousVersion = graphVersion;
     }
 
     public void shutdown() {
         timer.cancel();
-        if (observer != null && !observer.isDestroyed()) {
-            observer.destroy();
-        }
-    }
-
-    public GraphModel getGraphModel() {
-        return graphModel;
     }
 }

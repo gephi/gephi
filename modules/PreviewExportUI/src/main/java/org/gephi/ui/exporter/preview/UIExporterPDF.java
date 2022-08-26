@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.exporter.preview;
 
+import com.itextpdf.text.Rectangle;
 import javax.swing.JPanel;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.io.exporter.spi.Exporter;
@@ -56,6 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterPDF implements ExporterUI {
 
+    private final ExporterPDFSettings settings = new ExporterPDFSettings();
     private UIExporterPDFPanel panel;
     private ValidationPanel validationPanel;
     private PDFExporter exporterPDF;
@@ -63,6 +65,7 @@ public class UIExporterPDF implements ExporterUI {
     @Override
     public void setup(Exporter exporter) {
         exporterPDF = (PDFExporter) exporter;
+        settings.load(exporterPDF);
         panel.setup(exporterPDF);
     }
 
@@ -70,6 +73,7 @@ public class UIExporterPDF implements ExporterUI {
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterPDF);
+            settings.save(exporterPDF);
         }
         panel = null;
         exporterPDF = null;
@@ -90,5 +94,40 @@ public class UIExporterPDF implements ExporterUI {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterPDF.class, "UIExporterPDF.name");
+    }
+
+    private static class ExporterPDFSettings extends AbstractExporterSettings {
+
+        // Preference names
+        private final static String MARGIN_TOP = "PDF_marginTop";
+        private final static String MARGIN_BOTTOM = "PDF_marginBottom";
+        private final static String MARGIN_LEFT = "PDF_marginLeft";
+        private final static String MARGIN_RIGHT = "PDF_marginRight";
+        private final static String LANDSCAPE = "PDF_landscape";
+        private final static String PAGE_SIZE_WIDTH = "PDF_pageSizeWidth";
+        private final static String PAGE_SIZE_HEIGHT = "PDF_pageSizeHeight";
+        // Default
+        private final static PDFExporter DEFAULT = new PDFExporter();
+
+        private void load(PDFExporter exporter) {
+            exporter.setMarginTop(get(MARGIN_TOP, DEFAULT.getMarginTop()));
+            exporter.setMarginBottom(get(MARGIN_BOTTOM, DEFAULT.getMarginBottom()));
+            exporter.setMarginLeft(get(MARGIN_LEFT, DEFAULT.getMarginLeft()));
+            exporter.setMarginRight(get(MARGIN_RIGHT, DEFAULT.getMarginRight()));
+            exporter.setLandscape(get(LANDSCAPE, DEFAULT.isLandscape()));
+            float width = get(PAGE_SIZE_WIDTH, DEFAULT.getPageSize().getWidth());
+            float height = get(PAGE_SIZE_HEIGHT, DEFAULT.getPageSize().getHeight());
+            exporter.setPageSize(new Rectangle(width, height));
+        }
+
+        private void save(PDFExporter exporter) {
+            put(MARGIN_TOP, exporter.getMarginTop());
+            put(MARGIN_BOTTOM, exporter.getMarginBottom());
+            put(MARGIN_LEFT, exporter.getMarginLeft());
+            put(MARGIN_RIGHT, exporter.getMarginRight());
+            put(LANDSCAPE, exporter.isLandscape());
+            put(PAGE_SIZE_WIDTH, exporter.getPageSize().getWidth());
+            put(PAGE_SIZE_HEIGHT, exporter.getPageSize().getHeight());
+        }
     }
 }

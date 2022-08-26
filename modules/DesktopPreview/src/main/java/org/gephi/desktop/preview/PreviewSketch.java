@@ -73,14 +73,14 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     private final Vector lastMove = new Vector();
     //Utils
     private final RefreshLoop refreshLoop = new RefreshLoop();
-    private final boolean isRetina;
+    private final float scaleFactor;
     private Timer wheelTimer;
     private boolean inited;
 
     public PreviewSketch(G2DTarget target) {
         this.target = target;
         previewController = Lookup.getDefault().lookup(PreviewController.class);
-        isRetina = PreviewTopComponent.isRetina();
+        scaleFactor = PreviewTopComponent.getScaleFactor();
     }
 
     @Override
@@ -95,8 +95,8 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
             inited = true;
         }
 
-        int width = (int) (getWidth() * (isRetina ? 2.0 : 1.0));
-        int height = (int) (getHeight() * (isRetina ? 2.0 : 1.0));
+        int width = (int) (getWidth() * scaleFactor);
+        int height = (int) (getHeight() * scaleFactor);
 
         if (target.getWidth() != width || target.getHeight() != height) {
             target.resize(width, height);
@@ -173,7 +173,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
             Vector trans = target.getTranslate();
             trans.set(e.getX(), e.getY());
             trans.sub(ref);
-            trans.mult(isRetina ? 2f : 1f);
+            trans.mult(scaleFactor);
             trans.div(target.getScaling()); // ensure const. moving speed whatever the zoom is
             trans.add(lastMove);
 
@@ -207,6 +207,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
 
         Vector modelPos = new Vector(screenPos.x, screenPos.y);
         modelPos.sub(scaledTrans);
+        modelPos.mult(scaleFactor);
         modelPos.div(target.getScaling());
         modelPos.sub(target.getTranslate());
         return modelPos;

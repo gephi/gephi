@@ -4,13 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>filters-plugin-ui</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>FiltersPluginUI</name>
@@ -38,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -62,7 +61,7 @@
         </dependency>
        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-banner</artifactId>
+            <artifactId>desktop-window</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

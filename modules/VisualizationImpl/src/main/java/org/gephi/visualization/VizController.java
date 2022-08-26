@@ -42,6 +42,8 @@
 
 package org.gephi.visualization;
 
+import java.util.Collections;
+import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -187,12 +189,56 @@ public class VizController implements VisualizationController {
     }
 
     @Override
+    public List<Node> getSelectedNodes() {
+        if (selectionManager != null) {
+            return selectionManager.getSelectedNodes();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Edge> getSelectedEdges() {
+        if (selectionManager != null) {
+            return selectionManager.getSelectedEdges();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public Column[] getEdgeTextColumns() {
+        if (currentModel != null) {
+            //TODO
+            // return currentModel.textModel.getEdgeTextColumns();
+        }
+        return new Column[0];
+    }
+
+    @Override
+    public Column[] getEdgeTextColumns(Workspace workspace) {
+        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel != null) {
+            //TODO
+            //return vizModel.textModel.getEdgeTextColumns();
+        }
         return new Column[0];
     }
 
     @Override
     public Column[] getNodeTextColumns() {
+        if (currentModel != null) {
+            //TODO
+            //return currentModel.textModel.getNodeTextColumns();
+        }
+        return new Column[0];
+    }
+
+    @Override
+    public Column[] getNodeTextColumns(Workspace workspace) {
+        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel != null) {
+            //TODO
+            //return vizModel.textModel.getNodeTextColumns();
+        }
         return new Column[0];
     }
 

@@ -179,4 +179,32 @@
             <file name="rankingmode.wsmode" url="rankingmodeWsmode.xml"/>
         </folder>
     </folder>
+    <folder name="Services">
+        <folder name="AutoupdateType">
+            <file name="org_gephi_branding_update_center.instance">
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_update_center.instance"/>
+                <attr name="enabled" boolvalue="${enableAutoUpdate}"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url" stringvalue="${gephi.update.center.official.url}"/>
+            </file>
+            <file name="org_gephi_branding_update_center_1.instance">
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_update_center_1.instance"/>
+                <attr name="enabled" boolvalue="${enableAutoUpdate}"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url" stringvalue="${gephi.update.center.thirdparty.url}"/>
+            </file>
+        </folder>
+    </folder>
+    <!-- Used to turn off Janitor by default -->
+    <folder name="Preferences">
+        <folder name="org">
+            <folder name="netbeans">
+                <folder name="modules">
+                    <file name="janitor.properties" url="janitor.properties"/>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
 </filesystem>

@@ -53,9 +53,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -69,6 +71,7 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.ImportUtils;
+import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
@@ -84,6 +87,7 @@ import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -106,12 +110,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class DesktopImportControllerUI implements ImportControllerUI {
 
     private final LongTaskExecutor executor;
-    private final LongTaskErrorHandler errorHandler;
+    private final LongTaskErrorHandler defaultErrorHandler;
     private final ImportController controller;
 
     public DesktopImportControllerUI() {
         controller = Lookup.getDefault().lookup(ImportController.class);
-        errorHandler = new LongTaskErrorHandler() {
+        defaultErrorHandler = new LongTaskErrorHandler() {
             @Override
             public void fatalError(Throwable t) {
                 if (t instanceof OutOfMemoryError) {
@@ -305,27 +309,36 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ui.unsetup(true);
             }
 
+            ImportErrorHandler errorHandler = new ImportErrorHandler();
             final List<Container> results = new ArrayList<>();
             for (int i = 0; i < importers.length; i++) {
-                doImport(results, readers[i], files[i], importers[i]);
+                doImport(results, readers[i], fileObjects != null ? fileObjects[i] : null, files[i], importers[i],
+                    errorHandler);
             }
 
-            executor.execute(null, new Runnable() {
-
-                @Override
-                public void run() {
-                    if (!results.isEmpty()) {
-                        finishImport(results.toArray(new Container[0]));
-                    }
-                }
-            });
+            String taskName = null;
+            if (importers.length == 1) {
+                taskName = NbBundle
+                    .getMessage(DesktopImportControllerUI.class,
+                        "DesktopImportControllerUI.finishingImport",
+                        fileObjects != null ? fileObjects[0].getNameExt() : "");
+            } else {
+                taskName = NbBundle
+                    .getMessage(DesktopImportControllerUI.class,
+                        "DesktopImportControllerUI.multiImport.finishingImport",
+                        importers.length);
+            }
+            FinishImport finishImport = new FinishImport(results, errorHandler);
+            executor.execute(finishImport, finishImport, taskName, defaultErrorHandler);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private void doImport(final List<Container> results, final Reader reader, final File file,
-                          final FileImporter importer) {
+    private void doImport(final List<Container> results, final Reader reader, final FileObject fileObject,
+                          final File file,
+                          final FileImporter importer,
+                          final ImportErrorHandler errorHandler) {
         LongTask task = null;
         if (importer instanceof LongTask) {
             task = (LongTask) importer;
@@ -340,7 +353,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
 
         //Execute task
-        final String containerSource = NbBundle
+        final String containerSource = fileObject != null ? fileObject.getNameExt() : NbBundle
             .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource",
                 importer.getClass().getSimpleName());
         String taskName =
@@ -364,7 +377,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     throw new RuntimeException(ex);
                 }
             }
-        }, taskName, errorHandler);
+        }, taskName, errorHandler.createHandler(containerSource));
     }
 
     private boolean showWizard(ImporterUI importer, WizardDescriptor wizardDescriptor) {
@@ -443,13 +456,13 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         Container container = controller.importDatabase(db, importer);
                         if (container != null) {
                             container.setSource(containerSource);
-                            finishImport(container);
+                            new FinishImport(Collections.singletonList(container), null).run();
                         }
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, taskName, errorHandler);
+            }, taskName, defaultErrorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -515,113 +528,15 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         Container container = controller.importWizard(importer);
                         if (container != null) {
                             container.setSource(source);
-                            finishImport(container);
+                            new FinishImport(Collections.singletonList(container), null).run();
                         }
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, taskName, errorHandler);
+            }, taskName, defaultErrorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
-        }
-    }
-
-    private void finishImport(Container container) {
-        finishImport(new Container[] {container});
-    }
-
-    private void finishImport(Container[] containers) {
-        Report finalReport = new Report();
-        for (Container container : containers) {
-            if (container.verify()) {
-                Report report = container.getReport();
-                report.close();
-                finalReport.append(report);
-            } else {
-                //TODO
-            }
-        }
-        finalReport.close();
-
-        //Report panel
-        ReportPanel reportPanel = new ReportPanel();
-        reportPanel.setData(finalReport, containers);
-        DialogDescriptor dd = new DialogDescriptor(reportPanel,
-            NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
-        Object response = DialogDisplayer.getDefault().notify(dd);
-        reportPanel.destroy();
-        finalReport.clean();
-        for (Container c : containers) {
-            c.getReport().clean();
-        }
-        if (!response.equals(NotifyDescriptor.OK_OPTION)) {
-            return;
-        }
-        final Processor processor = reportPanel.getProcessor();
-
-        //Project
-        Workspace workspace = null;
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-        if (pc.getCurrentProject() == null) {
-            pcui.newProject();
-            workspace = pc.getCurrentWorkspace();
-        }
-
-        //Process
-        final ProcessorUI pui = getProcessorUI(processor);
-        final ValidResult validResult = new ValidResult();
-        if (pui != null) {
-            try {
-                final JPanel panel = pui.getPanel();
-                if (panel != null) {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            String title = NbBundle.getMessage(DesktopImportControllerUI.class,
-                                "DesktopImportControllerUI.processor.ui.dialog.title");
-
-                            pui.setup(processor);
-                            final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
-                            if (panel instanceof ValidationPanel) {
-                                ValidationPanel vp = (ValidationPanel) panel;
-                                vp.addChangeListener(new ChangeListener() {
-                                    @Override
-                                    public void stateChanged(ChangeEvent e) {
-                                        dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                                    }
-                                });
-                                dd2.setValid(!vp.isProblem());
-                            }
-                            Object result = DialogDisplayer.getDefault().notify(dd2);
-                            if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
-                                result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-                                validResult.setResult(false);
-                            } else {
-                                pui.unsetup(); //true
-                                validResult.setResult(true);
-                            }
-                        }
-                    });
-                }
-            } catch (InterruptedException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-
-        if (validResult.isResult()) {
-            controller.process(containers, processor, workspace);
-
-            Report report = processor.getReport();
-            if (report != null && !report.isEmpty()) {
-                showProcessorIssues(report);
-            }
-
-            //StatusLine notify
-            StatusDisplayer.getDefault().setStatusText(NbBundle
-                .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.multiImportSuccess",
-                    containers.length));
         }
     }
 
@@ -652,6 +567,41 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         return null;
     }
 
+    private static class ImportErrorHandler {
+        private final Report errorReport = new Report("temperrorhandler");
+        private final AtomicInteger count = new AtomicInteger();
+
+        public LongTaskErrorHandler createHandler(String source) {
+            return new LongTaskErrorHandler() {
+                @Override
+                public void fatalError(Throwable t) {
+                    handleError(source, t);
+                }
+            };
+        }
+
+        public void handleError(String source, Throwable t) {
+            if (t instanceof OutOfMemoryError) {
+                return;
+            }
+            count.incrementAndGet();
+            String msg =
+                NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.errorHandler.critical",
+                    source, t.getMessage());
+            errorReport.logIssue(new Issue(msg, Issue.Level.SEVERE, t));
+            Exceptions.printStackTrace(t);
+        }
+
+        public int countErrors() {
+            return count.get();
+        }
+
+        public Report closeAndGetReport() {
+            errorReport.close();
+            return errorReport;
+        }
+    }
+
     private static class ValidResult {
 
         private boolean result = true;
@@ -662,6 +612,136 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
         public void setResult(boolean result) {
             this.result = result;
+        }
+    }
+
+    private class FinishImport implements LongTask, Runnable {
+
+        private final List<Container> containers;
+        private final ImportErrorHandler errorHandler;
+        private ProgressTicket progressTicket;
+
+        public FinishImport(List<Container> containers, ImportErrorHandler errorHandler) {
+            this.containers = containers;
+            this.errorHandler = errorHandler;
+        }
+
+        @Override
+        public void run() {
+            // If exceptions were thrown we show them in the processor panel
+            if (errorHandler != null) {
+                Report errorReport = errorHandler.closeAndGetReport();
+                if (errorHandler.countErrors() > 0) {
+                    showProcessorIssues(errorReport);
+                    return;
+                }
+            }
+
+            Report finalReport = new Report();
+            for (Container container : containers) {
+                if (container.verify()) {
+                    Report report = container.getReport();
+                    report.close();
+                    finalReport.append(report);
+                } else {
+                    //TODO
+                }
+            }
+            finalReport.close();
+
+            //Report panel
+            if (!containers.isEmpty()) {
+                ReportPanel reportPanel = new ReportPanel();
+                reportPanel.setData(finalReport, containers.toArray(new Container[0]));
+                DialogDescriptor dd = new DialogDescriptor(reportPanel,
+                    NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
+                Object response = DialogDisplayer.getDefault().notify(dd);
+                reportPanel.destroy();
+                finalReport.clean();
+                for (Container c : containers) {
+                    c.getReport().clean();
+                }
+                if (!response.equals(NotifyDescriptor.OK_OPTION)) {
+                    return;
+                }
+                final Processor processor = reportPanel.getProcessor();
+                processor.setProgressTicket(progressTicket);
+
+                //Project
+                Workspace workspace = null;
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                if (pc.getCurrentProject() == null) {
+                    pcui.newProject();
+                    workspace = pc.getCurrentWorkspace();
+                }
+
+                //Process
+                final ProcessorUI pui = getProcessorUI(processor);
+                final ValidResult validResult = new ValidResult();
+                if (pui != null) {
+                    try {
+                        final JPanel panel = pui.getPanel();
+                        if (panel != null) {
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String title = NbBundle.getMessage(DesktopImportControllerUI.class,
+                                        "DesktopImportControllerUI.processor.ui.dialog.title");
+
+                                    pui.setup(processor);
+                                    final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
+                                    if (panel instanceof ValidationPanel) {
+                                        ValidationPanel vp = (ValidationPanel) panel;
+                                        vp.addChangeListener(new ChangeListener() {
+                                            @Override
+                                            public void stateChanged(ChangeEvent e) {
+                                                dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                            }
+                                        });
+                                        dd2.setValid(!vp.isProblem());
+                                    }
+                                    Object result = DialogDisplayer.getDefault().notify(dd2);
+                                    if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
+                                        result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                                        validResult.setResult(false);
+                                    } else {
+                                        pui.unsetup(); //true
+                                        validResult.setResult(true);
+                                    }
+                                }
+                            });
+                        }
+                    } catch (InterruptedException | InvocationTargetException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+
+                if (validResult.isResult()) {
+                    controller.process(containers.toArray(new Container[0]), processor, workspace);
+
+                    Report report = processor.getReport();
+                    if (report != null && !report.isEmpty()) {
+                        showProcessorIssues(report);
+                    }
+
+                    //StatusLine notify
+                    StatusDisplayer.getDefault().setStatusText(NbBundle
+                        .getMessage(DesktopImportControllerUI.class,
+                            "DesktopImportControllerUI.status.multiImportSuccess",
+                            containers.size()));
+                }
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            return false;
+        }
+
+        @Override
+        public void setProgressTicket(ProgressTicket progressTicket) {
+            this.progressTicket = progressTicket;
         }
     }
 }

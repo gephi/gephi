@@ -44,37 +44,47 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 
 /**
  * @author mbastian
  */
 public abstract class RankingImpl implements Ranking {
 
-    protected Number min;
-    protected Number max;
+    public static Interpolator DEFAULT_INTERPOLATOR = Interpolator.LINEAR;
 
-    protected RankingImpl() {
+    protected Interpolator interpolator = DEFAULT_INTERPOLATOR;
+
+    public Interpolator getInterpolator() {
+        return interpolator;
     }
 
-    protected abstract void refresh();
-
-    @Override
-    public Number getMinValue() {
-        return min;
-    }
-
-    @Override
-    public Number getMaxValue() {
-        return max;
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
     }
 
     @Override
-    public float normalize(Number value, Interpolator interpolator) {
-        if (min.equals(max)) {
+    public float getNormalizedValue(Element element, Graph graph) {
+        return normalize(getValue(element, graph), interpolator, getMinValue(graph), getMaxValue(graph));
+    }
+
+    @Override
+    public float normalize(Number value, Interpolator interpolator, Number minValue, Number maxValue) {
+        if (minValue.equals(maxValue)) {
             return 1f;
         }
         float normalizedValue =
-            (float) (value.doubleValue() - min.doubleValue()) / (float) (max.doubleValue() - min.doubleValue());
+            (float) (value.doubleValue() - minValue.doubleValue()) /
+                (float) (maxValue.doubleValue() - minValue.doubleValue());
         return interpolator.interpolate(normalizedValue);
+    }
+
+    public abstract boolean isValid(Graph graph);
+
+    @Override
+    public Column getColumn() {
+        return null;
     }
 }

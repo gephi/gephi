@@ -4,13 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>desktop-project</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>DesktopProject</name>
@@ -53,16 +52,20 @@
             <artifactId>org-openide-windows</artifactId>
         </dependency>
         <dependency>
-            <artifactId>org-openide-util</artifactId>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
         </dependency>
         <dependency>
-            <artifactId>org-openide-util-lookup</artifactId>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
         </dependency>
     </dependencies>
 

@@ -64,7 +64,24 @@ public interface AppearanceController {
      * @param useLocalScale <code>true</code> for local, <code>false</code> for
      *                      global
      */
-    void setUseLocalScale(boolean useLocalScale);
+    void setUseRankingLocalScale(boolean useLocalScale);
+
+    /**
+     * Sets whether partitions use a local or a global scale. When calculating the
+     * partitions it can use the complete graph or only the currently visible graph. When using the visible graph
+     * it is called the <b>local</b> scale.
+     *
+     * @param useLocalScale <code>true</code> for local, <code>false</code> for
+     *                      global
+     */
+    void setUsePartitionLocalScale(boolean useLocalScale);
+
+    /**
+     * Sets whether elements with <code>null</code> values are also transformed. Default value is <code>false</code>/
+     *
+     * @param transformNullValues <code>true</code> to transform also null values, <code>false</code> to ignore
+     */
+    void setTransformNullValues(boolean transformNullValues);
 
     /**
      * Apply the function's transformer. If the function is for nodes all nodes

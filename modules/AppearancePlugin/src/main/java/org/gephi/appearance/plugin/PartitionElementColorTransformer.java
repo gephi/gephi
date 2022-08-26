@@ -59,9 +59,6 @@ public class PartitionElementColorTransformer implements PartitionTransformer<El
     @Override
     public void transform(Element element, Partition partition, Object value) {
         Color color = partition.getColor(value);
-        if (color == null) {
-            color = Color.BLACK;
-        }
         element.setColor(color);
     }
 

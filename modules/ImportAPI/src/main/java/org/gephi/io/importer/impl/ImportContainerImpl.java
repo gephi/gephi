@@ -112,6 +112,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
     private int selfLoops = 0;
+    private int mutualEdgesCount = 0;
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
@@ -452,6 +453,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public int getMutualEdgeCount() {
+        return mutualEdgesCount;
+    }
+
+    @Override
     public TimeFormat getTimeFormat() {
         return timeFormat;
     }
@@ -596,14 +602,14 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 start = Double.NEGATIVE_INFINITY;
             } else {
                 start = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
-                    AttributeUtils.parseDateTime(startDateTime);
+                    AttributeUtils.parseDateTime(startDateTime, getTimeZone());
             }
             if (endDateTime == null || endDateTime.trim().isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
                 "infinity".equalsIgnoreCase(endDateTime)) {
                 end = Double.POSITIVE_INFINITY;
             } else {
                 end = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
-                    AttributeUtils.parseDateTime(endDateTime);
+                    AttributeUtils.parseDateTime(endDateTime, getTimeZone());
             }
             this.interval = new Interval(start, end);
         } catch (Exception e) {
@@ -630,7 +636,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setTimestamp(String timestamp) {
         try {
             double t = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(timestamp) :
-                AttributeUtils.parseDateTime(timestamp);
+                AttributeUtils.parseDateTime(timestamp, getTimeZone());
             this.timestamp = t;
         } catch (Exception e) {
             report.logIssue(new Issue(NbBundle
@@ -681,6 +687,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             setEdgeDefault(EdgeDirectionDefault.MIXED);
         }
 
+        //Count mutual edges
+        if (directedEdgesCount > 0) {
+            for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
+                if (isEdgeDirected(edge) && getOpposite(edge) != null) {
+                    mutualEdgesCount++;
+                }
+            }
+            mutualEdgesCount /= 2;
+        }
+
         //IdType
         if (elementIdType.equals(ElementIdType.INTEGER) || elementIdType.equals(ElementIdType.LONG)) {
             try {
@@ -691,7 +707,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         Long.parseLong(node.getId());
                     }
                 }
-                for (EdgeDraftImpl edge : edgeList) {
+                for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
                     if (elementIdType.equals(ElementIdType.INTEGER)) {
                         Integer.parseInt(edge.getId());
                     } else if (elementIdType.equals(ElementIdType.LONG)) {
@@ -717,14 +733,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             }
         }
-        for (EdgeDraftImpl edge : edgeList) {
-            if (edge != null) {
-                if (edge.isDynamic()) {
-                    dynamicGraph = true;
-                }
-                if (edge.hasDynamicAttributes()) {
-                    dynamicAttributes = true;
-                }
+        for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
+            if (edge.isDynamic()) {
+                dynamicGraph = true;
+            }
+            if (edge.hasDynamicAttributes()) {
+                dynamicAttributes = true;
             }
         }
 
@@ -766,6 +780,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 .getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
         }
 
+        //Check that not all alpha are zeros
+        checkColorAlpha(nodeList, "Node");
+        checkColorAlpha(edgeList, "Edge");
+
         return true;
     }
 
@@ -782,22 +800,33 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             for (EdgeDraftImpl e : l) {
                 removeEdge(e);
             }
+
+            report.logIssue(new Issue(NbBundle.getMessage(
+                ImportContainerImpl.class, "ImportContainerClose_SelfLoopRemoved", l.size()
+            ), Level.WARNING));
         }
 
         if (directedEdgesCount > 0 && edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED)) {
+            int mutualEdgesRemoved = 0;
+
             //Force undirected
             for (EdgeDraftImpl edge : edgeList.toArray(new EdgeDraftImpl[0])) {
                 final boolean notAlreadyRemoved = edge != null
                     && edgeMap.containsKey(edge.getId());
 
-                if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
+                if (notAlreadyRemoved && !edge.isSelfLoop() && edge.getDirection() != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
                     if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);
                         removeEdge(opposite);
+                        mutualEdgesRemoved++;
                     }
                 }
             }
+
+            report.logIssue(new Issue(NbBundle.getMessage(
+                ImportContainerImpl.class, "ImportContainerClose_MutualEdgesRemoved", mutualEdgesRemoved
+            ), Level.WARNING));
         }
         //TODO check when mixed is forced
 
@@ -1004,6 +1033,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return lastEdgeType;
     }
 
+    @Override
+    public boolean containsAutoNodes() {
+        return reportedUnknownNode;
+    }
+
     //Utility
     private int getEdgeType(Object type) {
         //Verify
@@ -1080,6 +1114,25 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return null;
     }
 
+    private void checkColorAlpha(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            int validElement = 0;
+            int withAlphaZero = 0;
+            for (ElementDraft element : objectList) {
+                if (element != null && element.getColor() != null) {
+                    validElement++;
+                    withAlphaZero += element.getColor().getAlpha() == 0 ? 1 : 0;
+                }
+            }
+            if (validElement > 0 && validElement == withAlphaZero) {
+                report.logIssue(new Issue(
+                    NbBundle.getMessage(ImportContainerImpl.class,
+                        "ImportContainerException_" + elementType + "_Color_Alpha_AllZero"),
+                    Level.WARNING));
+            }
+        }
+    }
+
     private void checkElementDraftImpl(ElementDraft elmt) {
         if (elmt == null) {
             throw new NullPointerException();
@@ -1093,7 +1146,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (id == null) {
             throw new NullPointerException();
         }
-        if (id.trim().isEmpty()) {
+        if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
         }
     }

@@ -52,9 +52,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterDL implements ExporterUI {
 
+    private final ExporterDLSettings settings = new ExporterDLSettings();
     private UIExporterDLPanel panel;
     private ExporterDL exporter;
-    private final ExporterDLSettings settings = new ExporterDLSettings();
 
     @Override
     public JPanel getPanel() {
@@ -90,21 +90,25 @@ public class UIExporterDL implements ExporterUI {
         return NbBundle.getMessage(UIExporterDL.class, "UIExporterDL.name");
     }
 
-    private static class ExporterDLSettings {
-        private boolean useListFormat = true;
-        private boolean useMatrixFormat = false;
-        private boolean makeSymmetricMatrix = false;
+    private static class ExporterDLSettings extends AbstractExporterSettings {
+
+        // Preference names
+        private final static String USE_LIST_FORMAT = "DL_useListFormat";
+        private final static String USE_MATRIX_FORMAT = "DL_useMatrixFormat";
+        private final static String MAKE_SYMMETRIC_MATRIX = "DL_makeSymmetricMatrix";
+        // Default
+        private final static ExporterDL DEFAULT = new ExporterDL();
 
         private void load(ExporterDL exporterDL) {
-            exporterDL.setUseListFormat(useListFormat);
-            exporterDL.setUseMatrixFormat(useMatrixFormat);
-            exporterDL.setMakeSymmetricMatrix(makeSymmetricMatrix);
+            exporterDL.setUseListFormat(get(USE_LIST_FORMAT, DEFAULT.isUseListFormat()));
+            exporterDL.setUseMatrixFormat(get(USE_MATRIX_FORMAT, DEFAULT.isUseMatrixFormat()));
+            exporterDL.setMakeSymmetricMatrix(get(MAKE_SYMMETRIC_MATRIX, DEFAULT.isMakeSymmetricMatrix()));
         }
 
         private void save(ExporterDL exporterDL) {
-            useListFormat = exporterDL.isUseListFormat();
-            useMatrixFormat = exporterDL.isUseMatrixFormat();
-            makeSymmetricMatrix = exporterDL.isMakeSymmetricMatrix();
+            put(USE_LIST_FORMAT, exporterDL.isUseListFormat());
+            put(USE_MATRIX_FORMAT, exporterDL.isUseMatrixFormat());
+            put(MAKE_SYMMETRIC_MATRIX, exporterDL.isMakeSymmetricMatrix());
         }
     }
 }

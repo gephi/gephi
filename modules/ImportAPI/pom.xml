@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>io-importer-api</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>ImportAPI</name>
@@ -70,6 +70,19 @@
                         <publicPackage>org.gephi.io.processor.spi</publicPackage>
                     </publicPackages>
                 </configuration>
+            </plugin>
+
+            <!-- Create test jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -82,6 +82,7 @@ public class Modularity implements Statistics, LongTask {
     private boolean isRandomized = false;
     private boolean useWeight = true;
     private double resolution = 1.;
+    private int initialModularityClassIndex = 0;
 
     public boolean getRandom() {
         return isRandomized;
@@ -107,6 +108,14 @@ public class Modularity implements Statistics, LongTask {
         this.resolution = resolution;
     }
 
+    public int getInitialModularityClassIndex(){
+        return initialModularityClassIndex;
+    }
+
+    public void setInitialModularityClassIndex(int initialModularityClassIndex){
+        this.initialModularityClassIndex = initialModularityClassIndex;
+    }
+
     @Override
     public boolean cancel() {
         this.isCanceled = true;
@@ -127,6 +136,14 @@ public class Modularity implements Statistics, LongTask {
     public void execute(Graph graph) {
         isCanceled = false;
 
+        Table nodeTable = graph.getModel().getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {MODULARITY_CLASS}, Integer.class);
+
+        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
+        if (modCol == null) {
+            nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, 0);
+        }
+
         graph.readLock();
         try {
             structure = new Modularity.CommunityStructure(graph);
@@ -142,6 +159,9 @@ public class Modularity implements Statistics, LongTask {
                 modularityResolution = 0;
             }
 
+            for(int i = 0; i < comStructure.length; i++){
+                comStructure[i] = comStructure[i] + initialModularityClassIndex;
+            }
             saveValues(comStructure, graph, structure);
         } finally {
             graph.readUnlock();
@@ -287,10 +307,8 @@ public class Modularity implements Statistics, LongTask {
 
     private void saveValues(int[] struct, Graph graph, CommunityStructure theStructure) {
         Table nodeTable = graph.getModel().getNodeTable();
+
         Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
-        if (modCol == null) {
-            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, 0);
-        }
         for (Node n : graph.getNodes()) {
             int n_index = theStructure.map.get(n);
             n.setAttribute(modCol, struct[n_index]);

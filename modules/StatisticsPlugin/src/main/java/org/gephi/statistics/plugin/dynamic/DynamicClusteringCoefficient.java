@@ -59,6 +59,7 @@ import org.gephi.graph.api.types.IntervalDoubleMap;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
+import org.gephi.statistics.plugin.ColumnUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
@@ -110,12 +111,16 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
             TimeRepresentation tr = graphModel.getConfiguration().getTimeRepresentation();
 
             Table nodeTable = graphModel.getNodeTable();
+            Class columnType =
+                tr.equals(TimeRepresentation.INTERVAL) ? IntervalDoubleMap.class : TimestampDoubleMap.class;
+            ColumnUtils.cleanUpColumns(nodeTable, new String[] {DYNAMIC_CLUSTERING_COEFFICIENT}, columnType);
+
             dynamicCoefficientColumn = nodeTable.getColumn(DYNAMIC_CLUSTERING_COEFFICIENT);
             if (dynamicCoefficientColumn == null) {
                 dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle
                         .getMessage(DynamicClusteringCoefficient.class,
                             "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"),
-                    tr.equals(TimeRepresentation.INTERVAL) ? IntervalDoubleMap.class : TimestampDoubleMap.class, null);
+                    columnType, null);
             }
         }
     }

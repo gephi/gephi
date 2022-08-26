@@ -109,6 +109,8 @@ public class ReportPanel extends javax.swing.JPanel {
     private static final String PREF_SELF_LOOP = "ReportPanel_selfLoops";
     private static final Object PROCESSOR_KEY = new Object();
     private final ThreadGroup fillingThreads;
+    //UI
+    private final ButtonGroup processorGroup = new ButtonGroup();
     //Icons
     private ImageIcon infoIcon;
     private ImageIcon warningIcon;
@@ -116,8 +118,6 @@ public class ReportPanel extends javax.swing.JPanel {
     private ImageIcon criticalIcon;
     //Container
     private Container[] containers;
-    //UI
-    private final ButtonGroup processorGroup = new ButtonGroup();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoscaleCheckbox;
     private javax.swing.JCheckBox createMissingNodesCheckbox;
@@ -365,6 +365,9 @@ public class ReportPanel extends javax.swing.JPanel {
                             container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
                         }
                     }
+
+                    // Refresh stats
+                    fillStats(containers);
                 }
             }
         });
@@ -446,6 +449,20 @@ public class ReportPanel extends javax.swing.JPanel {
                     //NOOP
                 }
 
+                // Make sure containers have the right parameter values
+                for (Container container : containers) {
+                    container.getLoader().setAllowSelfLoop(selfLoopPref);
+                    container.getLoader().setAutoScale(autoscalePref);
+                    container.getLoader().setAllowAutoNode(createMissingNodesPref);
+                    container.getLoader().setEdgesMergeStrategy(strategyPref);
+                }
+
+                // Create Missing Nodes Checkbox should be disabled if no missing nodes found
+                createMissingNodesCheckbox.setEnabled(containers[0].getUnloader().containsAutoNodes());
+
+                // Self-Loop Checkbox should be disabled if no self loops found
+                selfLoopCheckBox.setEnabled(containers[0].hasSelfLoops());
+
                 autoscaleCheckbox.setSelected(autoscalePref);
                 selfLoopCheckBox.setSelected(selfLoopPref);
                 createMissingNodesCheckbox.setSelected(createMissingNodesPref);
@@ -477,6 +494,10 @@ public class ReportPanel extends javax.swing.JPanel {
                 for (Container container : containers) {
                     nodeCount += container.getUnloader().getNodeCount();
                     edgeCount += container.getUnloader().getEdgeCount();
+                    if (container.getUnloader().getEdgeDefault().equals(EdgeDirectionDefault.UNDIRECTED)) {
+                        // Discount mutual edges as they will be discarded
+                        edgeCount -= container.getUnloader().getMutualEdgeCount();
+                    }
                     dynamic |= container.isDynamicGraph();
                     dynamicAtts |= container.hasDynamicAttributes();
                     multiGraph |= container.isMultiGraph();

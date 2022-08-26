@@ -89,10 +89,6 @@ public class SelectionBar extends javax.swing.JPanel {
                 }
             }
         });
-
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
     }
 
     public JPopupMenu createPopup() {
@@ -162,6 +158,7 @@ public class SelectionBar extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(180, 28));
         setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
 
         statusLabel.setFont(statusLabel.getFont().deriveFont((float) 10));
         gridBagConstraints = new java.awt.GridBagConstraints();

@@ -49,6 +49,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Database;
@@ -213,6 +215,7 @@ public class ImportControllerImpl implements ImportController {
         } finally {
             try {
                 reader.close();
+                report.close();
             } catch (IOException ex) {
                 //NOOP
             }
@@ -263,6 +266,8 @@ public class ImportControllerImpl implements ImportController {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            report.close();
         }
         return null;
     }
@@ -303,6 +308,10 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public void process(Container container, Processor processor, Workspace workspace) {
+        processor.setContainers(new ContainerUnloader[] {container.getUnloader()});
+        processor.setWorkspace(workspace);
+
+        container.setReport(processor.getReport());
         container.closeLoader();
         if (container.getUnloader().isAutoScale()) {
             Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
@@ -310,16 +319,15 @@ public class ImportControllerImpl implements ImportController {
                 scaler.doScale(container);
             }
         }
-        processor.setContainers(new ContainerUnloader[] {container.getUnloader()});
-        processor.setWorkspace(workspace);
+
         processor.process();
     }
 
     @Override
     public void process(Container[] containers, Processor processor, Workspace workspace) {
-        ContainerUnloader[] unloaders = new ContainerUnloader[containers.length];
-        int i = 0;
+        processor.setContainers(Arrays.stream(containers).map(Container::getUnloader).toArray(ContainerUnloader[]::new));
         for (Container container : containers) {
+            container.setReport(processor.getReport());
             container.closeLoader();
             if (container.getUnloader().isAutoScale()) {
                 Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
@@ -327,9 +335,7 @@ public class ImportControllerImpl implements ImportController {
                     scaler.doScale(container);
                 }
             }
-            unloaders[i++] = container.getUnloader();
         }
-        processor.setContainers(unloaders);
         processor.setWorkspace(workspace);
         processor.process();
     }

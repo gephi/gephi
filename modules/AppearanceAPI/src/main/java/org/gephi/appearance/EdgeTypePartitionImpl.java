@@ -42,42 +42,35 @@
 
 package org.gephi.appearance;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Index;
 
 /**
  * @author mbastian
  */
 public class EdgeTypePartitionImpl extends PartitionImpl {
 
-    protected final Graph graph;
-    protected final GraphModel model;
+    private final Class valueType;
+    private final Column column;
 
-    public EdgeTypePartitionImpl(Graph graph) {
+    public EdgeTypePartitionImpl(Column column, Class valueType) {
         super();
-        this.graph = graph;
-        this.model = graph.getModel();
+        this.valueType = valueType;
+        this.column = column;
     }
 
     @Override
-    protected void refresh() {
-    }
-
-    @Override
-    public Collection getValues() {
-        Object[] labels = model.getEdgeTypeLabels();
-        ArrayList<Object> col = new ArrayList<>(labels.length);
-        for (Object l : labels) {
-            if (!(l == null && graph.getEdgeCount(0) == 0)) {
-                col.add(l);
-            }
-        }
-        return col;
+    public Collection getValues(Graph graph) {
+        int[] types = graph.getModel().getEdgeTypes();
+        return Arrays.stream(types).filter(t -> graph.getEdgeCount(t) > 0)
+            .mapToObj(t -> graph.getModel().getEdgeTypeLabel(t)).collect(
+                Collectors.toList());
     }
 
     @Override
@@ -86,29 +79,51 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     }
 
     @Override
-    public int getElementCount() {
+    public int getElementCount(Graph graph) {
         return graph.getEdgeCount();
     }
 
     @Override
-    public int count(Object value) {
-        return graph.getEdgeCount(model.getEdgeType(value));
+    public int count(Object value, Graph graph) {
+        return getIndex(graph).count(column, value);
     }
 
     @Override
-    public float percentage(Object value) {
-        int count = count(value);
-        return (float) count / graph.getEdgeCount();
+    public float percentage(Object value, Graph graph) {
+        Index<Edge> index = getIndex(graph);
+        int count = index.count(column, value);
+        return 100f * ((float) count / index.countElements(column));
     }
 
     @Override
-    public int size() {
-        int size = model.getEdgeTypeCount();
-        return graph.getEdgeCount(0) == 0 ? size - 1 : size;
+    public int size(Graph graph) {
+        return getIndex(graph).countValues(column);
+    }
+
+    private Index<Edge> getIndex(Graph graph) {
+        return graph.getModel().getEdgeIndex(graph.getView());
     }
 
     @Override
     public Column getColumn() {
-        return null;
+        return column;
+    }
+
+    @Override
+    public Class getValueType() {
+        return valueType;
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        return graph.getModel().isMultiGraph();
+    }
+
+    @Override
+    public int getVersion(Graph graph) {
+        if (isValid(graph)) {
+            return getIndex(graph).getColumnIndex(column).getVersion();
+        }
+        return 0;
     }
 }

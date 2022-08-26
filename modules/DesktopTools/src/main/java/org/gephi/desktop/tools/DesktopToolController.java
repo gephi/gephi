@@ -192,6 +192,7 @@ public class DesktopToolController implements ToolController {
             } else {
                 btn = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/tool.png")));
             }
+            btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
             btn.addActionListener(new ActionListener() {
 

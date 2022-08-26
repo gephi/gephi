@@ -7,24 +7,30 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <name>gephi-app</name>
     
     <properties>
         <jarGoalPhase>package</jarGoalPhase>
         <skipCreateTargz>true</skipCreateTargz>
-        <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
         <skipCreateExe>true</skipCreateExe>
         <skipCreateDmg>true</skipCreateDmg>
         <skipAppleNotarization>true</skipAppleNotarization>
     </properties>
+
+    <!-- For site only -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>scm:git:https://github.com/gephi/gephi.git</url>
+        </site>
+    </distributionManagement>
 
     <!-- Dependencies -->
     <dependencies>
@@ -58,18 +64,6 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-core-output2</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-libs-osgi</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-libs-felix</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-libs-jsr223</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
@@ -80,10 +74,6 @@
                 <exclusion>
                     <artifactId>org-netbeans-libs-junit4</artifactId>
                     <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-core-kit</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>org-netbeans-modules-netbinox</artifactId>
@@ -106,19 +96,7 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-modules-print</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-favorites</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-modules-javahelp</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-sampler</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
                 <exclusion>
@@ -138,54 +116,50 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-fx</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot.fx</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-script</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot.script</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-geo</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.geo</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-json</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.json</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-sound</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.sound</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-ko4j</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>ko4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.api</groupId>
-                    <artifactId>org-netbeans-spi-quicksearch</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-xhr4j</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>xhr4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.netbeans.api</groupId>
-                    <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+                    <artifactId>org-netbeans-libs-junit5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-htmlui</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gephi-branding</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -218,10 +192,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>
         <dependency>
@@ -247,18 +217,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>processor-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>project-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -298,10 +256,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mostrecentfiles-api</artifactId>
         </dependency>
         <dependency>
@@ -323,10 +277,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-progress</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -359,10 +309,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-propertyeditor</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -402,10 +348,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-recent-files</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
         </dependency>
         <dependency>
@@ -418,7 +360,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-banner</artifactId>
+            <artifactId>desktop-window</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -500,6 +442,8 @@
                 <configuration>
                     <!-- Set up the gephi.conf for the final artifact -->
                     <etcConfFile>${basedir}/target/${brandingToken}.conf</etcConfFile>
+                    <!-- Source of the NBMs for auto update -->
+                    <distBase>central::default::${gephi.update.center.source}</distBase>
                 </configuration>
                 <executions>
                     <execution>
@@ -601,7 +545,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <skip>${skipReplaceWindowsIcon}</skip>
+                                    <skip>${skipCreateExe}</skip>
                                     <!-- Target that replaces the icon for the launcher exe with our own icon. -->
                                     <target name="replaceWindowsLauncherIcon" description="Replace the icon for the Windows launcher exe">
                                         <!-- Windows -->
@@ -618,21 +562,6 @@
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
                                         </exec>
-
-                                        <!-- Linux (assuming the right wine configuration) -->
-                                        <echo message="Replacing icon of Windows launcher executable."/>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
-                                        </exec>
-                                        <exec dir="src/main/app-resources" executable="replacevistaicon" os="Linux">
-                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
-                                        </exec>
                                     </target>
                                 </configuration>
                             </execution>
@@ -646,41 +575,41 @@
                                 <configuration>
                                     <target name="downloadJRE" description="Download JRE">
                                         <!-- Download JRE (Mac OS X) -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="curl">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
                                             <arg line="${gephi.bundle.jre.macos}"/>
                                         </exec>
 
                                         <!-- Download JRE (Windows) -->
-                                        <exec dir="${project.build.directory}" os="Windows" executable="curl">
+                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
                                             <arg line="${gephi.bundle.jre.windows}"/>
                                         </exec>
 
                                         <!-- Download JRE (Linux) -->
-                                        <exec dir="${project.build.directory}" os="Linux" executable="curl">
+                                        <exec dir="${project.build.directory}" os="Linux" executable="curl" failonerror="true">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
                                             <arg line="${gephi.bundle.jre.linux}"/>
                                         </exec>
 
                                         <!-- Unzip archive -->
-                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre"/>
+                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}"/>
                                         <exec dir="${project.build.directory}" executable="tar">
                                             <arg line="-zxf"/>
-                                            <arg line="jre.zip"/>
-                                            <arg line="-C &quot;${brandingToken}/jre&quot;"/>
+                                            <arg line="jre-${gephi.bundle.arch}.zip"/>
+                                            <arg line="-C &quot;${brandingToken}/jre-${gephi.bundle.arch}&quot;"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -697,27 +626,22 @@
                                     <skip>${skipCreateExe}</skip>
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
-                                        <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
+                                        <delete file="${project.artifactId}-${project.version}-${gephi.bundle.arch}.setup.exe" failonerror="false"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre\${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}\${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
 
                                         <!-- Windows -->
-                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
+                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows" failonerror="true">
                                             <arg line="/cc &quot;${brandingToken}.iss&quot;" />
-                                        </exec>
-
-                                        <!-- Linux (assuming the right wine configuration) -->
-                                        <exec dir="${project.build.directory}" executable="iscc" os="Linux">
-                                            <arg line="${brandingToken}.iss" />
                                         </exec>
                                     </target>
                                 </configuration>
@@ -737,30 +661,13 @@
                                         <delete includeEmptyDirs="true" failonerror="false" removeNotFollowedSymlinks="true">
                                             <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app" followsymlinks="false"/>
                                             <fileset dir="${project.build.directory}/${gephi.app.title}" followsymlinks="false"/>
-                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" followsymlinks="false"/>
                                         </delete>
-                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}.dmg" failonerror="false"/>
-                                        
-                                        <!-- Codesign Gephi modules with native librairies -->
-                                        <exec executable="/bin/bash" os="Mac OS X">
-                                            <arg value="src/main/app-resources/codesign.sh" />
-                                            <arg value="${project.build.directory}/${brandingToken}/${brandingToken}/modules/ext" />
-                                            <arg value="${gephi.codesign.identity}" />
-                                        </exec>
-                                        
-                                        <!-- Codesign Netbeans native librairies -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/libjnidispatch-nb.jnilib" />
-                                        </exec>
+                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg" failonerror="false"/>
+
+                                        <!-- Delete Windows Executables -->
+                                        <delete file="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe" failonerror="false"/>
+                                        <delete file="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe" failonerror="false"/>
 
                                         <!-- Create folders -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
@@ -775,22 +682,22 @@
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}.icns" file="src/main/app-resources/${brandingToken}.icns" />
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Info.plist" file="${project.build.directory}/Info.plist"/>
 
-                                        <!-- Move bin/gephi script into MacOS/gephi and modify the script so it founds its resources -->
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
-                                        <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/${brandingToken}/bin&quot;"/>
+                                        <!-- Move Native Launcher into MacOS/gephi and modify the exec script to be runable -->
+                                        <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" file="../../src/macosx-launcher/Binaries/AppLauncher_x86_64" />
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
+                                        <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" perm="ugo+rx"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Move the JRE in the /Contents/PlugIns folder and cleanup -->
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-${gephi.bundle.arch}/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
                                         <delete includeEmptyDirs="true">
-                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre"/>
+                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre-${gephi.bundle.arch}"/>
                                         </delete>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
@@ -804,32 +711,11 @@
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../../PlugIns/${bundle.jre.name}/Contents/Home&quot;"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/**" perm="+x" type="both"/>
 
-                                        <!-- Codesign JRE -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib" />
-                                        </exec>
-                                        
-                                        <!-- Codesign app -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--entitlements" />
-                                            <arg value="${project.build.directory}/Entitlements.plist" />
-                                            <arg value="--sign"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="--deep"/>
-                                            <arg value="--force"/>
-                                            <arg value="--timestamp"/>
-                                            <arg value="--options"/>
-                                            <arg value="runtime"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
+                                        <!-- Codesign -->
+                                        <exec executable="/bin/bash" os="Mac OS X" failonerror="true">
+                                            <arg value="src/main/app-resources/codesign.sh" />
+                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app" />
+                                            <arg value="${gephi.codesign.identity}" />
                                         </exec>
 
                                         <!-- Create application folder and add Applications dynamic link -->
@@ -845,26 +731,17 @@
                                             <arg value="zlib-level=9"/>
                                             <arg value="-srcfolder"/>
                                             <arg value="${project.build.directory}/${gephi.app.title}"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
 
-                                        <!-- Create DMG (Linux), only for testing -->
-                                        <exec dir="${project.build.directory}" os="Linux" executable="genisoimage">
-                                            <arg value="-V"/>
-                                            <arg value="${gephi.appbundle.name}"/>
-                                            <arg value="-U"/>
-                                            <arg value="-D"/>
-                                            <arg value="-l"/>
-                                            <arg value="-allow-multidot"/>
-                                            <arg value="-max-iso9660-filenames"/>
-                                            <arg value="-relaxed-filenames"/>
-                                            <arg value="-no-iso-translate"/>
-                                            <arg value="-r"/>
-                                            <arg value="-o"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
-                                            <arg value="-root"/>
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
+                                        <!-- Codesign dmg -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                            <arg value="--sign"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="-i"/>
+                                            <arg value="org.gephi"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -881,10 +758,10 @@
                                     <skip>${skipAppleNotarization}</skip>
                                     <target>
                                         <!-- Send DMG file to Apple's notarization service -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="notarytool"/>
                                             <arg value="submit"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                             <arg value="--apple-id"/>
                                             <arg value="${gephi.apple.notarization.username}"/>
                                             <arg value="--password"/>
@@ -897,10 +774,10 @@
                                         </exec>
 
                                         <!-- Staple the notarization ticket to the DMG bundle -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun" failonerror="true">
                                             <arg value="stapler"/>
                                             <arg value="staple"/>
-                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -918,14 +795,14 @@
                                     <target>
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre/${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}/${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -970,9 +847,9 @@
                                     <skipAttach>${skipCreateTargz}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux.tar.gz</file>
+                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux-${gephi.bundle.arch}.tar.gz</file>
                                             <type>tar.gz</type>
-                                            <classifier>linux</classifier>
+                                            <classifier>linux-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -989,9 +866,9 @@
                                     <skipAttach>${skipCreateExe}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.setup.exe</file>
                                             <type>exe</type>
-                                            <classifier>windows</classifier>
+                                            <classifier>windows-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -1008,9 +885,9 @@
                                     <skipAttach>${skipCreateDmg}</skipAttach>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg</file>
                                             <type>dmg</type>
-                                            <classifier>macos</classifier>
+                                            <classifier>macos-${gephi.bundle.arch}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -1036,9 +913,30 @@
                                 <goals>
                                     <goal>autoupdate</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Copy only update.xml and update.xml.gz to a custom autoupdate_site folder -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-autoupdate</id>
+                                <phase>package</phase>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                    <target>
+                                        <copy todir="${project.build.directory}/autoupdate_site">
+                                            <fileset dir="${project.build.directory}/netbeans_site">
+                                                <include name="updates.xml*"/>
+                                                <type type="file"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -1084,14 +982,6 @@
             <id>create-targz</id>
             <properties>
                 <skipCreateTargz>false</skipCreateTargz>
-            </properties>
-        </profile>
-        
-        <!-- Profile used along with targz and windows exe to replace the windows icon -->
-        <profile>
-            <id>replace-windows-icon</id>
-            <properties>
-                <skipReplaceWindowsIcon>false</skipReplaceWindowsIcon>
             </properties>
         </profile>
 
@@ -1158,48 +1048,22 @@
             </properties>
         </profile>
 
-        <!-- Profile that pushes the /site folder to GitHub's gh-pages -->
+        <!-- Profile that pushes the /autoupdate_site folder to GitHub's gephi-repository -->
         <profile>
             <id>push-site</id>
             <build>
                 <plugins>
-                    <!-- Copy parent's site into target/site -->
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>site</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="${project.build.directory}/site">
-                                            <fileset dir="${basedir}/../../target/site"/>
-                                        </copy>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- Publish site folder to GitHub's gh-pages branch -->
                     <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
-                            <message>Creating site for ${project.version}</message>
-                            <path>${project.version}</path>
-                            <merge>true</merge>
+                            <content>${project.build.directory}/autoupdate_site</content>
+                            <scmBranch>gh-pages</scmBranch>
+                            <checkinComment>Autoupdate update for ${project.version}</checkinComment>
+                            <subDirectory>${gephi.minor.version}/autoupdate</subDirectory>
+                            <serverId>github</serverId>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>site</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

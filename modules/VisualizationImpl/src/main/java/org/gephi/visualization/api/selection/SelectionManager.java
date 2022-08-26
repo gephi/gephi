@@ -59,6 +59,11 @@ import org.gephi.viz.engine.status.GraphSelection;
 import org.joml.Vector2f;
 import org.openide.util.Lookup;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Mathieu Bastian
  */
@@ -145,6 +150,8 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setCustomSelection() {
+        //vizConfig.setRectangleSelection(false);
+        //TODO
         vizConfig.setSelectionEnable(false);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
@@ -162,7 +169,13 @@ public class SelectionManager implements VizArchitecture {
 
     public List<Node> getSelectedNodes() {
         return currentEngineSelectionModel()
-            .map(selection -> (List<Node>) new ArrayList<Node>(selection.getSelectedNodes()))
+            .map(selection -> (List<Node>) new ArrayList<>(selection.getSelectedNodes()))
+            .orElse(Collections.emptyList());
+    }
+
+    public List<Edge> getSelectedEdges() {
+        return currentEngineSelectionModel()
+            .map(selection -> (List<Edge>) new ArrayList<>(selection.getSelectedEdges()))
             .orElse(Collections.emptyList());
     }
 

@@ -29,6 +29,7 @@ ecu911,elarteviveenloja,Undirected,,,130
 cbamprendo,3h,Undirected,,,2
 temblor,elarteviveenloja,Undirected,,,2
 unl,ecuador,Undirected,,,26
+elarteviveenloja,elarteviveenloja,Undirected,,,292
 municipiodeloja,elarteviveenloja,Undirected,,,38
 elarteviveenloja,telediario,Undirected,,,10
 loja,ecuador,Undirected,,,70
@@ -43,6 +44,7 @@ sosunl,atender,Undirected,,,27
 elarteviveenloja,igf2017ec,Undirected,,,3
 igf2017ec,loja,Undirected,,,3
 loja,postalecu911,Undirected,,,2
+sosunl,sosunl,Undirected,,,51
 elarteviveenloja,zoocarcel,Undirected,,,1
 loja,unl,Undirected,,,3
 elarteviveenloja,agendapresidencialec,Undirected,,,110

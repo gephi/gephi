@@ -4,22 +4,22 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>db-drivers</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>DBDrivers</name>
 
     <properties>
         <gephi.sqlite.version>3.36.0.3</gephi.sqlite.version>
-        <gephi.mysql.version>8.0.27</gephi.mysql.version>
-        <gephi.postgresql.version>42.3.0</gephi.postgresql.version>
-        <gephi.sqlserver.version>9.4.0.jre8</gephi.sqlserver.version>
+        <gephi.mysql.version>8.0.28</gephi.mysql.version>
+        <gephi.postgresql.version>42.4.1</gephi.postgresql.version>
+        <gephi.sqlserver.version>10.2.0.jre11</gephi.sqlserver.version>
     </properties>
 
     <dependencies>
@@ -42,12 +42,6 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>${gephi.sqlserver.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.microsoft.azure</groupId>
-                    <artifactId>azure-keyvault</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -65,6 +59,11 @@
                     <verifyRuntime>warn</verifyRuntime><!-- Avoid problem with postgresql driver using checkerframework -->
                     <publicPackages>
                         <publicPackage>org.gephi.io.database.drivers</publicPackage>
+                        <publicPackage>com.microsoft.sqlserver.*</publicPackage>
+                        <publicPackage>microsoft.sql.*</publicPackage>
+                        <publicPackage>com.mysql.*</publicPackage>
+                        <publicPackage>org.postgresql.*</publicPackage>
+                        <publicPackage>org.sqlite.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

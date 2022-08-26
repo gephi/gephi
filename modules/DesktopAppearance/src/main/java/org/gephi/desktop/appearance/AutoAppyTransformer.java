@@ -47,6 +47,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import org.gephi.appearance.api.Function;
+import org.openide.util.Lookup;
 
 /**
  * @author mbastian
@@ -58,19 +59,13 @@ public class AutoAppyTransformer implements Runnable {
     private final AppearanceUIController controller;
     private ScheduledExecutorService executor;
 
-    public AutoAppyTransformer(AppearanceUIController controller, Function function) {
-        this.controller = controller;
+    public AutoAppyTransformer(Function function) {
+        this.controller = Lookup.getDefault().lookup(AppearanceUIController.class);
         this.function = function;
     }
 
     public void start() {
-        executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "Appearance Auto Transformer");
-                return t;
-            }
-        });
+        executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Appearance Auto Transformer"));
         executor.scheduleWithFixedDelay(this, 0, getDelayInMs(), TimeUnit.MILLISECONDS);
     }
 
@@ -83,7 +78,7 @@ public class AutoAppyTransformer implements Runnable {
 
     @Override
     public void run() {
-        controller.appearanceController.transform(function);
+        controller.transform(function);
     }
 
     public boolean isRunning() {

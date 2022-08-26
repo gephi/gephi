@@ -97,22 +97,26 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();
 
+        Column weaklyConnectedColumn = initializeWeaklyConnectedColumn(graphModel);
+        Column stronglyConnectedColumn = null;
+        if (isDirected) {
+            stronglyConnectedColumn = initializeStronglyConnectedColumn(graphModel);
+        }
+
         undirectedGraph.readLock();
         try {
-            weaklyConnected(undirectedGraph);
+            weaklyConnected(undirectedGraph, weaklyConnectedColumn);
             if (isDirected) {
                 DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
-                stronglyConnected(directedGraph, graphModel);
+                stronglyConnected(directedGraph, graphModel, stronglyConnectedColumn);
             }
         } finally {
             undirectedGraph.readUnlock();
         }
     }
 
-    public void weaklyConnected(UndirectedGraph graph) {
+    public void weaklyConnected(UndirectedGraph graph, Column componentCol) {
         isCanceled = false;
-
-        Column componentCol = initializeWeaklyConnectedColumn(graph.getModel());
 
         HashMap<Node, Integer> indices = createIndicesMap(graph);
 
@@ -192,6 +196,8 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     private Column initializeWeaklyConnectedColumn(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {WEAKLY}, Integer.class);
+
         Column componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(WEAKLY, "Component ID", Integer.class, 0);
@@ -228,6 +234,8 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     private Column initializeStronglyConnectedColumn(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {STRONG}, Integer.class);
+
         Column componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", Integer.class, 0);
@@ -235,11 +243,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         return componentCol;
     }
 
-    public void stronglyConnected(DirectedGraph graph, GraphModel graphModel) {
+    public void stronglyConnected(DirectedGraph graph, GraphModel graphModel, Column componentCol) {
         count = 1;
         stronglyCount = 0;
-
-        Column componentCol = initializeStronglyConnectedColumn(graphModel);
 
         HashMap<Node, Integer> indices = createIndicesMap(graph);
 

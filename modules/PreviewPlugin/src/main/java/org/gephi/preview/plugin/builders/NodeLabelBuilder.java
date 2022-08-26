@@ -49,11 +49,14 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -61,61 +64,47 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ItemBuilder.class, position = 200)
-public class NodeLabelBuilder implements ItemBuilder {
+public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
+        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
+        Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns(workspace) : null;
 
         List<Item> items = new ArrayList<>();
-        for (Node n : graph.getNodes()) {
-            NodeLabelItem labelItem = new NodeLabelItem(n);
-            String label = getLabel(n, nodeColumns, graph.getView());
-            labelItem.setData(NodeLabelItem.LABEL, label);
-            TextProperties textData = n.getTextProperties();
-            if (textData != null) {
-                if (textData.getR() != -1) {
-                    labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
-                        (int) (textData.getG() * 255),
-                        (int) (textData.getB() * 255),
-                        (int) (textData.getAlpha() * 255)));
-                }
+        NodeIterable nodeIterable = graph.getNodes();
+        try {
+            for (Node n : nodeIterable) {
+                NodeLabelItem labelItem = new NodeLabelItem(n);
+                String label = getLabel(n, nodeColumns, graph.getView());
+                labelItem.setData(NodeLabelItem.LABEL, label);
+                TextProperties textData = n.getTextProperties();
+                if (textData != null) {
+                    if (textData.getR() != -1) {
+                        labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
+                            (int) (textData.getG() * 255),
+                            (int) (textData.getB() * 255),
+                            (int) (textData.getAlpha() * 255)));
+                    }
 //                labelItem.setData(NodeLabelItem.WIDTH, textData.getWidth());
 //                labelItem.setData(NodeLabelItem.HEIGHT, textData.getHeight());
-                labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
-                labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
-                labelItem.setData(NodeLabelItem.LABEL, label);
-                if (textData.isVisible() && label != null && !label.isEmpty()) {
+                    labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
+                    labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
+                    labelItem.setData(NodeLabelItem.LABEL, label);
+                    if (textData.isVisible() && !label.isEmpty()) {
+                        items.add(labelItem);
+                    }
+                } else if (!label.isEmpty()) {
                     items.add(labelItem);
                 }
-            } else if (label != null && !label.isEmpty()) {
-                items.add(labelItem);
             }
+        } catch (Exception e) {
+            nodeIterable.doBreak();
+            Exceptions.printStackTrace(e);
         }
         return items.toArray(new Item[0]);
-    }
-
-    private String getLabel(Node n, Column[] cols, GraphView view) {
-        String str = "";
-        if (cols != null) {
-            int i = 0;
-            for (Column c : cols) {
-                if (i++ > 0) {
-                    str += " - ";
-                }
-                Object val = n.getAttribute(c, view);
-                str += val != null ? val : "";
-            }
-        }
-        if (str.isEmpty()) {
-            str = n.getLabel();
-        }
-        if (str == null) {
-            str = "";
-        }
-        return str;
     }
 
     @Override

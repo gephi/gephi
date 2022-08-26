@@ -112,7 +112,6 @@ import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.JCommandButtonPanel;
 import org.pushingpixels.flamingo.api.common.JCommandButtonStrip;
 import org.pushingpixels.flamingo.api.common.JCommandMenuButton;
-import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
 import org.pushingpixels.flamingo.api.common.popup.JCommandPopupMenu;
 import org.pushingpixels.flamingo.api.common.popup.JPopupPanel;
@@ -218,9 +217,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
         controlToolbar.setBorder(b);
         if (UIUtils.isAquaLookAndFeel()) {
-            controlToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+            controlToolbar.setOpaque(true);
         }
-
 
         //Init tables
         nodeTable = new NodesDataTable();
@@ -970,9 +968,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         manipulatorButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
         manipulatorButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
         if (acm.getDescription() != null && !acm.getDescription().isEmpty()) {
-            manipulatorButton.setPopupRichTooltip(new RichTooltip(
-                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
-                acm.getDescription()));
+            // Turn off rich tooltip for now due to issue #2498
+//            manipulatorButton.setPopupRichTooltip(new RichTooltip(
+//                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
+//                acm.getDescription()));
         }
 
         final ArrayList<Column> availableColumns = new ArrayList<>();
@@ -1218,9 +1217,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         button.setDisplayState(CommandButtonDisplayState.BIG);
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         if (m.getDescription() != null && !m.getDescription().isEmpty()) {
-            button.setPopupRichTooltip(new RichTooltip(
-                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
-                m.getDescription()));
+            // Turn off rich tooltip for now due to issue #2498
+//            button.setPopupRichTooltip(new RichTooltip(
+//                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
+//                m.getDescription()));
         }
         if (m.canExecute()) {
             button.addActionListener(new ActionListener() {
@@ -1314,6 +1314,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         columnManipulatorsPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
 
         controlToolbar.setFloatable(false);
         controlToolbar.setRollover(true);

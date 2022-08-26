@@ -60,17 +60,11 @@ public class VizExtendedBar extends javax.swing.JPanel {
      */
     public VizExtendedBar(VizToolbarGroup[] groups) {
         initComponents();
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
 
         for (VizToolbarGroup g : groups) {
             if (g.hasExtended()) {
                 JComponent c = g.getExtendedComponent();
                 if (c != null) {
-                    if (UIUtils.isAquaLookAndFeel()) {
-                        c.setBackground(UIManager.getColor("NbExplorerView.background"));
-                    }
                     tabbedPane.addTab(g.getName(), c);
                 }
             }
@@ -88,6 +82,7 @@ public class VizExtendedBar extends javax.swing.JPanel {
 
         separator = new javax.swing.JSeparator();
         tabbedPane = new javax.swing.JTabbedPane();
+        setOpaque(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

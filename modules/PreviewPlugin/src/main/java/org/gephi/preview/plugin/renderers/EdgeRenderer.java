@@ -297,6 +297,10 @@ public class EdgeRenderer implements Renderer {
     }
 
     @Override
+    public void postProcess(PreviewModel previewModel, RenderTarget renderTarget, PreviewProperties properties) {
+    }
+
+    @Override
     public CanvasSize getCanvasSize(Item item, PreviewProperties properties) {
         if (isSelfLoopEdge(item)) {
             return SELF_LOOP_RENDERER.getCanvasSize(item, properties);

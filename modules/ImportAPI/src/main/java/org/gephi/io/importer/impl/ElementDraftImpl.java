@@ -228,7 +228,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value) {
         if (value == null) {
-            throw new NullPointerException("Value can't be null");
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
         }
 
         Class type = value.getClass();
@@ -249,12 +249,15 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value, String dateTime) {
         setValue(key, value, container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
-            AttributeUtils.parseDateTime(dateTime));
+            AttributeUtils.parseDateTime(dateTime, container.getTimeZone()));
     }
 
     @Override
     public void setValue(String key, Object value, double timestamp) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
+        ColumnDraft column = getColumn(key, AttributeUtils.getTimestampMapType(value.getClass()));
         try {
             setAttributeValue(column, value, timestamp);
         } catch (Exception ex) {
@@ -267,27 +270,33 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value, String startDateTime, String endDateTime) {
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
         double start, end;
         if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) ||
             "-infinity".equalsIgnoreCase(startDateTime)) {
             start = Double.NEGATIVE_INFINITY;
         } else {
             start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
-                AttributeUtils.parseDateTime(startDateTime);
+                AttributeUtils.parseDateTime(startDateTime, container.getTimeZone());
         }
         if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
             "infinity".equalsIgnoreCase(endDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
             end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
-                AttributeUtils.parseDateTime(endDateTime);
+                AttributeUtils.parseDateTime(endDateTime, container.getTimeZone());
         }
         setValue(key, value, start, end);
     }
 
     @Override
     public void setValue(String key, Object value, double start, double end) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        if (value == null) {
+            throw new NullPointerException("Value for key '" + key + "' can't be null");
+        }
+        ColumnDraft column = getColumn(key, AttributeUtils.getIntervalMapType(value.getClass()));
         try {
             setAttributeValue(column, value, start, end);
         } catch (Exception ex) {
@@ -316,14 +325,19 @@ public abstract class ElementDraftImpl implements ElementDraft {
             }
         }
 
-        setValue(key, parseValue(value, column.getResolvedTypeClass(container)));
+        if (value != null) {
+            Object obj = parseValue(value, column.getResolvedTypeClass(container));
+            if (obj != null) {
+                setValue(key, obj);
+            }
+        }
     }
 
     @Override
     public void parseAndSetValue(String key, String value, String dateTime) {
         parseAndSetValue(key, value,
             container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
-                AttributeUtils.parseDateTime(dateTime));
+                AttributeUtils.parseDateTime(dateTime, container.getTimeZone()));
     }
 
     @Override
@@ -340,14 +354,14 @@ public abstract class ElementDraftImpl implements ElementDraft {
             start = Double.NEGATIVE_INFINITY;
         } else {
             start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
-                AttributeUtils.parseDateTime(startDateTime);
+                AttributeUtils.parseDateTime(startDateTime, container.getTimeZone());
         }
         if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
             "infinity".equalsIgnoreCase(endDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
             end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
-                AttributeUtils.parseDateTime(endDateTime);
+                AttributeUtils.parseDateTime(endDateTime, container.getTimeZone());
         }
         parseAndSetValue(key, value, start, end);
     }
@@ -361,7 +375,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void addTimestamp(String dateTime) {
         addTimestamp(container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
-            AttributeUtils.parseDateTime(dateTime));
+            AttributeUtils.parseDateTime(dateTime, container.getTimeZone()));
     }
 
     @Override
@@ -409,14 +423,14 @@ public abstract class ElementDraftImpl implements ElementDraft {
             start = Double.NEGATIVE_INFINITY;
         } else {
             start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalStartDateTime) :
-                AttributeUtils.parseDateTime(intervalStartDateTime);
+                AttributeUtils.parseDateTime(intervalStartDateTime, container.getTimeZone());
         }
         if (intervalEndDateTime == null || intervalEndDateTime.isEmpty() ||
             "inf".equalsIgnoreCase(intervalEndDateTime) || "infinity".equalsIgnoreCase(intervalEndDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
             end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalEndDateTime) :
-                AttributeUtils.parseDateTime(intervalEndDateTime);
+                AttributeUtils.parseDateTime(intervalEndDateTime, container.getTimeZone());
         }
         addInterval(start, end);
     }

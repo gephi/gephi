@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>preview-plugin</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>PreviewPlugin</name>
@@ -51,6 +51,14 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
+        </dependency>
+
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graph-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 

@@ -48,6 +48,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -205,5 +206,25 @@ public class WeightedDegreeTest extends TestCase {
         assertEquals(inDegree1, 0.0);
         assertEquals(outDegree1, 5.0);
         assertEquals(degree3, 1.0);
+    }
+
+    @Test
+    public void testColumnCreation() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graphModel);
+
+        Assert.assertTrue(graphModel.getNodeTable().hasColumn(WeightedDegree.WDEGREE));
+    }
+
+    @Test
+    public void testColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
+
+        graphModel.getNodeTable().addColumn(WeightedDegree.WDEGREE, String.class);
+
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graphModel);
     }
 }

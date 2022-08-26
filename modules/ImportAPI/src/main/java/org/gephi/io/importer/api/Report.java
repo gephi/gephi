@@ -49,7 +49,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.gephi.io.importer.api.Issue.Level;
 import org.openide.util.Exceptions;
 
@@ -70,9 +73,13 @@ public final class Report {
     private boolean empty = true;
 
     public Report() {
+        this("tempreport");
+    }
+
+    public Report(String name) {
         File f = null;
         try {
-            f = File.createTempFile("tempreport", Long.toString(System.nanoTime()));
+            f = File.createTempFile(name, Long.toString(System.nanoTime()));
             f.deleteOnExit();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -88,7 +95,7 @@ public final class Report {
     /**
      * Free resources.
      */
-    public void clean() {
+    public synchronized void clean() {
         if (file.exists()) {
             file.delete();
         }
@@ -97,7 +104,7 @@ public final class Report {
     /**
      * Closes writing.
      */
-    public void close() {
+    public synchronized void close() {
         if (writer != null) {
             try {
                 writer.close();
@@ -208,12 +215,38 @@ public final class Report {
     }
 
     /**
+     * Returns all issues written in the report as a collection
+     *
+     * @param limit maximum number of issuers
+     * @return a collection of all issues written in the report
+     */
+    public synchronized Collection<Issue> getIssuesList(int limit) {
+        List<Issue> issues = new ArrayList<>();
+        Iterator<Issue> itr = getIssues(limit);
+        while (itr.hasNext()) {
+            issues.add(itr.next());
+        }
+        return issues;
+    }
+
+    /**
      * Returns the report logs and issues, presented as basic multi-line text.
      *
      * @return a string of all messages and issues written in the report, one
      * per line
      */
     public synchronized String getText() {
+        return getText(false);
+    }
+
+    /**
+     * Returns the report logs and issues, presented as basic multi-line text.
+     *
+     * @param includeIssues whether to include also issues
+     * @return a string of all messages and issues written in the report, one
+     * per line
+     */
+    public synchronized String getText(boolean includeIssues) {
         if (writer != null) {
             close();
         }
@@ -223,7 +256,7 @@ public final class Report {
             r = new Reader(file);
             for (; r.hasNext(); ) {
                 ReportEntry re = r.next();
-                if (re.level == null) {
+                if (includeIssues || re.level == null) {
                     builder.append(re.message);
                     builder.append("\n");
                 }

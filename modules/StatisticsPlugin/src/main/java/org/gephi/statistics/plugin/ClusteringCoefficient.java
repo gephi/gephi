@@ -259,6 +259,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         //Set results in columns
         Table nodeTable = graph.getModel().getNodeTable();
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {CLUSTERING_COEFF}, Double.class);
         Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, 0.0);
