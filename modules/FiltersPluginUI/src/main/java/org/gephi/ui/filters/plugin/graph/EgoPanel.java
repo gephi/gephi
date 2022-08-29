@@ -61,6 +61,7 @@ public class EgoPanel extends javax.swing.JPanel {
     private javax.swing.JTextField nodeIdTextField;
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox withSelfCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EgoPanel
@@ -192,5 +193,4 @@ public class EgoPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

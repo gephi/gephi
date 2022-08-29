@@ -114,6 +114,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     private javax.swing.JButton saveButton;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JButton svgExportButton;
+    // End of variables declaration//GEN-END:variables
 
     public PreviewSettingsTopComponent() {
         initComponents();
@@ -585,7 +586,6 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             presetComboBox.setModel(comboBoxModel);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

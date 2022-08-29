@@ -96,6 +96,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JPanel backPanel;
     private javax.swing.JScrollPane centerScrollPane;
     private javax.swing.JTable table;
+    // End of variables declaration//GEN-END:variables
 
     public PartitionColorTransformerPanel() {
         initComponents();
@@ -485,5 +486,4 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             applyPalette(palette);
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

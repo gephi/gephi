@@ -60,6 +60,7 @@ public class BrushPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelColor;
     private javax.swing.JLabel labelDiffusion;
     private javax.swing.JLabel labelIntensity;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form BrushPanel
@@ -183,5 +184,4 @@ public class BrushPanel extends javax.swing.JPanel {
                         javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

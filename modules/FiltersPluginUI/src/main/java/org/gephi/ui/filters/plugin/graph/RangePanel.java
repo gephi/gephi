@@ -67,6 +67,7 @@ public class RangePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel histogramPanel;
     private javax.swing.JPanel rangeSliderPanel;
+    // End of variables declaration//GEN-END:variables
 
     public RangePanel() {
         initComponents();
@@ -244,5 +245,4 @@ public class RangePanel extends javax.swing.JPanel {
         histogramPanel.setLayout(new java.awt.BorderLayout());
         add(histogramPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

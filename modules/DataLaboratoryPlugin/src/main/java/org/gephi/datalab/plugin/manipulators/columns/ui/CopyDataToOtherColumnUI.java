@@ -68,6 +68,7 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
     private javax.swing.JComboBox columnsComboBox;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JLabel sourceColumnLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CopyDataToOtherColumnUI
@@ -168,5 +169,4 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

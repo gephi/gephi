@@ -56,6 +56,7 @@ public class NeighborsPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox depthComboBox;
     private javax.swing.JLabel labelDepth;
     private javax.swing.JCheckBox withSelfCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form NeighborsPanel
@@ -153,5 +154,4 @@ public class NeighborsPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

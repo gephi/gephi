@@ -79,6 +79,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
     private javax.swing.JTextField regexTextField;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CreateBooleanMatchesColumnUI
@@ -270,5 +271,4 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         BOOLEAN,
         MATCHING_GROUPS
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -64,6 +64,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
     private javax.swing.JLabel labelDescription;
     private javax.swing.JLabel labelWizard;
     private javax.swing.JList wizardList;
+    // End of variables declaration//GEN-END:variables
 
     public WizardVisualPanel1() {
         initComponents();
@@ -185,7 +186,6 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wizardListValueChanged
         reloadDescription();
     }//GEN-LAST:event_wizardListValueChanged
-    // End of variables declaration//GEN-END:variables
 
     public String getCurrentCategory() {
         return categoryList.getSelectedValue().toString();

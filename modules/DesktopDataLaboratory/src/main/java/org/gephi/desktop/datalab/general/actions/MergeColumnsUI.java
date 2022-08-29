@@ -92,6 +92,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton removeColumnButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form MergeColumnsUI
@@ -536,5 +537,4 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             return column.getTitle() + " -- " + column.getTypeClass().getSimpleName();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

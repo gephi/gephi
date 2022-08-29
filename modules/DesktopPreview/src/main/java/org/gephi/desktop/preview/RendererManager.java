@@ -89,6 +89,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     private javax.swing.JButton selectAllButton;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JButton unselectAllButon;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form RendererManagerPanel
@@ -405,5 +406,4 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             refresh();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

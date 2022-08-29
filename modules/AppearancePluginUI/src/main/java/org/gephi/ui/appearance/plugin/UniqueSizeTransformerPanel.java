@@ -56,6 +56,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSpinner sizeSpinner;
+    // End of variables declaration//GEN-END:variables
 
     public UniqueSizeTransformerPanel() {
         initComponents();
@@ -114,5 +115,4 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
                     .addContainerGap(266, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

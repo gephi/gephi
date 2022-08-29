@@ -59,6 +59,7 @@ public class CollapsePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton extendButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CollapsePanel
@@ -140,5 +141,4 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         add(buttonPanel, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

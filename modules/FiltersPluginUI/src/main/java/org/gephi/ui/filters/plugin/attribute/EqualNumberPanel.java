@@ -65,6 +65,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     private javax.swing.JLabel maxLabel;
     private javax.swing.JLabel minLabel;
     private javax.swing.JSpinner valueSpinner;
+    // End of variables declaration//GEN-END:variables
 
     public EqualNumberPanel() {
         initComponents();
@@ -216,5 +217,4 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(maxLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

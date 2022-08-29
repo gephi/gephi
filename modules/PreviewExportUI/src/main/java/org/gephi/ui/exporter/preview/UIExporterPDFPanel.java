@@ -97,6 +97,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private org.jdesktop.swingx.JXHyperlink unitLink;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel widthUnitLabel;
+    // End of variables declaration//GEN-END:variables
 
     public UIExporterPDFPanel() {
         initComponents();
@@ -778,5 +779,4 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             return result;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

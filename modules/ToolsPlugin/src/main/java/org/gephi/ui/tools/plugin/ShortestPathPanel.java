@@ -55,6 +55,7 @@ public class ShortestPathPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelColor;
     private javax.swing.JLabel resultLabel;
     private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ShortestPathPanel
@@ -141,5 +142,4 @@ public class ShortestPathPanel extends javax.swing.JPanel {
                     javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

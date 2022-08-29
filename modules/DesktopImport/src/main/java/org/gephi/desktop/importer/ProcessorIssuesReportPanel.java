@@ -96,6 +96,7 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
 
     public ProcessorIssuesReportPanel() {
         try {
@@ -259,7 +260,6 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class IssueTreeModel implements TreeModel {
 

@@ -58,6 +58,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.java.dev.colorchooser.ColorChooser colorChooser;
     private javax.swing.JLabel colorLabel;
+    // End of variables declaration//GEN-END:variables
 
     public UniqueColorTransformerPanel() {
         initComponents();
@@ -137,5 +138,4 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
                     .addGap(278, 278, 278))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

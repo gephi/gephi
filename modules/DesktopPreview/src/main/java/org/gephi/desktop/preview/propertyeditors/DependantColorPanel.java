@@ -62,6 +62,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
     private javax.swing.JRadioButton customRadio;
     private org.jdesktop.swingx.JXHeader jXHeader1;
     private javax.swing.JRadioButton parentRadio;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DependantColorPanel
@@ -162,5 +163,4 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
                     .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

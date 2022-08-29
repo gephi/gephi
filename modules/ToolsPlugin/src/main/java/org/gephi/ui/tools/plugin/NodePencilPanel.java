@@ -56,6 +56,7 @@ public class NodePencilPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelSize;
     private javax.swing.JSpinner sizeSpinner;
     private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form NodePencilPanel
@@ -154,6 +155,5 @@ public class NodePencilPanel extends javax.swing.JPanel {
                     javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
 }

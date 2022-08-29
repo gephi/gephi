@@ -94,6 +94,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private javax.swing.JPanel propertySheet;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
+    // End of variables declaration//GEN-END:variables
 
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
@@ -452,7 +453,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             run();
         }
     }//GEN-LAST:event_runButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
     private RichTooltip buildTooltip(LayoutBuilder builder) {
         String description = "";

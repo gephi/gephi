@@ -58,6 +58,7 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
     private javax.swing.JToggleButton falseButton;
     private javax.swing.ButtonGroup group;
     private javax.swing.JToggleButton trueButton;
+    // End of variables declaration//GEN-END:variables
 
     public EqualBooleanPanel() {
         initComponents();
@@ -108,5 +109,4 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
             .getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.falseButton.text")); // NOI18N
         add(falseButton);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

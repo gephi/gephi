@@ -59,6 +59,7 @@ public class UIExporterVNAPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox exportSizeCheckBox;
     private javax.swing.JCheckBox normalizeCheckBox;
     private javax.swing.JLabel normalizeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new customizer UIExporterGMLPanel
@@ -196,5 +197,4 @@ public class UIExporterVNAPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportAttributesCheckBoxActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_exportAttributesCheckBoxActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

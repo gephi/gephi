@@ -66,6 +66,7 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
     private javax.swing.JComboBox sourceNodeComboBox;
     private javax.swing.JLabel sourceNodeLabel;
     private javax.swing.JRadioButton undirectedEdge;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form LinkNodesUI
@@ -192,5 +193,4 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

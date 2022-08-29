@@ -83,6 +83,7 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
     private javax.swing.JTextField timestampText;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DuplicateColumnUI
@@ -259,5 +260,4 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceColumnCheckboxActionPerformed
         refreshTitleEnabledState();
     }//GEN-LAST:event_replaceColumnCheckboxActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

@@ -57,6 +57,7 @@ public class UIExporterGraphMLPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
     private javax.swing.JCheckBox sizeExportCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form UIExporterGEXFPanel
@@ -162,5 +163,4 @@ public class UIExporterGraphMLPanel extends javax.swing.JPanel {
                     .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

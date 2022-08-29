@@ -106,6 +106,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     private javax.swing.JButton removeConfigurationButton;
     private javax.swing.JButton testConnection;
     private javax.swing.JLabel userLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EdgeListPanel
@@ -569,7 +570,6 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_removeConfigurationButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
     private void configurationComboActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationComboActionPerformed

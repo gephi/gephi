@@ -66,6 +66,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox regexCheckbox;
     private javax.swing.JTextField textField;
+    // End of variables declaration//GEN-END:variables
 
     public EqualStringPanel() {
         initComponents();
@@ -172,7 +173,6 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         add(okButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private static class RegexValidator implements Validator<String> {
 

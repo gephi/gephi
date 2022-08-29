@@ -190,6 +190,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JToolBar.Separator separator2;
     private javax.swing.JScrollPane tableScrollPane;
+    // End of variables declaration//GEN-END:variables
 
     public DataTableTopComponent() {
 
@@ -1529,7 +1530,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     @Override
     public void componentClosed() {
     }
-    // End of variables declaration//GEN-END:variables
 
     @Override
     protected void componentActivated() {

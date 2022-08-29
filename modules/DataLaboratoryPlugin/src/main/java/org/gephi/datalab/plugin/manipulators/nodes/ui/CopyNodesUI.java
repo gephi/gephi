@@ -62,6 +62,7 @@ public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner copiesSpinner;
     private javax.swing.JLabel descriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CopyNodesUI
@@ -141,5 +142,4 @@ public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

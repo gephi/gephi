@@ -61,6 +61,7 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JCheckBox transparentBackgroundCheckbox;
     private javax.swing.JLabel widthLabel;
     private javax.swing.JTextField widthTextField;
+    // End of variables declaration//GEN-END:variables
 
     public UIExporterPNGPanel() {
         initComponents();
@@ -92,7 +93,6 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
         } catch (Exception ex) {
         }
     }
-    // End of variables declaration//GEN-END:variables
 
     /**
      * This method is called from within the constructor to

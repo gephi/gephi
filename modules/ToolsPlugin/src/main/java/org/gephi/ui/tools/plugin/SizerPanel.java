@@ -55,6 +55,7 @@ public class SizerPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelSize;
     private javax.swing.JLabel sizeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SizePanel
@@ -126,5 +127,4 @@ public class SizerPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
         add(sizeLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

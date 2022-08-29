@@ -58,6 +58,7 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel separatorLabel;
     private javax.swing.JTextField separatorText;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form JoinWithSeparatorUI
@@ -134,5 +135,4 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

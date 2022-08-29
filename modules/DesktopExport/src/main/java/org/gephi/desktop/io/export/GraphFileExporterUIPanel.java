@@ -54,6 +54,7 @@ public class GraphFileExporterUIPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelGraph;
     private javax.swing.JLabel labelVisibleOnly;
     private javax.swing.JRadioButton visibleOnlyRadio;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GraphFileExporterUIPanel
@@ -145,6 +146,5 @@ public class GraphFileExporterUIPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
 }

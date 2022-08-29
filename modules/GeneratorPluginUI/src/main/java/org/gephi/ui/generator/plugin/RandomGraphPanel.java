@@ -53,12 +53,6 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  */
 public class RandomGraphPanel extends javax.swing.JPanel {
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    protected javax.swing.JTextField edgeField;
-    protected javax.swing.JTextField nodeField;
-    private javax.swing.JLabel edgeLabel;
-    private javax.swing.JLabel nodeLabel;
-
     /**
      * Creates new form RandomGraphPanel
      */
@@ -144,5 +138,13 @@ public class RandomGraphPanel extends javax.swing.JPanel {
                     .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+                  
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    protected javax.swing.JTextField edgeField;
+    protected javax.swing.JTextField nodeField;
+    private javax.swing.JLabel edgeLabel;
+    private javax.swing.JLabel nodeLabel;
     // End of variables declaration//GEN-END:variables
+    
+
 }

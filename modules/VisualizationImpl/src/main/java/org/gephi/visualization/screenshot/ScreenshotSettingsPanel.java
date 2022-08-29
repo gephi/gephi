@@ -68,6 +68,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelWidth;
     private javax.swing.JButton selectDirectoryButton;
     private javax.swing.JTextField widthTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ScreenshotSettingsPanel
@@ -287,5 +288,4 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                     .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

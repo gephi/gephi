@@ -60,6 +60,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelValue;
     private javax.swing.JCheckBox proportionnalZoomCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form MouseSelectionPopupPanel
@@ -185,5 +186,4 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

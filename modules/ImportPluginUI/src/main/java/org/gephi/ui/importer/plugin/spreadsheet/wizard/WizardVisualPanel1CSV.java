@@ -79,6 +79,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JComboBox separatorComboBox;
     private javax.swing.JLabel separatorLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form WizardVisualPanel1CSV
@@ -438,5 +439,4 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
             }
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

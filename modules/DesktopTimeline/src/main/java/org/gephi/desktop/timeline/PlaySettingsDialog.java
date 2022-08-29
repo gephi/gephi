@@ -69,6 +69,7 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
     private javax.swing.JRadioButton oneBoundRadio;
     private javax.swing.JSpinner stepSizeSpinner;
     private javax.swing.JRadioButton twoBoundsRadio;
+    // End of variables declaration//GEN-END:variables
 
     public PlaySettingsDialog() {
         initComponents();
@@ -242,5 +243,4 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
                     .addContainerGap(39, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

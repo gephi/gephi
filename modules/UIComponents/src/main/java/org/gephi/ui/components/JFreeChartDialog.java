@@ -62,6 +62,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JButton zoomInButton;
     private javax.swing.JButton zoomOutButton;
+    // End of variables declaration//GEN-END:variables
 
     public JFreeChartDialog(java.awt.Frame parent, String title, JFreeChart chart, int initialWidth,
                             int initialHeight) {
@@ -257,5 +258,4 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
         applyZoom(0.5f);
     }//GEN-LAST:event_zoomOutButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

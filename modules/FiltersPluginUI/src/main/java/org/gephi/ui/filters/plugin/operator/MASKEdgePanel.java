@@ -58,6 +58,7 @@ public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener 
     private javax.swing.ButtonGroup group;
     private javax.swing.JRadioButton sourceButton;
     private javax.swing.JRadioButton targetButton;
+    // End of variables declaration//GEN-END:variables
 
     public MASKEdgePanel() {
         initComponents();
@@ -160,5 +161,4 @@ public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener 
         gridBagConstraints.insets = new java.awt.Insets(0, 20, 0, 0);
         add(bothButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

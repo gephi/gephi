@@ -72,6 +72,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel contentPanel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane scroll;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form AvailableColumnsPanel
@@ -202,5 +203,4 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
             validate();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -87,6 +87,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
     private javax.swing.JCheckBox replaceColumnCheckbox;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DuplicateColumnUI
@@ -277,5 +278,4 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceColumnCheckboxActionPerformed
         refreshTitleEnabledState();
     }//GEN-LAST:event_replaceColumnCheckboxActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

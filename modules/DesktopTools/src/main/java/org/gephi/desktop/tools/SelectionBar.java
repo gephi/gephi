@@ -64,6 +64,7 @@ public class SelectionBar extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXHyperlink configureLink;
     private javax.swing.JSeparator endSeparator;
     private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SelectionBar
@@ -193,7 +194,6 @@ public class SelectionBar extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
         add(endSeparator, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public void setEnabled(final boolean enabled) {

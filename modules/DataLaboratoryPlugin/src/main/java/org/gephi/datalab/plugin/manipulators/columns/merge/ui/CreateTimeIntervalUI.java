@@ -98,6 +98,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     private javax.swing.JRadioButton parseNumbersRadioButton;
     private javax.swing.JComboBox startColumnComboBox;
     private javax.swing.JLabel startColumnLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CreateTimeIntervalUI
@@ -571,5 +572,4 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             return column != null ? column.getTitle() : "";
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

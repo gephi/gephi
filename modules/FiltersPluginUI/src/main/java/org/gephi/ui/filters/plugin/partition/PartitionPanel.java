@@ -82,6 +82,7 @@ public class PartitionPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList list;
+    // End of variables declaration//GEN-END:variables
 
     public PartitionPanel() {
         initComponents();
@@ -337,5 +338,4 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -94,6 +94,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private javax.swing.JLabel resultLabel;
     private javax.swing.JButton runButton;
     private javax.swing.JToolBar toolbar;
+    // End of variables declaration//GEN-END:variables
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
@@ -356,5 +357,4 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         add(toolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }
