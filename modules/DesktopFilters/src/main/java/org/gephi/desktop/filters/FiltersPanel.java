@@ -93,6 +93,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JToggleButton stopButton;
     private javax.swing.JToolBar toolbar;
+    // End of variables declaration//GEN-END:variables
 
     public FiltersPanel() {
         initComponents();
@@ -476,7 +477,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     public ExplorerManager getExplorerManager() {
         return manager;
     }
-    // End of variables declaration//GEN-END:variables
 
     private class QueriesPanel extends JPanel implements ExplorerManager.Provider {
 

@@ -72,6 +72,7 @@ public class AddColumnUI extends javax.swing.JPanel {
     private javax.swing.JTextField titleTextField;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form AddColumnUI
@@ -243,5 +244,4 @@ public class AddColumnUI extends javax.swing.JPanel {
 
         NODES_TABLE, EDGES_TABLE
     }
-    // End of variables declaration//GEN-END:variables
 }

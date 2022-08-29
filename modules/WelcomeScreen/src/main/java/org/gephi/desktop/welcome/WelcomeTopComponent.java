@@ -91,6 +91,7 @@ public final class WelcomeTopComponent extends JPanel {
     private javax.swing.JPanel recentPanel;
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JPanel southPanel;
+    // End of variables declaration//GEN-END:variables
 
     private WelcomeTopComponent() {
         initComponents();
@@ -374,5 +375,4 @@ public final class WelcomeTopComponent extends JPanel {
 
         add(southPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

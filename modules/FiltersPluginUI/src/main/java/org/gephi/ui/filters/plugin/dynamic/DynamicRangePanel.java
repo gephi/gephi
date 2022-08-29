@@ -61,6 +61,7 @@ public class DynamicRangePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox keepEmptyCheckbox;
     private javax.swing.JButton timelineButton;
+    // End of variables declaration//GEN-END:variables
 
     public DynamicRangePanel() {
         initComponents();
@@ -128,5 +129,4 @@ public class DynamicRangePanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         add(keepEmptyCheckbox, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

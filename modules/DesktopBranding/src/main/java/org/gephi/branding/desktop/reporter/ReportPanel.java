@@ -69,6 +69,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea problemArea;
     private javax.swing.JTextField summaryTextField;
     private javax.swing.JButton viewDataButton;
+    // End of variables declaration//GEN-END:variables
 
     public ReportPanel(Report report) {
         this.reportController = new ReportController();
@@ -241,5 +242,4 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

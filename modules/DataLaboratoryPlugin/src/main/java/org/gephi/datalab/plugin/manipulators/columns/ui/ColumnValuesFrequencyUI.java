@@ -73,6 +73,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton configurePieChartButton;
     private javax.swing.JButton showReportButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ColumnValuesFrequencyUI
@@ -202,5 +203,4 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         }
         reportDialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), html);
     }//GEN-LAST:event_showReportButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

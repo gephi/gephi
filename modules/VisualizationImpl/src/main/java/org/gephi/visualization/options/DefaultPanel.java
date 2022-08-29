@@ -79,6 +79,7 @@ final class DefaultPanel extends javax.swing.JPanel {
     private javax.swing.JButton resetButton;
     private org.jdesktop.swingx.JXTitledSeparator titleDesign;
     private org.jdesktop.swingx.JXTitledSeparator titleLabel;
+    // End of variables declaration//GEN-END:variables
 
     DefaultPanel(DefaultOptionsPanelController controller) {
         this.controller = controller;
@@ -416,5 +417,4 @@ final class DefaultPanel extends javax.swing.JPanel {
         // TODO check whether form is consistent and complete
         return true;
     }
-    // End of variables declaration//GEN-END:variables
 }

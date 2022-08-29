@@ -69,6 +69,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     private javax.swing.JTextField lowerBoundTextField;
     private javax.swing.JSlider rangeSlider;
     private javax.swing.JTextField upperBoundTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form JRangeSliderPanel
@@ -228,7 +229,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         add(upperBoundTextField, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     public static class Range<T extends Number & Comparable> {
 

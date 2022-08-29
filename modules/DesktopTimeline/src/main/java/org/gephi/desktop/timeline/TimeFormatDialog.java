@@ -60,6 +60,7 @@ public class TimeFormatDialog extends javax.swing.JPanel {
     private javax.swing.JRadioButton dateTimeRadio;
     private org.jdesktop.swingx.JXHeader headerTitle;
     private javax.swing.JRadioButton numericRadio;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DateFormatDialog
@@ -155,5 +156,4 @@ public class TimeFormatDialog extends javax.swing.JPanel {
                     .addGap(0, 22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

@@ -76,6 +76,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox timeZoneComboBox;
     private javax.swing.JLabel timeZoneLabel;
     private javax.swing.JCheckBox useSparklinesCheckBox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ConfigurationPanel
@@ -317,5 +318,4 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxActionPerformed
         dataTableTopComponent.setShowEdgesNodesLabels(showEdgesNodesLabelsCheckBox.isSelected());
     }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

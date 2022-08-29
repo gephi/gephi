@@ -97,6 +97,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel windowInfoLabel;
     private javax.swing.JTextField windowTextField;
     private javax.swing.JComboBox windowTimeUnitCombo;
+    // End of variables declaration//GEN-END:variables
 
     public DynamicSettingsPanel() {
         initComponents();
@@ -370,7 +371,6 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         richTooltip.setMainImage(image);
         return richTooltip;
     }
-    // End of variables declaration//GEN-END:variables
 
     /**
      * This method is called from within the constructor to initialize the form.

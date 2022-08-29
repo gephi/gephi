@@ -78,6 +78,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelComment;
     private javax.swing.JToggleButton nodesToggleButton;
     private javax.swing.JCheckBox showPropertiesCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form LabelAttributesPanel
@@ -265,7 +266,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
+
 
     private static class AttributesCheckBox {
 

@@ -113,6 +113,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
     private javax.swing.JToolBar tranformerToolbar;
+    // End of variables declaration//GEN-END:variables
 
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
@@ -727,7 +728,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

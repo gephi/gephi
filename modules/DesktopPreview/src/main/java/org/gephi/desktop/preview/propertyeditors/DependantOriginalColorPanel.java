@@ -63,6 +63,7 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
     private org.jdesktop.swingx.JXHeader jXHeader1;
     private javax.swing.JRadioButton originalRadio;
     private javax.swing.JRadioButton parentRadio;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DependantOriginalColorPanel
@@ -180,5 +181,4 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
                     .addGap(47, 47, 47))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

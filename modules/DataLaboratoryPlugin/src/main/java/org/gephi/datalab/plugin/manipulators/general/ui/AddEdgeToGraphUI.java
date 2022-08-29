@@ -77,6 +77,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     private javax.swing.JLabel targetNodeLabel;
     private javax.swing.JComboBox targetNodesComboBox;
     private javax.swing.JRadioButton undirectedRadioButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form AddEdgeToGraphUI
@@ -298,5 +299,4 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         public SelectedOptions() {
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

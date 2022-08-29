@@ -58,6 +58,7 @@ public class UIExporterCSVPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox nodeIdCheckbox;
     private javax.swing.JCheckBox zeroEdgeCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
 
     public UIExporterCSVPanel() {
         initComponents();
@@ -182,5 +183,4 @@ public class UIExporterCSVPanel extends javax.swing.JPanel {
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

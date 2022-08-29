@@ -74,6 +74,7 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
     private javax.swing.JLabel separatorLabel;
     private javax.swing.JComboBox tableComboBox;
     private javax.swing.JLabel tableLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form UIExporterSpreadsheet
@@ -285,5 +286,4 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
             this.id = id;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

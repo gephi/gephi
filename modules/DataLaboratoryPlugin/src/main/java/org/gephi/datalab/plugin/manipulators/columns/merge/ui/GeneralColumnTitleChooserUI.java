@@ -69,6 +69,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GeneralColumnTitleChooserUI
@@ -178,5 +179,4 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

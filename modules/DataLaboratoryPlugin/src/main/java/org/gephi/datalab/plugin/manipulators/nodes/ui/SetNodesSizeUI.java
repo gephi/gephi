@@ -62,6 +62,7 @@ public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel sizeLabel;
     private javax.swing.JTextField sizeText;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SetNodesSizeUI
@@ -172,5 +173,4 @@ public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI 
             }
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -55,9 +55,11 @@ import org.openide.util.NbPreferences;
  */
 public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private RankingSizeTransformer sizeTransformer;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
+    // End of variables declaration//GEN-END:variables
 
     public RankingSizeTransformerPanel() {
         initComponents();
@@ -134,5 +136,4 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
                     .addContainerGap(80, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

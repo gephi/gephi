@@ -86,6 +86,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
     private javax.swing.JButton settingsButton;
     private javax.swing.JPanel statisticsPanel;
     private javax.swing.JToolBar toolbar;
+    // End of variables declaration//GEN-END:variables
 
     public StatisticsTopComponent() {
         initComponents();
@@ -226,7 +227,6 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         gridBagConstraints.weighty = 1.0;
         add(statisticsPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

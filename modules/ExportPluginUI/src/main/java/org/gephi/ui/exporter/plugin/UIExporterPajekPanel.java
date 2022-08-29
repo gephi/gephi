@@ -53,6 +53,7 @@ public class UIExporterPajekPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox edgeWeightCheckbox;
     private javax.swing.JLabel labelExport;
     private javax.swing.JCheckBox positionExportCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     public UIExporterPajekPanel() {
         initComponents();
@@ -119,5 +120,4 @@ public class UIExporterPajekPanel extends javax.swing.JPanel {
                     .addComponent(edgeWeightCheckbox))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

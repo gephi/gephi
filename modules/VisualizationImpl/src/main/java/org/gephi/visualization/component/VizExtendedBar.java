@@ -54,6 +54,7 @@ public class VizExtendedBar extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSeparator separator;
     private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form VizExtendedBar
@@ -100,5 +101,4 @@ public class VizExtendedBar extends javax.swing.JPanel {
                     .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

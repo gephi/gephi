@@ -71,6 +71,7 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
     private javax.swing.JScrollPane contentScrollPane;
     private javax.swing.JComboBox rowComboBox;
     private javax.swing.JLabel rowDescriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GeneralChooseColumnsUI
@@ -235,5 +236,4 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
             return column;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

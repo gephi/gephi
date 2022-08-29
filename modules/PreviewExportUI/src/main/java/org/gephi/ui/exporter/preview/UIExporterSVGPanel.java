@@ -52,6 +52,7 @@ public class UIExporterSVGPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel labelStrokeScale;
     private javax.swing.JCheckBox strokeScaleCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     public UIExporterSVGPanel() {
         initComponents();
@@ -108,5 +109,4 @@ public class UIExporterSVGPanel extends javax.swing.JPanel {
                     .addContainerGap(158, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

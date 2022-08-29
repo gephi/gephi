@@ -86,6 +86,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
     private javax.swing.JButton showReportButton;
     private javax.swing.JCheckBox useLinearRegression;
     private javax.swing.JCheckBox useLinesCheckBox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Constructor method to set all necessary information to build statistics, charts and dialog title.
@@ -401,5 +402,4 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
                     histogram, 600, 400);
         }
     }//GEN-LAST:event_configureHistogramButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

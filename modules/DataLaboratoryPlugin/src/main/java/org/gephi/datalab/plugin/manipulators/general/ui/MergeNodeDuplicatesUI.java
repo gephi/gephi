@@ -94,6 +94,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scroll;
     private javax.swing.JScrollPane scrollStrategies;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form MergeNodeDuplicatesUI
@@ -416,5 +417,4 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
             return strategy;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

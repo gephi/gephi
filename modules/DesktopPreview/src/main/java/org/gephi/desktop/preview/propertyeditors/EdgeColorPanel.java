@@ -65,6 +65,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
     private javax.swing.JRadioButton originalRadio;
     private javax.swing.JRadioButton sourceRadio;
     private javax.swing.JRadioButton targetRadio;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EdgeColorPanel
@@ -205,5 +206,4 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
                     .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

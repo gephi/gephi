@@ -81,6 +81,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     private StrategyConfigurationButton[] strategiesConfigurationButtons;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scroll;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form MergeNodesUI
@@ -355,5 +356,4 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
             return strategy;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

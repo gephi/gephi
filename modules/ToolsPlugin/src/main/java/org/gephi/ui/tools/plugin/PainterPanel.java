@@ -53,6 +53,7 @@ public class PainterPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
     private javax.swing.JLabel labelColor;
+    // End of variables declaration//GEN-END:variables
 
     public PainterPanel() {
         initComponents();
@@ -109,5 +110,4 @@ public class PainterPanel extends javax.swing.JPanel {
                         javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

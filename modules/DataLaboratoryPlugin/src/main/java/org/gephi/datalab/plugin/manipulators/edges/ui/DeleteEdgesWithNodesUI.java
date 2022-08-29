@@ -62,6 +62,7 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
     private javax.swing.JCheckBox deleteSource;
     private javax.swing.JCheckBox deleteTarget;
     private javax.swing.JLabel descriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DeleteEdgesWithNodesUI
@@ -156,6 +157,5 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
 }

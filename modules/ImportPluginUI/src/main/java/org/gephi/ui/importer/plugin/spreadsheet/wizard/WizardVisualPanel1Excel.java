@@ -74,6 +74,7 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JLabel separatorLabel;
     private javax.swing.JComboBox sheetComboBox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form WizardVisualPanel1CSV
@@ -321,5 +322,4 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
             refreshPreviewTable();
         }
     }//GEN-LAST:event_modeComboBoxItemStateChanged
-    // End of variables declaration//GEN-END:variables
 }

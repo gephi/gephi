@@ -88,6 +88,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.gephi.visualization.component.CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
+    // End of variables declaration//GEN-END:variables
 
     public GraphTopComponent() {
         initComponents();
@@ -285,7 +286,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         add(waitingLabel, java.awt.BorderLayout.CENTER);
         add(collapsePanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     @Override
     protected void componentActivated() {

@@ -97,6 +97,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showEdgeLabelsCheckbox;
     private javax.swing.JCheckBox showNodeLabelsCheckbox;
     private javax.swing.JComboBox sizeModeCombo;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form LabelSettingsPanel
@@ -628,5 +629,4 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

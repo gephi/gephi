@@ -75,6 +75,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar colorSwatchToolbar;
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
+    // End of variables declaration//GEN-END:variables
 
     public RankingColorTransformerPanel() {
         initComponents();
@@ -289,5 +290,4 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                     .addContainerGap(88, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

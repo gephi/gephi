@@ -60,6 +60,7 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
     private javax.swing.JCheckBox deleteDirectedCheckbox;
     private javax.swing.JCheckBox deleteUndirectedChekbox;
     private javax.swing.JLabel descriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ClearEdgesUI
@@ -151,5 +152,4 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

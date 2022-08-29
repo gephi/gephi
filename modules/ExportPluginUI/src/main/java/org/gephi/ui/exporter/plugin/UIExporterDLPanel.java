@@ -51,6 +51,7 @@ public class UIExporterDLPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton listRadioButton;
     private javax.swing.JRadioButton matrixRadioButton;
     private javax.swing.JCheckBox symmetricCheckBox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new customizer UIExporterDLPanel
@@ -145,5 +146,4 @@ public class UIExporterDLPanel extends javax.swing.JPanel {
         matrixRadioButton.setSelected(!listRadioButton.isSelected());
         symmetricCheckBox.setEnabled(matrixRadioButton.isSelected());
     }//GEN-LAST:event_listRadioButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

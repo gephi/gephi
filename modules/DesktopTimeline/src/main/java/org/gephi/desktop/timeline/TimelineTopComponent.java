@@ -109,6 +109,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JButton settingsButton;
     private transient javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar toolbarEnable;
+    // End of variables declaration//GEN-END:variables
 
     public TimelineTopComponent() {
         initComponents();
@@ -569,7 +570,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         add(closeButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

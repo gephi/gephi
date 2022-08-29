@@ -75,6 +75,7 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
     private javax.swing.JTextField titleTextField;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DuplicateColumnUI
@@ -219,5 +220,4 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

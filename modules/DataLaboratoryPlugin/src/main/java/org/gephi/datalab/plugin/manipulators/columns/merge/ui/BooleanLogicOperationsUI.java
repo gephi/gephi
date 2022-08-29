@@ -75,6 +75,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     private javax.swing.JScrollPane scroll;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form BooleanLogicOperationsUI
@@ -223,5 +224,4 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

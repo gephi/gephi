@@ -68,6 +68,7 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
     private javax.swing.JLabel labelTitle;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ProjectPropertiesEditor
@@ -260,5 +261,4 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
                     .addContainerGap(148, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

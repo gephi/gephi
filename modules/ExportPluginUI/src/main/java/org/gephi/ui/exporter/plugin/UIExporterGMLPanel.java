@@ -65,6 +65,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JLabel normalizeLabel;
     private javax.swing.JLabel spacesLabel;
     private javax.swing.JTextField spacesTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new customizer UIExporterGMLPanel
@@ -225,7 +226,6 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
         spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private void exportNotRecognizedCheckBoxActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportNotRecognizedCheckBoxActionPerformed

@@ -70,6 +70,7 @@ public class ManageColumnEstimatorsUI extends javax.swing.JPanel implements Mani
     private javax.swing.JPanel contentPanel;
     private javax.swing.JScrollPane contentScrollPane;
     private javax.swing.JLabel descriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GeneralChooseColumnsUI
@@ -248,5 +249,4 @@ public class ManageColumnEstimatorsUI extends javax.swing.JPanel implements Mani
             return ((EstimatorWrapper) comboBox.getSelectedItem()).estimator;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -169,6 +169,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton printButton;
     private javax.swing.JButton saveButton;
+    // End of variables declaration//GEN-END:variables
 
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
@@ -386,7 +387,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         dispose(); // TODO add your handling code here:
     }//GEN-LAST:event_closeButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {

@@ -80,6 +80,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     private javax.swing.JButton resetDefaultsDate;
     private javax.swing.JTextField startTextField;
     private org.jdesktop.swingx.JXHeader titleHeader;
+    // End of variables declaration//GEN-END:variables
 
     public CustomBoundsDialog() {
         initComponents();
@@ -420,5 +421,4 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
             return true;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -66,6 +66,7 @@ public class BannerComponent extends javax.swing.JPanel {
     private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JPanel groupsPanel;
+    // End of variables declaration//GEN-END:variables
 
     //Not working
     /*public void reset() {
@@ -231,7 +232,6 @@ public class BannerComponent extends javax.swing.JPanel {
         add(mainPanel, java.awt.BorderLayout.CENTER);
         add(workspacePanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private static class JPerspectiveButton extends JToggleButton {
 

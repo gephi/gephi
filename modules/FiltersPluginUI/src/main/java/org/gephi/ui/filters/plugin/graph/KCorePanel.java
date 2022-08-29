@@ -57,6 +57,7 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
     private KCoreFilter filter;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner degreeSpinner;
+    // End of variables declaration//GEN-END:variables
 
     public KCorePanel() {
         initComponents();
@@ -96,5 +97,4 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
         degreeSpinner.setPreferredSize(new java.awt.Dimension(65, 28));
         add(degreeSpinner, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

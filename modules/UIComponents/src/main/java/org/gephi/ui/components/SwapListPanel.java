@@ -58,6 +58,7 @@ public class SwapListPanel extends javax.swing.JPanel {
     private javax.swing.JButton rightButton;
     private javax.swing.JScrollPane scrollPane1;
     private javax.swing.JScrollPane scrollPane2;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SwapListPanel
@@ -165,7 +166,6 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         add(rightButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class SwapListModel {
 

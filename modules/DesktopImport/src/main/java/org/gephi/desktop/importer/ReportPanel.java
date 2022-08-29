@@ -151,6 +151,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
 
     public ReportPanel() {
         try {
@@ -916,7 +917,6 @@ public class ReportPanel extends javax.swing.JPanel {
                             javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class IssueTreeModel implements TreeModel {
 

@@ -102,6 +102,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     private javax.swing.JLabel searchLabel;
     private javax.swing.ButtonGroup searchModeButtonGroup;
     private javax.swing.JTextField searchText;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SearchReplaceUI
@@ -641,5 +642,4 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             return column.getTitle();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }
