@@ -104,7 +104,7 @@ public class EdgeRenderer implements Renderer {
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
     protected float defaultBezierCurviness = 0.2f;
-    protected float defaultArcCurviness = 0.6f;
+    protected float defaultArcCurviness = 1.2f;
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
