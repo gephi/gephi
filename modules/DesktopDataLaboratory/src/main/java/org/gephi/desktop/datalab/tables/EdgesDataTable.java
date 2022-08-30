@@ -92,8 +92,19 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
+                return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : "";
             }
+
+            @Override
+            public void setValueFor(Edge element, Object value) {
+
+                super.setValueFor(element, value);
+            }
+
+            @Override
+            public boolean isEditable(){return true;}
+
+
         };
     private boolean showEdgesNodesLabels = false;
     private final PropertyDataColumn<Edge> SOURCE_COLUMN =
