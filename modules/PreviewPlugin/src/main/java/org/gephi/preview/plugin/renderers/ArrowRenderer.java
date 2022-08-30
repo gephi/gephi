@@ -169,7 +169,6 @@ public class ArrowRenderer implements Renderer {
     private boolean showArrows(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
             && properties.getBooleanValue(PreviewProperty.DIRECTED)
-            && !properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
             && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
