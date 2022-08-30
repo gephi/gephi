@@ -84,6 +84,7 @@ public class EdgeRenderer implements Renderer {
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
     public static final String BEZIER_CURVENESS = "edge.bezier-curveness";
+    public static final String ARC_CURVENESS = "edge.arc-curveness";
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
     public static final String TARGET_RADIUS = "edge.target.radius";
@@ -103,6 +104,7 @@ public class EdgeRenderer implements Renderer {
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
     protected float defaultBezierCurviness = 0.2f;
+    protected float defaultArcCurviness = 0.6f;
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
@@ -183,6 +185,11 @@ public class EdgeRenderer implements Renderer {
         //Put bezier curveness in properties
         if (!properties.hasProperty(BEZIER_CURVENESS)) {
             properties.putValue(BEZIER_CURVENESS, defaultBezierCurviness);
+        }
+
+        //Put arc curveness in properties
+        if (!properties.hasProperty(ARC_CURVENESS)) {
+            properties.putValue(ARC_CURVENESS, defaultArcCurviness);
         }
 
         //Rescale weight if necessary - and avoid negative weights
@@ -537,11 +544,20 @@ public class EdgeRenderer implements Renderer {
                     SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
                     SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
                 ));
+                /* // Bézier curve
                 edgeElem.setAttribute("d", String.format(
                     Locale.ENGLISH,
                     "M %f,%f C %f,%f %f,%f %f,%f",
                     h.x1, h.y1,
                     h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
+                */
+                // Elliptical arc
+                String path = String.format(
+                    Locale.ENGLISH,
+                    "M %f,%f A %f,%f %d,%d %d,%f,%f",
+                    h.x1, h.y1,
+                    h.r, h.r, 0, 0, 1, h.x2, h.y2);
+                edgeElem.setAttribute("d", path);
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
                 edgeElem.setAttribute(
                     "stroke-width",
@@ -602,6 +618,7 @@ public class EdgeRenderer implements Renderer {
             public final Float y2;
             public final Vector v1;
             public final Vector v2;
+            public final Float r;
 
             public Helper(
                 final Item item,
@@ -620,6 +637,8 @@ public class EdgeRenderer implements Renderer {
                 final float length = direction.mag();
 
                 direction.normalize();
+
+                // Bézier curve
                 final float factor
                     = properties.getFloatValue(BEZIER_CURVENESS) * length;
 
@@ -628,6 +647,9 @@ public class EdgeRenderer implements Renderer {
 
                 v1 = computeCtrlPoint(x1, y1, direction, factor, n);
                 v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
+
+                // Arc radius
+                r = length / properties.getFloatValue(ARC_CURVENESS);
             }
 
             private Vector computeCtrlPoint(

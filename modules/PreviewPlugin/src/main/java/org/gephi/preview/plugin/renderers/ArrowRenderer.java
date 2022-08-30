@@ -229,21 +229,40 @@ public class ArrowRenderer implements Renderer {
             direction.sub(new Vector(x1, y1));
             direction.normalize();
 
-            p1 = new Vector(direction.x, direction.y);
-            p1.mult(radius);
-            p1.add(new Vector(x2, y2));
+            if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+                // TODO: change the formulas to reflect the curvature of edges
+                p1 = new Vector(direction.x, direction.y);
+                p1.mult(radius);
+                p1.add(new Vector(x2, y2));
 
-            final Vector p1r = new Vector(direction.x, direction.y);
-            p1r.mult(radius - size);
-            p1r.add(new Vector(x2, y2));
+                final Vector p1r = new Vector(direction.x, direction.y);
+                p1r.mult(radius - size);
+                p1r.add(new Vector(x2, y2));
 
-            p2 = new Vector(-direction.y, direction.x);
-            p2.mult(size * BASE_RATIO);
-            p2.add(p1r);
+                p2 = new Vector(-direction.y, direction.x);
+                p2.mult(size * BASE_RATIO);
+                p2.add(p1r);
 
-            p3 = new Vector(direction.y, -direction.x);
-            p3.mult(size * BASE_RATIO);
-            p3.add(p1r);
+                p3 = new Vector(direction.y, -direction.x);
+                p3.mult(size * BASE_RATIO);
+                p3.add(p1r);
+            } else {
+                p1 = new Vector(direction.x, direction.y);
+                p1.mult(radius);
+                p1.add(new Vector(x2, y2));
+
+                final Vector p1r = new Vector(direction.x, direction.y);
+                p1r.mult(radius - size);
+                p1r.add(new Vector(x2, y2));
+
+                p2 = new Vector(-direction.y, direction.x);
+                p2.mult(size * BASE_RATIO);
+                p2.add(p1r);
+
+                p3 = new Vector(direction.y, -direction.x);
+                p3.mult(size * BASE_RATIO);
+                p3.add(p1r);
+            }
         }
     }
 }
