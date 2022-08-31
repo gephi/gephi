@@ -97,8 +97,8 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
             @Override
             public void setValueFor(Edge element, Object value) {
-
-                super.setValueFor(element, value);
+                int edgeType = element.getTable().getGraph().getModel().addEdgeType(value);
+                element.setType(edgeType);
             }
 
             @Override
