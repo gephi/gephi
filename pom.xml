@@ -137,7 +137,7 @@
         <netbeans.version>RELEASE140</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.6.11-SNAPSHOT</graphstore.version>
+        <graphstore.version>0.6.11</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -278,13 +278,6 @@
             <url>https://raw.github.com/gephi/gephi/mvn-thirdparty-repo/</url>
             <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
