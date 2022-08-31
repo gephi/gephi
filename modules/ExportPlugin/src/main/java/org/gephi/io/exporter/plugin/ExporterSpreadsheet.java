@@ -178,8 +178,8 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                 csvWriter.print(columnHeader);
             }
             if (includePositions) {
-                csvWriter.print("Positions_X");
-                csvWriter.print("Positions_Y");
+                csvWriter.print("X");
+                csvWriter.print("Y");
             }
             csvWriter.println();
 
