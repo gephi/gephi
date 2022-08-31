@@ -42,6 +42,10 @@
 
 package org.gephi.statistics.plugin;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -184,7 +188,20 @@ public class Modularity implements Statistics, LongTask {
         if (isCanceled) {
             return results;
         }
+
+        // CUSTOM
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter("log-modularity.csv", "UTF-8");
+            writer.println("\"iteration\",\"nodes\",\"move-to-group\"");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         boolean someChange = true;
+        int iteration = 0; // CUSTOM
         while (someChange) {
             someChange = false;
             boolean localChange = true;
@@ -200,6 +217,33 @@ public class Modularity implements Statistics, LongTask {
                     Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         theStructure.moveNodeTo(i, bestCommunity);
+
+                        // CUSTOM
+                        List<Integer> nodes = theStructure.nodeCommunities[i].nodes;
+                        List<Integer> rootNodes = new ArrayList<>();
+                        for (Integer n1 : nodes) {
+                            Community hidden = theStructure.invMap.get(n1);
+                            for (Integer n2 : hidden.nodes) {
+                                rootNodes.add(n2);
+                            }
+                        }
+                        List<String> nodeIndexes = new ArrayList<>();
+                        for (Node n : graph.getNodes()) {
+                            int n_index = theStructure.map.get(n);
+                            if (rootNodes.contains(n_index)) {
+                                nodeIndexes.add((String) n.getId());
+                            }
+                        }
+
+                        String nodesString = "";
+                        for (String s : nodeIndexes) {
+                            nodesString = nodesString + "|" + s;
+                        }
+                        nodesString = nodesString.substring(1, nodesString.length());
+                        String bestCommunityString = bestCommunity.toString();
+                        bestCommunityString = bestCommunityString.substring(39, bestCommunityString.length());
+                        writer.println("\""+iteration+"\",\""+nodesString+"\",\""+bestCommunityString+"\"");
+
                         localChange = true;
                     }
                     if (isCanceled) {
@@ -215,7 +259,11 @@ public class Modularity implements Statistics, LongTask {
             if (someChange) {
                 theStructure.zoomOut();
             }
+            iteration++; // CUSTOM
         }
+
+        // CUSTOM
+        writer.close();
 
         fillComStructure(graph, theStructure, comStructure);
         double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);

@@ -302,13 +302,13 @@ public class ModularityTest extends TestCase {
         h.execute(graphModel);
     }
 
+    // CUSTOM
     @Test
     public void testLogCommunityDetection() {
+        //GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "Rio+20.gexf");
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "celegans.graphml");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
         Modularity h = new Modularity();
         h.execute(graph);
-        Modularity.CommunityStructure theStructure = h.new CommunityStructure(graph);
-        // TODO: log the process
     }
 }
