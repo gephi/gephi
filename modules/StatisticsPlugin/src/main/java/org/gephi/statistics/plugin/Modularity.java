@@ -225,7 +225,6 @@ public class Modularity implements Statistics, LongTask {
                     step++;
                     Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
-                        theStructure.moveNodeTo(i, bestCommunity);
 
                         // CUSTOM
                         List<Integer> nodes = theStructure.nodeCommunities[i].nodes;
@@ -243,7 +242,6 @@ public class Modularity implements Statistics, LongTask {
                                 nodeIndexes.add((String) n.getId());
                             }
                         }
-
                         String nodesString = "";
                         for (String s : nodeIndexes) {
                             nodesString = nodesString + "|" + s;
@@ -252,7 +250,10 @@ public class Modularity implements Statistics, LongTask {
                         String bestCommunityString = communityNames.get(bestCommunity);
                         writer.println("\""+iteration+"\",\""+nodesString+"\",\""+bestCommunityString+"\"");
 
+                        theStructure.moveNodeTo(i, bestCommunity);
                         localChange = true;
+
+
                     }
                     if (isCanceled) {
                         return results;
