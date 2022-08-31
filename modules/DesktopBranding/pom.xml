@@ -112,11 +112,6 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
         </dependency>
-        <!-- required by Sentry -->
-	    <dependency>
-	        <groupId>com.google.code.gson</groupId>
-	        <artifactId>gson</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
