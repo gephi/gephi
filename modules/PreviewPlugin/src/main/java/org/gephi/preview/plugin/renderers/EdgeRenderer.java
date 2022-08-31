@@ -576,8 +576,13 @@ public class EdgeRenderer implements Renderer {
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PdfContentByte cb = pdfTarget.getContentByte();
+                /*
+                // Bézier
                 cb.moveTo(h.x1, -h.y1);
                 cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                */
+                // Arc
+                cb.arc(h.bbx, -h.bby, h.bbx+h.bbw, -(h.bby+h.bbh), h.astart, h.asweep);
                 cb.setRGBColorStroke(
                     color.getRed(),
                     color.getGreen(),
