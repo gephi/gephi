@@ -209,8 +209,34 @@ public class Modularity implements Statistics, LongTask {
             cc++;
         }
 
+        // CUSTOM - log initial node communities
+        for (Community c : theStructure.nodeCommunities) {
+            List<Integer> nodes = c.nodes;
+            List<Integer> rootNodes = new ArrayList<>();
+            for (Integer n1 : nodes) {
+                Community hidden = theStructure.invMap.get(n1);
+                for (Integer n2 : hidden.nodes) {
+                    rootNodes.add(n2);
+                }
+            }
+            List<String> nodeIndexes = new ArrayList<>();
+            for (Node n : graph.getNodes()) {
+                int n_index = theStructure.map.get(n);
+                if (rootNodes.contains(n_index)) {
+                    nodeIndexes.add((String) n.getId());
+                }
+            }
+            String nodesString = "";
+            for (String s : nodeIndexes) {
+                nodesString = nodesString + "|" + s;
+            }
+            nodesString = nodesString.substring(1, nodesString.length());
+            String communityString = communityNames.get(c);
+            writer.println("\"0\",\"" + nodesString + "\",\"" + communityString + "\"");
+        }
+
         boolean someChange = true;
-        int iteration = 0; // CUSTOM
+        int iteration = 1; // CUSTOM
         while (someChange) {
             someChange = false;
             boolean localChange = true;
