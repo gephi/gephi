@@ -3,6 +3,8 @@ package org.gephi.datalab.plugin.manipulators.columns.merge;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Table;
 import org.openide.util.NbBundle;
 
@@ -21,7 +23,15 @@ public class GenerateAnEdgeKind implements AttributeColumnsMergeStrategy {
 
     @Override
     public void execute() {
+        Column selectedColumn = this.columns[0];
 
+        for (Edge edge : table.getGraph().getEdges().toArray()) {
+
+            String newType = (String) edge.getAttribute(selectedColumn);
+            int edgeType = table.getGraph().getModel().addEdgeType(newType);
+            edge.setType(edgeType);
+
+        }
     }
 
     @Override
