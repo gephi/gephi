@@ -829,5 +829,17 @@ public class StatisticalInferenceTest extends TestCase {
         StatisticalInferenceClustering h = new StatisticalInferenceClustering();
         h.execute(graphModel);
     }
+
+//    @Test
+//    public void testLogCommunityDetection() {
+//        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "celegans.graphml");
+//        UndirectedGraph graph = graphModel.getUndirectedGraph();
+//        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+//        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+//
+//        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+//        System.out.println("DESC LENGTH: "+descriptionLength);
+//        TODO: Log the process
+//    }
 }
 

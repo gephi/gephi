@@ -44,10 +44,12 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import junit.framework.TestCase;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.io.importer.GraphImporter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -298,5 +300,15 @@ public class ModularityTest extends TestCase {
 
         Modularity h = new Modularity();
         h.execute(graphModel);
+    }
+
+    @Test
+    public void testLogCommunityDetection() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "celegans.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        Modularity h = new Modularity();
+        h.execute(graph);
+        Modularity.CommunityStructure theStructure = h.new CommunityStructure(graph);
+        // TODO: log the process
     }
 }
