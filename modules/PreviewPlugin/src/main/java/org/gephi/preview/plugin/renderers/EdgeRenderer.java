@@ -531,11 +531,15 @@ public class EdgeRenderer implements Renderer {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(getThickness(item)));
                 graphics.setColor(color);
+                /* // Bézier curve
                 final GeneralPath gp
                     = new GeneralPath(GeneralPath.WIND_NON_ZERO);
                 gp.moveTo(h.x1, h.y1);
                 gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2);
                 graphics.draw(gp);
+                */
+                // Arc
+                graphics.drawArc(h.bbx, h.bby, h.bbw, h.bbh, h.a1, h.a2);
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
@@ -619,6 +623,12 @@ public class EdgeRenderer implements Renderer {
             public final Vector v1;
             public final Vector v2;
             public final Float r;
+            public final Integer bbx;
+            public final Integer bby;
+            public final Integer bbw;
+            public final Integer bbh;
+            public final Integer a1;
+            public final Integer a2;
 
             public Helper(
                 final Item item,
@@ -650,6 +660,15 @@ public class EdgeRenderer implements Renderer {
 
                 // Arc radius
                 r = length / properties.getFloatValue(ARC_CURVENESS);
+
+                // Arc bounding box (for Graphics2D)
+                // TODO: find the values of the bounding box below
+                bbx = 0;
+                bby = 0;
+                bbw = 0;
+                bbh = 0;
+                a1 = 0;
+                a2 = 0;
             }
 
             private Vector computeCtrlPoint(
