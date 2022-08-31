@@ -87,6 +87,7 @@ public class Modularity implements Statistics, LongTask {
     private boolean useWeight = true;
     private double resolution = 1.;
     private int initialModularityClassIndex = 0;
+    private Map<Community, String>communityNames = null; // CUSTOM
 
     public boolean getRandom() {
         return isRandomized;
@@ -189,7 +190,7 @@ public class Modularity implements Statistics, LongTask {
             return results;
         }
 
-        // CUSTOM
+        // CUSTOM - init file writer
         PrintWriter writer = null;
         try {
             writer = new PrintWriter("log-modularity.csv", "UTF-8");
@@ -198,6 +199,14 @@ public class Modularity implements Statistics, LongTask {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        }
+
+        // CUSTOM - init community names
+        communityNames = new HashMap<>();
+        int cc = 0;
+        for (Community c: theStructure.nodeCommunities) {
+            communityNames.put(c, "com_"+cc);
+            cc++;
         }
 
         boolean someChange = true;
@@ -240,8 +249,7 @@ public class Modularity implements Statistics, LongTask {
                             nodesString = nodesString + "|" + s;
                         }
                         nodesString = nodesString.substring(1, nodesString.length());
-                        String bestCommunityString = bestCommunity.toString();
-                        bestCommunityString = bestCommunityString.substring(39, bestCommunityString.length());
+                        String bestCommunityString = communityNames.get(bestCommunity);
                         writer.println("\""+iteration+"\",\""+nodesString+"\",\""+bestCommunityString+"\"");
 
                         localChange = true;
@@ -768,6 +776,9 @@ public class Modularity implements Statistics, LongTask {
             connectionsCount = new HashMap<>();
             nodes = new ArrayList<>();
             //mHidden = pCom.mHidden;
+
+            // CUSTOM - propagate names
+            communityNames.put(this, communityNames.get(com));
         }
 
         public Community(CommunityStructure structure) {
