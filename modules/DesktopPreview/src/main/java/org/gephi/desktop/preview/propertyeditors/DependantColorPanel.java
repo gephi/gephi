@@ -110,7 +110,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
                 parentRadio.setSelected(true);
                 break;
             case DARKER:
-                customRadio.setSelected(true);
+                darkerButton.setSelected(true);
                 break;
             default:
                 break;
