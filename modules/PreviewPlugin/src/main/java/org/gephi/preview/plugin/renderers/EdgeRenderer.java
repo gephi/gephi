@@ -539,7 +539,7 @@ public class EdgeRenderer implements Renderer {
                 graphics.draw(gp);
                 */
                 // Arc
-                graphics.drawArc(h.bbx, h.bby, h.bbw, h.bbh, h.a1, h.a2);
+                graphics.drawArc(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep);
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
@@ -627,8 +627,8 @@ public class EdgeRenderer implements Renderer {
             public final Integer bby;
             public final Integer bbw;
             public final Integer bbh;
-            public final Integer a1;
-            public final Integer a2;
+            public final Integer astart;
+            public final Integer asweep;
 
             public Helper(
                 final Item item,
@@ -662,13 +662,23 @@ public class EdgeRenderer implements Renderer {
                 r = length / properties.getFloatValue(ARC_CURVENESS);
 
                 // Arc bounding box (for Graphics2D)
-                // TODO: find the values of the bounding box below
-                bbx = 0;
-                bby = 0;
-                bbw = 0;
-                bbh = 0;
-                a1 = 0;
-                a2 = 0;
+                // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
+                Double _xa = 0.5*(x1-x2);
+                Double _ya = 0.5*(y1-y2);
+                Double _x0 = x2+_xa;
+                Double _y0 = y2+_ya;
+                Double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
+                Double _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
+                Double xc = _x0 + (_b * _ya) / _a;
+                Double yc = _y0 - (_b * _xa / _a);
+                Double angle1 = Math.atan2(y1-yc, x1-xc);
+                Double angle2 = Math.atan2(y2-yc, x2-xc);
+                bbx = (int) Math.round(xc-r);
+                bby = (int) Math.round(yc-r);
+                bbw = (int) Math.round(2*r);
+                bbh = (int) Math.round(2*r);
+                astart = (int) Math.round(-180*(angle1)/Math.PI);
+                asweep = (int) Math.round(180*(angle1-angle2)/Math.PI+360)%360 - 360;
             }
 
             private Vector computeCtrlPoint(
