@@ -47,6 +47,9 @@ import java.io.File;
 
 /**
  * Hosts various information about a project.
+ *
+ * @deprecated Relevant methods have been ported to {@link Project} directly.
+ *
  * <p>
  * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It

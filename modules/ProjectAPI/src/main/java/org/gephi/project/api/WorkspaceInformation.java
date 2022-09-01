@@ -46,6 +46,8 @@ import java.beans.PropertyChangeListener;
 
 /**
  * Hosts various information about a workspace.
+ *
+ * @deprecated Relevant methods have been ported to {@link Workspace} directly.
  * <p>
  * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It

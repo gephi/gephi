@@ -43,6 +43,7 @@
 package org.gephi.workspace.impl;
 
 import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.impl.ProjectImpl;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -58,6 +59,7 @@ public class WorkspaceImpl implements Workspace {
     private final transient Lookup lookup;
     private final int id;
     private final ProjectImpl project;
+    private final WorkspaceInformationImpl workspaceInformation;
 
     public WorkspaceImpl(ProjectImpl project, int id) {
         this(project, id, NbBundle.getMessage(WorkspaceImpl.class, "Workspace.default.prefix") + " " + id);
@@ -70,8 +72,8 @@ public class WorkspaceImpl implements Workspace {
         this.project = project;
 
         //Init Default Content
-        WorkspaceInformationImpl workspaceInformationImpl = new WorkspaceInformationImpl(name);
-        instanceContent.add(workspaceInformationImpl);
+        workspaceInformation = new WorkspaceInformationImpl(name);
+        instanceContent.add(workspaceInformation);
     }
 
     @Override
@@ -99,8 +101,33 @@ public class WorkspaceImpl implements Workspace {
         return id;
     }
 
+    @Override
+    public boolean isOpen() {
+        return workspaceInformation.isOpen();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return workspaceInformation.isClosed();
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return workspaceInformation.isInvalid();
+    }
+
     public String getName() {
         return lookup.lookup(WorkspaceInformationImpl.class).getName();
+    }
+
+    @Override
+    public boolean hasSource() {
+        return workspaceInformation.hasSource();
+    }
+
+    @Override
+    public String getSource() {
+        return workspaceInformation.getSource();
     }
 
     @Override

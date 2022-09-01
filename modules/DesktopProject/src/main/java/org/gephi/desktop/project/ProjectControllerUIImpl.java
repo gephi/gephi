@@ -52,7 +52,6 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
@@ -65,9 +64,10 @@ import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
+import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.project.spi.ProjectPropertiesUI;
+import org.gephi.ui.project.ProjectPropertiesEditor;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -90,7 +90,7 @@ import org.openide.windows.WindowManager;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ProjectControllerUI.class)
-public class ProjectControllerUIImpl implements ProjectControllerUI {
+public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectListener {
 
     //Project
     private final ProjectController controller;
@@ -141,40 +141,108 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         });
     }
 
-    private void saveProject(Project project, File file) {
+    @Override
+    public void startSaving(Project project) {
         lockProjectActions();
+    }
 
-        final Runnable saveTask = controller.saveProject(project, file);
-        final String fileName = file.getName();
-        Runnable saveRunnable = new Runnable() {
+    @Override
+    public void endSaving(Project project) {
+        SwingUtilities.invokeLater(() -> {
+            //Status line
+            StatusDisplayer.getDefault().setStatusText(
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", project.getFileName()));
+        });
+        unlockProjectActions();
+    }
+
+    @Override
+    public void savingError(Project project, Throwable throwable) {
+
+    }
+
+    @Override
+    public void startLoading(Project project) {
+        lockProjectActions();
+    }
+
+    @Override
+    public void endLoading(Project project) {
+        SwingUtilities.invokeLater(() -> {
+            //Status line
+            StatusDisplayer.getDefault().setStatusText(
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", project.getFileName()));
+        });
+        unlockProjectActions();
+    }
+
+    @Override
+    public void closed(Project project) {
+
+    }
+
+    private void updateTitleBar(Project project) {
+        //Modifying Title bar
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                saveTask.run();
-                //Status line
-                StatusDisplayer.getDefault().setStatusText(
-                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", fileName));
+                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                String title = frame.getTitle();
+                if (project == null || project.isClosed()) {
+                    title = title.substring(0, title.indexOf(" - "));
+                } else if(project.hasFile()) {
+                    title = title.substring(0, title.indexOf(" - ")) + " - " + project.getFileName();
+                }
+                frame.setTitle(title);
             }
-        };
-        if (saveTask instanceof LongTask) {
-            longTaskExecutor.execute((LongTask) saveTask, saveRunnable);
-        } else {
-            longTaskExecutor.execute(null, saveRunnable);
-        }
+        });
+    }
 
-        //Save MRU
-        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-        mostRecentFiles.addFile(file.getAbsolutePath());
+    private void saveProject(Project project, File file) {
+        controller.saveProject(project, file);
+//        lockProjectActions();
+//
+//        final Runnable saveTask = controller.saveProject(project, file);
+//        final String fileName = file.getName();
+//        Runnable saveRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                saveTask.run();
+//                //Status line
+//                StatusDisplayer.getDefault().setStatusText(
+//                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", fileName));
+//            }
+//        };
+//        if (saveTask instanceof LongTask) {
+//            longTaskExecutor.execute((LongTask) saveTask, saveRunnable);
+//        } else {
+//            longTaskExecutor.execute(null, saveRunnable);
+//        }
+//
+//        //Save MRU
+//        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+//        mostRecentFiles.addFile(file.getAbsolutePath());
     }
 
     @Override
     public void saveProject() {
-        Project project = controller.getCurrentProject();
-        if (project.getLookup().lookup(ProjectInformation.class).hasFile()) {
-            File file = project.getLookup().lookup(ProjectInformation.class).getFile();
-            saveProject(project, file);
-        } else {
-            saveAsProject();
-        }
+        controller.saveProject(controller.getCurrentProject());
+//        Project project = controller.getCurrentProject();
+//        if (project.getLookup().lookup(ProjectInformation.class).hasFile()) {
+//            File file = project.getLookup().lookup(ProjectInformation.class).getFile();
+//            saveProject(project, file);
+//        } else {
+//            saveAsProject();
+//        }
+    }
+
+    @Override
+    public void loadingError(Project project, Throwable throwable) {
+        Exceptions.printStackTrace(throwable);
+        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"),
+            NotifyDescriptor.WARNING_MESSAGE);
+        DialogDisplayer.getDefault().notify(msg);
     }
 
     @Override
@@ -218,30 +286,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
 
-            //Save last path
+            // Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
-            //File management
-            try {
-                final String SaveAsFileName = file.getName();
-                //File exist now, Save project
-                Project project = controller.getCurrentProject();
-                saveProject(project, file);
-
-                //Modifying Title bar
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                        String title = frame.getTitle();
-                        title = title.substring(0, title.indexOf(" - ")) + " - " + SaveAsFileName;
-                        frame.setTitle(title);
-                    }
-                });
-
-            } catch (Exception e) {
-                Logger.getLogger("").log(Level.WARNING, "", e);
-            }
+            // Save file
+            saveProject(controller.getCurrentProject(), file);
         }
     }
 
@@ -302,27 +351,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             }
 
             controller.closeCurrentProject();
-
-            //Actions
-            saveProject = false;
-            saveAsProject = false;
-            projectProperties = false;
-            closeProject = false;
-            newWorkspace = false;
-            deleteWorkspace = false;
-            duplicateWorkspace = false;
-            renameWorkspace = false;
-
-            //Title bar
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                    String title = frame.getTitle();
-                    title = title.substring(0, title.indexOf(" - "));
-                    frame.setTitle(title);
-                }
-            });
         }
         return true;
     }
@@ -334,57 +362,44 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 return;
             }
         }
-        loadProject(file);
+        controller.openProject(file);
     }
 
-    private void loadProject(File file) {
-        lockProjectActions();
+//    private void loadProject(File file) {
+//        lockProjectActions();
 
-        final Runnable loadTask = controller.openProject(file);
-        final String fileName = file.getName();
-        Runnable loadRunnable = new Runnable() {
-            @Override
-            public void run() {
-                loadTask.run();
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                        String title = frame.getTitle() + " - " + fileName;
-                        frame.setTitle(title);
-                    }
-                });
-                //Status line
-                StatusDisplayer.getDefault().setStatusText(
-                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", fileName));
-            }
-        };
-        if (loadTask instanceof LongTask) {
-            longTaskExecutor.execute((LongTask) loadTask, loadRunnable);
-        } else {
-            longTaskExecutor.execute(null, loadRunnable);
-        }
-
-        //Save MRU
-        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-        mostRecentFiles.addFile(file.getAbsolutePath());
-    }
+//        final String fileName = file.getName();
+//        Runnable loadRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                loadTask.run();
+//                SwingUtilities.invokeLater(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+//                        String title = frame.getTitle() + " - " + fileName;
+//                        frame.setTitle(title);
+//                    }
+//                });
+//                //Status line
+//                StatusDisplayer.getDefault().setStatusText(
+//                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", fileName));
+//            }
+//        };
+//        if (loadTask instanceof LongTask) {
+//            longTaskExecutor.execute((LongTask) loadTask, loadRunnable);
+//        } else {
+//            longTaskExecutor.execute(null, loadRunnable);
+//        }
+//
+//        //Save MRU
+//        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+//        mostRecentFiles.addFile(file.getAbsolutePath());
+//    }
 
     @Override
     public void renameProject(final String name) {
         controller.renameProject(controller.getCurrentProject(), name);
-
-        //Title bar
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                String title = frame.getTitle();
-                title = title.substring(0, title.indexOf(" - "));
-                title += " - " + name;
-                frame.setTitle(title);
-            }
-        });
     }
 
     @Override
@@ -471,16 +486,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     @Override
     public void projectProperties() {
         Project project = controller.getCurrentProject();
-        ProjectPropertiesUI ui = Lookup.getDefault().lookup(ProjectPropertiesUI.class);
-        if (ui != null) {
-            JPanel panel = ui.getPanel();
-            ui.setup(project);
-            DialogDescriptor dd = new DialogDescriptor(panel,
-                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title"));
-            Object result = DialogDisplayer.getDefault().notify(dd);
-            if (result == NotifyDescriptor.OK_OPTION) {
-                ui.unsetup(project);
-            }
+        ProjectPropertiesEditor panel = new ProjectPropertiesEditor();
+        panel.load(project);
+        DialogDescriptor dd = new DialogDescriptor(panel,
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title"));
+        Object result = DialogDisplayer.getDefault().notify(dd);
+        if (result == NotifyDescriptor.OK_OPTION) {
+            panel.save(project);
         }
     }
 
@@ -589,15 +601,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     }
                 }
 
-                try {
-                    loadProject(gephiFile);
-                } catch (Exception ew) {
-                    Exceptions.printStackTrace(ew);
-                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
-                        NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"),
-                        NotifyDescriptor.WARNING_MESSAGE);
-                    DialogDisplayer.getDefault().notify(msg);
-                }
+                controller.openProject(gephiFile);
             } else {
                 //Import
                 importControllerUI.importFiles(fileObjects);

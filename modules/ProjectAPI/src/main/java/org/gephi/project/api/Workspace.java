@@ -119,4 +119,48 @@ public interface Workspace extends Lookup.Provider {
      * @return the workspace id
      */
     int getId();
+
+    /**
+     * Returns true if the workspace is open.
+     *
+     * @return true if open, false otherwise
+     */
+    boolean isOpen();
+
+    /**
+     * Returns true if the workspace is closed.
+     *
+     * @return true if closed, false otherwise
+     */
+    boolean isClosed();
+
+    /**
+     * Returns true if the workspace is invalid.
+     *
+     * @return true if invalid, false otherwise
+     */
+    boolean isInvalid();
+
+    /**
+     * Returns the name of the workspace.
+     * <p>
+     * The name can't be null and has a default value (e.g. Workspace 1).
+     *
+     * @return the workspace's name
+     */
+    String getName();
+
+    /**
+     * Returns true if the workspace has a source.
+     *
+     * @return true if has a source, false otherwise
+     */
+    boolean hasSource();
+
+    /**
+     * Returns the workspace's source or null if missing.
+     *
+     * @return workspace's source or null if missing
+     */
+    String getSource();
 }
