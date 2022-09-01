@@ -680,7 +680,6 @@ public class EdgeRenderer implements Renderer {
                 Double angle1 = Math.atan2(y1-yc, x1-xc);
                 Double angle2 = Math.atan2(y2-yc, x2-xc);
 
-                // TODO: if arrows...
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
                 // Offset due to the source node
@@ -689,7 +688,7 @@ public class EdgeRenderer implements Renderer {
                     angle2 += targetOffset;
                 }
 
-                //Source radius
+                // Source radius
                 final Float sourceRadius = item.getData(SOURCE_RADIUS);
                 //Avoid edge from passing the node's center:
                 if (sourceRadius != null && sourceRadius < 0) {
