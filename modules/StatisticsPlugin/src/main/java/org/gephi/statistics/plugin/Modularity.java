@@ -194,7 +194,7 @@ public class Modularity implements Statistics, LongTask {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter("log-modularity.csv", "UTF-8");
-            writer.println("\"iteration\",\"nodes\",\"move-to-group\"");
+            writer.println("\"iteration\",\"nodes\",\"source-group\",\"target-group\"");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -232,7 +232,7 @@ public class Modularity implements Statistics, LongTask {
             }
             nodesString = nodesString.substring(1, nodesString.length());
             String communityString = communityNames.get(c);
-            writer.println("\"0\",\"" + nodesString + "\",\"" + communityString + "\"");
+            writer.println("\"0\",\"" + nodesString + "\",\"none\",\"" + communityString + "\"");
         }
 
         boolean someChange = true;
@@ -253,13 +253,10 @@ public class Modularity implements Statistics, LongTask {
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
 
                         // CUSTOM
-                        List<Integer> nodes = theStructure.nodeCommunities[i].nodes;
                         List<Integer> rootNodes = new ArrayList<>();
-                        for (Integer n1 : nodes) {
-                            Community hidden = theStructure.invMap.get(n1);
-                            for (Integer n2 : hidden.nodes) {
-                                rootNodes.add(n2);
-                            }
+                        Community hidden = theStructure.invMap.get(i);
+                        for (Integer n2 : hidden.nodes) {
+                            rootNodes.add(n2);
                         }
                         List<String> nodeIndexes = new ArrayList<>();
                         for (Node n : graph.getNodes()) {
@@ -272,9 +269,10 @@ public class Modularity implements Statistics, LongTask {
                         for (String s : nodeIndexes) {
                             nodesString = nodesString + "|" + s;
                         }
-                        nodesString = nodesString.substring(1, nodesString.length());
+                        nodesString = nodesString.substring(1);
+                        String sourceCommunityString = communityNames.get(theStructure.nodeCommunities[i]);
                         String bestCommunityString = communityNames.get(bestCommunity);
-                        writer.println("\""+iteration+"\",\""+nodesString+"\",\""+bestCommunityString+"\"");
+                        writer.println("\""+iteration+"\",\""+nodesString+"\",\""+sourceCommunityString+"\",\""+bestCommunityString+"\"");
 
                         theStructure.moveNodeTo(i, bestCommunity);
                         localChange = true;
