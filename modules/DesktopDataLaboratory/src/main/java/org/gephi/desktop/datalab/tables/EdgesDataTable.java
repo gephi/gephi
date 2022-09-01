@@ -111,7 +111,9 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
             }
 
             @Override
-            public boolean isEditable(){return true;}
+            public boolean isEditable() {
+                return true;
+            }
 
 
         };
