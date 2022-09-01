@@ -736,16 +736,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${gephi.slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jdk14</artifactId>
-                <version>${gephi.slf4j.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>io.sentry</groupId>
                 <artifactId>sentry</artifactId>
                 <version>${gephi.sentry.version}</version>
