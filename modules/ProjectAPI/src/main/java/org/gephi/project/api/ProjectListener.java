@@ -1,6 +1,8 @@
 package org.gephi.project.api;
 
-public interface ProjectListener {
+import java.util.EventListener;
+
+public interface ProjectListener extends EventListener {
 
     void startSaving(Project project);
 

@@ -158,7 +158,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
 
     @Override
     public void savingError(Project project, Throwable throwable) {
-
+        handleError(throwable);
     }
 
     @Override
@@ -236,13 +236,29 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
 //        }
     }
 
+    private void handleError(Throwable t) {
+        unlockProjectActions();
+
+//        Exceptions.printStackTrace(throwable);
+//        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+//            NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"),
+//            NotifyDescriptor.WARNING_MESSAGE);
+//        DialogDisplayer.getDefault().notify(msg);
+
+        if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
+            NotifyDescriptor.Message msg =
+                new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notify(msg);
+        }
+
+        if (!(t instanceof LegacyGephiFormatException)) {
+            Exceptions.printStackTrace(t);
+        }
+    }
+
     @Override
     public void loadingError(Project project, Throwable throwable) {
-        Exceptions.printStackTrace(throwable);
-        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
-            NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"),
-            NotifyDescriptor.WARNING_MESSAGE);
-        DialogDisplayer.getDefault().notify(msg);
+        handleError(throwable);
     }
 
     @Override

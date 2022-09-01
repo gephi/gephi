@@ -46,15 +46,20 @@ import java.beans.PropertyEditorManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.openide.util.Lookup;
@@ -67,11 +72,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ProjectController.class)
 public class ProjectControllerImpl implements ProjectController {
 
+    private final LongTaskExecutor longTaskExecutor;
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
 
     public ProjectControllerImpl() {
+        // Executor
+        longTaskExecutor = new LongTaskExecutor(true, "Project IO");
 
         //Listeners
         listeners = new ArrayList<>();
@@ -108,6 +116,16 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
+    Collection<ProjectListener> projectListeners;
+
+    private void emitProjectEvent(Consumer<? super ProjectListener> consumer) {
+        projectListeners.forEach(consumer);
+    }
+
+    private void execute(Runnable runnable) {
+
+    }
+
     @Override
     public void newProject() {
         closeCurrentProject();
@@ -118,6 +136,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Runnable openProject(File file) {
+
         return new LoadTask(file);
     }
 
@@ -140,25 +159,8 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public void closeCurrentProject() {
         if (projects.hasCurrentProject()) {
-            ProjectImpl currentProject = projects.getCurrentProject();
 
-            //Event
-            if (currentProject.getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
-                fireWorkspaceEvent(EventType.UNSELECT,
-                    currentProject.getLookup().lookup(WorkspaceProvider.class).getCurrentWorkspace());
-            }
-            for (Workspace ws : currentProject.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
-                fireWorkspaceEvent(EventType.CLOSE, ws);
-            }
 
-            //Close
-            currentProject.getLookup().lookup(ProjectInformationImpl.class).close();
-            projects.closeCurrentProject();
-
-            fireWorkspaceEvent(EventType.DISABLE, null);
-
-            //Remove
-            projects.removeProject(currentProject);
         }
     }
 
@@ -316,7 +318,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private void fireWorkspaceEvent(EventType event, Workspace workspace) {
+    public void fireWorkspaceEvent(EventType event, Workspace workspace) {
         WorkspaceListener[] listenersArray;
         synchronized (listeners) {
             listenersArray = listeners.toArray(new WorkspaceListener[0]);
@@ -342,7 +344,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private enum EventType {
+    public enum EventType {
 
         INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
     }
