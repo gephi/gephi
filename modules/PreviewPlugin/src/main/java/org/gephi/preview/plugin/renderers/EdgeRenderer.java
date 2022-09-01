@@ -47,6 +47,7 @@ import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.util.Locale;
@@ -539,7 +540,7 @@ public class EdgeRenderer implements Renderer {
                 graphics.draw(gp);
                 */
                 // Arc
-                graphics.drawArc(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep);
+                graphics.draw(new Arc2D.Double(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep, Arc2D.OPEN));
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
@@ -627,13 +628,13 @@ public class EdgeRenderer implements Renderer {
             public final Float y2;
             public final Vector v1;
             public final Vector v2;
-            public final Float r;
-            public final Integer bbx;
-            public final Integer bby;
-            public final Integer bbw;
-            public final Integer bbh;
-            public final Integer astart;
-            public final Integer asweep;
+            public final Double r;
+            public final Double bbx;
+            public final Double bby;
+            public final Double bbw;
+            public final Double bbh;
+            public final Double astart;
+            public final Double asweep;
 
             public Helper(
                 final Item item,
@@ -664,7 +665,7 @@ public class EdgeRenderer implements Renderer {
                 v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
 
                 // Arc radius
-                r = length / properties.getFloatValue(ARC_CURVENESS);
+                r = (double) (length / properties.getFloatValue(ARC_CURVENESS));
 
                 // Arc bounding box (for Graphics2D)
                 // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
@@ -678,12 +679,43 @@ public class EdgeRenderer implements Renderer {
                 Double yc = _y0 - (_b * _xa / _a);
                 Double angle1 = Math.atan2(y1-yc, x1-xc);
                 Double angle2 = Math.atan2(y2-yc, x2-xc);
-                bbx = (int) Math.round(xc-r);
-                bby = (int) Math.round(yc-r);
-                bbw = (int) Math.round(2*r);
-                bbh = (int) Math.round(2*r);
-                astart = (int) Math.round(-180*(angle1)/Math.PI);
-                asweep = (int) Math.round(180*(angle1-angle2)/Math.PI+360)%360 - 360;
+
+                // TODO: if arrows...
+                // Target radius - to start at the base of the arrow
+                final Float targetRadius = item.getData(TARGET_RADIUS);
+                // Offset due to the source node
+                if (targetRadius != null && targetRadius < 0) {
+                    Double targetOffset = this.computeTheThing(r, (double) targetRadius);
+                    angle2 += targetOffset;
+                }
+
+                //Source radius
+                final Float sourceRadius = item.getData(SOURCE_RADIUS);
+                //Avoid edge from passing the node's center:
+                if (sourceRadius != null && sourceRadius < 0) {
+                    Double sourceOffset = this.computeTheThing(r, (double) sourceRadius);
+                    angle1 -= sourceOffset;
+                }
+
+                bbx = xc-r;
+                bby = yc-r;
+                bbw = 2*r;
+                bbh = 2*r;
+                astart = -180*(angle1)/Math.PI;
+                asweep = (180*(angle1-angle2)/Math.PI+720)%360 - 360;
+            }
+
+            private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
+                // I don't want to explain what this is. I'll try though.
+                // There is an edge that is a circle arc.
+                // We want to truncate that arc so that truncated part has a chord of a given length.
+                // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
+                // We give back the result as an angle, as it's how it's useful to us.
+                Double rt = truncature_length;
+                Double r = radius_curvature_edge;
+                Double x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt/2,2));
+                Double angle = 2*Math.atan2(rt/2, x);
+                return angle;
             }
 
             private Vector computeCtrlPoint(
