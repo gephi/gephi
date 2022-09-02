@@ -220,7 +220,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        printButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/print.png", false)); // NOI18N
+        printButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/print.png", false)); // NOI18N
         printButton.setText(org.openide.util.NbBundle
             .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
@@ -232,7 +232,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(printButton);
 
         copyButton.setIcon(
-            ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/copy.gif", false)); // NOI18N
+            ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/copy.gif", false)); // NOI18N
         copyButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -244,7 +244,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(copyButton);
 
         saveButton.setIcon(
-            ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/save.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/save.png", false)); // NOI18N
         saveButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {

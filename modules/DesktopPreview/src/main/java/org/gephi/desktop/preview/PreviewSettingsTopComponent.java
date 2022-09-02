@@ -395,7 +395,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
         presetToolbar.add(box);
 
-        saveButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/save.png", false)); // NOI18N
+        saveButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/save.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.saveButton.text")); // NOI18N
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
@@ -418,7 +418,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
         presetPanel.add(presetToolbar, gridBagConstraints);
 
-        labelPreset.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/preset.png", false)); // NOI18N
+        labelPreset.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/preset.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelPreset, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelPreset.text")); // NOI18N
         labelPreset.setEnabled(false);
@@ -436,7 +436,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         mainPanel.add(presetPanel, gridBagConstraints);
 
-        refreshButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/refresh.png", false)); // NOI18N
+        refreshButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/refresh.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);

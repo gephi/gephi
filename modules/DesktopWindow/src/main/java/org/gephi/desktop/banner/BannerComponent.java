@@ -174,7 +174,7 @@ public class BannerComponent extends javax.swing.JPanel {
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
-        logoButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/banner/resources/logo_std.png", false)); // NOI18N
+        logoButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_std.png", false)); // NOI18N
         logoButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(BannerComponent.class, "BannerComponent.logoButton.toolTipText")); // NOI18N
         logoButton.setBorderPainted(false);
@@ -182,8 +182,8 @@ public class BannerComponent extends javax.swing.JPanel {
         logoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         logoButton.setFocusPainted(false);
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        logoButton.setPressedIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
-        logoButton.setRolloverIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
+        logoButton.setPressedIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
+        logoButton.setRolloverIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -206,7 +206,7 @@ public class BannerComponent extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         groupsPanel.add(buttonsPanel, gridBagConstraints);
 
-        bannerBackground.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/banner/resources/bannerback.png", false)); // NOI18N
+        bannerBackground.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/bannerback.png", false)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

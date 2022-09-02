@@ -114,7 +114,7 @@ public class TimeFormatDialog extends javax.swing.JPanel {
 
         headerTitle.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "TimeFormatDialog.headerTitle.description")); // NOI18N
-        headerTitle.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/timeline/resources/time_format.png", false)); // NOI18N
+        headerTitle.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/timeline/resources/time_format.png", false)); // NOI18N
         headerTitle
             .setTitle(NbBundle.getMessage(TimelineTopComponent.class, "TimeFormatDialog.headerTitle.title")); // NOI18N
 

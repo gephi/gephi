@@ -563,7 +563,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
         configureLabelsButton.setFont(new java.awt.Font("Tahoma", 0, 10));
         configureLabelsButton.setIcon(
-            ImageUtilities.loadImageIcon("/org/gephi/visualization/component/configureLabels.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("org/gephi/visualization/component/configureLabels.png", false)); // NOI18N
         configureLabelsButton.setText(org.openide.util.NbBundle
             .getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.configureLabelsButton.text")); // NOI18N
         configureLabelsButton.setBorder(null);

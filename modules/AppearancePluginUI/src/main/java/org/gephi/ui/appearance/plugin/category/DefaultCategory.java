@@ -61,7 +61,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("/org/gephi/ui/appearance/plugin/resources/size.png", false);
+            return ImageUtilities.loadImageIcon("org/gephi/ui/appearance/plugin/resources/size.png", false);
         }
 
         @Override
@@ -77,7 +77,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("/org/gephi/ui/appearance/plugin/resources/color.png", false);
+            return ImageUtilities.loadImageIcon("org/gephi/ui/appearance/plugin/resources/color.png", false);
         }
 
         @Override
@@ -93,7 +93,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("/org/gephi/ui/appearance/plugin/resources/labelcolor.png", false);
+            return ImageUtilities.loadImageIcon("org/gephi/ui/appearance/plugin/resources/labelcolor.png", false);
         }
 
         @Override
@@ -109,7 +109,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("/org/gephi/ui/appearance/plugin/resources/labelsize.png", false);
+            return ImageUtilities.loadImageIcon("org/gephi/ui/appearance/plugin/resources/labelsize.png", false);
         }
 
         @Override

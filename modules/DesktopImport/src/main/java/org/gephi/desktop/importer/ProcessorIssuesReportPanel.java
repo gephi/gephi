@@ -142,13 +142,13 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     }
 
     public void initIcons() {
-        infoIcon = ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/info.png", false);
+        infoIcon = ImageUtilities.loadImageIcon("org/gephi/desktop/importer/resources/info.png", false);
         warningIcon =
-            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/warning.gif", false);
+            ImageUtilities.loadImageIcon("org/gephi/desktop/importer/resources/warning.gif", false);
         severeIcon =
-            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/severe.png", false);
+            ImageUtilities.loadImageIcon("org/gephi/desktop/importer/resources/severe.png", false);
         criticalIcon =
-            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/critical.png", false);
+            ImageUtilities.loadImageIcon("org/gephi/desktop/importer/resources/critical.png", false);
     }
 
     public void setData(Report report) {

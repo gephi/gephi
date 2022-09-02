@@ -106,7 +106,7 @@ public class UniqueColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("/org/gephi/visualization/opengl/text/UniqueColorMode.png", false);
+        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/UniqueColorMode.png", false);
     }
 
     @Override

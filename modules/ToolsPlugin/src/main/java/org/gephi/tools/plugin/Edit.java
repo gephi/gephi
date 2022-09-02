@@ -102,7 +102,7 @@ public class Edit implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("/org/gephi/ui/tools/plugin/edit/edit.png", false);
+                return ImageUtilities.loadImageIcon("org/gephi/ui/tools/plugin/edit/edit.png", false);
             }
 
             @Override

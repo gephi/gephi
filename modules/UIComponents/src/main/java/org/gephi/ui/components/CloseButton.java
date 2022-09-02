@@ -66,38 +66,38 @@ public class CloseButton extends JButton {
     private void init() {
         if (UIUtils.isGTKLookAndFeel()) {
             setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/gtk_bigclose_enabled.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/gtk_bigclose_enabled.png", false));
             setRolloverIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/gtk_bigclose_rollover.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/gtk_bigclose_rollover.png", false));
             setPressedIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/gtk_bigclose_pressed.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/gtk_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsClassicLookAndFeel()) {
             setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/win_bigclose_enabled.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/win_bigclose_enabled.png", false));
             setRolloverIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/win_bigclose_rollover.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/win_bigclose_rollover.png", false));
             setPressedIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/win_bigclose_pressed.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/win_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsXPLookAndFeel()) {
             setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/xp_bigclose_enabled.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/xp_bigclose_enabled.png", false));
             setRolloverIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/xp_bigclose_rollover.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/xp_bigclose_rollover.png", false));
             setPressedIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/xp_bigclose_pressed.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/xp_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsVistaLookAndFeel()) {
             setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/vista_bigclose_enabled.png", false));
-            setRolloverIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/vista_bigclose_rollover.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/vista_bigclose_enabled.png", false));
+            setRolloverIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/vista_bigclose_rollover.png", false));
             setPressedIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/vista_bigclose_pressed.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/vista_bigclose_pressed.png", false));
         } else if (UIUtils.isAquaLookAndFeel()) {
             setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/mac_bigclose_enabled.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/mac_bigclose_enabled.png", false));
             setRolloverIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/mac_bigclose_rollover.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/mac_bigclose_rollover.png", false));
             setPressedIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/mac_bigclose_pressed.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/mac_bigclose_pressed.png", false));
         }
 
         setText("");

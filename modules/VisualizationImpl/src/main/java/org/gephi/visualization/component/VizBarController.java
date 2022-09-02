@@ -179,7 +179,7 @@ public class VizBarController {
             });
             screenshotPopup.add(configureScreenshotItem);
             final JButton screenshotButton = new JDropDownButton(
-                ImageUtilities.loadImageIcon("/org/gephi/visualization/component/screenshot.png", false),
+                ImageUtilities.loadImageIcon("org/gephi/visualization/component/screenshot.png", false),
                 screenshotPopup);
             screenshotButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
@@ -232,7 +232,7 @@ public class VizBarController {
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showLabels"));
-            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/showNodeLabels.png", false));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/showNodeLabels.png", false));
             showLabelsButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -297,7 +297,7 @@ public class VizBarController {
             showEdgeButton.setSelected(vizModel.isShowEdges());
             showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
             showEdgeButton.setIcon(
-                ImageUtilities.loadImageIcon("/org/gephi/visualization/component/showEdges.png", false));
+                ImageUtilities.loadImageIcon("org/gephi/visualization/component/showEdges.png", false));
             showEdgeButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -323,7 +323,7 @@ public class VizBarController {
             edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
             edgeHasNodeColorButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
-            edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/edgeNodeColor.png", false));
+            edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/edgeNodeColor.png", false));
             edgeHasNodeColorButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -348,7 +348,7 @@ public class VizBarController {
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
-            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/showEdgeLabels.png", false));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/showEdgeLabels.png", false));
             showLabelsButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -450,7 +450,7 @@ public class VizBarController {
                     model.setSizeMode(sm);
                 }
             });
-            labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/labelSizeMode.png", false));
+            labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/labelSizeMode.png", false));
             labelSizeModeButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
             model.addChangeListener(new ChangeListener() {
@@ -478,7 +478,7 @@ public class VizBarController {
                     model.setColorMode(cm);
                 }
             });
-            labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/labelColorMode.png", false));
+            labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/labelColorMode.png", false));
             labelColorModeButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
             model.addChangeListener(new ChangeListener() {
@@ -566,7 +566,7 @@ public class VizBarController {
 
             //Attributes
             final JButton attributesButton = new JButton();
-            attributesButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/visualization/component/configureLabels.png", false));
+            attributesButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/configureLabels.png", false));
             attributesButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.attributes"));
             attributesButton.addActionListener(new ActionListener() {

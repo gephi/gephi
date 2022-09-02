@@ -411,7 +411,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         windowTextField.setName("window"); // NOI18N
 
-        windowInfoLabel.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/statistics/resources/info.png", false)); // NOI18N
+        windowInfoLabel.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/info.png", false)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

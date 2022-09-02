@@ -361,7 +361,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar.add(separator);
 
         exportColumnButton.setIcon(
-            ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/table_export.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/table_export.png", false)); // NOI18N
         exportColumnButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.text")); // NOI18N
         exportColumnButton.setToolTipText(org.openide.util.NbBundle
@@ -371,7 +371,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportColumnButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportColumnButton);
 
-        exportWorkspaceButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/workspace_export.png", false)); // NOI18N
+        exportWorkspaceButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/workspace_export.png", false)); // NOI18N
         exportWorkspaceButton.setText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.text")); // NOI18N
         exportWorkspaceButton.setToolTipText(org.openide.util.NbBundle
@@ -381,7 +381,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportWorkspaceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportWorkspaceButton);
 
-        exportLabelVisible.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/labelvisible_export.png", false)); // NOI18N
+        exportLabelVisible.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/labelvisible_export.png", false)); // NOI18N
         exportLabelVisible.setToolTipText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportLabelVisible.toolTipText")); // NOI18N
         exportLabelVisible.setFocusable(false);
@@ -444,20 +444,20 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
 
-        selectButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/select.png", false)); // NOI18N
+        selectButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/select.png", false)); // NOI18N
         selectButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.selectButton.text")); // NOI18N
         selectButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(selectButton);
 
-        filterButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/filter.png", false)); // NOI18N
+        filterButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/filter.png", false)); // NOI18N
         filterButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.filterButton.text")); // NOI18N
         filterButton.setFocusable(false);
         filterButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(filterButton);
 
-        stopButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/filters/resources/stop.png", false)); // NOI18N
+        stopButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/filters/resources/stop.png", false)); // NOI18N
         stopButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.stopButton.text")); // NOI18N
         stopButton.setMargin(new java.awt.Insets(2, 7, 2, 14));

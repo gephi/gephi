@@ -264,7 +264,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(restoreOrderButton);
         toolBar.add(jSeparator1);
 
-        selectAllButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/ui-check-box.png", false)); // NOI18N
+        selectAllButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/ui-check-box.png", false)); // NOI18N
         selectAllButton.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.selectAllButton.text")); // NOI18N
         selectAllButton.setFocusable(false);
@@ -277,7 +277,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         });
         toolBar.add(selectAllButton);
 
-        unselectAllButon.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/ui-check-box-uncheck.png", false)); // NOI18N
+        unselectAllButon.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/ui-check-box-uncheck.png", false)); // NOI18N
         unselectAllButon.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.unselectAllButon.text")); // NOI18N
         unselectAllButon.setFocusable(false);
@@ -291,7 +291,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(unselectAllButon);
         toolBar.add(glue);
 
-        infoLabel.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/preview/resources/info.png", false)); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/info.png", false)); // NOI18N
         infoLabel.setText(
             org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.infoLabel.text")); // NOI18N
         toolBar.add(infoLabel);

@@ -442,7 +442,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         autoApplyButton.setVisible(false);
 
 //        listButton = new JToggleButton();
-//        listButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/ranking/resources/list.png", false)); // NOI18N
+//        listButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/ranking/resources/list.png", false)); // NOI18N
 //        listButton.setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.listButton.text"));
 //        listButton.setEnabled(false);
 //        listButton.setFocusable(false);
@@ -456,7 +456,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
          * southToolbar.add(barChartButton);
          */
 //        localScaleButton = new JToggleButton();
-//        localScaleButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/ranking/resources/funnel.png", false)); // NOI18N
+//        localScaleButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/ranking/resources/funnel.png", false)); // NOI18N
 //        localScaleButton.setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.localScaleButton.text"));
 //        localScaleButton.setEnabled(false);
 //        localScaleButton.setFocusable(false);
@@ -594,30 +594,30 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlToolbar.setMargin(new java.awt.Insets(0, 4, 0, 0));
         controlToolbar.setOpaque(true);
 
-        rankingLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/funnel.png", false)); // NOI18N
+        rankingLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/funnel.png", false)); // NOI18N
         rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
         rankingLocalScaleButton.setFocusable(false);
         rankingLocalScaleButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/funnel.png", false).getImage())))); // NOI18N
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/funnel.png", false).getImage())))); // NOI18N
         controlToolbar.add(rankingLocalScaleButton);
 
-        partitionLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/funnel.png", false)); // NOI18N
+        partitionLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/funnel.png", false)); // NOI18N
         partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
         partitionLocalScaleButton.setFocusable(false);
         partitionLocalScaleButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/funnel.png", false).getImage())))); // NOI18N
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/funnel.png", false).getImage())))); // NOI18N
         controlToolbar.add(partitionLocalScaleButton);
 
-        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/transformNull.png", false)); // NOI18N
+        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/transformNull.png", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
         transformNullValuesButton.setFocusable(false);
         transformNullValuesButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/transformNull.png", false)
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/transformNull.png", false)
                 .getImage())))); // NOI18N
         controlToolbar.add(transformNullValuesButton);
 
@@ -644,7 +644,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlPanel.setOpaque(true);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        applyButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/apply.gif", false)); // NOI18N
+        applyButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/apply.gif", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(applyButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.applyButton.text")); // NOI18N
         applyButton.setToolTipText(org.openide.util.NbBundle
@@ -657,7 +657,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.insets = new java.awt.Insets(0, 18, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
-        stopAutoApplyButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/stop.png", false)); // NOI18N
+        stopAutoApplyButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/stop.png", false)); // NOI18N
         stopAutoApplyButton.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(stopAutoApplyButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.stopAutoApplyButton.text")); // NOI18N
@@ -678,7 +678,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         autoApplyToolbar.setRollover(true);
         autoApplyToolbar.setOpaque(true);
 
-        enableAutoButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/chain.png", false)); // NOI18N
+        enableAutoButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/chain.png", false)); // NOI18N
         enableAutoButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.toolTipText")); // NOI18N
         enableAutoButton.setFocusable(false);
@@ -694,7 +694,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.weightx = 1.0;
         controlPanel.add(autoApplyToolbar, gridBagConstraints);
 
-        autoApplyButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/appearance/resources/apply.gif", false)); // NOI18N
+        autoApplyButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/appearance/resources/apply.gif", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(autoApplyButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
         autoApplyButton.setToolTipText(org.openide.util.NbBundle

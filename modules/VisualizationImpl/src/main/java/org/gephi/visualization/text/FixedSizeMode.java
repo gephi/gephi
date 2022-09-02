@@ -79,7 +79,7 @@ public class FixedSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("/org/gephi/visualization/opengl/text/FixedSizeMode.png", false);
+        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/FixedSizeMode.png", false);
     }
 
     @Override

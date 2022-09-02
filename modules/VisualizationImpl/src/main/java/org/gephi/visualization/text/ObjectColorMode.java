@@ -105,7 +105,7 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("/org/gephi/visualization/opengl/text/ObjectColorMode.png", false);
+        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/ObjectColorMode.png", false);
     }
 
     @Override

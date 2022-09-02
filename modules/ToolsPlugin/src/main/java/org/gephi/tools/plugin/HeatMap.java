@@ -182,7 +182,7 @@ public class HeatMap implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("/org/gephi/tools/plugin/resources/heatmap.png", false);
+                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/heatmap.png", false);
             }
 
             @Override

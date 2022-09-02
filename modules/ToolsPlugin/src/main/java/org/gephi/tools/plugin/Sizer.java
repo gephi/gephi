@@ -140,7 +140,7 @@ public class Sizer implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("/org/gephi/tools/plugin/resources/sizer.png", false);
+                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/sizer.png", false);
             }
 
             @Override

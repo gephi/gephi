@@ -160,7 +160,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         });
 
         resetButton.setIcon(
-            ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/magnifier-history.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/magnifier-history.png", false)); // NOI18N
         resetButton.setText(org.openide.util.NbBundle
             .getMessage(JFreeChartDialog.class, "JFreeChartDialog.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
@@ -170,7 +170,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
             }
         });
 
-        zoomOutButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/magnifier--minus.png", false)); // NOI18N
+        zoomOutButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/magnifier--minus.png", false)); // NOI18N
         zoomOutButton.setText(org.openide.util.NbBundle
             .getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomOutButton.text")); // NOI18N
         zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
@@ -180,7 +180,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
             }
         });
 
-        zoomInButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/magnifier--plus.png", false)); // NOI18N
+        zoomInButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/magnifier--plus.png", false)); // NOI18N
         zoomInButton.setText(org.openide.util.NbBundle
             .getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomInButton.text")); // NOI18N
         zoomInButton.addActionListener(new java.awt.event.ActionListener() {
