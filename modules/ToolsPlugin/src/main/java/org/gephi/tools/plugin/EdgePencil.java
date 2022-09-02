@@ -189,7 +189,7 @@ public class EdgePencil implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/edgepencil.png", false);
+                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/edgepencil.svg", false);
             }
 
             @Override

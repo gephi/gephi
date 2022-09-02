@@ -93,7 +93,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
-        Icon icon = ImageUtilities.loadImageIcon("org/gephi/visualization/component/rectangle.svg", false);
+        Icon icon = ImageUtilities.loadImageIcon("org/gephi/visualization/component/rectangle.png", false);
 
         //Rectangle
         final JToggleButton rectangleButton = new JToggleButton(icon);

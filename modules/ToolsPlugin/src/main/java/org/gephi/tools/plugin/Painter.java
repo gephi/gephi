@@ -123,7 +123,7 @@ public class Painter implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/painter.png", false);
+                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/painter.svg", false);
             }
 
             @Override
