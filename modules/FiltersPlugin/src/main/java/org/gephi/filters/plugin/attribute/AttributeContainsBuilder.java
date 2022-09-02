@@ -72,7 +72,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AttributeContainsBuilder implements CategoryBuilder {
 
     private final static Category CONTAINS = new Category(
-            NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeContainsBuilder.name"),
+            NbBundle.getMessage(AttributeContainsBuilder.class, "AttributeContainsBuilder.name"),
             null,
             FilterLibrary.ATTRIBUTES);
 
