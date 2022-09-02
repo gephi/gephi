@@ -94,6 +94,28 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
             public Object getValueFor(Edge edge) {
                 return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
             }
+
+            @Override
+            public void setValueFor(Edge element, Object value) {
+                final String strValue = value != null ? value.toString() : null;
+
+                if (strValue != null && !strValue.trim().isEmpty()) {
+
+                    int edgeType = element.getTable().getGraph().getModel().addEdgeType(strValue);
+                    element.setType(edgeType);
+                } else {
+                    // Type 0 is a special type for "no type defined"
+                    element.setType(0);
+                }
+
+            }
+
+            @Override
+            public boolean isEditable() {
+                return true;
+            }
+
+
         };
     private boolean showEdgesNodesLabels = false;
     private final PropertyDataColumn<Edge> SOURCE_COLUMN =
