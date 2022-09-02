@@ -121,9 +121,12 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
         for (Column column : table) {
             columnCheckboxesList.add(new ColumnCheckboxWrapper(column.getId(), column.getTitle()));
         }
-        ColumnCheckboxWrapper positionsCheckbox = new ColumnCheckboxWrapper("positions", "Positions");
-        positionsCheckbox.setSelected(false);
-        columnCheckboxesList.add(positionsCheckbox);
+        if (!table.isEdgeTable()) {
+            ColumnCheckboxWrapper positionsCheckbox = new ColumnCheckboxWrapper("positions", "Positions");
+            positionsCheckbox.setSelected(false);
+            columnCheckboxesList.add(positionsCheckbox);
+        }
+
 
         columnsCheckBoxes = columnCheckboxesList.toArray(new ColumnCheckboxWrapper[0]);
         for (ColumnCheckboxWrapper columnCheckboxWrapper : columnsCheckBoxes) {
