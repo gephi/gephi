@@ -60,6 +60,7 @@ import org.gephi.ui.components.gradientslider.GradientSlider;
 import org.gephi.ui.components.gradientslider.MultiThumbSlider;
 import org.gephi.utils.PaletteUtils;
 import org.gephi.utils.PaletteUtils.Palette;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -250,8 +251,8 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         colorSwatchToolbar.setRollover(true);
         colorSwatchToolbar.setOpaque(false);
 
-        colorSwatchButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/appearance/plugin/resources/color-swatch.png"))); // NOI18N
+        colorSwatchButton.setIcon(
+            ImageUtilities.loadImageIcon("/org/gephi/ui/appearance/plugin/resources/color-swatch.png", false)); // NOI18N
         colorSwatchButton.setFocusable(false);
         colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         colorSwatchButton.setIconTextGap(0);

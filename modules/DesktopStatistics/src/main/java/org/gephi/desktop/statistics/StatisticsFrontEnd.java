@@ -342,8 +342,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
-        reportButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
+        reportButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/statistics/resources/report.png", false)); // NOI18N
         reportButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);

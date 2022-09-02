@@ -116,7 +116,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/frequency-list.png");
+        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/frequency-list.png", false);
     }
 
     public String getReportHTML(Table table, Column column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart,

@@ -52,6 +52,7 @@ import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -101,7 +102,7 @@ public class Edit implements Tool {
 
             @Override
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/ui/tools/plugin/edit/edit.png"));
+                return ImageUtilities.loadImageIcon("/org/gephi/ui/tools/plugin/edit/edit.png", false);
             }
 
             @Override

@@ -45,6 +45,7 @@ package org.gephi.desktop.timeline;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -113,8 +114,7 @@ public class TimeFormatDialog extends javax.swing.JPanel {
 
         headerTitle.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "TimeFormatDialog.headerTitle.description")); // NOI18N
-        headerTitle.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/timeline/resources/time_format.png"))); // NOI18N
+        headerTitle.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/timeline/resources/time_format.png", false)); // NOI18N
         headerTitle
             .setTitle(NbBundle.getMessage(TimelineTopComponent.class, "TimeFormatDialog.headerTitle.title")); // NOI18N
 

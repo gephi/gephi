@@ -57,6 +57,7 @@ import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.ui.utils.ChartsUtils;
 import org.gephi.utils.StatisticsUtils;
 import org.jfree.chart.JFreeChart;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -195,8 +196,8 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
         divisionsLabel = new javax.swing.JLabel();
         divisionsComboBox = new javax.swing.JComboBox();
 
-        configureBoxPlotButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/wooden-box.png"))); // NOI18N
+        configureBoxPlotButton.setIcon(
+            ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/wooden-box.png", false)); // NOI18N
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
@@ -206,8 +207,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        configureScatterPlotButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/chart-up.png"))); // NOI18N
+        configureScatterPlotButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/chart-up.png", false)); // NOI18N
         configureScatterPlotButton.setText(org.openide.util.NbBundle
             .getMessage(GeneralNumberListStatisticsReportUI.class,
                 "GeneralNumberListStatisticsReportUI.configureScatterPlotButton.text_1")); // NOI18N
@@ -218,8 +218,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        showReportButton.setIcon(new javax.swing.ImageIcon(getClass()
-            .getResource("/org/gephi/datalab/plugin/manipulators/resources/application-block.png"))); // NOI18N
+        showReportButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/application-block.png", false)); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
@@ -247,8 +246,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        configureHistogramButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/chart.png"))); // NOI18N
+        configureHistogramButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/chart.png", false)); // NOI18N
         configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.configureHistogramButton.text")); // NOI18N
         configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {

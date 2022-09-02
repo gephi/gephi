@@ -72,6 +72,7 @@ import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -141,13 +142,13 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     }
 
     public void initIcons() {
-        infoIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/info.png"));
+        infoIcon = ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/info.png", false);
         warningIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/warning.gif"));
+            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/warning.gif", false);
         severeIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/severe.png"));
+            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/severe.png", false);
         criticalIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/critical.png"));
+            ImageUtilities.loadImageIcon("/org/gephi/desktop/importer/resources/critical.png", false);
     }
 
     public void setData(Report report) {

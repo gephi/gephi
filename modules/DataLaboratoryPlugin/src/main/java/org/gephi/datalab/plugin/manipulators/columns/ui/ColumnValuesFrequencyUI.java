@@ -54,6 +54,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.jfree.chart.JFreeChart;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -131,8 +132,8 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         configurePieChartButton = new javax.swing.JButton();
         showReportButton = new javax.swing.JButton();
 
-        configurePieChartButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/category.png"))); // NOI18N
+        configurePieChartButton.setIcon(
+            ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/category.png", false)); // NOI18N
         configurePieChartButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class,
             "ColumnValuesFrequencyUI.configurePieChartButton.text")); // NOI18N
         configurePieChartButton.addActionListener(new java.awt.event.ActionListener() {
@@ -142,8 +143,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
             }
         });
 
-        showReportButton.setIcon(new javax.swing.ImageIcon(getClass()
-            .getResource("/org/gephi/datalab/plugin/manipulators/resources/application-block.png"))); // NOI18N
+        showReportButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/datalab/plugin/manipulators/resources/application-block.png", false)); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle
             .getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {

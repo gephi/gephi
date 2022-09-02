@@ -106,6 +106,6 @@ public class CreateBooleanMatchesColumn extends GeneralCreateColumnFromRegex {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/binocular--arrow.png");
+        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/binocular--arrow.png", false);
     }
 }

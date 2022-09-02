@@ -273,8 +273,7 @@ public final class WelcomeTopComponent extends JPanel {
         setPreferredSize(new java.awt.Dimension(679, 379));
         setLayout(new java.awt.BorderLayout());
 
-        header.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/welcome/resources/logo_transparent_small.png"))); // NOI18N
+        header.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/welcome/resources/logo_transparent_small.png", false)); // NOI18N
         header.setTitle(org.openide.util.NbBundle
             .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
         header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize() + 4f));

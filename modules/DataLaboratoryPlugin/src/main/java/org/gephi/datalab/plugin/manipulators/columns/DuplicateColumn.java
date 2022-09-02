@@ -102,7 +102,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-duplicate-column.png");
+        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-duplicate-column.png", false);
     }
 
     public String getTitle() {

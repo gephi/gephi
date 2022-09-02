@@ -993,7 +993,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     for (final Column column : availableColumns) {
 
                         button = new JCommandMenuButton(column.getTitle(), ImageWrapperResizableIcon
-                            .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/column.png"),
+                            .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/column.png", false),
                                 new Dimension(16, 16)));
                         button.addActionListener(new ActionListener() {
 
@@ -1350,8 +1350,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         controlToolbar.add(separator);
 
         configurationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        configurationButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/gear-small.png"))); // NOI18N
+        configurationButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/datalab/resources/gear-small.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
         configurationButton.setFocusable(false);
@@ -1387,8 +1386,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
         controlToolbar.add(columnComboBox);
 
-        availableColumnsButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/light-bulb.png"))); // NOI18N
+        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/datalab/resources/light-bulb.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(availableColumnsButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.text")); // NOI18N
         availableColumnsButton.setToolTipText(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class,
@@ -1423,8 +1421,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        labelBanner.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
+        labelBanner.setIcon(ImageUtilities.loadImageIcon("/org/gephi/desktop/datalab/resources/info.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelBanner, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.labelBanner.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

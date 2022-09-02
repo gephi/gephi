@@ -66,6 +66,7 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -361,8 +362,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
         edgeQueryTextField.setText(org.openide.util.NbBundle
             .getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQueryTextField.text")); // NOI18N
 
-        testConnection.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/importer/plugin/resources/test_connection.png"))); // NOI18N
+        testConnection.setIcon(
+            ImageUtilities.loadImageIcon("/org/gephi/ui/importer/plugin/resources/test_connection.png", false)); // NOI18N
         testConnection.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
@@ -379,8 +380,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         configNameLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configNameLabel.text")); // NOI18N
 
-        removeConfigurationButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/importer/plugin/resources/remove_config.png"))); // NOI18N
+        removeConfigurationButton.setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/importer/plugin/resources/remove_config.png", false)); // NOI18N
         removeConfigurationButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(EdgeListPanel.class, "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
         removeConfigurationButton.setMargin(new java.awt.Insets(0, 4, 0, 2));

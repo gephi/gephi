@@ -62,6 +62,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.ComponentUI;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.ImageUtilities;
 
 //Copied from org.netbeans.lib.profiler.ui.components
 public class SnippetPanel extends JPanel implements MouseListener, KeyListener, FocusListener {
@@ -283,9 +284,9 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         private final int TITLE_X_OFFSET = 5;
         private final int TITLE_Y_OFFSET = 2;
         private final ImageIcon collapsedIcon =
-            new ImageIcon(TitleUI.class.getResource("resources/collapsedSnippet.png")); //NOI18N
+            ImageUtilities.loadImageIcon("resources/collapsedSnippet.png", false); //NOI18N
         private final ImageIcon expandedIcon =
-            new ImageIcon(TitleUI.class.getResource("resources/expandedSnippet.png")); //NOI18N
+            ImageUtilities.loadImageIcon("resources/expandedSnippet.png", false); //NOI18N
         private final JLabel plainPainter = new JLabel();
         private final JLabel boldPainter = new JLabel();
         private final Font plainFont = plainPainter.getFont().deriveFont(Font.PLAIN);
