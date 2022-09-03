@@ -976,7 +976,7 @@
             </build>
         </profile>
 
-        <!-- Attach aggregate Javadoc -->
+        <!-- Attach aggregate Javadoc, need to be run with site phase -->
         <profile>
             <id>create-javadoc</id>
             <build>
