@@ -1265,6 +1265,7 @@
                                     <goal>jar</goal>
                                 </goals> 
                             </execution>
+                            <!-- Aggregate Javadoc, attached in gephi-app -->
                             <execution>
                                 <id>aggregate</id>
                                 <phase>site</phase>
