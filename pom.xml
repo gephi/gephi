@@ -1348,46 +1348,6 @@
                 </plugins>
             </build>
         </profile>
-        
-        <!-- Properties for release -->
-        <profile>
-            <id>release</id>
-            <properties>
-            </properties>
-        </profile>
-        
-        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
-        <profile>
-            <id>release-extra</id>
-            <build>
-                <plugins>
-                    
-                    <!-- Skip Javadoc creation -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution> 
-                                <id>attach-javadocs</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-            
-                    <!-- Skip sources attach -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>none</phase> 
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
                 
     <!-- List of modules -->
