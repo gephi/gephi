@@ -995,7 +995,7 @@
                                     <artifacts>
                                         <artifact>
                                             <!-- Aggregate file is generated in gephi-parent but attached here -->
-                                            <file>${project.build.directory}/../../../target/${project.artifactId}-parent-${project.version}-javadoc.jar</file>
+                                            <file>${project.parent.basedir}/target/${project.artifactId}-parent-${project.version}-javadoc.jar</file>
                                             <type>jar</type>
                                             <classifier>javadoc</classifier>
                                         </artifact>
