@@ -13,7 +13,10 @@
                 <exclude>**/target/**</exclude>
                 <exclude>.git/**</exclude>
                 <exclude>**/*.log</exclude>
-                <exclude>src/travis/**</exclude>
+                <exclude>**/*.asc</exclude>
+                <exclude>**/*.ks</exclude>
+                <exclude>**/.DS_Store</exclude>
+                <exclude>.github/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
