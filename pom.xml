@@ -235,7 +235,7 @@
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.3.2</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.4.1</gephi.maven-javadoc-plugin.version>
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
@@ -1270,7 +1270,7 @@
                                 <phase>site</phase>
                                 <inherited>false</inherited>
                                 <goals>
-                                    <goal>aggregate</goal>
+                                    <goal>aggregate-jar</goal>
                                 </goals>
                                 <configuration>
                                     <show>public</show>
