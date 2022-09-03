@@ -235,7 +235,7 @@
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.3.2</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.4.1</gephi.maven-javadoc-plugin.version>
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
@@ -1265,12 +1265,13 @@
                                     <goal>jar</goal>
                                 </goals> 
                             </execution>
+                            <!-- Aggregate Javadoc, attached in gephi-app -->
                             <execution>
                                 <id>aggregate</id>
                                 <phase>site</phase>
                                 <inherited>false</inherited>
                                 <goals>
-                                    <goal>aggregate</goal>
+                                    <goal>aggregate-jar</goal>
                                 </goals>
                                 <configuration>
                                     <show>public</show>
@@ -1342,46 +1343,6 @@
                                     </descriptors>
                                     <attach>false</attach>
                                 </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <!-- Properties for release -->
-        <profile>
-            <id>release</id>
-            <properties>
-            </properties>
-        </profile>
-        
-        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
-        <profile>
-            <id>release-extra</id>
-            <build>
-                <plugins>
-                    
-                    <!-- Skip Javadoc creation -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution> 
-                                <id>attach-javadocs</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-            
-                    <!-- Skip sources attach -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>none</phase> 
                             </execution>
                         </executions>
                     </plugin>

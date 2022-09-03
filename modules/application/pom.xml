@@ -976,6 +976,37 @@
             </build>
         </profile>
 
+        <!-- Attach aggregate Javadoc -->
+        <profile>
+            <id>create-javadoc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <!-- Aggregate file is generated in gephi-parent but attached here -->
+                                            <file>${project.build.directory}/../../../target/${project.artifactId}-parent-${project.version}-javadoc.jar</file>
+                                            <type>jar</type>
+                                            <classifier>javadoc</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         
         <!-- Profile used along with deployment to create the tar.gz artifact -->
         <profile>
