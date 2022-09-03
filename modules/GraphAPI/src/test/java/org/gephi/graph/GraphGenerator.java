@@ -105,6 +105,17 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator addRandomPositions() {
+        Random random = new Random();
+        double size = 100.0;
+        for (Node node : graphModel.getGraph().getNodes()) {
+            node.setX((float) (-size / 2 + size * random.nextDouble()));
+            node.setY((float) (-size / 2 + size * random.nextDouble()));
+            node.setSize(random.nextFloat() * (float)size / 25f);
+        }
+        return this;
+    }
+
     public GraphGenerator addIntNodeColumn() {
         graphModel.getNodeTable().addColumn(INT_COLUMN, Integer.class);
         int age = INT_COLUMN_MIN_VALUE;

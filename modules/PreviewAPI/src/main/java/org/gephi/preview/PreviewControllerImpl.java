@@ -159,10 +159,10 @@ public class PreviewControllerImpl implements PreviewController {
 
         Renderer[] renderers;
         if (!mousePressed) {
-            renderers = model.getManagedEnabledRenderers();
+            renderers = previewModel.getManagedEnabledRenderers();
         } else {
             ArrayList<Renderer> renderersList = new ArrayList<>();
-            for (Renderer renderer : model.getManagedEnabledRenderers()) {
+            for (Renderer renderer : previewModel.getManagedEnabledRenderers()) {
                 //Only mouse responsive renderers will be called while mouse is pressed
                 if (renderer instanceof MouseResponsiveRenderer) {
                     renderersList.add(renderer);
@@ -198,7 +198,7 @@ public class PreviewControllerImpl implements PreviewController {
 
         //Pre process renderers
         for (Renderer r : renderers) {
-            r.preProcess(model);
+            r.preProcess(previewModel);
         }
     }
 
