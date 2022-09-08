@@ -44,6 +44,7 @@ package org.gephi.layout;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutModel;
@@ -190,6 +192,10 @@ public class LayoutModelImpl implements LayoutModel {
             try {
                 Object value = p.getProperty().getValue();
                 if (value != null) {
+                    if (value instanceof Column) {
+                        PropertyEditor propertyEditor = p.getProperty().getPropertyEditor();
+                        value = propertyEditor.getAsText();
+                    }
                     savedProperties
                         .put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
@@ -212,7 +218,12 @@ public class LayoutModelImpl implements LayoutModel {
                     || property.getProperty().getName().equalsIgnoreCase(
                     l.name)) {//Also compare with property name to maintain compatibility with old saved properties
                     try {
-                        property.getProperty().setValue(savedProperties.get(l));
+                        if (property.getProperty().getValueType().isAssignableFrom(Column.class)) {
+                            PropertyEditor propertyEditor = property.getProperty().getPropertyEditor();
+                            propertyEditor.setAsText(savedProperties.get(l).toString());
+                        } else {
+                            property.getProperty().setValue(savedProperties.get(l));
+                        }
                     } catch (Exception e) {
                         Exceptions.printStackTrace(e);
                     }
