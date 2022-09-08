@@ -2,16 +2,19 @@ package org.gephi.layout.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.gephi.ui.propertyeditor.NodeColumnAllNumbersEditor;
 import org.openide.util.Exceptions;
 
 public class MockLayout implements Layout {
 
     private final MockLayoutBuilder builder;
     private double angle;
+    private Column column;
 
     public MockLayout(MockLayoutBuilder builder) {
         this.builder = builder;
@@ -53,6 +56,12 @@ public class MockLayout implements Layout {
                 "",
                 "",
                 "getAngle", "setAngle"));
+            properties.add(LayoutProperty.createProperty(
+                this, Column.class,
+                "column",
+                null,
+                "",
+                "getColumn", "setColumn", NodeColumnAllNumbersEditor.class));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -75,5 +84,13 @@ public class MockLayout implements Layout {
 
     public void setAngle(Double angle) {
         this.angle = angle;
+    }
+
+    public Column getColumn() {
+        return column;
+    }
+
+    public void setColumn(Column column) {
+        this.column = column;
     }
 }
