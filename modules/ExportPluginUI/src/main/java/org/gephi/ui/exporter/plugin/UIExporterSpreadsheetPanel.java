@@ -115,12 +115,19 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
 
         ArrayList<ColumnCheckboxWrapper> columnCheckboxesList = new ArrayList<>();
 
+
         //Show rest of columns:
         Table table = getSelectedTable() == ExporterSpreadsheet.ExportTable.NODES ? graphModel.getNodeTable() :
             graphModel.getEdgeTable();
         for (Column column : table) {
             columnCheckboxesList.add(new ColumnCheckboxWrapper(column.getId(), column.getTitle()));
         }
+        if (!table.isEdgeTable()) {
+            ColumnCheckboxWrapper positionsCheckbox = new ColumnCheckboxWrapper("positions", "Positions");
+            positionsCheckbox.setSelected(false);
+            columnCheckboxesList.add(positionsCheckbox);
+        }
+
 
         columnsCheckBoxes = columnCheckboxesList.toArray(new ColumnCheckboxWrapper[0]);
         for (ColumnCheckboxWrapper columnCheckboxWrapper : columnsCheckBoxes) {

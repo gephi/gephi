@@ -51,15 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Element;
-import org.gephi.graph.api.ElementIterable;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Table;
-import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
@@ -95,6 +87,20 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
+    private boolean includePositions = false;
+
+    private boolean normalize = true;
+
+    private NodeIterable nodes;
+
+    float minX, maxX;
+
+    float minY, maxY;
+
+    float minZ, maxZ;
+
+    float minSize, maxSize;
+
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
@@ -102,6 +108,9 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
         graph.readLock();
         try {
+            if (normalize) {
+                computeNormalizeValues(graph);
+            }
             exportData(graph);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -137,6 +146,9 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
             if (columnIdsToExport != null) {
                 for (String columnId : columnIdsToExport) {
+                    if (columnId.equalsIgnoreCase("positions")) {
+                            includePositions = true;
+                    }
                     Column column = table.getColumn(columnId);
                     if (column != null) {
                         columns.add(column);
@@ -165,6 +177,10 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                 String columnHeader = columnId.equalsIgnoreCase(columnTitle) ? columnTitle : columnId;
                 csvWriter.print(columnHeader);
             }
+            if (includePositions) {
+                csvWriter.print("X");
+                csvWriter.print("Y");
+            }
             csvWriter.println();
 
             //Write rows:
@@ -173,6 +189,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
             } else {
                 rows = graph.getNodes();
             }
+
 
             for (Element row : rows) {
                 if (isEdgeTable) {
@@ -188,6 +205,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
                 for (Column column : columns) {
                     Object value = row.getAttribute(column);
+
                     String text;
 
                     if (value != null) {
@@ -200,6 +218,23 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                         text = "";
                     }
                     csvWriter.print(text);
+                }
+
+
+                if (includePositions) {
+
+                    Node n = (Node) row;
+
+                    List <String> coordinates = new ArrayList<>();
+
+                    coordinates.add(NUMBER_FORMAT.format((n.x() - minX) / (maxX - minX)));
+                    coordinates.add(NUMBER_FORMAT.format((n.y() - minY) / (maxY - minY)));
+//                    coordinates.add(NUMBER_FORMAT.format((n.y() - minZ) / (maxZ - minZ)));
+
+                    for (int itr=0; itr < coordinates.size(); itr++) {
+                        csvWriter.print(coordinates.get(itr));
+                    }
+
                 }
 
                 csvWriter.println();
@@ -270,4 +305,35 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
         NODES,
         EDGES
     }
+
+    private void computeNormalizeValues(Graph graph) {
+        minX = Float.MAX_VALUE;
+        minY = Float.MAX_VALUE;
+        minZ = Float.MAX_VALUE;
+
+        maxX = Float.MIN_VALUE;
+        maxY = Float.MIN_VALUE;
+        maxZ = Float.MIN_VALUE;
+
+        minSize = Float.MAX_VALUE;
+        maxSize = Float.MIN_VALUE;
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
+            if (cancel) {
+                nodeIterable.doBreak();
+                break;
+            }
+            minX = Math.min(minX, node.x());
+            minY = Math.min(minY, node.y());
+            minZ = Math.min(minZ, node.z());
+
+            maxX = Math.max(maxX, node.x());
+            maxY = Math.max(maxY, node.y());
+            maxZ = Math.max(maxZ, node.z());
+
+            minSize = Math.min(minSize, node.size());
+            maxSize = Math.max(maxSize, node.size());
+        }
+    }
+
 }
