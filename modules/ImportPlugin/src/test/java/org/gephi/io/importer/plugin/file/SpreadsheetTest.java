@@ -52,8 +52,12 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Table;
@@ -581,14 +585,7 @@ public class SpreadsheetTest {
         exporter.setWriter(writer);
 
         if (ignoreId) {
-            Table edgeTable = graphController.getGraphModel(workspace).getEdgeTable();
-            LinkedHashSet<String> columnIdsToExport = new LinkedHashSet<>();
-            for (Column column : edgeTable) {
-                if (!column.getId().equals("id")) {
-                    columnIdsToExport.add(column.getId());
-                }
-            }
-            exporter.setColumnIdsToExport(columnIdsToExport);
+            exporter.setExcludedColumns(Set.of("id"));
         }
 
         exporter.execute();
