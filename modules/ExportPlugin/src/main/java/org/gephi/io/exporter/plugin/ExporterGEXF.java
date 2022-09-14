@@ -156,15 +156,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
     private boolean exportMeta = true;
-    //Settings Helper
-    private float minSize;
-    private float maxSize;
-    private float minX;
-    private float maxX;
-    private float minY;
-    private float maxY;
-    private float minZ;
-    private float maxZ;
+    private NormalizationHelper normalization;
 
     @Override
     public boolean execute() {
@@ -179,7 +171,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         exportDynamic = exportDynamic && graphModel.isDynamic();
 
         //Calculate min & max
-        calculateMinMax(graph);
+        normalization = NormalizationHelper.build(normalize, graph);
 
         Progress.switchToDeterminate(progress, graph.getNodeCount() + graph.getEdgeCount());
 
@@ -473,23 +465,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodePosition(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        float x = node.x();
-        if (normalize && x != 0.0) {
-            x = (x - minX) / (maxX - minX);
-        }
-        float y = node.y();
-        if (normalize && y != 0.0) {
-            y = (y - minY) / (maxY - minY);
-        }
-        float z = node.z();
-        if (normalize && z != 0.0) {
-            z = (z - minZ) / (maxZ - minZ);
-        }
+        float x = normalization.normalizeX(node.x());
+        float y = normalization.normalizeY(node.y());
+        float z = normalization.normalizeZ(node.z());
         if (!(x == 0 && y == 0 && z == 0)) {
             xmlWriter.writeStartElement(VIZ, NODE_POSITION, VIZ_NAMESPACE);
             xmlWriter.writeAttribute("x", "" + x);
             xmlWriter.writeAttribute("y", "" + y);
-            if (minZ != 0 || maxZ != 0) {
+            if (normalization.minZ != 0 || normalization.maxZ != 0) {
                 xmlWriter.writeAttribute("z", "" + z);
             }
             xmlWriter.writeEndElement();
@@ -497,11 +480,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodeSize(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        float size = node.size();
-        if (normalize) {
-            size = (size - minSize) / (maxSize - minSize);
-        }
-        if(size != 0) {
+        float size = normalization.normalizeSize(node.size());
+        if(normalize || size != 0) {
             xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
             xmlWriter.writeAttribute("value", "" + size);
             xmlWriter.writeEndElement();
@@ -656,28 +636,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 }
                 xmlWriter.writeEndElement();
             }
-        }
-    }
-
-    private void calculateMinMax(Graph graph) {
-        minX = Float.POSITIVE_INFINITY;
-        maxX = Float.NEGATIVE_INFINITY;
-        minY = Float.POSITIVE_INFINITY;
-        maxY = Float.NEGATIVE_INFINITY;
-        minZ = Float.POSITIVE_INFINITY;
-        maxZ = Float.NEGATIVE_INFINITY;
-        minSize = Float.POSITIVE_INFINITY;
-        maxSize = Float.NEGATIVE_INFINITY;
-
-        for (Node node : graph.getNodes()) {
-            minX = Math.min(minX, node.x());
-            maxX = Math.max(maxX, node.x());
-            minY = Math.min(minY, node.y());
-            maxY = Math.max(maxY, node.y());
-            minZ = Math.min(minZ, node.z());
-            maxZ = Math.max(maxZ, node.z());
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
         }
     }
 
