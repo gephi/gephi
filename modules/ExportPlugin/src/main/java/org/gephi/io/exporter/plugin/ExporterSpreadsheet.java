@@ -101,7 +101,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     private boolean exportAttributes = true;
     private boolean exportPosition = false;
     private boolean exportSize = false;
-    private boolean exportDynamic = false;
+    private boolean exportDynamic = true;
 
     @Override
     public boolean execute() {
