@@ -67,6 +67,8 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -208,6 +210,9 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 selectedBuilder = getExporter(exporterBuilders, fileFilter);
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
+
+                    Workspace workspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
+                    selectedExporter.setWorkspace(workspace);
                 }
                 optionsButton.setEnabled(
                     selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null);

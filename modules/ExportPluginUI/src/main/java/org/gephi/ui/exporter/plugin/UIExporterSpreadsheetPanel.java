@@ -42,18 +42,21 @@ Portions Copyrighted 2017 Gephi Consortium.
 
 package org.gephi.ui.exporter.plugin;
 
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Table;
 import org.gephi.io.exporter.plugin.ExporterSpreadsheet;
-import org.gephi.project.api.ProjectController;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 
 /**
  * UI for selecting CSV export options of a JTable.
@@ -62,47 +65,95 @@ import org.openide.util.NbPreferences;
  */
 public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
 
-    private static final String SEPARATOR_SAVED_PREFERENCES = "UIExporterSpreadsheetPanel_Separator";
-    private static final String TABLE_SAVED_PREFERENCES = "UIExporterSpreadsheetPanel_Table";
-    private ColumnCheckboxWrapper[] columnsCheckBoxes;
-    private GraphModel graphModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox attributesExportCheckbox;
+    private javax.swing.JCheckBox colorsExportCheckbox;
     private javax.swing.JLabel columnsLabel;
     private javax.swing.JPanel columnsPanel;
+    private javax.swing.JComboBox decimalSeparatorComboBox;
+    private javax.swing.JLabel decimalSeparatorLabel;
+    private javax.swing.JCheckBox dynamicExportCheckbox;
+    private javax.swing.JLabel labelExport;
+    private javax.swing.JLabel labelNormalize;
+    private javax.swing.JCheckBox normalizeCheckbox;
+    private javax.swing.JCheckBox positionExportCheckbox;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JComboBox separatorComboBox;
     private javax.swing.JLabel separatorLabel;
+    private javax.swing.JCheckBox sizeExportCheckbox;
     private javax.swing.JComboBox tableComboBox;
     private javax.swing.JLabel tableLabel;
     // End of variables declaration//GEN-END:variables
+
+    private final Set<SeparatorWrapper> separators = new HashSet<>();
+    private final Set<SeparatorWrapper> decimalSeparators = new HashSet<>();
+
+    private List<ColumnCheckboxWrapper> columnsCheckBoxes;
+    private GraphModel graphModel;
+    private ExporterSpreadsheet exporterSpreadsheet;
 
     /**
      * Creates new form UIExporterSpreadsheet
      */
     public UIExporterSpreadsheetPanel() {
         initComponents();
-        separatorComboBox.addItem(new SeparatorWrapper((','), getMessage("UIExporterSpreadsheetPanel.comma")));
-        separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("UIExporterSpreadsheetPanel.semicolon")));
-        separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("UIExporterSpreadsheetPanel.tab")));
-        separatorComboBox.addItem(new SeparatorWrapper((' '), getMessage("UIExporterSpreadsheetPanel.space")));
 
-        separatorComboBox.setSelectedIndex(NbPreferences.forModule(UIExporterSpreadsheetPanel.class)
-            .getInt(SEPARATOR_SAVED_PREFERENCES, 0));//Use saved separator or comma if not saved
+        separators.add(new SeparatorWrapper((','), getMessage("UIExporterSpreadsheetPanel.comma")));
+        separators.add(new SeparatorWrapper((';'), getMessage("UIExporterSpreadsheetPanel.semicolon")));
+        separators.add(new SeparatorWrapper(('\t'), getMessage("UIExporterSpreadsheetPanel.tab")));
+        separators.add(new SeparatorWrapper((' '), getMessage("UIExporterSpreadsheetPanel.space")));
+        separators.forEach(s -> separatorComboBox.addItem(s));
+
+        decimalSeparators.add(new SeparatorWrapper(('.'), getMessage("UIExporterSpreadsheetPanel.dot")));
+        decimalSeparators.add(new SeparatorWrapper((','), getMessage("UIExporterSpreadsheetPanel.comma")));
+        decimalSeparators.forEach(s -> decimalSeparatorComboBox.addItem(s));
 
         tableComboBox.addItem(getMessage("UIExporterSpreadsheetPanel.table.nodes"));
         tableComboBox.addItem(getMessage("UIExporterSpreadsheetPanel.table.edges"));
-
-        separatorComboBox.setSelectedIndex(NbPreferences.forModule(UIExporterSpreadsheetPanel.class)
-            .getInt(SEPARATOR_SAVED_PREFERENCES, 0));//Use saved separator or comma if not saved
-        tableComboBox.setSelectedIndex(NbPreferences.forModule(UIExporterSpreadsheetPanel.class)
-            .getInt(TABLE_SAVED_PREFERENCES, 1));//Use saved separator or edges by default if not saved
     }
 
-    public void unSetup() {
-        NbPreferences.forModule(UIExporterSpreadsheetPanel.class)
-            .putInt(SEPARATOR_SAVED_PREFERENCES, separatorComboBox.getSelectedIndex());
-        NbPreferences.forModule(UIExporterSpreadsheetPanel.class)
-            .putInt(TABLE_SAVED_PREFERENCES, tableComboBox.getSelectedIndex());
+    public void setup(ExporterSpreadsheet exporter) {
+        tableComboBox.setSelectedIndex(
+            exporter.getTableToExport().equals(ExporterSpreadsheet.ExportTable.NODES) ? 0 : 1);
+        separatorComboBox.setSelectedItem(new SeparatorWrapper(exporter.getFieldDelimiter()));
+        decimalSeparatorComboBox.setSelectedItem(
+            new SeparatorWrapper(exporter.getDecimalFormatSymbols().getDecimalSeparator()));
+
+        positionExportCheckbox.setSelected(exporter.isExportPosition());
+        colorsExportCheckbox.setSelected(exporter.isExportColors());
+        sizeExportCheckbox.setSelected(exporter.isExportSize());
+        attributesExportCheckbox.setSelected(exporter.isExportAttributes());
+        dynamicExportCheckbox.setSelected(exporter.isExportDynamic());
+        normalizeCheckbox.setSelected(exporter.isNormalize());
+
+        graphModel = exporter.getWorkspace().getLookup().lookup(GraphModel.class);
+        exporterSpreadsheet = exporter;
+
+        refreshColumns();
+    }
+
+    public void unsetup(ExporterSpreadsheet exporter) {
+        exporter.setTableToExport(tableComboBox.getSelectedIndex() == 0 ? ExporterSpreadsheet.ExportTable.NODES :
+            ExporterSpreadsheet.ExportTable.EDGES);
+        exporter.setFieldDelimiter(((SeparatorWrapper) separatorComboBox.getSelectedItem()).separator);
+
+        DecimalFormatSymbols dfs = exporter.getDecimalFormatSymbols();
+        dfs.setDecimalSeparator(((SeparatorWrapper) decimalSeparatorComboBox.getSelectedItem()).separator);
+        exporter.setDecimalFormatSymbols(dfs);
+
+        exporter.setExportPosition(positionExportCheckbox.isSelected());
+        exporter.setExportColors(colorsExportCheckbox.isSelected());
+        exporter.setExportSize(sizeExportCheckbox.isSelected());
+        exporter.setExportAttributes(attributesExportCheckbox.isSelected());
+        exporter.setExportDynamic(dynamicExportCheckbox.isSelected());
+        exporter.setNormalize(normalizeCheckbox.isSelected());
+
+        exporter.setExcludedColumns(columnsCheckBoxes.stream().filter(c -> !c.isSelected()).map(c -> c.id).collect(
+            Collectors.toSet()));
+
+        graphModel = null;
+        exporterSpreadsheet = null;
+        columnsCheckBoxes = null;
     }
 
     private void refreshColumns() {
@@ -113,65 +164,24 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
         columnsPanel.removeAll();
         columnsPanel.setLayout(new MigLayout("", "[pref!]"));
 
-        ArrayList<ColumnCheckboxWrapper> columnCheckboxesList = new ArrayList<>();
-
+        columnsCheckBoxes = new ArrayList<>();
 
         //Show rest of columns:
-        Table table = getSelectedTable() == ExporterSpreadsheet.ExportTable.NODES ? graphModel.getNodeTable() :
+        Table table = tableComboBox.getSelectedIndex() == 0 ? graphModel.getNodeTable() :
             graphModel.getEdgeTable();
-        for (Column column : table) {
-            columnCheckboxesList.add(new ColumnCheckboxWrapper(column.getId(), column.getTitle()));
-        }
-        if (!table.isEdgeTable()) {
-            ColumnCheckboxWrapper positionsCheckbox = new ColumnCheckboxWrapper("positions", "Positions");
-            positionsCheckbox.setSelected(false);
-            columnCheckboxesList.add(positionsCheckbox);
-        }
+        for (Column column : exporterSpreadsheet.getExportableColumns(graphModel, table)) {
+            ColumnCheckboxWrapper checkBox = new ColumnCheckboxWrapper(column.getId(), column.getTitle());
+            columnsCheckBoxes.add(checkBox);
 
+            if (exporterSpreadsheet.getExcludedColumns().contains(column.getId())) {
+                checkBox.setSelected(false);
+            }
 
-        columnsCheckBoxes = columnCheckboxesList.toArray(new ColumnCheckboxWrapper[0]);
-        for (ColumnCheckboxWrapper columnCheckboxWrapper : columnsCheckBoxes) {
-            columnsPanel.add(columnCheckboxWrapper, "wrap");
+            columnsPanel.add(checkBox, "wrap");
         }
 
         columnsPanel.revalidate();
         columnsPanel.repaint();
-    }
-
-    public Character getSelectedSeparator() {
-        Object item = separatorComboBox.getSelectedItem();
-        if (item instanceof SeparatorWrapper) {
-            return ((SeparatorWrapper) item).separator;
-        } else {
-            return item.toString().charAt(0);
-        }
-    }
-
-    public LinkedHashSet<String> getSelectedColumnsIds() {
-        LinkedHashSet<String> columnsIds = new LinkedHashSet<>();
-        for (ColumnCheckboxWrapper columnsCheckBox : columnsCheckBoxes) {
-            if (columnsCheckBox.isSelected()) {
-                columnsIds.add(columnsCheckBox.id);
-            }
-        }
-
-        return columnsIds;
-    }
-
-    public ExporterSpreadsheet.ExportTable getSelectedTable() {
-        return tableComboBox.getSelectedIndex() == 0 ? ExporterSpreadsheet.ExportTable.NODES :
-            ExporterSpreadsheet.ExportTable.EDGES;
-    }
-
-    public void setup(ExporterSpreadsheet exporter) {
-        ExporterSpreadsheet.ExportTable tableToExport = exporter.getTableToExport();
-        if (tableToExport != null) {
-            tableComboBox.setSelectedIndex(tableToExport == ExporterSpreadsheet.ExportTable.NODES ? 0 : 1);
-        }
-
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        graphModel = projectController.getCurrentWorkspace().getLookup().lookup(GraphModel.class);
-        refreshColumns();
     }
 
     private String getMessage(String resName) {
@@ -192,24 +202,68 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
         columnsLabel = new javax.swing.JLabel();
         tableLabel = new javax.swing.JLabel();
         tableComboBox = new javax.swing.JComboBox();
+        decimalSeparatorLabel = new javax.swing.JLabel();
+        decimalSeparatorComboBox = new javax.swing.JComboBox();
+        labelNormalize = new javax.swing.JLabel();
+        normalizeCheckbox = new javax.swing.JCheckBox();
+        dynamicExportCheckbox = new javax.swing.JCheckBox();
+        attributesExportCheckbox = new javax.swing.JCheckBox();
+        sizeExportCheckbox = new javax.swing.JCheckBox();
+        colorsExportCheckbox = new javax.swing.JCheckBox();
+        positionExportCheckbox = new javax.swing.JCheckBox();
+        labelExport = new javax.swing.JLabel();
 
-        separatorLabel.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterSpreadsheetPanel.class, "UIExporterSpreadsheetPanel.separatorLabel.text")); // NOI18N
+        separatorLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.separatorLabel.text")); // NOI18N
 
         columnsPanel.setLayout(new java.awt.GridLayout(1, 0));
         scroll.setViewportView(columnsPanel);
 
-        columnsLabel.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterSpreadsheetPanel.class, "UIExporterSpreadsheetPanel.columnsLabel.text")); // NOI18N
+        columnsLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.columnsLabel.text")); // NOI18N
 
-        tableLabel.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterSpreadsheetPanel.class, "UIExporterSpreadsheetPanel.tableLabel.text")); // NOI18N
+        tableLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.tableLabel.text")); // NOI18N
 
         tableComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tableComboBoxActionPerformed(evt);
             }
         });
+
+        decimalSeparatorLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.decimalSeparatorLabel.text")); // NOI18N
+
+        labelNormalize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelNormalize.setForeground(new java.awt.Color(102, 102, 102));
+        labelNormalize.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.labelNormalize.text")); // NOI18N
+
+        normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.normalizeCheckbox.text")); // NOI18N
+
+        dynamicExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.dynamicExportCheckbox.text")); // NOI18N
+
+        attributesExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.attributesExportCheckbox.text")); // NOI18N
+        attributesExportCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                attributesExportCheckboxActionPerformed(evt);
+            }
+        });
+
+        sizeExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.sizeExportCheckbox.text")); // NOI18N
+
+        colorsExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.colorsExportCheckbox.text")); // NOI18N
+
+        positionExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.positionExportCheckbox.text")); // NOI18N
+
+        labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterSpreadsheetPanel.class,
+            "UIExporterSpreadsheetPanel.labelExport.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -218,20 +272,47 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                        .addComponent(scroll)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(columnsLabel)
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                                .addComponent(separatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(18, 18, 18)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(separatorComboBox, 0, 151, Short.MAX_VALUE)
-                                .addComponent(tableComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                    Short.MAX_VALUE))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(
+                                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1,
+                                                Short.MAX_VALUE)
+                                            .addComponent(separatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(18, 18, Short.MAX_VALUE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(decimalSeparatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(16, 16, 16)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(decimalSeparatorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(separatorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(tableComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(normalizeCheckbox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(labelNormalize, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(columnsLabel)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelExport)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(colorsExportCheckbox)
+                                        .addComponent(sizeExportCheckbox)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(attributesExportCheckbox)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(dynamicExportCheckbox))
+                                        .addComponent(positionExportCheckbox))))
+                            .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -248,9 +329,32 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
                         .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
                             javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(decimalSeparatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(decimalSeparatorLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(positionExportCheckbox)
+                        .addComponent(labelExport))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(colorsExportCheckbox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(sizeExportCheckbox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(attributesExportCheckbox)
+                        .addComponent(dynamicExportCheckbox))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(normalizeCheckbox)
+                        .addComponent(labelNormalize))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(columnsLabel)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 102,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -260,7 +364,13 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
         refreshColumns();
     }//GEN-LAST:event_tableComboBoxActionPerformed
 
-    private class SeparatorWrapper {
+    private void attributesExportCheckboxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attributesExportCheckboxActionPerformed
+        exporterSpreadsheet.setExportAttributes(attributesExportCheckbox.isSelected());
+        refreshColumns();
+    }//GEN-LAST:event_attributesExportCheckboxActionPerformed
+
+    private static class SeparatorWrapper {
 
         private final Character separator;
         private String displayText;
@@ -282,9 +392,33 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
                 return String.valueOf(separator);
             }
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 37 * hash + Objects.hashCode(this.separator);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final SeparatorWrapper other = (SeparatorWrapper) obj;
+            return Objects.equals(this.separator, other.separator);
+        }
+
+
     }
 
-    private class ColumnCheckboxWrapper extends JCheckBox {
+    private static class ColumnCheckboxWrapper extends JCheckBox {
 
         private final String id;
 
