@@ -583,6 +583,7 @@ public class SpreadsheetTest {
         exporter.setWorkspace(workspace);
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.EDGES);
         exporter.setWriter(writer);
+        exporter.setExportDynamic(true);
 
         if (ignoreId) {
             exporter.setExcludedColumns(Set.of("id"));
@@ -612,6 +613,7 @@ public class SpreadsheetTest {
         exporter.setWorkspace(workspace);
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.NODES);
         exporter.setWriter(writer);
+        exporter.setExportDynamic(true);
 
         exporter.execute();
 
