@@ -3,6 +3,7 @@ package org.gephi.appearance;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.Optional;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.Ranking;
@@ -11,8 +12,12 @@ import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
@@ -178,6 +183,40 @@ public class AppearanceControllerTest {
             Function::isPartition).findFirst();
         controller.transform(partitionFunction.get());
         Assert.assertEquals(Color.GREEN, node.getColor());
+    }
+
+    @Test
+    public void testRankingDynamicColumn() {
+        MockServices.setServices(FixedTransformer.class);
+        GraphGenerator generator =
+            GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampDoubleColumn();
+        AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+        Column col = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
+
+        Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
+        TimestampDoubleMap ts = new TimestampDoubleMap(new double[] {2000, 2004, 2008}, new double[] {0, 500, 1000});
+        node1.setAttribute(col, ts);
+
+        Function rankingFunction =
+            Arrays.stream(controller.getModel().getNodeFunctions()).filter(f -> f.isRanking() && f.isAttribute()
+                    && ((AttributeFunction) f).getColumn() == col)
+                .findFirst().get();
+
+        GraphView view = generator.getGraphModel().createView(true, false);
+        view.getGraphModel().getGraph(view).fill();
+        generator.getGraphModel().setVisibleView(view);
+
+        controller.transform(rankingFunction);
+        Assert.assertEquals(0, (int) node1.size());
+
+        col.setEstimator(Estimator.MAX);
+        controller.transform(rankingFunction);
+        Assert.assertEquals(1, (int) node1.size());
+
+        view.getGraphModel().setTimeInterval(view, new Interval(2000, 2000));
+        controller.transform(rankingFunction);
+        Assert.assertEquals(0, (int) node1.size());
     }
 
     public static class FixedTransformer implements Transformer, RankingTransformer<Node>,

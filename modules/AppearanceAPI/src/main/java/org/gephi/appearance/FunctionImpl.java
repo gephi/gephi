@@ -133,7 +133,8 @@ public abstract class FunctionImpl implements Function {
     }
 
     private void transformRanking(Element element, Graph graph, Number minValue, Number maxValue) {
-        Number val = ranking.getValue(element, graph);
+        // Always use visible graph to get the value (see #2629)
+        Number val = ranking.getValue(element, graph.getModel().getGraphVisible());
         if (val != null) {
             float normalizedValue = ranking.normalize(val, ranking.getInterpolator(), minValue, maxValue);
             ((RankingTransformer) transformer).transform(element, ranking, val, normalizedValue);
