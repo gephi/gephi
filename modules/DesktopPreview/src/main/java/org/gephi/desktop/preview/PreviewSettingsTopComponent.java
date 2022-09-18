@@ -257,7 +257,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
                     comboBoxModel.addElement(preset);
                 }
             }
-            presetComboBox.setSelectedItem(previewModel.getCurrentPreset());
+            comboBoxModel.setSelectedItem(previewModel.getCurrentPreset());
             presetComboBox.setModel(comboBoxModel);
         }
 
