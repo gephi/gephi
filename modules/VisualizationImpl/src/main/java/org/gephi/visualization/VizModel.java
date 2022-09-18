@@ -57,6 +57,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.text.TextModelImpl;
@@ -138,7 +139,11 @@ public class VizModel {
         cameraPosition = Arrays.copyOf(config.getDefaultCameraPosition(), 3);
         cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
         textModel = new TextModelImpl();
-        backgroundColor = config.getDefaultBackgroundColor();
+        if (UIUtils.isDarkLookAndFeel()) {
+            backgroundColor = config.getDefaultDarkBackgroundColor();
+        } else {
+            backgroundColor = config.getDefaultBackgroundColor();
+        }
         backgroundColorComponents = backgroundColor.getRGBComponents(backgroundColorComponents);
 
         showEdges = config.isDefaultShowEdges();
