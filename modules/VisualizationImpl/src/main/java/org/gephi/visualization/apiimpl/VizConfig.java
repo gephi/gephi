@@ -107,6 +107,7 @@ public class VizConfig {
     public static final String DISABLE_LOD = "VizConfig.disableLOD";
     //Default values
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    public static final Color DEFAULT_DARK_BACKGROUND_COLOR = Color.BLACK;
     public static final boolean DEFAULT_NODE_LABELS = false;
     public static final boolean DEFAULT_EDGE_LABELS = false;
     public static final boolean DEFAULT_SHOW_EDGES = true;
@@ -118,6 +119,7 @@ public class VizConfig {
     public static final Color DEFAULT_EDGE_UNIQUE_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public static final Color DEFAULT_NODE_LABEL_COLOR = new Color(0f, 0f, 0f, 1f);
     public static final Color DEFAULT_EDGE_LABEL_COLOR = new Color(0.5f, 0.5f, 0.5f, 1f);
+    public static final Color DEFAULT_DARK_NODE_LABEL_COLOR = new Color(1f, 1f, 1f, 1f);
     public static final Font DEFAULT_NODE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
     public static final Font DEFAULT_EDGE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
     public static final boolean DEFAULT_LABEL_SELECTION_ONLY = false;
@@ -161,6 +163,9 @@ public class VizConfig {
     //Default config - loaded in the VizModel
     protected Color defaultBackgroundColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
+
+    protected Color defaultDarkBackgroundColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_DARK_BACKGROUND_COLOR)));
     protected float[] defaultCameraTarget = {0f, 0f, 0f};
     protected float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected boolean defaultShowNodeLabels =
@@ -183,6 +188,8 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
     protected Color defaultNodeLabelColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
+    protected Color defaultDarkNodeLabelColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_DARK_NODE_LABEL_COLOR)));
     protected Color defaultEdgeLabelColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
     protected Font defaultNodeLabelFont = Font.decode(
@@ -293,6 +300,10 @@ public class VizConfig {
         return defaultBackgroundColor;
     }
 
+    public Color getDefaultDarkBackgroundColor() {
+        return defaultDarkBackgroundColor;
+    }
+
     public float[] getDefaultCameraPosition() {
         return defaultCameraPosition;
     }
@@ -327,6 +338,10 @@ public class VizConfig {
 
     public Color getDefaultNodeLabelColor() {
         return defaultNodeLabelColor;
+    }
+
+    public Color getDefaultDarkNodeLabelColor() {
+        return defaultDarkNodeLabelColor;
     }
 
     public Font getDefaultNodeLabelFont() {

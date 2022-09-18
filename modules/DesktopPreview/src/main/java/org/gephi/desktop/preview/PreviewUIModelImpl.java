@@ -45,7 +45,9 @@ package org.gephi.desktop.preview;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  * @author Mathieu Bastian
@@ -61,7 +63,13 @@ public class PreviewUIModelImpl implements PreviewUIModel {
 
     public PreviewUIModelImpl(PreviewModel model) {
         previewModel = model;
-        currentPreset = new DefaultPreset();
+
+        if (UIUtils.isDarkLookAndFeel()) {
+            currentPreset = new BlackBackground();
+        } else {
+            currentPreset = new DefaultPreset();
+        }
+        model.getProperties().applyPreset(currentPreset);
     }
 
     @Override
