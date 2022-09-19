@@ -47,6 +47,7 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.UIUtils;
 
 /**
@@ -75,6 +76,11 @@ public class PreviewUIModelImpl implements PreviewUIModel {
     @Override
     public PreviewModel getPreviewModel() {
         return previewModel;
+    }
+
+    @Override
+    public Workspace getWorkspace() {
+        return previewModel.getWorkspace();
     }
 
     @Override

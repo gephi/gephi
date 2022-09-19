@@ -48,6 +48,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.Renderer;
+import org.gephi.project.api.Workspace;
 
 /**
  * The Preview Model contains all items and all preview properties. <p> Items are the visual elements built from the {@link Graph} by {@link ItemBuilder} implementations and can be retrieved from this
@@ -141,4 +142,11 @@ public interface PreviewModel {
      * @return the graphics canvas size
      */
     CanvasSize getGraphicsCanvasSize();
+
+    /**
+     * Returns the workspace this model is attached to.
+     *
+     * @return the workspace
+     */
+    Workspace getWorkspace();
 }

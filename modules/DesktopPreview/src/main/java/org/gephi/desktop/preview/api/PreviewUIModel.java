@@ -44,6 +44,7 @@ package org.gephi.desktop.preview.api;
 
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.project.api.Workspace;
 
 /**
  * @author Mathieu Bastian
@@ -58,5 +59,5 @@ public interface PreviewUIModel {
 
     boolean isRefreshing();
 
-    boolean isWorkspaceBarVisible();
+    Workspace getWorkspace();
 }

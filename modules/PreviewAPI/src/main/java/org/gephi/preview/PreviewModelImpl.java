@@ -284,6 +284,7 @@ public class PreviewModelImpl implements PreviewModel {
         sourceMap.clear();
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
