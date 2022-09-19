@@ -52,6 +52,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
         </dependency>
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
