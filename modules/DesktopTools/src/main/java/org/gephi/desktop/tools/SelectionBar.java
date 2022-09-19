@@ -171,7 +171,6 @@ public class SelectionBar extends javax.swing.JPanel {
 
         configureLink.setText(
             org.openide.util.NbBundle.getMessage(SelectionBar.class, "SelectionBar.configureLink.text")); // NOI18N
-        configureLink.setClickedColor(new java.awt.Color(0, 51, 255));
         configureLink.setDefaultCapable(false);
         configureLink.setFocusable(false);
         configureLink.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
