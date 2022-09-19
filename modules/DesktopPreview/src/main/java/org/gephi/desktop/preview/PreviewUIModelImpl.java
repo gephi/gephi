@@ -42,12 +42,20 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.preview;
 
+import java.util.Arrays;
+import java.util.Optional;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
@@ -59,7 +67,6 @@ public class PreviewUIModelImpl implements PreviewUIModel {
     private float visibilityRatio = 1f;
     private PreviewPreset currentPreset;
     private boolean refreshing;
-    private boolean workspaceBarVisible;
 
     public PreviewUIModelImpl(PreviewModel model) {
         previewModel = model;
@@ -75,6 +82,11 @@ public class PreviewUIModelImpl implements PreviewUIModel {
     @Override
     public PreviewModel getPreviewModel() {
         return previewModel;
+    }
+
+    @Override
+    public Workspace getWorkspace() {
+        return previewModel.getWorkspace();
     }
 
     @Override
@@ -104,12 +116,59 @@ public class PreviewUIModelImpl implements PreviewUIModel {
         this.refreshing = refreshing;
     }
 
-    @Override
-    public boolean isWorkspaceBarVisible() {
-        return workspaceBarVisible;
+    private void setCurrentPresetBasedOnString(String className, String displayName) {
+        // Retrieve preset, either default (by class) or user (by name)
+        PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
+        PreviewPreset[] defaultPresets = controller.getDefaultPresets();
+        Optional<PreviewPreset> preset =
+            Arrays.stream(defaultPresets).filter(p -> p.getClass().getName().equals(className)).findFirst();
+        if (preset.isPresent()) {
+            setCurrentPreset(preset.get());
+        } else {
+            PreviewPreset[] userPresets = controller.getUserPresets();
+            preset = Arrays.stream(userPresets).filter(p -> p.getName().equals(displayName)).findFirst();
+            preset.ifPresent(this::setCurrentPreset);
+        }
     }
 
-    public void setWorkspaceBarVisible(boolean workspaceBarVisible) {
-        this.workspaceBarVisible = workspaceBarVisible;
+    protected void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+        if (currentPreset != null) {
+            writer.writeStartElement("currentpreset");
+            writer.writeAttribute("class", currentPreset.getClass().getName());
+            writer.writeAttribute("name", currentPreset.getName());
+            writer.writeEndElement();
+        }
+        writer.writeStartElement("visibilityratio");
+        writer.writeAttribute("value", visibilityRatio + "");
+        writer.writeEndElement();
+    }
+
+    protected void readXML(XMLStreamReader reader) throws XMLStreamException {
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if ("currentpreset".equalsIgnoreCase(name)) {
+                        String presetClass = reader.getAttributeValue(null, "class");
+                        String presetName = reader.getAttributeValue(null, "name");
+
+                        setCurrentPresetBasedOnString(presetClass, presetName);
+                    } else if ("visibilityratio".equalsIgnoreCase(name)) {
+                        String value = reader.getAttributeValue(null, "value");
+                        visibilityRatio = Float.parseFloat(value);
+                    }
+                    break;
+                case XMLStreamReader.CHARACTERS:
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if ("previewuimodel".equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
+        }
     }
 }

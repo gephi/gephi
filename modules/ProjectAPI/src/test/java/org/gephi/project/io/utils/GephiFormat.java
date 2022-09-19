@@ -26,7 +26,7 @@ public class GephiFormat {
         String xmlStringAgain = toString(provider, newWorkspace);
 
         Assert.assertEquals(xmlString, xmlStringAgain);
-        return workspace;
+        return newWorkspace;
     }
 
     private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString)
