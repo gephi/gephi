@@ -223,7 +223,7 @@ public class PresetUtils {
         return new PreviewPreset(presetName, propertiesMap);
     }
 
-    private void addPreset(PreviewPreset preset) {
+    protected void addPreset(PreviewPreset preset) {
         presets.add(preset);
     }
 }
