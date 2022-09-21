@@ -74,7 +74,7 @@ import org.gephi.preview.types.EdgeColor;
 import org.gephi.preview.types.editors.BasicDependantColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
-import org.gephi.preview.types.editors.ColorEditor;
+import org.gephi.utils.ColorEditor;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.Serialization;
 import org.openide.util.Lookup;
@@ -128,9 +128,6 @@ public class PreviewModelImpl implements PreviewModel {
         }
         if (PropertyEditorManager.findEditor(EdgeColor.class) == null) {
             PropertyEditorManager.registerEditor(EdgeColor.class, BasicEdgeColorPropertyEditor.class);
-        }
-        if (PropertyEditorManager.findEditor(Color.class) == null) {
-            PropertyEditorManager.registerEditor(Color.class, ColorEditor.class);
         }
     }
 
