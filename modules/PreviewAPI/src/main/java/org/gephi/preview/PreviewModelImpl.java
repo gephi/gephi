@@ -42,6 +42,7 @@
 
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +74,7 @@ import org.gephi.preview.types.EdgeColor;
 import org.gephi.preview.types.editors.BasicDependantColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
+import org.gephi.preview.types.editors.ColorEditor;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.Serialization;
 import org.openide.util.Lookup;
@@ -126,6 +128,9 @@ public class PreviewModelImpl implements PreviewModel {
         }
         if (PropertyEditorManager.findEditor(EdgeColor.class) == null) {
             PropertyEditorManager.registerEditor(EdgeColor.class, BasicEdgeColorPropertyEditor.class);
+        }
+        if (PropertyEditorManager.findEditor(Color.class) == null) {
+            PropertyEditorManager.registerEditor(Color.class, ColorEditor.class);
         }
     }
 
@@ -184,7 +189,7 @@ public class PreviewModelImpl implements PreviewModel {
             //Default preset
             properties.applyPreset(new DefaultPreset());
 
-            //Defaut values
+            //Default values
             properties.putValue(PreviewProperty.VISIBILITY_RATIO, 1f);
         }
     }
