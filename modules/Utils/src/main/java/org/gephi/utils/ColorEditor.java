@@ -1,4 +1,4 @@
-package org.gephi.preview.types.editors;
+package org.gephi.utils;
 
 import java.awt.Color;
 import java.beans.PropertyEditorSupport;
