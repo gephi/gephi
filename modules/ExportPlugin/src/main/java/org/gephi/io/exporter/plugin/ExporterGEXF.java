@@ -250,7 +250,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
             xmlWriter.writeStartElement(META_CREATOR);
-            xmlWriter.writeCharacters("Gephi 0.9.3");
+
+            xmlWriter.writeCharacters(getCurrentVersion());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
@@ -259,6 +260,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeEndElement();
         }
+    }
+
+    private String getCurrentVersion() {
+        return NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion")
+            .replaceAll("( [0-9]{12})$", "");
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
