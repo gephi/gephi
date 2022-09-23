@@ -13,7 +13,7 @@
 
 - **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of [Apache Netbeans Platform](https://netbeans.apache.org/tutorials/nbm-quick-start.html) and can be extended or reused easily through well-written APIs.
 
-[Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/wiki/Releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
+[Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
 ![Gephi](https://gephi.github.io/images/screenshots/select-tool-mini.png)
 
@@ -23,7 +23,7 @@ Download and [Install](https://gephi.github.io/users/install/) Gephi on your com
 
 Get started with the [Quick Start](https://gephi.github.io/users/quick-start/) and follow the [Tutorials](https://gephi.github.io/users/). Load a sample [dataset](https://github.com/gephi/gephi/wiki/Datasets) and start to play with the data.
 
-If you run into any trouble or have questions consult our [forum](http://forum-gephi.org/).
+If you run into any trouble or have questions consult our [discussions](https://github.com/gephi/gephi/discussions).
 
 ## Latest releases
 
@@ -31,19 +31,17 @@ If you run into any trouble or have questions consult our [forum](http://forum-g
 
 - Latest stable release on [gephi.org](https://gephi.org/users/download/).
 
-### Nightly builds
+### Development builds
 
-Current version is 0.9.8-SNAPSHOT
+Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml). Current version is 0.10.0-SNAPSHOT
 
-- [gephi-0.9.8-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.8-SNAPSHOT&c=windows-x64&p=exe) (Windows)
+- [gephi-0.10.0-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=windows-x64&p=exe) (Windows)
 
-- [gephi-0.9.8-SNAPSHOT-windows-x32.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.8-SNAPSHOT&c=windows-x32&p=exe) (Windows x32)
+- [gephi-0.10.0-SNAPSHOT-windows-x32.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=windows-x32&p=exe) (Windows x32)
 
-- [gephi-0.9.8-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.8-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
+- [gephi-0.10.0-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
 
-- [gephi-0.9.8-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.8-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
-
-- [gephi-0.9.8-SNAPSHOT-sources.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.8-SNAPSHOT&c=sources&p=tar.gz) (Sources)
+- [gephi-0.10.0-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
 
 ## Developer Introduction
 

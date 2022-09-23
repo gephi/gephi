@@ -625,7 +625,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N
         splineButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
-        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         splineButton.setFocusPainted(false);
         splineButton.setFocusable(false);
         splineButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);

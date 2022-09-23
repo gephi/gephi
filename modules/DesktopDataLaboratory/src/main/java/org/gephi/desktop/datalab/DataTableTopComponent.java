@@ -502,13 +502,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         }
         if (isShowingNodesTable()) {
             if (nodeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(Color.WHITE);
+                filterTextField.setBackground(UIManager.getColor("TextField.background"));
             } else {
                 filterTextField.setBackground(INVALID_FILTER_COLOR);
             }
         } else if (isShowingEdgesTable()) {
             if (edgeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(Color.WHITE);
+                filterTextField.setBackground(UIManager.getColor("TextField.background"));
             } else {
                 filterTextField.setBackground(INVALID_FILTER_COLOR);
             }

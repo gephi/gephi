@@ -56,6 +56,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.openide.util.Lookup;
@@ -90,7 +91,11 @@ public class TextModelImpl {
         showEdgeLabels = vizConfig.isDefaultShowEdgeLabels();
         nodeFont = vizConfig.getDefaultNodeLabelFont();
         edgeFont = vizConfig.getDefaultEdgeLabelFont();
-        nodeColor = vizConfig.getDefaultNodeLabelColor().getRGBComponents(null);
+        if (UIUtils.isDarkLookAndFeel()) {
+            nodeColor = vizConfig.getDefaultDarkNodeLabelColor().getRGBComponents(null);
+        } else {
+            nodeColor = vizConfig.getDefaultNodeLabelColor().getRGBComponents(null);
+        }
         edgeColor = vizConfig.getDefaultEdgeLabelColor().getRGBComponents(null);
         selectedOnly = vizConfig.isDefaultShowLabelOnSelectedOnly();
         colorMode = VizController.getInstance().getTextManager().getColorModes()[2];

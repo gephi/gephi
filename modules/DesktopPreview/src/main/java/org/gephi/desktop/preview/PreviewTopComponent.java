@@ -61,6 +61,7 @@ import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
@@ -127,10 +128,13 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-                    previewController.getModel().getProperties()
-                        .putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
-                    PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-                    previewUIController.refreshPreview();
+                    PreviewProperties properties = previewController.getModel().getProperties();
+                    Color oldColor = properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+                    if (oldColor == null || !oldColor.equals(evt.getNewValue())) {
+                        properties.putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
+                        PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                        previewUIController.refreshPreview();
+                    }
                 }
             });
         southBusyLabel.setVisible(false);

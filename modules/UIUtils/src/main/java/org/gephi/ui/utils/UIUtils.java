@@ -89,6 +89,22 @@ public final class UIUtils {
         return UIManager.getLookAndFeel().getID().equals("Aqua"); //NOI18N
     }
 
+    public static boolean isFlatLafLookAndFeel() {
+        return UIManager.getLookAndFeel().getName().contains("FlatLaf"); //NOI18N
+    }
+
+    public static boolean isFlatLafLightLookAndFeel() {
+        return UIManager.getLookAndFeel().getID().equals("FlatLaf Light"); //NOI18N
+    }
+
+    public static boolean isFlatLafDarkLookAndFeel() {
+        return UIManager.getLookAndFeel().getName().equals("FlatLaf Dark"); //NOI18N
+    }
+
+    public static boolean isDarkLookAndFeel() {
+        return isFlatLafDarkLookAndFeel();
+    }
+
     public static Color getDarker(Color c) {
         if (c.equals(Color.WHITE)) {
             return new Color(244, 244, 244);

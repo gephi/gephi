@@ -75,6 +75,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.Evaluator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 class SplineControlPanel extends JPanel {
@@ -302,8 +303,7 @@ class SplineControlPanel extends JPanel {
         public Component getListCellRendererComponent(JList list, Object value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             Template template = (Template) value;
-            this.setBackground(Color.WHITE);
-            this.setIcon(new ImageIcon(template.getImage()));
+            this.setIcon(template.getImageIcon());
             this.isSelected = isSelected;
             return this;
         }
@@ -323,7 +323,6 @@ class SplineControlPanel extends JPanel {
 
         private final Point2D control1;
         private final Point2D control2;
-        private Image image;
 
         public Template(Point2D control1, Point2D control2) {
             this.control1 = control1;
@@ -338,22 +337,15 @@ class SplineControlPanel extends JPanel {
             return control2;
         }
 
-        public Image getImage() {
-            if (image == null) {
-                NumberFormat formatter = getNumberFormatter();
+        public ImageIcon getImageIcon() {
+            NumberFormat formatter = getNumberFormatter();
 
-                String name = "";
-                name += formatter.format(control1.getX()) + '-' + formatter.format(control1.getY());
-                name += '-';
-                name += formatter.format(control2.getX()) + '-' + formatter.format(control2.getY());
+            String name = "";
+            name += formatter.format(control1.getX()) + '-' + formatter.format(control1.getY());
+            name += '-';
+            name += formatter.format(control2.getX()) + '-' + formatter.format(control2.getY());
 
-                try {
-                    image = ImageIO.read(getClass().getResourceAsStream("images/templates/" + name + ".png"));
-                } catch (IOException e) {
-                }
-            }
-
-            return image;
+            return ImageUtilities.loadImageIcon("org/gephi/ui/components/splineeditor/images/templates/" + name + ".png", false);
         }
     }
 

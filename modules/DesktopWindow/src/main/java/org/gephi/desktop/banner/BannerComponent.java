@@ -63,27 +63,12 @@ public class BannerComponent extends javax.swing.JPanel {
     private final transient PerspectiveController perspectiveController;
     private transient JToggleButton[] buttons;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JPanel groupsPanel;
-    // End of variables declaration//GEN-END:variables
-
-    //Not working
-    /*public void reset() {
-    refreshSelectedPerspective();
-    for (final Perspective group : Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0])) {
-    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getName());
-    if (group.getName().equals(selectedPerspective)) {
-    tpg.open();
-    } else {
-    tpg.close();
-    }
-    }
-    }*/
-    private javax.swing.JButton logoButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.ButtonGroup perspectivesButtonGroup;
     private javax.swing.JPanel workspacePanel;
+    // End of variables declaration//GEN-END:variables
 
     public BannerComponent() {
         initComponents();
@@ -93,43 +78,22 @@ public class BannerComponent extends javax.swing.JPanel {
 
         addGroupTabs();
 
-        logoButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-
-                if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
-                    try {
-                        java.net.URI uri = new java.net.URI("https://gephi.org");
-                        desktop.browse(uri);
-                    } catch (Exception ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-
-            }
-        });
-
         //This defines the height of the banner bar
         setPreferredSize(new Dimension(100, 65));
     }
 
     private void addGroupTabs() {
-        buttons = new JPerspectiveButton[perspectiveController.getPerspectives().length];
+        buttons = new JToggleButton[perspectiveController.getPerspectives().length];
         int i = 0;
 
         //Add tabs
         for (final Perspective perspective : perspectiveController.getPerspectives()) {
-            JPerspectiveButton toggleButton =
-                new JPerspectiveButton(perspective.getDisplayName(), perspective.getIcon());
-            toggleButton.addActionListener(new ActionListener() {
+            JToggleButton toggleButton =
+                new JToggleButton(perspective.getDisplayName(), perspective.getIcon());
+            toggleButton.setFocusPainted(false);
+            toggleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    perspectiveController.selectPerspective(perspective);
-                }
-            });
+            toggleButton.addActionListener(e -> perspectiveController.selectPerspective(perspective));
             perspectivesButtonGroup.add(toggleButton);
             buttonsPanel.add(toggleButton);
             buttons[i++] = toggleButton;
@@ -162,10 +126,8 @@ public class BannerComponent extends javax.swing.JPanel {
 
         perspectivesButtonGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
-        logoButton = new javax.swing.JButton();
         groupsPanel = new javax.swing.JPanel();
         buttonsPanel = new javax.swing.JPanel();
-        bannerBackground = new javax.swing.JLabel();
         workspacePanel = new org.gephi.desktop.banner.workspace.WorkspacePanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -174,25 +136,8 @@ public class BannerComponent extends javax.swing.JPanel {
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
-        logoButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_std.png", false)); // NOI18N
-        logoButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(BannerComponent.class, "BannerComponent.logoButton.toolTipText")); // NOI18N
-        logoButton.setBorderPainted(false);
-        logoButton.setContentAreaFilled(false);
-        logoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        logoButton.setFocusPainted(false);
-        logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        logoButton.setPressedIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
-        logoButton.setRolloverIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/logo_glow.png", false)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        mainPanel.add(logoButton, gridBagConstraints);
-
-        groupsPanel.setBackground(new java.awt.Color(255, 255, 255));
         groupsPanel.setLayout(new java.awt.GridBagLayout());
 
-        buttonsPanel.setBackground(new java.awt.Color(255, 255, 255));
         buttonsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonsPanel.setOpaque(false);
         buttonsPanel.setPreferredSize(new java.awt.Dimension(10, 50));
@@ -206,16 +151,6 @@ public class BannerComponent extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         groupsPanel.add(buttonsPanel, gridBagConstraints);
 
-        bannerBackground.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/banner/resources/bannerback.png", false)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        groupsPanel.add(bannerBackground, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -228,27 +163,4 @@ public class BannerComponent extends javax.swing.JPanel {
         add(mainPanel, java.awt.BorderLayout.CENTER);
         add(workspacePanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-
-    private static class JPerspectiveButton extends JToggleButton {
-
-        public JPerspectiveButton(String text, Icon icon) {
-            setText(text);
-            setBorder(null);
-            setBorderPainted(false);
-            setContentAreaFilled(false);
-            setFocusPainted(false);
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-            setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-enabled.png", false),
-                ImageUtilities.icon2Image(icon), 6, 3)));
-            setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-mouseover.png", false),
-                ImageUtilities.icon2Image(icon), 6, 3)));
-            setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-selected.png", false),
-                ImageUtilities.icon2Image(icon), 6, 3)));
-        }
-    }
 }

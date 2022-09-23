@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.utils;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -65,6 +66,11 @@ public class Serialization {
 
     public Serialization(GraphModel graphModel) {
         this.graphModel = graphModel;
+
+        // Only needed in headless mode, not sure why
+        if (PropertyEditorManager.findEditor(Color.class) == null) {
+            PropertyEditorManager.registerEditor(Color.class, ColorEditor.class);
+        }
     }
 
     /**
