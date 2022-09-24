@@ -125,7 +125,7 @@ public class CopyEdgeDataToOtherEdges extends BasicEdgesManipulator implements G
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/broom--arrow.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/broom--arrow.png", false);
     }
 
     @Override

@@ -125,7 +125,7 @@ public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements G
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/broom--arrow.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/broom--arrow.png", false);
     }
 
     @Override

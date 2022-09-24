@@ -111,6 +111,6 @@ public class Settle extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/settle.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/settle.png", false);
     }
 }

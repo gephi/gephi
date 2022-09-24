@@ -105,6 +105,6 @@ public class ClearAttributeValue implements AttributeValueManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.png", false);
     }
 }

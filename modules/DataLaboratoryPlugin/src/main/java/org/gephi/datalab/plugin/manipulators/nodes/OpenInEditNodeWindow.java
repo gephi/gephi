@@ -111,6 +111,6 @@ public class OpenInEditNodeWindow extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.png", false);
     }
 }

@@ -111,6 +111,6 @@ public class DeleteNodes extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/cross.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/cross.png", false);
     }
 }

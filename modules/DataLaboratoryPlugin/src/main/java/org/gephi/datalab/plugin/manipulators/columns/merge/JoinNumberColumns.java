@@ -116,7 +116,7 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy, General
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.png", false);
     }
 
     @Override

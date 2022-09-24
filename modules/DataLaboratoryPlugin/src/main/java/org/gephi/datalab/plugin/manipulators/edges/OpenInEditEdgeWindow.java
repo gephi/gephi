@@ -110,6 +110,6 @@ public class OpenInEditEdgeWindow extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.png", false);
     }
 }

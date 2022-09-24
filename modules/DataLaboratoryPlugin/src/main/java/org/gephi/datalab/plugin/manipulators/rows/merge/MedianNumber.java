@@ -116,6 +116,6 @@ public class MedianNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/ui-slider-050.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/ui-slider-050.png", false);
     }
 }

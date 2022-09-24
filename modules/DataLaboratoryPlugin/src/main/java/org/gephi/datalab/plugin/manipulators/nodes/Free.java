@@ -111,6 +111,6 @@ public class Free extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/free.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/free.png", false);
     }
 }

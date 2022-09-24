@@ -140,7 +140,7 @@ public class JoinWithSeparator implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.png", false);
     }
 
     public String getSeparator() {

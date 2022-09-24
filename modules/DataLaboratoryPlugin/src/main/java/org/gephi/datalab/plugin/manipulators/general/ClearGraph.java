@@ -102,6 +102,6 @@ public class ClearGraph implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/eraser--minus.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/eraser--minus.png", false);
     }
 }

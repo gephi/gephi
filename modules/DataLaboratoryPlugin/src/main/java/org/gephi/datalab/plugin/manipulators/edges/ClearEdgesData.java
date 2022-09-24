@@ -124,7 +124,7 @@ public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColu
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.png", false);
     }
 
     @Override

@@ -110,6 +110,6 @@ public class SelectEdgesOnTable extends BasicNodesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DataLaboratoryPlugin/table-select-row.png", true);
+            .loadImageIcon("DataLaboratoryPlugin/table-select-row.png", false);
     }
 }

@@ -116,6 +116,6 @@ public class MaximumNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-white.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-white.png", false);
     }
 }
