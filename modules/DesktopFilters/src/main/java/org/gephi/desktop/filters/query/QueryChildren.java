@@ -109,7 +109,7 @@ public class QueryChildren extends Children.Array {
 
         public HelpNode() {
             super(Children.LEAF);
-            setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/drop.png");
+            setIconBaseWithExtension("DesktopFilters/drop.png");
         }
 
         @Override
