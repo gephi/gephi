@@ -107,7 +107,7 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-duplicate-column.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-duplicate-column.png", false);
     }
 
     public Column getTargetColumn() {

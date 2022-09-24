@@ -284,9 +284,9 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         private final int TITLE_X_OFFSET = 5;
         private final int TITLE_Y_OFFSET = 2;
         private final ImageIcon collapsedIcon =
-            ImageUtilities.loadImageIcon("resources/collapsedSnippet.png", false); //NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/collapsedSnippet.png", false); //NOI18N
         private final ImageIcon expandedIcon =
-            ImageUtilities.loadImageIcon("resources/expandedSnippet.png", false); //NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/expandedSnippet.png", false); //NOI18N
         private final JLabel plainPainter = new JLabel();
         private final JLabel boldPainter = new JLabel();
         private final Font plainFont = plainPainter.getFont().deriveFont(Font.PLAIN);

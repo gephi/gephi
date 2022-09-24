@@ -116,6 +116,6 @@ public class MinimumNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/minus-white.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/minus-white.png", true);
     }
 }

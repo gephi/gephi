@@ -108,7 +108,7 @@ public class DeleteEdgesWithNodes extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/cross.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/cross.png", true);
     }
 
     public void setDeleteSource(boolean deleteSource) {

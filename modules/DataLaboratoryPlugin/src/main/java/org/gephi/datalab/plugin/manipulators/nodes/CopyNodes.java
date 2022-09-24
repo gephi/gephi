@@ -110,7 +110,7 @@ public class CopyNodes extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/duplicate.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/duplicate.png", true);
     }
 
     public int getCopies() {

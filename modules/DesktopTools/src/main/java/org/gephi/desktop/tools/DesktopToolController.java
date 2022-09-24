@@ -191,7 +191,7 @@ public class DesktopToolController implements ToolController {
             if (toolUI.getIcon() != null) {
                 btn = new JToggleButton(toolUI.getIcon());
             } else {
-                btn = new JToggleButton(ImageUtilities.loadImageIcon("org/gephi/desktop/tools/tool.png", false));
+                btn = new JToggleButton(ImageUtilities.loadImageIcon("DesktopTools/tool.png", false));
             }
             btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());

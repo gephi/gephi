@@ -128,7 +128,7 @@ public final class WelcomeTopComponent extends JPanel {
 
     private void initAction() {
         openAction = new AbstractAction("",
-            ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
+            ImageUtilities.loadImageIcon("WelcomeScreen/gephifile20.png", false)) {
 
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -115,7 +115,7 @@ public class MedianNumber implements AttributeColumnsMergeStrategy, GeneralColum
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/ui-slider-050.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/ui-slider-050.png", true);
     }
 
     @Override

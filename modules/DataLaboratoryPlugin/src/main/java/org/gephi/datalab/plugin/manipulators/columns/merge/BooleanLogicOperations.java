@@ -116,7 +116,7 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/script-binary.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/script-binary.png", true);
     }
 
     public BooleanOperations[] getBooleanOperations() {

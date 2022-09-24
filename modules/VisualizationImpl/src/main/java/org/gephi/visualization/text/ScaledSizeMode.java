@@ -75,7 +75,7 @@ public class ScaledSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/ScaledSizeMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.png", false);
     }
 
     @Override

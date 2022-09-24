@@ -102,6 +102,6 @@ public class SetNull implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/broom.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/broom.png", true);
     }
 }

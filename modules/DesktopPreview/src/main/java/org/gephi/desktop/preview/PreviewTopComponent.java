@@ -355,7 +355,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        bannerLabel.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/info.png", false)); // NOI18N
+        bannerLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle
             .getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

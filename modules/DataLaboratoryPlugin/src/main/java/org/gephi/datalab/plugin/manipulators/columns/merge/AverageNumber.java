@@ -115,7 +115,7 @@ public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColu
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/balance.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/balance.png", true);
     }
 
     @Override

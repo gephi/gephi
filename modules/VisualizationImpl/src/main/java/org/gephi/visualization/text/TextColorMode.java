@@ -115,7 +115,7 @@ public class TextColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/TextColorMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/TextColorMode.png", false);
     }
 
     @Override

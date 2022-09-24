@@ -172,7 +172,7 @@ public class Brush implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/brush.svg", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/brush.svg", false);
             }
 
             @Override

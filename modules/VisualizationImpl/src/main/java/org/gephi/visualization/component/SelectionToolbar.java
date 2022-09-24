@@ -79,7 +79,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Mouse
         final JToggleButton mouseButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("org/gephi/visualization/component/mouse.png", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.png", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(new ActionListener() {
 
@@ -93,7 +93,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
-        Icon icon = ImageUtilities.loadImageIcon("org/gephi/visualization/component/rectangle.png", false);
+        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.png", false);
 
         //Rectangle
         final JToggleButton rectangleButton = new JToggleButton(icon);
@@ -113,7 +113,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Drag
         final JToggleButton dragButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("org/gephi/visualization/component/hand.png", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.png", false));
         dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
         dragButton.addActionListener(new ActionListener() {
 

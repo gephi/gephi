@@ -83,7 +83,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
         initComponents();
 
         // Init component
-        workspaceIcon = ImageUtilities.loadImageIcon("org/gephi/desktop/banner/workspace/resources/workspace.png", false);
+        workspaceIcon = ImageUtilities.loadImageIcon("DesktopWindow/workspace.png", false);
         tabDataModel = new DefaultTabDataModel();
 
         WinsysInfoForTabbedContainer ws = new WinsysInfoForTabbedContainer() {

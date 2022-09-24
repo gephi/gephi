@@ -75,7 +75,7 @@ public class ProportionalSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/opengl/text/ProportionalSizeMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.png", false);
     }
 
     @Override

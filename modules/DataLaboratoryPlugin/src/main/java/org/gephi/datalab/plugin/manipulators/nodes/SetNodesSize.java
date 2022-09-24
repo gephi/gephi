@@ -108,7 +108,7 @@ public class SetNodesSize extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/size.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/size.png", true);
     }
 
     public float getSize() {

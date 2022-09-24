@@ -82,7 +82,7 @@ public class ActionsToolbar extends JToolBar {
         final JButton centerOnGraphButton = new JButton();
         centerOnGraphButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "ActionsToolbar.centerOnGraph"));
         centerOnGraphButton.setIcon(
-            ImageUtilities.loadImageIcon("org/gephi/visualization/component/centerOnGraph.png", false));
+            ImageUtilities.loadImageIcon("VisualizationImpl/centerOnGraph.png", false));
         centerOnGraphButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,7 +94,7 @@ public class ActionsToolbar extends JToolBar {
         //Center on zero
         /*final JButton centerOnZeroButton = new JButton();
          centerOnZeroButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "ActionsToolbar.centerOnZero"));
-         centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/centerOnZero.png", false));
+         centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.png", false));
          centerOnZeroButton.addActionListener(new ActionListener() {
 
          public void actionPerformed(ActionEvent e) {
@@ -131,7 +131,7 @@ public class ActionsToolbar extends JToolBar {
         //Reset sizes
         //Reset label colors
         final JButton resetLabelColorButton = new JButton();
-        resetLabelColorButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/resetLabelColor.png", false));
+        resetLabelColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/resetLabelColor.png", false));
         resetLabelColorButton
             .setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelColors"));
         resetLabelColorButton.addActionListener(new ActionListener() {
@@ -154,7 +154,7 @@ public class ActionsToolbar extends JToolBar {
 
         //Reset label visible
         final JButton resetLabelVisibleButton = new JButton();
-        resetLabelVisibleButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/visualization/component/resetLabelVisible.png", false));
+        resetLabelVisibleButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/resetLabelVisible.png", false));
         resetLabelVisibleButton
             .setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelVisible"));
         resetLabelVisibleButton.addActionListener(new ActionListener() {

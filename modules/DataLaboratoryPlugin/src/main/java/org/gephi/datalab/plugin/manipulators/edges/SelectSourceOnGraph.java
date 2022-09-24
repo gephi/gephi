@@ -103,6 +103,6 @@ public class SelectSourceOnGraph extends BasicEdgesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
+            .loadImageIcon("DataLaboratoryPlugin/magnifier--arrow.png", true);
     }
 }

@@ -106,6 +106,6 @@ public class AddNodeToGraph implements GeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-circle.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-circle.png", true);
     }
 }

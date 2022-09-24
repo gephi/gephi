@@ -33,6 +33,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-icons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-project</artifactId>
         </dependency>
         <dependency>

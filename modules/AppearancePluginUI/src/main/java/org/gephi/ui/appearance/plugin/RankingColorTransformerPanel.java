@@ -252,7 +252,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         colorSwatchToolbar.setOpaque(false);
 
         colorSwatchButton.setIcon(
-            ImageUtilities.loadImageIcon("org/gephi/ui/appearance/plugin/resources/color-swatch.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("AppearancePluginUI/color-swatch.png", false)); // NOI18N
         colorSwatchButton.setFocusable(false);
         colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         colorSwatchButton.setIconTextGap(0);

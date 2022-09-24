@@ -139,7 +139,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/merge.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/merge.png", true);
     }
 
     public Column[] getColumns() {

@@ -190,7 +190,7 @@ public class ShortestPath implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("org/gephi/tools/plugin/resources/shortestpath.svg", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/shortestpath.svg", false);
             }
 
             @Override

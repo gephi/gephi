@@ -70,9 +70,9 @@ import org.openide.util.NbBundle;
 public final class MergeNodesUI extends JPanel implements ManipulatorUI {
 
     private static final ImageIcon CONFIG_BUTTONS_ICON =
-        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/gear.png", true);
+        ImageUtilities.loadImageIcon("DataLaboratoryPlugin/gear.png", true);
     private static final ImageIcon INFO_LABELS_ICON =
-        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
+        ImageUtilities.loadImageIcon("DataLaboratoryPlugin/information.png", true);
     private MergeNodes manipulator;
     private JCheckBox deleteMergedNodesCheckBox;
     private JComboBox nodesComboBox;

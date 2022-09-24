@@ -107,6 +107,6 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/binocular--arrow.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/binocular--arrow.png", false);
     }
 }
