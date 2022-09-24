@@ -598,8 +598,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
         rankingLocalScaleButton.setFocusable(false);
-        rankingLocalScaleButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("DesktopAppearance/funnel.png", false).getImage())))); // NOI18N
         controlToolbar.add(rankingLocalScaleButton);
 
         partitionLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/funnel.png", false)); // NOI18N
@@ -607,8 +605,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
         partitionLocalScaleButton.setFocusable(false);
-        partitionLocalScaleButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("DesktopAppearance/funnel.png", false).getImage())))); // NOI18N
         controlToolbar.add(partitionLocalScaleButton);
 
         transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.png", false)); // NOI18N
@@ -616,9 +612,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
         transformNullValuesButton.setFocusable(false);
-        transformNullValuesButton
-            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.png", false)
-                .getImage())))); // NOI18N
         controlToolbar.add(transformNullValuesButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
