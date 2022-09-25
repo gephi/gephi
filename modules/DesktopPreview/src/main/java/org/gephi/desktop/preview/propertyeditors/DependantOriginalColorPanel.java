@@ -123,7 +123,7 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jXHeader1 = new org.jdesktop.swingx.JXHeader();
-        colorButton = new JColorButton(Color.BLACK);
+        colorButton = new JColorButton(Color.BLACK, false, true);
         customRadio = new javax.swing.JRadioButton();
         originalRadio = new javax.swing.JRadioButton();
         parentRadio = new javax.swing.JRadioButton();

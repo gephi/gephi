@@ -128,7 +128,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        colorButton = new JColorButton(Color.BLACK);
+        colorButton = new JColorButton(Color.BLACK, false, true);
         customRadio = new javax.swing.JRadioButton();
         parentRadio = new javax.swing.JRadioButton();
         jXHeader1 = new org.jdesktop.swingx.JXHeader();

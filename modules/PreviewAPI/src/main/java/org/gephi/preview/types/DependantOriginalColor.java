@@ -55,7 +55,7 @@ public final class DependantOriginalColor {
     private final Mode mode;
 
     public DependantOriginalColor(Mode mode) {
-        customColor = Color.BLACK;
+        customColor = mode.equals(DependantOriginalColor.Mode.CUSTOM) ? Color.BLACK : null;
         this.mode = mode;
     }
 

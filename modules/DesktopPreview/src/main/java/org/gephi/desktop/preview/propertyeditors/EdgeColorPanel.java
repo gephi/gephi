@@ -141,7 +141,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
         sourceRadio = new javax.swing.JRadioButton();
         targetRadio = new javax.swing.JRadioButton();
         customRadio = new javax.swing.JRadioButton();
-        colorButton = new JColorButton(Color.BLACK);
+        colorButton = new JColorButton(Color.BLACK, false, true);
 
         jXHeader1.setDescription(org.openide.util.NbBundle
             .getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.description")); // NOI18N
