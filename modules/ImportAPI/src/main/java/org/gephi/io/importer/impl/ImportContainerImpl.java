@@ -784,7 +784,18 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         checkColorAlpha(nodeList, "Node");
         checkColorAlpha(edgeList, "Edge");
 
+        //Check special characters in elements ids
+        for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
+            String id = edge.getId();
+            if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                report.logIssue(new Issue(
+                        NbBundle.getMessage(ImportContainerImpl.class, "Special_Characters_In_Id", id),
+                        Level.WARNING));
+            }
+        }
+
         return true;
+
     }
 
     @Override
