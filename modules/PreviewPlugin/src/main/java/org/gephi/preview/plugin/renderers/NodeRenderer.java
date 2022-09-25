@@ -104,8 +104,7 @@ public class NodeRenderer implements Renderer {
         final PreviewProperties properties) {
         final float x = item.getData(NodeItem.X);
         final float y = item.getData(NodeItem.Y);
-        final float s = (Float) item.getData(NodeItem.SIZE)
-            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        final float s = item.getData(NodeItem.SIZE);
         final float r = s / 2F;
         final int intS = Math.round(s);
         return new CanvasSize(
@@ -136,17 +135,34 @@ public class NodeRenderer implements Renderer {
         //Graphics
         Graphics2D graphics = target.getGraphics();
 
+        //Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
+
+        // Set size and pos
+        size = size - borderSize;
         x = x - (size / 2f);
         y = y - (size / 2f);
-        Ellipse2D.Float ellipse = new Ellipse2D.Float(x, y, size, size);
-        if (borderSize > 0) {
-            graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
-            graphics.setStroke(new BasicStroke(borderSize));
-            graphics.draw(ellipse);
-        }
 
+        //Draw fill
+        Ellipse2D.Float ellipse;
+        if (alpha == 255) {
+            // Allow the border and the fill to overlap a bit to avoid rendering artifacts
+            ellipse = new Ellipse2D.Float(x + borderSize / 4f, y + borderSize / 4f, size - borderSize / 2f,
+                size - borderSize / 2f);
+        } else {
+            // Special case making sure the border and the fill are not overlapping
+            ellipse =
+                new Ellipse2D.Float(x + borderSize / 2f, y + borderSize / 2f, size - borderSize, size - borderSize);
+        }
         graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
         graphics.fill(ellipse);
+
+        if (borderSize > 0) {
+            Ellipse2D.Float borderEllipse = new Ellipse2D.Float(x, y, size, size);
+            graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
+            graphics.setStroke(new BasicStroke(borderSize));
+            graphics.draw(borderEllipse);
+        }
     }
 
     public void renderSVG(Item item, SVGTarget target, PreviewProperties properties) {
@@ -155,7 +171,6 @@ public class NodeRenderer implements Renderer {
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
         Float size = item.getData(NodeItem.SIZE);
-        size /= 2f;
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
@@ -166,34 +181,56 @@ public class NodeRenderer implements Renderer {
             alpha = 1;
         }
 
+        // Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
+
         Element nodeElem = target.createElement("circle");
+        Element nodeBorderElem = nodeElem;
         nodeElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
         nodeElem.setAttribute("cx", x.toString());
         nodeElem.setAttribute("cy", y.toString());
-        nodeElem.setAttribute("r", size.toString());
         nodeElem.setAttribute("fill", target.toHexString(color));
         nodeElem.setAttribute("fill-opacity", "" + alpha);
+
         if (borderSize > 0) {
-            nodeElem.setAttribute("stroke", target.toHexString(borderColor));
-            nodeElem.setAttribute(
+            if (alpha < 1) {
+                // Special case making sure the border and the fill are not overlapping
+                nodeBorderElem = target.createElement("circle");
+                nodeBorderElem.setAttribute("cx", x.toString());
+                nodeBorderElem.setAttribute("cy", y.toString());
+                nodeBorderElem.setAttribute("r", Float.toString((size / 2f) - borderSize / 2f));
+                nodeBorderElem.setAttribute("fill", "none");
+
+                nodeElem.setAttribute("r", Float.toString((size / 2f) - borderSize));
+                target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
+            } else {
+                nodeElem.setAttribute("r", Float.toString((size - borderSize) / 2f));
+            }
+            nodeBorderElem.setAttribute("stroke", target.toHexString(borderColor));
+            nodeBorderElem.setAttribute(
                 "stroke-width",
                 Float.toString(borderSize * target.getScaleRatio()));
-            nodeElem.setAttribute("stroke-opacity", "" + alpha);
+            nodeBorderElem.setAttribute("stroke-opacity", "" + alpha);
+        } else {
+            nodeElem.setAttribute("r", Float.toString((size - borderSize) / 2f));
         }
-        target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
+
+        target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeBorderElem);
     }
 
     public void renderPDF(Item item, PDFTarget target, PreviewProperties properties) {
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
         Float size = item.getData(NodeItem.SIZE);
-        size /= 2f;
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
         float alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() / 255f :
             properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f;
+
+        // Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
 
         PdfContentByte cb = target.getContentByte();
         cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
@@ -206,9 +243,15 @@ public class NodeRenderer implements Renderer {
             gState.setStrokeOpacity(alpha);
             cb.setGState(gState);
         }
-        cb.circle(x, -y, size);
-        if (borderSize > 0) {
+
+        cb.circle(x, -y, (size / 2f) - borderSize / 2f);
+        if (borderSize > 0 && alpha == 1f) {
             cb.fillStroke();
+        } else if (borderSize > 0 && alpha < 1f) {
+            // Special case to make sure the border and the fill are not overlapping
+            cb.stroke();
+            cb.circle(x, -y, (size / 2f) - borderSize);
+            cb.fill();
         } else {
             cb.fill();
         }

@@ -260,16 +260,13 @@ public class EdgeRenderer implements Renderer {
 
                     final float targetRadius = -(edgeRadius
                         + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
-                        //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
                         + arrowRadiusSize);
                     item.setData(TARGET_RADIUS, targetRadius);
 
                     //Source
                     final Item sourceItem = item.getData(SOURCE);
                     final float sourceRadius = -(edgeRadius
-                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);
+                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f);
                     item.setData(SOURCE_RADIUS, sourceRadius);
                 }
             }
