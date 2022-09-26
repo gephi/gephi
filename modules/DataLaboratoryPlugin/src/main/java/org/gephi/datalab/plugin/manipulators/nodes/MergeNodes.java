@@ -143,7 +143,7 @@ public class MergeNodes extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/merge.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/merge.png", false);
     }
 
     public boolean isDeleteMergedNodes() {

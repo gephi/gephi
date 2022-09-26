@@ -56,6 +56,7 @@ import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -217,8 +218,8 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
         titleHeader.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
-        titleHeader.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/timeline/resources/custom_bounds.png"))); // NOI18N
+        titleHeader.setIcon(
+            ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.png", false)); // NOI18N
         titleHeader.setTitle(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
 

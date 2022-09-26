@@ -63,7 +63,7 @@ public final class NewProject extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/newProject.png";
+        return "DesktopBranding/newProject.png";
     }
 
     @Override

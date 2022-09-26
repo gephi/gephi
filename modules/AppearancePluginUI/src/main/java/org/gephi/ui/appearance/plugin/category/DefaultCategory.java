@@ -45,6 +45,7 @@ package org.gephi.ui.appearance.plugin.category;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.gephi.appearance.spi.TransformerCategory;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -60,7 +61,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/size.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/size.png", false);
         }
 
         @Override
@@ -76,7 +77,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/color.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/color.png", false);
         }
 
         @Override
@@ -92,7 +93,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelcolor.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelcolor.png", false);
         }
 
         @Override
@@ -108,7 +109,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelsize.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelsize.png", false);
         }
 
         @Override

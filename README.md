@@ -96,6 +96,12 @@ The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filte
 
 We use [Weblate](https://hosted.weblate.org/projects/gephi/) for localization. Follow the guidelines on the [wiki](https://github.com/gephi/gephi/wiki/Localization) for more details how to contribute.
 
+## Icons
+
+Gephi uses icons from various sources. The icons are licensed under the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.
+
+All icons can be found in the `DesktopIcons` module, organised by module name.
+
 ## License
 
 Gephi main source code is distributed under the dual license [CDDL 1.0](http://www.opensource.org/licenses/CDDL-1.0) and [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html). Read the [Legal FAQs](http://gephi.github.io/legal/faq/)  to learn more.

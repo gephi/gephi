@@ -58,6 +58,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
@@ -114,10 +115,10 @@ public class PropertiesBar extends JPanel {
         if (!UIUtils.isAquaLookAndFeel()) {
             JButton fullScreenButton = new JButton();
             fullScreenButton
-                .setIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_std.png")));
+                .setIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_std.png", false));
             fullScreenButton.setRolloverEnabled(true);
             fullScreenButton
-                .setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_glow.png")));
+                .setRolloverIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_glow.png", false));
             fullScreenButton
                 .setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
             fullScreenButton.addActionListener(new ActionListener() {

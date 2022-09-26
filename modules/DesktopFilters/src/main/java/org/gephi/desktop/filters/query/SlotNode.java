@@ -71,7 +71,7 @@ public class SlotNode extends AbstractNode {
     public SlotNode(Query parent) {
         super(Children.LEAF);
         this.parent = parent;
-        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/drop.png");
+        setIconBaseWithExtension("DesktopFilters/drop.png");
         setShortDescription(NbBundle.getMessage(SlotNode.class, "SlotNode.description"));
     }
 

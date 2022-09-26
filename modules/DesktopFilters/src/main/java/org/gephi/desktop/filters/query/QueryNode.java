@@ -69,7 +69,7 @@ public class QueryNode extends AbstractNode {
         super(new QueryChildren(query));
         this.query = query;
         //setName(query.getName());
-        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/query.png");
+        setIconBaseWithExtension("DesktopFilters/query.png");
     }
 
     @Override

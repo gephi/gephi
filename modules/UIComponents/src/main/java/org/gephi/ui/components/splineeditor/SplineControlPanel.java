@@ -345,7 +345,7 @@ class SplineControlPanel extends JPanel {
             name += '-';
             name += formatter.format(control2.getX()) + '-' + formatter.format(control2.getY());
 
-            return ImageUtilities.loadImageIcon("org/gephi/ui/components/splineeditor/images/templates/" + name + ".png", false);
+            return ImageUtilities.loadImageIcon("UIComponents/" + name + ".png", false);
         }
     }
 

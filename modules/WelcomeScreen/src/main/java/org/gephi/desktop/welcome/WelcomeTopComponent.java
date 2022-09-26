@@ -128,7 +128,7 @@ public final class WelcomeTopComponent extends JPanel {
 
     private void initAction() {
         openAction = new AbstractAction("",
-            ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
+            ImageUtilities.loadImageIcon("WelcomeScreen/gephifile20.png", false)) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -273,7 +273,7 @@ public final class WelcomeTopComponent extends JPanel {
         setLayout(new java.awt.BorderLayout());
 
         header.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
-        header.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/welcome/resources/logo_transparent_small.png"))); // NOI18N
+        header.setIcon(ImageUtilities.loadImageIcon("WelcomeScreen/logo_transparent_small.png", false)); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
         header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize()+4f));
         header.setTitleForeground(new java.awt.Color(39, 119, 198));

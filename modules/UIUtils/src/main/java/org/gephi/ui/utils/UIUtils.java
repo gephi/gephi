@@ -583,16 +583,6 @@ public final class UIUtils {
         return result[0];
     }
 
-    public static Image generateSelectedDarkImage(final Image image) {
-        final ImageFilter filter =  new IconImageFilter() {
-            @Override
-            int getGreyFor(final int gray) {
-                return gray * 75 / 100;
-            }
-        };
-        return map(image, filter);
-    }
-
     static Image generateFilteredImage(Image image, ImageFilter filter) {
         final ImageProducer prod = new FilteredImageSource(image.getSource(), filter);
         return Toolkit.getDefaultToolkit().createImage(prod);

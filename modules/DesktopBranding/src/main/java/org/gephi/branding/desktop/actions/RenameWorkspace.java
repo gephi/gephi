@@ -79,7 +79,7 @@ public class RenameWorkspace extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/renameWorkspace.png";
+        return "DesktopBranding/renameWorkspace.png";
     }
 
     @Override
