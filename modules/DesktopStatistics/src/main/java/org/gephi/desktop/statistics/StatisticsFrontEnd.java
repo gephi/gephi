@@ -122,8 +122,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             }
         });
 
-        RUN_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/run.png", false);
-        STOP_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/stop.png", false);
+        RUN_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/run.png", false);
+        STOP_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/stop.png", false);
     }
 
     private void initUI(StatisticsUI ui) {
@@ -342,8 +342,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
-        reportButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
+        reportButton.setIcon(ImageUtilities.loadImageIcon("DesktopStatistics/report.png", false)); // NOI18N
         reportButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);

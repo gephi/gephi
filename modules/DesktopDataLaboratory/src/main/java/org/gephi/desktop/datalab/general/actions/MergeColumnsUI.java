@@ -317,8 +317,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         description.setText(
             org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.description.text")); // NOI18N
 
-        addColumnButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow.png"))); // NOI18N
+        addColumnButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/arrow.png", false)); // NOI18N
         addColumnButton.setText(org.openide.util.NbBundle
             .getMessage(MergeColumnsUI.class, "MergeColumnsUI.addColumnButton.text")); // NOI18N
         addColumnButton.addActionListener(new java.awt.event.ActionListener() {
@@ -328,8 +327,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             }
         });
 
-        removeColumnButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow-180.png"))); // NOI18N
+        removeColumnButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/arrow-180.png", false)); // NOI18N
         removeColumnButton.setText(org.openide.util.NbBundle
             .getMessage(MergeColumnsUI.class, "MergeColumnsUI.removeColumnButton.text")); // NOI18N
         removeColumnButton.addActionListener(new java.awt.event.ActionListener() {
@@ -367,8 +365,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         });
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/info.png", false)); // NOI18N
         infoLabel.setText(
             org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.infoLabel.text")); // NOI18N
         infoLabel.setEnabled(false);

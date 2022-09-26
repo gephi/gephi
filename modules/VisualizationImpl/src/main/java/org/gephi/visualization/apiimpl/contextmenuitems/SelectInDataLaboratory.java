@@ -103,7 +103,7 @@ public class SelectInDataLaboratory extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/table-select.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/table-select.png", false);
     }
 
     @Override

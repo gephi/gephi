@@ -44,6 +44,7 @@ package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.model.node.NodeModel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -74,7 +75,7 @@ public class ProportionalSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ProportionalSizeMode.png"));
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.png", false);
     }
 
     @Override

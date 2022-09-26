@@ -67,7 +67,7 @@ public class OpenOnlineDoc extends SystemAction {
 
     /*@Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/cleanWorkspace.gif";
+        return "DesktopBranding/cleanWorkspace.gif";
     }*/
 
     @Override
