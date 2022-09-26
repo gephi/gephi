@@ -86,16 +86,18 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        colorButton.setEnabled(customRadio.isSelected());
-        DependantColor.Mode selectedMode = null;
-        if (parentRadio.isSelected()) {
-            selectedMode = DependantColor.Mode.PARENT;
-        } else if (customRadio.isSelected()) {
-            selectedMode = DependantColor.Mode.CUSTOM;
-        } else if (darkerButton.isSelected()){
-            selectedMode = DependantColor.Mode.DARKER;
+        if(e.getStateChange() == ItemEvent.SELECTED) {
+            colorButton.setEnabled(customRadio.isSelected());
+            DependantColor.Mode selectedMode = null;
+            if (parentRadio.isSelected()) {
+                selectedMode = DependantColor.Mode.PARENT;
+            } else if (customRadio.isSelected()) {
+                selectedMode = DependantColor.Mode.CUSTOM;
+            } else if (darkerButton.isSelected()) {
+                selectedMode = DependantColor.Mode.DARKER;
+            }
+            propertyEditor.setValue(new DependantColor(selectedMode));
         }
-        propertyEditor.setValue(new DependantColor(selectedMode));
     }
 
     public void setup(DependantColorPropertyEditor propertyEditor) {
@@ -128,7 +130,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        colorButton = new JColorButton(Color.BLACK, false, true);
+        colorButton = new JColorButton(Color.BLACK);
         customRadio = new javax.swing.JRadioButton();
         parentRadio = new javax.swing.JRadioButton();
         jXHeader1 = new org.jdesktop.swingx.JXHeader();
