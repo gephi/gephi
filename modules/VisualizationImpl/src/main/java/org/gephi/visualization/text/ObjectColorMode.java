@@ -49,6 +49,7 @@ import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.text.TextManager.Renderer;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -104,7 +105,7 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ObjectColorMode.png"));
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ObjectColorMode.png", false);
     }
 
     @Override

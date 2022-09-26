@@ -78,9 +78,9 @@ import org.openide.util.NbBundle;
 public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI {
 
     private static final ImageIcon CONFIG_BUTTONS_ICON =
-        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/gear.png", true);
+        ImageUtilities.loadImageIcon("DataLaboratoryPlugin/gear.png", false);
     private static final ImageIcon INFO_LABELS_ICON =
-        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
+        ImageUtilities.loadImageIcon("DataLaboratoryPlugin/information.png", false);
     private MergeNodeDuplicates manipulator;
     private DialogControls dialogControls;
     private Column[] columns;

@@ -63,7 +63,7 @@ public class NewWorkspace extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/newWorkspace.png";
+        return "DesktopBranding/newWorkspace.png";
     }
 
     @Override

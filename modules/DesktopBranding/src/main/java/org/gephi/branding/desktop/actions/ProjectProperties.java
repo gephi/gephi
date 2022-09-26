@@ -69,7 +69,7 @@ public class ProjectProperties extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/projectProperties.gif";
+        return "DesktopBranding/projectProperties.gif";
     }
 
     @Override

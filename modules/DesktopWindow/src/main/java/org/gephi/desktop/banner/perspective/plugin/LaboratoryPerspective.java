@@ -59,7 +59,7 @@ public class LaboratoryPerspective implements Perspective {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/laboratory.png", false);
+            .loadImageIcon("DesktopWindow/laboratory.png", false);
     }
 
     @Override

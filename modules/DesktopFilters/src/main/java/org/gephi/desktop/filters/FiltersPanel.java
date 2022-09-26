@@ -61,6 +61,7 @@ import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.explorer.ExplorerManager;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -359,8 +360,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar.add(resetButton);
         toolbar.add(separator);
 
-        exportColumnButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/table_export.png"))); // NOI18N
+        exportColumnButton.setIcon(
+            ImageUtilities.loadImageIcon("DesktopFilters/table_export.png", false)); // NOI18N
         exportColumnButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.text")); // NOI18N
         exportColumnButton.setToolTipText(org.openide.util.NbBundle
@@ -370,8 +371,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportColumnButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportColumnButton);
 
-        exportWorkspaceButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/workspace_export.png"))); // NOI18N
+        exportWorkspaceButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/workspace_export.png", false)); // NOI18N
         exportWorkspaceButton.setText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.text")); // NOI18N
         exportWorkspaceButton.setToolTipText(org.openide.util.NbBundle
@@ -381,8 +381,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportWorkspaceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportWorkspaceButton);
 
-        exportLabelVisible.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/labelvisible_export.png"))); // NOI18N
+        exportLabelVisible.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/labelvisible_export.png", false)); // NOI18N
         exportLabelVisible.setToolTipText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportLabelVisible.toolTipText")); // NOI18N
         exportLabelVisible.setFocusable(false);
@@ -445,23 +444,20 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
 
-        selectButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/select.png"))); // NOI18N
+        selectButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/select.png", false)); // NOI18N
         selectButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.selectButton.text")); // NOI18N
         selectButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(selectButton);
 
-        filterButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/filter.png"))); // NOI18N
+        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/filter.png", false)); // NOI18N
         filterButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.filterButton.text")); // NOI18N
         filterButton.setFocusable(false);
         filterButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(filterButton);
 
-        stopButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/filters/resources/stop.png"))); // NOI18N
+        stopButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/stop.png", false)); // NOI18N
         stopButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.stopButton.text")); // NOI18N
         stopButton.setMargin(new java.awt.Insets(2, 7, 2, 14));

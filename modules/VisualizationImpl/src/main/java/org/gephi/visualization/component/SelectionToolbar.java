@@ -48,6 +48,7 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
@@ -58,6 +59,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -77,7 +79,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Mouse
         final JToggleButton mouseButton =
-            new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/mouse.png")));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.png", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(new ActionListener() {
 
@@ -91,9 +93,10 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
+        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.png", false);
+
         //Rectangle
-        final JToggleButton rectangleButton = new JToggleButton(
-            new ImageIcon(getClass().getResource("/org/gephi/visualization/component/rectangle.png")));
+        final JToggleButton rectangleButton = new JToggleButton(icon);
         rectangleButton
             .setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
         rectangleButton.addActionListener(new ActionListener() {
@@ -110,7 +113,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Drag
         final JToggleButton dragButton =
-            new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/hand.png")));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.png", false));
         dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
         dragButton.addActionListener(new ActionListener() {
 

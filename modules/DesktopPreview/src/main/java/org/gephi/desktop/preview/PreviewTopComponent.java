@@ -70,6 +70,7 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -354,8 +355,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        bannerLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
+        bannerLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle
             .getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

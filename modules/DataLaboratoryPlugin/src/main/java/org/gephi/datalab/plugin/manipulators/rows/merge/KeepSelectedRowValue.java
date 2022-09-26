@@ -109,6 +109,6 @@ public class KeepSelectedRowValue implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-select.png", false);
     }
 }
