@@ -84,7 +84,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         //Init slider
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
-        gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
         gradientSlider.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
