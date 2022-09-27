@@ -117,28 +117,19 @@ public class EdgeRenderer implements Renderer {
             item.getData(EdgeItem.COLOR),
             sourceItem.getData(NodeItem.COLOR),
             targetItem.getData(NodeItem.COLOR));
+        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+
         return new Color(
             color.getRed(),
             color.getGreen(),
             color.getBlue(),
-            (int) (getAlpha(properties) * 255));
+            (int) (color.getAlpha() * opacity));
     }
 
     private static boolean isSelfLoopEdge(final Item item) {
         final Item sourceItem = item.getData(SOURCE);
         final Item targetItem = item.getData(TARGET);
         return item instanceof EdgeItem && sourceItem == targetItem;
-    }
-
-    private static float getAlpha(final PreviewProperties properties) {
-        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
-        if (opacity < 0) {
-            opacity = 0;
-        }
-        if (opacity > 1) {
-            opacity = 1;
-        }
-        return opacity;
     }
 
     private static float getThickness(final Item item) {
@@ -429,8 +420,7 @@ public class EdgeRenderer implements Renderer {
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
+                    gState.setStrokeOpacity(color.getAlpha() / 255f);
                     cb.setGState(gState);
                 }
                 cb.stroke();
@@ -563,8 +553,7 @@ public class EdgeRenderer implements Renderer {
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
+                    gState.setStrokeOpacity(color.getAlpha() / 255f);
                     cb.setGState(gState);
                 }
                 cb.stroke();
@@ -695,8 +684,7 @@ public class EdgeRenderer implements Renderer {
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
+                    gState.setStrokeOpacity(color.getAlpha() / 255f);
                     cb.setGState(gState);
                 }
                 cb.stroke();
