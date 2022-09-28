@@ -235,31 +235,29 @@ public class EdgeRenderer implements Renderer {
                     = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
 
                 boolean isDirected = item.getData(EdgeItem.DIRECTED);
-                if (isDirected
-                    || edgeRadius > 0F) {
-                    //Target
-                    final Item targetItem = item.getData(TARGET);
-                    final Double weight = item.getData(EdgeItem.WEIGHT);
-                    //Avoid negative arrow size:
-                    float arrowSize = properties.getFloatValue(
-                        PreviewProperty.ARROW_SIZE);
-                    if (arrowSize < 0F) {
-                        arrowSize = 0F;
-                    }
 
-                    final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
-
-                    final float targetRadius = -(edgeRadius
-                        + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                        + arrowRadiusSize);
-                    item.setData(TARGET_RADIUS, targetRadius);
-
-                    //Source
-                    final Item sourceItem = item.getData(SOURCE);
-                    final float sourceRadius = -(edgeRadius
-                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f);
-                    item.setData(SOURCE_RADIUS, sourceRadius);
+                //Target
+                final Item targetItem = item.getData(TARGET);
+                final Double weight = item.getData(EdgeItem.WEIGHT);
+                //Avoid negative arrow size:
+                float arrowSize = properties.getFloatValue(
+                    PreviewProperty.ARROW_SIZE);
+                if (arrowSize < 0F) {
+                    arrowSize = 0F;
                 }
+
+                final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
+
+                final float targetRadius = -(edgeRadius
+                    + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                    + arrowRadiusSize);
+                item.setData(TARGET_RADIUS, targetRadius);
+
+                //Source
+                final Item sourceItem = item.getData(SOURCE);
+                final float sourceRadius = -(edgeRadius
+                    + (Float) sourceItem.getData(NodeItem.SIZE) / 2f);
+                item.setData(SOURCE_RADIUS, sourceRadius);
             }
         }
     }
@@ -378,7 +376,7 @@ public class EdgeRenderer implements Renderer {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
                     getThickness(item),
-                    BasicStroke.CAP_SQUARE,
+                    BasicStroke.CAP_BUTT,
                     BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 final Line2D.Float line
