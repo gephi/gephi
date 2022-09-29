@@ -68,6 +68,7 @@ public class Installer extends ModuleInstall {
     }
 
     private void initBanner() {
+
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
@@ -86,6 +87,7 @@ public class Installer extends ModuleInstall {
                 JPanel childPanel = (JPanel) contentPane.getComponents()[1];
                 JLayeredPane layeredPane = (JLayeredPane) childPanel.getComponents()[0];
                 Container desktopPanel = (Container) layeredPane.getComponent(0);
+
                 for (Component c : desktopPanel.getComponents()) {
                     if (c instanceof JPanel) {
                         JPanel cp = (JPanel) c;
@@ -95,18 +97,11 @@ public class Installer extends ModuleInstall {
                                 break;
                             }
                         }
+                        if (statusLinePanel != null && bottomComponent != null) {
+                            statusLinePanel.add(bottomComponent, BorderLayout.NORTH);
+                            break;
+                        }
                     }
-                }
-
-                if (statusLinePanel != null) {
-                    frame.getContentPane().remove(statusLinePanel);
-                    JPanel southPanel = new JPanel(new BorderLayout());
-                    southPanel.add(statusLinePanel, BorderLayout.SOUTH);
-                    if (bottomComponent != null) {
-                        bottomComponent.setVisible(false);
-                        southPanel.add(bottomComponent, BorderLayout.CENTER);
-                    }
-                    frame.getContentPane().add(southPanel, BorderLayout.SOUTH);
                 }
             }
         });
