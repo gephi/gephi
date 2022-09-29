@@ -55,9 +55,9 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>net.java.dev</groupId>
+            <groupId>com.mastfrog</groupId>
             <artifactId>colorchooser</artifactId>
-            <version>1.2</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
