@@ -23,7 +23,7 @@
         <file name="VisualizationOptionsCategory.instance">
             <attr name="advancedOptionsFolder" stringvalue="OptionsDialog/VisualizationOptionsCategory"/>
             <attr name="categoryName" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Name_Visualization"/>
-            <attr name="iconBase" stringvalue="org/gephi/visualization/options/optionDialog_viz_name.png"/>
+            <attr name="iconBase" stringvalue="VisualizationImpl/optionDialog_viz_name.png"/>
             <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.OptionsCategory.createCategory"/>
             <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Keywords_Visualization"/>
             <attr name="keywordsCategory" stringvalue="Visualization"/>
