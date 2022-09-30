@@ -85,6 +85,22 @@ public class ElementDraftTest {
     }
 
     @Test
+    public void testSetValueDuplicateInterval() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", "bar", 1.0, 2.0);
+        edge.setValue("foo", "hello", 1.0, 2.0);
+        assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "hello");
+    }
+
+    @Test
+    public void testSetValueDuplicateTimestamp() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", "bar", 1.0);
+        edge.setValue("foo", "hello", 1.0);
+        assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "hello");
+    }
+
+    @Test
     public void testParseAndSetValue() {
         EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
         edge.container.addEdgeColumn("foo", String.class);
