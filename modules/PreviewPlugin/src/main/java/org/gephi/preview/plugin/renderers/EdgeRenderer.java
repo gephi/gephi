@@ -665,7 +665,7 @@ public class EdgeRenderer implements Renderer {
                 v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
 
                 // Arc radius
-                r = (double) (length / properties.getFloatValue(ARC_CURVENESS));
+                r = length / properties.getDoubleValue(ARC_CURVENESS);
 
                 // Arc bounding box (for Graphics2D)
                 // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
@@ -705,7 +705,6 @@ public class EdgeRenderer implements Renderer {
             }
 
             private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
-                // I don't want to explain what this is. I'll try though.
                 // There is an edge that is a circle arc.
                 // We want to truncate that arc so that truncated part has a chord of a given length.
                 // i.e. not the length along the arc, but as a straight segment (like the string of a bow)

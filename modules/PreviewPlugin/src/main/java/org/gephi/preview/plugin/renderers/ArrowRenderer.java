@@ -241,7 +241,7 @@ public class ArrowRenderer implements Renderer {
             if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
                 // Change the direction to account for the curvature
                 Double newAngle = Math.atan2(direction.y, direction.x);
-                Double curvature = (double)properties.getFloatValue(ARC_CURVENESS);
+                Double curvature = properties.getDoubleValue(ARC_CURVENESS);
                 Double r = length / curvature;
                 Double h = Math.sqrt(Math.pow(r, 2)-Math.pow(length/2,2));
                 newAngle += Math.PI / 2 - Math.atan2(h, length/2);
