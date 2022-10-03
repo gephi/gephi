@@ -42,13 +42,11 @@
 
 package org.gephi.io.importer.impl;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.TimestampStringMap;
-import org.gephi.io.importer.api.ColumnDraft;
-import org.gephi.io.importer.api.EdgeDirection;
-import org.gephi.io.importer.api.EdgeDirectionDefault;
-import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.importer.api.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -120,6 +118,23 @@ public class ImportContainerImplTest {
 
         Assert.assertTrue(importContainer.verify());
         Assert.assertEquals(1, importContainer.getUnloader().getEdgeCount());
+    }
+
+    @Test
+    public void testCheckSpecialCharacter() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        Report report = new Report();
+
+        ObjectList<NodeDraftImpl> nodeList = new ObjectArrayList<>();
+        nodeList.add(new NodeDraftImpl(new ImportContainerImpl(), "0 ", 1));
+        importContainer.checkSpecialCharacter(nodeList, "Node");
+        Assert.assertFalse(report.isEmpty());
+
+        report = new Report();
+        ObjectList<EdgeDraftImpl> edgeList = new ObjectArrayList<>();
+        edgeList.add(new EdgeDraftImpl(new ImportContainerImpl(), "0\n"));
+        importContainer.checkSpecialCharacter(edgeList, "Edge");
+        Assert.assertFalse(report.isEmpty());
     }
 
     // Utility
