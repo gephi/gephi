@@ -785,14 +785,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         checkColorAlpha(edgeList, "Edge");
 
         //Check special characters in elements ids
-        for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
-            String id = edge.getId();
-            if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
-                report.logIssue(new Issue(
-                        NbBundle.getMessage(ImportContainerImpl.class, "Special_Characters_In_Id", id),
-                        Level.WARNING));
-            }
-        }
+        checkSpecialCharacter(nodeList, "Node");
+        checkSpecialCharacter(edgeList, "Edge");
 
         return true;
 
@@ -1159,6 +1153,30 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
         if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
+        }
+    }
+
+    void checkSpecialCharacter(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            if (elementType.equals("Edge")) {
+                for(ElementDraft edge : new NullFilterIterable<EdgeDraftImpl>(objectList)) {
+                    String id = edge.getId();
+                    if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                        report.logIssue(new Issue(
+                                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_Edge_Id_Special_Character", id),
+                                Level.WARNING));
+                    }
+                }
+            }else {
+                for(ElementDraft node : objectList) {
+                    String id = node.getId();
+                    if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                        report.logIssue(new Issue(
+                                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_Node_Id_Special_Character", id),
+                                Level.WARNING));
+                    }
+                }
+            }
         }
     }
 
