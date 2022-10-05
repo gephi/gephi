@@ -52,6 +52,10 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.OutputStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.preview.api.PDFTarget;
@@ -85,7 +89,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private float marginLeft = 18f;
     private float marginRight = 18f;
     private boolean landscape = false;
-    private Rectangle pageSize = PageSize.A4;
+    private PDRectangle pageSize = PDRectangle.A4;
 
     @Override
     public boolean execute() {
@@ -96,53 +100,41 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         controller.refreshPreview(workspace);
         PreviewProperties props = controller.getModel(workspace).getProperties();
 
-        Rectangle size = new Rectangle(pageSize);
-        if (landscape) {
-            size = new Rectangle(pageSize.rotate());
-        }
-        Color col = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
-        size.setBackgroundColor(new BaseColor(col.getRed(), col.getGreen(), col.getBlue()));
+        try (PDDocument doc = new PDDocument()) {
+            doc.setVersion(1.5f);
 
-        Document document = new Document(size);
-        PdfWriter pdfWriter = null;
-        try {
-            pdfWriter = PdfWriter.getInstance(document, stream);
-            pdfWriter.setPdfVersion(PdfWriter.PDF_VERSION_1_5);
-            pdfWriter.setFullCompression();
+            PDPage page = new PDPage(pageSize);
+            if (landscape) {
+                page.setRotation(90);
+            }
+            doc.addPage(page);
 
-        } catch (DocumentException ex) {
+            try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
+                props.putValue(PDFTarget.LANDSCAPE, landscape);
+                props.putValue(PDFTarget.PAGESIZE, pageSize);
+                props.putValue(PDFTarget.MARGIN_TOP, marginTop);
+                props.putValue(PDFTarget.MARGIN_LEFT, marginLeft);
+                props.putValue(PDFTarget.MARGIN_BOTTOM, marginBottom);
+                props.putValue(PDFTarget.MARGIN_RIGHT, marginRight);
+                props.putValue(PDFTarget.PDF_CONTENT_BYTE, contentStream);
+                props.putValue(PDFTarget.PDF_DOCUMENT, doc);
+                target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
+                if (target instanceof LongTask) {
+                    ((LongTask) target).setProgressTicket(progress);
+                }
+
+                controller.render(target, workspace);
+            }
+            doc.save(stream);
+        } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
+        } finally {
+            Progress.finish(progress);
+
+            props.putValue(PDFTarget.PDF_CONTENT_BYTE, null);
+            props.putValue(PDFTarget.PAGESIZE, null);
+            props.putValue(PDFTarget.PDF_DOCUMENT, null);
         }
-        document.open();
-        PdfContentByte cb = pdfWriter.getDirectContent();
-        cb.saveState();
-
-        props.putValue(PDFTarget.LANDSCAPE, landscape);
-        props.putValue(PDFTarget.PAGESIZE, size);
-        props.putValue(PDFTarget.MARGIN_TOP, new Float(marginTop));
-        props.putValue(PDFTarget.MARGIN_LEFT, new Float(marginLeft));
-        props.putValue(PDFTarget.MARGIN_BOTTOM, new Float(marginBottom));
-        props.putValue(PDFTarget.MARGIN_RIGHT, new Float(marginRight));
-        props.putValue(PDFTarget.PDF_CONTENT_BYTE, cb);
-        target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
-        if (target instanceof LongTask) {
-            ((LongTask) target).setProgressTicket(progress);
-        }
-
-        try {
-            controller.render(target, workspace);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        cb.restoreState();
-        document.close();
-
-        Progress.finish(progress);
-
-        props.putValue(PDFTarget.PDF_CONTENT_BYTE, null);
-        props.putValue(PDFTarget.PAGESIZE, null);
-
         return !cancel;
     }
 
@@ -186,11 +178,11 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         this.marginTop = marginTop;
     }
 
-    public Rectangle getPageSize() {
+    public PDRectangle getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(Rectangle pageSize) {
+    public void setPageSize(PDRectangle pageSize) {
         this.pageSize = pageSize;
     }
 
