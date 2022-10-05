@@ -49,7 +49,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.io.IOException;
 import java.util.Locale;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
@@ -407,23 +410,27 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x1, -h.y1);
-                cb.lineTo(h.x2, -h.y2);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(color.getAlpha() / 255f);
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentByte();
+                try {
+                    cb.moveTo(h.x1, -h.y1);
+                    cb.lineTo(h.x2, -h.y2);
+                    cb.setStrokingColor(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -540,23 +547,27 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x1, -h.y1);
-                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(color.getAlpha() / 255f);
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentByte();
+                try {
+                    cb.moveTo(h.x1, -h.y1);
+                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                    cb.setNonStrokingColor(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -671,23 +682,27 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(selfLoopElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x, -h.y);
-                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(color.getAlpha() / 255f);
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentByte();
+                try {
+                    cb.moveTo(h.x, -h.y);
+                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
+                    cb.setNonStrokingColor(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }

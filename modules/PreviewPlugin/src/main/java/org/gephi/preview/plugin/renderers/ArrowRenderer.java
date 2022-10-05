@@ -47,7 +47,10 @@ import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import java.io.IOException;
 import java.util.Locale;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -119,22 +122,27 @@ public class ArrowRenderer implements Renderer {
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         } else if (target instanceof PDFTarget) {
             final PDFTarget pdfTarget = (PDFTarget) target;
-            final PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(h.p1.x, -h.p1.y);
-            cb.lineTo(h.p2.x, -h.p2.y);
-            cb.lineTo(h.p3.x, -h.p3.y);
-            cb.closePath();
-            cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-            if (color.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = color.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setFillOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.fill();
-            if (color.getAlpha() < 255) {
-                cb.restoreState();
+            final PDPageContentStream cb = pdfTarget.getContentByte();
+
+            try {
+                cb.moveTo(h.p1.x, -h.p1.y);
+                cb.lineTo(h.p2.x, -h.p2.y);
+                cb.lineTo(h.p3.x, -h.p3.y);
+                cb.closePath();
+                cb.setNonStrokingColor(color.getRed(), color.getGreen(), color.getBlue());
+                if (color.getAlpha() < 255) {
+                    float alpha = color.getAlpha() / 255f;
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setNonStrokingAlphaConstant(alpha);
+                    cb.saveGraphicsState();
+                    cb.setGraphicsStateParameters(graphicsState);
+                }
+                cb.fill();
+                if (color.getAlpha() < 255) {
+                    cb.restoreGraphicsState();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
