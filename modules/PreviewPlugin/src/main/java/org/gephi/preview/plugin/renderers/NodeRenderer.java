@@ -48,6 +48,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -63,6 +66,7 @@ import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -232,32 +236,70 @@ public class NodeRenderer implements Renderer {
         // Border can't be larger than size
         borderSize = Math.min(borderSize, size / 2f);
 
-        PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
-        cb.setLineWidth(borderSize);
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        if (alpha < 1f) {
-            cb.saveState();
-            PdfGState gState = new PdfGState();
-            gState.setFillOpacity(alpha);
-            gState.setStrokeOpacity(alpha);
-            cb.setGState(gState);
+        PDPageContentStream cb = target.getContentByte();
+        try {
+            cb.setStrokingColor(borderColor);
+            cb.setLineWidth(borderSize);
+            cb.setNonStrokingColor(color);
+            if (alpha < 1f) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setStrokingAlphaConstant(alpha);
+                graphicsState.setNonStrokingAlphaConstant(alpha);
+                cb.saveGraphicsState();
+                cb.setGraphicsStateParameters(graphicsState);
+            }
+            drawCircle(cb, x, -y, (size / 2f) - borderSize / 2f);
+            if (borderSize > 0 && alpha == 1f) {
+                cb.fillAndStroke();
+            } else if (borderSize > 0 && alpha < 1f) {
+                // Special case to make sure the border and the fill are not overlapping
+                cb.stroke();
+                drawCircle(cb, x, -y, (size / 2f) - borderSize);
+                cb.fill();
+            } else {
+                cb.fill();
+            }
+            if (alpha < 1f) {
+                cb.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
 
-        cb.circle(x, -y, (size / 2f) - borderSize / 2f);
-        if (borderSize > 0 && alpha == 1f) {
-            cb.fillStroke();
-        } else if (borderSize > 0 && alpha < 1f) {
-            // Special case to make sure the border and the fill are not overlapping
-            cb.stroke();
-            cb.circle(x, -y, (size / 2f) - borderSize);
-            cb.fill();
-        } else {
-            cb.fill();
-        }
-        if (alpha < 1f) {
-            cb.restoreState();
-        }
+//        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
+//        cb.setLineWidth(borderSize);
+//        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+//        if (alpha < 1f) {
+//            cb.saveState();
+//            PdfGState gState = new PdfGState();
+//            gState.setFillOpacity(alpha);
+//            gState.setStrokeOpacity(alpha);
+//            cb.setGState(gState);
+//        }
+//
+//        cb.circle(x, -y, (size / 2f) - borderSize / 2f);
+//        if (borderSize > 0 && alpha == 1f) {
+//            cb.fillStroke();
+//        } else if (borderSize > 0 && alpha < 1f) {
+//            // Special case to make sure the border and the fill are not overlapping
+//            cb.stroke();
+//            cb.circle(x, -y, (size / 2f) - borderSize);
+//            cb.fill();
+//        } else {
+//            cb.fill();
+//        }
+//        if (alpha < 1f) {
+//            cb.restoreState();
+//        }
+    }
+
+    private void drawCircle(PDPageContentStream stream, final float x, final float y, final float r) throws IOException {
+        float b = 0.5523f;
+        stream.moveTo(x + r, y);
+        stream.curveTo(x + r, y + r * b, x + r * b, y + r, x, y + r);
+        stream.curveTo(x - r * b, y + r, x - r, y + r * b, x - r, y);
+        stream.curveTo(x - r, y - r * b, x - r * b, y - r, x, y - r);
+        stream.curveTo(x + r * b, y - r, x + r, y - r * b, x + r, y);
     }
 
     @Override
