@@ -45,6 +45,10 @@ package org.gephi.preview.api;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 /**
  * Rendering target to PDF format.
@@ -71,6 +75,7 @@ public interface PDFTarget extends RenderTarget {
     String MARGIN_RIGHT = "pdf.margin.right";
     String LANDSCAPE = "pdf.landscape";
     String PAGESIZE = "pdf.pagesize";
+    String PDF_DOCUMENT = "pdf.document";
 
     /**
      * Returns the <code>PDFContentBype</code> instance of the PDFTarget. PDFContentByte
@@ -78,22 +83,20 @@ public interface PDFTarget extends RenderTarget {
      *
      * @return a PDFContentBype object
      */
-    PdfContentByte getContentByte();
+    PDPageContentStream getContentByte();
 
     /**
-     * Get a the equivalent in iText of the Java font. Base fonts are either
-     * Type 1 fonts (PDF default's font) or valid system fonts. The first time
-     * a base font which is not a Type 1 is requested the system will
-     * register the system fonts in order to find the right font. This might
-     * take some time up to a minute.
+     * Get the PDFBox equivalent the Java font. Base fonts are either
+     * Type 1 fonts (PDF default's font) or valid system fonts.
      * <p>
-     * If <code>font</code> can't be found in iText's default fonts or registered
-     * fonts it returns the default Helvetica font.
+     * If <code>font</code> can't be found it returns the default Helvetica font.
+     * <p>
+     * Note that each font (regardless of font size) is embedded in the PDF Document.
      *
      * @param font the reference Java font
-     * @return the iText BaseFont, or Helvetica is not found
+     * @return the PDFont, or Helvetica is not found
      */
-    BaseFont getBaseFont(java.awt.Font font);
+    public PDFont getPDFont(java.awt.Font font);
 
     /**
      * Returns the margin at the bottom of the page.
@@ -136,5 +139,5 @@ public interface PDFTarget extends RenderTarget {
      *
      * @return the page size
      */
-    Rectangle getPageSize();
+    PDRectangle getPageSize();
 }
