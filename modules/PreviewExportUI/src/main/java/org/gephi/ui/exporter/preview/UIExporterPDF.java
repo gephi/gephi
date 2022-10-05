@@ -44,6 +44,7 @@ package org.gephi.ui.exporter.preview;
 
 import com.itextpdf.text.Rectangle;
 import javax.swing.JPanel;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
@@ -117,7 +118,7 @@ public class UIExporterPDF implements ExporterUI {
             exporter.setLandscape(get(LANDSCAPE, DEFAULT.isLandscape()));
             float width = get(PAGE_SIZE_WIDTH, DEFAULT.getPageSize().getWidth());
             float height = get(PAGE_SIZE_HEIGHT, DEFAULT.getPageSize().getHeight());
-            exporter.setPageSize(new Rectangle(width, height));
+            exporter.setPageSize(new PDRectangle(width, height));
         }
 
         private void save(PDFExporter exporter) {

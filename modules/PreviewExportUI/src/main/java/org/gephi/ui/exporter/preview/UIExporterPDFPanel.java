@@ -52,6 +52,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.lib.validation.ValidationClient;
 import org.netbeans.validation.api.Problems;
@@ -109,27 +110,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
         //Page size model - http://en.wikipedia.org/wiki/Paper_size
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A0, "A0", 841, 1189, 33.1, 46.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A1, "A1", 594, 841, 23.4, 33.1));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A2, "A2", 420, 594, 16.5, 23.4));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A3, "A3", 297, 420, 11.7, 16.5));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A4, "A4", 210, 297, 8.3, 11.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A5, "A5", 148, 210, 5.8, 8.3));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_A, "ARCH A", 229, 305, 9, 12));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_B, "ARCH B", 305, 457, 12, 18));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_C, "ARCH C", 457, 610, 18, 24));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_D, "ARCH D", 610, 914, 24, 36));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_E, "ARCH E", 914, 1219, 36, 48));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B0, "B0", 1000, 1414, 39.4, 55.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B1, "B1", 707, 1000, 27.8, 39.4));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B2, "B2", 500, 707, 19.7, 27.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B3, "B3", 353, 500, 13.9, 19.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B4, "B4", 250, 353, 9.8, 13.9));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B5, "B5", 176, 250, 6.9, 9.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LEDGER, "Ledger", 432, 279, 17, 11));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LEGAL, "Legal", 216, 356, 8.5, 14));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LETTER, "Letter", 216, 279, 8.5, 11));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.TABLOID, "Tabloid", 279, 432, 11, 17));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A0, "A0", 841, 1189, 33.1, 46.8));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A1, "A1", 594, 841, 23.4, 33.1));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A2, "A2", 420, 594, 16.5, 23.4));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A3, "A3", 297, 420, 11.7, 16.5));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A4, "A4", 210, 297, 8.3, 11.7));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A5, "A5", 148, 210, 5.8, 8.3));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.LEGAL, "Legal", 216, 356, 8.5, 14));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.LETTER, "Letter", 216, 279, 8.5, 11));
 
         customSizeString = NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.pageSize.custom");
         comboBoxModel.addElement(customSizeString);
@@ -257,7 +245,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             }
             float w = (float) width;
             float h = (float) height;
-            Rectangle rect = new Rectangle(w, h);
+            PDRectangle rect = new PDRectangle(w, h);
             pdfExporter.setPageSize(rect);
         } else {
             pdfExporter.setPageSize(((PageSizeItem) pageSizeCombo.getSelectedItem()).getPageSize());
@@ -685,14 +673,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
     private static class PageSizeItem {
 
-        private final Rectangle pageSize;
+        private final PDRectangle pageSize;
         private final double inWidth;
         private final double inHeight;
         private final double mmWidth;
         private final double mmHeight;
         private String name = "";
 
-        public PageSizeItem(Rectangle pageSize) {
+        public PageSizeItem(PDRectangle pageSize) {
             this.pageSize = pageSize;
             this.inHeight = pageSize.getHeight() / INCH;
             this.inWidth = pageSize.getWidth() / INCH;
@@ -700,7 +688,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             this.mmWidth = pageSize.getWidth() / MM;
         }
 
-        public PageSizeItem(Rectangle pageSize, String name, double mmWidth, double mmHeight, double inWidth,
+        public PageSizeItem(PDRectangle pageSize, String name, double mmWidth, double mmHeight, double inWidth,
                             double inHeight) {
             this.pageSize = pageSize;
             this.name = name;
@@ -710,7 +698,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             this.mmWidth = mmWidth;
         }
 
-        public Rectangle getPageSize() {
+        public PDRectangle getPageSize() {
             return pageSize;
         }
 
