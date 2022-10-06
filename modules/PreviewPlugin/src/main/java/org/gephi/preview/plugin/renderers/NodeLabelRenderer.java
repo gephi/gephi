@@ -337,11 +337,11 @@ public class NodeLabelRenderer implements Renderer {
         PDFont pdFont = target.getPDFont(font);
 
         try {
-            float textHeight = getTextHeight(pdFont, fontSize);
-            float textWidth = getTextWidth(pdFont, fontSize, label);
+            float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
+            float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
 
             if (showBox) {
-                contentStream.setNonStrokingColor(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue());
+                contentStream.setNonStrokingColor(boxColor);
                 if (boxColor.getAlpha() < 255) {
                     PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
                     graphicsState.setNonStrokingAlphaConstant(boxColor.getAlpha() / 255f);
@@ -360,7 +360,7 @@ public class NodeLabelRenderer implements Renderer {
 
             if (outlineSize > 0) {
                 contentStream.setRenderingMode(RenderingMode.STROKE);
-                contentStream.setStrokingColor(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
+                contentStream.setStrokingColor(outlineColor);
                 contentStream.setLineWidth(outlineSize);
                 contentStream.setLineJoinStyle(1); //round
                 contentStream.setLineCapStyle(1); //round
@@ -388,7 +388,7 @@ public class NodeLabelRenderer implements Renderer {
             }
             contentStream.beginText();
             contentStream.setFont(pdFont, fontSize);
-            contentStream.setNonStrokingColor(color.getRed(), color.getGreen(), color.getBlue());
+            contentStream.setNonStrokingColor(color);
             contentStream.setRenderingMode(RenderingMode.FILL);
             contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
             contentStream.showText(label);
@@ -399,14 +399,6 @@ public class NodeLabelRenderer implements Renderer {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    private float getTextHeight(PDFont pdFont, float fontSize) throws IOException {
-        return pdFont.getFontDescriptor().getCapHeight() / 1000 * fontSize;
-    }
-
-    private float getTextWidth(PDFont pdFont, float fontSize, String text) throws IOException {
-        return pdFont.getStringWidth(text) / 1000 * fontSize;
     }
 
     @Override

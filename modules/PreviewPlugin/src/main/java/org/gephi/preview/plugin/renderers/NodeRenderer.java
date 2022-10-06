@@ -248,13 +248,13 @@ public class NodeRenderer implements Renderer {
                 cb.saveGraphicsState();
                 cb.setGraphicsStateParameters(graphicsState);
             }
-            drawCircle(cb, x, -y, (size / 2f) - borderSize / 2f);
+            PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize / 2f);
             if (borderSize > 0 && alpha == 1f) {
                 cb.fillAndStroke();
             } else if (borderSize > 0 && alpha < 1f) {
                 // Special case to make sure the border and the fill are not overlapping
                 cb.stroke();
-                drawCircle(cb, x, -y, (size / 2f) - borderSize);
+                PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize);
                 cb.fill();
             } else {
                 cb.fill();
@@ -265,41 +265,6 @@ public class NodeRenderer implements Renderer {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-
-//        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
-//        cb.setLineWidth(borderSize);
-//        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-//        if (alpha < 1f) {
-//            cb.saveState();
-//            PdfGState gState = new PdfGState();
-//            gState.setFillOpacity(alpha);
-//            gState.setStrokeOpacity(alpha);
-//            cb.setGState(gState);
-//        }
-//
-//        cb.circle(x, -y, (size / 2f) - borderSize / 2f);
-//        if (borderSize > 0 && alpha == 1f) {
-//            cb.fillStroke();
-//        } else if (borderSize > 0 && alpha < 1f) {
-//            // Special case to make sure the border and the fill are not overlapping
-//            cb.stroke();
-//            cb.circle(x, -y, (size / 2f) - borderSize);
-//            cb.fill();
-//        } else {
-//            cb.fill();
-//        }
-//        if (alpha < 1f) {
-//            cb.restoreState();
-//        }
-    }
-
-    private void drawCircle(PDPageContentStream stream, final float x, final float y, final float r) throws IOException {
-        float b = 0.5523f;
-        stream.moveTo(x + r, y);
-        stream.curveTo(x + r, y + r * b, x + r * b, y + r, x, y + r);
-        stream.curveTo(x - r * b, y + r, x - r, y + r * b, x - r, y);
-        stream.curveTo(x - r, y - r * b, x - r * b, y - r, x, y - r);
-        stream.curveTo(x + r * b, y - r, x + r, y - r * b, x + r, y);
     }
 
     @Override

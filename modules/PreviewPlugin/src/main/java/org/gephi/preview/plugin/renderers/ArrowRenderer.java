@@ -129,7 +129,7 @@ public class ArrowRenderer implements Renderer {
                 cb.lineTo(h.p2.x, -h.p2.y);
                 cb.lineTo(h.p3.x, -h.p3.y);
                 cb.closePath();
-                cb.setNonStrokingColor(color.getRed(), color.getGreen(), color.getBlue());
+                cb.setNonStrokingColor(color);
                 if (color.getAlpha() < 255) {
                     float alpha = color.getAlpha() / 255f;
                     PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
