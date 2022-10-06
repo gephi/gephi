@@ -179,7 +179,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                 FontMapping<TrueTypeFont> mapping = FontMappers.instance().getTrueTypeFont(fontKey, null);
                 if (mapping != null) {
                     try {
-                        return PDType0Font.load(document, mapping.getFont().getOriginalData(), true);
+                        return PDType0Font.load(document, mapping.getFont(), true);
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     }
