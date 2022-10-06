@@ -53,6 +53,11 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -310,42 +315,55 @@ public class EdgeLabelRenderer implements Renderer {
 
     public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize,
                           Color outlineColor) {
-        PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        BaseFont bf = target.getBaseFont(font);
-        float textHeight = getTextHeight(bf, font.getSize(), label);
-        if (outlineSize > 0) {
-            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
-            cb.setRGBColorStroke(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
-            cb.setLineWidth(outlineSize);
-            cb.setLineJoin(PdfContentByte.LINE_JOIN_ROUND);
-            cb.setLineCap(PdfContentByte.LINE_CAP_ROUND);
-            if (outlineColor.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = outlineColor.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.beginText();
-            cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-            cb.endText();
-            if (outlineColor.getAlpha() < 255) {
-                cb.restoreState();
-            }
-        }
-        cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-        cb.beginText();
-        cb.setFontAndSize(bf, font.getSize());
-        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-        cb.endText();
-    }
+        PDPageContentStream contentStream = target.getContentByte();
+        PDFont pdFont = target.getPDFont(font);
+        int fontSize = font.getSize();
 
-    private float getTextHeight(BaseFont baseFont, float fontSize, String text) {
-        float ascend = baseFont.getAscentPoint(text, fontSize);
-        float descend = baseFont.getDescentPoint(text, fontSize);
-        return ascend + descend;
+        try {
+            float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
+            float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
+
+            if (outlineSize > 0) {
+                contentStream.setRenderingMode(RenderingMode.STROKE);
+                contentStream.setStrokingColor(outlineColor);
+                contentStream.setLineWidth(outlineSize);
+                contentStream.setLineJoinStyle(1); //round
+                contentStream.setLineCapStyle(1); //round
+                if (outlineColor.getAlpha() < 255) {
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setStrokingAlphaConstant(outlineColor.getAlpha() / 255f);
+                    contentStream.saveGraphicsState();
+                    contentStream.setGraphicsStateParameters(graphicsState);
+                }
+                contentStream.beginText();
+                contentStream.setFont(pdFont, fontSize);
+                contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+                contentStream.showText(label);
+                contentStream.endText();
+                if (outlineColor.getAlpha() < 255) {
+                    contentStream.restoreGraphicsState();
+                }
+            }
+
+            if (color.getAlpha() < 255) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setNonStrokingAlphaConstant(color.getAlpha() / 255f);
+                contentStream.saveGraphicsState();
+                contentStream.setGraphicsStateParameters(graphicsState);
+            }
+            contentStream.beginText();
+            contentStream.setFont(pdFont, fontSize);
+            contentStream.setNonStrokingColor(color);
+            contentStream.setRenderingMode(RenderingMode.FILL);
+            contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+            contentStream.showText(label);
+            contentStream.endText();
+            if (color.getAlpha() < 255) {
+                contentStream.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

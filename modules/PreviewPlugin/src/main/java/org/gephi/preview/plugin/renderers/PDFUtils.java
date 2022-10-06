@@ -7,7 +7,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public class PDFUtils {
 
-    public static void drawCircle(PDPageContentStream stream, final float x, final float y, final float r) throws IOException {
+    public static void drawCircle(PDPageContentStream stream, final float x, final float y, final float r)
+        throws IOException {
         float b = 0.5523f;
         stream.moveTo(x + r, y);
         stream.curveTo(x + r, y + r * b, x + r * b, y + r, x, y + r);
