@@ -53,6 +53,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -220,8 +221,18 @@ public class NodeLabelRenderer implements Renderer {
     public CanvasSize getCanvasSize(
         final Item item,
         final PreviewProperties properties) {
-        //FIXME Compute the label canvas
-        return new CanvasSize();
+        float x = item.getData(NODE_X);
+        float y = item.getData(NODE_Y);
+        Integer fontSize = item.getData(FONT_SIZE);
+
+        Font font = fontCache.get(fontSize);
+        AffineTransform affinetransform = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
+        String label = item.getData(NodeLabelItem.LABEL);
+        float textWidth = (float) font.getStringBounds(label, frc).getWidth();
+        float textHeight = (float) font.getStringBounds(label, frc).getHeight();
+
+        return new CanvasSize(x - textWidth / 2f, y - textHeight / 2f, textWidth, textHeight);
     }
 
     public void renderG2D(G2DTarget target, String label, float x, float y, int fontSize, Color color,
