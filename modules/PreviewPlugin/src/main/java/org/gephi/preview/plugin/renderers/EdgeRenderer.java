@@ -548,7 +548,7 @@ public class EdgeRenderer implements Renderer {
                 try {
                     cb.moveTo(h.x1, -h.y1);
                     cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
-                    cb.setNonStrokingColor(color);
+                    cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
@@ -680,7 +680,7 @@ public class EdgeRenderer implements Renderer {
                 try {
                     cb.moveTo(h.x, -h.y);
                     cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
-                    cb.setNonStrokingColor(color);
+                    cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
