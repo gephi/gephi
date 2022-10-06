@@ -103,15 +103,13 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         try (PDDocument doc = new PDDocument()) {
             doc.setVersion(1.5f);
 
-            PDPage page = new PDPage(pageSize);
-            if (landscape) {
-                page.setRotation(90);
-            }
+            PDRectangle size = landscape ? new PDRectangle(pageSize.getHeight(), pageSize.getWidth()) : pageSize;
+            PDPage page = new PDPage(size);
             doc.addPage(page);
 
             try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
                 props.putValue(PDFTarget.LANDSCAPE, landscape);
-                props.putValue(PDFTarget.PAGESIZE, pageSize);
+                props.putValue(PDFTarget.PAGESIZE, size);
                 props.putValue(PDFTarget.MARGIN_TOP, marginTop);
                 props.putValue(PDFTarget.MARGIN_LEFT, marginLeft);
                 props.putValue(PDFTarget.MARGIN_BOTTOM, marginBottom);
