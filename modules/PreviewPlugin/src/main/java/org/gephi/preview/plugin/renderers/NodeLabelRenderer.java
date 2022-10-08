@@ -327,7 +327,7 @@ public class NodeLabelRenderer implements Renderer {
 
     public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color,
                           float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
-        PDPageContentStream contentStream = target.getContentByte();
+        PDPageContentStream contentStream = target.getContentStream();
         Font font = fontCache.get(fontSize);
         PDFont pdFont = target.getPDFont(font);
 

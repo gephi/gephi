@@ -233,7 +233,7 @@ public class NodeRenderer implements Renderer {
         // Border can't be larger than size
         borderSize = Math.min(borderSize, size / 2f);
 
-        PDPageContentStream cb = target.getContentByte();
+        PDPageContentStream cb = target.getContentStream();
         try {
             cb.setStrokingColor(borderColor);
             cb.setLineWidth(borderSize);

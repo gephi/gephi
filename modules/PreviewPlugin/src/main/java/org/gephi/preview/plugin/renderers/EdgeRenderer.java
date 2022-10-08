@@ -408,7 +408,7 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PDPageContentStream cb = pdfTarget.getContentByte();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
                     cb.moveTo(h.x1, -h.y1);
                     cb.lineTo(h.x2, -h.y2);
@@ -542,7 +542,7 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PDPageContentStream cb = pdfTarget.getContentByte();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
                     cb.moveTo(h.x1, -h.y1);
                     cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
@@ -674,7 +674,7 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(selfLoopElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PDPageContentStream cb = pdfTarget.getContentByte();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
                     cb.moveTo(h.x, -h.y);
                     cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);

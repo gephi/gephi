@@ -120,7 +120,7 @@ public class ArrowRenderer implements Renderer {
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         } else if (target instanceof PDFTarget) {
             final PDFTarget pdfTarget = (PDFTarget) target;
-            final PDPageContentStream cb = pdfTarget.getContentByte();
+            final PDPageContentStream cb = pdfTarget.getContentStream();
 
             try {
                 cb.moveTo(h.p1.x, -h.p1.y);

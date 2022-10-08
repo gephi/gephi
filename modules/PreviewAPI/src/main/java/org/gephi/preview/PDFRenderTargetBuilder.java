@@ -42,25 +42,18 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.preview;
 
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
 import java.awt.Font;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.FontMapper;
 import org.apache.pdfbox.pdmodel.font.FontMappers;
 import org.apache.pdfbox.pdmodel.font.FontMapping;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1CFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.util.Matrix;
 import org.gephi.preview.api.CanvasSize;
@@ -69,10 +62,7 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.utils.progress.Progress;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -161,15 +151,14 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             try {
                 cb.transform(Matrix.getTranslateInstance((float) (-centerX * scale), (float) (centerY * scale)));
                 cb.transform(Matrix.getScaleInstance((float) scale, (float) scale));
-                cb.transform(Matrix.getTranslateInstance((float)translateX, (float)translateY));
-
+                cb.transform(Matrix.getTranslateInstance((float) translateX, (float) translateY));
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
 
         @Override
-        public PDPageContentStream getContentByte() {
+        public PDPageContentStream getContentStream() {
             return this.cb;
         }
 

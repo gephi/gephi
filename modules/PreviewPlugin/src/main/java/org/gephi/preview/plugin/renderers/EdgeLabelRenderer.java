@@ -312,7 +312,7 @@ public class EdgeLabelRenderer implements Renderer {
 
     public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize,
                           Color outlineColor) {
-        PDPageContentStream contentStream = target.getContentByte();
+        PDPageContentStream contentStream = target.getContentStream();
         PDFont pdFont = target.getPDFont(font);
         int fontSize = font.getSize();
 
