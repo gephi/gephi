@@ -42,8 +42,6 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;

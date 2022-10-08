@@ -42,9 +42,6 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;

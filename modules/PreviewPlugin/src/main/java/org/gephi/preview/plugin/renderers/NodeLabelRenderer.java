@@ -42,9 +42,6 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -57,8 +54,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.pdfbox.contentstream.operator.state.SetLineJoinStyle;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -349,7 +344,7 @@ public class NodeLabelRenderer implements Renderer {
                     contentStream.setGraphicsStateParameters(graphicsState);
                 }
 
-                contentStream.addRect(x - textWidth / 2f - outlineSize / 2f, - y - textHeight / 2f - outlineSize / 2f,
+                contentStream.addRect(x - textWidth / 2f - outlineSize / 2f, -y - textHeight / 2f - outlineSize / 2f,
                     textWidth + outlineSize, textHeight + outlineSize);
 
                 contentStream.fill();
