@@ -48,12 +48,11 @@ import org.gephi.preview.spi.Renderer;
 /**
  * RenderTarget is the graphic container the renderers draw into.
  * <p>
- * There are three types of targets: <b>Processing</b>, <b>PDF</b> or
+ * There are three types of targets: <b>G2D</b>, <b>PDF</b> or
  * <b>SVG</b>. When the target is G2D, renderers obtain the {@link Graphics2D}
  * object. For the SVG target, renderers obtain Batik's <a
  * href="http://xmlgraphics.apache.org/batik/using/dom-api.html">Document</a>
- * instance. As the PDF target rely on the iText library renderers obtain the <a
- * href="http://api.itextpdf.com/itext/index.html?com/itextpdf/text/pdf/PdfContentByte.html">PdfContentByte</a>
+ * instance. As the PDF target rely on the PDFBox library, renderers obtain the {@link org.apache.pdfbox.pdmodel.PDPageContentStream}</a>
  * object.
  * <p>
  * Render targets are not drawing anything. They just make accessible the canvas

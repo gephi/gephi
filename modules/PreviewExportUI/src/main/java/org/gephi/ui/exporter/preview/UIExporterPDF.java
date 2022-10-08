@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.exporter.preview;
 
-import com.itextpdf.text.Rectangle;
 import javax.swing.JPanel;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.preview.PDFExporter;

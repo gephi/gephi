@@ -22,7 +22,6 @@
         <gephi.commons-csv.version>1.9.0</gephi.commons-csv.version>
         <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
-        <gephi.itextpdf.version>5.5.13.3</gephi.itextpdf.version>
         <gephi.pdfbox.version>2.0.27</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
         <gephi.gson.version>2.9.1</gephi.gson.version>
@@ -65,11 +64,6 @@
             <version>${gephi.commons-csv.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>${gephi.itextpdf.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${gephi.pdfbox.version}</version>
@@ -94,7 +88,6 @@
                         <publicPackage>org.jfree.*</publicPackage>
                         <publicPackage>gnu.trove.*</publicPackage>
                         <publicPackage>org.apache.commons.csv.*</publicPackage>
-                        <publicPackage>com.itextpdf.text.*</publicPackage>
                         <publicPackage>org.apache.pdfbox.*</publicPackage>
                         <publicPackage>org.apache.fontbox.*</publicPackage>
                         <publicPackage>javanet.staxutils.*</publicPackage>
