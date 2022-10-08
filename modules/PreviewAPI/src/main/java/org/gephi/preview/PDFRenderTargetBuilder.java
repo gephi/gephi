@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,6 +61,7 @@ import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
 import org.openide.util.Exceptions;
@@ -88,6 +90,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         float marginTop = properties.getFloatValue(PDFTarget.MARGIN_TOP);
         final PDRectangle pageSize = properties.getValue(PDFTarget.PAGESIZE);
         boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
+        Color backgroundColor = properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
         PDPageContentStream cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
         PDDocument doc = properties.getValue(PDFTarget.PDF_DOCUMENT);
         PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(
@@ -95,6 +98,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             cb,
             cs,
             pageSize,
+            backgroundColor,
             marginLeft,
             marginRight,
             marginTop,
@@ -122,6 +126,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             PDPageContentStream cb,
             CanvasSize cs,
             PDRectangle size,
+            Color backgroundColor,
             float marginLeft,
             float marginRight,
             float marginTop,
@@ -149,6 +154,14 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             double translateX = (marginLeft + pageWidth / 2.) / scale;
             double translateY = (marginBottom + pageHeight / 2.) / scale;
             try {
+                // Background
+                if (backgroundColor != null) {
+                    cb.setNonStrokingColor(backgroundColor);
+                    cb.addRect(0, 0, size.getWidth(), size.getHeight());
+                    cb.fill();
+                }
+
+                // Transformations
                 cb.transform(Matrix.getTranslateInstance((float) (-centerX * scale), (float) (centerY * scale)));
                 cb.transform(Matrix.getScaleInstance((float) scale, (float) scale));
                 cb.transform(Matrix.getTranslateInstance((float) translateX, (float) translateY));
