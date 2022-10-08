@@ -72,6 +72,7 @@ public interface PDFTarget extends RenderTarget {
     String LANDSCAPE = "pdf.landscape";
     String PAGESIZE = "pdf.pagesize";
     String PDF_DOCUMENT = "pdf.document";
+    String TRANSPARENT_BACKGROUND = "pdf.transparent.background";
 
     /**
      * Returns the <code>PDPageContentStream</code> instance of the PDFTarget. PDPageContentStream

@@ -106,6 +106,7 @@ public class UIExporterPDF implements ExporterUI {
         private final static String LANDSCAPE = "PDF_landscape";
         private final static String PAGE_SIZE_WIDTH = "PDF_pageSizeWidth";
         private final static String PAGE_SIZE_HEIGHT = "PDF_pageSizeHeight";
+        private final static String TRANSPARENT_BACKGROUND = "PDF_transparentBackground";
         // Default
         private final static PDFExporter DEFAULT = new PDFExporter();
 
@@ -118,6 +119,7 @@ public class UIExporterPDF implements ExporterUI {
             float width = get(PAGE_SIZE_WIDTH, DEFAULT.getPageSize().getWidth());
             float height = get(PAGE_SIZE_HEIGHT, DEFAULT.getPageSize().getHeight());
             exporter.setPageSize(new PDRectangle(width, height));
+            exporter.setTransparentBackground(get(TRANSPARENT_BACKGROUND, DEFAULT.isTransparentBackground()));
         }
 
         private void save(PDFExporter exporter) {
@@ -128,6 +130,7 @@ public class UIExporterPDF implements ExporterUI {
             put(LANDSCAPE, exporter.isLandscape());
             put(PAGE_SIZE_WIDTH, exporter.getPageSize().getWidth());
             put(PAGE_SIZE_HEIGHT, exporter.getPageSize().getHeight());
+            put(TRANSPARENT_BACKGROUND, exporter.isTransparentBackground());
         }
     }
 }

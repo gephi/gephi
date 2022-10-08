@@ -90,7 +90,8 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         float marginTop = properties.getFloatValue(PDFTarget.MARGIN_TOP);
         final PDRectangle pageSize = properties.getValue(PDFTarget.PAGESIZE);
         boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
-        Color backgroundColor = properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+        boolean transparentBackground = properties.getBooleanValue(PDFTarget.TRANSPARENT_BACKGROUND);
+        Color backgroundColor = transparentBackground ? null : properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
         PDPageContentStream cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
         PDDocument doc = properties.getValue(PDFTarget.PDF_DOCUMENT);
         PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(

@@ -82,6 +82,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private float marginRight = 18f;
     private boolean landscape = false;
     private PDRectangle pageSize = PDRectangle.A4;
+    private boolean transparentBackground = false;
 
     @Override
     public boolean execute() {
@@ -108,6 +109,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
                 props.putValue(PDFTarget.MARGIN_RIGHT, marginRight);
                 props.putValue(PDFTarget.PDF_CONTENT_BYTE, contentStream);
                 props.putValue(PDFTarget.PDF_DOCUMENT, doc);
+                props.putValue(PDFTarget.TRANSPARENT_BACKGROUND, transparentBackground);
                 target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
                 if (target instanceof LongTask) {
                     ((LongTask) target).setProgressTicket(progress);
@@ -174,6 +176,14 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
     public void setPageSize(PDRectangle pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public boolean isTransparentBackground() {
+        return transparentBackground;
+    }
+
+    public void setTransparentBackground(boolean transparentBackground) {
+        this.transparentBackground = transparentBackground;
     }
 
     @Override
