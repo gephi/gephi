@@ -266,7 +266,11 @@ public class PreviewControllerImpl implements PreviewController {
                     for (String type : previewModel.getItemTypes()) {
                         for (Item item : previewModel.getItems(type)) {
                             if (r.isRendererForitem(item, properties)) {
-                                r.render(item, target, properties);
+                                try {
+                                    r.render(item, target, properties);
+                                } catch (Exception e) {
+                                    Exceptions.printStackTrace(e);
+                                }
                                 Progress.progress(progressTicket);
                                 if (target instanceof AbstractRenderTarget) {
                                     if (((AbstractRenderTarget) target).isCancelled()) {
