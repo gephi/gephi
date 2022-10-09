@@ -42,14 +42,15 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.io.IOException;
 import java.util.Locale;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
@@ -117,28 +118,19 @@ public class EdgeRenderer implements Renderer {
             item.getData(EdgeItem.COLOR),
             sourceItem.getData(NodeItem.COLOR),
             targetItem.getData(NodeItem.COLOR));
+        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+
         return new Color(
             color.getRed(),
             color.getGreen(),
             color.getBlue(),
-            (int) (getAlpha(properties) * 255));
+            (int) (color.getAlpha() * opacity));
     }
 
     private static boolean isSelfLoopEdge(final Item item) {
         final Item sourceItem = item.getData(SOURCE);
         final Item targetItem = item.getData(TARGET);
         return item instanceof EdgeItem && sourceItem == targetItem;
-    }
-
-    private static float getAlpha(final PreviewProperties properties) {
-        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
-        if (opacity < 0) {
-            opacity = 0;
-        }
-        if (opacity > 1) {
-            opacity = 1;
-        }
-        return opacity;
     }
 
     private static float getThickness(final Item item) {
@@ -244,34 +236,29 @@ public class EdgeRenderer implements Renderer {
                     = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
 
                 boolean isDirected = item.getData(EdgeItem.DIRECTED);
-                if (isDirected
-                    || edgeRadius > 0F) {
-                    //Target
-                    final Item targetItem = item.getData(TARGET);
-                    final Double weight = item.getData(EdgeItem.WEIGHT);
-                    //Avoid negative arrow size:
-                    float arrowSize = properties.getFloatValue(
-                        PreviewProperty.ARROW_SIZE);
-                    if (arrowSize < 0F) {
-                        arrowSize = 0F;
-                    }
 
-                    final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
-
-                    final float targetRadius = -(edgeRadius
-                        + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
-                        //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-                        + arrowRadiusSize);
-                    item.setData(TARGET_RADIUS, targetRadius);
-
-                    //Source
-                    final Item sourceItem = item.getData(SOURCE);
-                    final float sourceRadius = -(edgeRadius
-                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);
-                    item.setData(SOURCE_RADIUS, sourceRadius);
+                //Target
+                final Item targetItem = item.getData(TARGET);
+                final Double weight = item.getData(EdgeItem.WEIGHT);
+                //Avoid negative arrow size:
+                float arrowSize = properties.getFloatValue(
+                    PreviewProperty.ARROW_SIZE);
+                if (arrowSize < 0F) {
+                    arrowSize = 0F;
                 }
+
+                final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
+
+                final float targetRadius = -(edgeRadius
+                    + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                    + arrowRadiusSize);
+                item.setData(TARGET_RADIUS, targetRadius);
+
+                //Source
+                final Item sourceItem = item.getData(SOURCE);
+                final float sourceRadius = -(edgeRadius
+                    + (Float) sourceItem.getData(NodeItem.SIZE) / 2f);
+                item.setData(SOURCE_RADIUS, sourceRadius);
             }
         }
     }
@@ -390,7 +377,7 @@ public class EdgeRenderer implements Renderer {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
                     getThickness(item),
-                    BasicStroke.CAP_SQUARE,
+                    BasicStroke.CAP_BUTT,
                     BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 final Line2D.Float line
@@ -421,24 +408,24 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x1, -h.y1);
-                cb.lineTo(h.x2, -h.y2);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
+                try {
+                    cb.moveTo(h.x1, -h.y1);
+                    cb.lineTo(h.x2, -h.y2);
+                    cb.setStrokingColor(color);
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -555,24 +542,24 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x1, -h.y1);
-                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
+                try {
+                    cb.moveTo(h.x1, -h.y1);
+                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                    cb.setStrokingColor(color);
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -687,24 +674,24 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(selfLoopElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-                final PdfContentByte cb = pdfTarget.getContentByte();
-                cb.moveTo(h.x, -h.y);
-                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
-                cb.setRGBColorStroke(
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-                cb.setLineWidth(getThickness(item));
-                if (color.getAlpha() < 255) {
-                    cb.saveState();
-                    final PdfGState gState = new PdfGState();
-                    gState.setStrokeOpacity(
-                        getAlpha(properties));
-                    cb.setGState(gState);
-                }
-                cb.stroke();
-                if (color.getAlpha() < 255) {
-                    cb.restoreState();
+                final PDPageContentStream cb = pdfTarget.getContentStream();
+                try {
+                    cb.moveTo(h.x, -h.y);
+                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
+                    cb.setStrokingColor(color);
+                    cb.setLineWidth(getThickness(item));
+                    if (color.getAlpha() < 255) {
+                        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                        graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
+                        cb.saveGraphicsState();
+                        cb.setGraphicsStateParameters(graphicsState);
+                    }
+                    cb.stroke();
+                    if (color.getAlpha() < 255) {
+                        cb.restoreGraphicsState();
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }

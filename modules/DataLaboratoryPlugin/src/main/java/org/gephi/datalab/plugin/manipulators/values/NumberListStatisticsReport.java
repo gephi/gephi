@@ -109,7 +109,7 @@ public class NumberListStatisticsReport implements AttributeValueManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/chart-up.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/chart-up.png", false);
     }
 
     private String getMessage(String resName) {

@@ -85,13 +85,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportAttributes = true;
     private final boolean exportDynamicWeight = true;
     private boolean exportVisibility = false;
-    //Settings Helper
-    private float minSize;
-    private float maxSize;
-    private float minX;
-    private float maxX;
-    private float minY;
-    private float maxY;
+    private NormalizationHelper normalization;
     private boolean edgeLabels;
     private boolean edgeColors;
     //Columns
@@ -168,9 +162,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.append("\n");
 
         //Options
-        if (normalize) {
-            calculateMinMax(graph);
-        }
+        normalization = NormalizationHelper.build(normalize, graph);
 
         //Calculate progress units count
         int max = graph.getNodeCount() + graph.getEdgeCount();
@@ -409,10 +401,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float size = node.size();
-                if (normalize) {
-                    size = (size - minSize) / (maxSize - minSize);
-                }
+                float size = normalization.normalizeSize(node.size());
                 builder.append(size);
             }
         };
@@ -425,10 +414,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float size = node.size();
-                if (normalize) {
-                    size = (size - minSize) / (maxSize - minSize);
-                }
+                float size = normalization.normalizeSize(node.size());
                 builder.append(size);
             }
         };
@@ -441,10 +427,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float x = node.x();
-                if (normalize && x != 0.0) {
-                    x = (x - minX) / (maxX - minX);
-                }
+                float x = normalization.normalizeX(node.x());
                 builder.append(x);
             }
         };
@@ -457,10 +440,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float y = node.y();
-                if (normalize && y != 0.0) {
-                    y = (y - minY) / (maxY - minY);
-                }
+                float y = normalization.normalizeY(node.y());
                 builder.append(y);
             }
         };
@@ -633,24 +613,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         defaultEdgeColumnsGDFs[4] = colorColumn;
         defaultEdgeColumnsGDFs[5] = visibleColumn;
         defaultEdgeColumnsGDFs[6] = labelVisibleColumn;
-    }
-
-    private void calculateMinMax(Graph graph) {
-        minX = Float.POSITIVE_INFINITY;
-        maxX = Float.NEGATIVE_INFINITY;
-        minY = Float.POSITIVE_INFINITY;
-        maxY = Float.NEGATIVE_INFINITY;
-        minSize = Float.POSITIVE_INFINITY;
-        maxSize = Float.NEGATIVE_INFINITY;
-
-        for (Node node : graph.getNodes()) {
-            minX = Math.min(minX, node.x());
-            maxX = Math.max(maxX, node.x());
-            minY = Math.min(minY, node.y());
-            maxY = Math.max(maxY, node.y());
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
-        }
     }
 
     @Override

@@ -63,7 +63,7 @@ public class DeleteWorkspace extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/resources/deleteWorkspace.png";
+        return "DesktopBranding/deleteWorkspace.png";
     }
 
     @Override

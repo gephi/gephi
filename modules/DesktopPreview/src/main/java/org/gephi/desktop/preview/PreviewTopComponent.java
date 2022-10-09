@@ -61,6 +61,7 @@ import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
@@ -69,6 +70,7 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -126,10 +128,13 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-                    previewController.getModel().getProperties()
-                        .putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
-                    PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-                    previewUIController.refreshPreview();
+                    PreviewProperties properties = previewController.getModel().getProperties();
+                    Color oldColor = properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+                    if (oldColor == null || !oldColor.equals(evt.getNewValue())) {
+                        properties.putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
+                        PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                        previewUIController.refreshPreview();
+                    }
                 }
             });
         southBusyLabel.setVisible(false);
@@ -350,8 +355,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        bannerLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
+        bannerLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle
             .getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

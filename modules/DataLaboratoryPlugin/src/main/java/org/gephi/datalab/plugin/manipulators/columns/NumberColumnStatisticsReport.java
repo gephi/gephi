@@ -100,7 +100,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/statistics.png");
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/statistics.png", false);
     }
 
     public Number[] getColumnNumbers(final Table table, final Column column) {

@@ -42,6 +42,7 @@
 
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -184,7 +185,7 @@ public class PreviewModelImpl implements PreviewModel {
             //Default preset
             properties.applyPreset(new DefaultPreset());
 
-            //Defaut values
+            //Default values
             properties.putValue(PreviewProperty.VISIBILITY_RATIO, 1f);
         }
     }
@@ -284,6 +285,7 @@ public class PreviewModelImpl implements PreviewModel {
         sourceMap.clear();
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }

@@ -316,6 +316,29 @@ public class AppearanceModelImpl implements AppearanceModel {
                         res.addAll(getAttributeFunctions(column, t));
                     }
                 });
+            } else if (column.isDynamic() && !column.isDynamicAttribute()) {
+                transformers.stream().filter(t -> t instanceof RankingTransformer).forEach(t -> {
+                    res.addAll(getTimesetFunctions(column, t));
+                });
+            }
+        }
+        return res;
+    }
+
+    private List<AttributeFunctionImpl> getTimesetFunctions(Column column, Transformer transformer) {
+        List<AttributeFunctionImpl> res = new ArrayList<>();
+        if (transformer instanceof RankingTransformer && column.isDynamic() && !column.isDynamicAttribute()) {
+            if (transformer.isNode() && column.getTable().isNodeTable()) {
+                RankingImpl ranking =
+                    nodeAttributeRankings.computeIfAbsent(column, k -> new TimesetRankingImpl(column));
+                res.add(new AttributeFunctionImpl(this, getId("node", transformer, column), column,
+                    transformer, getTransformerUI(transformer), ranking));
+            }
+            if (transformer.isEdge() && column.getTable().isEdgeTable()) {
+                RankingImpl ranking =
+                    edgeAttributeRankings.computeIfAbsent(column, k -> new TimesetRankingImpl(column));
+                res.add(new AttributeFunctionImpl(this, getId("edge", transformer, column), column,
+                    transformer, getTransformerUI(transformer), ranking));
             }
         }
         return res;

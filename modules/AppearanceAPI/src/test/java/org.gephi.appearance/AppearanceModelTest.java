@@ -60,7 +60,7 @@ public class AppearanceModelTest {
         System.gc();
         System.runFinalization();
 
-        Assert.assertEquals(0, model.countNodeAttributeRanking());
+        Assert.assertEquals(1, model.countNodeAttributeRanking());
     }
 
     @Test

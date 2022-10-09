@@ -42,12 +42,13 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import java.io.IOException;
 import java.util.Locale;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -119,22 +120,27 @@ public class ArrowRenderer implements Renderer {
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         } else if (target instanceof PDFTarget) {
             final PDFTarget pdfTarget = (PDFTarget) target;
-            final PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(h.p1.x, -h.p1.y);
-            cb.lineTo(h.p2.x, -h.p2.y);
-            cb.lineTo(h.p3.x, -h.p3.y);
-            cb.closePath();
-            cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-            if (color.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = color.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setFillOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.fill();
-            if (color.getAlpha() < 255) {
-                cb.restoreState();
+            final PDPageContentStream cb = pdfTarget.getContentStream();
+
+            try {
+                cb.moveTo(h.p1.x, -h.p1.y);
+                cb.lineTo(h.p2.x, -h.p2.y);
+                cb.lineTo(h.p3.x, -h.p3.y);
+                cb.closePath();
+                cb.setNonStrokingColor(color);
+                if (color.getAlpha() < 255) {
+                    float alpha = color.getAlpha() / 255f;
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setNonStrokingAlphaConstant(alpha);
+                    cb.saveGraphicsState();
+                    cb.setGraphicsStateParameters(graphicsState);
+                }
+                cb.fill();
+                if (color.getAlpha() < 255) {
+                    cb.restoreGraphicsState();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -216,10 +222,7 @@ public class ArrowRenderer implements Renderer {
             final float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE)
                 * weight.floatValue();
             float radius = -(properties.getFloatValue(PreviewProperty.EDGE_RADIUS)
-                + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)) /
-                2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-            );
+                + (Float) targetItem.getData(NodeItem.SIZE) / 2f);
 
             //Avoid arrow from passing the node's center:
             if (radius > 0) {

@@ -57,19 +57,13 @@ import org.gephi.preview.types.EdgeColor;
  *
  * @author Mathieu Bastian
  */
-public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
+public class BasicEdgeColorPropertyEditor extends AbstractColorPropertyEditor {
 
     @Override
     public String getAsText() {
         EdgeColor c = (EdgeColor) getValue();
         if (c.getMode().equals(EdgeColor.Mode.CUSTOM)) {
-            Color color = c.getCustomColor() == null ? Color.BLACK : c.getCustomColor();
-            return String.format(
-                "%s [%d,%d,%d]",
-                c.getMode().name().toLowerCase(),
-                color.getRed(),
-                color.getGreen(),
-                color.getBlue());
+            return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
             return c.getMode().name().toLowerCase();
         }
@@ -77,17 +71,8 @@ public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
 
     @Override
     public void setAsText(String s) {
-
         if (matchColorMode(s, EdgeColor.Mode.CUSTOM.name().toLowerCase())) {
-            Pattern p = Pattern.compile("\\w+\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
-            Matcher m = p.matcher(s);
-            if (m.lookingAt()) {
-                int r = Integer.valueOf(m.group(1));
-                int g = Integer.valueOf(m.group(2));
-                int b = Integer.valueOf(m.group(3));
-
-                setValue(new EdgeColor(new Color(r, g, b)));
-            }
+             setValue(new EdgeColor(toColor(s)));
         } else if (matchColorMode(s, EdgeColor.Mode.MIXED.name().toLowerCase())) {
             setValue(new EdgeColor(EdgeColor.Mode.MIXED));
         } else if (matchColorMode(s, EdgeColor.Mode.ORIGINAL.name().toLowerCase())) {
@@ -102,12 +87,5 @@ public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
     @Override
     public boolean supportsCustomEditor() {
         return false;
-    }
-
-    private boolean matchColorMode(String s, String identifier) {
-        String regexp = String.format("\\s*%s\\s*", identifier);
-        Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(s);
-        return m.lookingAt();
     }
 }

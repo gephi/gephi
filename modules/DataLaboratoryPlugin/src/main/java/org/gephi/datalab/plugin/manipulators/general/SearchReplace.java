@@ -120,7 +120,7 @@ public class SearchReplace implements GeneralActionsManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/binocular--pencil.png", true);
+            .loadImageIcon("DataLaboratoryPlugin/binocular--pencil.png", false);
     }
 
     private Table getCurrentTable() {

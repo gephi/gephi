@@ -60,7 +60,7 @@ public final class DependantColor {
     }
 
     public DependantColor(Mode mode) {
-        customColor = Color.BLACK;
+        customColor = mode.equals(Mode.CUSTOM) ? Color.BLACK : null;
         this.mode = mode;
     }
 

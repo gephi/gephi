@@ -42,23 +42,23 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.preview.api;
 
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 /**
  * Rendering target to PDF format.
  * <p>
  * This target is used by renderers objects to render a graph to PDF and uses
- * the <a href="http://itextpdf.com">iText</a> Java library.
+ * the <a href=https://pdfbox.apache.org/">PDFBox</a> Java library.
  * <p>
- * The target give access to the <code>PDFContentBype</code> object from itext to
+ * The target give access to the <code>PDPageContentStream</code> object from PDFBox to
  * draw items.
  * <p>
- * When this target is instanciated it uses property values defined in the
+ * When this target is instantiated it uses property values defined in the
  * {@link PreviewProperties}. Namely is uses <code>MARGIN_LEFT</code>,
  * <code>MARGIN_TOP</code>, <code>MARGIN_BOTTOM</code>, <code>MARGIN_RIGHT</code>,
- * <code>LANDCAPE</code> and <code>PAGESIZE</code>.
+ * <code>LANDSCAPE</code> and <code>PAGESIZE</code>.
  *
  * @author Yudi Xue, Mathieu Bastian
  */
@@ -71,29 +71,29 @@ public interface PDFTarget extends RenderTarget {
     String MARGIN_RIGHT = "pdf.margin.right";
     String LANDSCAPE = "pdf.landscape";
     String PAGESIZE = "pdf.pagesize";
+    String PDF_DOCUMENT = "pdf.document";
+    String TRANSPARENT_BACKGROUND = "pdf.transparent.background";
 
     /**
-     * Returns the <code>PDFContentBype</code> instance of the PDFTarget. PDFContentByte
+     * Returns the <code>PDPageContentStream</code> instance of the PDFTarget. PDPageContentStream
      * offers a set of drawing functions which can be used by Renderer objects.
      *
-     * @return a PDFContentBype object
+     * @return a PDPageContentStream object
      */
-    PdfContentByte getContentByte();
+    PDPageContentStream getContentStream();
 
     /**
-     * Get a the equivalent in iText of the Java font. Base fonts are either
-     * Type 1 fonts (PDF default's font) or valid system fonts. The first time
-     * a base font which is not a Type 1 is requested the system will
-     * register the system fonts in order to find the right font. This might
-     * take some time up to a minute.
+     * Get the PDFBox equivalent the Java font.
      * <p>
-     * If <code>font</code> can't be found in iText's default fonts or registered
-     * fonts it returns the default Helvetica font.
+     * If <code>font</code> can't be found it returns the default Helvetica font.
+     * <p>
+     * Note that each font (regardless of font size) is embedded in the PDF Document. Also note that some fonts might
+     * miss Unicode characters, which will prevent the text from being rendered properly.
      *
      * @param font the reference Java font
-     * @return the iText BaseFont, or Helvetica is not found
+     * @return the PDFont, or Helvetica is not found
      */
-    BaseFont getBaseFont(java.awt.Font font);
+    PDFont getPDFont(java.awt.Font font);
 
     /**
      * Returns the margin at the bottom of the page.
@@ -136,5 +136,5 @@ public interface PDFTarget extends RenderTarget {
      *
      * @return the page size
      */
-    Rectangle getPageSize();
+    PDRectangle getPageSize();
 }

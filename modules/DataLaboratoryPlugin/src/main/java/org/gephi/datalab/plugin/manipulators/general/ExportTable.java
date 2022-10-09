@@ -97,6 +97,6 @@ public class ExportTable implements GeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-excel.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-excel.png", false);
     }
 }

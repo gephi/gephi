@@ -46,9 +46,14 @@ import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.gephi.graph.api.AttributeUtils;
@@ -58,6 +63,7 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.io.exporter.spi.CharacterExporter;
@@ -73,38 +79,42 @@ import org.joda.time.DateTimeZone;
  */
 public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, LongTask {
 
-    /**
-     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
-     */
-    private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("0.######");
-
-    static {
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
-        symbols.setInfinity("Infinity");
-        NUMBER_FORMAT.setDecimalFormatSymbols(symbols);
-    }
-
     //Settings
     private boolean exportVisible;
-    private ExportTable tableToExport = null;//If null => edges is the default
+    private ExportTable tableToExport = ExportTable.EDGES;
     private char fieldDelimiter = ',';
-    private LinkedHashSet<String> columnIdsToExport = null;
+    private Set<String> excludedColumns = new HashSet<>();
     //Architecture
     private Workspace workspace;
     private Writer writer;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
+    //Settings
+    private DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+    /**
+     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
+     */
+    private DecimalFormat numberFormat = new DecimalFormat("0.######");
+    private boolean normalize = false;
+    private boolean exportColors = false;
+    private boolean exportAttributes = true;
+    private boolean exportPosition = false;
+    private boolean exportSize = false;
+    private boolean exportDynamic = true;
+
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
         Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
+        Progress.start(progressTicket);
         graph.readLock();
+
         try {
             exportData(graph);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Logger.getLogger(ExporterSpreadsheet.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             graph.readUnlock();
             Progress.finish(progressTicket);
@@ -114,8 +124,13 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     }
 
     private void exportData(Graph graph) throws Exception {
-        final CSVFormat format = CSVFormat.DEFAULT
-            .withDelimiter(fieldDelimiter);
+        decimalFormatSymbols.setInfinity("Infinity");
+        numberFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+
+        NormalizationHelper normalization = NormalizationHelper.build(normalize, graph);
+
+        final CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT)
+            .setDelimiter(fieldDelimiter).build();
 
         try (CSVPrinter csvWriter = new CSVPrinter(writer, format)) {
             boolean isEdgeTable = tableToExport != ExportTable.NODES;
@@ -123,30 +138,17 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
             ElementIterable<? extends Element> rows;
 
-            Object[] edgeLabels = graph.getModel().getEdgeTypeLabels();
-            boolean includeEdgeKindColumn = false;
-            for (Object edgeLabel : edgeLabels) {
-                if (edgeLabel != null && !edgeLabel.toString().isEmpty()) {
-                    includeEdgeKindColumn = true;
-                }
-            }
+            Object[] edgeLabels = graph.getModel().getEdgeTypeLabels(false);
+            boolean includeEdgeKindColumn = edgeLabels.length > 1;
+
 
             TimeFormat timeFormat = graph.getModel().getTimeFormat();
             DateTimeZone timeZone = graph.getModel().getTimeZone();
-            List<Column> columns = new ArrayList<>();
 
-            if (columnIdsToExport != null) {
-                for (String columnId : columnIdsToExport) {
-                    Column column = table.getColumn(columnId);
-                    if (column != null) {
-                        columns.add(column);
-                    }
-                }
-            } else {
-                for (Column column : table) {
-                    columns.add(column);
-                }
-            }
+            //Columns to export
+            Collection<Column> columns = getExportableColumns(graph.getModel(), table).stream()
+                .filter(c -> !excludedColumns.contains(c.getId()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
             //Write column headers:
             if (isEdgeTable) {
@@ -165,13 +167,30 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                 String columnHeader = columnId.equalsIgnoreCase(columnTitle) ? columnTitle : columnId;
                 csvWriter.print(columnHeader);
             }
+
+            if (!isEdgeTable && exportPosition) {
+                csvWriter.print("X");
+                csvWriter.print("Y");
+                if (normalization.minZ != 0 || normalization.maxZ != 0) {
+                    csvWriter.print("Z");
+                }
+            }
+            if (!isEdgeTable && exportSize) {
+                csvWriter.print("Size");
+            }
+            if (exportColors) {
+                csvWriter.print("Color");
+            }
+
             csvWriter.println();
 
             //Write rows:
             if (isEdgeTable) {
                 rows = graph.getEdges();
+                Progress.switchToDeterminate(progressTicket, graph.getEdgeCount());
             } else {
                 rows = graph.getNodes();
+                Progress.switchToDeterminate(progressTicket, graph.getNodeCount());
             }
 
             for (Element row : rows) {
@@ -182,17 +201,23 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                     csvWriter.print(edge.getTarget().getId());
                     csvWriter.print(edge.isDirected() ? "Directed" : "Undirected");
                     if (includeEdgeKindColumn) {
-                        csvWriter.print(edge.getTypeLabel().toString());
+                        Object edgeTypeLabel = edge.getTypeLabel();
+                        if (edgeTypeLabel != null) {
+                            csvWriter.print(edgeTypeLabel.toString());
+                        } else {
+                            csvWriter.print("");
+                        }
                     }
                 }
 
                 for (Column column : columns) {
-                    Object value = row.getAttribute(column);
+                    Object value = exportDynamic ? row.getAttribute(column) : row.getAttribute(column, graph.getView());
+
                     String text;
 
                     if (value != null) {
                         if (value instanceof Number) {
-                            text = NUMBER_FORMAT.format(value);
+                            text = numberFormat.format(value);
                         } else {
                             text = AttributeUtils.print(value, timeFormat, timeZone);
                         }
@@ -202,9 +227,52 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
                     csvWriter.print(text);
                 }
 
+                if (!isEdgeTable) {
+                    Node node = (Node) row;
+                    if (exportPosition) {
+                        float x = normalization.normalizeX(node.x());
+                        float y = normalization.normalizeY(node.y());
+                        float z = normalization.normalizeZ(node.z());
+
+                        csvWriter.print(numberFormat.format(x));
+                        csvWriter.print(numberFormat.format(y));
+                        if (normalization.minZ != 0 || normalization.maxZ != 0) {
+                            csvWriter.print(numberFormat.format(z));
+                        }
+                    }
+
+                    if (exportSize) {
+                        float size = normalization.normalizeSize(node.size());
+                        csvWriter.print(numberFormat.format(size));
+                    }
+                }
+
+                if (exportColors) {
+                    csvWriter.print(String.format("#%06x", row.getColor().getRGB() & 0x00FFFFFF));
+                }
+
                 csvWriter.println();
+
+                Progress.progress(progressTicket);
+
+                if (cancel) {
+                    rows.doBreak();
+                    break;
+                }
             }
         }
+    }
+
+    public Collection<Column> getExportableColumns(GraphModel graphModel, Table table) {
+        boolean includeTimeSet = graphModel.isDynamic();
+        List<Column> columns = new ArrayList<>();
+        for (Column column : table) {
+            if (!(column.getId().equals("timeset") && !includeTimeSet) &&
+                (exportAttributes || column.isProperty())) {
+                columns.add(column);
+            }
+        }
+        return columns;
     }
 
     @Override
@@ -250,12 +318,12 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
         this.fieldDelimiter = fieldDelimiter;
     }
 
-    public LinkedHashSet<String> getColumnIdsToExport() {
-        return new LinkedHashSet<>(columnIdsToExport);
+    public Set<String> getExcludedColumns() {
+        return excludedColumns;
     }
 
-    public void setColumnIdsToExport(LinkedHashSet<String> columnIdsToExport) {
-        this.columnIdsToExport = columnIdsToExport != null ? new LinkedHashSet<>(columnIdsToExport) : null;
+    public void setExcludedColumns(Set<String> excludedColumns) {
+        this.excludedColumns = excludedColumns;
     }
 
     public ExportTable getTableToExport() {
@@ -263,7 +331,74 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     }
 
     public void setTableToExport(ExportTable tableToExport) {
+        if (tableToExport == null) {
+            throw new NullPointerException("tableToExport must not be null");
+        }
         this.tableToExport = tableToExport;
+    }
+
+    public void setNumberFormat(DecimalFormat numberFormat) {
+        this.numberFormat = numberFormat;
+    }
+
+    public DecimalFormat getNumberFormat() {
+        return numberFormat;
+    }
+
+    public void setDecimalFormatSymbols(DecimalFormatSymbols decimalFormatSymbols) {
+        this.decimalFormatSymbols = decimalFormatSymbols;
+    }
+
+    public DecimalFormatSymbols getDecimalFormatSymbols() {
+        return decimalFormatSymbols;
+    }
+
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
+    }
+
+    public boolean isExportColors() {
+        return exportColors;
+    }
+
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+
+    public boolean isExportPosition() {
+        return exportPosition;
+    }
+
+    public void setExportSize(boolean exportSize) {
+        this.exportSize = exportSize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public boolean isExportSize() {
+        return exportSize;
+    }
+
+    public void setExportDynamic(boolean exportDynamic) {
+        this.exportDynamic = exportDynamic;
+    }
+
+    public boolean isExportDynamic() {
+        return exportDynamic;
+    }
+
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
+    }
+
+    public boolean isExportAttributes() {
+        return exportAttributes;
     }
 
     public enum ExportTable {

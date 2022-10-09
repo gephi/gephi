@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>ui-library-wrapper</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>UILibraryWrapper</name>
@@ -55,9 +55,9 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>net.java.dev</groupId>
+            <groupId>com.mastfrog</groupId>
             <artifactId>colorchooser</artifactId>
-            <version>1.2</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -68,6 +68,23 @@
             <groupId>net.java.dev</groupId>
             <artifactId>timingframework</artifactId>
             <version>1.1</version>
+        </dependency>
+        <!-- Flatlaf SwingX addon, need to be synced with NB flatlaf version -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-swingx</artifactId>
+            <version>2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.formdev</groupId>
+                    <artifactId>flatlaf</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-flatlaf</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 
@@ -89,6 +106,13 @@
                         <publicPackage>org.jdesktop.beansbinding.*</publicPackage>
                         <publicPackage>org.jdesktop.animation.*</publicPackage> 
                     </publicPackages>
+                    <moduleDependencies>
+                        <!-- Required to allow flatlaf-swingx JAR to access private classes in the NB flatlaf module -->
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-libs-flatlaf</id>
+                            <type>impl</type>
+                        </dependency>
+                    </moduleDependencies>
                 </configuration>
             </plugin>
         </plugins>

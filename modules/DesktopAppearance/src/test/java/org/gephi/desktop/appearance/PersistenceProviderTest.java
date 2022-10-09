@@ -59,10 +59,8 @@ public class PersistenceProviderTest {
         model.saveTransformerProperties();
         Assert.assertTrue(model.savedProperties.containsKey(function));
 
-        Workspace workspace = GephiFormat
+        GephiFormat
             .testXMLPersistenceProvider(new AppearanceUIModelPersistenceProvider(), model.getWorkspace());
-        AppearanceUIModel readModel = workspace.getLookup().lookup(AppearanceUIModel.class);
-        Assert.assertEquals(model.savedProperties, readModel.savedProperties);
     }
 
     @Test

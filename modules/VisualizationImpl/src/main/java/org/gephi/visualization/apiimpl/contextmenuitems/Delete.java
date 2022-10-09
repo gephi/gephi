@@ -92,7 +92,7 @@ public class Delete extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/delete.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/delete.png", false);
     }
 
     @Override

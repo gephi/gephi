@@ -366,7 +366,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         String description =
             NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.infoLabel.description");
         RichTooltip richTooltip = new RichTooltip(name, description);
-        Image image = ImageUtilities.loadImage("org/gephi/desktop/statistics/resources/infolabel_details.png");
+        Image image = ImageUtilities.loadImage("DesktopStatistics/infolabel_details.png", false);
 
         richTooltip.setMainImage(image);
         return richTooltip;
@@ -411,8 +411,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         windowTextField.setName("window"); // NOI18N
 
-        windowInfoLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/statistics/resources/info.png"))); // NOI18N
+        windowInfoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopStatistics/info.png", false)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

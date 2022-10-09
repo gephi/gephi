@@ -123,7 +123,7 @@ import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.datalab//DataTable//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "DataTableTopComponent",
-    iconBase = "org/gephi/desktop/datalab/resources/small.png",
+    iconBase = "DesktopDataLaboratory/small.png",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"datalab"})
 @ActionID(category = "Window", id = "org.gephi.desktop.datalab.DataTableTopComponent")
@@ -502,13 +502,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         }
         if (isShowingNodesTable()) {
             if (nodeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(Color.WHITE);
+                filterTextField.setBackground(UIManager.getColor("TextField.background"));
             } else {
                 filterTextField.setBackground(INVALID_FILTER_COLOR);
             }
         } else if (isShowingEdgesTable()) {
             if (edgeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(Color.WHITE);
+                filterTextField.setBackground(UIManager.getColor("TextField.background"));
             } else {
                 filterTextField.setBackground(INVALID_FILTER_COLOR);
             }
@@ -518,10 +518,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private void refreshAvailableColumnsButton(AvailableColumnsModel availableColumnsModel, Table table) {
         if (table.countColumns() > availableColumnsModel.getAvailableColumnsCount()) {
             availableColumnsButton.setIcon(
-                ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb--plus.png", true));
+                ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb--plus.png", true));
         } else {
             availableColumnsButton
-                .setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
+                .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", true));
         }
     }
 
@@ -708,7 +708,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         previousEdgeFilterColumns.clear();
         availableColumnsButton.setEnabled(false);
         availableColumnsButton
-            .setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
+            .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", true));
         labelFilter.setEnabled(false);
         bannerPanel.setVisible(false);
         hideTable();
@@ -993,7 +993,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     for (final Column column : availableColumns) {
 
                         button = new JCommandMenuButton(column.getTitle(), ImageWrapperResizableIcon
-                            .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/column.png"),
+                            .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/column.png", false),
                                 new Dimension(16, 16)));
                         button.addActionListener(new ActionListener() {
 
@@ -1024,7 +1024,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/table-insert-column.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.png", true),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1058,7 +1058,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/merge.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.png", true),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1170,7 +1170,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             JCommandButton pluginsButton = new JCommandButton(NbBundle
                 .getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"),
                 ImageWrapperResizableIcon
-                    .getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/puzzle--arrow.png", true),
+                    .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/puzzle--arrow.png", true),
                         new Dimension(16, 16)));
             pluginsButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
             pluginsButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
@@ -1350,8 +1350,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         controlToolbar.add(separator);
 
         configurationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        configurationButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/gear-small.png"))); // NOI18N
+        configurationButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/gear-small.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
         configurationButton.setFocusable(false);
@@ -1387,8 +1386,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
         controlToolbar.add(columnComboBox);
 
-        availableColumnsButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/light-bulb.png"))); // NOI18N
+        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(availableColumnsButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.text")); // NOI18N
         availableColumnsButton.setToolTipText(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class,
@@ -1423,8 +1421,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        labelBanner.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
+        labelBanner.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/info.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelBanner, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.labelBanner.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

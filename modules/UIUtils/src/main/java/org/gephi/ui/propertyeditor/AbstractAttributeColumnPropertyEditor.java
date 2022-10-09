@@ -140,6 +140,9 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
+        if (columns == null) {
+            columns = getColumns();
+        }
         for (Column c : columns) {
             if (c.getTitle().equals(text)) {
                 this.selectedColumn = c;

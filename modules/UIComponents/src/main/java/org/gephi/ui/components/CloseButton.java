@@ -46,6 +46,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.ImageUtilities;
 
 /**
  * @author Mathieu Bastian
@@ -65,39 +66,38 @@ public class CloseButton extends JButton {
     private void init() {
         if (UIUtils.isGTKLookAndFeel()) {
             setIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_enabled.png")));
+                ImageUtilities.loadImageIcon("UIComponents/gtk_bigclose_enabled.png", false));
             setRolloverIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_rollover.png")));
+                ImageUtilities.loadImageIcon("UIComponents/gtk_bigclose_rollover.png", false));
             setPressedIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_pressed.png")));
+                ImageUtilities.loadImageIcon("UIComponents/gtk_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsClassicLookAndFeel()) {
             setIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_enabled.png")));
+                ImageUtilities.loadImageIcon("UIComponents/win_bigclose_enabled.png", false));
             setRolloverIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_rollover.png")));
+                ImageUtilities.loadImageIcon("UIComponents/win_bigclose_rollover.png", false));
             setPressedIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_pressed.png")));
+                ImageUtilities.loadImageIcon("UIComponents/win_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsXPLookAndFeel()) {
             setIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_enabled.png")));
+                ImageUtilities.loadImageIcon("UIComponents/xp_bigclose_enabled.png", false));
             setRolloverIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_rollover.png")));
+                ImageUtilities.loadImageIcon("UIComponents/xp_bigclose_rollover.png", false));
             setPressedIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_pressed.png")));
+                ImageUtilities.loadImageIcon("UIComponents/xp_bigclose_pressed.png", false));
         } else if (UIUtils.isWindowsVistaLookAndFeel()) {
             setIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(
-                getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_rollover.png")));
+                ImageUtilities.loadImageIcon("UIComponents/vista_bigclose_enabled.png", false));
+            setRolloverIcon(ImageUtilities.loadImageIcon("UIComponents/vista_bigclose_rollover.png", false));
             setPressedIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_pressed.png")));
+                ImageUtilities.loadImageIcon("UIComponents/vista_bigclose_pressed.png", false));
         } else if (UIUtils.isAquaLookAndFeel()) {
             setIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_enabled.png")));
+                ImageUtilities.loadImageIcon("UIComponents/mac_bigclose_enabled.png", false));
             setRolloverIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_rollover.png")));
+                ImageUtilities.loadImageIcon("UIComponents/mac_bigclose_rollover.png", false));
             setPressedIcon(
-                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_pressed.png")));
+                ImageUtilities.loadImageIcon("UIComponents/mac_bigclose_pressed.png", false));
         }
 
         setText("");

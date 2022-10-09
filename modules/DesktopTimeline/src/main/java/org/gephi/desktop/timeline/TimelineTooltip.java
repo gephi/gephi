@@ -182,7 +182,7 @@ public class TimelineTooltip {
         richTooltip.setTitle(getPosition());
 
         //Img
-        richTooltip.setMainImage(ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/info.png"));
+        richTooltip.setMainImage(ImageUtilities.loadImage("DesktopTimeline/info.png", false));
 
         //Chart
         if (getY() != null) {
@@ -191,7 +191,7 @@ public class TimelineTooltip {
                 .addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img
-            richTooltip.setFooterImage(ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/chart.png"));
+            richTooltip.setFooterImage(ImageUtilities.loadImage("DesktopTimeline/chart.png", false));
         }
 
         return richTooltip;

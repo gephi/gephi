@@ -42,8 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.exporter.preview;
 
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -52,6 +50,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.lib.validation.ValidationClient;
 import org.netbeans.validation.api.Problems;
@@ -77,6 +76,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JTextField bottomMarginTextField;
     private javax.swing.JTextField heightTextField;
     private javax.swing.JLabel heightUnitLabel;
+    private javax.swing.JLabel labelBackground;
     private javax.swing.JLabel labelBottom;
     private javax.swing.JLabel labelHeight;
     private javax.swing.JLabel labelLeft;
@@ -94,6 +94,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JRadioButton portraitRadio;
     private javax.swing.JTextField rightMargintextField;
     private javax.swing.JTextField topMarginTextField;
+    private javax.swing.JCheckBox transparentBackgroundCheckbox;
     private org.jdesktop.swingx.JXHyperlink unitLink;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel widthUnitLabel;
@@ -109,27 +110,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
         //Page size model - http://en.wikipedia.org/wiki/Paper_size
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A0, "A0", 841, 1189, 33.1, 46.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A1, "A1", 594, 841, 23.4, 33.1));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A2, "A2", 420, 594, 16.5, 23.4));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A3, "A3", 297, 420, 11.7, 16.5));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A4, "A4", 210, 297, 8.3, 11.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.A5, "A5", 148, 210, 5.8, 8.3));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_A, "ARCH A", 229, 305, 9, 12));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_B, "ARCH B", 305, 457, 12, 18));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_C, "ARCH C", 457, 610, 18, 24));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_D, "ARCH D", 610, 914, 24, 36));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.ARCH_E, "ARCH E", 914, 1219, 36, 48));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B0, "B0", 1000, 1414, 39.4, 55.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B1, "B1", 707, 1000, 27.8, 39.4));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B2, "B2", 500, 707, 19.7, 27.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B3, "B3", 353, 500, 13.9, 19.7));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B4, "B4", 250, 353, 9.8, 13.9));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.B5, "B5", 176, 250, 6.9, 9.8));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LEDGER, "Ledger", 432, 279, 17, 11));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LEGAL, "Legal", 216, 356, 8.5, 14));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.LETTER, "Letter", 216, 279, 8.5, 11));
-        comboBoxModel.addElement(new PageSizeItem(PageSize.TABLOID, "Tabloid", 279, 432, 11, 17));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A0, "A0", 841, 1189, 33.1, 46.8));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A1, "A1", 594, 841, 23.4, 33.1));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A2, "A2", 420, 594, 16.5, 23.4));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A3, "A3", 297, 420, 11.7, 16.5));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A4, "A4", 210, 297, 8.3, 11.7));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.A5, "A5", 148, 210, 5.8, 8.3));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.LEGAL, "Legal", 216, 356, 8.5, 14));
+        comboBoxModel.addElement(new PageSizeItem(PDRectangle.LETTER, "Letter", 216, 279, 8.5, 11));
 
         customSizeString = NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.pageSize.custom");
         comboBoxModel.addElement(customSizeString);
@@ -233,6 +221,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         setMargins(pdfExporter.getMarginTop(), pdfExporter.getMarginBottom(), pdfExporter.getMarginLeft(),
             pdfExporter.getMarginRight());
         setOrientation(pdfExporter.isLandscape());
+        transparentBackgroundCheckbox.setSelected(pdfExporter.isTransparentBackground());
     }
 
     public void unsetup(PDFExporter pdfExporter) {
@@ -257,13 +246,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             }
             float w = (float) width;
             float h = (float) height;
-            Rectangle rect = new Rectangle(w, h);
+            PDRectangle rect = new PDRectangle(w, h);
             pdfExporter.setPageSize(rect);
         } else {
             pdfExporter.setPageSize(((PageSizeItem) pageSizeCombo.getSelectedItem()).getPageSize());
         }
 
         pdfExporter.setLandscape(landscapeRadio.isSelected());
+        pdfExporter.setTransparentBackground(transparentBackgroundCheckbox.isSelected());
 
         double top = pdfExporter.getMarginTop();
         double bottom = pdfExporter.getMarginBottom();
@@ -485,214 +475,182 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         rightMargintextField = new javax.swing.JTextField();
         labelUnit = new javax.swing.JLabel();
         unitLink = new org.jdesktop.swingx.JXHyperlink();
+        transparentBackgroundCheckbox = new javax.swing.JCheckBox();
+        labelBackground = new javax.swing.JLabel();
 
-        labelPageSize.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelPageSize.text")); // NOI18N
+        labelPageSize.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelPageSize.text")); // NOI18N
 
-        pageSizeCombo
-            .setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Item 1", "Item 2", "Item 3", "Item 4"}));
+        pageSizeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        labelWidth.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelWidth.text")); // NOI18N
+        labelWidth.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelWidth.text")); // NOI18N
 
         widthTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        widthTextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.widthTextField.text")); // NOI18N
+        widthTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.widthTextField.text")); // NOI18N
 
-        labelHeight.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelHeight.text")); // NOI18N
+        labelHeight.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelHeight.text")); // NOI18N
 
         heightTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        heightTextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightTextField.text")); // NOI18N
+        heightTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightTextField.text")); // NOI18N
 
-        widthUnitLabel.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.widthUnitLabel.text")); // NOI18N
+        widthUnitLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.widthUnitLabel.text")); // NOI18N
 
-        heightUnitLabel.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightUnitLabel.text")); // NOI18N
+        heightUnitLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightUnitLabel.text")); // NOI18N
 
-        labelOrientation.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelOrientation.text")); // NOI18N
+        labelOrientation.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelOrientation.text")); // NOI18N
 
         orientationButtonGroup.add(portraitRadio);
-        portraitRadio.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.portraitRadio.text")); // NOI18N
+        portraitRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.portraitRadio.text")); // NOI18N
 
         orientationButtonGroup.add(landscapeRadio);
-        landscapeRadio.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.landscapeRadio.text")); // NOI18N
+        landscapeRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.landscapeRadio.text")); // NOI18N
 
-        labelMargins.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelMargins.text")); // NOI18N
+        labelMargins.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelMargins.text")); // NOI18N
 
-        labelTop.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelTop.text")); // NOI18N
+        labelTop.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelTop.text")); // NOI18N
 
-        topMarginTextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.topMarginTextField.text")); // NOI18N
+        topMarginTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.topMarginTextField.text")); // NOI18N
 
-        labelBottom.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelBottom.text")); // NOI18N
+        labelBottom.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelBottom.text")); // NOI18N
 
-        bottomMarginTextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.bottomMarginTextField.text")); // NOI18N
+        bottomMarginTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.bottomMarginTextField.text")); // NOI18N
 
-        labelLeft.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelLeft.text")); // NOI18N
+        labelLeft.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelLeft.text")); // NOI18N
 
-        labelRight.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelRight.text")); // NOI18N
+        labelRight.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelRight.text")); // NOI18N
 
-        leftMarginTextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.leftMarginTextField.text")); // NOI18N
+        leftMarginTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.leftMarginTextField.text")); // NOI18N
 
-        rightMargintextField.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.rightMargintextField.text")); // NOI18N
+        rightMargintextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.rightMargintextField.text")); // NOI18N
 
-        labelUnit.setText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.text")); // NOI18N
+        labelUnit.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.text")); // NOI18N
 
         unitLink.setText(""); // NOI18N
-        unitLink.setToolTipText(org.openide.util.NbBundle
-            .getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.toolTipText")); // NOI18N
+        unitLink.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.toolTipText")); // NOI18N
         unitLink.setFocusPainted(false);
+
+        transparentBackgroundCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.transparentBackgroundCheckbox.text")); // NOI18N
+
+        labelBackground.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelBackground.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(labelUnit)
-                            .addGap(62, 62, 62)
-                            .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(labelPageSize)
-                                .addComponent(labelOrientation)
-                                .addComponent(labelMargins))
-                            .addGap(27, 27, 27)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(
-                                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(landscapeRadio, javax.swing.GroupLayout.Alignment.LEADING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(portraitRadio, javax.swing.GroupLayout.Alignment.LEADING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
-                                                layout.createSequentialGroup()
-                                                    .addGroup(layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(labelHeight)
-                                                        .addComponent(labelWidth))
-                                                    .addGap(18, 18, 18)
-                                                    .addGroup(layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(heightTextField,
-                                                            javax.swing.GroupLayout.Alignment.TRAILING,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE, 95,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(widthTextField,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE, 95,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addGap(10, 10, 10)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(widthUnitLabel)
-                                        .addComponent(heightUnitLabel)))
-                                .addComponent(pageSizeCombo, 0, 224, Short.MAX_VALUE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(labelTop)
-                                            .addGap(26, 26, 26)
-                                            .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(labelLeft))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(labelBottom)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(labelRight)))
-                                    .addGap(21, 21, 21)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34,
-                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34,
-                                            javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                    .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelPageSize)
+                            .addComponent(labelOrientation)
+                            .addComponent(labelMargins)
+                            .addComponent(labelBackground))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pageSizeCombo, 0, 217, Short.MAX_VALUE)
+                            .addComponent(transparentBackgroundCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(landscapeRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(portraitRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(labelHeight)
+                                                    .addComponent(labelWidth))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGap(10, 10, 10)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(widthUnitLabel)
+                                            .addComponent(heightUnitLabel)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(labelTop)
+                                                .addGap(26, 26, 26)
+                                                .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(labelLeft))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(labelBottom)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(labelRight)))
+                                        .addGap(21, 21, 21)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelUnit)
+                        .addGap(62, 62, 62)
+                        .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelUnit)
-                        .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelPageSize)
-                        .addComponent(pageSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(widthUnitLabel)
-                        .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelWidth))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(heightUnitLabel)
-                        .addComponent(labelHeight))
-                    .addGap(28, 28, 28)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelOrientation)
-                        .addComponent(portraitRadio))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(landscapeRadio)
-                    .addGap(30, 30, 30)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelMargins)
-                        .addComponent(labelTop)
-                        .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelLeft)
-                        .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelBottom)
-                        .addComponent(labelRight)
-                        .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelUnit)
+                    .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelPageSize)
+                    .addComponent(pageSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(widthUnitLabel)
+                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelWidth))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(heightUnitLabel)
+                    .addComponent(labelHeight))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelOrientation)
+                    .addComponent(portraitRadio))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(landscapeRadio)
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelMargins)
+                    .addComponent(labelTop)
+                    .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelLeft)
+                    .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelBottom)
+                    .addComponent(labelRight)
+                    .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(transparentBackgroundCheckbox)
+                    .addComponent(labelBackground))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private static class PageSizeItem {
 
-        private final Rectangle pageSize;
+        private final PDRectangle pageSize;
         private final double inWidth;
         private final double inHeight;
         private final double mmWidth;
         private final double mmHeight;
         private String name = "";
 
-        public PageSizeItem(Rectangle pageSize) {
+        public PageSizeItem(PDRectangle pageSize) {
             this.pageSize = pageSize;
             this.inHeight = pageSize.getHeight() / INCH;
             this.inWidth = pageSize.getWidth() / INCH;
@@ -700,7 +658,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             this.mmWidth = pageSize.getWidth() / MM;
         }
 
-        public PageSizeItem(Rectangle pageSize, String name, double mmWidth, double mmHeight, double inWidth,
+        public PageSizeItem(PDRectangle pageSize, String name, double mmWidth, double mmHeight, double inWidth,
                             double inHeight) {
             this.pageSize = pageSize;
             this.name = name;
@@ -710,7 +668,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             this.mmWidth = mmWidth;
         }
 
-        public Rectangle getPageSize() {
+        public PDRectangle getPageSize() {
             return pageSize;
         }
 
