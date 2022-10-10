@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.exporter.preview;
 
-import com.itextpdf.text.Rectangle;
 import javax.swing.JPanel;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
@@ -106,6 +106,7 @@ public class UIExporterPDF implements ExporterUI {
         private final static String LANDSCAPE = "PDF_landscape";
         private final static String PAGE_SIZE_WIDTH = "PDF_pageSizeWidth";
         private final static String PAGE_SIZE_HEIGHT = "PDF_pageSizeHeight";
+        private final static String TRANSPARENT_BACKGROUND = "PDF_transparentBackground";
         // Default
         private final static PDFExporter DEFAULT = new PDFExporter();
 
@@ -117,7 +118,8 @@ public class UIExporterPDF implements ExporterUI {
             exporter.setLandscape(get(LANDSCAPE, DEFAULT.isLandscape()));
             float width = get(PAGE_SIZE_WIDTH, DEFAULT.getPageSize().getWidth());
             float height = get(PAGE_SIZE_HEIGHT, DEFAULT.getPageSize().getHeight());
-            exporter.setPageSize(new Rectangle(width, height));
+            exporter.setPageSize(new PDRectangle(width, height));
+            exporter.setTransparentBackground(get(TRANSPARENT_BACKGROUND, DEFAULT.isTransparentBackground()));
         }
 
         private void save(PDFExporter exporter) {
@@ -128,6 +130,7 @@ public class UIExporterPDF implements ExporterUI {
             put(LANDSCAPE, exporter.isLandscape());
             put(PAGE_SIZE_WIDTH, exporter.getPageSize().getWidth());
             put(PAGE_SIZE_HEIGHT, exporter.getPageSize().getHeight());
+            put(TRANSPARENT_BACKGROUND, exporter.isTransparentBackground());
         }
     }
 }

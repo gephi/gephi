@@ -42,12 +42,13 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -232,31 +233,34 @@ public class NodeRenderer implements Renderer {
         // Border can't be larger than size
         borderSize = Math.min(borderSize, size / 2f);
 
-        PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
-        cb.setLineWidth(borderSize);
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        if (alpha < 1f) {
-            cb.saveState();
-            PdfGState gState = new PdfGState();
-            gState.setFillOpacity(alpha);
-            gState.setStrokeOpacity(alpha);
-            cb.setGState(gState);
-        }
-
-        cb.circle(x, -y, (size / 2f) - borderSize / 2f);
-        if (borderSize > 0 && alpha == 1f) {
-            cb.fillStroke();
-        } else if (borderSize > 0 && alpha < 1f) {
-            // Special case to make sure the border and the fill are not overlapping
-            cb.stroke();
-            cb.circle(x, -y, (size / 2f) - borderSize);
-            cb.fill();
-        } else {
-            cb.fill();
-        }
-        if (alpha < 1f) {
-            cb.restoreState();
+        PDPageContentStream cb = target.getContentStream();
+        try {
+            cb.setStrokingColor(borderColor);
+            cb.setLineWidth(borderSize);
+            cb.setNonStrokingColor(color);
+            if (alpha < 1f) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setStrokingAlphaConstant(alpha);
+                graphicsState.setNonStrokingAlphaConstant(alpha);
+                cb.saveGraphicsState();
+                cb.setGraphicsStateParameters(graphicsState);
+            }
+            PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize / 2f);
+            if (borderSize > 0 && alpha == 1f) {
+                cb.fillAndStroke();
+            } else if (borderSize > 0 && alpha < 1f) {
+                // Special case to make sure the border and the fill are not overlapping
+                cb.stroke();
+                PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize);
+                cb.fill();
+            } else {
+                cb.fill();
+            }
+            if (alpha < 1f) {
+                cb.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
