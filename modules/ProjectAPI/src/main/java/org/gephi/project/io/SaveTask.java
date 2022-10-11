@@ -114,10 +114,12 @@ public class SaveTask implements LongTask, Runnable {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
-        File writeFile = null;
+        File writeFile = file;
         try {
-            String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
-            writeFile = new File(file.getParent(), tempFileName);
+            if (file.exists()) {
+                String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
+                writeFile = new File(file.getParent(), tempFileName);
+            }
 
             FileOutputStream outputStream = null;
             ZipOutputStream zipOut = null;
@@ -196,7 +198,7 @@ public class SaveTask implements LongTask, Runnable {
             Progress.finish(progressTicket);
 
             //Rename file
-            if (!cancel && writeFile.exists()) {
+            if (!cancel && writeFile.exists() && file != writeFile) {
                 //Delete original file
                 if (file.exists()) {
                     file.delete();

@@ -47,19 +47,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
-import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.openide.util.Lookup;
@@ -72,15 +70,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ProjectController.class)
 public class ProjectControllerImpl implements ProjectController {
 
-    private final LongTaskExecutor longTaskExecutor;
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
 
     public ProjectControllerImpl() {
-        // Executor
-        longTaskExecutor = new LongTaskExecutor(true, "Project IO");
-
         //Listeners
         listeners = new ArrayList<>();
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
@@ -122,186 +116,246 @@ public class ProjectControllerImpl implements ProjectController {
         projectListeners.forEach(consumer);
     }
 
-    private void execute(Runnable runnable) {
-
+    @Override
+    public ProjectImpl newProject() {
+        synchronized (this) {
+            closeCurrentProject();
+            ProjectImpl project = new ProjectImpl(projects.nextProjectId());
+            projects.addProject(project);
+            openProject(project);
+            return project;
+        }
     }
 
     @Override
-    public void newProject() {
-        closeCurrentProject();
-        ProjectImpl project = new ProjectImpl(projects.nextProjectId());
-        projects.addProject(project);
-        openProject(project);
-    }
-
-    @Override
-    public Runnable openProject(File file) {
-
-        return new LoadTask(file);
-    }
-
-    @Override
-    public Runnable saveProject(Project project) {
-        if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
-            File file = project.getLookup().lookup(ProjectInformationImpl.class).getFile();
-            return saveProject(project, file);
+    public Project openProject(File file) {
+        synchronized (this) {
+            Project project = new LoadTask(file).execute();
+            if (project != null) {
+                openProject(project);
+                return project;
+            }
         }
         return null;
     }
 
     @Override
-    public Runnable saveProject(Project project, File file) {
-        project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-        SaveTask saveTask = new SaveTask(project, file);
-        return saveTask;
+    public void saveProject(Project project) {
+        synchronized (this) {
+            if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
+                File file = project.getLookup().lookup(ProjectInformationImpl.class).getFile();
+                saveProject(project, file);
+            }
+        }
+    }
+
+    @Override
+    public void saveProject(Project project, File file) {
+        synchronized (this) {
+            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+            new SaveTask(project, file).run();
+        }
     }
 
     @Override
     public void closeCurrentProject() {
-        if (projects.hasCurrentProject()) {
+        synchronized (this) {
+            if (projects.hasCurrentProject()) {
+                Project project = projects.getCurrentProject();
 
+                //Event
+                if (project.hasCurrentWorkspace()) {
+                    fireWorkspaceEvent(ProjectControllerImpl.EventType.UNSELECT,
+                        project.getCurrentWorkspace());
+                }
+                for (Workspace ws : project.getWorkspaces()) {
+                    fireWorkspaceEvent(ProjectControllerImpl.EventType.CLOSE, ws);
+                }
 
+                //Close
+                project.getLookup().lookup(ProjectInformationImpl.class).close();
+                projects.closeCurrentProject();
+
+                fireWorkspaceEvent(ProjectControllerImpl.EventType.DISABLE, null);
+            }
         }
     }
 
     @Override
     public void removeProject(Project project) {
-        if (projects.getCurrentProject() == project) {
-            closeCurrentProject();
+        synchronized (this) {
+            if (projects.getCurrentProject() == project) {
+                closeCurrentProject();
+            }
+            projects.removeProject(project);
         }
-        projects.removeProject(project);
     }
 
     @Override
     public ProjectsImpl getProjects() {
-        return projects;
+        synchronized (this) {
+            return projects;
+        }
+    }
+
+    @Override
+    public Collection<Project> getAllProjects() {
+        return Collections.unmodifiableList(Arrays.asList(projects.getProjects()));
+    }
+
+    @Override
+    public boolean hasCurrentProject() {
+        synchronized (this) {
+            return projects.hasCurrentProject();
+        }
     }
 
     @Override
     public Workspace newWorkspace(Project project) {
-        Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
+        synchronized (this) {
+            Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
 
-        //Event
-        fireWorkspaceEvent(EventType.INITIALIZE, workspace);
-        return workspace;
+            //Event
+            fireWorkspaceEvent(EventType.INITIALIZE, workspace);
+            return workspace;
+        }
     }
 
     @Override
     public void deleteWorkspace(Workspace workspace) {
-        Project project = workspace.getProject();
-        WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
+        synchronized (this) {
+            Project project = workspace.getProject();
+            WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
-        Workspace toSelectWorkspace = null;
-        if (getCurrentWorkspace() == workspace) {
-            toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
-        }
+            Workspace toSelectWorkspace = null;
+            if (getCurrentWorkspace() == workspace) {
+                toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
+            }
 
-        workspaceProvider.removeWorkspace(workspace);
+            workspaceProvider.removeWorkspace(workspace);
 
-        //Event
-        fireWorkspaceEvent(EventType.CLOSE, workspace);
+            //Event
+            fireWorkspaceEvent(EventType.CLOSE, workspace);
 
-        if (getCurrentWorkspace() == workspace) {
-            //Select the one before, or after
-            if (toSelectWorkspace == null) {
-                closeCurrentProject();
-            } else {
-                openWorkspace(toSelectWorkspace);
+            if (getCurrentWorkspace() == workspace) {
+                //Select the one before, or after
+                if (toSelectWorkspace == null) {
+                    closeCurrentProject();
+                } else {
+                    openWorkspace(toSelectWorkspace);
+                }
             }
         }
-
     }
 
     public void openProject(Project project) {
-        final ProjectImpl projectImpl = (ProjectImpl) project;
-        final ProjectInformationImpl projectInformationImpl =
-            projectImpl.getLookup().lookup(ProjectInformationImpl.class);
-        final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
+        synchronized (this) {
+            final ProjectImpl projectImpl = (ProjectImpl) project;
+            final ProjectInformationImpl projectInformationImpl =
+                projectImpl.getLookup().lookup(ProjectInformationImpl.class);
+            final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
-        if (projects.hasCurrentProject()) {
-            closeCurrentProject();
-        }
-        projects.addProject(projectImpl);
-        projects.setCurrentProject(projectImpl);
-        projectInformationImpl.open();
-
-        for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
-            fireWorkspaceEvent(EventType.INITIALIZE, ws);
-        }
-
-        if (!workspaceProviderImpl.hasCurrentWorkspace()) {
-            if (workspaceProviderImpl.getWorkspaces().length == 0) {
-                Workspace workspace = newWorkspace(project);
-                openWorkspace(workspace);
-            } else {
-                Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
-                openWorkspace(workspace);
+            if (projects.hasCurrentProject()) {
+                closeCurrentProject();
             }
-        } else {
-            fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
+            projects.addProject(projectImpl);
+            projects.setCurrentProject(projectImpl);
+            projectInformationImpl.open();
+
+            for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
+                fireWorkspaceEvent(EventType.INITIALIZE, ws);
+            }
+
+            if (!workspaceProviderImpl.hasCurrentWorkspace()) {
+                if (workspaceProviderImpl.getWorkspaces().length == 0) {
+                    Workspace workspace = newWorkspace(project);
+                    openWorkspace(workspace);
+                } else {
+                    Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
+                    openWorkspace(workspace);
+                }
+            } else {
+                fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
+            }
         }
     }
 
     @Override
     public ProjectImpl getCurrentProject() {
-        return projects.getCurrentProject();
+        synchronized (this) {
+            return projects.getCurrentProject();
+        }
     }
 
     @Override
     public WorkspaceImpl getCurrentWorkspace() {
-        if (projects.hasCurrentProject()) {
-            return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
+        synchronized (this) {
+            if (projects.hasCurrentProject()) {
+                return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
     public void closeCurrentWorkspace() {
-        WorkspaceImpl workspace = getCurrentWorkspace();
-        if (workspace != null) {
-            workspace.getLookup().lookup(WorkspaceInformationImpl.class).close();
+        synchronized (this) {
+            WorkspaceImpl workspace = getCurrentWorkspace();
+            if (workspace != null) {
+                workspace.getLookup().lookup(WorkspaceInformationImpl.class).close();
 
-            //Event
-            fireWorkspaceEvent(EventType.UNSELECT, workspace);
+                //Event
+                fireWorkspaceEvent(EventType.UNSELECT, workspace);
+            }
         }
     }
 
     @Override
     public void openWorkspace(Workspace workspace) {
-        closeCurrentWorkspace();
-        getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).setCurrentWorkspace(workspace);
-        workspace.getLookup().lookup(WorkspaceInformationImpl.class).open();
+        synchronized (this) {
+            closeCurrentWorkspace();
+            getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).setCurrentWorkspace(workspace);
+            workspace.getLookup().lookup(WorkspaceInformationImpl.class).open();
 
-        //Event
-        fireWorkspaceEvent(EventType.SELECT, workspace);
+            //Event
+            fireWorkspaceEvent(EventType.SELECT, workspace);
+        }
     }
 
     @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
-        if (projects.hasCurrentProject()) {
-            Workspace duplicate = newWorkspace(projects.getCurrentProject());
-            for (WorkspaceDuplicateProvider dp : Lookup.getDefault().lookupAll(WorkspaceDuplicateProvider.class)) {
-                dp.duplicate(workspace, duplicate);
+        synchronized (this) {
+            if (projects.hasCurrentProject()) {
+                Workspace duplicate = newWorkspace(projects.getCurrentProject());
+                for (WorkspaceDuplicateProvider dp : Lookup.getDefault().lookupAll(WorkspaceDuplicateProvider.class)) {
+                    dp.duplicate(workspace, duplicate);
+                }
+                openWorkspace(duplicate);
+                return duplicate;
             }
-            openWorkspace(duplicate);
-            return duplicate;
+            return null;
         }
-        return null;
     }
 
     @Override
     public void renameProject(Project project, final String name) {
-        project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
+        synchronized (this) {
+            project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
+        }
     }
 
     @Override
     public void renameWorkspace(Workspace workspace, String name) {
-        workspace.getLookup().lookup(WorkspaceInformationImpl.class).setName(name);
+        synchronized (this) {
+            workspace.getLookup().lookup(WorkspaceInformationImpl.class).setName(name);
+        }
     }
 
     @Override
     public void setSource(Workspace workspace, String source) {
-        workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
+        synchronized (this) {
+            workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
+        }
     }
 
     @Override
@@ -318,7 +372,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    public void fireWorkspaceEvent(EventType event, Workspace workspace) {
+    private void fireWorkspaceEvent(EventType event, Workspace workspace) {
         WorkspaceListener[] listenersArray;
         synchronized (listeners) {
             listenersArray = listeners.toArray(new WorkspaceListener[0]);

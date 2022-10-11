@@ -43,6 +43,8 @@
 package org.gephi.project.api;
 
 import java.io.File;
+import java.util.Collection;
+import org.gephi.project.impl.ProjectImpl;
 
 /**
  * Project controller, manage projects and workspaces states.
@@ -58,27 +60,50 @@ public interface ProjectController {
 
     void startup();
 
-    void newProject();
+    Project newProject();
 
-    Runnable openProject(File file);
+    Project openProject(File file);
 
-    Runnable saveProject(Project project);
+    void saveProject(Project project);
 
-    Runnable saveProject(Project project, File file);
+    void saveProject(Project project, File file);
 
     void closeCurrentProject();
 
     void removeProject(Project project);
 
+    /**
+     * Deprecated.
+     * @return
+     */
     Projects getProjects();
+
+    /**
+     * Returns true if a project is selected.
+     *
+     * @return true if current project, false otherwise
+     */
+    boolean hasCurrentProject();
+
+    /**
+     * Returns the current project or null if missing.
+     *
+     * @return current project or null if missing
+     */
+    Project getCurrentProject();
+
+    /**
+     * Returns an array of all projects.
+     *
+     * @return project array
+     */
+    Collection<Project> getAllProjects();
 
     Workspace newWorkspace(Project project);
 
     void deleteWorkspace(Workspace workspace);
 
     void renameWorkspace(Workspace workspace, String name);
-
-    Project getCurrentProject();
 
     void renameProject(Project project, String name);
 

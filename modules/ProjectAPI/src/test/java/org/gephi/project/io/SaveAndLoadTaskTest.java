@@ -71,8 +71,7 @@ public class SaveAndLoadTaskTest {
         Assert.assertTrue(tempFile.exists());
 
         LoadTask loadTask = new LoadTask(tempFile);
-        loadTask.run();
-        ProjectImpl readProject = Utils.getCurrentProject();
+        ProjectImpl readProject = loadTask.execute();
         Assert.assertNotNull(readProject);
 
         return readProject;

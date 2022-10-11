@@ -63,6 +63,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
+import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
@@ -83,7 +84,7 @@ import org.openide.util.NbBundle;
 /**
  * @author Mathieu Bastian
  */
-public class LoadTask implements LongTask, Runnable {
+public class LoadTask implements LongTask {
 
     private final File file;
     private boolean cancel = false;
@@ -93,8 +94,7 @@ public class LoadTask implements LongTask, Runnable {
         this.file = file;
     }
 
-    @Override
-    public void run() {
+    public ProjectImpl execute() {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
@@ -174,8 +174,8 @@ public class LoadTask implements LongTask, Runnable {
                             }
                         }
 
-                        // Open project
-                        projectController.openProject(project);
+                        Progress.finish(progressTicket);
+                        return project;
                     }
                 }
             } finally {
@@ -192,6 +192,7 @@ public class LoadTask implements LongTask, Runnable {
             throw new GephiFormatException(GephiReader.class, ex);
         }
         Progress.finish(progressTicket);
+        return null;
     }
 
     private ProjectImpl readProject(ZipFile zipFile) throws Exception {
@@ -206,49 +207,46 @@ public class LoadTask implements LongTask, Runnable {
                     new RuntimeException("Project can't be found in the zip"));
             }
         }
-        if (entry != null) {
-            InputStream is = null;
+        InputStream is = null;
+        try {
+            is = zipFile.getInputStream(entry);
+            InputStreamReader isReader = null;
+            Xml10FilterReader filterReader = null;
+            XMLStreamReader reader = null;
             try {
-                is = zipFile.getInputStream(entry);
-                InputStreamReader isReader = null;
-                Xml10FilterReader filterReader = null;
-                XMLStreamReader reader = null;
-                try {
-                    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-                    if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
-                        inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
-                    }
-                    inputFactory.setXMLReporter(new XMLReporter() {
-                        @Override
-                        public void report(String message, String errorType, Object relatedInformation,
-                                           Location location) throws XMLStreamException {
-                        }
-                    });
-                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
-                    filterReader = new Xml10FilterReader(isReader);
-                    reader = inputFactory.createXMLStreamReader(filterReader);
-
-                    ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                    ProjectsImpl projects = projectController.getProjects();
-                    ProjectImpl project = GephiReader.readProject(reader, projects);
-                    project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-                    return project;
-                } finally {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                    if (filterReader != null) {
-                        filterReader.close();
-                    }
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                    inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
                 }
+                inputFactory.setXMLReporter(new XMLReporter() {
+                    @Override
+                    public void report(String message, String errorType, Object relatedInformation,
+                                       Location location) throws XMLStreamException {
+                    }
+                });
+                isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+                filterReader = new Xml10FilterReader(isReader);
+                reader = inputFactory.createXMLStreamReader(filterReader);
 
+                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                ProjectsImpl projects = projectController.getProjects();
+                ProjectImpl project = GephiReader.readProject(reader, projects);
+                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+                return project;
             } finally {
-                if (is != null) {
-                    is.close();
+                if (reader != null) {
+                    reader.close();
+                }
+                if (filterReader != null) {
+                    filterReader.close();
                 }
             }
+
+        } finally {
+            if (is != null) {
+                is.close();
+            }
         }
-        return null;
     }
 
     private WorkspaceImpl readWorkspace(ProjectImpl project, String entryName, ZipFile zipFile) throws Exception {
