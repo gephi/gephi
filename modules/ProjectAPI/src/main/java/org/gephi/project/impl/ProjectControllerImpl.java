@@ -50,11 +50,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.io.GephiReader;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
@@ -74,10 +77,12 @@ public class ProjectControllerImpl implements ProjectController {
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
 
+    private final List<ProjectListener> projectListeners;
+
     public ProjectControllerImpl() {
         //Listeners
-        listeners = new ArrayList<>();
-        listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
+        listeners = new ArrayList<>(Lookup.getDefault().lookupAll(WorkspaceListener.class));
+        projectListeners = new ArrayList<>(Lookup.getDefault().lookupAll(ProjectListener.class));
 
         registerNetbeansPropertyEditors();
     }
@@ -110,8 +115,6 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    Collection<ProjectListener> projectListeners;
-
     private void emitProjectEvent(Consumer<? super ProjectListener> consumer) {
         projectListeners.forEach(consumer);
     }
@@ -119,21 +122,48 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public ProjectImpl newProject() {
         synchronized (this) {
-            closeCurrentProject();
-            ProjectImpl project = new ProjectImpl(projects.nextProjectId());
-            projects.addProject(project);
-            openProject(project);
-            return project;
+            emitProjectEvent(ProjectListener::lock);
+            ProjectImpl project = null;
+            try {
+                closeCurrentProject();
+                project = new ProjectImpl(projects.nextProjectId());
+                projects.addProject(project);
+                openProject(project);
+                ProjectImpl finalProject = project;
+                emitProjectEvent((pl) -> pl.opened(finalProject));
+                return project;
+            } catch (Exception e) {
+                return handleException(project, e);
+            }
         }
+    }
+
+    private ProjectImpl handleException(Project project, Throwable t) {
+        emitProjectEvent((pl) -> pl.error(project, t));
+        if (t instanceof GephiFormatException) {
+            throw (GephiFormatException) t;
+        } else if (t instanceof LegacyGephiFormatException) {
+            throw (LegacyGephiFormatException) t;
+        }
+        throw new RuntimeException(t);
     }
 
     @Override
     public Project openProject(File file) {
         synchronized (this) {
-            Project project = new LoadTask(file).execute();
-            if (project != null) {
-                openProject(project);
-                return project;
+            emitProjectEvent(ProjectListener::lock);
+            Project project = null;
+            try {
+                project = new LoadTask(file).execute();
+                // Null if cancelled
+                if (project != null) {
+                    openProject(project);
+                    Project finalProject = project;
+                    emitProjectEvent((pl) -> pl.opened(finalProject));
+                    return project;
+                }
+            } catch (Exception e) {
+                return handleException(project, e);
             }
         }
         return null;
@@ -152,8 +182,14 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public void saveProject(Project project, File file) {
         synchronized (this) {
-            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-            new SaveTask(project, file).run();
+            emitProjectEvent(ProjectListener::lock);
+            try {
+                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+                new SaveTask(project, file).run();
+                emitProjectEvent((pl) -> pl.saved(project));
+            } catch (Exception e) {
+                handleException(project, e);
+            }
         }
     }
 
@@ -161,22 +197,28 @@ public class ProjectControllerImpl implements ProjectController {
     public void closeCurrentProject() {
         synchronized (this) {
             if (projects.hasCurrentProject()) {
+                emitProjectEvent(ProjectListener::lock);
                 Project project = projects.getCurrentProject();
 
-                //Event
-                if (project.hasCurrentWorkspace()) {
-                    fireWorkspaceEvent(ProjectControllerImpl.EventType.UNSELECT,
-                        project.getCurrentWorkspace());
-                }
-                for (Workspace ws : project.getWorkspaces()) {
-                    fireWorkspaceEvent(ProjectControllerImpl.EventType.CLOSE, ws);
-                }
+                try {
+                    //Event
+                    if (project.hasCurrentWorkspace()) {
+                        fireWorkspaceEvent(ProjectControllerImpl.EventType.UNSELECT,
+                            project.getCurrentWorkspace());
+                    }
+                    for (Workspace ws : project.getWorkspaces()) {
+                        fireWorkspaceEvent(ProjectControllerImpl.EventType.CLOSE, ws);
+                    }
 
-                //Close
-                project.getLookup().lookup(ProjectInformationImpl.class).close();
-                projects.closeCurrentProject();
+                    //Close
+                    project.getLookup().lookup(ProjectInformationImpl.class).close();
+                    projects.closeCurrentProject();
 
-                fireWorkspaceEvent(ProjectControllerImpl.EventType.DISABLE, null);
+                    fireWorkspaceEvent(ProjectControllerImpl.EventType.DISABLE, null);
+                    emitProjectEvent((pl) -> pl.closed(project));
+                } catch (Exception e) {
+                    handleException(project, e);
+                }
             }
         }
     }
@@ -248,35 +290,33 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    public void openProject(Project project) {
-        synchronized (this) {
-            final ProjectImpl projectImpl = (ProjectImpl) project;
-            final ProjectInformationImpl projectInformationImpl =
-                projectImpl.getLookup().lookup(ProjectInformationImpl.class);
-            final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
+    private void openProject(Project project) {
+        final ProjectImpl projectImpl = (ProjectImpl) project;
+        final ProjectInformationImpl projectInformationImpl =
+            projectImpl.getLookup().lookup(ProjectInformationImpl.class);
+        final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
-            if (projects.hasCurrentProject()) {
-                closeCurrentProject();
-            }
-            projects.addProject(projectImpl);
-            projects.setCurrentProject(projectImpl);
-            projectInformationImpl.open();
+        if (projects.hasCurrentProject()) {
+            closeCurrentProject();
+        }
+        projects.addProject(projectImpl);
+        projects.setCurrentProject(projectImpl);
+        projectInformationImpl.open();
 
-            for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
-                fireWorkspaceEvent(EventType.INITIALIZE, ws);
-            }
+        for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
+            fireWorkspaceEvent(EventType.INITIALIZE, ws);
+        }
 
-            if (!workspaceProviderImpl.hasCurrentWorkspace()) {
-                if (workspaceProviderImpl.getWorkspaces().length == 0) {
-                    Workspace workspace = newWorkspace(project);
-                    openWorkspace(workspace);
-                } else {
-                    Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
-                    openWorkspace(workspace);
-                }
+        if (!workspaceProviderImpl.hasCurrentWorkspace()) {
+            if (workspaceProviderImpl.getWorkspaces().length == 0) {
+                Workspace workspace = newWorkspace(project);
+                openWorkspace(workspace);
             } else {
-                fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
+                Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
+                openWorkspace(workspace);
             }
+        } else {
+            fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
         }
     }
 
@@ -341,6 +381,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void renameProject(Project project, final String name) {
         synchronized (this) {
             project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
+            emitProjectEvent((pl) -> pl.changed(project));
         }
     }
 

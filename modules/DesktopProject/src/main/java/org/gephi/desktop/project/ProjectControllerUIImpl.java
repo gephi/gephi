@@ -47,15 +47,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
@@ -63,10 +60,8 @@ import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.project.ProjectPropertiesEditor;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -142,101 +137,24 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
     }
 
     @Override
-    public void startSaving(Project project) {
+    public void lock() {
         lockProjectActions();
     }
 
     @Override
-    public void endSaving(Project project) {
+    public void saved(Project project) {
         SwingUtilities.invokeLater(() -> {
             //Status line
             StatusDisplayer.getDefault().setStatusText(
-                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", project.getFileName()));
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved",
+                    project.getFileName()));
         });
         unlockProjectActions();
+        updateTitleBar(project);
     }
 
     @Override
-    public void savingError(Project project, Throwable throwable) {
-        handleError(throwable);
-    }
-
-    @Override
-    public void startLoading(Project project) {
-        lockProjectActions();
-    }
-
-    @Override
-    public void endLoading(Project project) {
-        SwingUtilities.invokeLater(() -> {
-            //Status line
-            StatusDisplayer.getDefault().setStatusText(
-                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", project.getFileName()));
-        });
-        unlockProjectActions();
-    }
-
-    @Override
-    public void closed(Project project) {
-
-    }
-
-    private void updateTitleBar(Project project) {
-        //Modifying Title bar
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                String title = frame.getTitle();
-                if (project == null || project.isClosed()) {
-                    title = title.substring(0, title.indexOf(" - "));
-                } else if(project.hasFile()) {
-                    title = title.substring(0, title.indexOf(" - ")) + " - " + project.getFileName();
-                }
-                frame.setTitle(title);
-            }
-        });
-    }
-
-    private void saveProject(Project project, File file) {
-        controller.saveProject(project, file);
-//        lockProjectActions();
-//
-//        final Runnable saveTask = controller.saveProject(project, file);
-//        final String fileName = file.getName();
-//        Runnable saveRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                saveTask.run();
-//                //Status line
-//                StatusDisplayer.getDefault().setStatusText(
-//                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", fileName));
-//            }
-//        };
-//        if (saveTask instanceof LongTask) {
-//            longTaskExecutor.execute((LongTask) saveTask, saveRunnable);
-//        } else {
-//            longTaskExecutor.execute(null, saveRunnable);
-//        }
-//
-//        //Save MRU
-//        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-//        mostRecentFiles.addFile(file.getAbsolutePath());
-    }
-
-    @Override
-    public void saveProject() {
-        controller.saveProject(controller.getCurrentProject());
-//        Project project = controller.getCurrentProject();
-//        if (project.getLookup().lookup(ProjectInformation.class).hasFile()) {
-//            File file = project.getLookup().lookup(ProjectInformation.class).getFile();
-//            saveProject(project, file);
-//        } else {
-//            saveAsProject();
-//        }
-    }
-
-    private void handleError(Throwable t) {
+    public void error(Project project, Throwable t) {
         unlockProjectActions();
 
 //        Exceptions.printStackTrace(throwable);
@@ -254,11 +172,57 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         if (!(t instanceof LegacyGephiFormatException)) {
             Exceptions.printStackTrace(t);
         }
+        updateTitleBar(project);
     }
 
     @Override
-    public void loadingError(Project project, Throwable throwable) {
-        handleError(throwable);
+    public void opened(Project project) {
+        SwingUtilities.invokeLater(() -> {
+            //Status line
+            StatusDisplayer.getDefault().setStatusText(
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened",
+                    project.getFileName()));
+        });
+        unlockProjectActions();
+        updateTitleBar(project);
+    }
+
+    @Override
+    public void closed(Project project) {
+        unlockProjectActions();
+        updateTitleBar(project);
+    }
+
+    @Override
+    public void changed(Project project) {
+        unlockProjectActions();
+        updateTitleBar(project);
+    }
+
+    private void updateTitleBar(Project project) {
+        //Modifying Title bar
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+            String title = frame.getTitle();
+            if (project == null || project.isClosed()) {
+                title = title.substring(0, title.indexOf(" - "));
+            } else if (project.hasFile()) {
+                title = title.substring(0, title.indexOf(" - ")) + " - " + project.getFileName();
+            }
+            if (!frame.getTitle().equals(title)) {
+                frame.setTitle(title);
+                ;
+            }
+        });
+    }
+
+    private void saveProject(Project project, File file) {
+        controller.saveProject(project, file);
+    }
+
+    @Override
+    public void saveProject() {
+        controller.saveProject(controller.getCurrentProject());
     }
 
     @Override
@@ -347,7 +311,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
 
     public boolean closeCurrentProject() {
         if (controller.getCurrentProject() != null) {
-
             //Save ?
             String messageBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_message");
             String titleBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_title");
@@ -380,38 +343,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         }
         controller.openProject(file);
     }
-
-//    private void loadProject(File file) {
-//        lockProjectActions();
-
-//        final String fileName = file.getName();
-//        Runnable loadRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                loadTask.run();
-//                SwingUtilities.invokeLater(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-//                        String title = frame.getTitle() + " - " + fileName;
-//                        frame.setTitle(title);
-//                    }
-//                });
-//                //Status line
-//                StatusDisplayer.getDefault().setStatusText(
-//                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", fileName));
-//            }
-//        };
-//        if (loadTask instanceof LongTask) {
-//            longTaskExecutor.execute((LongTask) loadTask, loadRunnable);
-//        } else {
-//            longTaskExecutor.execute(null, loadRunnable);
-//        }
-//
-//        //Save MRU
-//        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-//        mostRecentFiles.addFile(file.getAbsolutePath());
-//    }
 
     @Override
     public void renameProject(final String name) {
@@ -488,7 +419,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
             closeProject = true;
             newWorkspace = true;
             projectProperties = true;
-            if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
+            if (controller.getCurrentProject().hasCurrentWorkspace()) {
                 deleteWorkspace = true;
                 duplicateWorkspace = true;
                 renameWorkspace = true;
@@ -633,21 +564,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
     @Override
     public Project newProject() {
         if (closeCurrentProject()) {
-            controller.newProject();
-            final Project project = controller.getCurrentProject();
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                    String title =
-                        frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
-                    frame.setTitle(title);
-                }
-            });
-
-            unlockProjectActions();
-            return project;
+            return controller.newProject();
         }
         return null;
     }
@@ -669,33 +586,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
 
     @Override
     public void deleteWorkspace(Workspace workspace) {
-        if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length == 1) {
-            //Close project
-            //Actions
-            saveProject = false;
-            saveAsProject = false;
-            projectProperties = false;
-            closeProject = false;
-            newWorkspace = false;
-            deleteWorkspace = false;
-            duplicateWorkspace = false;
-            renameWorkspace = false;
-
-            controller.closeCurrentProject();
-
-            //Title bar
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                    String title = frame.getTitle();
-                    title = title.substring(0, title.indexOf(" - "));
-                    frame.setTitle(title);
-                }
-            });
-        } else {
-            controller.deleteWorkspace(workspace);
-        }
+        controller.deleteWorkspace(workspace);
     }
 
     @Override

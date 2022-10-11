@@ -159,24 +159,21 @@ public class LoadTask implements LongTask {
                 Progress.switchToIndeterminate(progressTicket);
 
                 //Add project
-                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                if (project != null && !cancel) {
-                    if (!cancel) {
+                if (!cancel) {
 
-                        //Set current workspace
-                        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
-                        for (Workspace workspace : workspaces.getWorkspaces()) {
-                            WorkspaceInformationImpl info =
-                                workspace.getLookup().lookup(WorkspaceInformationImpl.class);
-                            if (info.isOpen()) {
-                                workspaces.setCurrentWorkspace(workspace);
-                                break;
-                            }
+                    //Set current workspace
+                    WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+                    for (Workspace workspace : workspaces.getWorkspaces()) {
+                        WorkspaceInformationImpl info =
+                            workspace.getLookup().lookup(WorkspaceInformationImpl.class);
+                        if (info.isOpen()) {
+                            workspaces.setCurrentWorkspace(workspace);
+                            break;
                         }
-
-                        Progress.finish(progressTicket);
-                        return project;
                     }
+
+                    Progress.finish(progressTicket);
+                    return project;
                 }
             } finally {
                 if (zip != null) {

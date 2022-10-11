@@ -4,19 +4,15 @@ import java.util.EventListener;
 
 public interface ProjectListener extends EventListener {
 
-    void startSaving(Project project);
+    void lock();
 
-    void endSaving(Project project);
+    void saved(Project project);
 
-    void savingError(Project project, Throwable throwable);
+    void opened(Project project);
 
-    void startLoading(Project project);
-
-    void endLoading(Project project);
-
-    void loadingError(Project project, Throwable throwable);
+    void error(Project project, Throwable throwable);
 
     void closed(Project project);
 
-    //Renamed?
+    void changed(Project project);
 }
