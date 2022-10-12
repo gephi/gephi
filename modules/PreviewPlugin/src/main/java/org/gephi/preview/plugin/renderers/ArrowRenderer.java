@@ -70,7 +70,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- * @author Yudi Xue, Mathieu Bastian
+ * @author Yudi Xue, Mathieu Bastian, Mathieu Jacomy
  */
 @ServiceProvider(service = Renderer.class, position = 200)
 public class ArrowRenderer implements Renderer {

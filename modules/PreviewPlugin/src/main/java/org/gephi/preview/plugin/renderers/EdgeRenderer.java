@@ -76,7 +76,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- * @author Yudi Xue, Mathieu Bastian
+ * @author Yudi Xue, Mathieu Bastian, Mathieu Jacomy
  */
 @ServiceProvider(service = Renderer.class, position = 100)
 public class EdgeRenderer implements Renderer {
@@ -605,7 +605,8 @@ public class EdgeRenderer implements Renderer {
 
         public CanvasSize getCanvasSize(
             final Item item,
-            final PreviewProperties properties) {
+            final PreviewProperties properties
+        ) {
             final Helper h = new Helper(item, properties);
             final float minX
                 = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
@@ -682,6 +683,7 @@ public class EdgeRenderer implements Renderer {
 
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
+                System.out.println("targetRadius "+ targetRadius);
                 // Offset due to the source node
                 if (targetRadius != null && targetRadius < 0) {
                     Double targetOffset = this.computeTheThing(r, (double) targetRadius);
@@ -702,6 +704,7 @@ public class EdgeRenderer implements Renderer {
                 bbh = 2*r;
                 astart = -180*(angle1)/Math.PI;
                 asweep = (180*(angle1-angle2)/Math.PI+720)%360 - 360;
+                System.out.println("r "+r+" astart "+astart+" asweep "+asweep+" angle1 "+angle1+" x1 "+x1+" y1 "+y1);
             }
 
             private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
