@@ -79,12 +79,16 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 import org.openide.windows.WindowManager;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = ProjectControllerUI.class)
+@ServiceProviders({
+    @ServiceProvider(service = ProjectControllerUI.class),
+    @ServiceProvider(service = ProjectListener.class)
+})
 public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectListener {
 
     //Project
