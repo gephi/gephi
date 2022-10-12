@@ -185,7 +185,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
             //Status line
             StatusDisplayer.getDefault().setStatusText(
                 NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened",
-                    project.getFileName()));
+                    project.getFileName() != null ? project.getFileName() : project.getName()));
         });
         unlockProjectActions();
         updateTitleBar(project);
@@ -207,15 +207,14 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         //Modifying Title bar
         SwingUtilities.invokeLater(() -> {
             JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            String title = frame.getTitle();
+            String title;
             if (project == null || project.isClosed()) {
-                title = title.substring(0, title.indexOf(" - "));
-            } else if (project.hasFile()) {
-                title = title.substring(0, title.indexOf(" - ")) + " - " + project.getFileName();
+                title = getCurrentVersion();
+            } else {
+                title = getCurrentVersion() + " - " + project.getName();
             }
             if (!frame.getTitle().equals(title)) {
                 frame.setTitle(title);
-                ;
             }
         });
     }
@@ -226,7 +225,12 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
 
     @Override
     public void saveProject() {
-        controller.saveProject(controller.getCurrentProject());
+        Project project = controller.getCurrentProject();
+        if (project.hasFile()) {
+            saveProject(project, project.getFile());
+        } else {
+            saveAsProject();
+        }
     }
 
     @Override
@@ -414,6 +418,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         deleteWorkspace = false;
         duplicateWorkspace = false;
         renameWorkspace = false;
+        projectProperties = false;
     }
 
     private void unlockProjectActions() {
@@ -601,5 +606,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
     @Override
     public Workspace duplicateWorkspace() {
         return controller.duplicateWorkspace(controller.getCurrentWorkspace());
+    }
+
+    private String getCurrentVersion() {
+        return NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion")
+            .replaceAll("( [0-9]{12})$", "");
     }
 }

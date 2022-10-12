@@ -57,7 +57,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.project.io.GephiReader;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
@@ -75,15 +74,11 @@ public class ProjectControllerImpl implements ProjectController {
 
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
-    private final List<WorkspaceListener> listeners;
+    private final List<WorkspaceListener> workspaceListeners = new ArrayList<>();
 
-    private final List<ProjectListener> projectListeners;
+    private final List<ProjectListener> projectListeners = new ArrayList<>();
 
     public ProjectControllerImpl() {
-        //Listeners
-        listeners = new ArrayList<>(Lookup.getDefault().lookupAll(WorkspaceListener.class));
-        projectListeners = new ArrayList<>(Lookup.getDefault().lookupAll(ProjectListener.class));
-
         registerNetbeansPropertyEditors();
     }
 
@@ -115,14 +110,10 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private void emitProjectEvent(Consumer<? super ProjectListener> consumer) {
-        projectListeners.forEach(consumer);
-    }
-
     @Override
     public ProjectImpl newProject() {
         synchronized (this) {
-            emitProjectEvent(ProjectListener::lock);
+            fireProjectEvent(ProjectListener::lock);
             ProjectImpl project = null;
             try {
                 closeCurrentProject();
@@ -130,7 +121,7 @@ public class ProjectControllerImpl implements ProjectController {
                 projects.addProject(project);
                 openProject(project);
                 ProjectImpl finalProject = project;
-                emitProjectEvent((pl) -> pl.opened(finalProject));
+                fireProjectEvent((pl) -> pl.opened(finalProject));
                 return project;
             } catch (Exception e) {
                 return handleException(project, e);
@@ -139,7 +130,7 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     private ProjectImpl handleException(Project project, Throwable t) {
-        emitProjectEvent((pl) -> pl.error(project, t));
+        fireProjectEvent((pl) -> pl.error(project, t));
         if (t instanceof GephiFormatException) {
             throw (GephiFormatException) t;
         } else if (t instanceof LegacyGephiFormatException) {
@@ -151,7 +142,7 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public Project openProject(File file) {
         synchronized (this) {
-            emitProjectEvent(ProjectListener::lock);
+            fireProjectEvent(ProjectListener::lock);
             Project project = null;
             try {
                 project = new LoadTask(file).execute();
@@ -159,7 +150,7 @@ public class ProjectControllerImpl implements ProjectController {
                 if (project != null) {
                     openProject(project);
                     Project finalProject = project;
-                    emitProjectEvent((pl) -> pl.opened(finalProject));
+                    fireProjectEvent((pl) -> pl.opened(finalProject));
                     return project;
                 }
             } catch (Exception e) {
@@ -182,11 +173,11 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public void saveProject(Project project, File file) {
         synchronized (this) {
-            emitProjectEvent(ProjectListener::lock);
+            fireProjectEvent(ProjectListener::lock);
             try {
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 new SaveTask(project, file).run();
-                emitProjectEvent((pl) -> pl.saved(project));
+                fireProjectEvent((pl) -> pl.saved(project));
             } catch (Exception e) {
                 handleException(project, e);
             }
@@ -197,7 +188,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void closeCurrentProject() {
         synchronized (this) {
             if (projects.hasCurrentProject()) {
-                emitProjectEvent(ProjectListener::lock);
+                fireProjectEvent(ProjectListener::lock);
                 Project project = projects.getCurrentProject();
 
                 try {
@@ -215,7 +206,7 @@ public class ProjectControllerImpl implements ProjectController {
                     projects.closeCurrentProject();
 
                     fireWorkspaceEvent(ProjectControllerImpl.EventType.DISABLE, null);
-                    emitProjectEvent((pl) -> pl.closed(project));
+                    fireProjectEvent((pl) -> pl.closed(project));
                 } catch (Exception e) {
                     handleException(project, e);
                 }
@@ -381,7 +372,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void renameProject(Project project, final String name) {
         synchronized (this) {
             project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
-            emitProjectEvent((pl) -> pl.changed(project));
+            fireProjectEvent((pl) -> pl.changed(project));
         }
     }
 
@@ -401,24 +392,46 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void addWorkspaceListener(WorkspaceListener workspaceListener) {
-        synchronized (listeners) {
-            listeners.add(workspaceListener);
+        synchronized (workspaceListeners) {
+            workspaceListeners.add(workspaceListener);
         }
     }
 
     @Override
     public void removeWorkspaceListener(WorkspaceListener workspaceListener) {
-        synchronized (listeners) {
-            listeners.remove(workspaceListener);
+        synchronized (workspaceListeners) {
+            workspaceListeners.remove(workspaceListener);
         }
     }
 
-    private void fireWorkspaceEvent(EventType event, Workspace workspace) {
-        WorkspaceListener[] listenersArray;
-        synchronized (listeners) {
-            listenersArray = listeners.toArray(new WorkspaceListener[0]);
+    protected void addProjectListener(ProjectListener projectListener) {
+        synchronized (projectListeners) {
+            projectListeners.add(projectListener);
         }
-        for (WorkspaceListener wl : listenersArray) {
+    }
+
+    protected void removeProjectListener(ProjectListener projectListener) {
+        synchronized (projectListeners) {
+            projectListeners.remove(projectListener);
+        }
+    }
+
+    private void fireProjectEvent(Consumer<? super ProjectListener> consumer) {
+        List<ProjectListener> listeners;
+        synchronized (projectListeners) {
+            listeners = new ArrayList<>(projectListeners);
+            listeners.addAll(Lookup.getDefault().lookupAll(ProjectListener.class));
+        }
+        listeners.forEach(consumer);
+    }
+
+    private void fireWorkspaceEvent(EventType event, Workspace workspace) {
+        List<WorkspaceListener> listeners;
+        synchronized (workspaceListeners) {
+            listeners = new ArrayList<>(workspaceListeners);
+            listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
+        }
+        for (WorkspaceListener wl : listeners) {
             switch (event) {
                 case INITIALIZE:
                     wl.initialize(workspace);
