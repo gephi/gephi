@@ -40,35 +40,36 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-public class DeleteWorkspace extends SystemAction {
+public final class NewProject extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Lookup.getDefault().lookup(ProjectControllerUI.class).deleteWorkspace();
+        ProjectControllerUIImpl.getInstance().newProject();
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canDeleteWorkspace();
+        return ProjectControllerUIImpl.getInstance().canNewProject();
     }
 
     @Override
     protected String iconResource() {
-        return "DesktopBranding/deleteWorkspace.png";
+        return "DesktopProject/newProject.png";
     }
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(DeleteWorkspace.class, "CTL_DeleteWorkspace");
+        return NbBundle.getMessage(NewProject.class, "CTL_NewProject");
     }
 
     @Override

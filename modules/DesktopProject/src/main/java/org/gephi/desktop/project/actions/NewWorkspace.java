@@ -40,35 +40,40 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-public class SaveAsProject extends SystemAction {
+public class NewWorkspace extends SystemAction {
 
     @Override
-    public String getName() {
-        return NbBundle.getMessage(SaveAsProject.class, "CTL_SaveAsProject");
+    public void actionPerformed(ActionEvent e) {
+        ProjectControllerUIImpl.getInstance().newWorkspace();
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canSaveAs();
+        return ProjectControllerUIImpl.getInstance().canNewWorkspace();
+    }
+
+    @Override
+    protected String iconResource() {
+        return "DesktopProject/newWorkspace.png";
+    }
+
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(NewWorkspace.class, "CTL_NewWorkspace");
     }
 
     @Override
     public HelpCtx getHelpCtx() {
         return null;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ev) {
-        ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-        pcui.saveAsProject();
     }
 }

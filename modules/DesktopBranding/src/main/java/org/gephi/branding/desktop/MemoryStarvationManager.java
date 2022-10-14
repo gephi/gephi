@@ -63,6 +63,7 @@ import org.gephi.visualization.VizController;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.Actions;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -254,7 +255,7 @@ public class MemoryStarvationManager implements NotificationListener {
     private void saveProject() {
         ProjectControllerUI pui = Lookup.getDefault().lookup(ProjectControllerUI.class);
         if (pui.canSave()) {
-            pui.saveProject();
+            Actions.forID("File", "org.gephi.desktop.project.actions.SaveProject").actionPerformed(null);
         }
     }
 

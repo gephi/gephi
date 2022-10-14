@@ -40,20 +40,26 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-public class OpenFile extends SystemAction {
+public class SaveAsProject extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(OpenFile.class, "CTL_OpenFile");
+        return NbBundle.getMessage(SaveAsProject.class, "CTL_SaveAsProject");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ProjectControllerUIImpl.getInstance().canSaveAs();
     }
 
     @Override
@@ -62,12 +68,7 @@ public class OpenFile extends SystemAction {
     }
 
     @Override
-    public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canOpenFile();
-    }
-
-    @Override
     public void actionPerformed(ActionEvent ev) {
-        Lookup.getDefault().lookup(ProjectControllerUI.class).openFile();
+        ProjectControllerUIImpl.getInstance().saveAsProject();
     }
 }

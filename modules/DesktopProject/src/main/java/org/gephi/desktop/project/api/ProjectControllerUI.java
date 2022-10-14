@@ -52,15 +52,7 @@ import org.gephi.project.api.Workspace;
  */
 public interface ProjectControllerUI {
 
-    void saveProject();
-
-    void saveAsProject();
-
     void openProject(File file);
-
-    void renameProject(final String name);
-
-    void projectProperties();
 
     void openFile(FileImporterBuilder[] builders);
 

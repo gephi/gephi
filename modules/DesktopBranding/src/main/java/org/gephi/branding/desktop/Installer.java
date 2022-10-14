@@ -66,6 +66,7 @@ import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.awt.Actions;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -168,7 +169,7 @@ public class Installer extends ModuleInstall {
             JOptionPane.YES_NO_CANCEL_OPTION,
             JOptionPane.WARNING_MESSAGE);
         if (option == JOptionPane.YES_OPTION) {
-            Lookup.getDefault().lookup(ProjectControllerUI.class).saveProject();
+            Actions.forID("File", "org.gephi.desktop.project.actions.SaveAsProject").actionPerformed(null);
         } else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
             return false;//Exit canceled
         }

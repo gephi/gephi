@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Gephi
-Authors : Sébastien Heymann <sebastien.heymann@gephi.org>
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -40,47 +40,56 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.project.actions;
 
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
-import java.net.URI;
-import org.openide.util.Exceptions;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
+import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.WorkspaceInformation;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
 /**
- * @author Sébastien Heymann
+ * @author Mathieu Bastian
  */
-public class OpenOnlineDoc extends SystemAction {
+public class RenameWorkspace extends SystemAction {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String name = "";
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        name = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class).getName();
+        DialogDescriptor.InputLine dd = new DialogDescriptor.InputLine("",
+            NbBundle.getMessage(RenameWorkspace.class, "RenameWorkspace.dialog.title"));
+        dd.setInputText(name);
+        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION) &&
+            !dd.getInputText().isEmpty()) {
+            ProjectControllerUIImpl.getInstance().renameWorkspace(dd.getInputText());
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ProjectControllerUIImpl.getInstance().canRenameWorkspace();
+    }
+
+    @Override
+    protected String iconResource() {
+        return "DesktopProject/renameWorkspace.png";
+    }
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(OpenOnlineDoc.class, "CTL_OpenOnlineDoc");
+        return NbBundle.getMessage(RenameWorkspace.class, "CTL_RenameWorkspace");
     }
 
     @Override
     public HelpCtx getHelpCtx() {
         return null;
-    }
-
-    /*@Override
-    protected String iconResource() {
-        return "DesktopBranding/cleanWorkspace.gif";
-    }*/
-
-    @Override
-    public void actionPerformed(ActionEvent ev) {
-        /*if (Desktop.isDesktopSupported()) {*/
-        Desktop desktop = Desktop.getDesktop();
-        /*if (desktop.isSupported(Desktop.Action.BROWSE)) {*/
-        try {
-            desktop.browse(new URI("http://gephi.org/users/support/"));
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        }
-            /*}
-        }*/
     }
 }

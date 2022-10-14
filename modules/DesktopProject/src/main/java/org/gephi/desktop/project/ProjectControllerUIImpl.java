@@ -109,6 +109,15 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
 
+    private static ProjectControllerUIImpl instance;
+
+    public synchronized static ProjectControllerUIImpl getInstance() {
+        if (instance == null) {
+            instance = new ProjectControllerUIImpl();
+        }
+        return instance;
+    }
+
     public ProjectControllerUIImpl() {
 
         controller = Lookup.getDefault().lookup(ProjectController.class);
@@ -223,7 +232,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         controller.saveProject(project, file);
     }
 
-    @Override
     public void saveProject() {
         Project project = controller.getCurrentProject();
         if (project.hasFile()) {
@@ -233,7 +241,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         }
     }
 
-    @Override
     public void saveAsProject() {
         final String LAST_PATH = "SaveAsProject_Last_Path";
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
@@ -352,7 +359,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         controller.openProject(file);
     }
 
-    @Override
     public void renameProject(final String name) {
         controller.renameProject(controller.getCurrentProject(), name);
     }
@@ -439,7 +445,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         openFile = true;
     }
 
-    @Override
     public void projectProperties() {
         Project project = controller.getCurrentProject();
         ProjectPropertiesEditor panel = new ProjectPropertiesEditor();

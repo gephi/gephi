@@ -40,39 +40,35 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-public class SaveProject extends SystemAction {
+public final class CloseProject extends SystemAction {
 
     @Override
-    public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_SaveProject");
+    public void actionPerformed(ActionEvent e) {
+        ProjectControllerUIImpl.getInstance().closeProject();
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canSave();
+        return ProjectControllerUIImpl.getInstance().canCloseProject();
+    }
+
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(CloseProject.class, "CTL_CloseProject");
     }
 
     @Override
     public HelpCtx getHelpCtx() {
         return null;
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopBranding/saveProject.png";
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ev) {
-        Lookup.getDefault().lookup(ProjectControllerUI.class).saveProject();
     }
 }
