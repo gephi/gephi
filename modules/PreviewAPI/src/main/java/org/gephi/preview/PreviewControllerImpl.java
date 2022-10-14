@@ -293,7 +293,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     @Override
-    public synchronized PreviewModelImpl getModel() {
+    public PreviewModelImpl getModel() {
         if (model == null) {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (pc.getCurrentWorkspace() != null) {
