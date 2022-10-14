@@ -185,7 +185,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
             //Status line
             StatusDisplayer.getDefault().setStatusText(
                 NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened",
-                    project.getFileName() != null ? project.getFileName() : project.getName()));
+                    !project.getFileName().isEmpty() ? project.getFileName() : project.getName()));
         });
         unlockProjectActions();
         updateTitleBar(project);
