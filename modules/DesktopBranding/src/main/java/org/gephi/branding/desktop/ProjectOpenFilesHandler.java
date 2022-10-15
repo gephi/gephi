@@ -8,15 +8,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.Actions;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  * Handles files from double click at opening time

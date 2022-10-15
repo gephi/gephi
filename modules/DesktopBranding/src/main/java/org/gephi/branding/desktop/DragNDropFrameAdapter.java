@@ -51,15 +51,11 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.Actions;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
@@ -96,7 +92,7 @@ public class DragNDropFrameAdapter {
                     }
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
                         Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
-                                new ActionEvent(file, 0, null));
+                            new ActionEvent(file, 0, null));
                     } else {
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {

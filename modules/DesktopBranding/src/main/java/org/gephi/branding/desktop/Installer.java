@@ -63,7 +63,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.awt.Actions;
