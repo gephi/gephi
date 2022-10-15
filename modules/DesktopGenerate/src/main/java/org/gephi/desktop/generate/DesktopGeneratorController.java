@@ -45,7 +45,6 @@ package org.gephi.desktop.generate;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
@@ -53,6 +52,7 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -138,11 +138,10 @@ public class DesktopGeneratorController implements GeneratorController {
     private void finishGenerate(Container container) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
         Workspace workspace;
         if (pc.getCurrentProject() == null) {
-            pcui.newProject();
-            workspace = pc.getCurrentWorkspace();
+            Project project = pc.newProject();
+            workspace = project.getCurrentWorkspace();
         } else {
             workspace = pc.newWorkspace(pc.getCurrentProject());
             pc.openWorkspace(workspace);

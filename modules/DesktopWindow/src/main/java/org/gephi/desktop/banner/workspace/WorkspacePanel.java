@@ -51,7 +51,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -63,11 +62,9 @@ import org.netbeans.swing.tabcontrol.TabDisplayer;
 import org.netbeans.swing.tabcontrol.TabbedContainer;
 import org.netbeans.swing.tabcontrol.WinsysInfoForTabbedContainer;
 import org.netbeans.swing.tabcontrol.event.TabActionEvent;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import org.openide.awt.Actions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListener, PropertyChangeListener {
@@ -112,18 +109,9 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             public void actionPerformed(ActionEvent e) {
                 TabActionEvent tabActionEvent = (TabActionEvent) e;
                 if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE)) {
-                    String message =
-                        NbBundle.getMessage(WorkspacePanel.class, "WorkspacePanel_closeWorkspace_Question");
-                    String title = NbBundle.getMessage(WorkspacePanel.class, "WorkspacePanel_closeWorkspace_Title");
-                    NotifyDescriptor dd = new NotifyDescriptor(message, title,
-                        NotifyDescriptor.YES_NO_OPTION,
-                        NotifyDescriptor.QUESTION_MESSAGE, null, null);
-                    Object retType = DialogDisplayer.getDefault().notify(dd);
-                    if (retType == NotifyDescriptor.YES_OPTION) {
-                        TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
-                        ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-                        pc.deleteWorkspace(((WorkspaceComponent) tabData.getUserObject()).workspace);
-                    }
+                    TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
+                    Actions.forID("Workspace", "org.gephi.desktop.project.actions.DeleteWorkspace").actionPerformed(
+                        new ActionEvent(((WorkspaceComponent) tabData.getUserObject()).workspace, 0, null));
                     tabActionEvent.consume();
                 } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_SELECT)) {
                     TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());

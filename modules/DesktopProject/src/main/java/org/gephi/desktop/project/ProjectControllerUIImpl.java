@@ -53,7 +53,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.project.api.GephiFormatException;
@@ -79,14 +78,13 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 import org.openide.windows.WindowManager;
 
 /**
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ProjectListener.class)
-public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectListener {
+public class ProjectControllerUIImpl implements ProjectListener {
 
     //Project
     private final ProjectController controller;
@@ -339,7 +337,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         return true;
     }
 
-    @Override
     public void openProject(File file) {
         if (controller.getCurrentProject() != null) {
             if (!closeCurrentProject()) {
@@ -353,52 +350,42 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         controller.renameProject(controller.getCurrentProject(), name);
     }
 
-    @Override
     public boolean canCloseProject() {
         return closeProject;
     }
 
-    @Override
     public boolean canDeleteWorkspace() {
         return deleteWorkspace;
     }
 
-    @Override
     public boolean canNewProject() {
         return newProject;
     }
 
-    @Override
     public boolean canNewWorkspace() {
         return newWorkspace;
     }
 
-    @Override
     public boolean canDuplicateWorkspace() {
         return duplicateWorkspace;
     }
 
-    @Override
     public boolean canRenameWorkspace() {
         return renameWorkspace;
     }
 
-    @Override
     public boolean canOpenFile() {
         return openFile;
     }
 
-    @Override
     public boolean canSave() {
         return saveProject;
     }
 
-    @Override
     public boolean canSaveAs() {
         return saveAsProject;
     }
 
-    @Override
     public boolean canProjectProperties() {
         return projectProperties;
     }
@@ -447,12 +434,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         }
     }
 
-    @Override
     public void openFile() {
         openFile(null);
     }
 
-    @Override
     public void openFile(FileImporterBuilder[] builders) {
         List<FileFilter> filters = new ArrayList<>();
 
@@ -560,12 +545,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         }
     }
 
-    @Override
     public Project getCurrentProject() {
         return controller.getCurrentProject();
     }
 
-    @Override
     public Project newProject() {
         if (closeCurrentProject()) {
             return controller.newProject();
@@ -573,32 +556,35 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
         return null;
     }
 
-    @Override
     public void closeProject() {
         closeCurrentProject();
     }
 
-    @Override
     public Workspace newWorkspace() {
         return controller.newWorkspace(controller.getCurrentProject());
     }
 
-    @Override
     public void deleteWorkspace() {
         deleteWorkspace(controller.getCurrentWorkspace());
     }
 
-    @Override
     public void deleteWorkspace(Workspace workspace) {
-        controller.deleteWorkspace(workspace);
+        String message =
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "DeleteWorkspace_confirm_message");
+        String title = NbBundle.getMessage(ProjectControllerUIImpl.class, "DeleteWorkspace_confirm_title");
+        NotifyDescriptor dd = new NotifyDescriptor(message, title,
+            NotifyDescriptor.YES_NO_OPTION,
+            NotifyDescriptor.QUESTION_MESSAGE, null, null);
+        Object retType = DialogDisplayer.getDefault().notify(dd);
+        if (retType == NotifyDescriptor.YES_OPTION) {
+            controller.deleteWorkspace(workspace);
+        }
     }
 
-    @Override
     public void renameWorkspace(String name) {
         controller.renameWorkspace(controller.getCurrentWorkspace(), name);
     }
 
-    @Override
     public Workspace duplicateWorkspace() {
         return controller.duplicateWorkspace(controller.getCurrentWorkspace());
     }

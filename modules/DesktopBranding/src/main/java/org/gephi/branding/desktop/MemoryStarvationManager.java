@@ -254,9 +254,7 @@ public class MemoryStarvationManager implements NotificationListener {
 
     private void saveProject() {
         ProjectControllerUI pui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-        if (pui.canSave()) {
-            Actions.forID("File", "org.gephi.desktop.project.actions.SaveProject").actionPerformed(null);
-        }
+        Actions.forID("File", "org.gephi.desktop.project.actions.SaveProject").actionPerformed(null);
     }
 
     private boolean canIncreaseMemory() {

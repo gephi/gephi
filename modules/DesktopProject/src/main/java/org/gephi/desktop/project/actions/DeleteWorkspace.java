@@ -43,8 +43,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
+import org.gephi.project.api.Workspace;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -63,9 +65,15 @@ public final class DeleteWorkspace extends AbstractAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent ev) {
         if (isEnabled()) {
-            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).deleteWorkspace();
+            ProjectControllerUIImpl cui = Lookup.getDefault().lookup(ProjectControllerUIImpl.class);
+            if (ev.getSource() != null && ev.getSource() instanceof Workspace) {
+                Workspace workspace = (Workspace) ev.getSource();
+                cui.deleteWorkspace(workspace);
+            } else {
+                cui.deleteWorkspace();
+            }
         }
     }
 
