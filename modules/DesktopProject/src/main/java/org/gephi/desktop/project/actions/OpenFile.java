@@ -45,12 +45,15 @@ package org.gephi.desktop.project.actions;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.AbstractAction;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -62,6 +65,8 @@ import org.openide.util.NbBundle;
     @ActionReference(path = "Shortcuts", name = "D-O")
 })
 public final class OpenFile extends AbstractAction {
+
+    private static final String GEPHI_EXTENSION = "gephi";
 
     OpenFile() {
         super(NbBundle.getMessage(OpenFile.class, "CTL_OpenFile"));
@@ -76,7 +81,15 @@ public final class OpenFile extends AbstractAction {
     public void actionPerformed(ActionEvent ev) {
         if (isEnabled()) {
             if (ev.getSource() != null && ev.getSource() instanceof File) {
-                Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openProject((File) ev.getSource());
+                FileObject fileObject = FileUtil.toFileObject((File) ev.getSource());
+                if (fileObject.hasExt(GEPHI_EXTENSION)) {
+                    Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openProject(FileUtil.toFile(fileObject));
+                } else {
+                    ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                    if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
+                        importController.importFile(fileObject);
+                    }
+                }
             } else if (ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {
                 Lookup.getDefault().lookup(ProjectControllerUIImpl.class)
                     .openFile((FileImporterBuilder[]) ev.getSource());
