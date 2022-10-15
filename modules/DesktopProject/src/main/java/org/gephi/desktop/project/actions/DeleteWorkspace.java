@@ -43,37 +43,34 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class DeleteWorkspace extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.DeleteWorkspace", category = "Workspace")
+@ActionRegistration(displayName = "#CTL_DeleteWorkspace", lazy = false)
+@ActionReference(path = "Menu/Workspace", position = 2600, separatorAfter = 2605)
+public final class DeleteWorkspace extends AbstractAction {
+
+    DeleteWorkspace() {
+        super(NbBundle.getMessage(DeleteWorkspace.class, "CTL_DeleteWorkspace"),
+            ImageUtilities.loadImageIcon("DesktopProject/deleteWorkspace.png", false));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProjectControllerUIImpl.getInstance().deleteWorkspace();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).deleteWorkspace();
+        }
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canDeleteWorkspace();
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/deleteWorkspace.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(DeleteWorkspace.class, "CTL_DeleteWorkspace");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canDeleteWorkspace();
     }
 }

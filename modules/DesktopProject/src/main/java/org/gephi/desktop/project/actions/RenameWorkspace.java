@@ -43,53 +43,47 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.WorkspaceInformation;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-/**
- * @author Mathieu Bastian
- */
-public class RenameWorkspace extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.RenameWorkspace", category = "Workspace")
+@ActionRegistration(displayName = "#CTL_RenameWorkspace", lazy = false)
+@ActionReference(path = "Menu/Workspace", position = 2800)
+public final class RenameWorkspace extends AbstractAction {
+
+    RenameWorkspace() {
+        super(NbBundle.getMessage(DeleteWorkspace.class, "CTL_RenameWorkspace"),
+            ImageUtilities.loadImageIcon("DesktopProject/renameWorkspace.png", false));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String name = "";
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        name = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class).getName();
-        DialogDescriptor.InputLine dd = new DialogDescriptor.InputLine("",
-            NbBundle.getMessage(RenameWorkspace.class, "RenameWorkspace.dialog.title"));
-        dd.setInputText(name);
-        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION) &&
-            !dd.getInputText().isEmpty()) {
-            ProjectControllerUIImpl.getInstance().renameWorkspace(dd.getInputText());
+        if (isEnabled()) {
+            String name = "";
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            name = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class).getName();
+            DialogDescriptor.InputLine dd = new DialogDescriptor.InputLine("",
+                NbBundle.getMessage(RenameWorkspace.class, "RenameWorkspace.dialog.title"));
+            dd.setInputText(name);
+            if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION) &&
+                !dd.getInputText().isEmpty()) {
+                Lookup.getDefault().lookup(ProjectControllerUIImpl.class).renameWorkspace(dd.getInputText());
+            }
         }
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canRenameWorkspace();
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/renameWorkspace.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(RenameWorkspace.class, "CTL_RenameWorkspace");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canRenameWorkspace();
     }
 }

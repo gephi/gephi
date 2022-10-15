@@ -43,32 +43,46 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class OpenFile extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.OpenFile", category = "File")
+@ActionRegistration(displayName = "#CTL_OpenFile", lazy = false)
+@ActionReference(path = "Menu/File", position = 300)
+@ActionReferences({
+    @ActionReference(path = "Menu/File", position = 300),
+    @ActionReference(path = "Shortcuts", name = "D-O")
+})
+public final class OpenFile extends AbstractAction {
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(OpenFile.class, "CTL_OpenFile");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+    OpenFile() {
+        super(NbBundle.getMessage(OpenFile.class, "CTL_OpenFile"));
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canOpenFile();
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canOpenFile();
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectControllerUIImpl.getInstance().openFile();
+        if (isEnabled()) {
+            if (ev.getSource() != null && ev.getSource() instanceof File) {
+                Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openProject((File) ev.getSource());
+            } else if (ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {
+                Lookup.getDefault().lookup(ProjectControllerUIImpl.class)
+                    .openFile((FileImporterBuilder[]) ev.getSource());
+            } else {
+                Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openFile();
+            }
+        }
     }
 }

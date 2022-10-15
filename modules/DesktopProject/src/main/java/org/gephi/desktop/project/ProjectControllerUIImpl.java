@@ -85,10 +85,7 @@ import org.openide.windows.WindowManager;
 /**
  * @author Mathieu Bastian
  */
-@ServiceProviders({
-    @ServiceProvider(service = ProjectControllerUI.class),
-    @ServiceProvider(service = ProjectListener.class)
-})
+@ServiceProvider(service = ProjectListener.class)
 public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectListener {
 
     //Project
@@ -110,13 +107,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI, ProjectList
     private boolean renameWorkspace = false;
 
     private static ProjectControllerUIImpl instance;
-
-    public synchronized static ProjectControllerUIImpl getInstance() {
-        if (instance == null) {
-            instance = new ProjectControllerUIImpl();
-        }
-        return instance;
-    }
 
     public ProjectControllerUIImpl() {
 

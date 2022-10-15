@@ -43,37 +43,38 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class SaveProject extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.SaveProject", category = "File")
+@ActionRegistration(displayName = "#CTL_SaveProject", lazy = false)
+@ActionReferences({
+    @ActionReference(path = "Menu/File", position = 750),
+    @ActionReference(path = "Shortcuts", name = "D-S")
+})
+public final class SaveProject extends AbstractAction {
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_SaveProject");
+    SaveProject() {
+        super(NbBundle.getMessage(ProjectProperties.class, "CTL_SaveProject"),
+            ImageUtilities.loadImageIcon("DesktopProject/saveProject.png", false));
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canSave();
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/saveProject.png";
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canSave();
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectControllerUIImpl.getInstance().saveProject();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).saveProject();
+        }
     }
 }

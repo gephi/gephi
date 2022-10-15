@@ -43,37 +43,38 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public final class NewProject extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.NewProject", category = "File")
+@ActionRegistration(displayName = "#CTL_NewProject", lazy = false)
+@ActionReferences({
+    @ActionReference(path = "Menu/File", position = 100),
+    @ActionReference(path = "Shortcuts", name = "D-N")
+})
+public final class NewProject extends AbstractAction {
+
+    NewProject() {
+        super(NbBundle.getMessage(NewProject.class, "CTL_NewProject"),
+            ImageUtilities.loadImageIcon("DesktopProject/newProject.png", false));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProjectControllerUIImpl.getInstance().newProject();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).newProject();
+        }
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canNewProject();
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/newProject.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(NewProject.class, "CTL_NewProject");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canNewProject();
     }
 }

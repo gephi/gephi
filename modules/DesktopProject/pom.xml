@@ -78,6 +78,7 @@
                     <publicPackages>
                         <publicPackage>org.gephi.desktop.importer.api</publicPackage>
                         <publicPackage>org.gephi.desktop.project.api</publicPackage>
+                        <publicPackage>org.gephi.desktop.project.actions</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

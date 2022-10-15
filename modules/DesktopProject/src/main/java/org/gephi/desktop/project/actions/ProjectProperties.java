@@ -43,38 +43,34 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class ProjectProperties extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.ProjectProperties", category = "File")
+@ActionRegistration(displayName = "#CTL_ProjectProperties", lazy = false)
+@ActionReference(path = "Menu/File", position = 500)
+public final class ProjectProperties extends AbstractAction {
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(ProjectProperties.class, "CTL_ProjectProperties");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+    ProjectProperties() {
+        super(NbBundle.getMessage(ProjectProperties.class, "CTL_ProjectProperties"),
+            ImageUtilities.loadImageIcon("DesktopProject/projectProperties.gif", false));
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canProjectProperties();
-    }
-
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/projectProperties.gif";
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canProjectProperties();
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectControllerUIImpl.getInstance().projectProperties();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).projectProperties();
+        }
     }
 }

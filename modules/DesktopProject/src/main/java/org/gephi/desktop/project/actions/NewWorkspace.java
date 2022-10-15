@@ -43,37 +43,38 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class NewWorkspace extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.NewWorkspace", category = "Workspace")
+@ActionRegistration(displayName = "#CTL_NewWorkspace", lazy = false)
+@ActionReferences({
+    @ActionReference(path = "Menu/Workspace", position = 2500),
+    @ActionReference(path = "Shortcuts", name = "D-N")
+})
+public final class NewWorkspace extends AbstractAction {
+
+    NewWorkspace() {
+        super(NbBundle.getMessage(NewWorkspace.class, "CTL_NewWorkspace"),
+            ImageUtilities.loadImageIcon("DesktopProject/newWorkspace.png", false));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProjectControllerUIImpl.getInstance().newWorkspace();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).newWorkspace();
+        }
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canNewWorkspace();
-    }
-
-    @Override
-    protected String iconResource() {
-        return "DesktopProject/newWorkspace.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(NewWorkspace.class, "CTL_NewWorkspace");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canNewWorkspace();
     }
 }

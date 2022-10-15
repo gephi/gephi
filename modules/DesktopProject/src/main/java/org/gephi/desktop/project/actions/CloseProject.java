@@ -43,32 +43,32 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public final class CloseProject extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.CloseProject", category = "File")
+@ActionRegistration(displayName = "#CTL_CloseProject", lazy = false)
+@ActionReference(path = "Menu/File", position = 400)
+public final class CloseProject extends AbstractAction {
+
+    CloseProject() {
+        super(NbBundle.getMessage(CloseProject.class, "CTL_CloseProject"));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProjectControllerUIImpl.getInstance().closeProject();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).closeProject();
+        }
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canCloseProject();
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(CloseProject.class, "CTL_CloseProject");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canCloseProject();
     }
 }

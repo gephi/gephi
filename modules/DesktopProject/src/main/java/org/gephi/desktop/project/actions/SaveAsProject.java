@@ -43,32 +43,32 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.util.HelpCtx;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-public class SaveAsProject extends SystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.SaveAsProject", category = "File")
+@ActionRegistration(displayName = "#CTL_SaveAsProject", lazy = false)
+@ActionReference(path = "Menu/File", position = 1100)
+public final class SaveAsProject extends AbstractAction {
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(SaveAsProject.class, "CTL_SaveAsProject");
+    SaveAsProject() {
+        super(NbBundle.getMessage(ProjectProperties.class, "CTL_SaveAsProject"));
     }
 
     @Override
     public boolean isEnabled() {
-        return ProjectControllerUIImpl.getInstance().canSaveAs();
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canSaveAs();
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectControllerUIImpl.getInstance().saveAsProject();
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).saveAsProject();
+        }
     }
 }

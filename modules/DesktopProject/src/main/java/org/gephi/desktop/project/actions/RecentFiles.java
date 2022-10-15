@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.desktop.recentfiles;
+package org.gephi.desktop.project.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -52,20 +52,26 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
-import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.awt.Actions;
 import org.openide.awt.DynamicMenuContent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-/**
- * @author Sébastien Heymann
- */
+@ActionID(id = "org.gephi.desktop.project.actions.RecentFiles", category = "File")
+@ActionRegistration(displayName = "#CTL_OpenRecentFiles", lazy = false)
+@ActionReference(path = "Menu/File", position = 350)
 public class RecentFiles extends AbstractAction implements DynamicMenuContent {
 
     private static final String GEPHI_EXTENSION = "gephi";
+
+    RecentFiles() {
+        super(NbBundle.getMessage(RecentFiles.class, "CTL_OpenRecentFiles"));
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -105,12 +111,8 @@ public class RecentFiles extends AbstractAction implements DynamicMenuContent {
                     public void actionPerformed(ActionEvent e) {
                         FileObject fileObject = FileUtil.toFileObject(file);
                         if (fileObject.hasExt(GEPHI_EXTENSION)) {
-                            ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-                            try {
-                                pc.openProject(file);
-                            } catch (Exception ex) {
-                                Exceptions.printStackTrace(ex);
-                            }
+                            Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+                                new ActionEvent(file, 0, null));
                         } else {
                             ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                             if (importController.getImportController().isFileSupported(file)) {
