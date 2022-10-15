@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.project.api.ProjectController;
 import org.netbeans.api.sendopts.CommandException;
 import org.netbeans.spi.sendopts.Env;
 import org.netbeans.spi.sendopts.Option;
@@ -113,7 +114,7 @@ public class CommandLineProcessor extends OptionProcessor {
                     return;
                 }
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
-                    ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                     try {
                         pc.openProject(file);
                     } catch (Exception ew) {

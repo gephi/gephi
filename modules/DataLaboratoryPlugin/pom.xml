@@ -88,6 +88,10 @@
             <artifactId>org-openide-windows</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
         </dependency>

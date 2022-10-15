@@ -44,6 +44,7 @@ package org.gephi.branding.desktop;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -53,6 +54,7 @@ import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.Actions;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -93,17 +95,8 @@ public class DragNDropFrameAdapter {
                         return false;
                     }
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
-
-                        ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-                        try {
-                            pc.openProject(file);
-                        } catch (Exception ew) {
-                            Exceptions.printStackTrace(ew);
-                            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
-                                .getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"),
-                                NotifyDescriptor.WARNING_MESSAGE);
-                            DialogDisplayer.getDefault().notify(msg);
-                        }
+                        Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+                                new ActionEvent(file, 0, null));
                     } else {
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {

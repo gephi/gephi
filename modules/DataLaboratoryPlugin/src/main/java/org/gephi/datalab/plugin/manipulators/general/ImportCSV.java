@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.datalab.plugin.manipulators.general;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
@@ -50,6 +51,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.openide.awt.Actions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -62,8 +64,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GeneralActionsManipulator.class)
 public class ImportCSV implements GeneralActionsManipulator {
-
-    private final ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+    
     private final FileImporterBuilder[] spreadsheetImporterBuilders;
 
     public ImportCSV() {
@@ -79,12 +80,8 @@ public class ImportCSV implements GeneralActionsManipulator {
 
     @Override
     public void execute() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                pc.openFile(spreadsheetImporterBuilders);
-            }
-        });
+        Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+            new ActionEvent(spreadsheetImporterBuilders, 0, null));
     }
 
     @Override
