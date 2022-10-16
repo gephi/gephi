@@ -47,6 +47,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectMetaData;
@@ -115,7 +116,7 @@ public class ProjectImpl implements Project, Lookup.Provider {
 
     @Override
     public Collection<Workspace> getWorkspaces() {
-        return Arrays.asList(workspaceProvider.getWorkspaces());
+        return Collections.unmodifiableList(Arrays.asList(workspaceProvider.getWorkspaces()));
     }
 
     @Override

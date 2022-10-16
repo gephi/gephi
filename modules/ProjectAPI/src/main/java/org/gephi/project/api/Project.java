@@ -42,7 +42,6 @@
 
 package org.gephi.project.api;
 
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Collection;
 import org.openide.util.Lookup;
@@ -59,26 +58,24 @@ import org.openide.util.Lookup;
 public interface Project extends Lookup.Provider {
 
     /**
-     * Adds an abilities to this project.
+     * Adds an object to this project.
      *
      * @param instance the instance that is to be added to the lookup
      */
     void add(Object instance);
 
     /**
-     * Removes an abilities to this project.
+     * Removes an object to this project.
      *
      * @param instance the instance that is to be removed from the lookup
      */
     void remove(Object instance);
 
     /**
-     * Gets any optional abilities of this project.
+     * Gets any optional object from this project.
      * <p>
      * May contains:
-     * <ol><li>{@link ProjectInformation}</li>
      * <li>{@link ProjectMetaData}</li>
-     * <li>{@link WorkspaceProvider}</li></ol>
      *
      * @return the project's lookup
      */
@@ -95,16 +92,16 @@ public interface Project extends Lookup.Provider {
     /**
      * Returns true if the project has a current workspace.
      *
-     * @return true if has a current workspace, false otherwise
+     * @return true if it has a current workspace, false otherwise
      */
     boolean hasCurrentWorkspace();
 
     /**
      * Returns all the workspaces.
      * <p>
-     * Returns an empty array if no workspaces.
+     * Returns an empty collection if no workspaces.
      *
-     * @return an array of all workspaces
+     * @return a list of all workspaces, unmodifiable
      */
     Collection<Workspace> getWorkspaces();
 
