@@ -48,6 +48,8 @@ import javax.swing.AbstractAction;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -88,6 +90,11 @@ public final class OpenFile extends AbstractAction {
                     ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                     if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
                         importController.importFile(fileObject);
+                    } else {
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(OpenFile.class, "OpenFile.fileNotSupported"),
+                            NotifyDescriptor.WARNING_MESSAGE);
+                        DialogDisplayer.getDefault().notify(msg);
                     }
                 }
             } else if (ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {

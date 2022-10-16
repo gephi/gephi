@@ -104,8 +104,6 @@ public class ProjectControllerUIImpl implements ProjectListener {
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
 
-    private static ProjectControllerUIImpl instance;
-
     public ProjectControllerUIImpl() {
 
         controller = Lookup.getDefault().lookup(ProjectController.class);

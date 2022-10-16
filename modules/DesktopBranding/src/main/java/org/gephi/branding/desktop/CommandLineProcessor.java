@@ -57,6 +57,7 @@ import org.netbeans.spi.sendopts.Option;
 import org.netbeans.spi.sendopts.OptionProcessor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.Actions;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -104,7 +105,6 @@ public class CommandLineProcessor extends OptionProcessor {
                 if (!file.isAbsolute()) {
                     file = new File(env.getCurrentDirectory(), filenameList.get(i));
                 }
-                FileObject fileObject = FileUtil.toFileObject(file);
                 if (!file.exists()) {
                     NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
                         .getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotFound", file.getName()),
@@ -112,29 +112,7 @@ public class CommandLineProcessor extends OptionProcessor {
                     DialogDisplayer.getDefault().notify(msg);
                     return;
                 }
-                if (fileObject.hasExt(GEPHI_EXTENSION)) {
-                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    try {
-                        pc.openProject(file);
-                    } catch (Exception ew) {
-                        Exceptions.printStackTrace(ew);
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
-                            NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.openGephiError"),
-                            NotifyDescriptor.WARNING_MESSAGE);
-                        DialogDisplayer.getDefault().notify(msg);
-                    }
-                    return;
-                } else {
-                    ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                    if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
-                        importController.importFile(fileObject);
-                    } else {
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
-                            NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotSupported"),
-                            NotifyDescriptor.WARNING_MESSAGE);
-                        DialogDisplayer.getDefault().notify(msg);
-                    }
-                }
+                Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(null);
             }
         } catch (OutOfMemoryError ex) {
             System.gc();
