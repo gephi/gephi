@@ -136,11 +136,9 @@ public class Installer extends ModuleInstall {
     }
 
     private void initGephi() {
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                pc.startup();
                 DragNDropFrameAdapter.register();
             }
         });
