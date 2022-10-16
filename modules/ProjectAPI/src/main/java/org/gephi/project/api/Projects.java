@@ -57,9 +57,9 @@ public interface Projects {
     boolean hasCurrentProject();
 
     /**
-     * Returns the current project or null if missing.
+     * Returns the current project..
      *
-     * @return current project or null if missing
+     * @return current project or <code>null</code> if missing
      */
     Project getCurrentProject();
 

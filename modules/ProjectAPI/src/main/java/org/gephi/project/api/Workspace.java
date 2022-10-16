@@ -97,7 +97,6 @@ public interface Workspace extends Lookup.Provider {
      * <li><code>StatisticsModel</code></li>
      * <li><code>FiltersModel</code></li>
      * <li><code>PreviewModel</code></li>
-     * <li><code>VizModel</code></li>
      * <li>...</li>
      * </ul>
      *

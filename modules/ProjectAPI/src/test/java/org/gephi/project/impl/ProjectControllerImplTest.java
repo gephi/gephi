@@ -1,17 +1,25 @@
 package org.gephi.project.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.Workspace;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 public class ProjectControllerImplTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testInit() {
@@ -83,5 +91,90 @@ public class ProjectControllerImplTest {
         project = pc.openProject(file);
         Assert.assertNotNull(project);
         Assert.assertTrue(project.isOpen());
+    }
+
+    @Test
+    public void testOpenFileNotFound() throws IOException {
+        expectedException.expect(RuntimeException.class);
+        expectedException.expectCause(new org.hamcrest.core.IsInstanceOf(FileNotFoundException.class));
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        File file = tempFolder.newFile("foo.gephi");
+        file.delete();
+        pc.openProject(file);
+    }
+
+    @Test
+    public void testDefaultWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+
+        Assert.assertNotNull(pc.getCurrentWorkspace());
+        Assert.assertSame(project, pc.getCurrentWorkspace().getProject());
+        Assert.assertTrue(project.hasCurrentWorkspace());
+        Assert.assertSame(pc.getCurrentWorkspace(), project.getCurrentWorkspace());
+        Assert.assertTrue(project.getWorkspaces().contains(pc.getCurrentWorkspace()));
+    }
+
+    @Test
+    public void testAddWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        Workspace workspace = pc.newWorkspace(project);
+
+        Assert.assertNotSame(workspace, pc.getCurrentWorkspace());
+        Assert.assertTrue(workspace.isClosed());
+        Assert.assertTrue(project.hasCurrentWorkspace());
+        Assert.assertSame(workspace.getProject(), project);
+        Assert.assertEquals(2, project.getWorkspaces().size());
+    }
+
+    @Test
+    public void testDeleteWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        Workspace originalWorkspace = pc.getCurrentWorkspace();
+        Workspace workspace = pc.newWorkspace(project);
+        pc.deleteWorkspace(workspace);
+
+        Assert.assertTrue(workspace.isClosed());
+        Assert.assertSame(originalWorkspace, pc.getCurrentWorkspace());
+        Assert.assertTrue(project.getWorkspaces().contains(originalWorkspace));
+    }
+
+    @Test
+    public void testDeleteLastWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        Workspace workspace = pc.getCurrentWorkspace();
+        pc.deleteWorkspace(workspace);
+
+        Assert.assertTrue(project.isClosed());
+        Assert.assertNull(pc.getCurrentProject());
+    }
+
+    @Test
+    public void testOpenWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        Workspace originalWorkspace = pc.getCurrentWorkspace();
+        Workspace workspace = pc.newWorkspace(project);
+        pc.openWorkspace(workspace);
+
+        Assert.assertSame(workspace, pc.getCurrentWorkspace());
+        Assert.assertTrue(originalWorkspace.isClosed());
+        Assert.assertTrue(workspace.isOpen());
+    }
+
+    @Test
+    public void testCloseWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.newProject();
+        Workspace workspace = pc.getCurrentWorkspace();
+        pc.closeCurrentWorkspace();
+
+        Assert.assertTrue(workspace.isClosed());
+        // TODO: Should we make it null?
+//        Assert.assertNull(pc.getCurrentWorkspace());
     }
 }

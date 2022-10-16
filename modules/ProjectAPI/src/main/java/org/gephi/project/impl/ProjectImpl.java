@@ -71,6 +71,7 @@ public class ProjectImpl implements Project, Lookup.Provider {
     private final WorkspaceProviderImpl workspaceProvider;
     private final ProjectInformationImpl projectInformation;
     private final ProjectMetaDataImpl projectMetaData;
+    private final ProjectControllerImpl projectController;
 
     public ProjectImpl(int id) {
         this(NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + " " + id);
@@ -87,6 +88,8 @@ public class ProjectImpl implements Project, Lookup.Provider {
         instanceContent.add(projectMetaData);
         instanceContent.add(projectInformation);
         instanceContent.add(workspaceProvider);
+
+        projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
     }
 
     @Override
@@ -116,7 +119,9 @@ public class ProjectImpl implements Project, Lookup.Provider {
 
     @Override
     public Collection<Workspace> getWorkspaces() {
-        return Collections.unmodifiableList(Arrays.asList(workspaceProvider.getWorkspaces()));
+        synchronized (projectController) {
+            return Collections.unmodifiableCollection(Arrays.asList(workspaceProvider.getWorkspaces()));
+        }
     }
 
     @Override

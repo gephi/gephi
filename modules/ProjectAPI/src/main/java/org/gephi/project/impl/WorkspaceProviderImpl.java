@@ -53,36 +53,32 @@ import org.gephi.workspace.impl.WorkspaceImpl;
  */
 public class WorkspaceProviderImpl implements WorkspaceProvider {
 
-    private final transient ProjectImpl project;
-    private final transient List<Workspace> workspaces;
-    private transient WorkspaceImpl currentWorkspace;
+    private final ProjectImpl project;
+    private final List<Workspace> workspaces;
+    private WorkspaceImpl currentWorkspace;
 
     public WorkspaceProviderImpl(ProjectImpl project) {
         this.project = project;
         workspaces = new ArrayList<>();
     }
 
-    public synchronized WorkspaceImpl newWorkspace() {
+    public WorkspaceImpl newWorkspace() {
         WorkspaceImpl workspace = new WorkspaceImpl(project, project.nextWorkspaceId());
         workspaces.add(workspace);
         return workspace;
     }
 
-    public synchronized WorkspaceImpl newWorkspace(int id) {
+    public WorkspaceImpl newWorkspace(int id) {
         WorkspaceImpl workspace = new WorkspaceImpl(project, id);
         workspaces.add(workspace);
         return workspace;
     }
 
-    public synchronized void addWorkspace(Workspace workspace) {
-        workspaces.add(workspace);
-    }
-
-    public synchronized void removeWorkspace(Workspace workspace) {
+    protected void removeWorkspace(Workspace workspace) {
         workspaces.remove(workspace);
     }
 
-    public synchronized Workspace getPrecedingWorkspace(Workspace workspace) {
+    protected Workspace getPrecedingWorkspace(Workspace workspace) {
         Workspace[] ws = getWorkspaces();
         int index = -1;
         for (int i = 0; i < ws.length; i++) {
@@ -90,7 +86,7 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
                 index = i;
             }
         }
-        if (index != -1 && index >= 1) {
+        if (index >= 1) {
             //Get preceding
             return ws[index - 1];
         } else if (index == 0 && ws.length > 1) {
@@ -101,21 +97,21 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
     }
 
     @Override
-    public synchronized WorkspaceImpl getCurrentWorkspace() {
+    public WorkspaceImpl getCurrentWorkspace() {
         return currentWorkspace;
     }
 
-    public synchronized void setCurrentWorkspace(Workspace currentWorkspace) {
+    public void setCurrentWorkspace(Workspace currentWorkspace) {
         this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
     }
 
     @Override
-    public synchronized Workspace[] getWorkspaces() {
+    public Workspace[] getWorkspaces() {
         return workspaces.toArray(new Workspace[0]);
     }
 
     @Override
-    public synchronized Workspace getWorkspace(int id) {
+    public Workspace getWorkspace(int id) {
         for (Workspace w : workspaces) {
             if (w.getId() == id) {
                 return w;
@@ -125,7 +121,7 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
     }
 
     @Override
-    public synchronized boolean hasCurrentWorkspace() {
+    public boolean hasCurrentWorkspace() {
         return currentWorkspace != null;
     }
 }

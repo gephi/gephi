@@ -45,6 +45,7 @@ package org.gephi.project.io;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -101,6 +102,9 @@ public class LoadTask implements LongTask {
         try {
             ZipFile zip = null;
             try {
+                if (!file.exists()) {
+                    throw new FileNotFoundException("File "+file.getPath()+" not found");
+                }
                 zip = new ZipFile(file);
 
                 ProjectImpl project = readProject(zip);
@@ -181,10 +185,14 @@ public class LoadTask implements LongTask {
                 }
             }
         } catch (Exception ex) {
+            Progress.finish(progressTicket);
+
             if (ex instanceof GephiFormatException) {
                 throw (GephiFormatException) ex;
             } else if (ex instanceof LegacyGephiFormatException) {
                 throw (LegacyGephiFormatException) ex;
+            } else if (ex instanceof FileNotFoundException) {
+                throw new RuntimeException(ex);
             }
             throw new GephiFormatException(GephiReader.class, ex);
         }

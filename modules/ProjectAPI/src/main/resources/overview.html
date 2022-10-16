@@ -5,7 +5,7 @@
     </head>
     <body>
         <p>
-            Project API/SPI for <b>project</b> and <b>worskpaces</b> manipulation.
+            Project API/SPI for <b>project</b> and <b>workspaces</b> manipulation.
         </p>
         <p>
             The API defines <code>Project</code> and <code>Workspace</code>
@@ -13,11 +13,11 @@
             the application lifecycle. The API therefore define the
             <code>WorkspaceListener</code> interface, which is essential for tracking
             workspace events. The <code>ProjectController</code> service manage
-            the system.
+            the system. A <code>ProjectListener</code> interface can be used to track project events.
         </p>
         <p>
-            The SPI notably defines how modules can interact more with the
-            worspace lifecyle. See <code>WorkspacePersistenceProvider</code> for
+            The SPI notably defines how modules can interact with the
+            workspace lifecycle. See <code>WorkspacePersistenceProvider</code> for
             project saving/loading.
         </p>
     </body>

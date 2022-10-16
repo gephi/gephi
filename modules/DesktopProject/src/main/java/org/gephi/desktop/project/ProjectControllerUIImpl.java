@@ -344,10 +344,6 @@ public class ProjectControllerUIImpl implements ProjectListener {
         controller.openProject(file);
     }
 
-    public void renameProject(final String name) {
-        controller.renameProject(controller.getCurrentProject(), name);
-    }
-
     public boolean canCloseProject() {
         return closeProject;
     }

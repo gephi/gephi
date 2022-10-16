@@ -51,6 +51,12 @@ import org.gephi.project.impl.ProjectImpl;
  * <p>
  * This controller is a service and can therefore be found in Lookup:
  * <pre>ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);</pre>
+ * <p>
+ * Only a single project can be opened at a time. It can be retrieved from {@link #getCurrentProject()}.}
+ * <p>
+ * At startup, no project is opened. To open a project, use {@link #openProject(java.io.File)} or create a new one with {@link #newProject()}.
+ * <p>
+ * A project contains one or more workspaces. A project can have only one workspace selected at a time. By default, a project starts with one workspace.
  *
  * @author Mathieu Bastian
  * @see Project
@@ -58,23 +64,61 @@ import org.gephi.project.impl.ProjectImpl;
  */
 public interface ProjectController {
 
-    void startup();
-
+    /**
+     * Creates and open a new project.
+     * <p>
+     * If a project is currently opened, it will be closed first.
+     *
+     * @return newly created project
+     */
     Project newProject();
 
+    /**
+     * Opens a project from a <code>.gephi</code> file.
+     * <p>
+     * If a project is currently opened, it will be closed first.
+     *
+     * @param file project file
+     * @return opened project
+     */
     Project openProject(File file);
 
+    /**
+     * Saves the current project to its <code>.gephi</code> file.
+     *
+     * @param project project to save
+     * @throws IllegalStateException is the project hasn't a file configured
+     */
     void saveProject(Project project);
 
+    /**
+     * Saves the current project to a new <code>.gephi</code> file.
+     * <p>
+     * The project file is updated with the new file.
+     *
+     * @param project project to save
+     * @param file file to be written
+     */
     void saveProject(Project project, File file);
 
+    /**
+     * Closes the current project.
+     */
     void closeCurrentProject();
 
+    /**
+     * Removes the project from the active project list.
+     * <p>
+     * It won't delete any <code>.gephi</code> files.
+     * @param project project to remove
+     */
     void removeProject(Project project);
 
     /**
-     * Deprecated.
-     * @return
+     * Gets the set of active projects.
+     *
+     * @deprecated Directly use this class instead as all of the methods have been ported.
+     * @return projects
      */
     Projects getProjects();
 
@@ -86,33 +130,85 @@ public interface ProjectController {
     boolean hasCurrentProject();
 
     /**
-     * Returns the current project or null if missing.
+     * Returns the current opened project.
      *
-     * @return current project or null if missing
+     * @return current open project or <code>null</code> if missing
      */
     Project getCurrentProject();
 
     /**
-     * Returns an array of all projects.
+     * Gets all active projects
      *
      * @return project array
      */
     Collection<Project> getAllProjects();
 
+    /**
+     * Creates and adds a new workspace to the given project.
+     * <p>
+     * The new workspace is not selected. Call {@link #openWorkspace(Workspace)} (org.gephi.project.api.Workspace)} to select it.
+     *
+     * @param project project to add the workspace to
+     * @return workspace
+     */
     Workspace newWorkspace(Project project);
 
+    /**
+     * Deletes the given workspace from its project.
+     * <p>
+     * If the workspace is currently selected, it's preceding workspace will be selected.
+     * <p>
+     * If this workspace is the unique workspace in the project, the project will be closed.
+     *
+     * @param workspace workspace to delete
+     */
     void deleteWorkspace(Workspace workspace);
 
+    /**
+     * Renames the given workspace with the provided string.
+     *
+     * @param workspace workspace to rename
+     * @param name new name
+     */
     void renameWorkspace(Workspace workspace, String name);
 
+    /**
+     * Renames the given project with the provided string.
+     *
+     * @param project project to rename
+     * @param name new name
+     */
     void renameProject(Project project, String name);
 
+    /**
+     * Returns the selected workspace of the current project.
+     *
+     * @return selected workspace or <code>null</code> if no current project
+     */
     Workspace getCurrentWorkspace();
 
+    /**
+     * Selects the given workspace as the current workspace of the project.
+     * <p>
+     * This method calls {@link #closeCurrentWorkspace()} beforehand.
+     *
+     * @param workspace workspace to select
+     */
     void openWorkspace(Workspace workspace);
 
+    /**
+     * Unselects the current workspace.
+     */
     void closeCurrentWorkspace();
 
+    /**
+     * Duplicates the given workspace and adds it to the project.
+     * <p>
+     * The new workspace is automatically selected.
+     *
+     * @param workspace workspace to duplicate
+     * @return duplicated workspace
+     */
     Workspace duplicateWorkspace(Workspace workspace);
 
     void setSource(Workspace workspace, String source);

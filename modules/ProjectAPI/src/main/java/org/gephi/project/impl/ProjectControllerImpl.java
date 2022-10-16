@@ -96,21 +96,6 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    public void startup() {
-        final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
-        final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
-        boolean openLastProject =
-            NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
-        boolean newProjectStartup =
-            NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
-
-        //Default project
-        if (!openLastProject && newProjectStartup) {
-            newProject();
-        }
-    }
-
-    @Override
     public ProjectImpl newProject() {
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
@@ -135,6 +120,8 @@ public class ProjectControllerImpl implements ProjectController {
             throw (GephiFormatException) t;
         } else if (t instanceof LegacyGephiFormatException) {
             throw (LegacyGephiFormatException) t;
+        } else if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
         }
         throw new RuntimeException(t);
     }
@@ -166,6 +153,8 @@ public class ProjectControllerImpl implements ProjectController {
             if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
                 File file = project.getLookup().lookup(ProjectInformationImpl.class).getFile();
                 saveProject(project, file);
+            } else {
+                throw new IllegalStateException("Project has no file");
             }
         }
     }
