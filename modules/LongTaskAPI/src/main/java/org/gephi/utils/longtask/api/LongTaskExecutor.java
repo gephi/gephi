@@ -44,6 +44,7 @@ package org.gephi.utils.longtask.api;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -146,7 +147,10 @@ public final class LongTaskExecutor {
             runningLongtask.future = executor.submit(runningLongtask);
         } else {
             currentTask = runningLongtask;
-            runningLongtask.run();
+            runningLongtask.call();
+            if (listener != null) {
+                listener.taskFinished(task);
+            }
         }
     }
 
@@ -241,26 +245,37 @@ public final class LongTaskExecutor {
     /**
      * Inner class for associating a task to its Future instance
      */
-    private class RunningLongTask implements Runnable {
+    private class RunningLongTask<V> implements Callable<V> {
 
         private final LongTask task;
         private final Runnable runnable;
+        private final Callable callable;
         private final LongTaskErrorHandler errorHandler;
-        private Future<?> future;
+        private Future<V> future;
         private ProgressTicket progress;
 
         public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
             this.task = task;
             this.runnable = runnable;
+            this.callable = null;
             this.errorHandler = errorHandler;
+            init(taskName);
+        }
+
+        public RunningLongTask(LongTask task, Callable<V> callable, String taskName, LongTaskErrorHandler errorHandler) {
+            this.task = task;
+            this.runnable = null;
+            this.callable = callable;
+            this.errorHandler = errorHandler;
+            init(taskName);
+        }
+
+        private void init(String taskName) {
             ProgressTicketProvider progressProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
             if (progressProvider != null) {
-                this.progress = progressProvider.createTicket(taskName, new Cancellable() {
-                    @Override
-                    public boolean cancel() {
-                        LongTaskExecutor.this.cancel();
-                        return true;
-                    }
+                this.progress = progressProvider.createTicket(taskName, () -> {
+                    LongTaskExecutor.this.cancel();
+                    return true;
                 });
                 if (task != null) {
                     task.setProgressTicket(progress);
@@ -269,13 +284,18 @@ public final class LongTaskExecutor {
         }
 
         @Override
-        public void run() {
+        public V call() {
             if (task == null && progress != null) {
                 progress.start();
             }
             currentTask = this;
             try {
-                runnable.run();
+                if (runnable != null) {
+                    runnable.run();
+                    return null;
+                } else if (callable != null) {
+                    return (V) callable.call();
+                }
             } catch (Throwable e) {
                 LongTaskErrorHandler err = errorHandler;
                 finished(this);
@@ -296,6 +316,7 @@ public final class LongTaskExecutor {
             if (progress != null) {
                 progress.finish();
             }
+            return null;
         }
 
         public boolean cancel() {
