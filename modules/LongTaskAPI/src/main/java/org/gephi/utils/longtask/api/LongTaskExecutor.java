@@ -45,6 +45,7 @@ package org.gephi.utils.longtask.api;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -137,20 +138,49 @@ public final class LongTaskExecutor {
         if (runnable == null || taskName == null) {
             throw new NullPointerException();
         }
-        if (executor == null) {
-            this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-                new NamedThreadFactory());
-        }
+        execute(new RunningLongTask<>(task, runnable, taskName, errorHandler));
+    }
 
-        RunningLongTask runningLongtask = new RunningLongTask(task, runnable, taskName, errorHandler);
+    /**
+     * Execute a long task with cancel and progress support. Task can be
+     * <code>null</code>. In this case <code>callable</code> will be executed
+     * normally, but without cancel and progress support.
+     *
+     * @param task         the task to be executed, can be <code>null</code>.
+     * @param callable     the callable to be executed
+     * @param taskName     the name of the task, is displayed in the status bar if
+     *                     available
+     * @param errorHandler error handler for exception retrieval during
+     *                     execution
+     * @return a future that can be used to retrieve the result of the task
+     * @throws NullPointerException  if <code>callable</code> * or
+     *                               <code>taskName</code> is null
+     * @throws IllegalStateException if a task is still executing at this time
+     */
+    public synchronized <V> Future<V> execute(LongTask task, final Callable<V> callable, String taskName,
+                                     LongTaskErrorHandler errorHandler) {
+        if (callable == null || taskName == null) {
+            throw new NullPointerException();
+        }
+        return execute(new RunningLongTask<>(task, callable, taskName, errorHandler));
+    }
+
+    private <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
         if (inBackground) {
-            runningLongtask.future = executor.submit(runningLongtask);
+            if (executor == null) {
+                this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                    new NamedThreadFactory());
+            }
+            Future<V> result = executor.submit(runningLongtask);
+            runningLongtask.future = result;
+            return result;
         } else {
             currentTask = runningLongtask;
             runningLongtask.call();
             if (listener != null) {
-                listener.taskFinished(task);
+                listener.taskFinished(runningLongtask.task);
             }
+            return runningLongtask.future;
         }
     }
 
@@ -166,6 +196,20 @@ public final class LongTaskExecutor {
      */
     public synchronized void execute(LongTask task, Runnable runnable) {
         execute(task, runnable, "", null);
+    }
+
+    /**
+     * Execute a long task with cancel and progress support. Task can be
+     * <code>null</code>. In this case <code>callable</code> will be executed
+     * normally, but without cancel and progress support.
+     *
+     * @param task     the task to be executed, can be <code>null</code>.
+     * @param callable the callable to be executed
+     * @throws NullPointerException  if <code>callable</code> is null
+     * @throws IllegalStateException if a task is still executing at this time
+     */
+    public synchronized <V> Future<V> execute(LongTask task, Callable<V> callable) {
+        return execute(task, callable, "", null);
     }
 
     /**
@@ -249,7 +293,7 @@ public final class LongTaskExecutor {
 
         private final LongTask task;
         private final Runnable runnable;
-        private final Callable callable;
+        private final Callable<V> callable;
         private final LongTaskErrorHandler errorHandler;
         private Future<V> future;
         private ProgressTicket progress;
@@ -294,7 +338,10 @@ public final class LongTaskExecutor {
                     runnable.run();
                     return null;
                 } else if (callable != null) {
-                    return (V) callable.call();
+                    V result = callable.call();
+                    if (!inBackground) {
+                        future = CompletableFuture.completedFuture(result);
+                    }
                 }
             } catch (Throwable e) {
                 LongTaskErrorHandler err = errorHandler;
@@ -308,6 +355,9 @@ public final class LongTaskExecutor {
                     defaultErrorHandler.fatalError(e);
                 } else {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
+                }
+                if (!inBackground) {
+                    future = CompletableFuture.failedFuture(e);
                 }
             }
             currentTask = null;
