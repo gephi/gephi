@@ -219,7 +219,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
             public void run() {
                 PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault()
                     .findTopComponent("PreviewSettingsTopComponent");
-                pstc.enableRefreshButton();
+                if (pstc != null) {
+                    pstc.enableRefreshButton();
+                }
             }
         });
     }
