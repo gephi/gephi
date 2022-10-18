@@ -165,7 +165,7 @@ public final class LongTaskExecutor {
         return execute(new RunningLongTask<>(task, callable, taskName, errorHandler));
     }
 
-    private <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
+    protected <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
         if (inBackground) {
             if (executor == null) {
                 this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
@@ -177,9 +177,6 @@ public final class LongTaskExecutor {
         } else {
             currentTask = runningLongtask;
             runningLongtask.call();
-            if (listener != null) {
-                listener.taskFinished(runningLongtask.task);
-            }
             return runningLongtask.future;
         }
     }
@@ -289,7 +286,7 @@ public final class LongTaskExecutor {
     /**
      * Inner class for associating a task to its Future instance
      */
-    private class RunningLongTask<V> implements Callable<V> {
+    protected class RunningLongTask<V> implements Callable<V> {
 
         private final LongTask task;
         private final Runnable runnable;
@@ -329,26 +326,33 @@ public final class LongTaskExecutor {
 
         @Override
         public V call() {
-            if (task == null && progress != null) {
+            if (task != null && progress != null) {
                 progress.start();
             }
             currentTask = this;
+            V result = null;
             try {
                 if (runnable != null) {
                     runnable.run();
-                    return null;
                 } else if (callable != null) {
-                    V result = callable.call();
+                    result = callable.call();
                     if (!inBackground) {
                         future = CompletableFuture.completedFuture(result);
                     }
                 }
-            } catch (Throwable e) {
-                LongTaskErrorHandler err = errorHandler;
+
+                currentTask = null;
+
                 finished(this);
                 if (progress != null) {
                     progress.finish();
                 }
+            } catch (Throwable e) {
+                LongTaskErrorHandler err = errorHandler;
+                if (progress != null) {
+                    progress.finish();
+                }
+                currentTask = null;
                 if (err != null) {
                     err.fatalError(e);
                 } else if (defaultErrorHandler != null) {
@@ -360,13 +364,8 @@ public final class LongTaskExecutor {
                     future = CompletableFuture.failedFuture(e);
                 }
             }
-            currentTask = null;
 
-            finished(this);
-            if (progress != null) {
-                progress.finish();
-            }
-            return null;
+            return result;
         }
 
         public boolean cancel() {
