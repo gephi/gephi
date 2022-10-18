@@ -1,4 +1,4 @@
-package org.gephi.utils.longtask;
+package org.gephi.utils.longtask.api;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -64,6 +64,8 @@ public class SynchronousTest {
     public void testExecuteRunnableWithProgress() {
         executor.execute(longTask, runnable);
         Mockito.verify(longTask).setProgressTicket(Mockito.any(ProgressTicket.class));
+        Mockito.verify(progressTicket).start();
+        Mockito.verify(progressTicket).finish();
     }
 
     @Test
@@ -71,6 +73,14 @@ public class SynchronousTest {
         Mockito.doThrow(new RuntimeException()).when(runnable).run();
         executor.execute(longTask, runnable, "", errorHandler);
         Mockito.verify(errorHandler).fatalError(Mockito.any(RuntimeException.class));
+        Mockito.verify(listener, Mockito.never()).taskFinished(Mockito.any());
+    }
+
+    @Test
+    public void testExecuteRunnableProgressWithException() {
+        Mockito.doThrow(new RuntimeException()).when(runnable).run();
+        executor.execute(longTask, runnable);
+        Mockito.verify(progressTicket).finish();
     }
 
     @Test
