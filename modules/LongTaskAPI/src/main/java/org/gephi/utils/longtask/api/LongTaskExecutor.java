@@ -247,7 +247,11 @@ public final class LongTaskExecutor {
      * otherwise
      */
     public boolean isRunning() {
-        return currentTask != null;
+        if(inBackground) {
+            return executor != null && executor.getActiveCount() > 0;
+        } else {
+            return currentTask != null;
+        }
     }
 
     /**
@@ -406,7 +410,9 @@ public final class LongTaskExecutor {
                 if (task.future != null) {
                     task.future.cancel(interruptCancel);
                 }
-                cancelTimer.cancel();
+                if (cancelTimer != null) {
+                    cancelTimer.cancel();
+                }
                 cancelTimer = null;
                 if (task.progress != null) {
                     task.progress.finish();
