@@ -362,6 +362,11 @@ public final class LongTaskExecutor {
                 }
                 if (!inBackground) {
                     future = CompletableFuture.failedFuture(e);
+                } else if (callable != null) {
+                    if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    }
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -409,6 +414,7 @@ public final class LongTaskExecutor {
                 finished(task);
 
                 if (!inBackground) {
+                    Logger.getLogger("").warning("Task from " + name + " did not respond to cancellation request. Interrupting thread.");
                     Thread.currentThread().interrupt();
                 }
             }
