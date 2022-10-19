@@ -3,6 +3,7 @@ package org.gephi.utils.longtask.api;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import org.awaitility.Awaitility;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.api.LongTaskListener;
@@ -18,6 +19,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.internal.stubbing.answers.AnswersWithDelay;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.netbeans.junit.MockServices;
 import org.openide.util.Cancellable;
@@ -70,6 +72,7 @@ public class SynchronousTest {
 
     @Test
     public void testExecuteRunnableException() {
+        executor.setLongTaskListener(listener);
         Mockito.doThrow(new RuntimeException()).when(runnable).run();
         executor.execute(longTask, runnable, "", errorHandler);
         Mockito.verify(errorHandler).fatalError(Mockito.any(RuntimeException.class));
