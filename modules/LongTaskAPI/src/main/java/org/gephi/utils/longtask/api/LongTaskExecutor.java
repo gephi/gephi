@@ -165,7 +165,7 @@ public final class LongTaskExecutor {
         return execute(new RunningLongTask<>(task, callable, taskName, errorHandler));
     }
 
-    protected <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
+    private <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
         if (inBackground) {
             if (executor == null) {
                 this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
