@@ -16,6 +16,10 @@
         <hr>
         <h2>API Changes</h2>
         <h3>0.10.0</h3>
+        <h4>LongTask API</h4>
+        <ul>
+            <li>The <code>LongTaskExecutor</code> now has <code>execute</code> methods that also support <code>Callable</code> in addition of <code>Runnable</code>.</li>
+        </ul>
         <h4>Preview API</h4>
         <ul>
             <li>The <code>PDFTarget</code> interface now gives access to the PDFBox objects as it has been migrated from iText to Apache PDFBox. All <code>Renderer</code> implementation need to adapt the PDF rendering accordingly.</li>
