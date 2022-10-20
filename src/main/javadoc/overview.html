@@ -18,13 +18,17 @@
         <h3>0.10.0</h3>
         <h4>Project API</h4>
         <ul>
-            <li><code>ProjectController</code> now executes all methods synchronously, protected by an internal lock. The <code>openProject()</code>, <code>saveProject()</code> no longer return a <code>Runnable</code>.</li>.
+            <li><code>ProjectController</code> now executes all methods synchronously, protected by an internal lock. The <code>openProject()</code>, <code>saveProject()</code> no longer return a <code>Runnable</code>.</li>
             <li>Addition of a <code>ProjectListener</code> to receive events from <code>ProjectController</code>.</li>
             <li>Removal of <code>org.gephi.project.spi.ProjectPropertiesUI</code> as it had no clear purpose.</li>
             <li>The <code>ProjectController.startup()</code> method was removed as it wasn't used.</li>
             <li>Deprecation of <code>ProjectInformation</code>. Relevant methods have been ported to <code>Project</code>.</li>
             <li>Also deprecation of <code>WorkspaceInformation</code>. Relevant methods have been ported to <code>Workspace</code>.</li>
             <li>Finally, deprecation of <code>WorkspaceProvider</code>. Relevant methods were ported to <code>Project</code>.</li>
+        </ul>
+        <h4>LongTask API</h4>
+        <ul>
+            <li>The <code>LongTaskExecutor</code> now has <code>execute</code> methods that also support <code>Callable</code> in addition of <code>Runnable</code>.</li>
         </ul>
         <h4>Preview API</h4>
         <ul>

@@ -156,6 +156,8 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
+        <gephi.mockito.version>4.8.0</gephi.mockito.version>
+        <gephi.awaitility.version>4.1.0</gephi.awaitility.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         
@@ -748,6 +750,20 @@
                 <groupId>io.sentry</groupId>
                 <artifactId>sentry</artifactId>
                 <version>${gephi.sentry.version}</version>
+            </dependency>
+
+            <!-- Test -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${gephi.mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${gephi.awaitility.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Test JARs -->
