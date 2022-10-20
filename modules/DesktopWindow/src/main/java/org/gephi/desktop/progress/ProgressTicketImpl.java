@@ -180,7 +180,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     @Override
     public void start() {
-        if (handle != null) {
+        if (handle != null && !started) {
             started = true;
             handle.start();
         }

@@ -111,33 +111,30 @@ public class ProjectControllerUIImpl implements ProjectListener {
 
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
-        longTaskExecutor.setDefaultErrorHandler(new LongTaskErrorHandler() {
-            @Override
-            public void fatalError(Throwable t) {
-                unlockProjectActions();
+        longTaskExecutor.setDefaultErrorHandler(t -> {
+            unlockProjectActions();
 
-                if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
-                    NotifyDescriptor.Message msg =
-                        new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
-                    DialogDisplayer.getDefault().notify(msg);
-                }
+            if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
+                NotifyDescriptor.Message msg =
+                    new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+            }
 
-                if (!(t instanceof LegacyGephiFormatException)) {
-                    Exceptions.printStackTrace(t);
-                }
+            if (!(t instanceof LegacyGephiFormatException)) {
+                Exceptions.printStackTrace(t);
             }
         });
-        longTaskExecutor.setLongTaskListener(new LongTaskListener() {
-            @Override
-            public void taskFinished(LongTask task) {
-                unlockProjectActions();
-            }
-        });
+        longTaskExecutor.setLongTaskListener(task -> unlockProjectActions());
     }
 
     @Override
     public void lock() {
         lockProjectActions();
+    }
+
+    @Override
+    public void unlock() {
+        unlockProjectActions();
     }
 
     @Override
@@ -336,12 +333,14 @@ public class ProjectControllerUIImpl implements ProjectListener {
     }
 
     public void openProject(File file) {
-        if (controller.getCurrentProject() != null) {
-            if (!closeCurrentProject()) {
-                return;
+        longTaskExecutor.execute(null, () -> {
+            if (controller.getCurrentProject() != null) {
+                if (!closeCurrentProject()) {
+                    return;
+                }
             }
-        }
-        controller.openProject(file);
+            controller.openProject(file);
+        });
     }
 
     public boolean canCloseProject() {
@@ -523,15 +522,18 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
             }
 
+
             if (gephiFile != null) {
                 //Project
-                if (controller.getCurrentProject() != null) {
-                    if (!closeCurrentProject()) {
-                        return;
+                File finalGephiFile = gephiFile;
+                longTaskExecutor.execute(null, () -> {
+                    if (controller.getCurrentProject() != null) {
+                        if (!closeCurrentProject()) {
+                            return;
+                        }
                     }
-                }
-
-                controller.openProject(gephiFile);
+                    controller.openProject(finalGephiFile);
+                });
             } else {
                 //Import
                 importControllerUI.importFiles(fileObjects);

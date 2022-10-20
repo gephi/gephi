@@ -82,7 +82,7 @@ public final class OpenFile extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent ev) {
         if (isEnabled()) {
-            if (ev.getSource() != null && ev.getSource() instanceof File) {
+            if (ev != null && ev.getSource() != null && ev.getSource() instanceof File) {
                 FileObject fileObject = FileUtil.toFileObject((File) ev.getSource());
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
                     Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openProject(FileUtil.toFile(fileObject));
@@ -97,7 +97,7 @@ public final class OpenFile extends AbstractAction {
                         DialogDisplayer.getDefault().notify(msg);
                     }
                 }
-            } else if (ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {
+            } else if (ev != null && ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {
                 Lookup.getDefault().lookup(ProjectControllerUIImpl.class)
                     .openFile((FileImporterBuilder[]) ev.getSource());
             } else {

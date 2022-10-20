@@ -72,7 +72,7 @@ import org.openide.util.NbPreferences;
 /**
  * @author Mathieu Bastian
  */
-public class SaveTask implements LongTask, Runnable {
+public class SaveTask implements LongTask {
 
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
     private final File file;
@@ -109,8 +109,7 @@ public class SaveTask implements LongTask, Runnable {
         return fileName;
     }
 
-    @Override
-    public void run() {
+    public boolean run() {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
@@ -227,6 +226,7 @@ public class SaveTask implements LongTask, Runnable {
         }
 
         Progress.finish(progressTicket);
+        return !cancel;
     }
 
     private void writeProject(OutputStream outputStream, ZipOutputStream zipOut) throws Exception {

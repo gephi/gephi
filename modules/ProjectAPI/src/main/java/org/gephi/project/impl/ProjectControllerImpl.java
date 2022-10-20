@@ -49,6 +49,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
@@ -60,10 +62,10 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -77,6 +79,8 @@ public class ProjectControllerImpl implements ProjectController {
     private final List<WorkspaceListener> workspaceListeners = new ArrayList<>();
 
     private final List<ProjectListener> projectListeners = new ArrayList<>();
+
+    private final LongTaskExecutor longTaskExecutor = new LongTaskExecutor(false, "ProjectController");
 
     public ProjectControllerImpl() {
         registerNetbeansPropertyEditors();
@@ -130,21 +134,24 @@ public class ProjectControllerImpl implements ProjectController {
     public Project openProject(File file) {
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
-            Project project = null;
-            try {
-                project = new LoadTask(file).execute();
+            LoadTask loadTask = new LoadTask(file);
+            Future<ProjectImpl> res = longTaskExecutor.execute(loadTask, () -> {
+               ProjectImpl project = loadTask.execute();
                 // Null if cancelled
                 if (project != null) {
                     openProject(project);
-                    Project finalProject = project;
-                    fireProjectEvent((pl) -> pl.opened(finalProject));
-                    return project;
+                    fireProjectEvent((pl) -> pl.opened(project));
+                } else {
+                    fireProjectEvent(ProjectListener::unlock);
                 }
-            } catch (Exception e) {
-                return handleException(project, e);
+                return project;
+            }, "", t -> handleException(null, t));
+            try {
+                return res.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
         }
-        return null;
     }
 
     @Override
@@ -163,13 +170,15 @@ public class ProjectControllerImpl implements ProjectController {
     public void saveProject(Project project, File file) {
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
-            try {
+            SaveTask saveTask = new SaveTask(project, file);
+            longTaskExecutor.execute(saveTask, () -> {
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-                new SaveTask(project, file).run();
-                fireProjectEvent((pl) -> pl.saved(project));
-            } catch (Exception e) {
-                handleException(project, e);
-            }
+                if( saveTask.run()) {
+                    fireProjectEvent((pl) -> pl.saved(project));
+                } else {
+                    fireProjectEvent(ProjectListener::unlock);
+                }
+            }, "", t -> handleException(project, t));
         }
     }
 

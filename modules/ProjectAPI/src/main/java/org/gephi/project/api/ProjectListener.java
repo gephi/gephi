@@ -9,6 +9,8 @@ public interface ProjectListener extends EventListener {
 
     void lock();
 
+    void unlock();
+
     /**
      * Called when a project was successfully saved.
      * @param project project that was saved
