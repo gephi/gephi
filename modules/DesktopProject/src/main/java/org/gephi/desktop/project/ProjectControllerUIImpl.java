@@ -212,7 +212,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
     }
 
     private void saveProject(Project project, File file) {
-        controller.saveProject(project, file);
+        longTaskExecutor.execute(null, () -> {
+            controller.saveProject(project, file);
+        });
     }
 
     public void saveProject() {
