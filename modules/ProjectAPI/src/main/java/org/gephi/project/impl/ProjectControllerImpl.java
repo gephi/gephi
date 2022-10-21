@@ -352,6 +352,21 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
+    public Workspace openNewWorkspace() {
+        synchronized (this) {
+            Project project;
+            if (hasCurrentProject()) {
+                project = getCurrentProject();
+            } else {
+                project = newProject();
+            }
+            Workspace workspace = newWorkspace(project);
+            openWorkspace(workspace);
+            return workspace;
+        }
+    }
+
+    @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
         synchronized (this) {
             if (projects.hasCurrentProject()) {

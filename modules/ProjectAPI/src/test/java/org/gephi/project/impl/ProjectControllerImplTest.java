@@ -177,4 +177,15 @@ public class ProjectControllerImplTest {
         // TODO: Should we make it null?
 //        Assert.assertNull(pc.getCurrentWorkspace());
     }
+
+    @Test
+    public void testOpenNewWorkspace() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.newProject();
+        Workspace workspace = pc.openNewWorkspace();
+        Assert.assertNotNull(workspace);
+        Assert.assertTrue(workspace.isOpen());
+        Assert.assertSame(workspace, pc.getCurrentWorkspace());
+        Assert.assertEquals(2, pc.getCurrentProject().getWorkspaces().size());
+    }
 }

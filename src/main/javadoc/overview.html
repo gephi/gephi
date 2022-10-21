@@ -20,6 +20,7 @@
         <ul>
             <li><code>ProjectController</code> now executes all methods synchronously, protected by an internal lock. The <code>openProject()</code>, <code>saveProject()</code> no longer return a <code>Runnable</code>.</li>
             <li>Addition of a <code>ProjectListener</code> to receive events from <code>ProjectController</code>.</li>
+            <li>New <code>ProjectController.openNewWorkspace()</code> to simplify usage.</li>
             <li>Removal of <code>org.gephi.project.spi.ProjectPropertiesUI</code> as it had no clear purpose.</li>
             <li>The <code>ProjectController.startup()</code> method was removed as it wasn't used.</li>
             <li>Deprecation of <code>ProjectInformation</code>. Relevant methods have been ported to <code>Project</code>.</li>

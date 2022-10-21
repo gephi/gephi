@@ -197,6 +197,11 @@ public interface ProjectController {
     void openWorkspace(Workspace workspace);
 
     /**
+     * Creates and open a new workspace in the current project. If not project is opened, a new one is created.
+     */
+    Workspace openNewWorkspace();
+
+    /**
      * Unselects the current workspace.
      */
     void closeCurrentWorkspace();

@@ -138,14 +138,7 @@ public class DesktopGeneratorController implements GeneratorController {
     private void finishGenerate(Container container) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace;
-        if (pc.getCurrentProject() == null) {
-            Project project = pc.newProject();
-            workspace = project.getCurrentWorkspace();
-        } else {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
+        Workspace workspace = pc.openNewWorkspace();
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
