@@ -48,65 +48,77 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class ProjectsImpl implements Projects, Serializable {
+public class ProjectsImpl implements Projects {
 
     //Project
     private final List<Project> projects;
     //Workspace ids
-    private final AtomicInteger projectIds;
     private ProjectImpl currentProject;
 
     public ProjectsImpl() {
         projects = new ArrayList<>();
-        projectIds = new AtomicInteger(1);
     }
 
-    public synchronized void addProject(Project project) {
-        if (!projects.contains(project)) {
-            projects.add(project);
+    public void addProject(Project project) {
+        synchronized (projects) {
+            if (!projects.contains(project)) {
+                projects.add(project);
+            }
         }
     }
 
-    public synchronized void removeProject(Project project) {
-        projects.remove(project);
+    public void removeProject(Project project) {
+        synchronized (projects) {
+            projects.remove(project);
+        }
     }
 
     @Override
-    public synchronized Project[] getProjects() {
-        return projects.toArray(new Project[0]);
+    public Project[] getProjects() {
+        synchronized (projects) {
+            return projects.toArray(new Project[0]);
+        }
     }
 
     @Override
-    public synchronized ProjectImpl getCurrentProject() {
-        return currentProject;
+    public ProjectImpl getCurrentProject() {
+        synchronized (projects) {
+            return currentProject;
+        }
     }
 
-    public synchronized void setCurrentProject(ProjectImpl currentProject) {
-        this.currentProject = currentProject;
+    public void setCurrentProject(ProjectImpl currentProject) {
+        synchronized (projects) {
+            this.currentProject = currentProject;
+        }
     }
 
     @Override
-    public synchronized boolean hasCurrentProject() {
-        return currentProject != null;
+    public boolean hasCurrentProject() {
+        synchronized (projects) {
+            return currentProject != null;
+        }
     }
 
     public synchronized void closeCurrentProject() {
-        this.currentProject = null;
+        synchronized (projects) {
+            this.currentProject = null;
+        }
     }
 
-    public int nextProjectId() {
-        return projectIds.getAndIncrement();
-    }
-
-    public int getProjectIds() {
-        return projectIds.get();
-    }
-
-    public void setProjectIds(int id) {
-        projectIds.set(id);
+    protected String nextUntitledProjectName() {
+        int i = 0;
+        while (true) {
+            final String name = NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix")+(i > 0 ? " "+i : "");
+            if (projects.stream().noneMatch((p) -> (p.getName().equals(name)))) {
+                return name;
+            }
+            i++;
+        }
     }
 }

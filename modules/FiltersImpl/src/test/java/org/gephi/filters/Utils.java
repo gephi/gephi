@@ -2,7 +2,7 @@ package org.gephi.filters;
 
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 
 public class Utils {
 

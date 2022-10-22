@@ -50,8 +50,8 @@ import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectsImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.gephi.workspace.impl.WorkspaceInformationImpl;
+import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceInformationImpl;
 
 public class GephiReader {
 
@@ -74,11 +74,18 @@ public class GephiReader {
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
-                    project = new ProjectImpl(projectName);
+                    String projectId = reader.getAttributeValue(null, "id");
+                    if (projectId == null) {
+                        // Before 0.10 version we didn't have unique project ids
+                        project = new ProjectImpl(projectName);
+                    } else {
+                        project = new ProjectImpl(projectId, projectName);
+                    }
+
                     project.getLookup().lookup(WorkspaceProviderImpl.class);
 
                     if (reader.getAttributeValue(null, "ids") != null) {
-                        Integer workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
+                        int workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
                         project.setWorkspaceIds(workspaceIds);
                     }
                 }
@@ -108,7 +115,7 @@ public class GephiReader {
                         workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
                     }
 
-                    workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace(workspaceId);
+                    workspace = project.newWorkspace(workspaceId);
                     WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
                     //Name

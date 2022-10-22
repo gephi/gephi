@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.workspace.impl.WorkspaceImpl;
 
 /**
  * @author Mathieu Bastian
@@ -62,20 +61,22 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         workspaces = new ArrayList<>();
     }
 
-    public WorkspaceImpl newWorkspace() {
-        WorkspaceImpl workspace = new WorkspaceImpl(project, project.nextWorkspaceId());
-        workspaces.add(workspace);
-        return workspace;
+    protected WorkspaceImpl newWorkspace() {
+        return newWorkspace(project.nextWorkspaceId());
     }
 
-    public WorkspaceImpl newWorkspace(int id) {
-        WorkspaceImpl workspace = new WorkspaceImpl(project, id);
-        workspaces.add(workspace);
-        return workspace;
+    protected WorkspaceImpl newWorkspace(int id) {
+        synchronized (workspaces) {
+            WorkspaceImpl workspace = new WorkspaceImpl(project, id);
+            workspaces.add(workspace);
+            return workspace;
+        }
     }
 
     protected void removeWorkspace(Workspace workspace) {
-        workspaces.remove(workspace);
+        synchronized (workspaces) {
+            workspaces.remove(workspace);
+        }
     }
 
     protected Workspace getPrecedingWorkspace(Workspace workspace) {
@@ -98,30 +99,44 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     @Override
     public WorkspaceImpl getCurrentWorkspace() {
-        return currentWorkspace;
+        synchronized (workspaces) {
+            return currentWorkspace;
+        }
     }
 
-    public void setCurrentWorkspace(Workspace currentWorkspace) {
-        this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
+    protected void setCurrentWorkspace(Workspace currentWorkspace) {
+        synchronized (workspaces) {
+            if (this.currentWorkspace != null) {
+                this.currentWorkspace.close();
+            }
+            this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
+            this.currentWorkspace.open();
+        }
     }
 
     @Override
     public Workspace[] getWorkspaces() {
-        return workspaces.toArray(new Workspace[0]);
+        synchronized (workspaces) {
+            return workspaces.toArray(new Workspace[0]);
+        }
     }
 
     @Override
     public Workspace getWorkspace(int id) {
-        for (Workspace w : workspaces) {
-            if (w.getId() == id) {
-                return w;
+        synchronized (workspaces) {
+            for (Workspace w : workspaces) {
+                if (w.getId() == id) {
+                    return w;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     @Override
     public boolean hasCurrentWorkspace() {
-        return currentWorkspace != null;
+        synchronized (workspaces) {
+            return currentWorkspace != null;
+        }
     }
 }

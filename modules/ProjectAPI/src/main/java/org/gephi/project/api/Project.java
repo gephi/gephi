@@ -144,6 +144,15 @@ public interface Project extends Lookup.Provider {
     String getName();
 
     /**
+     * Returns the project's unique identifier.
+     * <p>
+     * This identifier is assigned at the project creation and is unique.
+     *
+     * @return the project's unique identifier
+     */
+    String getUniqueIdentifier();
+
+    /**
      * Returns true if the project is associated with a file.
      * <p>
      * A project is associated with a file if it has been saved/loaded to/from a

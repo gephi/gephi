@@ -7,7 +7,7 @@ import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailRead;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailWrite;
 import org.gephi.project.io.utils.Utils;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

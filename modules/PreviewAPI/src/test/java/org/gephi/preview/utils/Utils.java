@@ -2,7 +2,7 @@ package org.gephi.preview.utils;
 
 import org.gephi.preview.PreviewModelImpl;
 import org.gephi.project.api.Workspace;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 
 public class Utils {
 

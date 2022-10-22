@@ -14,7 +14,7 @@ import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 
 public class GraphGenerator {

@@ -77,12 +77,12 @@ public class GephiWriter {
         writer.writeEndElement();
         writer.writeComment("File saved with " + getVersion());
 
-        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
         ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
 
         //Start Project
         writer.writeStartElement("project");
-        writer.writeAttribute("name", info.getName());
+        writer.writeAttribute("id", project.getUniqueIdentifier());
+        writer.writeAttribute("name", project.getName());
         writer.writeAttribute("ids", String.valueOf(((ProjectImpl) project).getWorkspaceIds()));
 
         //MetaData

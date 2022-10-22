@@ -64,21 +64,18 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
-import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.ProjectsImpl;
-import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.gephi.workspace.impl.WorkspaceInformationImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -166,12 +163,9 @@ public class LoadTask implements LongTask {
                 if (!cancel) {
 
                     //Set current workspace
-                    WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
-                    for (Workspace workspace : workspaces.getWorkspaces()) {
-                        WorkspaceInformationImpl info =
-                            workspace.getLookup().lookup(WorkspaceInformationImpl.class);
-                        if (info.isOpen()) {
-                            workspaces.setCurrentWorkspace(workspace);
+                    for (Workspace workspace : project.getWorkspaces()) {
+                        if (workspace.isOpen()) {
+                            project.setCurrentWorkspace(workspace);
                             break;
                         }
                     }

@@ -8,7 +8,7 @@ import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.io.utils.GephiFormat;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.Utils;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,15 +18,17 @@ public class GephiWriterReaderTest {
     public void testProject() throws Exception {
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter writer = GephiFormat.newXMLWriter(stringWriter);
-        GephiWriter.writeProject(writer, Utils.newProject());
+        ProjectImpl project = Utils.newProject();
+        GephiWriter.writeProject(writer, project);
 
         StringReader stringReader = new StringReader(stringWriter.toString());
         XMLStreamReader reader = GephiFormat.newXMLReader(stringReader);
-        ProjectImpl project = GephiReader.readProject(reader, null);
+        ProjectImpl readProject = GephiReader.readProject(reader, null);
 
         //TODO Implement deepEquals in ProjectImpl
-        Assert.assertNotNull(project);
-        Assert.assertEquals(Utils.PROJECT_NAME, project.getName());
+        Assert.assertNotNull(readProject);
+        Assert.assertEquals(Utils.PROJECT_NAME, readProject.getName());
+        Assert.assertEquals(project, readProject);
     }
 
     @Test

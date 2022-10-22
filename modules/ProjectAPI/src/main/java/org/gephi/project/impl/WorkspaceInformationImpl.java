@@ -40,7 +40,7 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.workspace.impl;
+package org.gephi.project.impl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

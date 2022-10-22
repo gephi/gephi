@@ -63,8 +63,6 @@ import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -106,7 +104,7 @@ public class ProjectControllerImpl implements ProjectController {
             ProjectImpl project = null;
             try {
                 closeCurrentProject();
-                project = new ProjectImpl(projects.nextProjectId());
+                project = new ProjectImpl(projects.nextUntitledProjectName());
                 projects.addProject(project);
                 openProject(project);
                 ProjectImpl finalProject = project;
@@ -343,8 +341,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void openWorkspace(Workspace workspace) {
         synchronized (this) {
             closeCurrentWorkspace();
-            getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).setCurrentWorkspace(workspace);
-            workspace.getLookup().lookup(WorkspaceInformationImpl.class).open();
+            getCurrentProject().setCurrentWorkspace(workspace);
 
             //Event
             fireWorkspaceEvent(EventType.SELECT, workspace);

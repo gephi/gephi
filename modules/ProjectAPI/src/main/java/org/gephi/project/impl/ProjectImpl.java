@@ -42,18 +42,16 @@
 
 package org.gephi.project.impl;
 
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
@@ -72,12 +70,20 @@ public class ProjectImpl implements Project, Lookup.Provider {
     private final ProjectInformationImpl projectInformation;
     private final ProjectMetaDataImpl projectMetaData;
     private final ProjectControllerImpl projectController;
-
-    public ProjectImpl(int id) {
-        this(NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + " " + id);
-    }
+    private final String uniqueIdentifier;
 
     public ProjectImpl(String name) {
+        this(UUID.randomUUID().toString(), name);
+    }
+
+    public ProjectImpl(String uniqueIdentifier, String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be null or empty");
+        }
+        if (uniqueIdentifier == null || uniqueIdentifier.isEmpty()) {
+            throw new IllegalArgumentException("Project unique identifier cannot be null or empty");
+        }
+        this.uniqueIdentifier = uniqueIdentifier;
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         workspaceIds = new AtomicInteger(1);
@@ -117,6 +123,18 @@ public class ProjectImpl implements Project, Lookup.Provider {
         return workspaceProvider.hasCurrentWorkspace();
     }
 
+    public void setCurrentWorkspace(Workspace workspace) {
+        workspaceProvider.setCurrentWorkspace(workspace);
+    }
+
+    public WorkspaceImpl newWorkspace() {
+        return workspaceProvider.newWorkspace();
+    }
+
+    public WorkspaceImpl newWorkspace(int id) {
+        return workspaceProvider.newWorkspace(id);
+    }
+
     @Override
     public Collection<Workspace> getWorkspaces() {
         synchronized (projectController) {
@@ -150,6 +168,11 @@ public class ProjectImpl implements Project, Lookup.Provider {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return uniqueIdentifier;
+    }
+
+    @Override
     public boolean hasFile() {
         return projectInformation.hasFile();
     }
@@ -179,5 +202,32 @@ public class ProjectImpl implements Project, Lookup.Provider {
     @Override
     public ProjectMetaData getProjectMetadata() {
         return projectMetaData;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ProjectImpl project = (ProjectImpl) o;
+
+        return uniqueIdentifier.equals(project.uniqueIdentifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return uniqueIdentifier.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectImpl {" +
+            "uniqueIdentifier='" + uniqueIdentifier + '\'' +
+            '}';
     }
 }

@@ -3,8 +3,6 @@ package org.gephi.project.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.junit.Assert;
@@ -187,5 +185,13 @@ public class ProjectControllerImplTest {
         Assert.assertTrue(workspace.isOpen());
         Assert.assertSame(workspace, pc.getCurrentWorkspace());
         Assert.assertEquals(2, pc.getCurrentProject().getWorkspaces().size());
+    }
+
+    @Test
+    public void testRenameProject() {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        pc.renameProject(project, "foo");
+        Assert.assertEquals("foo", project.getName());
     }
 }

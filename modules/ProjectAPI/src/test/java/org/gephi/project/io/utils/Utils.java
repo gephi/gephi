@@ -3,7 +3,7 @@ package org.gephi.project.io.utils;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 
 public class Utils {
@@ -16,9 +16,8 @@ public class Utils {
 
     public static WorkspaceImpl newWorkspace() {
         ProjectImpl project = newProject();
-        WorkspaceProviderImpl provider = project.getLookup().lookup(WorkspaceProviderImpl.class);
-        WorkspaceImpl workspace = provider.newWorkspace();
-        provider.setCurrentWorkspace(workspace);
+        WorkspaceImpl workspace = project.newWorkspace();
+        project.setCurrentWorkspace(project.newWorkspace());
         return workspace;
     }
 

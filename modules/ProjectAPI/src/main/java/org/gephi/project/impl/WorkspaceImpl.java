@@ -40,11 +40,9 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.workspace.impl;
+package org.gephi.project.impl;
 
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceInformation;
-import org.gephi.project.impl.ProjectImpl;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.AbstractLookup;
@@ -114,6 +112,14 @@ public class WorkspaceImpl implements Workspace {
     @Override
     public boolean isInvalid() {
         return workspaceInformation.isInvalid();
+    }
+
+    protected void close() {
+        workspaceInformation.close();
+    }
+
+    protected void open() {
+        workspaceInformation.open();
     }
 
     public String getName() {
