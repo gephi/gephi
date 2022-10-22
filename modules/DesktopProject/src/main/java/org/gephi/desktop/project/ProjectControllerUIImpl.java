@@ -61,12 +61,10 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
+import org.gephi.ui.project.ProjectList;
 import org.gephi.ui.project.ProjectPropertiesEditor;
 import org.gephi.ui.utils.DialogFileFilter;
-import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
-import org.gephi.utils.longtask.api.LongTaskListener;
-import org.gephi.utils.longtask.spi.LongTask;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -427,6 +425,13 @@ public class ProjectControllerUIImpl implements ProjectListener {
         if (result == NotifyDescriptor.OK_OPTION) {
             panel.save(project);
         }
+    }
+
+    public void manageProjects() {
+        ProjectList panel = new ProjectList();
+        DialogDescriptor dd = new DialogDescriptor(panel,
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "ManageProjects_dialog_title"));
+        DialogDisplayer.getDefault().notify(dd);
     }
 
     public void openFile() {
