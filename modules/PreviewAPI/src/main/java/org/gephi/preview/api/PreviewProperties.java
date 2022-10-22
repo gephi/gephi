@@ -326,24 +326,7 @@ public class PreviewProperties {
      * @return all properties
      */
     public PreviewProperty[] getProperties() {
-        PreviewProperty[] props = properties.values().toArray(new PreviewProperty[0]);
-        //Reorder to put parents on top:
-        Arrays.sort(props, new Comparator<PreviewProperty>() {
-
-            @Override
-            public int compare(PreviewProperty o1, PreviewProperty o2) {
-                boolean hasParent1 = o1.dependencies.length > 0;
-                boolean hasParent2 = o2.dependencies.length > 0;
-                if (hasParent1 && !hasParent2) {
-                    return 1;
-                } else if (!hasParent1 && hasParent2) {
-                    return -1;
-                } else {
-                    return 0;//Stable sort will not change original insertion order if no parents.
-                }
-            }
-        });
-        return props;
+        return properties.values().toArray(new PreviewProperty[0]);
     }
 
     /**

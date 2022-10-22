@@ -79,6 +79,9 @@ public class NodeRenderer implements Renderer {
     protected DependantColor defaultBorderColor = new DependantColor(Color.BLACK);
     protected float defaultOpacity = 100f;
     protected boolean defaultPerNodeOpacity = false;
+    protected boolean defaultFixedNodeBorder = true;
+    // Same as overview
+    protected float defaultBorderWidthFactor = 0.16f;
 
     @Override
     public void preProcess(PreviewModel previewModel) {
@@ -115,6 +118,14 @@ public class NodeRenderer implements Renderer {
             intS);
     }
 
+    private float getBorderWidth(PreviewProperties properties, float nodeSize) {
+        if (properties.getBooleanValue(PreviewProperty.NODE_BORDER_FIXED)) {
+            return properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        } else {
+            return nodeSize * defaultBorderWidthFactor / 2f;
+        }
+    }
+
     public void renderG2D(Item item, G2DTarget target, PreviewProperties properties) {
         //Params
         Float x = item.getData(NodeItem.X);
@@ -122,7 +133,8 @@ public class NodeRenderer implements Renderer {
         Float size = item.getData(NodeItem.SIZE);
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
+
         int alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() :
             (int) ((properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
@@ -174,7 +186,7 @@ public class NodeRenderer implements Renderer {
         Float size = item.getData(NodeItem.SIZE);
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
         float alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() / 255f :
             properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f;
@@ -225,7 +237,7 @@ public class NodeRenderer implements Renderer {
         Float size = item.getData(NodeItem.SIZE);
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
         float alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() / 255f :
             properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f;
@@ -267,10 +279,14 @@ public class NodeRenderer implements Renderer {
     @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[] {
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_FIXED, Boolean.class,
+                NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.fixedBorderWidth.displayName"),
+                NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.fixedBorderWidth.description"),
+                PreviewProperty.CATEGORY_NODES).setValue(defaultFixedNodeBorder),
             PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_WIDTH, Float.class,
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.displayName"),
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.description"),
-                PreviewProperty.CATEGORY_NODES).setValue(defaultBorderWidth),
+                PreviewProperty.CATEGORY_NODES, PreviewProperty.NODE_BORDER_FIXED).setValue(defaultBorderWidth),
             PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
