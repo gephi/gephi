@@ -211,7 +211,6 @@ public class ProjectControllerImpl implements ProjectController {
                     }
 
                     //Close
-                    project.getLookup().lookup(ProjectInformationImpl.class).close();
                     projects.closeCurrentProject();
 
                     fireWorkspaceEvent(ProjectControllerImpl.EventType.DISABLE, null);
@@ -229,7 +228,7 @@ public class ProjectControllerImpl implements ProjectController {
             if (projects.getCurrentProject() == project) {
                 closeCurrentProject();
             }
-            projects.removeProject(project);
+            projects.removeProject((ProjectImpl) project);
         }
     }
 
@@ -292,31 +291,26 @@ public class ProjectControllerImpl implements ProjectController {
 
     private void openProjectInternal(Project project) {
         final ProjectImpl projectImpl = (ProjectImpl) project;
-        final ProjectInformationImpl projectInformationImpl =
-            projectImpl.getLookup().lookup(ProjectInformationImpl.class);
-        final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
-
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
         projects.addOrReplaceProject(projectImpl);
         projects.setCurrentProject(projectImpl);
-        projectInformationImpl.open();
 
-        for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
+        for (Workspace ws : projectImpl.getWorkspaces()) {
             fireWorkspaceEvent(EventType.INITIALIZE, ws);
         }
 
-        if (!workspaceProviderImpl.hasCurrentWorkspace()) {
-            if (workspaceProviderImpl.getWorkspaces().length == 0) {
+        if (!projectImpl.hasCurrentWorkspace()) {
+            if (projectImpl.getWorkspaces().isEmpty()) {
                 Workspace workspace = newWorkspace(project);
                 openWorkspace(workspace);
             } else {
-                Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
+                Workspace workspace = projectImpl.getWorkspaces().get(0);
                 openWorkspace(workspace);
             }
         } else {
-            fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
+            fireWorkspaceEvent(EventType.SELECT, projectImpl.getCurrentWorkspace());
         }
     }
 
@@ -331,7 +325,7 @@ public class ProjectControllerImpl implements ProjectController {
     public WorkspaceImpl getCurrentWorkspace() {
         synchronized (this) {
             if (projects.hasCurrentProject()) {
-                return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
+                return getCurrentProject().getCurrentWorkspace();
             }
             return null;
         }

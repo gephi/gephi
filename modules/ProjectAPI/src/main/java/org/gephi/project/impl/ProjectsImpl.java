@@ -43,6 +43,7 @@
 package org.gephi.project.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
@@ -54,7 +55,7 @@ import org.openide.util.NbBundle;
 public class ProjectsImpl implements Projects {
 
     //Project
-    private final List<Project> projects;
+    private final List<ProjectImpl> projects;
     //Workspace ids
     private ProjectImpl currentProject;
 
@@ -62,12 +63,12 @@ public class ProjectsImpl implements Projects {
         projects = new ArrayList<>();
     }
 
-    public void addProject(Project project) {
+    public void addProject(ProjectImpl project) {
         synchronized (projects) {
             if (!projects.contains(project)) {
                 projects.add(project);
             } else {
-                throw new IllegalArgumentException("The project "+project.getUniqueIdentifier()+" already exists");
+                throw new IllegalArgumentException("The project " + project.getUniqueIdentifier() + " already exists");
             }
         }
     }
@@ -89,7 +90,7 @@ public class ProjectsImpl implements Projects {
         return null;
     }
 
-    public void addOrReplaceProject(Project project) {
+    public void addOrReplaceProject(ProjectImpl project) {
         synchronized (projects) {
             if (!projects.contains(project)) {
                 projects.add(project);
@@ -100,7 +101,7 @@ public class ProjectsImpl implements Projects {
         }
     }
 
-    public void removeProject(Project project) {
+    public void removeProject(ProjectImpl project) {
         synchronized (projects) {
             projects.remove(project);
         }
@@ -109,7 +110,9 @@ public class ProjectsImpl implements Projects {
     @Override
     public Project[] getProjects() {
         synchronized (projects) {
-            return projects.toArray(new Project[0]);
+            ProjectImpl[] res = projects.toArray(new ProjectImpl[0]);
+            Arrays.sort(res);
+            return res;
         }
     }
 
@@ -123,6 +126,9 @@ public class ProjectsImpl implements Projects {
     public void setCurrentProject(ProjectImpl currentProject) {
         synchronized (projects) {
             this.currentProject = currentProject;
+            if (currentProject != null) {
+                currentProject.open();
+            }
         }
     }
 
@@ -135,6 +141,9 @@ public class ProjectsImpl implements Projects {
 
     public synchronized void closeCurrentProject() {
         synchronized (projects) {
+            if (currentProject != null) {
+                currentProject.close();
+            }
             this.currentProject = null;
         }
     }

@@ -104,6 +104,13 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         }
     }
 
+    protected void purge() {
+        synchronized (workspaces) {
+            workspaces.clear();
+            this.currentWorkspace = null;
+        }
+    }
+
     protected void setCurrentWorkspace(Workspace currentWorkspace) {
         synchronized (workspaces) {
             if (this.currentWorkspace != null) {

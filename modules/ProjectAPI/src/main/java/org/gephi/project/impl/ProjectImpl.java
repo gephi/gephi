@@ -43,9 +43,10 @@
 package org.gephi.project.impl;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
@@ -58,7 +59,7 @@ import org.openide.util.lookup.InstanceContent;
 /**
  * @author Mathieu Bastian
  */
-public class ProjectImpl implements Project, Lookup.Provider {
+public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Provider {
 
     //Workspace ids
     private final AtomicInteger workspaceIds;
@@ -69,8 +70,9 @@ public class ProjectImpl implements Project, Lookup.Provider {
     private final WorkspaceProviderImpl workspaceProvider;
     private final ProjectInformationImpl projectInformation;
     private final ProjectMetaDataImpl projectMetaData;
-    private final ProjectControllerImpl projectController;
     private final String uniqueIdentifier;
+
+    private LocalDateTime lastOpened;
 
     public ProjectImpl(String name) {
         this(UUID.randomUUID().toString(), name);
@@ -94,8 +96,6 @@ public class ProjectImpl implements Project, Lookup.Provider {
         instanceContent.add(projectMetaData);
         instanceContent.add(projectInformation);
         instanceContent.add(workspaceProvider);
-
-        projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
     }
 
     @Override
@@ -114,13 +114,17 @@ public class ProjectImpl implements Project, Lookup.Provider {
     }
 
     @Override
-    public Workspace getCurrentWorkspace() {
+    public WorkspaceImpl getCurrentWorkspace() {
         return workspaceProvider.getCurrentWorkspace();
     }
 
     @Override
     public boolean hasCurrentWorkspace() {
         return workspaceProvider.hasCurrentWorkspace();
+    }
+
+    public LocalDateTime getLastOpened() {
+        return lastOpened;
     }
 
     public void setCurrentWorkspace(Workspace workspace) {
@@ -136,15 +140,23 @@ public class ProjectImpl implements Project, Lookup.Provider {
     }
 
     @Override
-    public Collection<Workspace> getWorkspaces() {
-        synchronized (projectController) {
-            return Collections.unmodifiableCollection(Arrays.asList(workspaceProvider.getWorkspaces()));
-        }
+    public List<Workspace> getWorkspaces() {
+        return Collections.unmodifiableList(Arrays.asList(workspaceProvider.getWorkspaces()));
     }
 
     @Override
     public Workspace getWorkspace(int id) {
         return workspaceProvider.getWorkspace(id);
+    }
+
+    protected void open() {
+        lastOpened = LocalDateTime.now();
+        projectInformation.open();
+    }
+
+    protected void close() {
+        projectInformation.close();
+        workspaceProvider.purge();
     }
 
     @Override
@@ -229,5 +241,16 @@ public class ProjectImpl implements Project, Lookup.Provider {
         return "ProjectImpl {" +
             "uniqueIdentifier='" + uniqueIdentifier + '\'' +
             '}';
+    }
+
+    @Override
+    public int compareTo(ProjectImpl o) {
+        if (o.getLastOpened() == null) {
+            return -1;
+        } else if (getLastOpened() == null) {
+            return 1;
+        } else {
+            return o.getLastOpened().compareTo(getLastOpened());
+        }
     }
 }
