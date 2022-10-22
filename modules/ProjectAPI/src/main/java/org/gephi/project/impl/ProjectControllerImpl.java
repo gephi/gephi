@@ -106,7 +106,7 @@ public class ProjectControllerImpl implements ProjectController {
                 closeCurrentProject();
                 project = new ProjectImpl(projects.nextUntitledProjectName());
                 projects.addProject(project);
-                openProject(project);
+                openProjectInternal(project);
                 ProjectImpl finalProject = project;
                 fireProjectEvent((pl) -> pl.opened(finalProject));
                 return project;
@@ -134,10 +134,10 @@ public class ProjectControllerImpl implements ProjectController {
             fireProjectEvent(ProjectListener::lock);
             LoadTask loadTask = new LoadTask(file);
             Future<ProjectImpl> res = longTaskExecutor.execute(loadTask, () -> {
-                ProjectImpl project = loadTask.execute();
+                ProjectImpl project = loadTask.execute(getProjects());
                 // Null if cancelled
                 if (project != null) {
-                    openProject(project);
+                    openProjectInternal(project);
                     fireProjectEvent((pl) -> pl.opened(project));
                 } else {
                     fireProjectEvent(ProjectListener::unlock);
@@ -150,6 +150,19 @@ public class ProjectControllerImpl implements ProjectController {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public void openProject(Project project) {
+        if (!projects.containsProject(project)) {
+            throw new IllegalArgumentException(
+                "Project " + project.getUniqueIdentifier() + " does not belong to the list of active projects");
+        }
+        File file = project.getFile();
+        if (file == null) {
+            throw new IllegalArgumentException("Project " + project.getUniqueIdentifier() + " has no file associated");
+        }
+        openProject(file);
     }
 
     @Override
@@ -277,7 +290,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private void openProject(Project project) {
+    private void openProjectInternal(Project project) {
         final ProjectImpl projectImpl = (ProjectImpl) project;
         final ProjectInformationImpl projectInformationImpl =
             projectImpl.getLookup().lookup(ProjectInformationImpl.class);
@@ -286,7 +299,7 @@ public class ProjectControllerImpl implements ProjectController {
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
-        projects.addProject(projectImpl);
+        projects.addOrReplaceProject(projectImpl);
         projects.setCurrentProject(projectImpl);
         projectInformationImpl.open();
 

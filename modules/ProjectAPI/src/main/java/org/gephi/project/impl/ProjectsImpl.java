@@ -66,6 +66,36 @@ public class ProjectsImpl implements Projects {
         synchronized (projects) {
             if (!projects.contains(project)) {
                 projects.add(project);
+            } else {
+                throw new IllegalArgumentException("The project "+project.getUniqueIdentifier()+" already exists");
+            }
+        }
+    }
+
+    public boolean containsProject(Project project) {
+        synchronized (projects) {
+            return projects.contains(project);
+        }
+    }
+
+    public ProjectImpl getProjectByIdentifier(String identifier) {
+        synchronized (projects) {
+            for (Project p : projects) {
+                if (p.getUniqueIdentifier().equals(identifier)) {
+                    return (ProjectImpl) p;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addOrReplaceProject(Project project) {
+        synchronized (projects) {
+            if (!projects.contains(project)) {
+                projects.add(project);
+            } else {
+                projects.remove(project);
+                projects.add(project);
             }
         }
     }

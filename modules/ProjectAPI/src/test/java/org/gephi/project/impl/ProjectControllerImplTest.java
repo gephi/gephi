@@ -194,4 +194,16 @@ public class ProjectControllerImplTest {
         pc.renameProject(project, "foo");
         Assert.assertEquals("foo", project.getName());
     }
+
+    @Test
+    public void testOpenAnotherProject() throws IOException {
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+        File file = tempFolder.newFile("project.gephi");
+        pc.saveProject(project, file);
+        pc.closeCurrentProject();
+        pc.openProject(project);
+        Assert.assertTrue(project.isOpen());
+        Assert.assertSame(project, pc.getCurrentProject());
+    }
 }

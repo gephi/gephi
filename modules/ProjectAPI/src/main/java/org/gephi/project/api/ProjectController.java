@@ -84,6 +84,16 @@ public interface ProjectController {
     Project openProject(File file);
 
     /**
+     * Opens a project from the list of active projects.
+     * <p>
+     * If a project is currently opened, it will be closed first.
+     *
+     * @param project project to open
+     * @throws IllegalArgumentException if the project doesn't belong to the list of active projects
+     */
+    void openProject(Project project);
+
+    /**
      * Saves the current project to its <code>.gephi</code> file.
      *
      * @param project project to save

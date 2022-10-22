@@ -64,6 +64,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
+import org.gephi.project.api.Projects;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
@@ -92,7 +93,7 @@ public class LoadTask implements LongTask {
         this.file = file;
     }
 
-    public ProjectImpl execute() {
+    public ProjectImpl execute(ProjectsImpl projects) {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
@@ -104,7 +105,7 @@ public class LoadTask implements LongTask {
                 }
                 zip = new ZipFile(file);
 
-                ProjectImpl project = readProject(zip);
+                ProjectImpl project = readProject(zip, projects);
 
                 if (project != null) {
                     // Enumerate workspaces
@@ -194,7 +195,7 @@ public class LoadTask implements LongTask {
         return null;
     }
 
-    private ProjectImpl readProject(ZipFile zipFile) throws Exception {
+    private ProjectImpl readProject(ZipFile zipFile, ProjectsImpl projects) throws Exception {
         ZipEntry entry = zipFile.getEntry("Project_xml");
         if (entry == null) {
             // Try legacy
@@ -227,8 +228,6 @@ public class LoadTask implements LongTask {
                 filterReader = new Xml10FilterReader(isReader);
                 reader = inputFactory.createXMLStreamReader(filterReader);
 
-                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                ProjectsImpl projects = projectController.getProjects();
                 ProjectImpl project = GephiReader.readProject(reader, projects);
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 return project;

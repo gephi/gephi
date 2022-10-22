@@ -48,10 +48,10 @@ import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectsImpl;
-import org.gephi.project.impl.WorkspaceProviderImpl;
-import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.project.impl.WorkspaceImpl;
 import org.gephi.project.impl.WorkspaceInformationImpl;
+import org.gephi.project.impl.WorkspaceProviderImpl;
+import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 
 public class GephiReader {
 
@@ -79,7 +79,12 @@ public class GephiReader {
                         // Before 0.10 version we didn't have unique project ids
                         project = new ProjectImpl(projectName);
                     } else {
-                        project = new ProjectImpl(projectId, projectName);
+                        if (projects != null) {
+                            project = projects.getProjectByIdentifier(projectId);
+                        }
+                        if (project == null) {
+                            project = new ProjectImpl(projectId, projectName);
+                        }
                     }
 
                     project.getLookup().lookup(WorkspaceProviderImpl.class);
