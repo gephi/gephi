@@ -134,7 +134,7 @@ public class ProjectControllerImpl implements ProjectController {
             fireProjectEvent(ProjectListener::lock);
             LoadTask loadTask = new LoadTask(file);
             Future<ProjectImpl> res = longTaskExecutor.execute(loadTask, () -> {
-               ProjectImpl project = loadTask.execute();
+                ProjectImpl project = loadTask.execute();
                 // Null if cancelled
                 if (project != null) {
                     openProject(project);
@@ -171,7 +171,7 @@ public class ProjectControllerImpl implements ProjectController {
             SaveTask saveTask = new SaveTask(project, file);
             longTaskExecutor.execute(saveTask, () -> {
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-                if( saveTask.run()) {
+                if (saveTask.run()) {
                     fireProjectEvent((pl) -> pl.saved(project));
                 } else {
                     fireProjectEvent(ProjectListener::unlock);

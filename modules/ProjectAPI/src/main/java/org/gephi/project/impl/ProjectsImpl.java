@@ -42,10 +42,8 @@
 
 package org.gephi.project.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
 import org.openide.util.NbBundle;
@@ -114,7 +112,8 @@ public class ProjectsImpl implements Projects {
     protected String nextUntitledProjectName() {
         int i = 0;
         while (true) {
-            final String name = NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix")+(i > 0 ? " "+i : "");
+            final String name =
+                NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + (i > 0 ? " " + i : "");
             if (projects.stream().noneMatch((p) -> (p.getName().equals(name)))) {
                 return name;
             }
