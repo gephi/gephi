@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <!-- Hides the default Netbeans Options Panel we don't need -->
+    <folder name="OptionsDialog">
+        <folder name="Advanced">
+            <file name="org-netbeans-janitor-JanitorSettings.instance_hidden"/>
+            <file name="org-netbeans-core-ui-options-filetypes-FileAssociationsOptionsPanelController.instance_hidden"/>
+        </folder>
+        <file name="Keymaps.instance_hidden"/>
+    </folder>
+</filesystem>

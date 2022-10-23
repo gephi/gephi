@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
-OpenIDE-Module-Layer: org/gephi/visualization/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/visualization/Bundle.properties
 OpenIDE-Module-Install: org/gephi/visualization/Installer.class
 OpenIDE-Module-Hide-Classpath-Packages: javax.media.openGL2.**, com.sun.openGL2.**, com.sun.gluegen.runtime.**
