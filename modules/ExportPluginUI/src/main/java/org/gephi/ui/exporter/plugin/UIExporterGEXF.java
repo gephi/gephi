@@ -63,7 +63,9 @@ public class UIExporterGEXF implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterGEXF = (ExporterGEXF) exporter;
         settings.load(exporterGEXF);
-        panel.setup(exporterGEXF);
+        if (panel != null) {
+            panel.setup(exporterGEXF);
+        }
     }
 
     @Override

@@ -63,7 +63,9 @@ public class UIExporterPajek implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterPajek = (ExporterPajek) exporter;
         settings.load(exporterPajek);
-        panel.setup(exporterPajek);
+        if (panel != null) {
+            panel.setup(exporterPajek);
+        }
     }
 
     @Override
