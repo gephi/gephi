@@ -63,7 +63,9 @@ public class UIExporterCSV implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterCSV = (ExporterCSV) exporter;
         settings.load(exporterCSV);
-        panel.setup(exporterCSV);
+        if (panel != null) {
+            panel.setup(exporterCSV);
+        }
     }
 
     @Override

@@ -130,4 +130,14 @@ public class CanvasSize {
     public float getMaxY() {
         return getY() + getHeight();
     }
+
+    @Override
+    public String toString() {
+        return "CanvasSize{" +
+            "x=" + x +
+            ", y=" + y +
+            ", width=" + width +
+            ", height=" + height +
+            '}';
+    }
 }

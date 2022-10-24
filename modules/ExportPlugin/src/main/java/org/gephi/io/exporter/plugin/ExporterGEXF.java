@@ -156,6 +156,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
     private boolean exportMeta = true;
+    private boolean includeNullAttValues = false;
     private NormalizationHelper normalization;
 
     @Override
@@ -389,7 +390,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         throws Exception {
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
-            if (val != null) {
+            if (val != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
@@ -406,7 +407,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || interval.compareTo(visibleInterval) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(interval, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -431,7 +432,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || visibleInterval.compareTo(timestamp) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(timestamp, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -444,7 +445,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
         } else {
             Object value = element.getAttribute(column, graph.getView());
-            if (value != null) {
+            if (value != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -739,6 +740,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public void setExportDynamic(boolean exportDynamic) {
         this.exportDynamic = exportDynamic;
+    }
+
+    public boolean isIncludeNullAttValues() {
+        return includeNullAttValues;
+    }
+
+    public void setIncludeNullAttValues(boolean includeNullAttValues) {
+        this.includeNullAttValues = includeNullAttValues;
     }
 
     @Override

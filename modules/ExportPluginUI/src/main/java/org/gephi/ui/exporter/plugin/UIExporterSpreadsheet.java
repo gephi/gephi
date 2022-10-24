@@ -66,7 +66,9 @@ public class UIExporterSpreadsheet implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterSpreadsheet = (ExporterSpreadsheet) exporter;
         settings.load(exporterSpreadsheet);
-        panel.setup(exporterSpreadsheet);
+        if (panel != null) {
+            panel.setup(exporterSpreadsheet);
+        }
     }
 
     @Override

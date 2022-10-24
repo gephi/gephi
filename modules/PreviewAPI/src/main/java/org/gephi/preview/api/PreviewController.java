@@ -200,4 +200,16 @@ public interface PreviewController {
      * @return True if the event was consumed, false otherwise
      */
     boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
+
+    /**
+     * Sets the canvas size parameter.
+     * <p>
+     * If true, the {@link PreviewModel#getGraphicsCanvasSize()} will return the canvas boundaries based on the full graph.
+     * If false, it will be based on the visible graph.
+     * <p>
+     * The default is false
+     *
+     * @param globalCanvasSize global canvas size parameter
+     */
+    void setGlobalCanvasSize(boolean globalCanvasSize);
 }

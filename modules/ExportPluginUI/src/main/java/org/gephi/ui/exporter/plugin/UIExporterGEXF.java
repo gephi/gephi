@@ -63,7 +63,9 @@ public class UIExporterGEXF implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterGEXF = (ExporterGEXF) exporter;
         settings.load(exporterGEXF);
-        panel.setup(exporterGEXF);
+        if (panel != null) {
+            panel.setup(exporterGEXF);
+        }
     }
 
     @Override
@@ -102,6 +104,7 @@ public class UIExporterGEXF implements ExporterUI {
         private final static String EXPORT_SIZE = "GEXF_exportSize";
         private final static String EXPORT_DYNAMICS = "GEXF_exportDynamics";
         private final static String EXPORT_META = "GEXF_exportMeta";
+        private final static String INCLUDE_NULL_ATT_VALUES = "GEXF_includeNullAttValues";
         // Default
         private final static ExporterGEXF DEFAULT = new ExporterGEXF();
 
@@ -113,6 +116,7 @@ public class UIExporterGEXF implements ExporterUI {
             put(EXPORT_ATTRIBUTES, exporterGEXF.isExportAttributes());
             put(EXPORT_DYNAMICS, exporterGEXF.isExportDynamic());
             put(EXPORT_META, exporterGEXF.isExportMeta());
+            put(INCLUDE_NULL_ATT_VALUES, exporterGEXF.isIncludeNullAttValues());
         }
 
         private void load(ExporterGEXF exporterGEXF) {
@@ -123,6 +127,7 @@ public class UIExporterGEXF implements ExporterUI {
             exporterGEXF.setExportSize(get(EXPORT_SIZE, DEFAULT.isExportSize()));
             exporterGEXF.setExportDynamic(get(EXPORT_DYNAMICS, DEFAULT.isExportDynamic()));
             exporterGEXF.setExportMeta(get(EXPORT_META, DEFAULT.isExportMeta()));
+            exporterGEXF.setIncludeNullAttValues(get(INCLUDE_NULL_ATT_VALUES, DEFAULT.isIncludeNullAttValues()));
         }
     }
 }
