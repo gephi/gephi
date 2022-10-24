@@ -64,4 +64,15 @@ public class PersistenceProviderTest {
             GephiFormat.testXMLPersistenceProvider(new PreviewPersistenceProvider(), previewModel.getWorkspace()));
         Assert.assertEquals(Color.CYAN, readModel.getProperties().getValue(PreviewProperty.BACKGROUND_COLOR));
     }
+
+    @Test
+    public void testGlobalCanvasSize() throws Exception {
+        PreviewModelImpl previewModel = Utils.newPreviewModel();
+        Assert.assertFalse(previewModel.isGlobalCanvasSize());
+        previewModel.setGlobalCanvasSize(true);
+
+        PreviewModelImpl readModel = Utils.getPreviewModel(
+            GephiFormat.testXMLPersistenceProvider(new PreviewPersistenceProvider(), previewModel.getWorkspace()));
+        Assert.assertTrue(readModel.isGlobalCanvasSize());
+    }
 }

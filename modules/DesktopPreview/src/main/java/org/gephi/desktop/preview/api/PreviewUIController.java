@@ -55,7 +55,6 @@ public interface PreviewUIController {
     String UNSELECT = "unselect";
     String REFRESHED = "refreshed";
     String REFRESHING = "refreshing";
-    String GRAPH_CHANGED = "graph_changed";
 
     void refreshPreview();
 
