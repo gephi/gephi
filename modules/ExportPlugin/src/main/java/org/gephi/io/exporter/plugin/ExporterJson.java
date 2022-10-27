@@ -327,7 +327,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
             out.value(edge.getSource().getId().toString());
             out.name("target");
             out.value(edge.getTarget().getId().toString());
-            if (!edge.isDirected()) {
+            if (!edge.isDirected() && graph.isMixed()) {
                 out.name("undirected");
                 out.value(Boolean.TRUE);
             }
