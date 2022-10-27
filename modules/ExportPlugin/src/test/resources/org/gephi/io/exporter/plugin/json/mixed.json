@@ -1,0 +1,39 @@
+{
+  "options": {
+    "multi": false,
+    "type": "mixed"
+  },
+  "nodes": [
+    {
+      "key": "1",
+      "attributes": {}
+    },
+    {
+      "key": "2",
+      "attributes": {}
+    },
+    {
+      "key": "3",
+      "attributes": {}
+    }
+  ],
+  "edges": [
+    {
+      "key": "1",
+      "source": "1",
+      "target": "2",
+      "undirected": true,
+      "attributes": {
+        "weight": 1.0
+      }
+    },
+    {
+      "key": "2",
+      "source": "1",
+      "target": "3",
+      "attributes": {
+        "weight": 1.0
+      }
+    }
+  ]
+}

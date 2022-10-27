@@ -1,0 +1,26 @@
+{
+  "options": {
+    "multi": false,
+    "type": "directed"
+  },
+  "nodes": [
+    {
+      "key": "1",
+      "attributes": {}
+    },
+    {
+      "key": "2",
+      "attributes": {}
+    }
+  ],
+  "edges": [
+    {
+      "key": "1",
+      "source": "1",
+      "target": "2",
+      "attributes": {
+        "weight": 1.0
+      }
+    }
+  ]
+}

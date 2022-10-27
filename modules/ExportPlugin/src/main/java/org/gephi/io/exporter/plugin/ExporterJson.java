@@ -34,7 +34,7 @@ import org.openide.util.Lookup;
 
 public class ExporterJson implements GraphExporter, CharacterExporter, LongTask {
 
-    //
+    // Architecture
     private boolean cancel = false;
     private ProgressTicket progress;
     private Workspace workspace;
@@ -49,7 +49,14 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
     private boolean exportMeta = true;
+    private boolean prettyPrint = true;
+
+    // Helper
     private NormalizationHelper normalization;
+
+    // Formats
+    public enum Format { Graphology };
+    private Format format = Format.Graphology;
 
     @Override
     public boolean execute() {
@@ -70,7 +77,6 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
         try {
             exportData();
-
         } catch (Exception e) {
             Logger.getLogger(ExporterGEXF.class.getName()).log(Level.SEVERE, null, e);
         } finally {
@@ -82,10 +88,15 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void exportData() {
-        Gson gson = new GsonBuilder()
+        GsonBuilder gsonBuilder = new GsonBuilder()
             .registerTypeAdapter(Color.class, new ColorAdapter())
-            .registerTypeAdapterFactory(new GraphTypeAdapterFactory())
-            .setPrettyPrinting()
+            .registerTypeAdapterFactory(new GraphTypeAdapterFactory());
+
+        if (prettyPrint) {
+            gsonBuilder = gsonBuilder.setPrettyPrinting();
+        }
+
+        Gson gson = gsonBuilder
             .create();
         gson.toJson(graph, writer);
     }
@@ -453,6 +464,22 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
     public boolean isExportMeta() {
         return exportMeta;
+    }
+
+    public boolean isPrettyPrint() {
+        return prettyPrint;
+    }
+
+    public void setPrettyPrint(boolean prettyPrint) {
+        this.prettyPrint = prettyPrint;
+    }
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 
     public void setExportMeta(boolean exportMeta) {
