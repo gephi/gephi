@@ -55,7 +55,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
     private NormalizationHelper normalization;
 
     // Formats
-    public enum Format { Graphology };
+    public enum Format {Graphology}
     private Format format = Format.Graphology;
 
     @Override

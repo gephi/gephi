@@ -43,7 +43,6 @@
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.DefaultComboBoxModel;
-import org.gephi.io.exporter.plugin.ExporterGEXF;
 import org.gephi.io.exporter.plugin.ExporterJson;
 
 /**
@@ -55,7 +54,7 @@ public class UIExporterJsonPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox attributesExportCheckbox;
     private javax.swing.JCheckBox colorsExportCheckbox;
     private javax.swing.JCheckBox dynamicExportCheckbox;
-    private javax.swing.JComboBox<String> formatCombo;
+    private javax.swing.JComboBox<ExporterJson.Format> formatCombo;
     private javax.swing.JLabel labelExport;
     private javax.swing.JLabel labelFormat;
     private javax.swing.JLabel labelNormalize;
@@ -67,9 +66,10 @@ public class UIExporterJsonPanel extends javax.swing.JPanel {
 
     public UIExporterJsonPanel() {
         initComponents();
-        
-        DefaultComboBoxModel comboBoxModel =
-                new DefaultComboBoxModel(ExporterJson.Format.values());
+
+        // Init format combo
+        DefaultComboBoxModel<ExporterJson.Format> comboBoxModel =
+            new DefaultComboBoxModel<>(ExporterJson.Format.values());
         formatCombo.setModel(comboBoxModel);
     }
 
@@ -85,7 +85,7 @@ public class UIExporterJsonPanel extends javax.swing.JPanel {
     }
 
     public void unsetup(ExporterJson exporterJson) {
-        exporterJson.setFormat((ExporterJson.Format)formatCombo.getSelectedItem());
+        exporterJson.setFormat((ExporterJson.Format) formatCombo.getSelectedItem());
         exporterJson.setExportAttributes(attributesExportCheckbox.isSelected());
         exporterJson.setExportColors(colorsExportCheckbox.isSelected());
         exporterJson.setExportSize(sizeExportCheckbox.isSelected());
