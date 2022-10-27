@@ -7,21 +7,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import java.awt.Color;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Configuration;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Element;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
@@ -31,6 +17,12 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExporterJson implements GraphExporter, CharacterExporter, LongTask {
 
@@ -56,6 +48,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
     // Formats
     public enum Format {Graphology}
+
     private Format format = Format.Graphology;
 
     @Override
@@ -89,15 +82,15 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
     private void exportData() {
         GsonBuilder gsonBuilder = new GsonBuilder()
-            .registerTypeAdapter(Color.class, new ColorAdapter())
-            .registerTypeAdapterFactory(new GraphTypeAdapterFactory());
+                .registerTypeAdapter(Color.class, new ColorAdapter())
+                .registerTypeAdapterFactory(new GraphTypeAdapterFactory());
 
         if (prettyPrint) {
             gsonBuilder = gsonBuilder.setPrettyPrinting();
         }
 
         Gson gson = gsonBuilder
-            .create();
+                .create();
         gson.toJson(graph, writer);
     }
 
@@ -162,7 +155,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
             out.value(graph.getModel().getEdgeTypeLabels(false).length > 1);
             out.name("type");
             out.value(
-                graph.getModel().isUndirected() ? "undirected" : graph.getModel().isMixed() ? "mixed" : "directed");
+                    graph.getModel().isUndirected() ? "undirected" : graph.getModel().isMixed() ? "mixed" : "directed");
             out.endObject();
         }
 
@@ -207,16 +200,16 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
                 for (Column column : element.getAttributeColumns()) {
                     if (!column.isProperty() ||
-                        (element instanceof Edge &&
-                            column.getId().equals("weight"))) {
+                            (element instanceof Edge &&
+                                    column.getId().equals("weight"))) {
                         // Col header, similar to spreadsheet
                         String columnId = column.getId();
                         String columnTitle = column.getTitle();
                         String columnHeader =
-                            columnId.equalsIgnoreCase(columnTitle) && !column.isProperty() ? columnTitle : columnId;
+                                columnId.equalsIgnoreCase(columnTitle) && !column.isProperty() ? columnTitle : columnId;
 
                         Object value = exportDynamic ? element.getAttribute(column) :
-                            element.getAttribute(column, graph.getView());
+                                element.getAttribute(column, graph.getView());
                         out.name(columnHeader);
                         if (value instanceof Number) {
                             out.value((Number) value);
@@ -491,7 +484,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
      *
      * @param <T> type
      */
-    private static abstract class WriteTypeAdapter<T> extends TypeAdapter<T> {
+    private abstract static class WriteTypeAdapter<T> extends TypeAdapter<T> {
 
         @Override
         public T read(JsonReader in) throws IOException {
