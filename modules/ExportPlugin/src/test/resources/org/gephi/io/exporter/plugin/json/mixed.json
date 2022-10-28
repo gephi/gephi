@@ -1,6 +1,7 @@
 {
   "options": {
     "multi": false,
+    "allowSelfLoops": true,
     "type": "mixed"
   },
   "nodes": [

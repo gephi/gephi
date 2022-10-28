@@ -99,9 +99,12 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
         @Override
         public void write(JsonWriter out, Color value) throws IOException {
             if (exportColors) {
-                // TODO What about alpha
                 out.name("color");
-                out.value(String.format("#%06x", value.getRGB() & 0x00FFFFFF));
+                if (value.getAlpha() < 255) {
+                    out.value(String.format("#%08x", (value.getRGB() << 8) | value.getAlpha()));
+                } else {
+                    out.value(String.format("#%06x", value.getRGB() & 0x00FFFFFF));
+                }
             }
         }
     }
@@ -153,6 +156,8 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
             out.beginObject();
             out.name("multi");
             out.value(graph.getModel().getEdgeTypeLabels(false).length > 1);
+            out.name("allowSelfLoops");
+            out.value(true);
             out.name("type");
             out.value(
                     graph.getModel().isUndirected() ? "undirected" : graph.getModel().isMixed() ? "mixed" : "directed");

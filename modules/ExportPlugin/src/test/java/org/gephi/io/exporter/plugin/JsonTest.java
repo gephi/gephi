@@ -1,7 +1,10 @@
 package org.gephi.io.exporter.plugin;
 
+import java.awt.*;
 import java.io.IOException;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.junit.Test;
 
@@ -61,6 +64,21 @@ public class JsonTest {
             GraphGenerator.build().withWorkspace().generateTinyMixedGraph();
 
         Utils.assertExporterMatch("json/mixed.json", createExporter(graphGenerator));
+    }
+
+    @Test
+    public void testColors() throws IOException {
+        GraphGenerator graphGenerator =
+                GraphGenerator.build().withWorkspace().generateTinyGraph();
+        Graph graph = graphGenerator.getGraph();
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
+        n1.setColor(Color.CYAN);
+        n2.setColor(new Color(255, 100, 120, 254));
+
+        ExporterJson exporterJson = createExporter(graphGenerator);
+        exporterJson.setExportColors(true);
+        Utils.assertExporterMatch("json/colors.json", exporterJson);
     }
 
     private static ExporterJson createExporter(GraphGenerator graphGenerator) {

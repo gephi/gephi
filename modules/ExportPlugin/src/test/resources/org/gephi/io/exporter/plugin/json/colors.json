@@ -8,13 +8,13 @@
     {
       "key": "1",
       "attributes": {
-        "value": 10.0
+        "color": "#00ffff"
       }
     },
     {
       "key": "2",
       "attributes": {
-        "value": 11.0
+        "color": "#ff6478fe"
       }
     }
   ],
@@ -24,6 +24,7 @@
       "source": "1",
       "target": "2",
       "attributes": {
+        "color": "#000000",
         "weight": 1.0
       }
     }
