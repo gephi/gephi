@@ -11,6 +11,14 @@ import org.xmlunit.diff.Difference;
 
 public class Utils {
 
+    public static void print(CharacterExporter exporter) throws IOException {
+        StringWriter writer = new StringWriter();
+        exporter.setWriter(writer);
+        exporter.execute();
+        writer.close();
+        System.out.println(writer);
+    }
+
     public static void assertExporterMatch(String expectedFilename, CharacterExporter exporter) throws IOException {
         String expected = getResourceContent(expectedFilename);
         StringWriter writer = new StringWriter();
