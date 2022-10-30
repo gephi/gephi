@@ -58,6 +58,9 @@ public class NormalizationHelper {
 
     protected float normalizeX(float x) {
         if (enabled && x != 0.0) {
+            if (maxX == minX) {
+                return 1f;
+            }
             return (x - minX) / (maxX - minX);
         } else {
             return x;
@@ -66,6 +69,9 @@ public class NormalizationHelper {
 
     protected float normalizeY(float y) {
         if (enabled && y != 0.0) {
+            if (minY == maxY) {
+                return 1f;
+            }
             return (y - minY) / (maxY - minY);
         } else {
             return y;
@@ -74,6 +80,9 @@ public class NormalizationHelper {
 
     protected float normalizeZ(float z) {
         if (enabled && z != 0.0) {
+            if (maxZ == minZ) {
+                return 1f;
+            }
             return (z - minZ) / (maxZ - minZ);
         } else {
             return z;
@@ -82,6 +91,9 @@ public class NormalizationHelper {
 
     protected float normalizeSize(float size) {
         if (enabled && size != 0.0) {
+            if (maxSize == minSize) {
+                return 1f;
+            }
             return (size - minSize) / (maxSize - minSize);
         } else {
             return size;

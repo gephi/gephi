@@ -21,6 +21,9 @@ import org.openide.util.Lookup;
 import java.awt.*;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,7 +74,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
         try {
             exportData();
         } catch (Exception e) {
-            Logger.getLogger(ExporterGEXF.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ExporterJson.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             graph.readUnlock();
             Progress.finish(progress);
@@ -185,13 +188,15 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
         }
     }
 
-    private class ElementTypeAdapter<T extends Element> extends WriteTypeAdapter<T> {
+    private abstract class ElementTypeAdapter<T extends Element> extends WriteTypeAdapter<T> {
 
         private final TypeAdapter<Color> colorAdapter;
 
         public ElementTypeAdapter(Gson gson) {
             this.colorAdapter = gson.getAdapter(Color.class);
         }
+
+        protected abstract Set<String> getReservedKeys();
 
         @Override
         public void write(JsonWriter out, T element) throws IOException {
@@ -203,25 +208,31 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
                 TimeFormat timeFormat = graph.getModel().getTimeFormat();
                 DateTimeZone timeZone = graph.getModel().getTimeZone();
 
+                Set<String> reservedKeys = getReservedKeys();
                 for (Column column : element.getAttributeColumns()) {
                     if (!column.isProperty() ||
                             (element instanceof Edge &&
                                     column.getId().equals("weight"))) {
-                        // Col header, similar to spreadsheet
-                        String columnId = column.getId();
-                        String columnTitle = column.getTitle();
-                        String columnHeader =
-                                columnId.equalsIgnoreCase(columnTitle) && !column.isProperty() ? columnTitle : columnId;
+                        if (!reservedKeys.contains(column.getId().toLowerCase())) {
+                            // Col header, similar to spreadsheet
+                            String columnId = column.getId();
+                            String columnTitle = column.getTitle();
+                            String columnHeader =
+                                    columnId.equalsIgnoreCase(columnTitle) && !column.isProperty() ? columnTitle : columnId;
 
-                        Object value = exportDynamic ? element.getAttribute(column) :
-                                element.getAttribute(column, graph.getView());
-                        out.name(columnHeader);
-                        if (value instanceof Number) {
-                            out.value((Number) value);
-                        } else if (value instanceof Boolean) {
-                            out.value((Boolean) value);
+                            Object value = exportDynamic ? element.getAttribute(column) :
+                                    element.getAttribute(column, graph.getView());
+                            out.name(columnHeader);
+                            if (value instanceof Number) {
+                                out.value((Number) value);
+                            } else if (value instanceof Boolean) {
+                                out.value((Boolean) value);
+                            } else {
+                                out.value(AttributeUtils.print(value, timeFormat, timeZone));
+                            }
                         } else {
-                            out.value(AttributeUtils.print(value, timeFormat, timeZone));
+                            Logger.getLogger(ExporterJson.class.getName()).log(Level.WARNING,
+                                    "Attribute value for column '"+column.getId()+"' is ignored as its key overlap with a default key");
                         }
                     }
                 }
@@ -244,8 +255,25 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
     private class NodeTypeAdapter extends ElementTypeAdapter<Node> {
 
+        private final Set<String> reservedColumns = new HashSet<>();
+
         public NodeTypeAdapter(Gson gson) {
             super(gson);
+
+            if (exportPosition) {
+                reservedColumns.addAll(Arrays.asList("x", "y", "z"));
+            }
+            if (exportSize) {
+                reservedColumns.add("size");
+            }
+            if (exportColors) {
+                reservedColumns.add("color");
+            }
+        }
+
+        @Override
+        protected Set<String> getReservedKeys() {
+            return reservedColumns;
         }
 
         @Override
@@ -312,8 +340,20 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
     private class EdgeTypeAdapter extends ElementTypeAdapter<Edge> {
 
+        private final Set<String> reservedColumns = new HashSet<>();
+
         public EdgeTypeAdapter(Gson gson) {
             super(gson);
+
+            reservedColumns.add("type");
+            if (exportColors) {
+                reservedColumns.add("color");
+            }
+        }
+
+        @Override
+        protected Set<String> getReservedKeys() {
+            return reservedColumns;
         }
 
         @Override

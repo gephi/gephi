@@ -78,6 +78,7 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.VersionUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -252,7 +253,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeStartElement(META_CREATOR);
 
-            xmlWriter.writeCharacters(getCurrentVersion());
+            xmlWriter.writeCharacters(VersionUtils.getGephiVersion());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
@@ -261,11 +262,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeEndElement();
         }
-    }
-
-    private String getCurrentVersion() {
-        return NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion")
-            .replaceAll("( [0-9]{12})$", "");
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
