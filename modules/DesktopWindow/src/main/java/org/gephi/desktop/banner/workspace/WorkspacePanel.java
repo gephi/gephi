@@ -73,7 +73,7 @@ import org.openide.windows.WindowManager;
 public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListener, PropertyChangeListener {
 
     private transient final DefaultTabDataModel tabDataModel;
-    private transient final TabbedContainer tabbedContainer;
+    private transient final TabDisplayer tabbedContainer;
     private final Icon workspaceIcon;
 
     /**
@@ -104,7 +104,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             }
         };
 
-        tabbedContainer = new TabbedContainer(tabDataModel, TabbedContainer.TYPE_EDITOR, ws);
+        tabbedContainer = new TabDisplayer(tabDataModel, TabbedContainer.TYPE_EDITOR, ws);
 
         tabbedContainer.addActionListener(new ActionListener() {
 
@@ -272,7 +272,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
 
                     @Override
                     public void run() {
-                        tabbedContainer.setTitleAt(index, workspaceInformation.getName());
+                        tabDataModel.setText(index, workspaceInformation.getName());
                     }
                 });
             }
@@ -286,7 +286,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
 
                     @Override
                     public void run() {
-                        tabbedContainer.setToolTipTextAt(index, workspaceInformation.getSource());
+                        tabDataModel.setToolTipTextAt(index, workspaceInformation.getSource());
                     }
                 });
             }
