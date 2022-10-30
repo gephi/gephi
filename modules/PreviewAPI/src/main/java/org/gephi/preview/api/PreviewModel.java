@@ -144,6 +144,14 @@ public interface PreviewModel {
     CanvasSize getGraphicsCanvasSize();
 
     /**
+     * Returns <code>true</code> if the canvas size returned by {@link #getGraphicsCanvasSize()} is based on the full graph,
+     * as opposed to the visible graph. The default is <code>false</code>: the canvas size is based on the visible graph.
+     *
+     * @return true if canvas size is global, false otherwise
+     */
+    boolean isGlobalCanvasSize();
+
+    /**
      * Returns the workspace this model is attached to.
      *
      * @return the workspace

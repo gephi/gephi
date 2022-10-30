@@ -49,6 +49,11 @@ import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
+@OptionsPanelController.SubRegistration(location = "Gephi",
+    displayName = "#AdvancedOption_DisplayName_Default",
+    keywords = "#AdvancedOption_Keywords_Default",
+    keywordsCategory = "Gephi/OpenGL",
+    position = 400)
 public final class DefaultOptionsPanelController extends OptionsPanelController {
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);

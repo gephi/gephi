@@ -66,7 +66,9 @@ public class UIExporterPDF implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterPDF = (PDFExporter) exporter;
         settings.load(exporterPDF);
-        panel.setup(exporterPDF);
+        if (panel != null) {
+            panel.setup(exporterPDF);
+        }
     }
 
     @Override

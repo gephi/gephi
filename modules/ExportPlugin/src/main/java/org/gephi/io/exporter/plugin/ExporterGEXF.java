@@ -78,6 +78,7 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.VersionUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -156,6 +157,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
     private boolean exportMeta = true;
+    private boolean includeNullAttValues = false;
     private NormalizationHelper normalization;
 
     @Override
@@ -251,7 +253,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeStartElement(META_CREATOR);
 
-            xmlWriter.writeCharacters(getCurrentVersion());
+            xmlWriter.writeCharacters(VersionUtils.getGephiVersion());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
@@ -260,11 +262,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeEndElement();
         }
-    }
-
-    private String getCurrentVersion() {
-        return NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion")
-            .replaceAll("( [0-9]{12})$", "");
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
@@ -389,7 +386,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         throws Exception {
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
-            if (val != null) {
+            if (val != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
@@ -406,7 +403,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || interval.compareTo(visibleInterval) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(interval, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -431,7 +428,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || visibleInterval.compareTo(timestamp) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(timestamp, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -444,7 +441,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
         } else {
             Object value = element.getAttribute(column, graph.getView());
-            if (value != null) {
+            if (value != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -739,6 +736,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public void setExportDynamic(boolean exportDynamic) {
         this.exportDynamic = exportDynamic;
+    }
+
+    public boolean isIncludeNullAttValues() {
+        return includeNullAttValues;
+    }
+
+    public void setIncludeNullAttValues(boolean includeNullAttValues) {
+        this.includeNullAttValues = includeNullAttValues;
     }
 
     @Override

@@ -63,7 +63,9 @@ public class UIExporterGDF implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterGDF = (ExporterGDF) exporter;
         settings.load(exporterGDF);
-        panel.setup(exporterGDF);
+        if (panel != null) {
+            panel.setup(exporterGDF);
+        }
     }
 
     @Override

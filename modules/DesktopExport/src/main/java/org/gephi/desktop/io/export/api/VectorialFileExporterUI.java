@@ -66,6 +66,8 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.io.exporter.spi.VectorFileExporterBuilder;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -186,6 +188,20 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 selectedBuilder = getExporter(fileFilter);
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
+
+                    Workspace workspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
+                    selectedExporter.setWorkspace(workspace);
+
+                    ExporterUI ui = exportController.getExportController().getUI(selectedExporter);
+                    if (ui != null) {
+                        // Load saved values into exporter
+                        ui.setup(selectedExporter);
+                        optionsButton.setEnabled(true);
+                    } else {
+                        optionsButton.setEnabled(false);
+                    }
+                } else {
+                    optionsButton.setEnabled(false);
                 }
                 optionsButton.setEnabled(selectedExporter != null &&
                     exportController.getExportController().getUI(selectedExporter) != null);

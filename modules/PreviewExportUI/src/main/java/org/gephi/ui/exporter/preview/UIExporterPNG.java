@@ -72,7 +72,9 @@ public class UIExporterPNG implements ExporterUI {
     public void setup(Exporter exporter) {
         this.exporter = (PNGExporter) exporter;
         settings.load(this.exporter);
-        panel.setup(this.exporter);
+        if (panel != null) {
+            panel.setup(this.exporter);
+        }
     }
 
     @Override

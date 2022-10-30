@@ -63,7 +63,9 @@ public class UIExporterSVG implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterSVG = (SVGExporter) exporter;
         settings.load(exporterSVG);
-        panel.setup(exporterSVG);
+        if (panel != null) {
+            panel.setup(exporterSVG);
+        }
     }
 
     @Override

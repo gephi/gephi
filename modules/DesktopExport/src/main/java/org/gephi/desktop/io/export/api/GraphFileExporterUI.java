@@ -213,9 +213,18 @@ public final class GraphFileExporterUI implements ExporterClassUI {
 
                     Workspace workspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
                     selectedExporter.setWorkspace(workspace);
+
+                    ExporterUI ui = exportController.getExportController().getUI(selectedExporter);
+                    if (ui != null) {
+                        // Load saved values into exporter
+                        ui.setup(selectedExporter);
+                        optionsButton.setEnabled(true);
+                    } else {
+                        optionsButton.setEnabled(false);
+                    }
+                } else {
+                    optionsButton.setEnabled(false);
                 }
-                optionsButton.setEnabled(
-                    selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null);
 
                 //Selected file extension change
                 if (selectedFile != null && fileFilter != null) {

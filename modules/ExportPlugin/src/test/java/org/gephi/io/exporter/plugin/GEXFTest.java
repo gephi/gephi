@@ -19,6 +19,18 @@ public class GEXFTest {
         Utils.assertExporterMatch("infinity.gexf", createExporter(graphGenerator));
     }
 
+    @Test
+    public void testIncludeAttValues() throws IOException {
+        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+
+        Graph graph = graphGenerator.getGraph();
+
+        graph.getNode(GraphGenerator.FIRST_NODE).setAttribute(GraphGenerator.DOUBLE_COLUMN, null);
+        ExporterGEXF exporterGEXF = createExporter(graphGenerator);
+        exporterGEXF.setIncludeNullAttValues(true);
+        Utils.assertExporterMatch("includenullattvalues.gexf", exporterGEXF);
+    }
+
     private static ExporterGEXF createExporter(GraphGenerator graphGenerator) {
         Workspace workspace = graphGenerator.getWorkspace();
         ExporterGEXF exporterGEXF = new ExporterGEXF();

@@ -30,6 +30,7 @@ public class GraphGenerator {
     public static final String INTERVAL_DOUBLE_COLUMN = "price";
     public static final String FIRST_NODE = "1";
     public static final String SECOND_NODE = "2";
+    public static final String THIRD_NODE = "3";
     public static final String FIRST_EDGE = "1";
     public static final String SECOND_EDGE = "2";
     public static final String[] STRING_COLUMN_VALUES = new String[] {"France", "Germany"};
@@ -84,6 +85,30 @@ public class GraphGenerator {
         graphModel.getDirectedGraph().addNode(n1);
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
+
+    public GraphGenerator generateTinyUndirectedGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, false);
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
+
+    public GraphGenerator generateTinyMixedGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Node n3 = graphModel.factory().newNode(THIRD_NODE);
+        Edge e1 = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, false);
+        Edge e2 = graphModel.factory().newEdge(SECOND_EDGE, n1, n3, 0, 1.0, true);
+        graphModel.getGraph().addNode(n1);
+        graphModel.getGraph().addNode(n2);
+        graphModel.getGraph().addNode(n3);
+        graphModel.getGraph().addEdge(e1);
+        graphModel.getGraph().addEdge(e2);
         return this;
     }
 
