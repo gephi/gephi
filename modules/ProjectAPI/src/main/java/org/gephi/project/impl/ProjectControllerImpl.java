@@ -61,6 +61,8 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
+import org.gephi.project.spi.Controller;
+import org.gephi.project.spi.Model;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.openide.util.Lookup;
@@ -255,6 +257,12 @@ public class ProjectControllerImpl implements ProjectController {
     public Workspace newWorkspace(Project project) {
         synchronized (this) {
             Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
+
+            // Models
+            Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
+                Model model = c.newModel(workspace);
+                workspace.add(model);
+            });
 
             //Event
             fireWorkspaceEvent(EventType.INITIALIZE, workspace);

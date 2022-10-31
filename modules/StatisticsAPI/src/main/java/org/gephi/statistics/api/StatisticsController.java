@@ -44,10 +44,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.api;
 
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Controller;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Controller for executing Statistics/Metrics algorithms.
@@ -58,7 +60,7 @@ import org.gephi.utils.longtask.spi.LongTask;
  * @author Patrick J. McSweeney, Mathieu Bastian
  * @see StatisticsBuilder
  */
-public interface StatisticsController {
+public interface StatisticsController extends Controller<StatisticsModel> {
 
     /**
      * Execute the statistics algorithm in a background thread and notify
@@ -86,21 +88,4 @@ public interface StatisticsController {
      * @return the builder, or <code>null</code> if not found
      */
     StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
-
-    /**
-     * Returns the current <code>StatisticsModel</code>, from the current
-     * workspace
-     *
-     * @return the current <code>StatisticsModel</code>
-     */
-    StatisticsModel getModel();
-
-    /**
-     * Returns the <code>StatisticsModel</code> for <code>workspace</code>
-     *
-     * @param workspace the workspace to return the model for
-     * @return the <code>StatisticsModel</code> associated to
-     * <code>workspace</code>
-     */
-    StatisticsModel getModel(Workspace workspace);
 }
