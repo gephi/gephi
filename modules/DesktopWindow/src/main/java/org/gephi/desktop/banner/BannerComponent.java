@@ -42,17 +42,14 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.banner;
 
+import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Icon;
+import javax.swing.BorderFactory;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
 import org.gephi.ui.utils.UIUtils;
-import org.openide.util.Exceptions;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 /**
@@ -61,10 +58,8 @@ import org.openide.util.Lookup;
 public class BannerComponent extends javax.swing.JPanel {
 
     private final transient PerspectiveController perspectiveController;
-    private transient JToggleButton[] buttons;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
-    private javax.swing.JPanel groupsPanel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.ButtonGroup perspectivesButtonGroup;
     private javax.swing.JPanel workspacePanel;
@@ -73,17 +68,30 @@ public class BannerComponent extends javax.swing.JPanel {
     public BannerComponent() {
         initComponents();
 
+        // Make the workspace tab stand out well
+        if (UIUtils.isFlatLafLightLookAndFeel()) {
+            mainPanel.setBackground(Color.WHITE);
+            workspacePanel.setBackground(Color.WHITE);
+        } else if (UIUtils.isFlatLafDarkLookAndFeel()) {
+            Color cl = UIManager.getColor("EditorTab.background");
+            mainPanel.setBackground(cl);
+            workspacePanel.setBackground(cl);
+        }
+
+        // Button panel border so it matches with the workspace panel
+        buttonsPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, UIManager.getColor("Component.borderColor")),
+            BorderFactory.createEmptyBorder(6, 0, 6, 5)));
+        workspacePanel.setBorder(BorderFactory.createEmptyBorder(12, 0, 0, 0));
+
         //Init perspective controller
         perspectiveController = Lookup.getDefault().lookup(PerspectiveController.class);
 
         addGroupTabs();
-
-        //This defines the height of the banner bar
-        setPreferredSize(new Dimension(100, 65));
     }
 
     private void addGroupTabs() {
-        buttons = new JToggleButton[perspectiveController.getPerspectives().length];
+        JToggleButton[] buttons = new JToggleButton[perspectiveController.getPerspectives().length];
         int i = 0;
 
         //Add tabs
@@ -122,45 +130,24 @@ public class BannerComponent extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         perspectivesButtonGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
-        groupsPanel = new javax.swing.JPanel();
-        buttonsPanel = new javax.swing.JPanel();
         workspacePanel = new org.gephi.desktop.banner.workspace.WorkspacePanel();
+        buttonsPanel = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        mainPanel.setLayout(new java.awt.GridBagLayout());
+        mainPanel.setLayout(new java.awt.BorderLayout());
 
-        groupsPanel.setLayout(new java.awt.GridBagLayout());
+        workspacePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 0, 0, 0));
+        mainPanel.add(workspacePanel, java.awt.BorderLayout.CENTER);
 
-        buttonsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonsPanel.setOpaque(false);
-        buttonsPanel.setPreferredSize(new java.awt.Dimension(10, 50));
-        buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 3, 3));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        groupsPanel.add(buttonsPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        mainPanel.add(groupsPanel, gridBagConstraints);
+        buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 6, 0));
+        mainPanel.add(buttonsPanel, java.awt.BorderLayout.WEST);
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
-        add(workspacePanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 }

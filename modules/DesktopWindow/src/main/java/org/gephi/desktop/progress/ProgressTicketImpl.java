@@ -193,10 +193,12 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     @Override
     public void start(int workunits) {
-        if (handle != null) {
+        if (handle != null && !started) {
             started = true;
             this.progressTotal = workunits;
             handle.start(100);
+        } else if (started && progressTotal == 0){
+            switchToDeterminate(workunits);
         }
     }
 

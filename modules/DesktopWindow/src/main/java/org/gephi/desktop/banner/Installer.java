@@ -68,7 +68,6 @@ public class Installer extends ModuleInstall {
     }
 
     private void initBanner() {
-
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
