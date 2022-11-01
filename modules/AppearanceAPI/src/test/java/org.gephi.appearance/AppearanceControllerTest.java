@@ -20,16 +20,25 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.netbeans.junit.MockServices;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AppearanceControllerTest {
+
+    @Spy
+    AppearanceControllerImpl controller = new AppearanceControllerImpl();
 
     @Test
     public void testTransform() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
 
         Assert.assertFalse(controller.getModel().isRankingLocalScale());
 
@@ -62,8 +71,9 @@ public class AppearanceControllerTest {
     public void testFilteredView() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
 
         Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
         Node node2 = generator.getGraph().getNode(GraphGenerator.SECOND_NODE);
@@ -85,8 +95,9 @@ public class AppearanceControllerTest {
     public void testLocalScale() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
 
         Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
         Node node2 = generator.getGraph().getNode(GraphGenerator.SECOND_NODE);
@@ -115,8 +126,9 @@ public class AppearanceControllerTest {
     public void testTransformNullValuesRanking() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
         controller.setTransformNullValues(true);
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
@@ -134,8 +146,9 @@ public class AppearanceControllerTest {
     public void testNotTransformNullValuesRanking() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
         controller.setTransformNullValues(false);
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
@@ -153,8 +166,9 @@ public class AppearanceControllerTest {
     public void testTransformNullValuesPartition() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
         controller.setTransformNullValues(true);
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
@@ -171,8 +185,9 @@ public class AppearanceControllerTest {
     public void testNotTransformNullValuesPartition() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
         controller.setTransformNullValues(false);
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
@@ -190,8 +205,9 @@ public class AppearanceControllerTest {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator =
             GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampDoubleColumn();
-        AppearanceControllerImpl controller = new AppearanceControllerImpl();
-        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Mockito.doReturn(model).when(controller).getModel();
         Column col = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
 
         Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);

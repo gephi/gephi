@@ -11,9 +11,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Controller;
+import org.gephi.project.spi.Model;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.project.impl.WorkspaceImpl;
 import org.junit.Assert;
+import org.openide.util.Lookup;
 
 public class GephiFormat {
 
@@ -32,6 +35,12 @@ public class GephiFormat {
     private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString)
         throws XMLStreamException, IOException {
         Workspace destinationWorkspace = new WorkspaceImpl(null, 0);
+
+        // Init Models
+        Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
+            Model model = c.newModel(destinationWorkspace);
+            destinationWorkspace.add(model);
+        });
 
         StringReader stringReader = new StringReader(xmlString);
         XMLStreamReader reader = newXMLReader(stringReader);
