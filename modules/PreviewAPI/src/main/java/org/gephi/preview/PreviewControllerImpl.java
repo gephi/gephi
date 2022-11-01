@@ -69,11 +69,14 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Controller.class)
+@ServiceProviders({
+    @ServiceProvider(service = PreviewController.class),
+    @ServiceProvider(service = Controller.class)})
 public class PreviewControllerImpl implements PreviewController, Controller<PreviewModelImpl> {
 
     //Registered renderers

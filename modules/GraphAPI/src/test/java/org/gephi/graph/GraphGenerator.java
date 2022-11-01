@@ -15,6 +15,8 @@ import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.spi.Controller;
+import org.gephi.project.spi.Model;
 import org.openide.util.Lookup;
 
 public class GraphGenerator {
@@ -69,6 +71,13 @@ public class GraphGenerator {
 
     public GraphGenerator withWorkspace() {
         workspace = new WorkspaceImpl(null, 0);
+
+        // Init Models
+        Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
+            Model model = c.newModel(workspace);
+            workspace.add(model);
+        });
+
         workspace.add(graphModel);
         return this;
     }

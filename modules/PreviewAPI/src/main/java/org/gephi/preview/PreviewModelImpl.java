@@ -103,15 +103,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
     private PreviewProperties properties;
 
     public PreviewModelImpl(Workspace workspace) {
-        this(workspace, null);
-    }
-
-    public PreviewModelImpl(Workspace workspace, PreviewController previewController) {
-        if (previewController != null) {
-            this.previewController = previewController;
-        } else {
-            this.previewController = Lookup.getDefault().lookup(PreviewController.class);
-        }
+        previewController = Lookup.getDefault().lookup(PreviewController.class);
         typeMap = new HashMap<>();
         sourceMap = new HashMap<>();
         this.workspace = workspace;
