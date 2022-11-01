@@ -43,11 +43,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout;
 
 import org.gephi.layout.api.LayoutController;
-import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -58,10 +58,9 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = LayoutController.class)
-public class LayoutControllerImpl implements LayoutController {
+@ServiceProvider(service = Controller.class)
+public class LayoutControllerImpl implements LayoutController, Controller<LayoutModelImpl> {
 
-    private LayoutModelImpl model;
     private LayoutRun layoutRun;
 
     public LayoutControllerImpl() {
@@ -69,22 +68,17 @@ public class LayoutControllerImpl implements LayoutController {
 
             @Override
             public void initialize(Workspace workspace) {
-                if (workspace.getLookup().lookup(LayoutModelImpl.class) == null) {
-                    workspace.add(new LayoutModelImpl(workspace));
-                }
+
             }
 
             @Override
             public void select(Workspace workspace) {
-                model = workspace.getLookup().lookup(LayoutModelImpl.class);
-                if (model == null) {
-                    model = new LayoutModelImpl(workspace);
-                }
-                workspace.add(model);
+
             }
 
             @Override
             public void unselect(Workspace workspace) {
+                LayoutModelImpl model = getModel(workspace);
                 if (model != null && model.getSelectedLayout() != null) {
                     model.saveProperties(model.getSelectedLayout());
                 }
@@ -92,40 +86,46 @@ public class LayoutControllerImpl implements LayoutController {
 
             @Override
             public void close(Workspace workspace) {
-                LayoutModelImpl layoutModel = workspace.getLookup().lookup(LayoutModelImpl.class);
-                if (layoutModel != null) {
-                    layoutModel.getExecutor().cancel();
+                LayoutModelImpl model = getModel(workspace);
+                if (model != null) {
+                    model.getExecutor().cancel();
                 }
             }
 
             @Override
             public void disable() {
-                model = null;
             }
         });
-
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        if (projectController.getCurrentWorkspace() != null) {
-            model = projectController.getCurrentWorkspace().getLookup().lookup(LayoutModelImpl.class);
-            if (model == null) {
-                model = new LayoutModelImpl(projectController.getCurrentWorkspace());
-            }
-            projectController.getCurrentWorkspace().add(model);
-        }
     }
 
     @Override
-    public LayoutModel getModel() {
-        return model;
+    public Class<LayoutModelImpl> getModelClass() {
+        return LayoutModelImpl.class;
+    }
+
+    @Override
+    public LayoutModelImpl newModel(Workspace workspace) {
+        return new LayoutModelImpl(workspace);
+    }
+
+    @Override
+    public LayoutModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
+    }
+
+    @Override
+    public LayoutModelImpl getModel() {
+        return Controller.super.getModel();
     }
 
     @Override
     public void setLayout(Layout layout) {
-        model.setSelectedLayout(layout);
+        getModel().setSelectedLayout(layout);
     }
 
     @Override
     public void executeLayout() {
+        LayoutModelImpl model = getModel();
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout());
             model.getExecutor().execute(layoutRun, layoutRun);
@@ -135,6 +135,7 @@ public class LayoutControllerImpl implements LayoutController {
 
     @Override
     public void executeLayout(int numIterations) {
+        LayoutModelImpl model = getModel();
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout(), numIterations);
             model.getExecutor().execute(layoutRun, layoutRun);
@@ -144,16 +145,19 @@ public class LayoutControllerImpl implements LayoutController {
 
     @Override
     public boolean canExecute() {
+        LayoutModelImpl model = getModel();
         return model.getSelectedLayout() != null && !model.isRunning();
     }
 
     @Override
     public boolean canStop() {
+        LayoutModelImpl model = getModel();
         return model.isRunning();
     }
 
     @Override
     public void stopLayout() {
+        LayoutModelImpl model = getModel();
         model.getExecutor().cancel();
     }
 

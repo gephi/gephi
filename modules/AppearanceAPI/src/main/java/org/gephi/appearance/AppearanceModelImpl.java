@@ -65,13 +65,14 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * @author mbastian
  */
-public class AppearanceModelImpl implements AppearanceModel {
+public class AppearanceModelImpl implements AppearanceModel, Model {
 
     private final Workspace workspace;
     private final GraphModel graphModel;

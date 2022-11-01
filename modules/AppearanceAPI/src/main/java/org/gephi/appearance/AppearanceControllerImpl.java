@@ -51,59 +51,23 @@ import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  * @author mbastian
  */
-@ServiceProvider(service = AppearanceController.class)
-public class AppearanceControllerImpl implements AppearanceController {
-
-    private AppearanceModelImpl model;
+@ServiceProvider(service = Controller.class)
+public class AppearanceControllerImpl implements AppearanceController, Controller<AppearanceModelImpl> {
 
     public AppearanceControllerImpl() {
-        //Workspace events
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-            }
+    }
 
-            @Override
-            public void select(Workspace workspace) {
-                model = workspace.getLookup().lookup(AppearanceModelImpl.class);
-                if (model == null) {
-                    model = new AppearanceModelImpl(workspace);
-                    workspace.add(model);
-                }
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-                model = null;
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                model = null;
-            }
-        });
-
-        if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(AppearanceModelImpl.class);
-            if (model == null) {
-                model = new AppearanceModelImpl(pc.getCurrentWorkspace());
-                pc.getCurrentWorkspace().add(model);
-            }
-        }
+    @Override
+    public AppearanceModelImpl newModel(Workspace workspace) {
+        return new AppearanceModelImpl(workspace);
     }
 
     @Override
@@ -132,22 +96,18 @@ public class AppearanceControllerImpl implements AppearanceController {
     }
 
     @Override
-    public AppearanceModelImpl getModel() {
-        return model;
+    public Class<AppearanceModelImpl> getModelClass() {
+        return AppearanceModelImpl.class;
     }
 
-    protected void setModel(AppearanceModelImpl model) {
-        this.model = model;
+    @Override
+    public AppearanceModelImpl getModel() {
+        return Controller.super.getModel();
     }
 
     @Override
     public AppearanceModelImpl getModel(Workspace workspace) {
-        AppearanceModelImpl m = workspace.getLookup().lookup(AppearanceModelImpl.class);
-        if (m == null) {
-            m = new AppearanceModelImpl(workspace);
-            workspace.add(m);
-        }
-        return m;
+        return Controller.super.getModel(workspace);
     }
 
     @Override
@@ -159,6 +119,7 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void setUseRankingLocalScale(boolean useLocalScale) {
+        AppearanceModelImpl model = getModel();
         if (model != null) {
             model.setRankingLocalScale(useLocalScale);
         }
@@ -166,6 +127,7 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void setUsePartitionLocalScale(boolean useLocalScale) {
+        AppearanceModelImpl model = getModel();
         if (model != null) {
             model.setPartitionLocalScale(useLocalScale);
         }
@@ -173,6 +135,7 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void setTransformNullValues(boolean transformNullValues) {
+        AppearanceModelImpl model = getModel();
         if (model != null) {
             model.setTransformNullValues(transformNullValues);
         }

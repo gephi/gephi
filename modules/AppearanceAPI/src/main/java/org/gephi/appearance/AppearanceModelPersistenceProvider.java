@@ -35,10 +35,6 @@ public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersisten
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         AppearanceModelImpl model = workspace.getLookup().lookup(AppearanceModelImpl.class);
-        if (model == null) {
-            model = new AppearanceModelImpl(workspace);
-            workspace.add(model);
-        }
         try {
             readXML(reader, model);
         } catch (XMLStreamException ex) {
