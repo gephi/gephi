@@ -94,11 +94,11 @@ public final class UIUtils {
     }
 
     public static boolean isFlatLafLightLookAndFeel() {
-        return UIManager.getLookAndFeel().getID().equals("FlatLaf Light"); //NOI18N
+        return UIManager.getLookAndFeel().getID().contains("FlatLaf Light"); //NOI18N
     }
 
     public static boolean isFlatLafDarkLookAndFeel() {
-        return UIManager.getLookAndFeel().getName().equals("FlatLaf Dark"); //NOI18N
+        return UIManager.getLookAndFeel().getName().contains("FlatLaf Dark"); //NOI18N
     }
 
     public static boolean isDarkLookAndFeel() {
