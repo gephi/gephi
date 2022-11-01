@@ -43,20 +43,22 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.banner.workspace;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.ui.utils.UIUtils;
 import org.netbeans.swing.tabcontrol.DefaultTabDataModel;
 import org.netbeans.swing.tabcontrol.TabData;
 import org.netbeans.swing.tabcontrol.TabDisplayer;
@@ -65,7 +67,6 @@ import org.netbeans.swing.tabcontrol.WinsysInfoForTabbedContainer;
 import org.netbeans.swing.tabcontrol.event.TabActionEvent;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
@@ -74,16 +75,19 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
 
     private transient final DefaultTabDataModel tabDataModel;
     private transient final TabDisplayer tabbedContainer;
-    private final Icon workspaceIcon;
 
     /**
      * Creates new form WorkspacePanel
      */
     public WorkspacePanel() {
+        // Make the background the same as the parent component
+        if (UIUtils.isFlatLafLightLookAndFeel()) {
+            UIManager.put("EditorTab.background", Color.WHITE);
+        }
+
         initComponents();
 
         // Init component
-        workspaceIcon = ImageUtilities.loadImageIcon("DesktopWindow/workspace.png", false);
         tabDataModel = new DefaultTabDataModel();
 
         WinsysInfoForTabbedContainer ws = new WinsysInfoForTabbedContainer() {
@@ -122,13 +126,13 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                     if (retType == NotifyDescriptor.YES_OPTION) {
                         TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
                         ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-                        pc.deleteWorkspace(((WorkspaceComponent) tabData.getUserObject()).workspace);
+                        pc.deleteWorkspace((Workspace) tabData.getUserObject());
                     }
                     tabActionEvent.consume();
                 } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_SELECT)) {
                     TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
                     ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    pc.openWorkspace(((WorkspaceComponent) tabData.getUserObject()).workspace);
+                    pc.openWorkspace((Workspace) tabData.getUserObject());
                     tabActionEvent.consume();
                 }
             }
@@ -157,7 +161,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                     WorkspaceInformation workspaceInformation =
                         workspace.getLookup().lookup(WorkspaceInformation.class);
                     tabDataModel.addTab(index,
-                        new TabData(new WorkspaceComponent(workspace), null, workspaceInformation.getName(),
+                        new TabData(workspace, null, workspaceInformation.getName(),
                             workspaceInformation.getSource()));
                     if (workspaceProvider.getCurrentWorkspace() == workspace) {
                         tabbedContainer.getSelectionModel().setSelectedIndex(index);
@@ -200,7 +204,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
 
             @Override
             public void run() {
-                tabDataModel.addTab(tabDataModel.size(), new TabData(new WorkspaceComponent(workspace), workspaceIcon,
+                tabDataModel.addTab(tabDataModel.size(), new TabData(workspace, null,
                     workspaceInformation.getName(),
                     workspaceInformation.getSource()));
                 if (tabDataModel.size() == 1) {
@@ -221,7 +225,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             public void run() {
                 for (int i = 0; i < tabDataModel.size(); i++) {
                     TabData tabData = tabDataModel.getTab(i);
-                    if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
+                    if (tabData.getUserObject() == workspace) {
                         if (tabbedContainer.getSelectionModel().getSelectedIndex() != i) {
                             tabbedContainer.getSelectionModel().setSelectedIndex(i);
                         }
@@ -246,7 +250,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             public void run() {
                 for (int i = 0; i < tabDataModel.size(); i++) {
                     TabData tabData = tabDataModel.getTab(i);
-                    if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
+                    if (tabData.getUserObject() == workspace) {
                         tabDataModel.removeTab(i);
                         break;
                     }
@@ -290,18 +294,6 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                     }
                 });
             }
-        }
-    }
-
-    /**
-     * Workspace component wrapper
-     */
-    private static class WorkspaceComponent extends JComponent {
-
-        private final Workspace workspace;
-
-        public WorkspaceComponent(Workspace workspace) {
-            this.workspace = workspace;
         }
     }
 }

@@ -42,22 +42,15 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.banner;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.List;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
-import org.openide.util.actions.Presenter;
 
 /**
  * @author Mathieu Bastian
@@ -65,7 +58,6 @@ import org.openide.util.actions.Presenter;
 public class BannerComponent extends javax.swing.JPanel {
 
     private final transient PerspectiveController perspectiveController;
-    private transient JToggleButton[] buttons;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JPanel mainPanel;
@@ -76,10 +68,21 @@ public class BannerComponent extends javax.swing.JPanel {
     public BannerComponent() {
         initComponents();
 
+        // Make the workspace tab stand out well
+        if (UIUtils.isFlatLafLightLookAndFeel()) {
+            mainPanel.setBackground(Color.WHITE);
+            workspacePanel.setBackground(Color.WHITE);
+        } else if (UIUtils.isFlatLafDarkLookAndFeel()) {
+            Color cl = UIManager.getColor("EditorTab.background");
+            mainPanel.setBackground(cl);
+            workspacePanel.setBackground(cl);
+        }
+
         // Button panel border so it matches with the workspace panel
         buttonsPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 1, 0, UIManager.getColor("Component.borderColor")),
-            BorderFactory.createEmptyBorder(6, 0, 0, 0)));
+            BorderFactory.createEmptyBorder(6, 0, 6, 5)));
+        workspacePanel.setBorder(BorderFactory.createEmptyBorder(12, 0, 0, 0));
 
         //Init perspective controller
         perspectiveController = Lookup.getDefault().lookup(PerspectiveController.class);
@@ -88,7 +91,7 @@ public class BannerComponent extends javax.swing.JPanel {
     }
 
     private void addGroupTabs() {
-        buttons = new JToggleButton[perspectiveController.getPerspectives().length];
+        JToggleButton[] buttons = new JToggleButton[perspectiveController.getPerspectives().length];
         int i = 0;
 
         //Add tabs
@@ -103,11 +106,6 @@ public class BannerComponent extends javax.swing.JPanel {
             buttonsPanel.add(toggleButton);
             buttons[i++] = toggleButton;
         }
-
-        // A bit of space before the workspaces
-        buttonsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0),
-            new java.awt.Dimension(10, 0)));
-
 
         //Set currently selected button
         perspectivesButtonGroup.setSelected(buttons[getSelectedPerspectiveIndex()].getModel(), true);
