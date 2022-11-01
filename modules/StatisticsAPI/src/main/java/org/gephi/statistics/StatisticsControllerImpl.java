@@ -72,9 +72,7 @@ import org.openide.util.lookup.ServiceProviders;
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */
-@ServiceProviders({
-    @ServiceProvider(service = StatisticsController.class),
-    @ServiceProvider(service = Controller.class)})
+@ServiceProvider(service = Controller.class)
 public class StatisticsControllerImpl implements StatisticsController {
 
     private final StatisticsBuilder[] statisticsBuilders;
