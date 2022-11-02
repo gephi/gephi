@@ -52,7 +52,8 @@ import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Severity;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationListener;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.ValidationUI;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
@@ -91,7 +92,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
         validationPanel.setInnerComponent(this);
 
         ValidationGroup group = validationPanel.getValidationGroup();
-        group.add(validator = new AvailableColumnsValidator());
+//        group.add(validator = new AvailableColumnsValidator());
         refreshAvailableColumnsControls();
         return validationPanel;
     }
@@ -118,7 +119,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
             }
         }
         if (validator != null) {
-            validator.event();
+//            validator.event();
         }
     }
 
@@ -188,19 +189,18 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
 
     class AvailableColumnsValidator extends ValidationListener {
 
+        protected AvailableColumnsValidator(Class targetType, ValidationUI ui,
+                                            Object component) {
+            super(targetType, ui, component);
+        }
+
         @Override
-        protected boolean validate(Problems prblms) {
+        protected void performValidation(Problems prblms) {
             if (!availableColumnsModel.canAddAvailableColumn()) {
                 prblms.add(NbBundle
                         .getMessage(AvailableColumnsPanel.class, "AvailableColumnsPanel.maximum-available-columns.info"),
                     Severity.INFO);
-                return false;
             }
-            return true;
-        }
-
-        public void event() {
-            validate();
         }
     }
 }

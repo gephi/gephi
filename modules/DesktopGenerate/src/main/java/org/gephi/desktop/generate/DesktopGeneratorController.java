@@ -57,7 +57,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -98,7 +98,7 @@ public class DesktopGeneratorController implements GeneratorController {
 
                     @Override
                     public void stateChanged(ChangeEvent e) {
-                        dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                     }
                 });
             }

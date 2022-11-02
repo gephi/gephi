@@ -61,7 +61,7 @@ import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -493,19 +493,20 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String string, ComboBoxModel t) {
+        public Class<ComboBoxModel> modelType() {
+            return ComboBoxModel.class;
+        }
+
+        @Override
+        public void validate(Problems problems, String string, ComboBoxModel t) {
             if (t.getSelectedItem() != null) {
-                if (ui.canExecuteSelectedStrategy()) {
-                    return true;
-                } else {
+                if (!ui.canExecuteSelectedStrategy()) {
                     problems.add(
                         NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
-                    return false;
                 }
             } else {
                 problems.add(
                     NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.less_than_2_columns_selected"));
-                return false;
             }
         }
     }

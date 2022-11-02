@@ -36,9 +36,8 @@
             <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.netbeans</groupId>
-            <artifactId>simple-validation</artifactId>
-            <version>1.0</version>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-swing-validation</artifactId>
         </dependency>
     </dependencies>
 
@@ -52,8 +51,14 @@
                         <publicPackage>org.gephi.lib.validation</publicPackage>
                         <publicPackage>org.gephi.ui.propertyeditor</publicPackage>
                         <publicPackage>org.gephi.ui.utils</publicPackage>
-                        <publicPackage>org.netbeans.validation.*</publicPackage>
                     </publicPackages>
+                    <!-- Needed to access Validation APIs -->
+                    <moduleDependencies>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-swing-validation</id>
+                            <type>impl</type>
+                        </dependency>
+                    </moduleDependencies>
                 </configuration>
             </plugin>
         </plugins>

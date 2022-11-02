@@ -162,6 +162,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-swing-validation</artifactId>
+            <type>nbm-file</type>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-nbjunit</artifactId>
             <scope>test</scope>

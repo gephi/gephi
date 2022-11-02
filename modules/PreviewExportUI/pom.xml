@@ -47,6 +47,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-swing-validation</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,6 +61,13 @@
                 <configuration>
                     <publicPackages>
                     </publicPackages>
+                    <!-- Needed to access Validation APIs -->
+                    <moduleDependencies>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-swing-validation</id>
+                            <type>impl</type>
+                        </dependency>
+                    </moduleDependencies>
                 </configuration>
             </plugin>
         </plugins>

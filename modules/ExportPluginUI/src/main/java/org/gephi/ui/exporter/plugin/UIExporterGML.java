@@ -46,7 +46,7 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.plugin.ExporterGML;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 

@@ -63,7 +63,7 @@ import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -225,7 +225,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                         }
                     });
                 }
@@ -247,7 +247,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                         }
                     });
                 }

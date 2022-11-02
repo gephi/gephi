@@ -52,7 +52,7 @@ import org.openide.util.NbBundle;
 public final class PositiveNumberValidator implements Validator<String> {
 
     @Override
-    public boolean validate(Problems problems, String compName, String model) {
+    public void validate(Problems problems, String compName, String model) {
         boolean result = false;
         try {
             Integer i = Integer.parseInt(model);
@@ -64,6 +64,10 @@ public final class PositiveNumberValidator implements Validator<String> {
                 "PositiveNumberValidator_NOT_POSITIVE", model);
             problems.add(message);
         }
-        return result;
+    }
+
+    @Override
+    public Class<String> modelType() {
+        return String.class;
     }
 }

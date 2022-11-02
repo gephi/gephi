@@ -53,9 +53,9 @@ import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -184,13 +184,13 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     }
 
     public void createValidation(ValidationGroup group, ValidationPanel panel) {
-        group.add(minTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(minTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new FormatValidator(), new TimeValidator(maxTextField, false));
-        group.add(maxTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(maxTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new FormatValidator(), new TimeValidator(minTextField, true));
-        group.add(startTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(startTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new FormatValidator(), new TimeValidator(endTextField, false));
-        group.add(endTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(endTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new FormatValidator(), new TimeValidator(startTextField, true));
     }
 
@@ -331,7 +331,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems prblms, String string, String t) {
+        public void validate(Problems prblms, String string, String t) {
             double thisDate;
             double otherDate;
             if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
@@ -343,21 +343,17 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                     if (minDate < model.getMin()) {
                         prblms
                             .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
-                        return false;
                     }
                     if (maxDate > model.getMax()) {
                         prblms
                             .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
-                        return false;
                     }
                     if (minDate >= maxDate) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
                     }
                 } catch (Exception ex) {
                     prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
                         DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
                 }
 
             } else {
@@ -369,38 +365,37 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                     if (minDate < model.getMin()) {
                         prblms
                             .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
-                        return false;
                     }
                     if (maxDate > model.getMax()) {
                         prblms
                             .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
-                        return false;
                     }
                     if (minDate >= maxDate) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
                     }
                 } catch (Exception e) {
                     prblms.add(
                         NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
-                    return false;
                 }
             }
-            return true;
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
     private class FormatValidator implements Validator<String> {
 
         @Override
-        public boolean validate(Problems prblms, String string, String t) {
+        public void validate(Problems prblms, String string, String t) {
             if (model.getTimeFormat().equals(TimeFormat.DATE)) {
                 try {
                     AttributeUtils.parseDateTime(t);
                 } catch (Exception ex) {
                     prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
                         DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
                 }
             } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
                 try {
@@ -408,7 +403,6 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 } catch (Exception ex) {
                     prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
                         DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
                 }
             } else {
                 try {
@@ -416,10 +410,13 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 } catch (Exception e) {
                     prblms.add(
                         NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
-                    return false;
                 }
             }
-            return true;
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 }

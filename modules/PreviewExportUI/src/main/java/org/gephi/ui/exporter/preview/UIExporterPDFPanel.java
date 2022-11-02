@@ -55,9 +55,9 @@ import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.lib.validation.ValidationClient;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -190,20 +190,20 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     @Override
     public void validate(ValidationGroup group) {
         //Size
-        group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(widthTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new PositiveSizeValidator(this));
-        group.add(heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(heightTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new PositiveSizeValidator(this));
 
         //Margins
-        group.add(topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-            Validators.REQUIRE_VALID_NUMBER);
-        group.add(bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-            Validators.REQUIRE_VALID_NUMBER);
-        group.add(leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-            Validators.REQUIRE_VALID_NUMBER);
-        group.add(rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
-            Validators.REQUIRE_VALID_NUMBER);
+        group.add(topMarginTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+            StringValidators.REQUIRE_VALID_NUMBER);
+        group.add(bottomMarginTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+            StringValidators.REQUIRE_VALID_NUMBER);
+        group.add(leftMarginTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+            StringValidators.REQUIRE_VALID_NUMBER);
+        group.add(rightMargintextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+            StringValidators.REQUIRE_VALID_NUMBER);
     }
 
     public void setup(PDFExporter pdfExporter) {
@@ -722,7 +722,12 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public Class<String> modelType() {
+            return String.class;
+        }
+
+        @Override
+        public void validate(Problems problems, String compName, String model) {
             boolean result = false;
             try {
                 double i = panel.sizeFormatter.parse(panel.widthTextField.getText()).doubleValue();
@@ -734,7 +739,6 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                     "PositiveSizeValidator.NEGATIVE", model);
                 problems.add(message);
             }
-            return result;
         }
     }
 }

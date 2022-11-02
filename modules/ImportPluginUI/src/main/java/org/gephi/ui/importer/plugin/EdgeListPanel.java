@@ -61,9 +61,10 @@ import org.gephi.io.importer.plugin.database.EdgeListDatabaseImpl;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.ValidatorUtils;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
@@ -165,7 +166,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         group = validationPanel.getValidationGroup();
 
         //Validators
-        group.add(innerPanel.configNameTextField, Validators.REQUIRE_NON_EMPTY_STRING);
+        group.add(innerPanel.configNameTextField, StringValidators.REQUIRE_NON_EMPTY_STRING);
         group.add(innerPanel.hostTextField, new HostOrFileValidator(innerPanel));
         group.add(innerPanel.dbTextField, new NotEmptyValidator(innerPanel));
         group.add(innerPanel.portTextField, new PortValidator(innerPanel));
@@ -210,7 +211,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
                     pwdTextField.setEnabled(true);
                     browseButton.setVisible(false);
                 }
-                group.validateAll();
+                group.performValidation();
             }
         });
     }
@@ -247,7 +248,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
             = (ConfigurationComboModel) configurationCombo.getModel();
         this.removeConfigurationButton.setEnabled(!model.getSelectedItem().equals(model.templateConfiguration));
         inited = true;
-        group.validateAll();
+        group.performValidation();
     }
 
     private void populateForm(EdgeListDatabaseImpl db) {
@@ -591,15 +592,20 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+
             }
             if (isSqlite(panel)) {
-                return Validators.FILE_MUST_BE_FILE.validate(problems, compName, model);
+                StringValidators.FILE_MUST_BE_FILE.validate(problems, compName, model);
             } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
+                StringValidators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
@@ -612,15 +618,20 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+
             }
             if (isSqlite(panel)) {
-                return true;
+
             } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
+                StringValidators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
@@ -633,17 +644,22 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+
             }
             if (isSqlite(panel)) {
-                return true;
+
             } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model)
-                    && Validators.REQUIRE_VALID_INTEGER.validate(problems, compName, model)
-                    && Validators.numberRange(1, 65535).validate(problems, compName, model);
+                ValidatorUtils.merge(StringValidators.REQUIRE_NON_EMPTY_STRING,
+                    StringValidators.REQUIRE_VALID_INTEGER,
+                    StringValidators.numberRange(1, 65535)).validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 

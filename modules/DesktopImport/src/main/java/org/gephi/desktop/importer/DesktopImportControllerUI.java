@@ -88,7 +88,7 @@ import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -286,7 +286,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         vp.addChangeListener(new ChangeListener() {
                             @Override
                             public void stateChanged(ChangeEvent e) {
-                                dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                             }
                         });
                     }
@@ -422,7 +422,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     vp.addChangeListener(new ChangeListener() {
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                         }
                     });
                 }
@@ -494,7 +494,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     vp.addChangeListener(new ChangeListener() {
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                         }
                     });
                 }
@@ -696,10 +696,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                         vp.addChangeListener(new ChangeListener() {
                                             @Override
                                             public void stateChanged(ChangeEvent e) {
-                                                dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                                dd2.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                                             }
                                         });
-                                        dd2.setValid(!vp.isProblem());
+                                        dd2.setValid(!vp.isFatalProblem());
                                     }
                                     Object result = DialogDisplayer.getDefault().notify(dd2);
                                     if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
