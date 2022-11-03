@@ -10,9 +10,7 @@ public class Utils {
 
     public static PreviewModelImpl newPreviewModel() {
         WorkspaceImpl workspace = new WorkspaceImpl(null, 0);
-        PreviewModelImpl model = new PreviewModelImpl(workspace);
-        workspace.add(model);
-        return model;
+        return workspace.getLookup().lookup(PreviewModelImpl.class);
     }
 
     public static PreviewModelImpl getPreviewModel(Workspace workspace) {

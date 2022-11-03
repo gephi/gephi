@@ -15,7 +15,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testDefaultNullNodes() {
-        Graph graph = GraphGenerator.build().withProject().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build().generateTinyGraph().getGraph();
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
         Assert.assertEquals(0, items.length);
@@ -23,7 +23,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testDefaultNullEdges() {
-        Graph graph = GraphGenerator.build().withProject().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build().withWorkspace().generateTinyGraph().getGraph();
 
         Item[] items = new EdgeLabelBuilder().getItems(graph);
         Assert.assertEquals(0, items.length);
@@ -31,7 +31,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testEmptyNodeLabel() {
-        Graph graph = GraphGenerator.build().withProject().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build().withWorkspace().generateTinyGraph().getGraph();
         graph.getNode(GraphGenerator.FIRST_NODE).setLabel("");
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
@@ -40,7 +40,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testNodeLabels() {
-        Graph graph = GraphGenerator.build().withProject().generateTinyGraph().addNodeLabels().getGraph();
+        Graph graph = GraphGenerator.build().withWorkspace().generateTinyGraph().addNodeLabels().getGraph();
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
         Assert.assertEquals(graph.getNodeCount(), items.length);
@@ -50,7 +50,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testEdgeLabels() {
-        Graph graph = GraphGenerator.build().withProject().generateTinyGraph().addEdgeLabels().getGraph();
+        Graph graph = GraphGenerator.build().withWorkspace().generateTinyGraph().addEdgeLabels().getGraph();
 
         Item[] items = new EdgeLabelBuilder().getItems(graph);
         Assert.assertEquals(graph.getEdgeCount(), items.length);
