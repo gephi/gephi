@@ -258,12 +258,6 @@ public class ProjectControllerImpl implements ProjectController {
         synchronized (this) {
             Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
 
-            // Models
-            Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
-                Model model = c.newModel(workspace);
-                workspace.add(model);
-            });
-
             //Event
             fireWorkspaceEvent(EventType.INITIALIZE, workspace);
             return workspace;

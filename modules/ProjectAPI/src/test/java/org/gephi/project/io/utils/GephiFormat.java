@@ -36,12 +36,6 @@ public class GephiFormat {
         throws XMLStreamException, IOException {
         Workspace destinationWorkspace = new WorkspaceImpl(null, 0);
 
-        // Init Models
-        Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
-            Model model = c.newModel(destinationWorkspace);
-            destinationWorkspace.add(model);
-        });
-
         StringReader stringReader = new StringReader(xmlString);
         XMLStreamReader reader = newXMLReader(stringReader);
         provider.readXML(reader, destinationWorkspace);

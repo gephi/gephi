@@ -71,14 +71,8 @@ public class GraphGenerator {
 
     public GraphGenerator withWorkspace() {
         workspace = new WorkspaceImpl(null, 0);
-
         workspace.add(graphModel);
 
-        // Init Models
-        Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
-            Model model = c.newModel(workspace);
-            workspace.add(model);
-        });
         return this;
     }
 

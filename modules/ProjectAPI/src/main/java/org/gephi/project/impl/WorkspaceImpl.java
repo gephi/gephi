@@ -44,6 +44,8 @@ package org.gephi.project.impl;
 
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceMetaData;
+import org.gephi.project.spi.Controller;
+import org.gephi.project.spi.Model;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.AbstractLookup;
@@ -76,6 +78,12 @@ public class WorkspaceImpl implements Workspace {
         instanceContent.add(workspaceInformation);
 
         workspaceMetaData = new WorkspaceMetaDataImpl();
+
+        // Models
+        Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
+            Model model = c.newModel(this);
+            add(model);
+        });
     }
 
     @Override
