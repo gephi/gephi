@@ -55,11 +55,14 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author mbastian
  */
-@ServiceProvider(service = Controller.class)
+@ServiceProviders({
+    @ServiceProvider(service = AppearanceController.class),
+    @ServiceProvider(service = Controller.class)})
 public class AppearanceControllerImpl implements AppearanceController, Controller<AppearanceModelImpl> {
 
     public AppearanceControllerImpl() {

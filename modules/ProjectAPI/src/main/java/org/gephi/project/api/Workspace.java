@@ -162,4 +162,11 @@ public interface Workspace extends Lookup.Provider {
      * @return workspace's source or null if missing
      */
     String getSource();
+
+    /**
+     * Returns the workspace's metadata.
+     *
+     * @return workspace metadata
+     */
+    WorkspaceMetaData getWorkspaceMetadata();
 }

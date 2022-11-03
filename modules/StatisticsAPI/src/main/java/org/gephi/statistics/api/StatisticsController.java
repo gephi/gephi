@@ -60,7 +60,19 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Patrick J. McSweeney, Mathieu Bastian
  * @see StatisticsBuilder
  */
-public interface StatisticsController extends Controller<StatisticsModel> {
+public interface StatisticsController {
+
+    /**
+     * Returns the model of the currently selected {@link Workspace}.
+     */
+    StatisticsModel getModel();
+
+    /**
+     * Returns the model in the given {@link Workspace}.
+     *
+     * @param workspace the workspace to lookup
+     */
+    StatisticsModel getModel(Workspace workspace);
 
     /**
      * Execute the statistics algorithm in a background thread and notify

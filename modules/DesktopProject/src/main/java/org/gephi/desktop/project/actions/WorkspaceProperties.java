@@ -38,48 +38,39 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
- */
+*/
 
-package org.gephi.project.api;
+package org.gephi.desktop.project.actions;
 
-/**
- * Workspace event listener.
- *
- * @author Mathieu Bastian
- */
-public interface WorkspaceListener {
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
-    /**
-     * Notify a workspace has been created.
-     *
-     * @param workspace the workspace that was created
-     */
-    void initialize(Workspace workspace);
+@ActionID(id = "org.gephi.desktop.project.actions.WorkspaceProperties", category = "Workspace")
+@ActionRegistration(displayName = "#CTL_WorkspaceProperties", lazy = false)
+@ActionReference(path = "Menu/Workspace", position = 2900)
+public final class WorkspaceProperties extends AbstractAction {
 
-    /**
-     * Notify a workspace has become the selected workspace.
-     *
-     * @param workspace the workspace that was made current workspace
-     */
-    void select(Workspace workspace);
+    WorkspaceProperties() {
+        super(NbBundle.getMessage(WorkspaceProperties.class, "CTL_WorkspaceProperties"),
+            ImageUtilities.loadImageIcon("DesktopProject/workspaceProperties.gif", false));
+    }
 
-    /**
-     * Notify another workspace will be selected. The <code>select()</code>
-     * always follows, unless the project is being closed.
-     *
-     * @param workspace the workspace that is currently the selected workspace
-     */
-    void unselect(Workspace workspace);
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canRenameWorkspace();
+    }
 
-    /**
-     * Notify a workspace will be closed, all data must be destroyed.
-     *
-     * @param workspace the workspace that is to be closed
-     */
-    void close(Workspace workspace);
-
-    /**
-     * Notify no more workspace is currently selected, the project is empty.
-     */
-    void disable();
+    @Override
+    public void actionPerformed(ActionEvent ev) {
+        if (isEnabled()) {
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).workspaceProperties();
+        }
+    }
 }

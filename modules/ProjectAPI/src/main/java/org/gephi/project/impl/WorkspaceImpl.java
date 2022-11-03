@@ -43,6 +43,7 @@
 package org.gephi.project.impl;
 
 import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceMetaData;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.AbstractLookup;
@@ -58,6 +59,7 @@ public class WorkspaceImpl implements Workspace {
     private final int id;
     private final ProjectImpl project;
     private final WorkspaceInformationImpl workspaceInformation;
+    private final WorkspaceMetaDataImpl workspaceMetaData;
 
     public WorkspaceImpl(ProjectImpl project, int id) {
         this(project, id, NbBundle.getMessage(WorkspaceImpl.class, "Workspace.default.prefix") + " " + id);
@@ -72,6 +74,8 @@ public class WorkspaceImpl implements Workspace {
         //Init Default Content
         workspaceInformation = new WorkspaceInformationImpl(name);
         instanceContent.add(workspaceInformation);
+
+        workspaceMetaData = new WorkspaceMetaDataImpl();
     }
 
     @Override
@@ -134,6 +138,11 @@ public class WorkspaceImpl implements Workspace {
     @Override
     public String getSource() {
         return workspaceInformation.getSource();
+    }
+
+    @Override
+    public WorkspaceMetaData getWorkspaceMetadata() {
+        return workspaceMetaData;
     }
 
     @Override

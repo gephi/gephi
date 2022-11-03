@@ -54,11 +54,14 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Controller.class)
+@ServiceProviders({
+    @ServiceProvider(service = LayoutController.class),
+    @ServiceProvider(service = Controller.class)})
 public class LayoutControllerImpl implements LayoutController, Controller<LayoutModelImpl> {
 
     private LayoutRun layoutRun;

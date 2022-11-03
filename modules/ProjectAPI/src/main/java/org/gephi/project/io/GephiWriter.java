@@ -54,7 +54,9 @@ import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
+import org.gephi.project.api.WorkspaceMetaData;
 import org.gephi.project.impl.ProjectImpl;
+import org.gephi.project.impl.WorkspaceMetaDataImpl;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.NbBundle;
 
@@ -129,6 +131,15 @@ public class GephiWriter {
         } else {
             writer.writeAttribute("status", "invalid");
         }
+
+        //MetaData
+        WorkspaceMetaData workspaceMetaData = workspace.getWorkspaceMetadata();
+        writer.writeStartElement("metadata");
+
+        writer.writeStartElement("description");
+        writer.writeCharacters(workspaceMetaData.getDescription());
+        writer.writeEndElement();
+        //End MetaData
 
         writer.writeEndElement();
         writer.writeEndDocument();

@@ -69,22 +69,12 @@ public final class DeleteWorkspace extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent ev) {
         if (isEnabled()) {
-            String message =
-                NbBundle.getMessage(DeleteWorkspace.class, "WorkspacePanel_closeWorkspace_Question");
-            String title = NbBundle.getMessage(DeleteWorkspace.class, "WorkspacePanel_closeWorkspace_Title");
-            NotifyDescriptor dd = new NotifyDescriptor(message, title,
-                NotifyDescriptor.YES_NO_OPTION,
-                NotifyDescriptor.QUESTION_MESSAGE, null, null);
-            Object retType = DialogDisplayer.getDefault().notify(dd);
-            if (retType == NotifyDescriptor.YES_OPTION) {
-
-                ProjectControllerUIImpl cui = Lookup.getDefault().lookup(ProjectControllerUIImpl.class);
-                if (ev.getSource() != null && ev.getSource() instanceof Workspace) {
-                    Workspace workspace = (Workspace) ev.getSource();
-                    cui.deleteWorkspace(workspace);
-                } else {
-                    cui.deleteWorkspace();
-                }
+            ProjectControllerUIImpl cui = Lookup.getDefault().lookup(ProjectControllerUIImpl.class);
+            if (ev.getSource() != null && ev.getSource() instanceof Workspace) {
+                Workspace workspace = (Workspace) ev.getSource();
+                cui.deleteWorkspace(workspace);
+            } else {
+                cui.deleteWorkspace();
             }
         }
     }

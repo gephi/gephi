@@ -55,7 +55,6 @@ import org.gephi.graph.api.TimeIndex;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
 import org.gephi.statistics.api.StatisticsController;
-import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -72,8 +71,10 @@ import org.openide.util.lookup.ServiceProviders;
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */
-@ServiceProvider(service = Controller.class)
-public class StatisticsControllerImpl implements StatisticsController {
+@ServiceProviders({
+    @ServiceProvider(service = StatisticsController.class),
+    @ServiceProvider(service = Controller.class)})
+public class StatisticsControllerImpl implements StatisticsController, Controller<StatisticsModelImpl> {
 
     private final StatisticsBuilder[] statisticsBuilders;
 
@@ -82,8 +83,8 @@ public class StatisticsControllerImpl implements StatisticsController {
     }
 
     @Override
-    public Class<StatisticsModel> getModelClass() {
-        return StatisticsModel.class;
+    public Class<StatisticsModelImpl> getModelClass() {
+        return StatisticsModelImpl.class;
     }
 
     @Override
@@ -93,7 +94,12 @@ public class StatisticsControllerImpl implements StatisticsController {
 
     @Override
     public StatisticsModelImpl getModel() {
-        return (StatisticsModelImpl) StatisticsController.super.getModel();
+        return Controller.super.getModel();
+    }
+
+    @Override
+    public StatisticsModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
     }
 
     @Override

@@ -63,6 +63,7 @@ import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.project.ProjectList;
 import org.gephi.ui.project.ProjectPropertiesEditor;
+import org.gephi.ui.project.WorkspacePropertiesEditor;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.openide.DialogDescriptor;
@@ -424,6 +425,19 @@ public class ProjectControllerUIImpl implements ProjectListener {
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {
             panel.save(project);
+        }
+    }
+
+    public void workspaceProperties() {
+        Workspace workspace = controller.getCurrentWorkspace();
+        WorkspacePropertiesEditor panel = new WorkspacePropertiesEditor();
+        panel.setup(workspace);
+
+        DialogDescriptor dd = new DialogDescriptor(panel,
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "WorkspaceProperties_dialog_title"));
+        Object result = DialogDisplayer.getDefault().notify(dd);
+        if (result == NotifyDescriptor.OK_OPTION) {
+            panel.unsetup(workspace);
         }
     }
 
