@@ -86,15 +86,15 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-11 ]
         arch: [ x64 ]
         include:
-          - task: create-targz
-            os: ubuntu-latest
-            arch: x64
-          - task: create-exe
-            os: windows-latest
-            arch: x64
-          - task: create-exe
-            os: windows-latest
-            arch: x32
+#          - task: create-targz
+#            os: ubuntu-latest
+#            arch: x64
+#          - task: create-exe
+#            os: windows-latest
+#            arch: x64
+#          - task: create-exe
+#            os: windows-latest
+#            arch: x32
           - task: create-dmg,notarize-dmg
             os: macos-11
             arch: x64
