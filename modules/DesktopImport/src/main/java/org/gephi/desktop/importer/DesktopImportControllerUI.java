@@ -88,6 +88,7 @@ import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+import org.netbeans.api.validation.adapters.DialogDescriptorAdapter;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -282,13 +283,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 if (panel != null) {
                     final DialogDescriptor dd = new DialogDescriptor(panel, title);
                     if (panel instanceof ValidationPanel) {
-                        ValidationPanel vp = (ValidationPanel) panel;
-                        vp.addChangeListener(new ChangeListener() {
-                            @Override
-                            public void stateChanged(ChangeEvent e) {
-                                dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                            }
-                        });
+                        ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd));
                     }
 
                     Object result = DialogDisplayer.getDefault().notify(dd);
@@ -418,13 +413,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ui.setup(new DatabaseImporter[] {importer});
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                        }
-                    });
+                    ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd));
                 }
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
@@ -464,7 +453,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 }
             }, taskName, defaultErrorHandler);
         } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+            Logger.getLogger("").log(Level.SEVERE, "", ex);
         }
     }
 
@@ -490,13 +479,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ui.setup(new WizardImporter[] {importer});
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                        }
-                    });
+                    ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd));
                 }
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
@@ -692,14 +675,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                     pui.setup(processor);
                                     final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
                                     if (panel instanceof ValidationPanel) {
-                                        ValidationPanel vp = (ValidationPanel) panel;
-                                        vp.addChangeListener(new ChangeListener() {
-                                            @Override
-                                            public void stateChanged(ChangeEvent e) {
-                                                dd2.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                                            }
-                                        });
-                                        dd2.setValid(!vp.isFatalProblem());
+                                        ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd2));
                                     }
                                     Object result = DialogDisplayer.getDefault().notify(dd2);
                                     if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
