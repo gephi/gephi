@@ -61,7 +61,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void restored() {
         //Initialize the perspective controller
-        Lookup.getDefault().lookup(PerspectiveController.class);
+//        Lookup.getDefault().lookup(PerspectiveController.class);
 
         // Init Banner
         initBanner();
