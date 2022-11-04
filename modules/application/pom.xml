@@ -400,10 +400,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>directory-chooser</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-filters</artifactId>
         </dependency>
         <dependency>
