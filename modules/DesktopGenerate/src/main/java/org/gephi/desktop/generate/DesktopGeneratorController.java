@@ -43,8 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.generate;
 
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
@@ -57,6 +55,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.netbeans.api.validation.adapters.DialogDescriptorAdapter;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -92,15 +91,9 @@ public class DesktopGeneratorController implements GeneratorController {
             ui.setup(generator);
             JPanel panel = ui.getPanel();
             final DialogDescriptor dd = new DialogDescriptor(panel, title);
-            if (panel instanceof ValidationPanel) {
-                ValidationPanel vp = (ValidationPanel) panel;
-                vp.addChangeListener(new ChangeListener() {
 
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                    }
-                });
+            if (panel instanceof ValidationPanel) {
+                ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd));
             }
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result != NotifyDescriptor.OK_OPTION) {
