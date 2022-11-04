@@ -81,6 +81,10 @@ public class EdgeListPanel extends javax.swing.JPanel {
         = NbBundle.getMessage(EdgeListPanel.class,
         "EdgeListPanel.template.name");
     private final String LAST_PATH = "EdgeListPanel_Sqlite_Last_Path";
+    private final EdgeListDatabaseManager databaseManager;
+    private boolean inited = false;
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JTextField dbTextField;
     protected javax.swing.JTextField edgeQueryTextField;
     protected javax.swing.JTextField hostTextField;
@@ -88,9 +92,6 @@ public class EdgeListPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField portTextField;
     protected javax.swing.JPasswordField pwdTextField;
     protected javax.swing.JTextField userTextField;
-    private final EdgeListDatabaseManager databaseManager;
-    private boolean inited = false;
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;
     private javax.swing.JLabel configNameLabel;
     private javax.swing.JTextField configNameTextField;
@@ -580,9 +581,6 @@ public class EdgeListPanel extends javax.swing.JPanel {
         this.removeConfigurationButton.setEnabled(!item.equals(model.templateConfiguration));
     }//GEN-LAST:event_configurationComboActionPerformed
 
-    public void initEvents() {
-    }
-
     private static class HostOrFileValidator implements Validator<String> {
 
         private final EdgeListPanel panel;
@@ -594,7 +592,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         @Override
         public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-
+                return;
             }
             if (isSqlite(panel)) {
                 StringValidators.FILE_MUST_BE_FILE.validate(problems, compName, model);
@@ -620,11 +618,9 @@ public class EdgeListPanel extends javax.swing.JPanel {
         @Override
         public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-
+                return;
             }
-            if (isSqlite(panel)) {
-
-            } else {
+            if (!isSqlite(panel)) {
                 StringValidators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
         }
@@ -646,11 +642,9 @@ public class EdgeListPanel extends javax.swing.JPanel {
         @Override
         public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-
+                return;
             }
-            if (isSqlite(panel)) {
-
-            } else {
+            if (!isSqlite(panel)) {
                 ValidatorUtils.merge(StringValidators.REQUIRE_NON_EMPTY_STRING,
                     StringValidators.REQUIRE_VALID_INTEGER,
                     StringValidators.numberRange(1, 65535)).validate(problems, compName, model);
