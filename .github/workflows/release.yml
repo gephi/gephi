@@ -166,30 +166,30 @@ jobs:
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
 
-  update-site:
-    needs: bundle
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Retrieve autoupdate output
-        uses: actions/download-artifact@v3
-        with:
-          name: autoupdate-output
-          path: modules/application/target/autoupdate_site
-
-      - name: Configure Git user
-        run: |
-          git config --global user.email "github-action@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-
-      - name: Update autoupdate content on gh-pages
-        run: mvn validate scm-publish:publish-scm -P push-site
-        working-directory: modules/application
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#  update-site:
+#    needs: bundle
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 11
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#
+#      - name: Retrieve autoupdate output
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: autoupdate-output
+#          path: modules/application/target/autoupdate_site
+#
+#      - name: Configure Git user
+#        run: |
+#          git config --global user.email "github-action@users.noreply.github.com"
+#          git config --global user.name "GitHub Actions"
+#
+#      - name: Update autoupdate content on gh-pages
+#        run: mvn validate scm-publish:publish-scm -P push-site
+#        working-directory: modules/application
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
