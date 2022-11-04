@@ -61,7 +61,7 @@ public final class PositiveNumberValidator implements Validator<String> {
         }
         if (!result) {
             String message = NbBundle.getMessage(PositiveNumberValidator.class,
-                "PositiveNumberValidator_NOT_POSITIVE", model);
+                "PositiveNumberValidator_NOT_POSITIVE", compName);
             problems.add(message);
         }
     }

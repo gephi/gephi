@@ -61,7 +61,7 @@ public final class Multiple4NumberValidator implements Validator<String> {
         }
         if (!result) {
             String message = NbBundle.getMessage(Multiple4NumberValidator.class,
-                "Multiple4NumberValidator_NOT_MULTIPLE", model);
+                "Multiple4NumberValidator_NOT_MULTIPLE", compName);
             problems.add(message);
         }
     }

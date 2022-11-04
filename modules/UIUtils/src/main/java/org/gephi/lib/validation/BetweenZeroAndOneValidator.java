@@ -60,8 +60,8 @@ public class BetweenZeroAndOneValidator implements Validator<String> {
         } catch (Exception e) {
         }
         if (!result) {
-            String message = NbBundle.getMessage(PositiveNumberValidator.class,
-                "PositiveNumberValidator_NOT_POSITIVE", model);
+            String message = NbBundle.getMessage(BetweenZeroAndOneValidator.class,
+                "BetweenZeroAndOneValidator_NOT_IN_RANGE", compName);
             problems.add(message);
         }
     }
