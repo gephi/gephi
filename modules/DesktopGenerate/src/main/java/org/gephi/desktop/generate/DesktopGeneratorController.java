@@ -51,12 +51,11 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
-import org.netbeans.api.validation.adapters.DialogDescriptorAdapter;
-import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -90,11 +89,7 @@ public class DesktopGeneratorController implements GeneratorController {
         if (ui != null) {
             ui.setup(generator);
             JPanel panel = ui.getPanel();
-            final DialogDescriptor dd = new DialogDescriptor(panel, title);
-
-            if (panel instanceof ValidationPanel) {
-                ((ValidationPanel) panel).getValidationGroup().addUI(new DialogDescriptorAdapter(dd));
-            }
+            final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(panel, title);
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result != NotifyDescriptor.OK_OPTION) {
                 return;

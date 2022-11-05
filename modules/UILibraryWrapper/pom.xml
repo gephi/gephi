@@ -69,6 +69,17 @@
             <artifactId>timingframework</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.mastfrog</groupId>
+            <artifactId>simplevalidation-swing</artifactId>
+            <version>1.14.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mastfrog</groupId>
+                    <artifactId>nbstubs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- Flatlaf SwingX addon, need to be synced with NB flatlaf version -->
         <dependency>
             <groupId>com.formdev</groupId>
@@ -104,7 +115,8 @@
                         <publicPackage>org.pushingpixels.flamingo.*</publicPackage>
                         <publicPackage>org.jdesktop.swingx.*</publicPackage>
                         <publicPackage>org.jdesktop.beansbinding.*</publicPackage>
-                        <publicPackage>org.jdesktop.animation.*</publicPackage> 
+                        <publicPackage>org.jdesktop.animation.*</publicPackage>
+                        <publicPackage>org.netbeans.validation.api.*</publicPackage>
                     </publicPackages>
                     <moduleDependencies>
                         <!-- Required to allow flatlaf-swingx JAR to access private classes in the NB flatlaf module -->

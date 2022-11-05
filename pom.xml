@@ -302,12 +302,6 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>org.netbeans.modules</groupId>
-                <artifactId>org-netbeans-modules-swing-validation</artifactId>
-                <version>${netbeans.version}</version>
-                <type>nbm-file</type>
-            </dependency>
-            <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-dialogs</artifactId>
                 <version>${netbeans.version}</version>
@@ -425,11 +419,6 @@
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
-                <version>${netbeans.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.netbeans.modules</groupId>
-                <artifactId>org-netbeans-modules-swing-validation</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>

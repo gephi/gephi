@@ -60,8 +60,8 @@
             <artifactId>org-openide-dialogs</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-swing-validation</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 
@@ -73,13 +73,6 @@
                 <configuration>
                     <publicPackages>
                     </publicPackages>
-                    <!-- Needed to access Validation APIs -->
-                    <moduleDependencies>
-                        <dependency>
-                            <id>org.netbeans.modules:org-netbeans-modules-swing-validation</id>
-                            <type>impl</type>
-                        </dependency>
-                    </moduleDependencies>
                 </configuration>
             </plugin>
         </plugins>
