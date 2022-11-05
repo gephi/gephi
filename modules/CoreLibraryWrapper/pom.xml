@@ -18,7 +18,7 @@
     <properties>
         <gephi.stax-utils.version>snapshot-20100402</gephi.stax-utils.version>
         <gephi.commons-codec.version>1.15</gephi.commons-codec.version>
-        <gephi.commons-compress.version>1.21</gephi.commons-compress.version>
+        <gephi.commons-compress.version>1.22</gephi.commons-compress.version>
         <gephi.commons-csv.version>1.9.0</gephi.commons-csv.version>
         <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>

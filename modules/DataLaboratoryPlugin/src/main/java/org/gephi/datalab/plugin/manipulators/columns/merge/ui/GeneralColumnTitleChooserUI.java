@@ -52,7 +52,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * UI for general merge strategies that only need to select a title for the column to create.

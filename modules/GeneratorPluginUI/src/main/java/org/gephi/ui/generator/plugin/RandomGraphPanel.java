@@ -44,9 +44,10 @@ package org.gephi.ui.generator.plugin;
 
 import org.gephi.lib.validation.BetweenZeroAndOneValidator;
 import org.gephi.lib.validation.PositiveNumberValidator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.ValidatorUtils;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * @author Mathieu Bastian
@@ -66,16 +67,19 @@ public class RandomGraphPanel extends javax.swing.JPanel {
             innerPanel = new RandomGraphPanel();
         }
         validationPanel.setInnerComponent(innerPanel);
-
         ValidationGroup group = validationPanel.getValidationGroup();
 
+        //Make sure components have names
+        innerPanel.nodeField.setName(innerPanel.nodeLabel.getText().replace(":", ""));
+        innerPanel.edgeField.setName(innerPanel.edgeLabel.getText().replace(":", ""));
+
         //Node field
-        group.add(innerPanel.nodeField, Validators.REQUIRE_NON_EMPTY_STRING,
-            new PositiveNumberValidator());
+        group.add(innerPanel.nodeField, ValidatorUtils.merge(StringValidators.REQUIRE_NON_EMPTY_STRING,
+            new PositiveNumberValidator()));
 
         //Edge field
-        group.add(innerPanel.edgeField, Validators.REQUIRE_NON_EMPTY_STRING,
-            new BetweenZeroAndOneValidator());
+        group.add(innerPanel.edgeField, ValidatorUtils.merge(StringValidators.REQUIRE_NON_EMPTY_STRING,
+            new BetweenZeroAndOneValidator()));
 
         return validationPanel;
     }

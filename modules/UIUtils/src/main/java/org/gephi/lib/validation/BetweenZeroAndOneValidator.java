@@ -52,7 +52,7 @@ import org.openide.util.NbBundle;
 public class BetweenZeroAndOneValidator implements Validator<String> {
 
     @Override
-    public boolean validate(Problems problems, String compName, String model) {
+    public void validate(Problems problems, String compName, String model) {
         boolean result = false;
         try {
             Double d = Double.parseDouble(model);
@@ -60,10 +60,14 @@ public class BetweenZeroAndOneValidator implements Validator<String> {
         } catch (Exception e) {
         }
         if (!result) {
-            String message = NbBundle.getMessage(PositiveNumberValidator.class,
-                "PositiveNumberValidator_NOT_POSITIVE", model);
+            String message = NbBundle.getMessage(BetweenZeroAndOneValidator.class,
+                "BetweenZeroAndOneValidator_NOT_IN_RANGE", compName);
             problems.add(message);
         }
-        return result;
+    }
+
+    @Override
+    public Class<String> modelType() {
+        return String.class;
     }
 }

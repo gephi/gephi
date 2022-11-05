@@ -56,7 +56,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.gephi.ui.utils.IntervalBoundValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -116,7 +116,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         validationPanel.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                dialogControls.setOkButtonEnabled(!validationPanel.isProblem());
+                dialogControls.setOkButtonEnabled(!validationPanel.isFatalProblem());
             }
         });
     }
@@ -149,7 +149,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_END_PREFERENCE, intervalEnd);
         NbPreferences.forModule(ConvertColumnToDynamicUI.class).putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
 
-        if (!validationPanel.isProblem()) {
+        if (!validationPanel.isFatalProblem()) {
             manipulator.setTitle(titleTextField.getText());
             manipulator.setReplaceColumn(replaceColumn);
             manipulator.setLow(AttributeUtils.parseDateTimeOrTimestamp(intervalStart));

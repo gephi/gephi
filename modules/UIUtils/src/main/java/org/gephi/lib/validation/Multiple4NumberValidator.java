@@ -52,7 +52,7 @@ import org.openide.util.NbBundle;
 public final class Multiple4NumberValidator implements Validator<String> {
 
     @Override
-    public boolean validate(Problems problems, String compName, String model) {
+    public void validate(Problems problems, String compName, String model) {
         boolean result = false;
         try {
             Integer i = Integer.parseInt(model);
@@ -61,9 +61,13 @@ public final class Multiple4NumberValidator implements Validator<String> {
         }
         if (!result) {
             String message = NbBundle.getMessage(Multiple4NumberValidator.class,
-                "Multiple4NumberValidator_NOT_MULTIPLE", model);
+                "Multiple4NumberValidator_NOT_MULTIPLE", compName);
             problems.add(message);
         }
-        return result;
+    }
+
+    @Override
+    public Class<String> modelType() {
+        return String.class;
     }
 }
