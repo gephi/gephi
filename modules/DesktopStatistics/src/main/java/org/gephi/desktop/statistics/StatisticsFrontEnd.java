@@ -55,6 +55,7 @@ import org.gephi.desktop.statistics.api.StatisticsControllerUI;
 import org.gephi.desktop.statistics.api.StatisticsModelUI;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.statistics.spi.Statistics;
@@ -63,7 +64,7 @@ import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -216,20 +217,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 dynamicPanel.setup((DynamicStatistics) currentStatistics);
 
                 JPanel dynamicSettingsPanel = DynamicSettingsPanel.createCounpoundPanel(dynamicPanel, settingsPanel);
-                final DialogDescriptor dd = new DialogDescriptor(dynamicSettingsPanel, NbBundle
+                final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(dynamicSettingsPanel, NbBundle
                     .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
                         builder.getName()));
-                if (dynamicSettingsPanel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) dynamicSettingsPanel;
-                    vp.addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
-
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     dynamicPanel.unsetup((DynamicStatistics) currentStatistics);
                     statisticsUI.unsetup();
@@ -237,20 +227,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 }
             } else if (settingsPanel != null) {
                 statisticsUI.setup(currentStatistics);
-
-                final DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle
+                final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(settingsPanel, NbBundle
                     .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
                         builder.getName()));
-                if (settingsPanel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) settingsPanel;
-                    vp.addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     statisticsUI.unsetup();
                     controllerUI.execute(currentStatistics, listener);

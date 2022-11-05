@@ -65,7 +65,7 @@ import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.ui.components.CloseButton;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -246,7 +246,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                             @Override
                             public void stateChanged(ChangeEvent e) {
-                                descriptor.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                descriptor.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
                             }
                         });
                         Object result = DialogDisplayer.getDefault().notify(descriptor);

@@ -62,9 +62,9 @@ import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -266,16 +266,16 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         TimeFormat timeFormat = graphModel.getTimeFormat();
 
         if (timeFormat == TimeFormat.DOUBLE) {
-            group.add(windowTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
-            group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
+            group.add(windowTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+                StringValidators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
+            group.add(tickTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
+                StringValidators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
         } else {
             //TODO validation with dates
-            group.add(windowTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+            group.add(windowTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
                 new PositiveNumberValidator(),
                 new DateRangeValidator(windowTimeUnitCombo.getModel()));
-            group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+            group.add(tickTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
                 new PositiveNumberValidator(),
                 new DateRangeValidator(tickTimeUnitCombo.getModel()),
                 new TickUnderWindowValidator(timeFormat != TimeFormat.DOUBLE));
@@ -493,12 +493,12 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems prblms, String string, String t) {
+        public void validate(Problems prblms, String string, String t) {
             Integer i = 0;
             try {
                 i = Integer.parseInt(t);
             } catch (NumberFormatException e) {
-                return false;
+                prblms.add("Number can't be parsed");
             }
             TimeUnit tu = getSelectedTimeUnit(combo);
             long timeInMilli = (long) getTimeInMilliseconds(t, tu);
@@ -507,9 +507,11 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                 String message = NbBundle.getMessage(DynamicSettingsPanel.class,
                     "DateRangeValidator.NotInRange", i, 1, tu.convert(limit, TimeUnit.MILLISECONDS));
                 prblms.add(message);
-                return false;
             }
-            return true;
+        }
+
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
@@ -522,7 +524,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems prblms, String string, String t) {
+        public void validate(Problems prblms, String string, String t) {
             if (dates) {
                 Integer tick = 0;
                 Integer window = 0;
@@ -530,7 +532,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                     tick = Integer.parseInt(t);
                     window = Integer.parseInt(windowTextField.getText());
                 } catch (NumberFormatException e) {
-                    return false;
+                    prblms.add("Number can't be parsed");
                 }
                 TimeUnit tu = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
                 long tickInMilli = (long) getTimeInMilliseconds(t, tu);
@@ -540,7 +542,6 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                     String message = NbBundle.getMessage(DynamicSettingsPanel.class,
                         "TickUnderWindowValidator.OverWindow");
                     prblms.add(message);
-                    return false;
                 }
             } else {
                 Double tick = 0.;
@@ -549,16 +550,19 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                     tick = Double.parseDouble(t);
                     window = Double.parseDouble(windowTextField.getText());
                 } catch (NumberFormatException e) {
-                    return false;
+                    prblms.add("Number can't be parsed");
                 }
                 if (tick > window) {
                     String message = NbBundle.getMessage(DynamicSettingsPanel.class,
                         "TickUnderWindowValidator.OverWindow");
                     prblms.add(message);
-                    return false;
                 }
             }
-            return true;
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 }

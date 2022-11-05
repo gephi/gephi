@@ -208,7 +208,7 @@
                             <directory>src/main/libs</directory> 
                             <targetPath>modules/lib</targetPath> 
                         </nbmResource> 
-                    </nbmResources> 
+                    </nbmResources>
                 </configuration>
             </plugin>
         </plugins>

@@ -36,9 +36,12 @@
             <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.netbeans</groupId>
-            <artifactId>simple-validation</artifactId>
-            <version>1.0</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
         </dependency>
     </dependencies>
 
@@ -52,7 +55,6 @@
                         <publicPackage>org.gephi.lib.validation</publicPackage>
                         <publicPackage>org.gephi.ui.propertyeditor</publicPackage>
                         <publicPackage>org.gephi.ui.utils</publicPackage>
-                        <publicPackage>org.netbeans.validation.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

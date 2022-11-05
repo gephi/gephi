@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.importer.plugin;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -61,9 +62,10 @@ import org.gephi.io.importer.plugin.database.EdgeListDatabaseImpl;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.ValidatorUtils;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
@@ -80,15 +82,9 @@ public class EdgeListPanel extends javax.swing.JPanel {
         = NbBundle.getMessage(EdgeListPanel.class,
         "EdgeListPanel.template.name");
     private final String LAST_PATH = "EdgeListPanel_Sqlite_Last_Path";
-    protected javax.swing.JTextField dbTextField;
-    protected javax.swing.JTextField edgeQueryTextField;
-    protected javax.swing.JTextField hostTextField;
-    protected javax.swing.JTextField nodeQueryTextField;
-    protected javax.swing.JTextField portTextField;
-    protected javax.swing.JPasswordField pwdTextField;
-    protected javax.swing.JTextField userTextField;
     private final EdgeListDatabaseManager databaseManager;
     private boolean inited = false;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;
     private javax.swing.JLabel configNameLabel;
@@ -96,17 +92,24 @@ public class EdgeListPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox configurationCombo;
     private javax.swing.JLabel configurationLabel;
     private javax.swing.JLabel dbLabel;
+    protected javax.swing.JTextField dbTextField;
     private javax.swing.JComboBox driverComboBox;
     private javax.swing.JLabel driverLabel;
     private javax.swing.JLabel edgeQueryLabel;
+    protected javax.swing.JTextField edgeQueryTextField;
     private javax.swing.JLabel hostLabel;
+    protected javax.swing.JTextField hostTextField;
     private org.jdesktop.swingx.JXHeader jXHeader1;
     private javax.swing.JLabel nodeQueryLabel;
+    protected javax.swing.JTextField nodeQueryTextField;
     private javax.swing.JLabel portLabel;
+    protected javax.swing.JTextField portTextField;
     private javax.swing.JLabel pwdLabel;
+    protected javax.swing.JPasswordField pwdTextField;
     private javax.swing.JButton removeConfigurationButton;
     private javax.swing.JButton testConnection;
     private javax.swing.JLabel userLabel;
+    protected javax.swing.JTextField userTextField;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -115,6 +118,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     public EdgeListPanel() {
         databaseManager = new EdgeListDatabaseManager();
         initComponents();
+        jXHeader1.setPreferredSize(new Dimension(100, 100));
 
         driverComboBox.addItemListener(new ItemListener() {
 
@@ -165,7 +169,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         group = validationPanel.getValidationGroup();
 
         //Validators
-        group.add(innerPanel.configNameTextField, Validators.REQUIRE_NON_EMPTY_STRING);
+        group.add(innerPanel.configNameTextField, StringValidators.REQUIRE_NON_EMPTY_STRING);
         group.add(innerPanel.hostTextField, new HostOrFileValidator(innerPanel));
         group.add(innerPanel.dbTextField, new NotEmptyValidator(innerPanel));
         group.add(innerPanel.portTextField, new PortValidator(innerPanel));
@@ -210,7 +214,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
                     pwdTextField.setEnabled(true);
                     browseButton.setVisible(false);
                 }
-                group.validateAll();
+//                group.performValidation();
             }
         });
     }
@@ -247,7 +251,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
             = (ConfigurationComboModel) configurationCombo.getModel();
         this.removeConfigurationButton.setEnabled(!model.getSelectedItem().equals(model.templateConfiguration));
         inited = true;
-        group.validateAll();
+        group.performValidation();
     }
 
     private void populateForm(EdgeListDatabaseImpl db) {
@@ -315,14 +319,13 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         configurationCombo.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configurationComboActionPerformed(evt);
             }
         });
 
-        configurationLabel.setText(org.openide.util.NbBundle
-            .getMessage(EdgeListPanel.class, "EdgeListPanel.configurationLabel.text")); // NOI18N
+        configurationLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
+            "EdgeListPanel.configurationLabel.text")); // NOI18N
 
         hostLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.hostLabel.text")); // NOI18N
@@ -337,8 +340,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
         userLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.userLabel.text")); // NOI18N
 
-        dbLabel
-            .setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.dbLabel.text")); // NOI18N
+        dbLabel.setText(
+            org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.dbLabel.text")); // NOI18N
 
         pwdLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.pwdLabel.text")); // NOI18N
@@ -353,21 +356,19 @@ public class EdgeListPanel extends javax.swing.JPanel {
         nodeQueryLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeQueryLabel.text")); // NOI18N
 
-        nodeQueryTextField.setText(org.openide.util.NbBundle
-            .getMessage(EdgeListPanel.class, "EdgeListPanel.nodeQueryTextField.text")); // NOI18N
+        nodeQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
+            "EdgeListPanel.nodeQueryTextField.text")); // NOI18N
 
         edgeQueryLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQueryLabel.text")); // NOI18N
 
-        edgeQueryTextField.setText(org.openide.util.NbBundle
-            .getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQueryTextField.text")); // NOI18N
+        edgeQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
+            "EdgeListPanel.edgeQueryTextField.text")); // NOI18N
 
-        testConnection.setIcon(
-            ImageUtilities.loadImageIcon("ImportPluginUI/test_connection.png", false)); // NOI18N
+        testConnection.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/test_connection.png", false));
         testConnection.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 testConnectionActionPerformed(evt);
             }
@@ -380,13 +381,12 @@ public class EdgeListPanel extends javax.swing.JPanel {
         configNameLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configNameLabel.text")); // NOI18N
 
-        removeConfigurationButton.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/remove_config.png", false)); // NOI18N
-        removeConfigurationButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(EdgeListPanel.class, "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
+        removeConfigurationButton.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/remove_config.png", false));
+        removeConfigurationButton.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
+            "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
         removeConfigurationButton.setMargin(new java.awt.Insets(0, 4, 0, 2));
         removeConfigurationButton.setPreferredSize(new java.awt.Dimension(65, 29));
         removeConfigurationButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeConfigurationButtonActionPerformed(evt);
             }
@@ -404,7 +404,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+                .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -424,26 +424,26 @@ public class EdgeListPanel extends javax.swing.JPanel {
                             .addGap(36, 36, 36)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(configurationCombo, 0, 423, Short.MAX_VALUE)
+                                    .addComponent(configurationCombo, 0, 470, Short.MAX_VALUE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(removeConfigurationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
                                         javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(configNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448,
+                                .addComponent(configNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 497,
                                     Short.MAX_VALUE)
                                 .addComponent(edgeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                                 .addComponent(nodeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-                                .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                                .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                                 .addComponent(dbTextField, javax.swing.GroupLayout.Alignment.TRAILING,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                                 .addComponent(userTextField, javax.swing.GroupLayout.Alignment.TRAILING,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                                 .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98,
                                     javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                                .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 351,
+                                    .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 417,
                                         Short.MAX_VALUE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(browseButton)))))
@@ -579,9 +579,6 @@ public class EdgeListPanel extends javax.swing.JPanel {
         this.removeConfigurationButton.setEnabled(!item.equals(model.templateConfiguration));
     }//GEN-LAST:event_configurationComboActionPerformed
 
-    public void initEvents() {
-    }
-
     private static class HostOrFileValidator implements Validator<String> {
 
         private final EdgeListPanel panel;
@@ -591,15 +588,20 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+                return;
             }
             if (isSqlite(panel)) {
-                return Validators.FILE_MUST_BE_FILE.validate(problems, compName, model);
+                StringValidators.FILE_MUST_BE_FILE.validate(problems, compName, model);
             } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
+                StringValidators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
@@ -612,15 +614,18 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+                return;
             }
-            if (isSqlite(panel)) {
-                return true;
-            } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
+            if (!isSqlite(panel)) {
+                StringValidators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 
@@ -633,17 +638,20 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public void validate(Problems problems, String compName, String model) {
             if (!panel.inited) {
-                return true;
+                return;
             }
-            if (isSqlite(panel)) {
-                return true;
-            } else {
-                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model)
-                    && Validators.REQUIRE_VALID_INTEGER.validate(problems, compName, model)
-                    && Validators.numberRange(1, 65535).validate(problems, compName, model);
+            if (!isSqlite(panel)) {
+                ValidatorUtils.merge(StringValidators.REQUIRE_NON_EMPTY_STRING,
+                    StringValidators.REQUIRE_VALID_INTEGER,
+                    StringValidators.numberRange(1, 65535)).validate(problems, compName, model);
             }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
         }
     }
 

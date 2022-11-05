@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jXHeader1" alignment="0" pref="655" max="32767" attributes="0"/>
+          <Component id="jXHeader1" alignment="0" pref="663" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
@@ -37,20 +37,20 @@
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="configurationCombo" pref="423" max="32767" attributes="1"/>
+                              <Component id="configurationCombo" pref="470" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="removeConfigurationButton" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="configNameTextField" alignment="0" pref="448" max="32767" attributes="0"/>
-                          <Component id="edgeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
-                          <Component id="nodeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
-                          <Component id="portTextField" alignment="0" pref="448" max="32767" attributes="1"/>
-                          <Component id="dbTextField" alignment="1" pref="448" max="32767" attributes="1"/>
-                          <Component id="userTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="configNameTextField" alignment="0" pref="497" max="32767" attributes="0"/>
+                          <Component id="edgeQueryTextField" alignment="1" pref="497" max="32767" attributes="1"/>
+                          <Component id="nodeQueryTextField" alignment="1" pref="497" max="32767" attributes="1"/>
+                          <Component id="portTextField" alignment="0" pref="497" max="32767" attributes="1"/>
+                          <Component id="dbTextField" alignment="1" pref="497" max="32767" attributes="1"/>
+                          <Component id="userTextField" alignment="1" pref="497" max="32767" attributes="1"/>
                           <Component id="driverComboBox" alignment="0" min="-2" pref="98" max="-2" attributes="1"/>
-                          <Component id="pwdTextField" alignment="0" pref="448" max="32767" attributes="0"/>
+                          <Component id="pwdTextField" alignment="0" pref="497" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="hostTextField" pref="351" max="32767" attributes="1"/>
+                              <Component id="hostTextField" pref="417" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="browseButton" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -259,8 +259,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="testConnection">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/org/gephi/ui/importer/plugin/resources/test_connection.png"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="ImageUtilities.loadImageIcon(&quot;ImportPluginUI/test_connection.png&quot;, false)" type="code"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/importer/plugin/Bundle.properties" key="EdgeListPanel.testConnection.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -292,8 +292,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="removeConfigurationButton">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/org/gephi/ui/importer/plugin/resources/remove_config.png"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="ImageUtilities.loadImageIcon(&quot;ImportPluginUI/remove_config.png&quot;, false)" type="code"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/importer/plugin/Bundle.properties" key="EdgeListPanel.removeConfigurationButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>

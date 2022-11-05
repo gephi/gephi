@@ -44,9 +44,9 @@ package org.gephi.ui.exporter.preview;
 
 import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.lib.validation.ValidationClient;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 public class UIExporterPNGPanel extends javax.swing.JPanel implements ValidationClient {
 
@@ -199,11 +199,11 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
 
     @Override
     public void validate(ValidationGroup group) {
-        group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_VALID_INTEGER,
-            Validators.numberRange(1, Integer.MAX_VALUE));
-        group.add(heightTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_VALID_INTEGER,
-            Validators.numberRange(1, Integer.MAX_VALUE));
-        group.add(marginTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_VALID_INTEGER,
-            Validators.numberRange(0, 100));
+        group.add(widthTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
+            StringValidators.numberRange(1, Integer.MAX_VALUE));
+        group.add(heightTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
+            StringValidators.numberRange(1, Integer.MAX_VALUE));
+        group.add(marginTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
+            StringValidators.numberRange(0, 100));
     }
 }

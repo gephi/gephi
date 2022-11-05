@@ -48,9 +48,9 @@ import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.lib.validation.Multiple4NumberValidator;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.windows.WindowManager;
 
 /**
@@ -95,11 +95,11 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         ValidationGroup group = validationPanel.getValidationGroup();
 
         //Node field
-        group.add(innerPanel.widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(innerPanel.widthTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new Multiple4NumberValidator());
 
         //Edge field
-        group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+        group.add(innerPanel.heightTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new Multiple4NumberValidator());
 
         return validationPanel;
