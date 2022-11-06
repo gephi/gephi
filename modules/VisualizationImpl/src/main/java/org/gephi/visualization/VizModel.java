@@ -511,7 +511,9 @@ public class VizModel {
             writer.writeAttribute("antialiasing", String.valueOf(screenshotMaker.getAntiAliasing()));
             writer.writeAttribute("transparent", String.valueOf(screenshotMaker.isTransparentBackground()));
             writer.writeAttribute("autosave", String.valueOf(screenshotMaker.isAutoSave()));
-            writer.writeAttribute("path", screenshotMaker.getDefaultDirectory());
+            if (screenshotMaker.getDefaultDirectory() != null) {
+                writer.writeAttribute("path", screenshotMaker.getDefaultDirectory());
+            }
             writer.writeEndElement();
         }
     }
