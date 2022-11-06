@@ -42,6 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.project.api;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Hosts the project lists and the currently selected project.
  *
@@ -69,4 +72,8 @@ public interface Projects {
      * @return project array
      */
     Project[] getProjects();
+
+    void saveProjects(File file) throws IOException;
+
+    void loadProjects(File file)  throws IOException;
 }

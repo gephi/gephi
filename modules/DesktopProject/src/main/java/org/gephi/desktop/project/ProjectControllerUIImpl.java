@@ -72,6 +72,7 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.modules.Places;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -85,6 +86,10 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = ProjectListener.class)
 public class ProjectControllerUIImpl implements ProjectListener {
 
+    public static final String PROJECTS_PERSISTENCE_ENABLED = "ProjectsPersistence_Enabled";
+    private static final boolean DEFAULT_PROJECTS_PERSISTENCE_ENABLED = true;
+    private static final String PROJECTS_FOLDER = "projects";
+    private static final String PROJECTS_FILE= "projects.xml";
     //Project
     private final ProjectController controller;
     private final ImportControllerUI importControllerUI;
@@ -146,6 +151,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         });
         unlockProjectActions();
         updateTitleBar(project);
+
+        //Persist projects so the last opened is refreshed
+        saveProjects();
     }
 
     @Override
@@ -180,6 +188,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         });
         unlockProjectActions();
         updateTitleBar(project);
+
+        //Persist projects so the last opened is refreshed
+        saveProjects();
     }
 
     @Override
@@ -609,5 +620,39 @@ public class ProjectControllerUIImpl implements ProjectListener {
     private String getCurrentVersion() {
         return NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion")
             .replaceAll("( [0-9]{12})$", "");
+    }
+
+    private File getProjectsFile() {
+        File folder = new File(Places.getUserDirectory(), PROJECTS_FOLDER);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return new File(folder, PROJECTS_FILE);
+    }
+
+    public void loadProjects() {
+        if(NbPreferences.forModule(Installer.class).getBoolean(PROJECTS_PERSISTENCE_ENABLED, DEFAULT_PROJECTS_PERSISTENCE_ENABLED)) {
+            File file = getProjectsFile();
+            if (file.exists()) {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                try {
+                    pc.getProjects().loadProjects(file);
+                } catch (IOException e) {
+                    Exceptions.printStackTrace(e);
+                }
+            }
+        }
+    }
+
+    public void saveProjects() {
+        if(NbPreferences.forModule(Installer.class).getBoolean(PROJECTS_PERSISTENCE_ENABLED, DEFAULT_PROJECTS_PERSISTENCE_ENABLED)) {
+            File file = getProjectsFile();
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            try {
+                pc.getProjects().saveProjects(file);
+            } catch (IOException e) {
+                Exceptions.printStackTrace(e);
+            }
+        }
     }
 }

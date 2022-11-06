@@ -149,6 +149,10 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
         return workspaceProvider.getWorkspace(id);
     }
 
+    protected void setLastOpened(LocalDateTime lastOpened) {
+        this.lastOpened = lastOpened;
+    }
+
     protected void open() {
         lastOpened = LocalDateTime.now();
         projectInformation.open();
@@ -197,6 +201,10 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
     @Override
     public File getFile() {
         return projectInformation.getFile();
+    }
+
+    protected void setFile(File file) {
+        projectInformation.setFile(file);
     }
 
     public int nextWorkspaceId() {

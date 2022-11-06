@@ -127,7 +127,7 @@ public interface ProjectController {
     /**
      * Gets the set of active projects.
      *
-     * @deprecated Directly use this class instead as all of the methods have been ported.
+     * @deprecated Directly use this class instead as all the methods have been ported.
      * @return projects
      */
     Projects getProjects();

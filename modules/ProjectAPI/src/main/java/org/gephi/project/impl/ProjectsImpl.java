@@ -42,11 +42,24 @@
 
 package org.gephi.project.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
+import org.gephi.project.io.SaveTask;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 
 /**
@@ -108,7 +121,7 @@ public class ProjectsImpl implements Projects {
     }
 
     @Override
-    public Project[] getProjects() {
+    public ProjectImpl[] getProjects() {
         synchronized (projects) {
             ProjectImpl[] res = projects.toArray(new ProjectImpl[0]);
             Arrays.sort(res);
@@ -139,7 +152,7 @@ public class ProjectsImpl implements Projects {
         }
     }
 
-    public synchronized void closeCurrentProject() {
+    public void closeCurrentProject() {
         synchronized (projects) {
             if (currentProject != null) {
                 currentProject.close();
@@ -157,6 +170,91 @@ public class ProjectsImpl implements Projects {
                 return name;
             }
             i++;
+        }
+    }
+
+    @Override
+    public void saveProjects(File file) throws IOException {
+        synchronized (projects) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                XMLStreamWriter writer = SaveTask.newXMLWriter(fos);
+                writer.writeStartDocument("UTF-8", "1.0");
+                writer.writeStartElement("projects");
+                for (ProjectImpl p : getProjects()) {
+                    if (!p.hasFile() || (p.hasFile() && p.getFile().exists())) {
+                        writer.writeStartElement("project");
+                        if (p.hasFile()) {
+                            writer.writeAttribute("file", p.getFile().getAbsolutePath());
+                        }
+                        writer.writeAttribute("id", p.getUniqueIdentifier());
+                        writer.writeAttribute("name", p.getName());
+                        if (p.getLastOpened() != null) {
+                            writer.writeAttribute("lastOpened",
+                                p.getLastOpened().format(DateTimeFormatter.ISO_DATE_TIME));
+                        }
+                        writer.writeEndElement();
+                    } else {
+                        Logger.getLogger(ProjectsImpl.class.getName())
+                            .warning("Project " + p.getName() + " file does not exist");
+                    }
+                }
+                writer.writeEndDocument();
+            } catch (XMLStreamException ex) {
+                throw new IOException(ex);
+            }
+        }
+    }
+
+    @Override
+    public void loadProjects(File file) throws IOException {
+        synchronized (projects) {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            try (FileInputStream fis = new FileInputStream(file)) {
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(fis, "UTF-8");
+
+                boolean end = false;
+                while (reader.hasNext() && !end) {
+                    int type = reader.next();
+
+                    switch (type) {
+                        case XMLStreamReader.START_ELEMENT:
+                            String name = reader.getLocalName();
+                            if ("project".equalsIgnoreCase(name)) {
+                                String filePath = reader.getAttributeValue(null, "file");
+                                String id = reader.getAttributeValue(null, "id");
+                                String projectName = reader.getAttributeValue(null, "name");
+                                String lastOpened = reader.getAttributeValue(null, "lastOpened");
+
+                                if (filePath == null || new File(filePath).exists()) {
+                                    ProjectImpl project = new ProjectImpl(id, projectName);
+                                    if (filePath != null) {
+                                        project.setFile(new File(filePath));
+                                    }
+                                    if (lastOpened != null) {
+                                        project.setLastOpened(LocalDateTime.parse(lastOpened,
+                                            DateTimeFormatter.ISO_DATE_TIME));
+                                    }
+                                    addOrReplaceProject(project);
+                                } else {
+                                    Logger.getLogger(ProjectsImpl.class.getName())
+                                        .warning("Project " + projectName + " file does not exist");
+                                }
+                            }
+                            break;
+                        case XMLStreamReader.END_ELEMENT:
+                            if ("projects".equalsIgnoreCase(reader.getLocalName())) {
+                                end = true;
+                            }
+                            break;
+                    }
+                }
+                reader.close();
+            } catch (XMLStreamException ex) {
+                throw new IOException(ex);
+            }
         }
     }
 }

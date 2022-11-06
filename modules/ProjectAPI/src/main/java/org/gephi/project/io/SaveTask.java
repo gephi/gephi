@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Project;
@@ -85,7 +86,7 @@ public class SaveTask implements LongTask {
         this.file = file;
     }
 
-    private static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws Exception {
+    public static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws XMLStreamException {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
         return outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
