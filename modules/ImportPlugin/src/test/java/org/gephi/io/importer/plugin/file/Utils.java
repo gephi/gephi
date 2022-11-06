@@ -51,6 +51,12 @@ public class Utils {
             Arrays.stream(actual).map(ElementDraft::getId).collect(Collectors.toSet()));
     }
 
+    public static void assertSameEdges(EdgeDraft[] actual, String... edges) {
+        Assert.assertEquals(edges.length, actual.length);
+        Assert.assertEquals(new HashSet<>(Arrays.asList(edges)),
+            Arrays.stream(actual).map(e -> e.getSource().getId()+" -> "+e.getTarget().getId()).collect(Collectors.toSet()));
+    }
+
     public static void assertSameLabels(ElementDraft[] actual, String... labels) {
         Assert.assertEquals(labels.length, actual.length);
         Assert.assertEquals(new HashSet<>(Arrays.asList(labels)),
