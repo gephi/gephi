@@ -10,15 +10,17 @@
         <p>
             The API defines <code>Project</code> and <code>Workspace</code>
             interface. Most of modules will use these interfaces to watch
-            the application lifecycle. The API therefore define the
-            <code>WorkspaceListener</code> interface, which is essential for tracking
-            workspace events. The <code>ProjectController</code> service manage
+            the application lifecycle. The <code>ProjectController</code> service manage
             the system. A <code>ProjectListener</code> interface can be used to track project events.
         </p>
         <p>
-            The SPI notably defines how modules can interact with the
-            workspace lifecycle. See <code>WorkspacePersistenceProvider</code> for
-            project saving/loading.
+            The SPI notably defines how modules can interact with the workspace lifecycle. The most common need is for
+            a module to attach a unique model to each workspace. The best way to do that is to implement a
+            <code>Controller</code> service. This controller will be called when a new workspace is created. The alternative
+            way is to implement a <code>WorkspaceListener</code> service to listen to the project lifecycle.
+        </p>
+        <p>
+            See <code>WorkspacePersistenceProvider</code> for project saving/loading.
         </p>
     </body>
 </html>
