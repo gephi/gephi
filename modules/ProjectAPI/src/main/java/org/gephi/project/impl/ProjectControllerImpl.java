@@ -44,6 +44,7 @@ package org.gephi.project.impl;
 
 import java.beans.PropertyEditorManager;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -187,6 +188,7 @@ public class ProjectControllerImpl implements ProjectController {
             longTaskExecutor.execute(saveTask, () -> {
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 if (saveTask.run()) {
+                    ((ProjectImpl) project).setLastOpened();
                     fireProjectEvent((pl) -> pl.saved(project));
                 } else {
                     fireProjectEvent(ProjectListener::unlock);

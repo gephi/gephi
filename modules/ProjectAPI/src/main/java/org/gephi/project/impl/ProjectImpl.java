@@ -43,7 +43,10 @@
 package org.gephi.project.impl;
 
 import java.io.File;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +75,7 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
     private final ProjectMetaDataImpl projectMetaData;
     private final String uniqueIdentifier;
 
-    private LocalDateTime lastOpened;
+    private Instant lastOpened;
 
     public ProjectImpl(String name) {
         this(UUID.randomUUID().toString(), name);
@@ -123,7 +126,7 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
         return workspaceProvider.hasCurrentWorkspace();
     }
 
-    public LocalDateTime getLastOpened() {
+    public Instant getLastOpened() {
         return lastOpened;
     }
 
@@ -149,12 +152,16 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
         return workspaceProvider.getWorkspace(id);
     }
 
-    protected void setLastOpened(LocalDateTime lastOpened) {
+    protected void setLastOpened() {
+        lastOpened = LocalDateTime.now().toInstant(ZoneOffset.UTC);
+    }
+
+    protected void setLastOpened(Instant lastOpened) {
         this.lastOpened = lastOpened;
     }
 
     protected void open() {
-        lastOpened = LocalDateTime.now();
+        setLastOpened();
         projectInformation.open();
     }
 

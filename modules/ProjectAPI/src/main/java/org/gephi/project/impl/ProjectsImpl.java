@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -189,8 +190,7 @@ public class ProjectsImpl implements Projects {
                         writer.writeAttribute("id", p.getUniqueIdentifier());
                         writer.writeAttribute("name", p.getName());
                         if (p.getLastOpened() != null) {
-                            writer.writeAttribute("lastOpened",
-                                p.getLastOpened().format(DateTimeFormatter.ISO_DATE_TIME));
+                            writer.writeAttribute("lastOpened", String.valueOf(p.getLastOpened().toEpochMilli()));
                         }
                         writer.writeEndElement();
                     } else {
@@ -234,8 +234,7 @@ public class ProjectsImpl implements Projects {
                                         project.setFile(new File(filePath));
                                     }
                                     if (lastOpened != null) {
-                                        project.setLastOpened(LocalDateTime.parse(lastOpened,
-                                            DateTimeFormatter.ISO_DATE_TIME));
+                                        project.setLastOpened(Instant.ofEpochMilli(Long.parseLong(lastOpened)));
                                     }
                                     addOrReplaceProject(project);
                                 } else {
