@@ -137,7 +137,7 @@
         <netbeans.version>RELEASE150</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.6.12</graphstore.version>
+        <graphstore.version>0.6.13</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>

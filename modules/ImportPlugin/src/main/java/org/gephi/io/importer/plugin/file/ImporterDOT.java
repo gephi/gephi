@@ -376,15 +376,6 @@ public class ImporterDOT implements FileImporter, LongTask {
                 edge.setTarget(nodeDraft);
                 container.addEdge(edge);
             }
-//        } else {
-//            report.logIssue(new Issue(
-//                NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_edgeparsing", streamTokenizer.lineno()),
-//                Issue.Level.SEVERE));
-//            if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
-//                streamTokenizer.pushBack();
-//            }
-//            return;
-//        }
 
             streamTokenizer.nextToken();
 
