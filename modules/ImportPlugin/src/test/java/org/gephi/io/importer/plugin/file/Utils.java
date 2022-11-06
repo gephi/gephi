@@ -12,9 +12,21 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.importer.impl.ImportContainerImpl;
+import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.Importer;
 import org.junit.Assert;
 
 public class Utils {
+
+    public static Container importFile(FileImporter importer, String path) {
+        importer.setReader(getReader(path));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        return container;
+    }
 
     public static NodeDraft[] toNodesArray(Container container) {
         List<NodeDraft> result = new ArrayList<>();

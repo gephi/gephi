@@ -163,9 +163,18 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected void stmt(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         //tk.nextToken();
 
-        if (streamTokenizer.sval == null || streamTokenizer.sval.equalsIgnoreCase("graph") ||
+        if (streamTokenizer.sval == null) {
+        } else if (streamTokenizer.sval.equalsIgnoreCase("graph") ||
             streamTokenizer.sval.equalsIgnoreCase("node")
-            || streamTokenizer.sval.equalsIgnoreCase("edge")) {
+            || streamTokenizer.sval.equalsIgnoreCase("edge")
+            || streamTokenizer.sval.equalsIgnoreCase("subgraph")) {
+
+            while (streamTokenizer.ttype != '{') {
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
+                    return;
+                }
+            }
         } else {
             String nodeId = nodeID(streamTokenizer);
             streamTokenizer.nextToken();
