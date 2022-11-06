@@ -43,7 +43,7 @@ public class DOTTest {
 
     @Test
     public void testUndirectedMultipleEdges() {
-        Container container = Utils.importFile(new ImporterDOT(), "dot/multipleundirectededgesperline.dot");
+        Container container = Utils.importFile(new ImporterDOT(), "dot/multipleedgesperline2.dot");
         Assert.assertEquals(container.getUnloader().getEdgeDefault(), EdgeDirectionDefault.UNDIRECTED);
         NodeDraft[] nodes = Utils.toNodesArray(container);
         Assert.assertEquals(4, nodes.length);
