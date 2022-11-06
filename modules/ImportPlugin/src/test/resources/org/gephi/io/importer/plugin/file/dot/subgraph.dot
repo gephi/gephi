@@ -1,0 +1,7 @@
+digraph g {
+    subgraph cluster_0 {
+        n0 [foo=a];
+        n1 [foo=b];
+    }
+    n0 -> n1;
+}

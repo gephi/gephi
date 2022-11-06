@@ -111,7 +111,6 @@ public class ImporterDOT implements FileImporter, LongTask {
         tk.ordinaryChar(']');
         tk.ordinaryChar('{');
         tk.ordinaryChar('}');
-        tk.ordinaryChar('-');
         tk.ordinaryChar('>');
         tk.ordinaryChar('/');
         tk.ordinaryChar('*');
@@ -163,14 +162,24 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected void stmt(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         //tk.nextToken();
 
-        if (streamTokenizer.sval == null || streamTokenizer.sval.equalsIgnoreCase("graph") ||
+        if (streamTokenizer.sval == null) {
+        } else if (streamTokenizer.sval.equalsIgnoreCase("graph") ||
             streamTokenizer.sval.equalsIgnoreCase("node")
-            || streamTokenizer.sval.equalsIgnoreCase("edge")) {
+            || streamTokenizer.sval.equalsIgnoreCase("edge")
+            || streamTokenizer.sval.equalsIgnoreCase("subgraph")) {
+
+            while (streamTokenizer.ttype != '{') {
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
+                    return;
+                }
+            }
         } else {
             String nodeId = nodeID(streamTokenizer);
             streamTokenizer.nextToken();
 
-            if (streamTokenizer.ttype == '-') {
+            if (streamTokenizer.ttype == '-' || (streamTokenizer.ttype == StreamTokenizer.TT_WORD &&
+                (streamTokenizer.sval.equalsIgnoreCase("-") || streamTokenizer.sval.equalsIgnoreCase("--")))) {
                 NodeDraft nodeDraft = getOrCreateNode(nodeId);
                 edgeStructure(streamTokenizer, nodeDraft);
             } else if (streamTokenizer.ttype == '[') {
@@ -335,13 +344,16 @@ public class ImporterDOT implements FileImporter, LongTask {
         nodeAttributes(streamTokenizer, nodeDraft);
     }
 
-    protected void edgeStructure(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft)
+    protected void edgeStructure(StreamTokenizerWithMultilineLiterals streamTokenizer, NodeDraft nodeDraft)
         throws Exception {
-        streamTokenizer.nextToken();
-
-        EdgeDraft edge = null;
-        if (streamTokenizer.ttype == '>' || streamTokenizer.ttype == '-') {
+        do {
             streamTokenizer.nextToken();
+
+            if (streamTokenizer.ttype == '>') {
+                streamTokenizer.nextToken();
+            }
+
+            EdgeDraft edge = null;
             if (streamTokenizer.ttype == '{') {
                 while (true) {
                     streamTokenizer.nextToken();
@@ -351,7 +363,8 @@ public class ImporterDOT implements FileImporter, LongTask {
                         nodeID(streamTokenizer);
                         edge = container.factory().newEdgeDraft();
                         edge.setSource(nodeDraft);
-                        edge.setTarget(getOrCreateNode("" + streamTokenizer.sval));
+                        nodeDraft = getOrCreateNode("" + streamTokenizer.sval);
+                        edge.setTarget(nodeDraft);
                         container.addEdge(edge);
                     }
                 }
@@ -359,26 +372,24 @@ public class ImporterDOT implements FileImporter, LongTask {
                 nodeID(streamTokenizer);
                 edge = container.factory().newEdgeDraft();
                 edge.setSource(nodeDraft);
-                edge.setTarget(getOrCreateNode("" + streamTokenizer.sval));
+                nodeDraft = getOrCreateNode("" + streamTokenizer.sval);
+                edge.setTarget(nodeDraft);
                 container.addEdge(edge);
             }
-        } else {
-            report.logIssue(new Issue(
-                NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_edgeparsing", streamTokenizer.lineno()),
-                Issue.Level.SEVERE));
-            if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
+
+            streamTokenizer.nextToken();
+
+            if (streamTokenizer.ttype == '[') {
+                edgeAttributes(streamTokenizer, edge);
+            } else if (!isEdgeToken(streamTokenizer)) {
                 streamTokenizer.pushBack();
             }
-            return;
-        }
+        } while (isEdgeToken(streamTokenizer));
+    }
 
-        streamTokenizer.nextToken();
-
-        if (streamTokenizer.ttype == '[') {
-            edgeAttributes(streamTokenizer, edge);
-        } else {
-            streamTokenizer.pushBack();
-        }
+    private boolean isEdgeToken(StreamTokenizerWithMultilineLiterals streamTokenizer) {
+        return streamTokenizer.ttype == StreamTokenizer.TT_WORD &&
+            (streamTokenizer.sval.equalsIgnoreCase("--") || streamTokenizer.sval.equalsIgnoreCase("-"));
     }
 
     protected void edgeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final EdgeDraft edge)
@@ -460,6 +471,23 @@ public class ImporterDOT implements FileImporter, LongTask {
                     report.logIssue(new Issue(NbBundle
                         .getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()),
                         Issue.Level.WARNING));
+                    streamTokenizer.pushBack();
+                }
+            } else {
+                // other attributes
+                String attributeName = streamTokenizer.sval;
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == '=') {
+                    streamTokenizer.nextToken();
+                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
+                        String value = streamTokenizer.sval;
+                        if (value != null && !value.isEmpty()) {
+                            edge.setValue(attributeName, value);
+                        }
+                    } else {
+                        streamTokenizer.pushBack();
+                    }
+                } else {
                     streamTokenizer.pushBack();
                 }
             }

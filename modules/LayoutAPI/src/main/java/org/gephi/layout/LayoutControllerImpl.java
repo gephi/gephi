@@ -51,6 +51,7 @@ import org.gephi.project.spi.Controller;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -83,7 +84,11 @@ public class LayoutControllerImpl implements LayoutController, Controller<Layout
             public void unselect(Workspace workspace) {
                 LayoutModelImpl model = getModel(workspace);
                 if (model != null && model.getSelectedLayout() != null) {
-                    model.saveProperties(model.getSelectedLayout());
+                    try {
+                        model.saveProperties(model.getSelectedLayout());
+                    } catch (Exception e) {
+                        Exceptions.printStackTrace(e);
+                    }
                 }
             }
 
