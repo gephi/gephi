@@ -76,7 +76,7 @@ public class WorkspaceImpl implements Workspace {
         //Init Default Content
         workspaceInformation = new WorkspaceInformationImpl(name);
         instanceContent.add(workspaceInformation);
-        for(Object o : objectsForLookup) {
+        for (Object o : objectsForLookup) {
             instanceContent.add(o);
         }
 

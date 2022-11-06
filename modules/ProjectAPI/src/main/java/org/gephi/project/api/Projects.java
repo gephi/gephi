@@ -75,5 +75,5 @@ public interface Projects {
 
     void saveProjects(File file) throws IOException;
 
-    void loadProjects(File file)  throws IOException;
+    void loadProjects(File file) throws IOException;
 }

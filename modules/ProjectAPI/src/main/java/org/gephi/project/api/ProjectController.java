@@ -44,7 +44,6 @@ package org.gephi.project.api;
 
 import java.io.File;
 import java.util.Collection;
-import org.gephi.project.impl.ProjectImpl;
 
 /**
  * Project controller, manage projects and workspaces states.
@@ -107,7 +106,7 @@ public interface ProjectController {
      * The project file is updated with the new file.
      *
      * @param project project to save
-     * @param file file to be written
+     * @param file    file to be written
      */
     void saveProject(Project project, File file);
 
@@ -120,6 +119,7 @@ public interface ProjectController {
      * Removes the project from the active project list.
      * <p>
      * It won't delete any <code>.gephi</code> files.
+     *
      * @param project project to remove
      */
     void removeProject(Project project);
@@ -127,8 +127,8 @@ public interface ProjectController {
     /**
      * Gets the set of active projects.
      *
-     * @deprecated Directly use this class instead as all the methods have been ported.
      * @return projects
+     * @deprecated Directly use this class instead as all the methods have been ported.
      */
     Projects getProjects();
 
@@ -178,7 +178,7 @@ public interface ProjectController {
      * Renames the given workspace with the provided string.
      *
      * @param workspace workspace to rename
-     * @param name new name
+     * @param name      new name
      */
     void renameWorkspace(Workspace workspace, String name);
 
@@ -186,7 +186,7 @@ public interface ProjectController {
      * Renames the given project with the provided string.
      *
      * @param project project to rename
-     * @param name new name
+     * @param name    new name
      */
     void renameProject(Project project, String name);
 

@@ -2,8 +2,8 @@ package org.gephi.project.io.utils;
 
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
-import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.openide.util.Lookup;
 
 public class Utils {

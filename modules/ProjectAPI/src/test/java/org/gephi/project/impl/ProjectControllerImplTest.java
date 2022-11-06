@@ -3,7 +3,6 @@ package org.gephi.project.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
@@ -20,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.netbeans.junit.MockServices;
-import org.openide.util.Lookup;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectControllerImplTest {

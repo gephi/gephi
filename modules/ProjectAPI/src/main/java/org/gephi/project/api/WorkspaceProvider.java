@@ -45,10 +45,9 @@ package org.gephi.project.api;
 /**
  * Maintains workspaces list for projects, and the currently selected workspace.
  *
- * @deprecated All methods have been ported to {@link Project} directly.
- *
  * @author Mathieu Bastian
  * @see Project
+ * @deprecated All methods have been ported to {@link Project} directly.
  */
 public interface WorkspaceProvider {
 

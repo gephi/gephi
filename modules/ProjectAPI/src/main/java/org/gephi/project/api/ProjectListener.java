@@ -13,19 +13,22 @@ public interface ProjectListener extends EventListener {
 
     /**
      * Called when a project was successfully saved.
+     *
      * @param project project that was saved
      */
     void saved(Project project);
 
     /**
      * Called when a project was successfully opened.
+     *
      * @param project project that was opened
      */
     void opened(Project project);
 
     /**
      * Called when an error occurred in project manipulation.
-     * @param project project that was manipulated, could be <code>null</code>
+     *
+     * @param project   project that was manipulated, could be <code>null</code>
      * @param throwable error that occurred
      */
     void error(Project project, Throwable throwable);

@@ -6,11 +6,11 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.gephi.project.impl.WorkspaceInformationImpl;
 import org.gephi.project.io.utils.GephiFormat;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.Utils;
-import org.gephi.project.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

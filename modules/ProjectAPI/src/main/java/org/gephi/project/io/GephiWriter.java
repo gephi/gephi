@@ -50,13 +50,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceMetaData;
 import org.gephi.project.impl.ProjectImpl;
-import org.gephi.project.impl.WorkspaceMetaDataImpl;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.NbBundle;
 

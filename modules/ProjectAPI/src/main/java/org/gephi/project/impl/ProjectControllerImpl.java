@@ -44,7 +44,6 @@ package org.gephi.project.impl;
 
 import java.beans.PropertyEditorManager;
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,8 +61,6 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
-import org.gephi.project.spi.Controller;
-import org.gephi.project.spi.Model;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.openide.util.Lookup;

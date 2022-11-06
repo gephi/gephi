@@ -2,8 +2,6 @@ package org.gephi.project.spi;
 
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.gephi.project.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 
 /**

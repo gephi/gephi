@@ -48,6 +48,8 @@ import java.io.File;
 /**
  * Hosts various information about a project.
  *
+ * @author Mathieu Bastian
+ * @see Project
  * @deprecated Relevant methods have been ported to {@link Project} directly.
  *
  * <p>
@@ -60,9 +62,6 @@ import java.io.File;
  * <li><b>EVENT_RENAME:</b> Project renamed
  * <li><b>EVENT_SET_FILE:</b> Project file set
  * </ul>
- *
- * @author Mathieu Bastian
- * @see Project
  */
 public interface ProjectInformation {
 
