@@ -55,6 +55,7 @@ import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
@@ -431,8 +432,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         Project project = controller.getCurrentProject();
         ProjectPropertiesEditor panel = new ProjectPropertiesEditor();
         panel.load(project);
-        DialogDescriptor dd = new DialogDescriptor(panel,
-            NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title"));
+
+        DialogDescriptor dd = DialogDescriptorWithValidation.dialog(ProjectPropertiesEditor.createValidationPanel(panel),
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title")) ;
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {
             panel.save(project);
@@ -444,7 +446,8 @@ public class ProjectControllerUIImpl implements ProjectListener {
         WorkspacePropertiesEditor panel = new WorkspacePropertiesEditor();
         panel.setup(workspace);
 
-        DialogDescriptor dd = new DialogDescriptor(panel,
+        DialogDescriptor dd = DialogDescriptorWithValidation
+            .dialog(WorkspacePropertiesEditor.createValidationPanel(panel),
             NbBundle.getMessage(ProjectControllerUIImpl.class, "WorkspaceProperties_dialog_title"));
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {

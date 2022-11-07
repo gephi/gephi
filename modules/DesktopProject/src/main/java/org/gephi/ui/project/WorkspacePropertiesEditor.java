@@ -1,9 +1,15 @@
 package org.gephi.ui.project;
 
 import org.gephi.desktop.project.ProjectControllerUIImpl;
+import org.gephi.lib.validation.BetweenZeroAndOneValidator;
+import org.gephi.lib.validation.PositiveNumberValidator;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceMetaData;
+import org.netbeans.validation.api.ValidatorUtils;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
 
 /**
@@ -16,6 +22,19 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
      */
     public WorkspacePropertiesEditor() {
         initComponents();
+    }
+
+    public static ValidationPanel createValidationPanel(WorkspacePropertiesEditor innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(innerPanel);
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        //Make sure components have names
+        innerPanel.nameTextField.setName(innerPanel.labelName.getText().replace(":", ""));
+
+        group.add(innerPanel.nameTextField, StringValidators.REQUIRE_NON_EMPTY_STRING);
+
+        return validationPanel;
     }
 
     public void setup(Workspace workspace) {
@@ -32,7 +51,7 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
         }
 
         if (!nameTextField.getText().isEmpty() && !nameTextField.getText().equals(workspace.getName())) {
-            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).renameWorkspace(nameTextField.getName());
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).renameWorkspace(nameTextField.getText());
         }
     }
 

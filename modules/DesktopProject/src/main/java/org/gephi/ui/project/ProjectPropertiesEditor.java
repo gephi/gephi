@@ -46,6 +46,9 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
 
 /**
@@ -75,6 +78,19 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
      */
     public ProjectPropertiesEditor() {
         initComponents();
+    }
+
+    public static ValidationPanel createValidationPanel(ProjectPropertiesEditor innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(innerPanel);
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        //Make sure components have names
+        innerPanel.nameTextField.setName(innerPanel.labelName.getText().replace(":", ""));
+
+        group.add(innerPanel.nameTextField, StringValidators.REQUIRE_NON_EMPTY_STRING);
+
+        return validationPanel;
     }
 
     public void load(Project project) {
