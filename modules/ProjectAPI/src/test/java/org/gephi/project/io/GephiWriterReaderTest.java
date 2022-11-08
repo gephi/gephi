@@ -27,18 +27,21 @@ public class GephiWriterReaderTest {
         Assert.assertEquals(project, readProject);
     }
 
-//    @Test
-//    public void testProjectMetadata() throws Exception {
-//        ProjectImpl project = Utils.newProject();
-//        project.getProjectMetadata().setDescription("foo");
-//        ProjectImpl readProject = writeAndReadProject(project);
-//
-//        //TODO Implement deepEquals in ProjectImpl
-//        Assert.assertNotNull(readProject);
-//        Assert.assertEquals(Utils.PROJECT_NAME, readProject.getName());
-//        Assert.assertEquals(project, readProject);
-//        Assert.assertEquals("foo", readProject.getProjectMetadata().getDescription());
-//    }
+    @Test
+    public void testProjectMetadata() throws Exception {
+        ProjectImpl project = Utils.newProject();
+        project.getProjectMetadata().setDescription("desc");
+        project.getProjectMetadata().setTitle("title");
+        project.getProjectMetadata().setKeywords("keywords");
+        project.getProjectMetadata().setAuthor("author");
+        ProjectImpl readProject = writeAndReadProject(project);
+
+        //TODO Implement deepEquals in ProjectImpl
+        Assert.assertNotNull(readProject);
+        Assert.assertEquals(Utils.PROJECT_NAME, readProject.getName());
+        Assert.assertEquals(project, readProject);
+        Assert.assertEquals(project.getProjectMetadata(), readProject.getProjectMetadata());
+    }
 
     @Test
     public void testWorkspace() throws Exception {
@@ -57,7 +60,7 @@ public class GephiWriterReaderTest {
         workspace.getWorkspaceMetadata().setDescription("foo");
 
         Workspace read = writeAndReadWorkspace(workspace);
-        Assert.assertEquals("foo", read.getWorkspaceMetadata().getDescription());
+        Assert.assertEquals(workspace.getWorkspaceMetadata(), read.getWorkspaceMetadata());
     }
 
     @Test

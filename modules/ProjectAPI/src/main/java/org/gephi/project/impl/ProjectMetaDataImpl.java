@@ -42,6 +42,7 @@
 
 package org.gephi.project.impl;
 
+import java.util.Objects;
 import org.gephi.project.api.ProjectMetaData;
 
 /**
@@ -99,5 +100,37 @@ public class ProjectMetaDataImpl implements ProjectMetaData {
     @Override
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ProjectMetaDataImpl that = (ProjectMetaDataImpl) o;
+
+        if (!Objects.equals(author, that.author)) {
+            return false;
+        }
+        if (!Objects.equals(title, that.title)) {
+            return false;
+        }
+        if (!Objects.equals(keywords, that.keywords)) {
+            return false;
+        }
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = author != null ? author.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (keywords != null ? keywords.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
     }
 }

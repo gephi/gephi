@@ -93,6 +93,8 @@ public class GephiReader {
                         int workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
                         project.setWorkspaceIds(workspaceIds);
                     }
+                } else if ("metadata".equalsIgnoreCase(name)) {
+                    readProjectMetadata(reader, project);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("project".equalsIgnoreCase(reader.getLocalName())) {
@@ -161,6 +163,37 @@ public class GephiReader {
                 if (property != null && property.equals("description")) {
                     String desc = reader.getText();
                     workspace.getWorkspaceMetadata().setDescription(desc);
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if ("metadata".equalsIgnoreCase(reader.getLocalName())) {
+                    return;
+                }
+            }
+        }
+    }
+
+    private static void readProjectMetadata(XMLStreamReader reader, ProjectImpl project) throws Exception {
+        String property = null;
+        while (reader.hasNext()) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                property = reader.getLocalName();
+            } else if (eventType.equals(XMLStreamReader.CHARACTERS)) {
+                if (property != null) {
+                    switch (property) {
+                        case "title":
+                            project.getProjectMetadata().setTitle(reader.getText());
+                            break;
+                        case "author":
+                            project.getProjectMetadata().setAuthor(reader.getText());
+                            break;
+                        case "description":
+                            project.getProjectMetadata().setDescription(reader.getText());
+                            break;
+                        case "keywords":
+                            project.getProjectMetadata().setKeywords(reader.getText());
+                            break;
+                    }
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("metadata".equalsIgnoreCase(reader.getLocalName())) {
