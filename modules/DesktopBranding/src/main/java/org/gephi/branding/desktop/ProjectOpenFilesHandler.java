@@ -2,19 +2,16 @@ package org.gephi.branding.desktop;
 
 import java.awt.desktop.OpenFilesEvent;
 import java.awt.desktop.OpenFilesHandler;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import org.openide.awt.Actions;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  * Handles files from double click at opening time
@@ -36,16 +33,8 @@ public class ProjectOpenFilesHandler implements OpenFilesHandler {
 
         // Open single project file and discard any other files
         if (projectFile.isPresent()) {
-            ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-            try {
-                pc.openProject(FileUtil.toFile(projectFile.get()));
-            } catch (Exception ew) {
-                Exceptions.printStackTrace(ew);
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
-                    .getMessage(ProjectOpenFilesHandler.class, "ProjectOpenFilesHandler.openGephiError"),
-                    NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-            }
+            Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+                new ActionEvent(FileUtil.toFile(projectFile.get()), 0, null));
         } else if (fileObjects.length > 0) {
             // Open files
             ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);

@@ -1,10 +1,15 @@
 package org.gephi.filters;
 
+import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
 import org.gephi.filters.plugin.graph.EgoBuilder;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
 import org.gephi.filters.plugin.graph.HasSelfLoopBuilder;
 import org.gephi.filters.plugin.operator.INTERSECTIONBuilder;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.project.io.utils.GephiFormat;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PersistenceProviderTest {
@@ -56,18 +61,19 @@ public class PersistenceProviderTest {
         GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
     }
 
-//    @Test
-//    public void testAttributeFilter() throws Exception {
-//        FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
-//
-//        FilterBuilder[] builders = new AttributeEqualBuilder().getBuilders(filterModel.getWorkspace());
-//        Assert.assertEquals(1, builders.length);
-//        FilterBuilder builder = builders[0];
-//        Filter filter = builder.getFilter(filterModel.getWorkspace());
-//
-//        FilterQueryImpl query = new FilterQueryImpl(builder, filter);
-//        filterModel.addFirst(query);
-//        new FilterProcessor().init(filter, filterModel.getGraphModel().getGraph());
-//        GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
-//    }
+    @Test
+    @Ignore
+    public void testAttributeFilter() throws Exception {
+        FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
+
+        FilterBuilder[] builders = new AttributeEqualBuilder().getBuilders(filterModel.getWorkspace());
+        Assert.assertEquals(1, builders.length);
+        FilterBuilder builder = builders[0];
+        Filter filter = builder.getFilter(filterModel.getWorkspace());
+
+        FilterQueryImpl query = new FilterQueryImpl(builder, filter);
+        filterModel.addFirst(query);
+        new FilterProcessor().init(filter, filterModel.getGraphModel().getGraph());
+        GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
+    }
 }

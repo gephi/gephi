@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Project;
@@ -72,7 +73,7 @@ import org.openide.util.NbPreferences;
 /**
  * @author Mathieu Bastian
  */
-public class SaveTask implements LongTask, Runnable {
+public class SaveTask implements LongTask {
 
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
     private final File file;
@@ -85,7 +86,7 @@ public class SaveTask implements LongTask, Runnable {
         this.file = file;
     }
 
-    private static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws Exception {
+    public static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws XMLStreamException {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
         return outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
@@ -109,15 +110,16 @@ public class SaveTask implements LongTask, Runnable {
         return fileName;
     }
 
-    @Override
-    public void run() {
+    public boolean run() {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
-        File writeFile = null;
+        File writeFile = file;
         try {
-            String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
-            writeFile = new File(file.getParent(), tempFileName);
+            if (file.exists()) {
+                String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
+                writeFile = new File(file.getParent(), tempFileName);
+            }
 
             FileOutputStream outputStream = null;
             ZipOutputStream zipOut = null;
@@ -196,7 +198,7 @@ public class SaveTask implements LongTask, Runnable {
             Progress.finish(progressTicket);
 
             //Rename file
-            if (!cancel && writeFile.exists()) {
+            if (!cancel && writeFile.exists() && file != writeFile) {
                 //Delete original file
                 if (file.exists()) {
                     file.delete();
@@ -225,6 +227,7 @@ public class SaveTask implements LongTask, Runnable {
         }
 
         Progress.finish(progressTicket);
+        return !cancel;
     }
 
     private void writeProject(OutputStream outputStream, ZipOutputStream zipOut) throws Exception {

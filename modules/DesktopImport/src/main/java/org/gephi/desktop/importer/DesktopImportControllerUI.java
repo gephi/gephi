@@ -64,7 +64,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
@@ -79,6 +78,7 @@ import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
+import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.CharsetToolkit;
@@ -639,10 +639,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 //Project
                 Workspace workspace = null;
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 if (pc.getCurrentProject() == null) {
-                    pcui.newProject();
-                    workspace = pc.getCurrentWorkspace();
+                    Project project = pc.newProject();
+                    workspace = project.getCurrentWorkspace();
                 }
 
                 //Process

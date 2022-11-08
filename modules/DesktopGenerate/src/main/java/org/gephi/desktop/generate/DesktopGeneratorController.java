@@ -43,7 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.generate;
 
 import javax.swing.JPanel;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
@@ -126,15 +125,7 @@ public class DesktopGeneratorController implements GeneratorController {
     private void finishGenerate(Container container) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-        Workspace workspace;
-        if (pc.getCurrentProject() == null) {
-            pcui.newProject();
-            workspace = pc.getCurrentWorkspace();
-        } else {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
+        Workspace workspace = pc.openNewWorkspace();
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }

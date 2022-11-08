@@ -11,14 +11,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
-import org.gephi.workspace.impl.WorkspaceImpl;
 import org.junit.Assert;
 
 public class GephiFormat {
 
     public static Workspace testXMLPersistenceProvider(WorkspaceXMLPersistenceProvider provider,
-                                                  Workspace workspace) throws Exception {
+                                                       Workspace workspace) throws Exception {
         Assert.assertNotNull(provider.getIdentifier());
 
         String xmlString = toString(provider, workspace);

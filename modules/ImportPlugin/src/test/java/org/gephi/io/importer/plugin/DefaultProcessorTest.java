@@ -7,7 +7,7 @@ import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.gephi.io.importer.impl.NodeDraftImpl;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.Workspace;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -67,7 +67,6 @@ public class ProjectInformationImpl implements ProjectInformation {
         this.project = project;
         this.name = name;
         listeners = new ArrayList<>();
-        status = Status.CLOSED;
     }
 
     public void open() {
@@ -123,6 +122,9 @@ public class ProjectInformationImpl implements ProjectInformation {
     }
 
     public void setName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be null or empty");
+        }
         String oldName = this.name;
         this.name = name;
         fireChangeEvent(ProjectInformation.EVENT_RENAME, oldName, name);

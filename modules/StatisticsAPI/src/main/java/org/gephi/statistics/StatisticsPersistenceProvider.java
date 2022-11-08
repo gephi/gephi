@@ -71,10 +71,6 @@ public class StatisticsPersistenceProvider implements WorkspaceXMLPersistencePro
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         StatisticsModelImpl statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
-        if (statModel == null) {
-            statModel = new StatisticsModelImpl();
-            workspace.add(statModel);
-        }
         try {
             statModel.readXML(reader);
         } catch (XMLStreamException ex) {

@@ -42,13 +42,12 @@
 
 package org.gephi.project.impl;
 
-import java.io.Serializable;
 import org.gephi.project.api.ProjectMetaData;
 
 /**
  * @author Mathieu Bastian
  */
-public class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
+public class ProjectMetaDataImpl implements ProjectMetaData {
 
     private String author;
     private String title = "";

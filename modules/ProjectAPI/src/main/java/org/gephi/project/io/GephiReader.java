@@ -48,10 +48,10 @@ import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectsImpl;
+import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceInformationImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.gephi.workspace.impl.WorkspaceInformationImpl;
 
 public class GephiReader {
 
@@ -74,11 +74,23 @@ public class GephiReader {
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
-                    project = new ProjectImpl(projectName);
+                    String projectId = reader.getAttributeValue(null, "id");
+                    if (projectId == null) {
+                        // Before 0.10 version we didn't have unique project ids
+                        project = new ProjectImpl(projectName);
+                    } else {
+                        if (projects != null) {
+                            project = projects.getProjectByIdentifier(projectId);
+                        }
+                        if (project == null) {
+                            project = new ProjectImpl(projectId, projectName);
+                        }
+                    }
+
                     project.getLookup().lookup(WorkspaceProviderImpl.class);
 
                     if (reader.getAttributeValue(null, "ids") != null) {
-                        Integer workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
+                        int workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
                         project.setWorkspaceIds(workspaceIds);
                     }
                 }
@@ -108,7 +120,7 @@ public class GephiReader {
                         workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
                     }
 
-                    workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace(workspaceId);
+                    workspace = project.newWorkspace(workspaceId);
                     WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
                     //Name
@@ -123,6 +135,8 @@ public class GephiReader {
                     } else {
                         info.invalid();
                     }
+                } else if ("metadata".equalsIgnoreCase(name)) {
+                    readWorkspaceMetadata(reader, workspace);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("workspace".equalsIgnoreCase(reader.getLocalName())) {
@@ -132,6 +146,28 @@ public class GephiReader {
         }
 
         return workspace;
+    }
+
+    private static void readWorkspaceMetadata(XMLStreamReader reader, Workspace workspace) throws Exception {
+        String property = null;
+        while (reader.hasNext()) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if ("description".equalsIgnoreCase(name)) {
+                    property = "description";
+                }
+            } else if (eventType.equals(XMLStreamReader.CHARACTERS)) {
+                if (property != null && property.equals("description")) {
+                    String desc = reader.getText();
+                    workspace.getWorkspaceMetadata().setDescription(desc);
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if ("metadata".equalsIgnoreCase(reader.getLocalName())) {
+                    return;
+                }
+            }
+        }
     }
 
     public static void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader,

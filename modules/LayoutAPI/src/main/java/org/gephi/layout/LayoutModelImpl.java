@@ -62,6 +62,7 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.utils.Serialization;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -73,7 +74,7 @@ import org.openide.util.Lookup;
 /**
  * @author Mathieu Bastian
  */
-public class LayoutModelImpl implements LayoutModel {
+public class LayoutModelImpl implements LayoutModel, Model {
 
     //Listeners
     private final List<PropertyChangeListener> listeners;
@@ -232,6 +233,7 @@ public class LayoutModelImpl implements LayoutModel {
         }
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }

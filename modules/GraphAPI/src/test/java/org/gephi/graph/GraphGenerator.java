@@ -12,10 +12,8 @@ import org.gephi.graph.api.types.IntervalDoubleMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.openide.util.Lookup;
+import org.gephi.project.impl.WorkspaceImpl;
 
 public class GraphGenerator {
 
@@ -59,17 +57,9 @@ public class GraphGenerator {
         return new GraphGenerator(configuration);
     }
 
-    public GraphGenerator withProject() {
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        projectController.newProject();
-        workspace = projectController.getCurrentWorkspace();
-        workspace.add(graphModel);
-        return this;
-    }
-
     public GraphGenerator withWorkspace() {
-        workspace = new WorkspaceImpl(null, 0);
-        workspace.add(graphModel);
+        workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+
         return this;
     }
 
@@ -144,7 +134,7 @@ public class GraphGenerator {
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setX((float) (-size / 2 + size * random.nextDouble()));
             node.setY((float) (-size / 2 + size * random.nextDouble()));
-            node.setSize(random.nextFloat() * (float)size / 25f);
+            node.setSize(random.nextFloat() * (float) size / 25f);
         }
         return this;
     }

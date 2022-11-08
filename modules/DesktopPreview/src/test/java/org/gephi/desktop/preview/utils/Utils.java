@@ -1,10 +1,9 @@
 package org.gephi.desktop.preview.utils;
 
 import org.gephi.desktop.preview.PreviewUIModelImpl;
-import org.gephi.preview.PreviewModelImpl;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 
 public class Utils {

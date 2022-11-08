@@ -46,6 +46,10 @@ import java.beans.PropertyChangeListener;
 
 /**
  * Hosts various information about a workspace.
+ *
+ * @author Mathieu Bastian
+ * @see Workspace
+ * @deprecated Relevant methods have been ported to {@link Workspace} directly.
  * <p>
  * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
@@ -56,9 +60,6 @@ import java.beans.PropertyChangeListener;
  * <li><b>EVENT_RENAME:</b> Workspace renamed
  * <li><b>EVENT_SET_SOURCE:</b> Workspace source set
  * </ul>
- *
- * @author Mathieu Bastian
- * @see Workspace
  */
 public interface WorkspaceInformation {
 

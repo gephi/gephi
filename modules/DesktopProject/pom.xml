@@ -33,6 +33,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
         </dependency>
         <dependency>
@@ -65,6 +69,10 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-ui</artifactId>
         </dependency>
     </dependencies>
@@ -77,7 +85,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.desktop.importer.api</publicPackage>
-                        <publicPackage>org.gephi.desktop.project.api</publicPackage>
+                        <publicPackage>org.gephi.desktop.project.actions</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

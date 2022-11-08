@@ -77,6 +77,7 @@ import org.gephi.preview.types.editors.BasicDependantColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.utils.Serialization;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -84,7 +85,7 @@ import org.openide.util.Lookup;
 /**
  * @author Mathieu Bastian
  */
-public class PreviewModelImpl implements PreviewModel {
+public class PreviewModelImpl implements PreviewModel, Model {
 
     private final PreviewController previewController;
     private final Workspace workspace;
@@ -102,15 +103,7 @@ public class PreviewModelImpl implements PreviewModel {
     private PreviewProperties properties;
 
     public PreviewModelImpl(Workspace workspace) {
-        this(workspace, null);
-    }
-
-    public PreviewModelImpl(Workspace workspace, PreviewController previewController) {
-        if (previewController != null) {
-            this.previewController = previewController;
-        } else {
-            this.previewController = Lookup.getDefault().lookup(PreviewController.class);
-        }
+        previewController = Lookup.getDefault().lookup(PreviewController.class);
         typeMap = new HashMap<>();
         sourceMap = new HashMap<>();
         this.workspace = workspace;

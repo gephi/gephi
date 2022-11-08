@@ -57,6 +57,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.codec.binary.Base64;
+import org.gephi.project.api.Workspace;
 import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -72,11 +73,17 @@ import org.openide.util.Lookup;
  */
 public class StatisticsModelImpl implements StatisticsModel {
 
-    //Model  
+    private final Workspace workspace;
     private final Map<Class, String> reportMap;
 
-    public StatisticsModelImpl() {
+    public StatisticsModelImpl(Workspace workspace) {
+        this.workspace = workspace;
         reportMap = new HashMap<>();
+    }
+
+    @Override
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     public void addReport(Statistics statistics) {

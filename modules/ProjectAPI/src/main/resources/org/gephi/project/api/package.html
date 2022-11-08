@@ -8,14 +8,18 @@
             API for project and workspace management.
         </p>
         <p>
-            From <code>ProjectController</code>, project and workspaces can
-            be managed.
+            From <code>ProjectController</code>, projects and workspaces can
+            be managed. A project is a collection of workspaces, of which one and only one can be active at a time. By
+            default, a new project has one workspace.
+        </p>
+        <p>
+            Only one project can be open at the time. The <code>ProjectController</code> can manage a list of projects
+            but it's assumed that a project has an existing project file so that it can be opened.
         </p>
         <p>
             Workspaces, where modules are interacting can be accessed from
             the current project and by listening through <code>WorkspaceListener</code>.
-            Workspaces are suitable for hosting any type of data modules wants
-            to.
+            Workspaces are suitable for hosting any type of data modules wants to.
         </p>
     </body>
 </html>

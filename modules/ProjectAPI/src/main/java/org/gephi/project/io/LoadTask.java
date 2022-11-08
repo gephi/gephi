@@ -45,6 +45,7 @@ package org.gephi.project.io;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -64,26 +65,22 @@ import javax.xml.stream.XMLStreamReader;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.ProjectsImpl;
-import org.gephi.project.impl.WorkspaceProviderImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.gephi.workspace.impl.WorkspaceInformationImpl;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class LoadTask implements LongTask, Runnable {
+public class LoadTask implements LongTask {
 
     private final File file;
     private boolean cancel = false;
@@ -93,17 +90,19 @@ public class LoadTask implements LongTask, Runnable {
         this.file = file;
     }
 
-    @Override
-    public void run() {
+    public ProjectImpl execute(ProjectsImpl projects) {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
         try {
             ZipFile zip = null;
             try {
+                if (!file.exists()) {
+                    throw new FileNotFoundException("File " + file.getPath() + " not found");
+                }
                 zip = new ZipFile(file);
 
-                ProjectImpl project = readProject(zip);
+                ProjectImpl project = readProject(zip, projects);
 
                 if (project != null) {
                     // Enumerate workspaces
@@ -159,24 +158,18 @@ public class LoadTask implements LongTask, Runnable {
                 Progress.switchToIndeterminate(progressTicket);
 
                 //Add project
-                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                if (project != null && !cancel) {
-                    if (!cancel) {
+                if (!cancel) {
 
-                        //Set current workspace
-                        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
-                        for (Workspace workspace : workspaces.getWorkspaces()) {
-                            WorkspaceInformationImpl info =
-                                workspace.getLookup().lookup(WorkspaceInformationImpl.class);
-                            if (info.isOpen()) {
-                                workspaces.setCurrentWorkspace(workspace);
-                                break;
-                            }
+                    //Set current workspace
+                    for (Workspace workspace : project.getWorkspaces()) {
+                        if (workspace.isOpen()) {
+                            project.setCurrentWorkspace(workspace);
+                            break;
                         }
-
-                        // Open project
-                        projectController.openProject(project);
                     }
+
+                    Progress.finish(progressTicket);
+                    return project;
                 }
             } finally {
                 if (zip != null) {
@@ -184,17 +177,22 @@ public class LoadTask implements LongTask, Runnable {
                 }
             }
         } catch (Exception ex) {
+            Progress.finish(progressTicket);
+
             if (ex instanceof GephiFormatException) {
                 throw (GephiFormatException) ex;
             } else if (ex instanceof LegacyGephiFormatException) {
                 throw (LegacyGephiFormatException) ex;
+            } else if (ex instanceof FileNotFoundException) {
+                throw new RuntimeException(ex);
             }
             throw new GephiFormatException(GephiReader.class, ex);
         }
         Progress.finish(progressTicket);
+        return null;
     }
 
-    private ProjectImpl readProject(ZipFile zipFile) throws Exception {
+    private ProjectImpl readProject(ZipFile zipFile, ProjectsImpl projects) throws Exception {
         ZipEntry entry = zipFile.getEntry("Project_xml");
         if (entry == null) {
             // Try legacy
@@ -206,49 +204,44 @@ public class LoadTask implements LongTask, Runnable {
                     new RuntimeException("Project can't be found in the zip"));
             }
         }
-        if (entry != null) {
-            InputStream is = null;
+        InputStream is = null;
+        try {
+            is = zipFile.getInputStream(entry);
+            InputStreamReader isReader = null;
+            Xml10FilterReader filterReader = null;
+            XMLStreamReader reader = null;
             try {
-                is = zipFile.getInputStream(entry);
-                InputStreamReader isReader = null;
-                Xml10FilterReader filterReader = null;
-                XMLStreamReader reader = null;
-                try {
-                    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-                    if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
-                        inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
-                    }
-                    inputFactory.setXMLReporter(new XMLReporter() {
-                        @Override
-                        public void report(String message, String errorType, Object relatedInformation,
-                                           Location location) throws XMLStreamException {
-                        }
-                    });
-                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
-                    filterReader = new Xml10FilterReader(isReader);
-                    reader = inputFactory.createXMLStreamReader(filterReader);
-
-                    ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                    ProjectsImpl projects = projectController.getProjects();
-                    ProjectImpl project = GephiReader.readProject(reader, projects);
-                    project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-                    return project;
-                } finally {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                    if (filterReader != null) {
-                        filterReader.close();
-                    }
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                    inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
                 }
+                inputFactory.setXMLReporter(new XMLReporter() {
+                    @Override
+                    public void report(String message, String errorType, Object relatedInformation,
+                                       Location location) throws XMLStreamException {
+                    }
+                });
+                isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+                filterReader = new Xml10FilterReader(isReader);
+                reader = inputFactory.createXMLStreamReader(filterReader);
 
+                ProjectImpl project = GephiReader.readProject(reader, projects);
+                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+                return project;
             } finally {
-                if (is != null) {
-                    is.close();
+                if (reader != null) {
+                    reader.close();
+                }
+                if (filterReader != null) {
+                    filterReader.close();
                 }
             }
+
+        } finally {
+            if (is != null) {
+                is.close();
+            }
         }
-        return null;
     }
 
     private WorkspaceImpl readWorkspace(ProjectImpl project, String entryName, ZipFile zipFile) throws Exception {
