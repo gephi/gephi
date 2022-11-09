@@ -56,7 +56,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewController;
@@ -69,6 +68,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.Actions;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
@@ -187,14 +187,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         });
 
         //Export
-        svgExportButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
-                ui.action();
-            }
-        });
+        svgExportButton.addActionListener(Actions.forID("File", "org.gephi.desktop.io.export.ExportImage"));
         setup(null);
 
         PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);

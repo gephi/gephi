@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.desktop.io.export.api;
+package org.gephi.desktop.io.export;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

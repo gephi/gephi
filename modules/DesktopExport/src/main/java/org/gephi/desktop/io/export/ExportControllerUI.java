@@ -53,5 +53,7 @@ public interface ExportControllerUI {
 
     void exportFile(final FileObject fileObject, final Exporter exporter);
 
+    void exportFiles(final FileObject folder, final Exporter exporter, final String extension);
+
     ExportController getExportController();
 }

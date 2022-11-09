@@ -1,50 +1,7 @@
-/*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
-
-This file is part of Gephi.
-
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
-
-Copyright 2011 Gephi Consortium. All rights reserved.
-
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
-
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
-
-Contributor(s):
-
-Portions Copyrighted 2011 Gephi Consortium.
- */
-
-package org.gephi.desktop.io.export.api;
+package org.gephi.desktop.io.export;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -53,19 +10,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import org.gephi.desktop.io.export.ExportControllerUI;
-import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.io.exporter.api.FileType;
+import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.VectorExporter;
-import org.gephi.io.exporter.spi.VectorFileExporterBuilder;
+import org.gephi.io.exporter.spi.FileExporterBuilder;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.DialogFileFilter;
@@ -77,52 +36,55 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.lookup.ServiceProvider;
 
-/**
- * @author Mathieu Bastian
- */
-@ServiceProvider(service = ExporterClassUI.class)
-public final class VectorialFileExporterUI implements ExporterClassUI {
+public class AbstractExporterUI<T extends FileExporterBuilder> {
 
-    private VectorFileExporterBuilder selectedBuilder;
-    private VectorExporter selectedExporter;
+    private FileExporterBuilder selectedBuilder;
+    private Exporter selectedExporter;
     private File selectedFile;
+    private boolean visibleOnlyGraph = false;
+    private boolean exportAll = false;
     private JDialog dialog;
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_title");
+    private final Class<T> builderClass;
+    private final String preferencesPrefix;
+
+    public AbstractExporterUI(String preferencesPrefix, Class<T> builderClass) {
+        this.builderClass = builderClass;
+        this.preferencesPrefix = preferencesPrefix;
     }
 
-    @Override
-    public boolean isEnable() {
-        return true;
-    }
-
-    @Override
     public void action() {
-        final String LAST_PATH = "VectorialFileExporterUI_Last_Path";
-        final String LAST_PATH_DEFAULT = "VectorialFileExporterUI_Last_Path_Default";
-        final String LAST_FILE_FILTER = "VectorialFileExporterUI_Last_File_Filter";
+        action(Lookup.getDefault().lookupAll(builderClass));
+    }
 
-        final ExportControllerUI exportController = Lookup.getDefault().lookup(ExportControllerUI.class);
+    public void action(final Collection<? extends T> exporterBuilders) {
+        final String LAST_PATH = preferencesPrefix + "_Last_Path";
+        final String LAST_PATH_DEFAULT = preferencesPrefix + "_Last_Path_Default";
+        final String LAST_FILE_FILTER = preferencesPrefix + "_Last_File_Filter";
+
+        final DesktopExportController exportController = Lookup.getDefault().lookup(DesktopExportController.class);
         if (exportController == null) {
             return;
         }
 
         //Get last directory
-        String lastPathDefault = NbPreferences.forModule(VectorialFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(VectorialFileExporterUI.class).get(LAST_PATH, lastPathDefault);
-        String lastFileFilterString =
-            NbPreferences.forModule(VectorialFileExporterUI.class).get(LAST_FILE_FILTER, null);
+        String lastPathDefault = NbPreferences.forModule(AbstractExporterUI.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(AbstractExporterUI.class).get(LAST_PATH, lastPathDefault);
+        String lastFileFilterString = NbPreferences.forModule(AbstractExporterUI.class).get(LAST_FILE_FILTER, null);
 
-        //Options panel
-        FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
-        JPanel optionsPanel = new JPanel(layout);
-        final JButton optionsButton = new JButton(
-            NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsButton_name"));
-        optionsPanel.add(optionsButton);
+        //Get last directory as a file
+        File lastPathDir = null;
+        if (lastPath != null) {
+            lastPathDir = new File(lastPath);
+            while (lastPathDir != null && (lastPathDir.isFile() || !lastPathDir.exists())) {
+                lastPathDir = lastPathDir.getParentFile();
+            }
+        }
+
+        //Options button (that shows the dialog)
+        final JButton optionsButton =
+            new JButton(NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.optionsButton.name"));
         optionsButton.addActionListener(new ActionListener() {
 
             @Override
@@ -131,8 +93,9 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 if (exporterUI != null) {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
+
                     DialogDescriptor dd = new DialogDescriptor(panel, NbBundle
-                        .getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsDialog_title",
+                        .getMessage(AbstractExporterUI.class, "AbstractExporterUI.optionsDialog.title",
                             selectedBuilder.getName()));
                     TopDialog topDialog = new TopDialog(dialog, dd.getTitle(), dd.isModal(), dd, dd.getClosingOptions(),
                         dd.getButtonListener());
@@ -144,16 +107,30 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             }
         });
 
+        // Settings panel
+        JPanel optionsPanel = new JPanel(new BorderLayout());
+        optionsPanel.add(optionsButton, BorderLayout.EAST);
+        optionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 6, 0));
+
         //Graph Settings Panel
         final JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(optionsPanel, BorderLayout.NORTH);
 
+        GraphFileExporterUIPanel graphSettings = new GraphFileExporterUIPanel();
+        graphSettings.setVisibleOnlyGraph(visibleOnlyGraph);
+        if (GraphFileExporterBuilder.class.isAssignableFrom(builderClass)) {
+            // Only needed for the graph exporters
+            southPanel.add(graphSettings, BorderLayout.CENTER);
+        }
+
         //Optionable file chooser
-        final JFileChooser chooser = new JFileChooser(lastPath) {
+        final JFileChooser chooser = new JFileChooser(lastPathDir) {
 
             @Override
             protected JDialog createDialog(Component parent) throws HeadlessException {
                 dialog = super.createDialog(parent);
+                dialog.setSize(640, 480);
+                dialog.setResizable(true);
                 Component c = dialog.getContentPane().getComponent(0);
                 if (c != null && c instanceof JComponent) {
                     Insets insets = ((JComponent) c).getInsets();
@@ -172,20 +149,20 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 }
             }
         };
-        chooser.setDialogTitle(
-            NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_filechooser_title"));
+        chooser.setFileSelectionMode(exportAll ? JFileChooser.DIRECTORIES_ONLY : JFileChooser.FILES_ONLY);
+        chooser.setDialogTitle(NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.filechooser.title"));
         chooser.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
-                //Save file filter
-                NbPreferences.forModule(VectorialFileExporterUI.class)
+                //Save last file filter
+                NbPreferences.forModule(AbstractExporterUI.class)
                     .put(LAST_FILE_FILTER, fileFilter.getExtensions().toString());
 
                 //Options panel enabling
-                selectedBuilder = getExporter(fileFilter);
+                selectedBuilder = getExporter(exporterBuilders, fileFilter);
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
 
@@ -203,11 +180,9 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 } else {
                     optionsButton.setEnabled(false);
                 }
-                optionsButton.setEnabled(selectedExporter != null &&
-                    exportController.getExportController().getUI(selectedExporter) != null);
 
                 //Selected file extension change
-                if (selectedFile != null && fileFilter != null) {
+                if (selectedFile != null && !exportAll) {
                     String fileName = selectedFile.getName();
                     String directoryPath = chooser.getCurrentDirectory().getAbsolutePath();
                     if (fileName.lastIndexOf(".") != -1) {
@@ -229,13 +204,25 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             }
         });
 
+        //Export all checkbox
+        JCheckBox exportAllCheckBox =
+            new JCheckBox(NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.exportAllCheckBox.text"));
+        exportAllCheckBox.setSelected(exportAll);
+        exportAllCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportAll = exportAllCheckBox.isSelected();
+                chooser.setFileSelectionMode(exportAll ? JFileChooser.DIRECTORIES_ONLY : JFileChooser.FILES_ONLY);
+            }
+        });
+        optionsPanel.add(exportAllCheckBox, BorderLayout.WEST);
+
         //File filters
         DialogFileFilter defaultFileFilter = null;
         DialogFileFilter lastFileFilter = null;
 
-        for (VectorFileExporterBuilder vectorFileExporter : Lookup.getDefault()
-            .lookupAll(VectorFileExporterBuilder.class)) {
-            for (FileType fileType : vectorFileExporter.getFileTypes()) {
+        for (FileExporterBuilder graphFileExporter : exporterBuilders) {
+            for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
                 if (defaultFileFilter == null) {
@@ -259,7 +246,16 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
         }
 
         chooser.setFileFilter(defaultFileFilter);
-        selectedFile = new File(chooser.getCurrentDirectory(), "Untitled" + defaultFileFilter.getExtensions().get(0));
+
+        if (exportAll) {
+            selectedFile = chooser.getCurrentDirectory();
+        } else if (lastPathDir != null && lastPathDir.exists() && lastPathDir.isDirectory()) {
+            selectedFile = new File(lastPath);
+        } else {
+            selectedFile = new File(chooser.getCurrentDirectory(),
+                NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.untitledFileName") +
+                    defaultFileFilter.getExtensions().get(0));
+        }
         chooser.setSelectedFile(selectedFile);
 
         //Show
@@ -270,37 +266,53 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             FileObject fileObject = FileUtil.toFileObject(file);
 
             //Save last path
-            NbPreferences.forModule(VectorialFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
+            NbPreferences.forModule(AbstractExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
+
+            //Save variable
+            visibleOnlyGraph = graphSettings.isVisibleOnlyGraph();
 
             //Do
-            exportController.exportFile(fileObject, selectedExporter);
+            if (selectedExporter instanceof GraphExporter) {
+                ((GraphExporter) selectedExporter).setExportVisible(visibleOnlyGraph);
+            }
+
+            if (exportAll) {
+                String extension = selectedBuilder.getFileTypes()[0].getExtension();
+                exportController.exportFiles(fileObject, selectedExporter, extension);
+            } else {
+                exportController.exportFile(fileObject, selectedExporter);
+            }
         }
         dialog = null;
     }
 
     private boolean canExport(JFileChooser chooser) {
+        if (exportAll) {
+            // TODO: Warning if directory is not empty
+            return true;
+        }
         File file = chooser.getSelectedFile();
-        String defaultExtention = selectedBuilder.getFileTypes()[0].getExtension();
+        String defaultExtension = selectedBuilder.getFileTypes()[0].getExtension();
 
         try {
-            if (!file.getPath().endsWith(defaultExtention)) {
-                file = new File(file.getPath() + defaultExtention);
+            if (!file.getPath().endsWith(defaultExtension)) {
+                file = new File(file.getPath() + defaultExtension);
+                selectedFile = file;
                 chooser.setSelectedFile(file);
             }
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    String failMsg = NbBundle
-                        .getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_SaveFailed",
-                            new Object[] {file.getPath()});
-                    JOptionPane.showMessageDialog(null, failMsg);
+                    String failMsg = NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.SaveFailed",
+                        new Object[] {file.getPath()});
+                    JOptionPane.showMessageDialog(chooser, failMsg);
                     return false;
                 }
             } else {
                 String overwriteMsg = NbBundle
-                    .getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_overwriteDialog_message",
+                    .getMessage(AbstractExporterUI.class, "AbstractExporterUI.overwriteDialog.message",
                         new Object[] {file.getPath()});
-                if (JOptionPane.showConfirmDialog(null, overwriteMsg,
-                    NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_overwriteDialog_title"),
+                if (JOptionPane.showConfirmDialog(chooser, overwriteMsg,
+                    NbBundle.getMessage(AbstractExporterUI.class, "AbstractExporterUI.overwriteDialog.title"),
                     JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                     return false;
                 }
@@ -311,13 +323,14 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             DialogDisplayer.getDefault().notifyLater(msg);
             return false;
         }
+
         return true;
     }
 
-    private VectorFileExporterBuilder getExporter(DialogFileFilter fileFilter) {
+    private FileExporterBuilder getExporter(Collection<? extends T> exporterBuilders,
+                                            DialogFileFilter fileFilter) {
         //Find fileFilter
-        for (VectorFileExporterBuilder graphFileExporter : Lookup.getDefault()
-            .lookupAll(VectorFileExporterBuilder.class)) {
+        for (FileExporterBuilder graphFileExporter : exporterBuilders) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
                 tempFilter.addExtensions(fileType.getExtensions());

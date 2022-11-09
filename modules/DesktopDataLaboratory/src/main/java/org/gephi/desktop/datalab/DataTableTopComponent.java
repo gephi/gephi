@@ -80,7 +80,6 @@ import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.desktop.datalab.tables.EdgesDataTable;
 import org.gephi.desktop.datalab.tables.NodesDataTable;
 import org.gephi.desktop.datalab.utils.GraphFileExporterBuilderDecorator;
-import org.gephi.desktop.io.export.api.GraphFileExporterUI;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -101,6 +100,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.Actions;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -879,8 +879,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         ExporterSpreadsheet.ExportTable currentTable =
             isEdgeTableMode() ? ExporterSpreadsheet.ExportTable.EDGES : ExporterSpreadsheet.ExportTable.NODES;
 
-        GraphFileExporterUI fileExporterUI = new GraphFileExporterUI();
-
         List<GraphFileExporterBuilder> builders = new ArrayList<>();
         for (GraphFileExporterBuilder builder : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
             if (builder.getName().toLowerCase().startsWith("spreadsheet")) {
@@ -888,7 +886,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             }
         }
 
-        fileExporterUI.action(builders.toArray(new GraphFileExporterBuilder[0]));
+        Actions.forID("File", "org.gephi.desktop.io.export.ExportGraph").actionPerformed(
+            new ActionEvent(builders.toArray(new GraphFileExporterBuilder[0]), 0, null));
     }
 
     /**
