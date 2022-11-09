@@ -74,6 +74,7 @@ import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
+import org.gephi.io.importer.api.MetadataDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.joda.time.DateTimeZone;
@@ -99,6 +100,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2ObjectMap<String, ColumnDraft> edgeColumns;
     //MetaData
     private String source;
+    private MetadataDraft metadataDraft;
     private Class lastEdgeType;
     private Long2ObjectMap<int[]>[] edgeTypeSets;
     private EdgeDirectionDefault edgeDefault = EdgeDirectionDefault.MIXED;
@@ -919,6 +921,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 break;
         }
         dest.setWeight(result);
+    }
+
+    @Override
+    public void setMetadata(MetadataDraft metadata) {
+        this.metadataDraft = metadata;
+    }
+
+    @Override
+    public MetadataDraft getMetadata() {
+        return metadataDraft;
     }
 
     @Override

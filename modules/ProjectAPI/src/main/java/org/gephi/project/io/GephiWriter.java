@@ -134,6 +134,10 @@ public class GephiWriter {
         WorkspaceMetaData workspaceMetaData = workspace.getWorkspaceMetadata();
         writer.writeStartElement("metadata");
 
+        writer.writeStartElement("title");
+        writer.writeCharacters(workspaceMetaData.getTitle());
+        writer.writeEndElement();
+
         writer.writeStartElement("description");
         writer.writeCharacters(workspaceMetaData.getDescription());
         writer.writeEndElement();

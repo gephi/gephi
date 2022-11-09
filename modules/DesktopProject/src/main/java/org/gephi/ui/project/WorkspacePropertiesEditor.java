@@ -1,20 +1,13 @@
 package org.gephi.ui.project;
 
 import org.gephi.desktop.project.ProjectControllerUIImpl;
-import org.gephi.lib.validation.BetweenZeroAndOneValidator;
-import org.gephi.lib.validation.PositiveNumberValidator;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceMetaData;
-import org.netbeans.validation.api.ValidatorUtils;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
 
-/**
- * @author mathieu.bastian
- */
 public class WorkspacePropertiesEditor extends javax.swing.JPanel {
 
     /**
@@ -40,7 +33,7 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
     public void setup(Workspace workspace) {
         WorkspaceMetaData info = workspace.getWorkspaceMetadata();
         descriptionTextArea.setText(info.getDescription());
-
+        titleTextField.setText(info.getTitle());
         nameTextField.setText(workspace.getName());
     }
 
@@ -52,6 +45,10 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
 
         if (!nameTextField.getText().isEmpty() && !nameTextField.getText().equals(workspace.getName())) {
             Lookup.getDefault().lookup(ProjectControllerUIImpl.class).renameWorkspace(nameTextField.getText());
+        }
+
+        if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(info.getTitle())) {
+            info.setTitle(titleTextField.getText());
         }
     }
 
@@ -70,6 +67,8 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
         descriptionTextArea = new javax.swing.JTextArea();
         labelName = new javax.swing.JLabel();
         labelDescription = new javax.swing.JLabel();
+        labelTitle = new javax.swing.JLabel();
+        titleTextField = new javax.swing.JTextField();
 
         innerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
             org.openide.util.NbBundle.getMessage(WorkspacePropertiesEditor.class,
@@ -89,6 +88,11 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
             org.openide.util.NbBundle.getMessage(WorkspacePropertiesEditor.class,
                 "WorkspacePropertiesEditor.labelDescription.text")); // NOI18N
 
+        labelTitle.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        org.openide.awt.Mnemonics.setLocalizedText(labelTitle,
+            org.openide.util.NbBundle.getMessage(WorkspacePropertiesEditor.class,
+                "WorkspacePropertiesEditor.labelTitle.text")); // NOI18N
+
         javax.swing.GroupLayout innerPanelLayout = new javax.swing.GroupLayout(innerPanel);
         innerPanel.setLayout(innerPanelLayout);
         innerPanelLayout.setHorizontalGroup(
@@ -96,14 +100,23 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
                 .addGroup(innerPanelLayout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(labelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                        .addComponent(labelName, javax.swing.GroupLayout.DEFAULT_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(nameTextField)
-                        .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 247,
-                            Short.MAX_VALUE))
+                        .addGroup(innerPanelLayout.createSequentialGroup()
+                            .addComponent(labelName, javax.swing.GroupLayout.PREFERRED_SIZE, 82,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(nameTextField))
+                        .addGroup(innerPanelLayout.createSequentialGroup()
+                            .addGroup(
+                                innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(labelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 82,
+                                        Short.MAX_VALUE)
+                                    .addComponent(labelTitle, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(titleTextField)
+                                .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 235,
+                                    Short.MAX_VALUE))))
                     .addContainerGap())
         );
         innerPanelLayout.setVerticalGroup(
@@ -114,13 +127,19 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
                         .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
                             javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelName))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelTitle)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(innerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(innerPanelLayout.createSequentialGroup()
                             .addComponent(labelDescription)
                             .addGap(0, 0, Short.MAX_VALUE))
-                        .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
-                    .addContainerGap())
+                        .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 150,
+                            Short.MAX_VALUE))
+                    .addGap(17, 17, 17))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -137,9 +156,9 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(innerPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(innerPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -150,6 +169,8 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
     private javax.swing.JPanel innerPanel;
     private javax.swing.JLabel labelDescription;
     private javax.swing.JLabel labelName;
+    private javax.swing.JLabel labelTitle;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }

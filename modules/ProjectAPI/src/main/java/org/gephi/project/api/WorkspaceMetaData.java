@@ -22,4 +22,18 @@ public interface WorkspaceMetaData {
      * @param description description
      */
     void setDescription(String description);
+
+    /**
+     * Returns the title of this workspace.
+     *
+     * @return the workspace's title or empty string if missing
+     */
+    String getTitle();
+
+    /**
+     * Sets the workspace's title.
+     *
+     * @param title title
+     */
+    void setTitle(String title);
 }

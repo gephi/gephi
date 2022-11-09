@@ -156,14 +156,14 @@ public class GephiReader {
         while (reader.hasNext()) {
             Integer eventType = reader.next();
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
-                String name = reader.getLocalName();
-                if ("description".equalsIgnoreCase(name)) {
-                    property = "description";
-                }
+                property = reader.getLocalName();
             } else if (eventType.equals(XMLStreamReader.CHARACTERS)) {
                 if (property != null && property.equals("description")) {
                     String desc = reader.getText();
                     workspace.getWorkspaceMetadata().setDescription(desc);
+                } else if (property != null && property.equals("title")) {
+                    String title = reader.getText();
+                    workspace.getWorkspaceMetadata().setTitle(title);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("metadata".equalsIgnoreCase(reader.getLocalName())) {
