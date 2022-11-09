@@ -288,6 +288,24 @@ public class ProjectControllerImplTest {
         Mockito.verify(workspaceListener).initialize(pc.getCurrentWorkspace());
     }
 
+    @Test
+    public void testDuplicateWorkspace() {
+        MockServices.setServices(MockController.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addWorkspaceListener(workspaceListener);
+        pc.newProject();
+        Workspace duplicate = pc.duplicateWorkspace(pc.getCurrentWorkspace());
+        Assert.assertNotNull(duplicate);
+        Assert.assertTrue(duplicate.isOpen());
+        Assert.assertSame(duplicate, pc.getCurrentWorkspace());
+        Assert.assertEquals(2, pc.getCurrentProject().getWorkspaces().size());
+        Mockito.verify(workspaceListener).initialize(duplicate);
+        Mockito.verify(workspaceListener).select(duplicate);
+        Assert.assertNotNull(duplicate.getLookup().lookup(MockModel.class));
+
+    }
+
     public static class MockModel implements Model {
 
         private final Workspace workspace;

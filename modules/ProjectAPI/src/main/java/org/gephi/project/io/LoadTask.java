@@ -90,6 +90,22 @@ public class LoadTask implements LongTask {
         this.file = file;
     }
 
+    public static XMLStreamReader newXMLReader(InputStream is) throws XMLStreamException {
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+            inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+        }
+        inputFactory.setXMLReporter(new XMLReporter() {
+            @Override
+            public void report(String message, String errorType, Object relatedInformation,
+                               Location location) throws XMLStreamException {
+            }
+        });
+        InputStreamReader isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        Xml10FilterReader filterReader = new Xml10FilterReader(isReader);
+        return inputFactory.createXMLStreamReader(filterReader);
+    }
+
     public ProjectImpl execute(ProjectsImpl projects) {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));

@@ -59,11 +59,12 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.io.DuplicateTask;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
-import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -374,15 +375,25 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
         synchronized (this) {
-            if (projects.hasCurrentProject()) {
-                Workspace duplicate = newWorkspace(projects.getCurrentProject());
-                for (WorkspaceDuplicateProvider dp : Lookup.getDefault().lookupAll(WorkspaceDuplicateProvider.class)) {
-                    dp.duplicate(workspace, duplicate);
+            DuplicateTask duplicateTask = new DuplicateTask(workspace);
+            Future<WorkspaceImpl> res = longTaskExecutor.execute(duplicateTask, () -> {
+                WorkspaceImpl newWorkspace = duplicateTask.run();
+                // Null if cancelled
+                if (newWorkspace != null) {
+                    newWorkspace.getLookup().lookup(WorkspaceInformationImpl.class).setName(
+                        NbBundle.getMessage(ProjectControllerImpl.class, "Workspace.duplicated.name",
+                            workspace.getName()));
+                    fireWorkspaceEvent(EventType.INITIALIZE, newWorkspace);
+
+                    openWorkspace(newWorkspace);
                 }
-                openWorkspace(duplicate);
-                return duplicate;
+                return newWorkspace;
+            }, "", t -> handleException(workspace.getProject(), t));
+            try {
+                return res.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
-            return null;
         }
     }
 

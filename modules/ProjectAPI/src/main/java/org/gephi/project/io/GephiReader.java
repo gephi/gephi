@@ -116,7 +116,8 @@ public class GephiReader {
                 if ("workspace".equalsIgnoreCase(name)) {
                     //Id
                     Integer workspaceId;
-                    if (reader.getAttributeValue(null, "id") == null) {
+                    if (reader.getAttributeValue(null, "id") == null ||
+                        project.getWorkspace(Integer.parseInt(reader.getAttributeValue(null, "id"))) != null) {
                         workspaceId = project.nextWorkspaceId();
                     } else {
                         workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
