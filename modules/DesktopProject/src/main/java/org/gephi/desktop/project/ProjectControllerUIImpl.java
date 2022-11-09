@@ -306,7 +306,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 String overwriteMsg = NbBundle.getMessage(
                     ProjectControllerUIImpl.class,
                     "SaveAsProject_Overwrite", new Object[] {file.getPath()});
-                if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
+                if (JOptionPane.showConfirmDialog(chooser, overwriteMsg) != JOptionPane.OK_OPTION) {
                     return false;
                 }
             }
