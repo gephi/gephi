@@ -114,12 +114,14 @@ public class DefaultProcessor extends AbstractProcessor {
     }
 
     protected void processMeta(ContainerUnloader container, Workspace workspace) {
-        WorkspaceMetaData metaData = workspace.getWorkspaceMetadata();
-        if (metaData.getDescription().isEmpty()) {
-            metaData.setDescription(container.getMetadata().getDescription());
-        }
-        if (metaData.getTitle().isEmpty()) {
-            metaData.setTitle(container.getMetadata().getTitle());
+        if (container.getMetadata() != null) {
+            WorkspaceMetaData metaData = workspace.getWorkspaceMetadata();
+            if (metaData.getDescription().isEmpty()) {
+                metaData.setDescription(container.getMetadata().getDescription());
+            }
+            if (metaData.getTitle().isEmpty()) {
+                metaData.setTitle(container.getMetadata().getTitle());
+            }
         }
     }
 
