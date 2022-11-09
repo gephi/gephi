@@ -58,6 +58,7 @@ public class GephiWriterReaderTest {
     public void testWorkspaceMetadata() throws Exception {
         Workspace workspace = Utils.newWorkspace();
         workspace.getWorkspaceMetadata().setDescription("foo");
+        workspace.getWorkspaceMetadata().setTitle("bar");
 
         Workspace read = writeAndReadWorkspace(workspace);
         Assert.assertEquals(workspace.getWorkspaceMetadata(), read.getWorkspaceMetadata());
