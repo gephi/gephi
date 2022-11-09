@@ -616,8 +616,10 @@ public class ProjectControllerUIImpl implements ProjectListener {
         controller.renameWorkspace(controller.getCurrentWorkspace(), name);
     }
 
-    public Workspace duplicateWorkspace() {
-        return controller.duplicateWorkspace(controller.getCurrentWorkspace());
+    public void duplicateWorkspace() {
+        longTaskExecutor.execute(null, () -> {
+            controller.duplicateWorkspace(controller.getCurrentWorkspace());
+        });
     }
 
     private String getCurrentVersion() {
