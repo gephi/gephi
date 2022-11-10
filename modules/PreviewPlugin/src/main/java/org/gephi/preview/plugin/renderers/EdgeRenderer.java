@@ -466,7 +466,7 @@ public class EdgeRenderer implements Renderer {
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Item sourceItem;
             public final Item targetItem;
@@ -599,7 +599,7 @@ public class EdgeRenderer implements Renderer {
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Item sourceItem;
             public final Item targetItem;
@@ -640,10 +640,10 @@ public class EdgeRenderer implements Renderer {
                 // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
                 Double _xa = 0.5*(x1-x2);
                 Double _ya = 0.5*(y1-y2);
-                Double _x0 = x2+_xa;
-                Double _y0 = y2+_ya;
-                Double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
-                Double _b = 0.;
+                double _x0 = x2+_xa;
+                double _y0 = y2+_ya;
+                double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
+                double _b = 0.;
                 if (_a < r) {
                     // Note: geometrically, _a <= r is granted.
                     // But in practice, we can have _a very close to r
@@ -654,8 +654,8 @@ public class EdgeRenderer implements Renderer {
                 }
                 Double xc = _x0 + (_b * _ya) / _a;
                 Double yc = _y0 - (_b * _xa / _a);
-                Double angle1 = Math.atan2(y1-yc, x1-xc);
-                Double angle2 = Math.atan2(y2-yc, x2-xc);
+                double angle1 = Math.atan2(y1-yc, x1-xc);
+                double angle2 = Math.atan2(y2-yc, x2-xc);
 
                 while (angle2<angle1) {
                     angle2 += 2*Math.PI;
@@ -706,7 +706,7 @@ public class EdgeRenderer implements Renderer {
                 // We give back the result as an angle, as it's how it's useful to us.
                 Double rt = truncature_length;
                 Double r = radius_curvature_edge;
-                Double x;
+                double x;
                 if (r>=rt) {
                     x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
                 } else {
@@ -714,8 +714,7 @@ public class EdgeRenderer implements Renderer {
                     // (this edge case is dealt with somewhere else)
                     return 0.;
                 }
-                Double angle = 2*Math.atan2(rt/2, x);
-                return angle;
+                return 2*Math.atan2(rt/2, x);
             }
 
             private Vector computeCtrlPoint(
@@ -808,7 +807,7 @@ public class EdgeRenderer implements Renderer {
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Float x;
             public final Float y;

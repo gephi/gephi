@@ -158,7 +158,7 @@ public class EdgeLabelRenderer implements Renderer {
                 direction.sub(new Vector(x1, y1));
                 final float length = direction.mag();
                 // Arc radius
-                Double r = length / properties.getDoubleValue(EdgeRenderer.ARC_CURVENESS);
+                double r = length / properties.getDoubleValue(EdgeRenderer.ARC_CURVENESS);
                 // Arc bounding box
                 Double _xa = 0.5*(x1-x2);
                 Double _ya = 0.5*(y1-y2);
