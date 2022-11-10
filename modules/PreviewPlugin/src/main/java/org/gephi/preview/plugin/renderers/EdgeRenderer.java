@@ -695,6 +695,12 @@ public class EdgeRenderer implements Renderer {
 
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
+                // Note: calling this a "radius" may be confusing.
+                // Clarification:
+                // This is about offsetting the arc at the end, using the
+                // node radius + the arrow size. It is a radius in the same
+                // sense as "node radius". It's not the radius of the edge curve.
+                // The same goes for sourceRadius below.
 
                 // Offset due to the source node
                 if (targetRadius != null && targetRadius < 0) {
