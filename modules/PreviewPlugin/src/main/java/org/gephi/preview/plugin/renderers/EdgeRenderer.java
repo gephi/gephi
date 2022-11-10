@@ -675,7 +675,15 @@ public class EdgeRenderer implements Renderer {
                 Double _x0 = x2+_xa;
                 Double _y0 = y2+_ya;
                 Double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
-                Double _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
+                Double _b = 0.;
+                if (_a < r) {
+                    // Note: geometrically, _a <= r is granted.
+                    // But in practice, we can have _a very close to r
+                    // and numerical approximations may produce _a > r.
+                    // This just corresponds to _b=0, but it would give a NaN.
+                    // This is why we have to do the check.
+                    _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
+                }
                 Double xc = _x0 + (_b * _ya) / _a;
                 Double yc = _y0 - (_b * _xa / _a);
                 Double angle1 = Math.atan2(y1-yc, x1-xc);
@@ -683,7 +691,7 @@ public class EdgeRenderer implements Renderer {
 
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
-                System.out.println("targetRadius "+ targetRadius);
+
                 // Offset due to the source node
                 if (targetRadius != null && targetRadius < 0) {
                     Double targetOffset = this.computeTheThing(r, (double) targetRadius);
