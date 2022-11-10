@@ -84,6 +84,11 @@ public class EdgeRenderer implements Renderer {
     //Custom properties
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
+    /**
+     * @deprecated
+     * We now use circle arcs to draw curved edges. See ARC_CURVENESS instead.
+     */
+    @Deprecated
     public static final String BEZIER_CURVENESS = "edge.bezier-curveness";
     public static final String ARC_CURVENESS = "edge.arc-curveness";
     public static final String SOURCE = "source";
@@ -104,7 +109,6 @@ public class EdgeRenderer implements Renderer {
     protected float defaultRescaleWeightMax = 1.0f;
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
-    protected float defaultBezierCurviness = 0.2f;
     protected float defaultArcCurviness = 1.2f;
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
@@ -182,11 +186,6 @@ public class EdgeRenderer implements Renderer {
         }
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
-
-        //Put bezier curveness in properties
-        if (!properties.hasProperty(BEZIER_CURVENESS)) {
-            properties.putValue(BEZIER_CURVENESS, defaultBezierCurviness);
-        }
 
         //Put arc curveness in properties
         if (!properties.hasProperty(ARC_CURVENESS)) {
@@ -532,13 +531,6 @@ public class EdgeRenderer implements Renderer {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(getThickness(item)));
                 graphics.setColor(color);
-                /* // Bézier curve
-                final GeneralPath gp
-                    = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-                gp.moveTo(h.x1, h.y1);
-                gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2);
-                graphics.draw(gp);
-                */
                 // Arc
                 graphics.draw(new Arc2D.Double(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep, Arc2D.OPEN));
             } else if (target instanceof SVGTarget) {
@@ -549,13 +541,6 @@ public class EdgeRenderer implements Renderer {
                     SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
                     SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
                 ));
-                /* // Bézier curve
-                edgeElem.setAttribute("d", String.format(
-                    Locale.ENGLISH,
-                    "M %f,%f C %f,%f %f,%f %f,%f",
-                    h.x1, h.y1,
-                    h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
-                */
                 // Elliptical arc
                 String path = String.format(
                     Locale.ENGLISH,
@@ -577,11 +562,6 @@ public class EdgeRenderer implements Renderer {
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PdfContentByte cb = pdfTarget.getContentByte();
-                /*
-                // Bézier
-                cb.moveTo(h.x1, -h.y1);
-                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
-                */
                 // Arc
                 cb.arc(h.bbx, -h.bby, h.bbx+h.bbw, -(h.bby+h.bbh), h.astart, h.asweep);
                 cb.setRGBColorStroke(
@@ -609,13 +589,13 @@ public class EdgeRenderer implements Renderer {
         ) {
             final Helper h = new Helper(item, properties);
             final float minX
-                = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.min(h.x1, h.x2);
             final float minY
-                = Math.min(Math.min(Math.min(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.min(h.y1, h.y2);
             final float maxX
-                = Math.max(Math.max(Math.max(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.max(h.x1, h.x2);
             final float maxY
-                = Math.max(Math.max(Math.max(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.max(h.y1, h.y2);
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
@@ -627,8 +607,6 @@ public class EdgeRenderer implements Renderer {
             public final Float x2;
             public final Float y1;
             public final Float y2;
-            public final Vector v1;
-            public final Vector v2;
             public final Double r;
             public final Double bbx;
             public final Double bby;
@@ -654,16 +632,6 @@ public class EdgeRenderer implements Renderer {
                 final float length = direction.mag();
 
                 direction.normalize();
-
-                // Bézier curve
-                final float factor
-                    = properties.getFloatValue(BEZIER_CURVENESS) * length;
-
-                final Vector n = new Vector(direction.y, -direction.x);
-                n.mult(factor);
-
-                v1 = computeCtrlPoint(x1, y1, direction, factor, n);
-                v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
 
                 // Arc radius
                 r = length / properties.getDoubleValue(ARC_CURVENESS);

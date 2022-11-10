@@ -197,35 +197,6 @@ public class EdgeLabelRenderer implements Renderer {
                 item.setData(LABEL_X, x);
                 item.setData(LABEL_Y, y);
 
-                /*
-                Vector direction = new Vector(x2, y2);
-                direction.sub(new Vector(x1, y1));
-                float length = direction.mag();
-                direction.normalize();
-
-                float factor = properties.getFloatValue(EdgeRenderer.BEZIER_CURVENESS) * length;
-
-                // normal vector to the edge
-                Vector n = new Vector(direction.y, -direction.x);
-                n.mult(factor);
-
-                // first control point
-                Vector v1 = new Vector(direction.x, direction.y);
-                v1.mult(factor);
-                v1.add(new Vector(x1, y1));
-                v1.add(n);
-
-                // second control point
-                Vector v2 = new Vector(direction.x, direction.y);
-                v2.mult(-factor);
-                v2.add(new Vector(x2, y2));
-                v2.add(n);
-
-                Vector middle = bezierPoint(x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2, 0.5f);
-                item.setData(LABEL_X, middle.x);
-                item.setData(LABEL_Y, middle.y);
-
-                 */
             } else {
                 Float x = ((Float) sourceItem.getData(NodeItem.X) + (Float) targetItem.getData(NodeItem.X)) / 2f;
                 Float y = ((Float) sourceItem.getData(NodeItem.Y) + (Float) targetItem.getData(NodeItem.Y)) / 2f;
