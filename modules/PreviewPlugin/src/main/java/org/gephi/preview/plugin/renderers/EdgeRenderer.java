@@ -689,6 +689,10 @@ public class EdgeRenderer implements Renderer {
                 Double angle1 = Math.atan2(y1-yc, x1-xc);
                 Double angle2 = Math.atan2(y2-yc, x2-xc);
 
+                while (angle2<angle1) {
+                    angle2 += 2*Math.PI;
+                }
+
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
 
@@ -711,8 +715,8 @@ public class EdgeRenderer implements Renderer {
                 bbw = 2*r;
                 bbh = 2*r;
                 astart = -180*(angle1)/Math.PI;
-                if (angle1-angle2 > 0.) {
-                    // This cas corresponds to a negative length of the edge.
+                if (0. < angle1-angle2) {
+                    // This case corresponds to a negative length of the edge.
                     // It may happen because the arrow or the nodes are too big and "swallow" the edge.
                     // In that case we do not trace the edge (null length).
                     asweep = 0.;
