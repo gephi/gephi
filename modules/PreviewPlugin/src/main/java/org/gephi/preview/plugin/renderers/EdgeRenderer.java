@@ -700,7 +700,7 @@ public class EdgeRenderer implements Renderer {
 
                 // Source radius
                 final Float sourceRadius = item.getData(SOURCE_RADIUS);
-                //Avoid edge from passing the node's center:
+                // Avoid edge from passing the node's center:
                 if (sourceRadius != null && sourceRadius < 0) {
                     Double sourceOffset = this.computeTheThing(r, (double) sourceRadius);
                     angle1 -= sourceOffset;
@@ -711,8 +711,14 @@ public class EdgeRenderer implements Renderer {
                 bbw = 2*r;
                 bbh = 2*r;
                 astart = -180*(angle1)/Math.PI;
-                asweep = (180*(angle1-angle2)/Math.PI+720)%360 - 360;
-                System.out.println("r "+r+" astart "+astart+" asweep "+asweep+" angle1 "+angle1+" x1 "+x1+" y1 "+y1);
+                if (angle1-angle2 > 0.) {
+                    // This cas corresponds to a negative length of the edge.
+                    // It may happen because the arrow or the nodes are too big and "swallow" the edge.
+                    // In that case we do not trace the edge (null length).
+                    asweep = 0.;
+                } else {
+                    asweep = (180*(angle1-angle2)/Math.PI+720)%360 - 360;
+                }
             }
 
             private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
@@ -722,7 +728,14 @@ public class EdgeRenderer implements Renderer {
                 // We give back the result as an angle, as it's how it's useful to us.
                 Double rt = truncature_length;
                 Double r = radius_curvature_edge;
-                Double x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt/2,2));
+                Double x;
+                if (r>=rt) {
+                    x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+                } else {
+                    // There is no solution to the problem
+                    // (this edge case is dealt with somewhere else)
+                    return 0.;
+                }
                 Double angle = 2*Math.atan2(rt/2, x);
                 return angle;
             }
