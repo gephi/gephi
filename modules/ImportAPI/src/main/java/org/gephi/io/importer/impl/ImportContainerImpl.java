@@ -1157,8 +1157,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     void checkSpecialCharacter(ObjectList<? extends ElementDraft> objectList, String elementType) {
         if (!objectList.isEmpty()) {
-            for(ElementDraft edge : new NullFilterIterable<>(objectList)) {
-                String id = edge.getId();
+            for(ElementDraft element : new NullFilterIterable<>(objectList)) {
+                String id = element.getId();
                 if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
                     report.logIssue(new Issue(
                             NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_"+elementType+"_Id_Special_Character", id),
