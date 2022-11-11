@@ -1,0 +1,5 @@
+digraph sample2 {
+    A -> B [ label = "Edge A to B" ];
+    B -> C [ label = "Edge B to C" ];
+    A [label="Node A"];
+}

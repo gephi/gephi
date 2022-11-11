@@ -215,7 +215,7 @@ public class PopupMenuUtils {
     public static JMenu createSubMenuFromRowColumn(Element row, Column column) {
         DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
         JMenu subMenu = new JMenu(NbBundle.getMessage(PopupMenuUtils.class, "Cell.Popup.subMenu.text"));
-        subMenu.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/table-select.png", true));
+        subMenu.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/table-select.png", true));
 
         Integer lastManipulatorType = null;
         for (AttributeValueManipulator am : dlh.getAttributeValueManipulators()) {

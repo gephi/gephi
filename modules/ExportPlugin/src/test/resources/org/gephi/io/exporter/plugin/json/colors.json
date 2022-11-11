@@ -1,0 +1,32 @@
+{
+  "options": {
+    "multi": false,
+    "allowSelfLoops": true,
+    "type": "directed"
+  },
+  "nodes": [
+    {
+      "key": "1",
+      "attributes": {
+        "color": "#00ffff"
+      }
+    },
+    {
+      "key": "2",
+      "attributes": {
+        "color": "#ff6478fe"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "key": "1",
+      "source": "1",
+      "target": "2",
+      "attributes": {
+        "color": "#000000",
+        "weight": 1.0
+      }
+    }
+  ]
+}

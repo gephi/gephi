@@ -63,13 +63,14 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JComponent;
+import org.gephi.ui.utils.UIUtils;
 
 public class EquationDisplay extends JComponent implements PropertyChangeListener {
 
-    private static final Color COLOR_BACKGROUND = Color.WHITE;
-    private static final Color COLOR_MAJOR_GRID = Color.GRAY.brighter();
-    private static final Color COLOR_MINOR_GRID = new Color(220, 220, 220);
-    private static final Color COLOR_AXIS = Color.BLACK;
+    private final Color colorBackground;
+    private final Color colorMajorGrid;
+    private final Color colorMinorGrid;
+    private final Color colorAxis;
     private static final float STROKE_AXIS = 1.2f;
     private static final float STROKE_GRID = 1.0f;
     private static final float COEFF_ZOOM = 1.1f;
@@ -145,6 +146,18 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
         this.formatter = NumberFormat.getInstance();
         this.formatter.setMaximumFractionDigits(2);
+
+        if (UIUtils.isDarkLookAndFeel()) {
+            colorBackground = new Color(43,43,43);
+            colorMajorGrid = new Color(80,80,80);
+            colorMinorGrid = new Color(60,60,60);
+            colorAxis = Color.GRAY;
+        } else {
+            colorBackground = Color.WHITE;
+            colorMajorGrid = Color.GRAY.brighter();
+            colorMinorGrid = new Color(220, 220, 220);
+            colorAxis = Color.BLACK;
+        }
 
         panHandler = new PanHandler();
         addMouseListener(panHandler);
@@ -295,7 +308,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
     private void drawHorizontalLabels(Graphics2D g2) {
         double axisV = xPositionToPixel(originX);
 
-        g2.setColor(COLOR_AXIS);
+        g2.setColor(colorAxis);
         for (double y = originY + majorY; y < maxY + majorY; y += majorY) {
             int position = (int) yPositionToPixel(y);
             g2.drawString(formatter.format(y), (int) axisV + 5, position);
@@ -316,35 +329,35 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
         for (double y = originY + majorY; y < maxY + majorY; y += majorY) {
             g2.setStroke(gridStroke);
-            g2.setColor(COLOR_MINOR_GRID);
+            g2.setColor(colorMinorGrid);
             for (int i = 0; i < minorY; i++) {
                 int position = (int) yPositionToPixel(y - i * minorSpacing);
                 g2.drawLine(0, position, getWidth(), position);
             }
 
             int position = (int) yPositionToPixel(y);
-            g2.setColor(COLOR_MAJOR_GRID);
+            g2.setColor(colorMajorGrid);
             g2.drawLine(0, position, getWidth(), position);
 
             g2.setStroke(axisStroke);
-            g2.setColor(COLOR_AXIS);
+            g2.setColor(colorAxis);
             g2.drawLine((int) axisV - 3, position, (int) axisV + 3, position);
         }
 
         for (double y = originY - majorY; y > minY - majorY; y -= majorY) {
             g2.setStroke(gridStroke);
-            g2.setColor(COLOR_MINOR_GRID);
+            g2.setColor(colorMinorGrid);
             for (int i = 0; i < minorY; i++) {
                 int position = (int) yPositionToPixel(y + i * minorSpacing);
                 g2.drawLine(0, position, getWidth(), position);
             }
 
             int position = (int) yPositionToPixel(y);
-            g2.setColor(COLOR_MAJOR_GRID);
+            g2.setColor(colorMajorGrid);
             g2.drawLine(0, position, getWidth(), position);
 
             g2.setStroke(axisStroke);
-            g2.setColor(COLOR_AXIS);
+            g2.setColor(colorAxis);
             g2.drawLine((int) axisV - 3, position, (int) axisV + 3, position);
         }
     }
@@ -353,7 +366,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         double axisH = yPositionToPixel(originY);
         FontMetrics metrics = g2.getFontMetrics();
 
-        g2.setColor(COLOR_AXIS);
+        g2.setColor(colorAxis);
 
         for (double x = originX + majorX; x < maxX + majorX; x += majorX) {
             int position = (int) xPositionToPixel(x);
@@ -375,35 +388,35 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
         for (double x = originX + majorX; x < maxX + majorX; x += majorX) {
             g2.setStroke(gridStroke);
-            g2.setColor(COLOR_MINOR_GRID);
+            g2.setColor(colorMinorGrid);
             for (int i = 0; i < minorX; i++) {
                 int position = (int) xPositionToPixel(x - i * minorSpacing);
                 g2.drawLine(position, 0, position, getHeight());
             }
 
             int position = (int) xPositionToPixel(x);
-            g2.setColor(COLOR_MAJOR_GRID);
+            g2.setColor(colorMajorGrid);
             g2.drawLine(position, 0, position, getHeight());
 
             g2.setStroke(axisStroke);
-            g2.setColor(COLOR_AXIS);
+            g2.setColor(colorAxis);
             g2.drawLine(position, (int) axisH - 3, position, (int) axisH + 3);
         }
 
         for (double x = originX - majorX; x > minX - majorX; x -= majorX) {
             g2.setStroke(gridStroke);
-            g2.setColor(COLOR_MINOR_GRID);
+            g2.setColor(colorMinorGrid);
             for (int i = 0; i < minorX; i++) {
                 int position = (int) xPositionToPixel(x + i * minorSpacing);
                 g2.drawLine(position, 0, position, getHeight());
             }
 
             int position = (int) xPositionToPixel(x);
-            g2.setColor(COLOR_MAJOR_GRID);
+            g2.setColor(colorMajorGrid);
             g2.drawLine(position, 0, position, getHeight());
 
             g2.setStroke(axisStroke);
-            g2.setColor(COLOR_AXIS);
+            g2.setColor(colorAxis);
             g2.drawLine(position, (int) axisH - 3, position, (int) axisH + 3);
         }
     }
@@ -412,7 +425,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         double axisH = yPositionToPixel(originY);
         double axisV = xPositionToPixel(originX);
 
-        g2.setColor(COLOR_AXIS);
+        g2.setColor(colorAxis);
         Stroke stroke = g2.getStroke();
         g2.setStroke(new BasicStroke(STROKE_AXIS));
 
@@ -431,7 +444,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
     }
 
     protected void paintBackground(Graphics2D g2) {
-        g2.setColor(COLOR_BACKGROUND);
+        g2.setColor(colorBackground);
         g2.fill(g2.getClipBounds());
     }
 

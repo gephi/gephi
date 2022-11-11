@@ -50,7 +50,8 @@ import javax.swing.Icon;
  * together different transformers. For instance if two transformers both act on
  * the size of a node but in a different way they should be grouped together
  * with the same category.
- *
+ * <p>
+ * For persistence purposes, the category should have a unique identifier via {#getId()}.
  * @see TransformerUI
  */
 public interface TransformerCategory {
@@ -68,4 +69,11 @@ public interface TransformerCategory {
      * @return icon or null if missing
      */
     Icon getIcon();
+
+    /**
+     * Returns the category's unique identifier.
+     *
+     * @return unique identifier
+     */
+    String getId();
 }

@@ -87,9 +87,9 @@ public class CategoryNode extends AbstractNode {
         } catch (Exception e) {
         }
         if (category == null) {
-            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/library.png");
+            return ImageUtilities.loadImage("DesktopFilters/library.png", false);
         } else {
-            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/folder.png");
+            return ImageUtilities.loadImage("DesktopFilters/folder.png", false);
         }
     }
 

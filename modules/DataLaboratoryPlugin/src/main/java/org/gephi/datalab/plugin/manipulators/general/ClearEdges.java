@@ -127,7 +127,7 @@ public class ClearEdges implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/eraser--minus.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/eraser--minus.png", false);
     }
 
     public boolean isDeleteDirected() {

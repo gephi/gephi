@@ -78,8 +78,9 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, 0f);
         properties.put(PreviewProperty.EDGE_LABEL_SHORTEN, false);
 
-        properties.put(PreviewProperty.NODE_BORDER_COLOR, new DependantColor(Color.BLACK));
+        properties.put(PreviewProperty.NODE_BORDER_COLOR, new DependantColor(DependantColor.Mode.DARKER));
         properties.put(PreviewProperty.NODE_BORDER_WIDTH, 1.0f);
+        properties.put(PreviewProperty.NODE_BORDER_FIXED, false);
         properties.put(PreviewProperty.NODE_OPACITY, 100f);
 
         properties.put(PreviewProperty.NODE_LABEL_BOX_COLOR, new DependantColor(DependantColor.Mode.PARENT));

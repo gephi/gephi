@@ -46,6 +46,7 @@ import javax.swing.ImageIcon;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.model.node.NodeModel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -78,7 +79,7 @@ public class FixedSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/FixedSizeMode.png"));
+        return ImageUtilities.loadImageIcon("VisualizationImpl/FixedSizeMode.png", false);
     }
 
     @Override

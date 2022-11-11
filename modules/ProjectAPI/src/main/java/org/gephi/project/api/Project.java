@@ -42,6 +42,8 @@
 
 package org.gephi.project.api;
 
+import java.io.File;
+import java.util.Collection;
 import org.openide.util.Lookup;
 
 /**
@@ -56,29 +58,134 @@ import org.openide.util.Lookup;
 public interface Project extends Lookup.Provider {
 
     /**
-     * Adds an abilities to this project.
+     * Adds an object to this project.
      *
      * @param instance the instance that is to be added to the lookup
      */
     void add(Object instance);
 
     /**
-     * Removes an abilities to this project.
+     * Removes an object to this project.
      *
      * @param instance the instance that is to be removed from the lookup
      */
     void remove(Object instance);
 
     /**
-     * Gets any optional abilities of this project.
+     * Gets any optional object from this project.
      * <p>
      * May contains:
-     * <ol><li>{@link ProjectInformation}</li>
      * <li>{@link ProjectMetaData}</li>
-     * <li>{@link WorkspaceProvider}</li></ol>
      *
      * @return the project's lookup
      */
     @Override
     Lookup getLookup();
+
+    /**
+     * Returns the current workspace.
+     *
+     * @return current workspace or <code>null</code> if no workspace is set.
+     */
+    Workspace getCurrentWorkspace();
+
+    /**
+     * Returns true if the project has a current workspace.
+     *
+     * @return true if it has a current workspace, false otherwise
+     */
+    boolean hasCurrentWorkspace();
+
+    /**
+     * Returns all the workspaces.
+     * <p>
+     * Returns an empty collection if no workspaces.
+     *
+     * @return a list of all workspaces, unmodifiable
+     */
+    Collection<Workspace> getWorkspaces();
+
+    /**
+     * Retrieve a workspace based on its unique identifier.
+     *
+     * @param id workspace's unique identifier
+     * @return found workspace or null if not found
+     */
+    Workspace getWorkspace(int id);
+
+    /**
+     * Returns true if the project is open.
+     *
+     * @return true if open, false otherwise
+     */
+    boolean isOpen();
+
+    /**
+     * Returns true if the project is closed.
+     *
+     * @return true if closed, false otherwise
+     */
+    boolean isClosed();
+
+    /**
+     * Returns true if the project is invalid.
+     *
+     * @return true if invalid, false otherwise
+     */
+    boolean isInvalid();
+
+    /**
+     * Returns the name of the project.
+     * <p>
+     * The name can't be null and has a default value (e.g. Project 1).
+     *
+     * @return the project's name
+     */
+    String getName();
+
+    /**
+     * Returns the project's unique identifier.
+     * <p>
+     * This identifier is assigned at the project creation and is unique.
+     *
+     * @return the project's unique identifier
+     */
+    String getUniqueIdentifier();
+
+    /**
+     * Returns true if the project is associated with a file.
+     * <p>
+     * A project is associated with a file if it has been saved/loaded to/from a
+     * file.
+     *
+     * @return true if associated with a file, false otherwise
+     */
+    boolean hasFile();
+
+    /**
+     * Returns the filename associated with this project.
+     * <p>
+     * Returns an empty string if the project isn't associated with a file.
+     *
+     * @return file name
+     * @see #hasFile()
+     */
+    String getFileName();
+
+    /**
+     * Returns the file associated with this project.
+     * <p>
+     * Returns null if the project isn't associated with a file.
+     *
+     * @return file or null if none
+     * @see #hasFile()
+     */
+    File getFile();
+
+    /**
+     * Returns the project's metadata.
+     *
+     * @return project metadata
+     */
+    ProjectMetaData getProjectMetadata();
 }

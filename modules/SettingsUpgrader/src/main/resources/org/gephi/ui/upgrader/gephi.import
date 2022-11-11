@@ -7,3 +7,4 @@ exclude config/Windows2Local-datalab/.*
 exclude config/Windows2Local-overview/.*
 exclude config/Windows2Local-preview/.*
 exclude config/Modules/.*
+include projects/.*

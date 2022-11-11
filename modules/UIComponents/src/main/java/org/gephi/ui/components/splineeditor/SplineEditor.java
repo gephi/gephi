@@ -49,6 +49,7 @@ import java.awt.geom.Point2D;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import org.jdesktop.swingx.JXHeader;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -75,7 +76,7 @@ public class SplineEditor extends JDialog {
     }
 
     private Component buildHeader() {
-        ImageIcon icon = new ImageIcon(getClass().getResource("images/simulator.png"));
+        ImageIcon icon = ImageUtilities.loadImageIcon("UIComponents/simulator.png", false);
         JXHeader header = new JXHeader(NbBundle.getMessage(SplineEditor.class, "splineEditor_title"),
             NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
             icon);

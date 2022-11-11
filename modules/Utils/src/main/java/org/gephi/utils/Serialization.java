@@ -42,10 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.utils;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
 
@@ -58,6 +61,10 @@ public class Serialization {
 
     private static final Serialization INSTANCE_WITHOUT_GRAPH_MODEL = new Serialization();
     private final GraphModel graphModel;
+
+    // Color regex
+    private final Pattern colorPattern =
+        Pattern.compile("\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,?(\\d+)?\\s*\\]");
 
     public Serialization() {
         this(null);
@@ -180,6 +187,22 @@ public class Serialization {
             return String.valueOf(value);
         } else if (valueClass.isArray()) {
             return AttributeUtils.printArray(value);
+        } else if (valueClass.equals(Color.class)) {
+            Color color = (Color) value;
+            if (color.getAlpha() < 255) {
+                return String.format(
+                    "[%d,%d,%d,%d]",
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue(),
+                    color.getAlpha());
+            } else {
+                return String.format(
+                    "[%d,%d,%d]",
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue());
+            }
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
@@ -227,6 +250,21 @@ public class Serialization {
             return NumberUtils.parseNumber(valueStr, valueClass);
         } else if (valueClass.isArray()) {
             return AttributeUtils.parse(valueStr, valueClass);
+        } else if (valueClass.equals(Color.class)) {
+            Matcher m = colorPattern.matcher(valueStr);
+            if (m.lookingAt()) {
+                int r = Integer.parseInt(m.group(1));
+                int g = Integer.parseInt(m.group(2));
+                int b = Integer.parseInt(m.group(3));
+                String alpha = m.group(4);
+                if (alpha != null) {
+                    int a = Integer.parseInt(alpha);
+                    return new Color(r, g, b, a);
+                } else {
+                    return new Color(r, g, b);
+                }
+            }
+            return null;
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {

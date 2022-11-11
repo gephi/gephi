@@ -42,6 +42,7 @@
 
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.ManagedRenderer;
@@ -64,6 +66,7 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.MouseResponsiveRenderer;
 import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.Renderer;
@@ -74,19 +77,24 @@ import org.gephi.preview.types.editors.BasicDependantColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.utils.Serialization;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
-public class PreviewModelImpl implements PreviewModel {
+public class PreviewModelImpl implements PreviewModel, Model {
 
     private final PreviewController previewController;
     private final Workspace workspace;
     //Items
     private final Map<String, List<Item>> typeMap;
     private final Map<Object, Object> sourceMap;
+    // Canvas size
+    private CanvasSize canvasSize;
+    private boolean globalCanvasSize = false;
     //Renderers
     private ManagedRenderer[] managedRenderers;
     //Mouse listeners (of enabled renderers)
@@ -95,15 +103,7 @@ public class PreviewModelImpl implements PreviewModel {
     private PreviewProperties properties;
 
     public PreviewModelImpl(Workspace workspace) {
-        this(workspace, null);
-    }
-
-    public PreviewModelImpl(Workspace workspace, PreviewController previewController) {
-        if (previewController != null) {
-            this.previewController = previewController;
-        } else {
-            this.previewController = Lookup.getDefault().lookup(PreviewController.class);
-        }
+        previewController = Lookup.getDefault().lookup(PreviewController.class);
         typeMap = new HashMap<>();
         sourceMap = new HashMap<>();
         this.workspace = workspace;
@@ -184,7 +184,7 @@ public class PreviewModelImpl implements PreviewModel {
             //Default preset
             properties.applyPreset(new DefaultPreset());
 
-            //Defaut values
+            //Default values
             properties.putValue(PreviewProperty.VISIBILITY_RATIO, 1f);
         }
     }
@@ -230,7 +230,55 @@ public class PreviewModelImpl implements PreviewModel {
         return typeMap.keySet().toArray(new String[0]);
     }
 
-    public void loadItems(String type, Item[] items) {
+    protected void buildAndLoadItems(Renderer[] renderers, Graph graph) {
+        for (ItemBuilder b : Lookup.getDefault().lookupAll(ItemBuilder.class)) {
+            //Only build items of this builder if some renderer needs it:
+            if (isItemBuilderNeeded(b, getProperties(), renderers)) {
+                try {
+                    Item[] items = b.getItems(graph);
+                    if (items != null) {
+                        loadItems(b.getType(), items);
+                    }
+                } catch (Exception e) {
+                    Exceptions.printStackTrace(e);
+                }
+            }
+        }
+    }
+
+    private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
+        for (Renderer r : renderers) {
+            if (r.needsItemBuilder(itemBuilder, properties)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected void updateCanvasSize(Renderer[] renderers) {
+        float x1 = Float.MAX_VALUE;
+        float y1 = Float.MAX_VALUE;
+        float x2 = Float.MIN_VALUE;
+        float y2 = Float.MIN_VALUE;
+        PreviewProperties properties = getProperties();
+        for (Renderer r : renderers) {
+            for (String type : getItemTypes()) {
+                for (Item item : getItems(type)) {
+                    if (r.isRendererForitem(item, properties)) {
+                        CanvasSize cs = r.getCanvasSize(item, properties);
+                        x1 = Math.min(x1, cs.getX());
+                        y1 = Math.min(y1, cs.getY());
+                        x2 = Math.max(x2, cs.getMaxX());
+                        y2 = Math.max(y2, cs.getMaxY());
+                    }
+                }
+            }
+        }
+        canvasSize = new CanvasSize(x1, y1, x2 - x1, y2 - y1);
+    }
+
+    protected void loadItems(String type, Item[] items) {
         //Add to type map
         List<Item> typeList = typeMap.get(type);
         if (typeList == null) {
@@ -284,30 +332,14 @@ public class PreviewModelImpl implements PreviewModel {
         sourceMap.clear();
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
     @Override
     public CanvasSize getGraphicsCanvasSize() {
-        float x1 = Float.MAX_VALUE;
-        float y1 = Float.MAX_VALUE;
-        float x2 = Float.MIN_VALUE;
-        float y2 = Float.MIN_VALUE;
-        for (Renderer r : getManagedEnabledRenderers()) {
-            for (String type : getItemTypes()) {
-                for (Item item : getItems(type)) {
-                    if (r.isRendererForitem(item, getProperties())) {
-                        CanvasSize cs = r.getCanvasSize(item, getProperties());
-                        x1 = Math.min(x1, cs.getX());
-                        y1 = Math.min(y1, cs.getY());
-                        x2 = Math.max(x2, cs.getMaxX());
-                        y2 = Math.max(y2, cs.getMaxY());
-                    }
-                }
-            }
-        }
-        return new CanvasSize(x1, y1, x2 - x1, y2 - y1);
+        return canvasSize;
     }
 
     @Override
@@ -453,6 +485,11 @@ public class PreviewModelImpl implements PreviewModel {
                 writer.writeEndElement();
             }
         }
+
+        //Settings
+        writer.writeStartElement("globalcanvassize");
+        writer.writeAttribute("value", String.valueOf(globalCanvasSize));
+        writer.writeEndElement();
     }
 
     public void readXML(XMLStreamReader reader) throws XMLStreamException {
@@ -492,6 +529,8 @@ public class PreviewModelImpl implements PreviewModel {
                             managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass),
                                 Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
                         }
+                    } else if("globalcanvassize".equalsIgnoreCase(name)) {
+                        this.globalCanvasSize = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
                     }
                     break;
                 case XMLStreamReader.CHARACTERS:
@@ -532,6 +571,15 @@ public class PreviewModelImpl implements PreviewModel {
         if (!managedRenderersList.isEmpty()) {
             setManagedRenderers(managedRenderersList.toArray(new ManagedRenderer[0]));
         }
+    }
+
+    @Override
+    public boolean isGlobalCanvasSize() {
+        return globalCanvasSize;
+    }
+
+    protected void setGlobalCanvasSize(boolean globalCanvasSize) {
+        this.globalCanvasSize = globalCanvasSize;
     }
 
     @Override

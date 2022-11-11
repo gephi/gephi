@@ -80,6 +80,7 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
 
             Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
+                processMeta(container, workspace);
                 processConfiguration(container, workspace);
 
                 if (container.getSource() != null) {

@@ -48,7 +48,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -139,7 +138,7 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
 
         GraphModel targetGraphModel;
         if (workspace == null) {
-            workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
+            workspace = projectController.newWorkspace(currentWorkspace.getProject());
             targetGraphModel = graphController.getGraphModel(workspace);
 
             targetGraphModel.setConfiguration(currentGraphModel.getConfiguration());

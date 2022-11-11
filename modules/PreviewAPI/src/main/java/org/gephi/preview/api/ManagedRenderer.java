@@ -42,6 +42,7 @@
 
 package org.gephi.preview.api;
 
+import java.util.Objects;
 import org.gephi.preview.spi.Renderer;
 
 /**
@@ -54,7 +55,7 @@ import org.gephi.preview.spi.Renderer;
  */
 public class ManagedRenderer {
 
-    private Renderer renderer;
+    private final Renderer renderer;
     private boolean enabled;
 
     public ManagedRenderer(Renderer renderer, boolean enabled) {
@@ -74,7 +75,20 @@ public class ManagedRenderer {
         return renderer;
     }
 
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ManagedRenderer that = (ManagedRenderer) o;
+        return enabled == that.enabled && renderer.equals(that.renderer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(renderer, enabled);
     }
 }

@@ -56,7 +56,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewController;
@@ -69,9 +68,11 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.Actions;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -186,14 +187,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         });
 
         //Export
-        svgExportButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
-                ui.action();
-            }
-        });
+        svgExportButton.addActionListener(Actions.forID("File", "org.gephi.desktop.io.export.ExportImage"));
         setup(null);
 
         PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
@@ -257,7 +251,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
                     comboBoxModel.addElement(preset);
                 }
             }
-            presetComboBox.setSelectedItem(previewModel.getCurrentPreset());
+            comboBoxModel.setSelectedItem(previewModel.getCurrentPreset());
             presetComboBox.setModel(comboBoxModel);
         }
 
@@ -394,8 +388,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
         presetToolbar.add(box);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/save.png"))); // NOI18N
+        saveButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/save.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.saveButton.text")); // NOI18N
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
@@ -418,8 +411,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
         presetPanel.add(presetToolbar, gridBagConstraints);
 
-        labelPreset.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/preset.png"))); // NOI18N
+        labelPreset.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/preset.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelPreset, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelPreset.text")); // NOI18N
         labelPreset.setEnabled(false);
@@ -437,8 +429,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         mainPanel.add(presetPanel, gridBagConstraints);
 
-        refreshButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/refresh.png"))); // NOI18N
+        refreshButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/refresh.png", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);

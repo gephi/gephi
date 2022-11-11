@@ -134,17 +134,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
             refreshSelectedTransformerUI();
         }
-//        if (pce.getPropertyName().equals(AppearanceUIModelEvent.CURRENT_ELEMENT_TYPE)) {
-//            refreshSelectedElmntGroup((String) pce.getNewValue());
-//        }
-//        if (pce.getPropertyName().equals(RankingUIModel.CURRENT_TRANSFORMER)
-//                || pce.getPropertyName().equals(RankingUIModel.CURRENT_ELEMENT_TYPE)) {
-//            refreshTransformers();
-//        }
-//        if (pce.getPropertyName().equalsIgnoreCase(RankingUIModel.START_AUTO_TRANSFORMER)
-//                || pce.getPropertyName().equalsIgnoreCase(RankingUIModel.STOP_AUTO_TRANSFORMER)) {
-//            refreshDecoratedIcons();
-//        }
     }
 
     private void setup(final AppearanceUIModel model) {
@@ -567,32 +556,5 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 }
             }
         }
-
-//    private void refreshDecoratedIcons() {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                int index = 0;
-//                for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
-//                    ButtonGroup g = buttonGroups.get(index++);
-//                    boolean active = model == null ? false : model.getCurrentElementType().equals(elmtType);
-//                    if (active) {
-//                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
-//                            btns.nextElement().repaint();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//    }
-//    private DecoratedIcon getDecoratedIcon(Icon icon, final Transformer transformer) {
-//        Icon decoration = ImageUtilities.image2Icon(ImageUtilities.loadImage("org/gephi/desktop/ranking/resources/chain.png", false));
-//        return new DecoratedIcon(icon, decoration, new DecoratedIcon.DecorationController() {
-//            @Override
-//            public boolean isDecorated() {
-//                return model != null && model.isAutoTransformer(transformer);
-//            }
-//        });
-//    }
     }
 }

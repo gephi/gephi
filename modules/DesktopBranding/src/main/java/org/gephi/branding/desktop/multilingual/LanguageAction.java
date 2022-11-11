@@ -105,7 +105,7 @@ public final class LanguageAction extends CallableSystemAction {
                 }
             });
             //Flag icons from http://www.famfamfam.com
-            String iconFile = "org/gephi/branding/desktop/multilingual/resources/" + lang.getLanguage();
+            String iconFile = "DesktopBranding/" + lang.getLanguage();
             if (lang.getCountry() != null) {
                 iconFile += "_" + lang.getCountry();
             }

@@ -1,19 +1,19 @@
 package org.gephi.graph;
 
 import java.util.Random;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalDoubleMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.workspace.impl.WorkspaceImpl;
-import org.openide.util.Lookup;
+import org.gephi.project.impl.WorkspaceImpl;
 
 public class GraphGenerator {
 
@@ -28,12 +28,14 @@ public class GraphGenerator {
     public static final String INTERVAL_DOUBLE_COLUMN = "price";
     public static final String FIRST_NODE = "1";
     public static final String SECOND_NODE = "2";
+    public static final String THIRD_NODE = "3";
     public static final String FIRST_EDGE = "1";
     public static final String SECOND_EDGE = "2";
     public static final String[] STRING_COLUMN_VALUES = new String[] {"France", "Germany"};
     public static final float[][] FLOAT_ARRAY_COLUMN_VALUES = new float[][] {{1f, 2f}, {4f, 3f}};
     public static final int INT_COLUMN_MIN_VALUE = 10;
     public static final double[][] TIMESTAMP_DOUBLE_COLUMN_VALUES = new double[][] {{3.0}, {6.0}};
+    public static final double[] TIMESTAMP_SET_VALUES = new double[] {3.0, 6.0};
     public static final String[][] STRING_ARRAY_COLUMN_VALUES = new String[][] {{"foo", "bar"}, {"foo"}};
 
     private final GraphModel graphModel;
@@ -55,17 +57,14 @@ public class GraphGenerator {
         return new GraphGenerator(configuration);
     }
 
-    public GraphGenerator withProject() {
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        projectController.newProject();
-        workspace = projectController.getCurrentWorkspace();
-        workspace.add(graphModel);
+    public GraphGenerator withWorkspace() {
+        workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+
         return this;
     }
 
-    public GraphGenerator withWorkspace() {
-        workspace = new WorkspaceImpl(null, 0);
-        workspace.add(graphModel);
+    public GraphGenerator withTimeFormat(TimeFormat timeFormat) {
+        graphModel.setTimeFormat(timeFormat);
         return this;
     }
 
@@ -76,6 +75,30 @@ public class GraphGenerator {
         graphModel.getDirectedGraph().addNode(n1);
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
+
+    public GraphGenerator generateTinyUndirectedGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, false);
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
+
+    public GraphGenerator generateTinyMixedGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Node n3 = graphModel.factory().newNode(THIRD_NODE);
+        Edge e1 = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, false);
+        Edge e2 = graphModel.factory().newEdge(SECOND_EDGE, n1, n3, 0, 1.0, true);
+        graphModel.getGraph().addNode(n1);
+        graphModel.getGraph().addNode(n2);
+        graphModel.getGraph().addNode(n3);
+        graphModel.getGraph().addEdge(e1);
+        graphModel.getGraph().addEdge(e2);
         return this;
     }
 
@@ -102,6 +125,17 @@ public class GraphGenerator {
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e1);
         graphModel.getDirectedGraph().addEdge(e2);
+        return this;
+    }
+
+    public GraphGenerator addRandomPositions() {
+        Random random = new Random();
+        double size = 100.0;
+        for (Node node : graphModel.getGraph().getNodes()) {
+            node.setX((float) (-size / 2 + size * random.nextDouble()));
+            node.setY((float) (-size / 2 + size * random.nextDouble()));
+            node.setSize(random.nextFloat() * (float) size / 25f);
+        }
         return this;
     }
 
@@ -160,8 +194,12 @@ public class GraphGenerator {
     public GraphGenerator addTimestampDoubleColumn() {
         graphModel.getNodeTable().addColumn(TIMESTAMP_DOUBLE_COLUMN, TimestampDoubleMap.class);
         int index = 0;
+        double value = 2000;
+        if (graphModel.getTimeFormat().equals(TimeFormat.DATE)) {
+            value = AttributeUtils.parseDateTime("2022-09-01");
+        }
         for (Node node : graphModel.getGraph().getNodes()) {
-            node.setAttribute(TIMESTAMP_DOUBLE_COLUMN, new TimestampDoubleMap(new double[] {2000},
+            node.setAttribute(TIMESTAMP_DOUBLE_COLUMN, new TimestampDoubleMap(new double[] {value},
                 TIMESTAMP_DOUBLE_COLUMN_VALUES[index++]));
         }
         return this;
@@ -169,9 +207,18 @@ public class GraphGenerator {
 
     public GraphGenerator addTimestampSetColumn() {
         graphModel.getNodeTable().addColumn(TIMESTAMP_SET_COLUMN, TimestampSet.class);
+        int index = 0;
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setAttribute(TIMESTAMP_SET_COLUMN, new TimestampSet(
-                new double[] {Math.random() * 100.0}));
+                new double[] {TIMESTAMP_SET_VALUES[index++]}));
+        }
+        return this;
+    }
+
+    public GraphGenerator setTimestampSet() {
+        int index = 0;
+        for (Node node : graphModel.getGraph().getNodes()) {
+            node.addTimestamp(TIMESTAMP_SET_VALUES[index++]);
         }
         return this;
     }

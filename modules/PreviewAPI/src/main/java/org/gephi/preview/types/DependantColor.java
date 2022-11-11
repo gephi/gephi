@@ -60,7 +60,7 @@ public final class DependantColor {
     }
 
     public DependantColor(Mode mode) {
-        customColor = Color.BLACK;
+        customColor = mode.equals(Mode.CUSTOM) ? Color.BLACK : null;
         this.mode = mode;
     }
 
@@ -80,12 +80,14 @@ public final class DependantColor {
     public Color getColor(Color parentColor) {
         if (mode.equals(Mode.CUSTOM) && customColor != null) {
             return customColor;
+        } else if (mode.equals(Mode.DARKER)){
+            return parentColor.darker();
         }
         return parentColor;
     }
 
     public enum Mode {
 
-        PARENT, CUSTOM
+        PARENT, CUSTOM, DARKER
     }
 }

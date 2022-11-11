@@ -98,15 +98,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private boolean exportSize = true;
     private final boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
-    //Settings Helper
-    private float minSize;
-    private float maxSize;
-    private float minX;
-    private float maxX;
-    private float minY;
-    private float maxY;
-    private float minZ;
-    private float maxZ;
+    private NormalizationHelper normalization;
 
     @Override
     public boolean execute() {
@@ -163,7 +155,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         Progress.start(progressTicket);
 
         //Options
-        calculateMinMax(graph);
+        normalization = NormalizationHelper.build(normalize, graph);
 
         //Calculate progress units count
         int max = graph.getNodeCount() + graph.getEdgeCount();
@@ -245,7 +237,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             positionKey2E.setAttribute("for", "node");
             root.appendChild(positionKey2E);
 
-            if (minZ != 0f || maxZ != 0f) {
+            if (normalization.minZ != 0f || normalization.maxZ != 0f) {
                 Element positionKey3E = document.createElement("key");
                 positionKey3E.setAttribute("id", "z");
                 positionKey3E.setAttribute("attr.name", "z");
@@ -405,7 +397,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             nodeE.appendChild(positionXE);
             Element positionYE = createNodePositionY(document, n);
             nodeE.appendChild(positionYE);
-            if (minZ != 0f || maxZ != 0f) {
+            if (normalization.minZ != 0f || normalization.maxZ != 0f) {
                 Element positionZE = createNodePositionZ(document, n);
                 nodeE.appendChild(positionZE);
             }
@@ -479,10 +471,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createNodeSize(Document document, Node n) throws Exception {
         Element sizeE = document.createElement("data");
-        float size = n.size();
-        if (normalize) {
-            size = (size - minSize) / (maxSize - minSize);
-        }
+        float size = normalization.normalizeSize(n.size());
         sizeE.setAttribute("key", "size");
         sizeE.setTextContent("" + size);
 
@@ -515,10 +504,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createNodePositionX(Document document, Node n) throws Exception {
         Element positionXE = document.createElement("data");
-        float x = n.x();
-        if (normalize && x != 0.0) {
-            x = (x - minX) / (maxX - minX);
-        }
+        float x = normalization.normalizeX(n.x());
         positionXE.setAttribute("key", "x");
         positionXE.setTextContent("" + x);
         return positionXE;
@@ -526,10 +512,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createNodePositionY(Document document, Node n) throws Exception {
         Element positionYE = document.createElement("data");
-        float y = n.y();
-        if (normalize && y != 0.0) {
-            y = (y - minY) / (maxY - minY);
-        }
+        float y = normalization.normalizeY(n.y());
         positionYE.setAttribute("key", "y");
         positionYE.setTextContent("" + y);
 
@@ -538,10 +521,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createNodePositionZ(Document document, Node n) throws Exception {
         Element positionZE = document.createElement("data");
-        float z = n.z();
-        if (normalize && z != 0.0) {
-            z = (z - minZ) / (maxZ - minZ);
-        }
+        float z = normalization.normalizeZ(n.z());
         positionZE.setAttribute("key", "z");
         positionZE.setTextContent("" + z);
 
@@ -576,28 +556,6 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         labelE.setTextContent(e.getLabel());
 
         return labelE;
-    }
-
-    private void calculateMinMax(Graph graph) {
-        minX = Float.POSITIVE_INFINITY;
-        maxX = Float.NEGATIVE_INFINITY;
-        minY = Float.POSITIVE_INFINITY;
-        maxY = Float.NEGATIVE_INFINITY;
-        minZ = Float.POSITIVE_INFINITY;
-        maxZ = Float.NEGATIVE_INFINITY;
-        minSize = Float.POSITIVE_INFINITY;
-        maxSize = Float.NEGATIVE_INFINITY;
-
-        for (Node node : graph.getNodes()) {
-            minX = Math.min(minX, node.x());
-            maxX = Math.max(maxX, node.x());
-            minY = Math.min(minY, node.y());
-            maxY = Math.max(maxY, node.y());
-            minZ = Math.min(minZ, node.z());
-            maxZ = Math.max(maxZ, node.z());
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
-        }
     }
 
     @Override

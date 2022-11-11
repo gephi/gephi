@@ -73,7 +73,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
     private int width = 1024;
     private int height = 1024;
     private boolean transparentBackground = false;
-    private int margin = 4; //FIXME Use a float instead to avoid extra cast
+    private int margin = 4;
     private G2DTarget target;
     private Color oldColor;
 

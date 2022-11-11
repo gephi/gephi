@@ -92,7 +92,7 @@ public class Free extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/free.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/free.png", false);
     }
 
     @Override

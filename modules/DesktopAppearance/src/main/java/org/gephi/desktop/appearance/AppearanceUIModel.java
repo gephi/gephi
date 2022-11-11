@@ -48,11 +48,14 @@ import java.awt.Color;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.PartitionTransformer;
@@ -62,6 +65,7 @@ import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
+import org.openide.util.Lookup;
 
 /**
  * @author mbastian
@@ -123,7 +127,6 @@ public class AppearanceUIModel {
         }
     }
 
-
     public void select() {
         tableObserverExecutor.start();
         functionObserverExecutor.start();
@@ -142,7 +145,9 @@ public class AppearanceUIModel {
         return appearanceModel.isPartitionLocalScale();
     }
 
-    public boolean isTransformNullValues() { return appearanceModel.isTransformNullValues(); }
+    public boolean isTransformNullValues() {
+        return appearanceModel.isTransformNullValues();
+    }
 
     public void saveTransformerProperties() {
         Function func = getSelectedFunction();
@@ -195,6 +200,54 @@ public class AppearanceUIModel {
 
     public TransformerCategory getSelectedCategory() {
         return selectedCategory.get(selectedElementClass);
+    }
+
+    public String[] getElementClasses() {
+        return ELEMENT_CLASSES;
+    }
+
+    // Used by serialization only
+    protected TransformerCategory getSelectedCategory(String elementClass) {
+        return selectedCategory.get(elementClass);
+    }
+
+    // Used by serialization only
+    protected Set<TransformerCategory> getTransformerCategories(String elementClass) {
+        return selectedTransformerUI.get(elementClass).keySet();
+    }
+
+    protected TransformerUI getTransformerUI(String elementClass, TransformerCategory category) {
+        return selectedTransformerUI.get(elementClass).get(category);
+    }
+
+    protected Function getFunction(String elementClass, TransformerUI transformerUI) {
+        return selectedFunction.get(elementClass).get(transformerUI);
+    }
+
+    // Only by serialization only
+    protected void setSelected(String elementClass, String categoryId, String ui, String function) {
+        if (ui != null) {
+            Optional<? extends TransformerUI> transformerUIOptional = Lookup.getDefault().lookupAll(TransformerUI.class)
+                .stream().filter(ui1 -> ui1.getClass().getName().equals(ui)).findFirst();
+
+            if (transformerUIOptional.isPresent()) {
+                TransformerUI transformerUI = transformerUIOptional.get();
+                selectedTransformerUI.get(elementClass).put(transformerUI.getCategory(), transformerUI);
+
+                if (function != null) {
+                    Arrays.stream(elementClass.equalsIgnoreCase(AppearanceUIController.NODE_ELEMENT) ?
+                            appearanceModel.getNodeFunctions() :
+                            appearanceModel.getEdgeFunctions()).filter(func -> func.getId().equals(function)).findFirst()
+                        .ifPresent(func -> selectedFunction.get(elementClass).put(transformerUI, func));
+                }
+            }
+        } else if (categoryId != null) {
+            Lookup.getDefault().lookupAll(TransformerUI.class)
+                .stream().map(TransformerUI::getCategory).filter(cat -> cat.getId().equals(categoryId)).findFirst()
+                .ifPresent(transformerCategory -> selectedCategory.put(elementClass, transformerCategory));
+        } else {
+            this.selectedElementClass = elementClass;
+        }
     }
 
     protected void setSelectedCategory(TransformerCategory category) {

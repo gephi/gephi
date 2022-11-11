@@ -78,6 +78,7 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.VersionUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -109,6 +110,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
     private static final String META_CREATOR = "creator";
     private static final String META_DESCRIPTION = "description";
+    private static final String META_TITLE = "title";
     private static final String NODES = "nodes";
     private static final String NODE = "node";
     private static final String NODE_ID = "id";
@@ -156,15 +158,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
     private boolean exportMeta = true;
-    //Settings Helper
-    private float minSize;
-    private float maxSize;
-    private float minX;
-    private float maxX;
-    private float minY;
-    private float maxY;
-    private float minZ;
-    private float maxZ;
+    private boolean includeNullAttValues = false;
+    private NormalizationHelper normalization;
 
     @Override
     public boolean execute() {
@@ -179,7 +174,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         exportDynamic = exportDynamic && graphModel.isDynamic();
 
         //Calculate min & max
-        calculateMinMax(graph);
+        normalization = NormalizationHelper.build(normalize, graph);
 
         Progress.switchToDeterminate(progress, graph.getNodeCount() + graph.getEdgeCount());
 
@@ -258,11 +253,16 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
             xmlWriter.writeStartElement(META_CREATOR);
-            xmlWriter.writeCharacters("Gephi 0.9.3");
+
+            xmlWriter.writeCharacters(VersionUtils.getGephiVersion());
+            xmlWriter.writeEndElement();
+
+            xmlWriter.writeStartElement(META_TITLE);
+            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getTitle());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
-            xmlWriter.writeCharacters("");
+            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getDescription());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeEndElement();
@@ -391,7 +391,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         throws Exception {
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
-            if (val != null) {
+            if (val != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
@@ -408,7 +408,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || interval.compareTo(visibleInterval) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(interval, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -433,7 +433,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || visibleInterval.compareTo(timestamp) == 0) {
                             final Object defaultValue = null;
                             final Object value = timeMap.get(timestamp, defaultValue);
-                            if (value != null) {
+                            if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -446,7 +446,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
         } else {
             Object value = element.getAttribute(column, graph.getView());
-            if (value != null) {
+            if (value != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
@@ -473,23 +473,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodePosition(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        float x = node.x();
-        if (normalize && x != 0.0) {
-            x = (x - minX) / (maxX - minX);
-        }
-        float y = node.y();
-        if (normalize && y != 0.0) {
-            y = (y - minY) / (maxY - minY);
-        }
-        float z = node.z();
-        if (normalize && z != 0.0) {
-            z = (z - minZ) / (maxZ - minZ);
-        }
+        float x = normalization.normalizeX(node.x());
+        float y = normalization.normalizeY(node.y());
+        float z = normalization.normalizeZ(node.z());
         if (!(x == 0 && y == 0 && z == 0)) {
             xmlWriter.writeStartElement(VIZ, NODE_POSITION, VIZ_NAMESPACE);
             xmlWriter.writeAttribute("x", "" + x);
             xmlWriter.writeAttribute("y", "" + y);
-            if (minZ != 0 || maxZ != 0) {
+            if (normalization.minZ != 0 || normalization.maxZ != 0) {
                 xmlWriter.writeAttribute("z", "" + z);
             }
             xmlWriter.writeEndElement();
@@ -497,11 +488,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodeSize(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        float size = node.size();
-        if (normalize) {
-            size = (size - minSize) / (maxSize - minSize);
-        }
-        if(size != 0) {
+        float size = normalization.normalizeSize(node.size());
+        if(normalize || size != 0) {
             xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
             xmlWriter.writeAttribute("value", "" + size);
             xmlWriter.writeEndElement();
@@ -659,28 +647,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
     }
 
-    private void calculateMinMax(Graph graph) {
-        minX = Float.POSITIVE_INFINITY;
-        maxX = Float.NEGATIVE_INFINITY;
-        minY = Float.POSITIVE_INFINITY;
-        maxY = Float.NEGATIVE_INFINITY;
-        minZ = Float.POSITIVE_INFINITY;
-        maxZ = Float.NEGATIVE_INFINITY;
-        minSize = Float.POSITIVE_INFINITY;
-        maxSize = Float.NEGATIVE_INFINITY;
-
-        for (Node node : graph.getNodes()) {
-            minX = Math.min(minX, node.x());
-            maxX = Math.max(maxX, node.x());
-            minY = Math.min(minY, node.y());
-            maxY = Math.max(maxY, node.y());
-            minZ = Math.min(minZ, node.z());
-            maxZ = Math.max(maxZ, node.z());
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
-        }
-    }
-
     private static String replaceInfinity(String str) {
         return str.replace("-Infinity", "-INF").replace("Infinity", "INF");
     }
@@ -775,6 +741,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public void setExportDynamic(boolean exportDynamic) {
         this.exportDynamic = exportDynamic;
+    }
+
+    public boolean isIncludeNullAttValues() {
+        return includeNullAttValues;
+    }
+
+    public void setIncludeNullAttValues(boolean includeNullAttValues) {
+        this.includeNullAttValues = includeNullAttValues;
     }
 
     @Override

@@ -4,19 +4,19 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>io-importer-plugin</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>ImportPlugin</name>
 
     <properties>
-        <gephi.apache-poi.version>5.2.2</gephi.apache-poi.version>
-        <gephi.woodstox.version>6.2.8</gephi.woodstox.version>
+        <gephi.apache-poi.version>5.2.3</gephi.apache-poi.version>
+        <gephi.woodstox.version>6.4.0</gephi.woodstox.version>
     </properties>
 
     <dependencies>

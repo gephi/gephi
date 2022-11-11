@@ -62,6 +62,7 @@ import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.Issue;
+import org.gephi.io.importer.api.MetadataDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.FileImporter;
@@ -79,6 +80,10 @@ public class ImporterGEXF implements FileImporter, LongTask {
     //GEXF
     private static final String GEXF = "gexf";
     private static final String GEXF_VERSION = "version";
+    private static final String META = "meta";
+    private static final String META_TITLE = "title";
+    private static final String META_DESCRIPTION = "description";
+    private static final String META_KEYWORDS = "keywords";
     private static final String GRAPH = "graph";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
@@ -160,6 +165,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
                     String name = xmlReader.getLocalName();
                     if (GEXF.equalsIgnoreCase(name)) {
                         readGexf(xmlReader);
+                    } else if (META.equalsIgnoreCase(name)) {
+                        readMeta(xmlReader);
                     } else if (GRAPH.equalsIgnoreCase(name)) {
                         readGraph(xmlReader);
                     } else if (NODE.equalsIgnoreCase(name)) {
@@ -220,6 +227,36 @@ public class ImporterGEXF implements FileImporter, LongTask {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version_undef"),
                 Issue.Level.WARNING));
         }
+    }
+
+    private void readMeta(XMLStreamReader reader) throws XMLStreamException {
+        String description = null;
+        String title = null;
+
+        String elmt = "";
+        while (reader.hasNext()) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                elmt = reader.getLocalName();
+            } else if (eventType.equals(XMLStreamReader.CHARACTERS)) {
+                if(!reader.isWhiteSpace()) {
+                    if (META_DESCRIPTION.equalsIgnoreCase(elmt)) {
+                        description = reader.getText();
+                    } else if (META_TITLE.equalsIgnoreCase(elmt)) {
+                        title = reader.getText();
+                    } else if(META_KEYWORDS.equalsIgnoreCase(elmt)) {
+                        // Not used
+                    }
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                String name = reader.getLocalName();
+                if (META.equalsIgnoreCase(name)) {
+                    break;
+                }
+            }
+        }
+
+        container.setMetadata(MetadataDraft.builder().description(description).title(title).build());
     }
 
     private void readGraph(XMLStreamReader reader) throws Exception {

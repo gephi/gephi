@@ -3,6 +3,7 @@ package org.gephi.io.importer.plugin.file;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.MetadataDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.joda.time.DateTimeZone;
@@ -14,7 +15,7 @@ public class GEXFTest {
     @Test
     public void testBasicGraph() {
         ImporterGEXF importer = new ImporterGEXF();
-        importer.setReader(Utils.getReader("basic.gexf"));
+        importer.setReader(Utils.getReader("gexf/basic.gexf"));
 
         Container container = new ImportContainerImpl();
         importer.execute(container.getLoader());
@@ -31,7 +32,7 @@ public class GEXFTest {
     @Test
     public void testDoubleInfinity() {
         ImporterGEXF importer = new ImporterGEXF();
-        importer.setReader(Utils.getReader("infinity.gexf"));
+        importer.setReader(Utils.getReader("gexf/infinity.gexf"));
 
         Container container = new ImportContainerImpl();
         importer.execute(container.getLoader());
@@ -44,7 +45,7 @@ public class GEXFTest {
     @Test
     public void testZeroWeight() {
         ImporterGEXF importer = new ImporterGEXF();
-        importer.setReader(Utils.getReader("zeroweight.gexf"));
+        importer.setReader(Utils.getReader("gexf/zeroweight.gexf"));
 
         Container container = new ImportContainerImpl();
         importer.execute(container.getLoader());
@@ -55,7 +56,7 @@ public class GEXFTest {
     @Test
     public void testTimezone() {
         ImporterGEXF importer = new ImporterGEXF();
-        importer.setReader(Utils.getReader("timezone.gexf"));
+        importer.setReader(Utils.getReader("gexf/timezone.gexf"));
 
         Container container = new ImportContainerImpl();
         importer.execute(container.getLoader());
@@ -69,5 +70,18 @@ public class GEXFTest {
         node0.getTimeSet().contains(AttributeUtils.parseDateTime("2012-01-12T15:00:00", timeZone));
         node1.getTimeSet()
             .contains(AttributeUtils.parseDateTime("2012-01-12T15:00:00", DateTimeZone.forID("Europe/Moscow")));
+    }
+
+    @Test
+    public void testMeta() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("gexf/meta.gexf"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        MetadataDraft meta = container.getUnloader().getMetadata();
+        Assert.assertEquals("TITLE", meta.getTitle());
+        Assert.assertEquals("DESCRIPTION", meta.getDescription());
     }
 }

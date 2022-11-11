@@ -71,7 +71,7 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Workspace workspace = WorkspaceHelper.getWorkspace(graph);
-        Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns(workspace) : null;
+        Column[] nodeColumns = workspace != null && vizController != null ? vizController.getNodeTextColumns(workspace) : null;
 
         List<Item> items = new ArrayList<>();
         NodeIterable nodeIterable = graph.getNodes();

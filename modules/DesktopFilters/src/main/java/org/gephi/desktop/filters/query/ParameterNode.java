@@ -57,13 +57,13 @@ public class ParameterNode extends AbstractNode {
         super(Children.LEAF);
         String valStr = value == null ? "null" : value.toString();
         setName(key + ": " + valStr);
-        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/parameter.png");
+        setIconBaseWithExtension("DesktopFilters/parameter.png");
     }
 
     public ParameterNode(Query function) {
         super(new ParameterChildren(function));
         setName(NbBundle.getMessage(ParameterNode.class, "ParametersNode.name"));
-        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/parameters.png");
+        setIconBaseWithExtension("DesktopFilters/parameters.png");
     }
 
     @Override

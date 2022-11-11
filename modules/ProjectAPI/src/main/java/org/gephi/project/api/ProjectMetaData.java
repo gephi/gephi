@@ -45,7 +45,7 @@ package org.gephi.project.api;
 /**
  * Hosts user data about a project.
  * <p>
- * These information are also saved to the project file.
+ * This information is also saved to the project file.
  *
  * @author Mathieu Bastian
  */

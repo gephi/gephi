@@ -52,8 +52,12 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Table;
@@ -579,16 +583,10 @@ public class SpreadsheetTest {
         exporter.setWorkspace(workspace);
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.EDGES);
         exporter.setWriter(writer);
+        exporter.setExportDynamic(true);
 
         if (ignoreId) {
-            Table edgeTable = graphController.getGraphModel(workspace).getEdgeTable();
-            LinkedHashSet<String> columnIdsToExport = new LinkedHashSet<>();
-            for (Column column : edgeTable) {
-                if (!column.getId().equals("id")) {
-                    columnIdsToExport.add(column.getId());
-                }
-            }
-            exporter.setColumnIdsToExport(columnIdsToExport);
+            exporter.setExcludedColumns(Set.of("id"));
         }
 
         exporter.execute();
@@ -615,6 +613,7 @@ public class SpreadsheetTest {
         exporter.setWorkspace(workspace);
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.NODES);
         exporter.setWriter(writer);
+        exporter.setExportDynamic(true);
 
         exporter.execute();
 

@@ -3,11 +3,11 @@ package org.gephi.project.io;
 import java.io.File;
 import java.io.IOException;
 import org.gephi.project.impl.ProjectImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailRead;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailWrite;
 import org.gephi.project.io.utils.Utils;
-import org.gephi.workspace.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,8 +71,7 @@ public class SaveAndLoadTaskTest {
         Assert.assertTrue(tempFile.exists());
 
         LoadTask loadTask = new LoadTask(tempFile);
-        loadTask.run();
-        ProjectImpl readProject = Utils.getCurrentProject();
+        ProjectImpl readProject = loadTask.execute(null);
         Assert.assertNotNull(readProject);
 
         return readProject;

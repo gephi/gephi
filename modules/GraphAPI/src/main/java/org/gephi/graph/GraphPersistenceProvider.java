@@ -73,9 +73,6 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
     @Override
     public void readBytes(DataInputStream stream, Workspace workspace) {
         GraphModel model = workspace.getLookup().lookup(GraphModel.class);
-        if (model != null) {
-            throw new IllegalStateException("The graphModel wasn't null");
-        }
         try {
             //Detect if the serialized graphstore declares its own version:
             stream.mark(1);
@@ -86,8 +83,14 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
                 //Old graphstore, from Gephi 0.9.0
                 model = GraphModel.Serialization.readWithoutVersionHeader(stream,
                     0.0f /* no version, first was 0.4*/);//Previous to version header existing at all
+
+                //TODO: Also properly handle the case when model isn't null
             } else {
-                model = GraphModel.Serialization.read(stream);
+                if (model != null) {
+                    model = GraphModel.Serialization.read(stream, model);
+                } else {
+                    model = GraphModel.Serialization.read(stream);
+                }
             }
 
             workspace.add(model);

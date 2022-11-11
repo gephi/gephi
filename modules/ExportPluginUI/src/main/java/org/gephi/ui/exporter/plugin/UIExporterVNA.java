@@ -68,7 +68,9 @@ public class UIExporterVNA implements ExporterUI {
     public void setup(Exporter exporter) {
         this.exporter = (ExporterVNA) exporter;
         settings.load(this.exporter);
-        panel.setup((ExporterVNA) exporter);
+        if (panel != null) {
+            panel.setup((ExporterVNA) exporter);
+        }
     }
 
     @Override

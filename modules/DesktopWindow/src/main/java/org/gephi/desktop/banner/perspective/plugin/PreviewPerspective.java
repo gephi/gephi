@@ -58,7 +58,7 @@ public class PreviewPerspective implements Perspective {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/preview.png", false);
+        return ImageUtilities.loadImageIcon("DesktopWindow/preview.png", false);
     }
 
     @Override
