@@ -11,6 +11,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
+import org.gephi.appearance.spi.TransformerCategory;
+import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
@@ -59,11 +61,47 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
 
     protected void writeXML(XMLStreamWriter writer, AppearanceUIModel model)
         throws XMLStreamException {
+
+        writeSelected(writer, model);
+
         for (Map.Entry<Function, Map<String, Object>> savedProperty : model.savedProperties.entrySet()) {
             writer.writeStartElement("savedproperty");
             writer.writeAttribute("function", savedProperty.getKey().getId());
             writeSavedProperty(writer, savedProperty.getValue());
             writer.writeEndElement();
+        }
+    }
+
+    private void writeSelected(XMLStreamWriter writer, AppearanceUIModel model) throws XMLStreamException {
+        // Element class
+        writer.writeStartElement("selected");
+        writer.writeAttribute("elementClass", model.getSelectedElementClass());
+        writer.writeEndElement();
+
+        // Category
+        for (String elementClass : model.getElementClasses()) {
+            writer.writeStartElement("selected");
+            writer.writeAttribute("elementClass", elementClass);
+            writer.writeAttribute("category", model.getSelectedCategory(elementClass).getId());
+            writer.writeEndElement();
+        }
+
+        // Transformer UI and functions
+        for (String elementClass : model.getElementClasses()) {
+            for (TransformerCategory transformerCategory : model.getTransformerCategories(elementClass)) {
+                TransformerUI transformerUI = model.getTransformerUI(elementClass, transformerCategory);
+
+                writer.writeStartElement("selected");
+                writer.writeAttribute("elementClass", elementClass);
+                writer.writeAttribute("ui", transformerUI.getClass().getName());
+
+                Function function = model.getFunction(elementClass, transformerUI);
+                if (function != null) {
+                    writer.writeAttribute("function", function.getId());
+                }
+
+                writer.writeEndElement();
+            }
         }
     }
 
@@ -84,7 +122,7 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
     public void readXML(XMLStreamReader reader, AppearanceUIModel model) throws XMLStreamException {
         AppearanceModel appearanceModel = model.appearanceModel;
         Function[] functions = Stream.concat(Arrays.stream(appearanceModel.getNodeFunctions()),
-            Arrays.stream(appearanceModel.getEdgeFunctions()))
+                Arrays.stream(appearanceModel.getEdgeFunctions()))
             .toArray(Function[]::new);
 
         Function function = null;
@@ -101,6 +139,8 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
                     properties = new HashMap<>();
                 } else if ("property".equalsIgnoreCase(name) && function != null) {
                     readSavedProperty(reader, properties);
+                } else if ("selected".equalsIgnoreCase(name)) {
+                    readSelected(reader, model);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("savedproperty".equalsIgnoreCase(reader.getLocalName()) && function != null) {
@@ -112,6 +152,15 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
                 }
             }
         }
+    }
+
+    private void readSelected(XMLStreamReader reader, AppearanceUIModel model) {
+        String elementClass = reader.getAttributeValue(null, "elementClass");
+        String category = reader.getAttributeValue(null, "category");
+        String ui = reader.getAttributeValue(null, "ui");
+        String function = reader.getAttributeValue(null, "function");
+
+        model.setSelected(elementClass, category, ui, function);
     }
 
     private void readSavedProperty(XMLStreamReader reader, Map<String, Object> map) throws XMLStreamException {

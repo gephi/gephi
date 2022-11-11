@@ -43,7 +43,6 @@
 package org.gephi.ui.appearance.plugin.category;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -65,8 +64,13 @@ public class DefaultCategory {
         }
 
         @Override
-        public String toString() {
+        public String getId() {
             return "SIZE";
+        }
+
+        @Override
+        public String toString() {
+            return getId();
         }
     };
     public static TransformerCategory COLOR = new TransformerCategory() {
@@ -81,8 +85,13 @@ public class DefaultCategory {
         }
 
         @Override
-        public String toString() {
+        public String getId() {
             return "COLOR";
+        }
+
+        @Override
+        public String toString() {
+            return getId();
         }
     };
     public static TransformerCategory LABEL_COLOR = new TransformerCategory() {
@@ -97,8 +106,13 @@ public class DefaultCategory {
         }
 
         @Override
-        public String toString() {
+        public String getId() {
             return "LABEL_COLOR";
+        }
+
+        @Override
+        public String toString() {
+            return getId();
         }
     };
     public static TransformerCategory LABEL_SIZE = new TransformerCategory() {
@@ -113,8 +127,13 @@ public class DefaultCategory {
         }
 
         @Override
-        public String toString() {
+        public String getId() {
             return "LABEL_SIZE";
+        }
+
+        @Override
+        public String toString() {
+            return getId();
         }
     };
 }

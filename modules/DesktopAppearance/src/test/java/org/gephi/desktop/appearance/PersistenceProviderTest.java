@@ -8,8 +8,12 @@ import org.gephi.appearance.plugin.UniqueNodeSizeTransformer;
 import org.gephi.desktop.appearance.utils.Utils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.io.utils.GephiFormat;
+import org.gephi.ui.appearance.plugin.RankingElementColorTransformerUI;
+import org.gephi.ui.appearance.plugin.RankingElementSizeTransformerUI;
+import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openide.util.Lookup;
 
 public class PersistenceProviderTest {
 
@@ -40,6 +44,7 @@ public class PersistenceProviderTest {
         AppearanceUIModel model = Utils.newAppearanceUIModel();
         Function function = Utils.findNodeFunction(model, UniqueNodeSizeTransformer.class);
         Assert.assertNotNull(function);
+        model.setSelectedCategory(DefaultCategory.SIZE);
         model.setSelectedFunction(function);
         model.saveTransformerProperties();
         Assert.assertTrue(model.savedProperties.containsKey(function));
@@ -55,6 +60,7 @@ public class PersistenceProviderTest {
         AppearanceUIModel model = Utils.newAppearanceUIModel();
         Function function = Utils.findNodeFunction(model, RankingElementColorTransformer.class);
         Assert.assertNotNull(function);
+        model.setSelectedTransformerUI(Lookup.getDefault().lookup(RankingElementColorTransformerUI.class));
         model.setSelectedFunction(function);
         model.saveTransformerProperties();
         Assert.assertTrue(model.savedProperties.containsKey(function));
@@ -68,6 +74,8 @@ public class PersistenceProviderTest {
         AppearanceUIModel model = Utils.newAppearanceUIModel();
         Function function = Utils.findNodeFunction(model, RankingNodeSizeTransformer.class);
         Assert.assertNotNull(function);
+        model.setSelectedCategory(DefaultCategory.SIZE);
+        model.setSelectedTransformerUI(Lookup.getDefault().lookup(RankingElementSizeTransformerUI.class));
         model.setSelectedFunction(function);
         Assert.assertFalse(model.savedProperties.isEmpty());
 
