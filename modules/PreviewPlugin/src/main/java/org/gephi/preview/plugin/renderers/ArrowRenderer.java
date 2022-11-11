@@ -82,14 +82,13 @@ public class ArrowRenderer implements Renderer {
     public static final String TARGET_RADIUS = "edge.target.radius";
     //Default values
     protected float defaultArrowSize = 3f;
-    protected float defaultArcCurviness = 1.2f;
 
     @Override
     public void preProcess(PreviewModel previewModel) {
         final PreviewProperties properties = previewModel.getProperties();
         //Put arc curveness in properties
         if (!properties.hasProperty(ARC_CURVENESS)) {
-            properties.putValue(ARC_CURVENESS, defaultArcCurviness);
+            properties.putValue(ARC_CURVENESS, EdgeRenderer.defaultArcCurviness);
         }
     }
 
@@ -243,16 +242,16 @@ public class ArrowRenderer implements Renderer {
 
             if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
                 // Change the direction to account for the curvature
-                Double newAngle = Math.atan2(direction.y, direction.x);
-                Double curvature = properties.getDoubleValue(ARC_CURVENESS);
-                Double r = length / curvature;
-                Double h = Math.sqrt(Math.pow(r, 2)-Math.pow(length/2,2));
-                newAngle += Math.PI / 2 - Math.atan2(h, length/2);
+                double newAngle = Math.atan2(direction.y, direction.x);
+                double curvature = properties.getDoubleValue(ARC_CURVENESS);
+                double r = length / curvature;
+                double h = Math.sqrt(Math.pow(r, 2) - Math.pow(length / 2, 2));
+                newAngle += Math.PI / 2 - Math.atan2(h, length / 2);
                 final Float targetRadius = item.getData(TARGET_RADIUS);
-                Double rt = (double) -targetRadius;
-                Double h2 = Math.sqrt(Math.pow(r, 2)-Math.pow(rt/2,2));
-                newAngle -= Math.PI / 2 - Math.atan2(h2, rt/2);
-                Vector newDirection = new Vector((float)Math.cos(newAngle), (float)Math.sin(newAngle));
+                double rt = -targetRadius;
+                double h2 = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+                newAngle -= Math.PI / 2 - Math.atan2(h2, rt / 2);
+                Vector newDirection = new Vector((float) Math.cos(newAngle), (float) Math.sin(newAngle));
 
                 p1 = new Vector(newDirection.x, newDirection.y);
                 p1.mult(radius);
@@ -269,7 +268,6 @@ public class ArrowRenderer implements Renderer {
                 p3 = new Vector(newDirection.y, -newDirection.x);
                 p3.mult(size * BASE_RATIO);
                 p3.add(p1r);
-
             } else {
                 p1 = new Vector(direction.x, direction.y);
                 p1.mult(radius);

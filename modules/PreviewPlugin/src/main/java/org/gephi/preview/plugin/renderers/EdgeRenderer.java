@@ -109,7 +109,7 @@ public class EdgeRenderer implements Renderer {
     protected float defaultRescaleWeightMax = 1.0f;
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
-    protected float defaultArcCurviness = 1.2f;
+    protected static float defaultArcCurviness = 1.2f;
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
@@ -515,7 +515,10 @@ public class EdgeRenderer implements Renderer {
 
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
-                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setStroke(new BasicStroke(
+                    getThickness(item),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 // Arc
                 graphics.draw(new Arc2D.Double(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep, Arc2D.OPEN));
@@ -547,15 +550,13 @@ public class EdgeRenderer implements Renderer {
                     .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
-
-//                cb.arc(h.bbx, -h.bby, h.bbx+h.bbw, -(h.bby+h.bbh), h.astart, h.asweep);
-
                 final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
-                    cb.moveTo(h.x1, -h.y1);
-//                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                    PDFUtils.drawArc(cb, (float)h.bbx, (float)-h.bby, (float)(h.bbx+h.bbw), (float)-(h.bby+h.bbh), (float)h.astart, (float)h.asweep);
                     cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
+                    cb.setLineJoinStyle(1); //round
+//                    cb.setLineCapStyle(1); //round
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
                         graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
@@ -596,13 +597,13 @@ public class EdgeRenderer implements Renderer {
             public final Float x2;
             public final Float y1;
             public final Float y2;
-            public final Double r;
-            public final Double bbx;
-            public final Double bby;
-            public final Double bbw;
-            public final Double bbh;
-            public final Double astart;
-            public final Double asweep;
+            public final double r;
+            public final double bbx;
+            public final double bby;
+            public final double bbw;
+            public final double bbh;
+            public final double astart;
+            public final double asweep;
 
             public Helper(
                 final Item item,
@@ -627,8 +628,8 @@ public class EdgeRenderer implements Renderer {
 
                 // Arc bounding box (for Graphics2D)
                 // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
-                Double _xa = 0.5 * (x1 - x2);
-                Double _ya = 0.5 * (y1 - y2);
+                double _xa = 0.5 * (x1 - x2);
+                double _ya = 0.5 * (y1 - y2);
                 double _x0 = x2 + _xa;
                 double _y0 = y2 + _ya;
                 double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
@@ -641,8 +642,8 @@ public class EdgeRenderer implements Renderer {
                     // This is why we have to do the check.
                     _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
                 }
-                Double xc = _x0 + (_b * _ya) / _a;
-                Double yc = _y0 - (_b * _xa / _a);
+                double xc = _x0 + (_b * _ya) / _a;
+                double yc = _y0 - (_b * _xa / _a);
                 double angle1 = Math.atan2(y1 - yc, x1 - xc);
                 double angle2 = Math.atan2(y2 - yc, x2 - xc);
 
@@ -734,7 +735,10 @@ public class EdgeRenderer implements Renderer {
 
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
-                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setStroke(new BasicStroke(
+                    getThickness(item),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 final GeneralPath gp
                     = new GeneralPath(GeneralPath.WIND_NON_ZERO);
