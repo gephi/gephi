@@ -110,6 +110,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
     private static final String META_CREATOR = "creator";
     private static final String META_DESCRIPTION = "description";
+    private static final String META_TITLE = "title";
     private static final String NODES = "nodes";
     private static final String NODE = "node";
     private static final String NODE_ID = "id";
@@ -256,8 +257,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeCharacters(VersionUtils.getGephiVersion());
             xmlWriter.writeEndElement();
 
+            xmlWriter.writeStartElement(META_TITLE);
+            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getTitle());
+            xmlWriter.writeEndElement();
+
             xmlWriter.writeStartElement(META_DESCRIPTION);
-            xmlWriter.writeCharacters("");
+            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getDescription());
             xmlWriter.writeEndElement();
 
             xmlWriter.writeEndElement();

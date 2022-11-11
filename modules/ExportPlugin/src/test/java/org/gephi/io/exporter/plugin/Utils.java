@@ -19,26 +19,31 @@ public class Utils {
         System.out.println(writer);
     }
 
-    public static void assertExporterMatch(String expectedFilename, CharacterExporter exporter) throws IOException {
-        String expected = getResourceContent(expectedFilename);
+    public static String toString(CharacterExporter exporter) throws IOException {
         StringWriter writer = new StringWriter();
         exporter.setWriter(writer);
         exporter.execute();
         writer.close();
+        return writer.toString();
+    }
+
+    public static void assertExporterMatch(String expectedFilename, CharacterExporter exporter) throws IOException {
+        String expected = getResourceContent(expectedFilename);
+        String actual = toString(exporter);
 
         if (expected.startsWith("<?xml")) {
             Diff myDiff = DiffBuilder.compare(expected).checkForIdentical().ignoreComments().ignoreWhitespace()
-                .withTest(writer.toString()).build();
+                .withTest(actual).build();
 
             Iterator<Difference> iter = myDiff.getDifferences().iterator();
             int size = 0;
             while (iter.hasNext()) {
-                System.out.println("Difference: " + iter.next().toString());
+                System.err.println("Difference: " + iter.next().toString());
                 size++;
             }
-            Assert.assertEquals(0, size);
+            Assert.assertEquals("Expected: \n"+cleanString(actual), 0, size);
         } else {
-            Assert.assertEquals(cleanString(expected), cleanString(writer.toString()));
+            Assert.assertEquals(cleanString(expected), cleanString(actual));
         }
     }
 
