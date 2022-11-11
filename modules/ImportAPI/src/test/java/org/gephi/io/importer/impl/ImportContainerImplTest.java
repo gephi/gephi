@@ -42,11 +42,14 @@
 
 package org.gephi.io.importer.impl;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.TimestampStringMap;
-import org.gephi.io.importer.api.*;
+import org.gephi.io.importer.api.ColumnDraft;
+import org.gephi.io.importer.api.EdgeDirection;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
+import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.Issue;
+import org.gephi.io.importer.api.NodeDraft;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -121,20 +124,26 @@ public class ImportContainerImplTest {
     }
 
     @Test
-    public void testCheckSpecialCharacter() {
-        ImportContainerImpl importContainer = new ImportContainerImpl();
-        Report report = new Report();
+    public void testCheckSpecialCharacterNode() {
+        ImportContainerImpl container = new ImportContainerImpl();
 
-        ObjectList<NodeDraftImpl> nodeList = new ObjectArrayList<>();
-        nodeList.add(new NodeDraftImpl(new ImportContainerImpl(), "0 ", 1));
-        importContainer.checkSpecialCharacter(nodeList, "Node");
-        Assert.assertFalse(report.isEmpty());
+        container.addNode(new NodeDraftImpl(container, "foo ", 1));
+        container.verify();
+        Utils.assertContainerIssues(container.getReport(), Issue.Level.WARNING, "foo ");
+    }
 
-        report = new Report();
-        ObjectList<EdgeDraftImpl> edgeList = new ObjectArrayList<>();
-        edgeList.add(new EdgeDraftImpl(new ImportContainerImpl(), "0\n"));
-        importContainer.checkSpecialCharacter(edgeList, "Edge");
-        Assert.assertFalse(report.isEmpty());
+    @Test
+    public void testCheckSpecialCharacterEdge() {
+        ImportContainerImpl container = new ImportContainerImpl();
+
+        NodeDraft node = new NodeDraftImpl(container, "0", 1);
+        container.addNode(node);
+        EdgeDraft edge = new EdgeDraftImpl(container, "bar ");
+        edge.setSource(node);
+        edge.setTarget(node);
+        container.addEdge(edge);
+        container.verify();
+        Utils.assertContainerIssues(container.getReport(), Issue.Level.WARNING, "bar ");
     }
 
     // Utility

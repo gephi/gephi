@@ -789,7 +789,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         checkSpecialCharacter(edgeList, "Edge");
 
         return true;
-
     }
 
     @Override
@@ -1158,23 +1157,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     void checkSpecialCharacter(ObjectList<? extends ElementDraft> objectList, String elementType) {
         if (!objectList.isEmpty()) {
-            if (elementType.equals("Edge")) {
-                for(ElementDraft edge : new NullFilterIterable<EdgeDraftImpl>(objectList)) {
-                    String id = edge.getId();
-                    if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
-                        report.logIssue(new Issue(
-                                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_Edge_Id_Special_Character", id),
-                                Level.WARNING));
-                    }
-                }
-            }else {
-                for(ElementDraft node : objectList) {
-                    String id = node.getId();
-                    if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
-                        report.logIssue(new Issue(
-                                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_Node_Id_Special_Character", id),
-                                Level.WARNING));
-                    }
+            for(ElementDraft edge : new NullFilterIterable<>(objectList)) {
+                String id = edge.getId();
+                if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                    report.logIssue(new Issue(
+                            NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_"+elementType+"_Id_Special_Character", id),
+                            Level.WARNING));
                 }
             }
         }
