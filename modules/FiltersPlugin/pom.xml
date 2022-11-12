@@ -36,6 +36,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-plugin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>algorithms-plugin</artifactId>
+        </dependency>
 <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>timeline</artifactId>
