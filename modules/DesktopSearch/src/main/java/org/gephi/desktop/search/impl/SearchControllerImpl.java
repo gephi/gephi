@@ -22,7 +22,9 @@ import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
+@ServiceProvider(service = SearchController.class)
 public class SearchControllerImpl implements SearchController {
 
     private final ExecutorService pool;
@@ -40,7 +42,7 @@ public class SearchControllerImpl implements SearchController {
     }
 
     @Override
-    public <T> Collection<SearchResult<T>> search(SearchRequest request, Class<T> typeFilter) {
+    public <T> List<SearchResult<T>> search(SearchRequest request, Class<T> typeFilter) {
         SearchSession<T> session = new SearchSession<>(request, Collections.singleton(typeFilter));
 
         ForkJoinPool commonPool = ForkJoinPool.commonPool();
@@ -155,9 +157,9 @@ public class SearchControllerImpl implements SearchController {
                 }));
         }
 
-        protected Collection<SearchResult<T>> getResults() {
+        protected List<SearchResult<T>> getResults() {
             this.finished = true;
-            return new ArrayList<>(resultSet.values());
+            return List.copyOf(resultSet.values());
         }
 
         protected boolean passClassFilters(T result) {

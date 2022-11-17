@@ -1,6 +1,7 @@
 package org.gephi.desktop.search.api;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface SearchListener {
 
@@ -8,5 +9,5 @@ public interface SearchListener {
 
     void cancelled();
 
-    void finished(SearchRequest request, Collection<SearchResult> results);
+    void finished(SearchRequest request, List<SearchResult> results);
 }

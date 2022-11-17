@@ -36,6 +36,11 @@ public class SearchResultImpl<T> implements SearchResult<T> {
     }
 
     @Override
+    public String toString() {
+        return htmlDisplay;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
