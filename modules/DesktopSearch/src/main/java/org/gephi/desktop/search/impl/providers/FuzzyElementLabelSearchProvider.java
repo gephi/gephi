@@ -1,5 +1,6 @@
 package org.gephi.desktop.search.impl.providers;
 
+import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
@@ -14,6 +15,11 @@ public class FuzzyElementLabelSearchProvider extends ElementLabelSearchProvider 
     protected boolean match(Element element, String query) {
         return element.getLabel() != null && element.getLabel().toLowerCase().contains(query.toLowerCase()) &&
             !super.match(element, query);
+    }
+
+    @Override
+    public SearchCategory getCategory() {
+        return new GraphCategory();
     }
 
     @Override

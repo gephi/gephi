@@ -1,6 +1,7 @@
 package org.gephi.desktop.search.impl.providers;
 
 import org.gephi.desktop.search.api.SearchRequest;
+import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.api.Edge;
@@ -13,12 +14,17 @@ public class EdgeIdSearchProvider implements SearchProvider<Edge> {
 
     @Override
     public void search(SearchRequest request, SearchResultsBuilder<Edge> resultsBuilder) {
-        GraphModel graphModel = request.workspace().getLookup().lookup(GraphModel.class);
+        GraphModel graphModel = request.getWorkspace().getLookup().lookup(GraphModel.class);
         Edge edge = graphModel.getGraphVisible().getEdge(request.getQuery());
 
         if (edge != null) {
             resultsBuilder.addResult(edge, toHtmlDisplay(edge));
         }
+    }
+
+    @Override
+    public SearchCategory getCategory() {
+        return new GraphCategory();
     }
 
     private String toHtmlDisplay(Edge edge) {

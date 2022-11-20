@@ -4,9 +4,12 @@ import java.awt.Component;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -15,6 +18,9 @@ import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 /**
@@ -22,23 +28,56 @@ import org.openide.util.Lookup;
  */
 public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
-    /**
-     * Creates new form SearchDialog
-     */
-    public SearchDialog() {
-        initComponents();
+    private final SearchUIModel uiModel;
+    private final ButtonGroup categoryGroup;
 
+    public SearchDialog(SearchUIModel uiModel) {
+        this.uiModel = uiModel;
+        categoryGroup = new ButtonGroup();
+        initComponents();
         setup();
     }
 
     protected void setup() {
+        // Tabs
+        allCategoriesButton.addActionListener(e -> {
+            uiModel.setCategory(null);
+            search();
+        });
+        allCategoriesButton.putClientProperty("JButton.buttonType", "square");
+        allCategoriesButton.setSelected(true);
+        categoryGroup.add(allCategoriesButton);
+        uiModel.getCategories().forEach(category -> {
+            JToggleButton toggleButton = new JToggleButton();
+            toggleButton.setText(category.getDisplayName());
+            toggleButton.setFocusable(false);
+            toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            toggleButton.putClientProperty("JButton.buttonType", "square");
+            categoryToolbar.add(toggleButton);
+            categoryGroup.add(toggleButton);
+            toggleButton.addActionListener(e -> {
+                uiModel.setCategory(category);
+                search();
+            });
+            if (uiModel.category == category) {
+                toggleButton.setSelected(true);
+            }
+        });
+
         // Results list
         resultsList.setCellRenderer(new ResultRenderer());
 
         // Search
+        searchField.setText(uiModel.query);
         searchField.getDocument().addDocumentListener((SimpleDocumentListener) e -> {
             search();
         });
+
+        // Search if query isn't empty
+        if (!uiModel.query.isEmpty()) {
+            search();
+        }
 
         // Focus
         searchField.requestFocusInWindow();
@@ -46,8 +85,9 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
     protected void search() {
         String query = searchField.getText();
+        uiModel.query = query;
         if (query != null && !query.trim().isEmpty()) {
-            SearchRequest request = SearchRequest.builder().query(query.trim()).build();
+            SearchRequest request = SearchRequest.builder().query(query.trim()).category(uiModel.category).build();
             SearchController searchController = Lookup.getDefault().lookup(SearchController.class);
             searchController.search(request, this);
         } else {
@@ -76,11 +116,22 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         protected final DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
+        // Icons
+        private final ImageIcon nodeIcon = ImageUtilities.loadImageIcon("DesktopSearch/node.svg", false);
+        private final ImageIcon edgeIcon = ImageUtilities.loadImageIcon("DesktopSearch/edge.svg", false);
+
         @Override
         public Component getListCellRendererComponent(JList<? extends SearchResult> list, SearchResult value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
                 isSelected, cellHasFocus);
+
+            Object val = value.getResult();
+            if (val instanceof Node) {
+                renderer.setIcon(nodeIcon);
+            } else if (val instanceof Edge) {
+                renderer.setIcon(edgeIcon);
+            }
 
             return renderer;
         }
@@ -151,7 +202,6 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         categoryToolbar.setRollover(true);
 
-        allCategoriesButton.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(allCategoriesButton,
             org.openide.util.NbBundle.getMessage(SearchDialog.class,
                 "SearchDialog.allCategoriesButton.text")); // NOI18N

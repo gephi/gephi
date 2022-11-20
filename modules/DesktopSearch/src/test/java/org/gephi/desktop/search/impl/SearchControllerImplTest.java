@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
+import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
+import org.gephi.desktop.search.impl.providers.GraphCategory;
 import org.gephi.desktop.search.impl.providers.NodeIdSearchProvider;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
@@ -141,6 +143,22 @@ public class SearchControllerImplTest {
         });
     }
 
+    @Test
+    public void testCategoryFilter() {
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+
+        SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, new GraphCategory());
+        Assert.assertFalse(toList(controller.search(request, Element.class)).isEmpty());
+    }
+
+    @Test
+    public void testFakeCategoryFilter() {
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+
+        SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, new FakeCategory());
+        Assert.assertTrue(toList(controller.search(request, Element.class)).isEmpty());
+    }
+
     // Utility
 
     public static class SleepProvider implements SearchProvider {
@@ -155,6 +173,24 @@ public class SearchControllerImplTest {
                 }
             }
         }
+
+        @Override
+        public SearchCategory getCategory() {
+            return null;
+        }
+    }
+
+    private static class FakeCategory implements SearchCategory {
+
+        @Override
+        public String getDisplayName() {
+            return "fake";
+        }
+
+        @Override
+        public String getId() {
+            return "fake";
+        }
     }
 
     private <T> List<T> toList(Collection<SearchResult<T>> results) {
@@ -163,5 +199,9 @@ public class SearchControllerImplTest {
 
     private SearchRequest buildRequest(String query, GraphGenerator generator) {
         return SearchRequest.builder().query(query).workspace(generator.getWorkspace()).build();
+    }
+
+    private SearchRequest buildRequest(String query, GraphGenerator generator, SearchCategory category) {
+        return SearchRequest.builder().query(query).workspace(generator.getWorkspace()).category(category).build();
     }
 }

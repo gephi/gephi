@@ -1,6 +1,7 @@
 package org.gephi.desktop.search.impl.providers;
 
 import org.gephi.desktop.search.api.SearchRequest;
+import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.api.Element;
@@ -16,7 +17,7 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
 
     @Override
     public void search(SearchRequest request, SearchResultsBuilder<Element> resultsBuilder) {
-        Workspace workspace = request.workspace();
+        Workspace workspace = request.getWorkspace();
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
         String query = request.getQuery();
@@ -26,6 +27,11 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
 
         // Exact edge label
         matchElementLabel(graphModel.getGraphVisible().getEdges(), query, resultsBuilder);
+    }
+
+    @Override
+    public SearchCategory getCategory() {
+        return new GraphCategory();
     }
 
     protected void matchElementLabel(ElementIterable<? extends Element> iterable, String query,
