@@ -17,6 +17,7 @@
 
     <properties>
         <jogl.version>2.4.0-rc-20210111</jogl.version>
+        <jogl.version.natives.macos>2.4.0-rc4</jogl.version.natives.macos>
     </properties>
 
     <dependencies>
@@ -105,7 +106,7 @@
         <dependency>
             <groupId>org.jogamp.gluegen</groupId>
             <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
+            <version>${jogl.version.natives.macos}</version>
             <classifier>natives-macosx-universal</classifier>
         </dependency>
         <dependency>
@@ -141,7 +142,7 @@
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
+            <version>${jogl.version.natives.macos}</version>
             <classifier>natives-macosx-universal</classifier>
         </dependency>
         <dependency>
