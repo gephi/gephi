@@ -786,6 +786,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         checkColorAlpha(nodeList, "Node");
         checkColorAlpha(edgeList, "Edge");
 
+        //Check special characters in elements ids
+        checkSpecialCharacter(nodeList, "Node");
+        checkSpecialCharacter(edgeList, "Edge");
+
         return true;
     }
 
@@ -1160,6 +1164,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
         if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
+        }
+    }
+
+    void checkSpecialCharacter(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            for(ElementDraft element : new NullFilterIterable<>(objectList)) {
+                String id = element.getId();
+                if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                    report.logIssue(new Issue(
+                            NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_"+elementType+"_Id_Special_Character", id),
+                            Level.WARNING));
+                }
+            }
         }
     }
 
