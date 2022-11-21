@@ -247,11 +247,7 @@ public final class LongTaskExecutor {
      * otherwise
      */
     public boolean isRunning() {
-        if(inBackground) {
-            return executor != null && executor.getActiveCount() > 0;
-        } else {
-            return currentTask != null;
-        }
+        return currentTask != null;
     }
 
     /**
