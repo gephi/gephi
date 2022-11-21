@@ -517,7 +517,7 @@ public class EdgeRenderer implements Renderer {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
                     getThickness(item),
-                    BasicStroke.CAP_BUTT,
+                    BasicStroke.CAP_ROUND,
                     BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 // Arc
@@ -556,7 +556,7 @@ public class EdgeRenderer implements Renderer {
                     cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
                     cb.setLineJoinStyle(1); //round
-//                    cb.setLineCapStyle(1); //round
+                    cb.setLineCapStyle(1); //round
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
                         graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
