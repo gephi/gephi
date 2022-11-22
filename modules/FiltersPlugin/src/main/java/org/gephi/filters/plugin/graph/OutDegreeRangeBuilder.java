@@ -90,7 +90,7 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter(Workspace workspace) {
+    public OutDegreeRangeFilter getFilter(Workspace workspace) {
         return new OutDegreeRangeFilter();
     }
 
