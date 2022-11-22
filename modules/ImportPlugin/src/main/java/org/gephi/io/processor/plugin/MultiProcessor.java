@@ -79,6 +79,7 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
                 } else {
                     workspace = pc.newWorkspace(pc.getCurrentProject());
                 }
+                processMeta(container, workspace);
                 processConfiguration(container, workspace);
                 process(container, workspace);
                 workspace = null;

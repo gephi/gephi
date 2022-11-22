@@ -89,6 +89,22 @@ public final class UIUtils {
         return UIManager.getLookAndFeel().getID().equals("Aqua"); //NOI18N
     }
 
+    public static boolean isFlatLafLookAndFeel() {
+        return UIManager.getLookAndFeel().getName().contains("FlatLaf"); //NOI18N
+    }
+
+    public static boolean isFlatLafLightLookAndFeel() {
+        return UIManager.getLookAndFeel().getID().contains("FlatLaf Light"); //NOI18N
+    }
+
+    public static boolean isFlatLafDarkLookAndFeel() {
+        return UIManager.getLookAndFeel().getName().contains("FlatLaf Dark"); //NOI18N
+    }
+
+    public static boolean isDarkLookAndFeel() {
+        return isFlatLafDarkLookAndFeel();
+    }
+
     public static Color getDarker(Color c) {
         if (c.equals(Color.WHITE)) {
             return new Color(244, 244, 244);
@@ -565,16 +581,6 @@ public final class UIUtils {
         }
 
         return result[0];
-    }
-
-    public static Image generateSelectedDarkImage(final Image image) {
-        final ImageFilter filter =  new IconImageFilter() {
-            @Override
-            int getGreyFor(final int gray) {
-                return gray * 75 / 100;
-            }
-        };
-        return map(image, filter);
     }
 
     static Image generateFilteredImage(Image image, ImageFilter filter) {

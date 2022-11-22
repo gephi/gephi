@@ -4,19 +4,20 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>visualization</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>VisualizationImpl</name>
 
     <properties>
         <jogl.version>2.4.0-rc-20210111</jogl.version>
+        <jogl.version.natives.macos>2.4.0-rc4</jogl.version.natives.macos>
     </properties>
 
     <dependencies>
@@ -51,6 +52,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-icons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -101,7 +106,7 @@
         <dependency>
             <groupId>org.jogamp.gluegen</groupId>
             <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
+            <version>${jogl.version.natives.macos}</version>
             <classifier>natives-macosx-universal</classifier>
         </dependency>
         <dependency>
@@ -137,7 +142,7 @@
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
+            <version>${jogl.version.natives.macos}</version>
             <classifier>natives-macosx-universal</classifier>
         </dependency>
         <dependency>
@@ -204,7 +209,7 @@
                             <directory>src/main/libs</directory> 
                             <targetPath>modules/lib</targetPath> 
                         </nbmResource> 
-                    </nbmResources> 
+                    </nbmResources>
                 </configuration>
             </plugin>
         </plugins>

@@ -63,7 +63,9 @@ public class UIExporterGraphML implements ExporterUI {
     public void setup(Exporter exporter) {
         exporterGraphML = (ExporterGraphML) exporter;
         settings.load(exporterGraphML);
-        panel.setup(exporterGraphML);
+        if (panel != null) {
+            panel.setup(exporterGraphML);
+        }
     }
 
     @Override

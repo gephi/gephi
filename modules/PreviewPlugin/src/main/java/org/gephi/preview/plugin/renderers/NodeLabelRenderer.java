@@ -42,9 +42,6 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -53,9 +50,15 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -220,8 +223,18 @@ public class NodeLabelRenderer implements Renderer {
     public CanvasSize getCanvasSize(
         final Item item,
         final PreviewProperties properties) {
-        //FIXME Compute the label canvas
-        return new CanvasSize();
+        float x = item.getData(NODE_X);
+        float y = item.getData(NODE_Y);
+        Integer fontSize = item.getData(FONT_SIZE);
+
+        Font font = fontCache.get(fontSize);
+        AffineTransform affinetransform = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
+        String label = item.getData(NodeLabelItem.LABEL);
+        float textWidth = (float) font.getStringBounds(label, frc).getWidth();
+        float textHeight = (float) font.getStringBounds(label, frc).getHeight();
+
+        return new CanvasSize(x - textWidth / 2f, y - textHeight / 2f, textWidth, textHeight);
     }
 
     public void renderG2D(G2DTarget target, String label, float x, float y, int fontSize, Color color,
@@ -325,72 +338,73 @@ public class NodeLabelRenderer implements Renderer {
 
     public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color,
                           float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
+        PDPageContentStream contentStream = target.getContentStream();
         Font font = fontCache.get(fontSize);
-        PdfContentByte cb = target.getContentByte();
-        BaseFont bf = target.getBaseFont(font);
+        PDFont pdFont = target.getPDFont(font);
 
-        //Box
-        if (showBox) {
-            cb.setRGBColorFill(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue());
-            if (boxColor.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = boxColor.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setFillOpacity(alpha);
-                cb.setGState(gState);
+        try {
+            float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
+            float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
+
+            if (showBox) {
+                contentStream.setNonStrokingColor(boxColor);
+                if (boxColor.getAlpha() < 255) {
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setNonStrokingAlphaConstant(boxColor.getAlpha() / 255f);
+                    contentStream.saveGraphicsState();
+                    contentStream.setGraphicsStateParameters(graphicsState);
+                }
+
+                contentStream.addRect(x - textWidth / 2f - outlineSize / 2f, -y - textHeight / 2f - outlineSize / 2f,
+                    textWidth + outlineSize, textHeight + outlineSize);
+
+                contentStream.fill();
+                if (boxColor.getAlpha() < 255) {
+                    contentStream.restoreGraphicsState();
+                }
             }
-            float textWidth = getTextWidth(bf, fontSize, label);
-            float textHeight = getTextHeight(bf, fontSize, label);
 
-            //A height of just textHeight seems to be half the text height sometimes
-            //BaseFont getAscentPoint and getDescentPoint may be not very precise
-            cb.rectangle(x - textWidth / 2f - outlineSize / 2f, -y - outlineSize / 2f - textHeight,
-                textWidth + outlineSize, textHeight * 2f + outlineSize);
-
-            cb.fill();
-            if (boxColor.getAlpha() < 255) {
-                cb.restoreState();
+            if (outlineSize > 0) {
+                contentStream.setRenderingMode(RenderingMode.STROKE);
+                contentStream.setStrokingColor(outlineColor);
+                contentStream.setLineWidth(outlineSize);
+                contentStream.setLineJoinStyle(1); //round
+                contentStream.setLineCapStyle(1); //round
+                if (outlineColor.getAlpha() < 255) {
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setStrokingAlphaConstant(outlineColor.getAlpha() / 255f);
+                    contentStream.saveGraphicsState();
+                    contentStream.setGraphicsStateParameters(graphicsState);
+                }
+                contentStream.beginText();
+                contentStream.setFont(pdFont, fontSize);
+                contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+                contentStream.showText(label);
+                contentStream.endText();
+                if (outlineColor.getAlpha() < 255) {
+                    contentStream.restoreGraphicsState();
+                }
             }
+
+            if (color.getAlpha() < 255) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setNonStrokingAlphaConstant(color.getAlpha() / 255f);
+                contentStream.saveGraphicsState();
+                contentStream.setGraphicsStateParameters(graphicsState);
+            }
+            contentStream.beginText();
+            contentStream.setFont(pdFont, fontSize);
+            contentStream.setNonStrokingColor(color);
+            contentStream.setRenderingMode(RenderingMode.FILL);
+            contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+            contentStream.showText(label);
+            contentStream.endText();
+            if (color.getAlpha() < 255) {
+                contentStream.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        float textHeight = getTextHeight(bf, fontSize, label);
-        if (outlineSize > 0) {
-            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
-            cb.setRGBColorStroke(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
-            cb.setLineWidth(outlineSize);
-            cb.setLineJoin(PdfContentByte.LINE_JOIN_ROUND);
-            cb.setLineCap(PdfContentByte.LINE_CAP_ROUND);
-            if (outlineColor.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = outlineColor.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.beginText();
-            cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-            cb.endText();
-            if (outlineColor.getAlpha() < 255) {
-                cb.restoreState();
-            }
-        }
-        cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-        cb.beginText();
-        cb.setFontAndSize(bf, font.getSize());
-        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-        cb.endText();
-    }
-
-    private float getTextHeight(BaseFont baseFont, float fontSize, String text) {
-        float ascend = baseFont.getAscentPoint(text, fontSize);
-        float descend = baseFont.getDescentPoint(text, fontSize);
-        return ascend + descend;
-    }
-
-    private float getTextWidth(BaseFont baseFont, float fontSize, String text) {
-        return baseFont.getWidthPoint(text, fontSize);
     }
 
     @Override

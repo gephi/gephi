@@ -52,11 +52,9 @@ import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Subgraph;
 import org.gephi.graph.api.TimeIndex;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.gephi.statistics.api.StatisticsController;
-import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -67,61 +65,41 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */
-@ServiceProvider(service = StatisticsController.class)
-public class StatisticsControllerImpl implements StatisticsController {
+@ServiceProviders({
+    @ServiceProvider(service = StatisticsController.class),
+    @ServiceProvider(service = Controller.class)})
+public class StatisticsControllerImpl implements StatisticsController, Controller<StatisticsModelImpl> {
 
     private final StatisticsBuilder[] statisticsBuilders;
-    private StatisticsModelImpl model;
 
     public StatisticsControllerImpl() {
         statisticsBuilders = Lookup.getDefault().lookupAll(StatisticsBuilder.class).toArray(new StatisticsBuilder[0]);
+    }
 
-        //Workspace events
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
+    @Override
+    public Class<StatisticsModelImpl> getModelClass() {
+        return StatisticsModelImpl.class;
+    }
 
-            @Override
-            public void initialize(Workspace workspace) {
-                if (workspace.getLookup().lookup(StatisticsModelImpl.class) == null) {
-                    workspace.add(new StatisticsModelImpl());
-                }
-            }
+    @Override
+    public StatisticsModelImpl newModel(Workspace workspace) {
+        return new StatisticsModelImpl(workspace);
+    }
 
-            @Override
-            public void select(Workspace workspace) {
-                model = workspace.getLookup().lookup(StatisticsModelImpl.class);
-                if (model == null) {
-                    model = new StatisticsModelImpl();
-                    workspace.add(model);
-                }
-            }
+    @Override
+    public StatisticsModelImpl getModel() {
+        return Controller.super.getModel();
+    }
 
-            @Override
-            public void unselect(Workspace workspace) {
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                model = null;
-            }
-        });
-
-        if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class);
-            if (model == null) {
-                model = new StatisticsModelImpl();
-                pc.getCurrentWorkspace().add(model);
-            }
-        }
+    @Override
+    public StatisticsModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
     }
 
     @Override
@@ -132,13 +110,14 @@ public class StatisticsControllerImpl implements StatisticsController {
             executor.setLongTaskListener(listener);
         }
 
+        final StatisticsModelImpl model = getModel();
         if (statistics instanceof DynamicStatistics) {
             final DynamicLongTask dynamicLongTask = new DynamicLongTask((DynamicStatistics) statistics);
             executor.execute(dynamicLongTask, new Runnable() {
 
                 @Override
                 public void run() {
-                    executeDynamic((DynamicStatistics) statistics, dynamicLongTask);
+                    executeDynamic((DynamicStatistics) statistics, dynamicLongTask, model);
                 }
             }, builder.getName(), null);
         } else {
@@ -147,7 +126,7 @@ public class StatisticsControllerImpl implements StatisticsController {
 
                 @Override
                 public void run() {
-                    execute(statistics);
+                    executeStatic(statistics, model);
                 }
             }, builder.getName(), null);
         }
@@ -155,17 +134,23 @@ public class StatisticsControllerImpl implements StatisticsController {
 
     @Override
     public void execute(Statistics statistics) {
+        StatisticsModelImpl model = getModel();
         if (statistics instanceof DynamicStatistics) {
-            executeDynamic((DynamicStatistics) statistics, null);
+            executeDynamic((DynamicStatistics) statistics, null, model);
         } else {
-            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-            GraphModel graphModel = graphController.getGraphModel();
-            statistics.execute(graphModel);
-            model.addReport(statistics);
+            executeStatic(statistics, model);
         }
     }
 
-    private void executeDynamic(DynamicStatistics statistics, DynamicLongTask dynamicLongTask) {
+    private void executeStatic(Statistics statistics, StatisticsModelImpl model) {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        GraphModel graphModel = graphController.getGraphModel(model.getWorkspace());
+        statistics.execute(graphModel);
+        model.addReport(statistics);
+    }
+
+    private void executeDynamic(DynamicStatistics statistics, DynamicLongTask dynamicLongTask,
+                                StatisticsModelImpl model) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel();
 
@@ -254,21 +239,6 @@ public class StatisticsControllerImpl implements StatisticsController {
             }
         }
         return null;
-    }
-
-    @Override
-    public StatisticsModelImpl getModel() {
-        return model;
-    }
-
-    @Override
-    public StatisticsModel getModel(Workspace workspace) {
-        StatisticsModel statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
-        if (statModel == null) {
-            statModel = new StatisticsModelImpl();
-            workspace.add(statModel);
-        }
-        return statModel;
     }
 
     private static class DynamicLongTask implements LongTask {

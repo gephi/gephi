@@ -47,6 +47,7 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.datalab.api.SearchReplaceController;
@@ -211,7 +212,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                 regexPattern = Pattern.compile(text);
             }
             searchOptions.setRegexPattern(regexPattern);
-            searchText.setBackground(Color.WHITE);
+            searchText.setBackground(UIManager.getColor("TextField.background"));
         } catch (PatternSyntaxException ex) {
             searchText.setBackground(invalidRegexColor);
             regexPattern = null;

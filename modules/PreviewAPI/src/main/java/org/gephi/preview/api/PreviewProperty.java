@@ -89,6 +89,10 @@ public class PreviewProperty {
     public static final String MARGIN = "margin";
     //Constants nodes
     /**
+     * Node <code>Boolean</code> property which indicates if the border size is either fixed or relative to the node size
+     */
+    public static final String NODE_BORDER_FIXED = "node.border.fixed";
+    /**
      * Node <code>Float</code> property defining the node border size.
      */
     public static final String NODE_BORDER_WIDTH = "node.border.width";

@@ -91,20 +91,22 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        colorButton.setEnabled(customRadio.isSelected());
-        EdgeColor.Mode selectedMode = null;
-        if (originalRadio.isSelected()) {
-            selectedMode = EdgeColor.Mode.ORIGINAL;
-        } else if (mixedRadio.isSelected()) {
-            selectedMode = EdgeColor.Mode.MIXED;
-        } else if (sourceRadio.isSelected()) {
-            selectedMode = EdgeColor.Mode.SOURCE;
-        } else if (targetRadio.isSelected()) {
-            selectedMode = EdgeColor.Mode.TARGET;
-        } else if (customRadio.isSelected()) {
-            selectedMode = EdgeColor.Mode.CUSTOM;
+        if(e.getStateChange() == ItemEvent.SELECTED) {
+            colorButton.setEnabled(customRadio.isSelected());
+            EdgeColor.Mode selectedMode = null;
+            if (originalRadio.isSelected()) {
+                selectedMode = EdgeColor.Mode.ORIGINAL;
+            } else if (mixedRadio.isSelected()) {
+                selectedMode = EdgeColor.Mode.MIXED;
+            } else if (sourceRadio.isSelected()) {
+                selectedMode = EdgeColor.Mode.SOURCE;
+            } else if (targetRadio.isSelected()) {
+                selectedMode = EdgeColor.Mode.TARGET;
+            } else if (customRadio.isSelected()) {
+                selectedMode = EdgeColor.Mode.CUSTOM;
+            }
+            propertyEditor.setValue(new EdgeColor(selectedMode));
         }
-        propertyEditor.setValue(new EdgeColor(selectedMode));
     }
 
     public void setup(EdgeColorPropertyEditor propertyEditor) {
@@ -141,7 +143,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
         sourceRadio = new javax.swing.JRadioButton();
         targetRadio = new javax.swing.JRadioButton();
         customRadio = new javax.swing.JRadioButton();
-        colorButton = new JColorButton(Color.BLACK);
+        colorButton = new JColorButton(Color.BLACK, false, true);
 
         jXHeader1.setDescription(org.openide.util.NbBundle
             .getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.description")); // NOI18N

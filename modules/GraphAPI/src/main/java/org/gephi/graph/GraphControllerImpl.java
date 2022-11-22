@@ -58,16 +58,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphControllerImpl implements GraphController {
 
     @Override
-    public synchronized GraphModel getGraphModel() {
+    public GraphModel getGraphModel() {
         Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
         if (currentWorkspace == null) {
             return null;
         }
-        GraphModel model = currentWorkspace.getLookup().lookup(GraphModel.class);
-        if (model == null) {
-            model = newGraphModel(currentWorkspace);
-        }
-        return model;
+        return getGraphModel(currentWorkspace);
     }
 
     @Override

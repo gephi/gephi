@@ -62,6 +62,13 @@ public interface LayoutController {
     LayoutModel getModel();
 
     /**
+     * Returns the model in the given {@link Workspace}.
+     *
+     * @param workspace the workspace to lookup
+     */
+    LayoutModel getModel(Workspace workspace);
+
+    /**
      * Sets the Layout to execute.
      *
      * @param layout the layout that is to be selected

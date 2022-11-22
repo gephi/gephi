@@ -42,6 +42,9 @@ Portions Copyrighted 2017 Gephi Consortium.
 
 package org.gephi.ui.exporter.plugin;
 
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import javax.swing.JPanel;
 import org.gephi.io.exporter.plugin.ExporterSpreadsheet;
 import org.gephi.io.exporter.spi.Exporter;
@@ -55,26 +58,27 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterSpreadsheet implements ExporterUI {
 
+    private final ExporterSpreadsheetSettings settings = new ExporterSpreadsheetSettings();
     private UIExporterSpreadsheetPanel panel;
-    private ExporterSpreadsheet exporter;
+    private ExporterSpreadsheet exporterSpreadsheet;
 
     @Override
     public void setup(Exporter exporter) {
-        this.exporter = (ExporterSpreadsheet) exporter;
-        panel.setup(this.exporter);
+        exporterSpreadsheet = (ExporterSpreadsheet) exporter;
+        settings.load(exporterSpreadsheet);
+        if (panel != null) {
+            panel.setup(exporterSpreadsheet);
+        }
     }
 
     @Override
     public void unsetup(boolean update) {
         if (update) {
-            exporter.setColumnIdsToExport(panel.getSelectedColumnsIds());
-            exporter.setFieldDelimiter(panel.getSelectedSeparator());
-            exporter.setTableToExport(panel.getSelectedTable());
-
-            panel.unSetup();
+            panel.unsetup(exporterSpreadsheet);
+            settings.save(exporterSpreadsheet);
         }
         panel = null;
-        exporter = null;
+        exporterSpreadsheet = null;
     }
 
     @Override
@@ -90,5 +94,67 @@ public class UIExporterSpreadsheet implements ExporterUI {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterSpreadsheet.class, "UIExporterSpreadsheet.name");
+    }
+
+    private static class ExporterSpreadsheetSettings extends AbstractExporterSettings {
+
+        // Preference names
+        private final static String NORMALIZE = "Spreadsheet_normalize";
+        private final static String EXPORT_COLORS = "Spreadsheet_exportColors";
+        private final static String EXPORT_POSITION = "Spreadsheet_exportPosition";
+        private final static String EXPORT_ATTRIBUTES = "Spreadsheet_exportAttributes";
+        private final static String EXPORT_SIZE = "Spreadsheet_exportSize";
+        private final static String EXPORT_DYNAMICS = "Spreadsheet_exportDynamics";
+        private final static String SEPARATOR = "Spreadsheet_separator";
+        private final static String DECIMAL_SEPARATOR = "Spreadsheet_decimalSeparator";
+        private final static String TABLE = "Spreadsheet_table";
+        private final static String EXCLUDED_NODE_COLUMNS = "Spreadsheet_excludedNodeColumns";
+        private final static String EXCLUDED_EDGE_COLUMNS = "Spreadsheet_excludedEdgeColumns";
+        // Default
+        private final static ExporterSpreadsheet DEFAULT = new ExporterSpreadsheet();
+
+        private void save(ExporterSpreadsheet exporterSpreadsheet) {
+            put(NORMALIZE, exporterSpreadsheet.isNormalize());
+            put(EXPORT_COLORS, exporterSpreadsheet.isExportColors());
+            put(EXPORT_POSITION, exporterSpreadsheet.isExportPosition());
+            put(EXPORT_SIZE, exporterSpreadsheet.isExportSize());
+            put(EXPORT_ATTRIBUTES, exporterSpreadsheet.isExportAttributes());
+            put(EXPORT_DYNAMICS, exporterSpreadsheet.isExportDynamic());
+            put(SEPARATOR, exporterSpreadsheet.getFieldDelimiter());
+            put(TABLE, exporterSpreadsheet.getTableToExport().name());
+            put(DECIMAL_SEPARATOR, exporterSpreadsheet.getDecimalFormatSymbols().getDecimalSeparator());
+            if (exporterSpreadsheet.getTableToExport().equals(ExporterSpreadsheet.ExportTable.NODES)) {
+                put(EXCLUDED_NODE_COLUMNS, exporterSpreadsheet.getExcludedColumns().toArray(new String[0]));
+            } else {
+                put(EXCLUDED_EDGE_COLUMNS, exporterSpreadsheet.getExcludedColumns().toArray(new String[0]));
+            }
+        }
+
+        private void load(ExporterSpreadsheet exporterSpreadsheet) {
+            exporterSpreadsheet.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
+            exporterSpreadsheet.setExportColors(get(EXPORT_COLORS, DEFAULT.isExportColors()));
+            exporterSpreadsheet.setExportAttributes(get(EXPORT_ATTRIBUTES, DEFAULT.isExportAttributes()));
+            exporterSpreadsheet.setExportPosition(get(EXPORT_POSITION, DEFAULT.isExportPosition()));
+            exporterSpreadsheet.setExportSize(get(EXPORT_SIZE, DEFAULT.isExportSize()));
+            exporterSpreadsheet.setExportDynamic(get(EXPORT_DYNAMICS, DEFAULT.isExportDynamic()));
+            exporterSpreadsheet.setFieldDelimiter(get(SEPARATOR, DEFAULT.getFieldDelimiter()));
+            exporterSpreadsheet.setTableToExport(
+                ExporterSpreadsheet.ExportTable.valueOf(get(TABLE, DEFAULT.getTableToExport().name())));
+
+            DecimalFormatSymbols dfs = exporterSpreadsheet.getDecimalFormatSymbols();
+            dfs.setDecimalSeparator(get(DECIMAL_SEPARATOR, DEFAULT.getDecimalFormatSymbols().getDecimalSeparator()));
+
+            if (exporterSpreadsheet.getTableToExport().equals(ExporterSpreadsheet.ExportTable.NODES)) {
+                exporterSpreadsheet.setExcludedColumns(
+                    Arrays.stream(get(EXCLUDED_NODE_COLUMNS, DEFAULT.getExcludedColumns().toArray(new String[0])))
+                        .collect(
+                            Collectors.toSet()));
+            } else {
+                exporterSpreadsheet.setExcludedColumns(
+                    Arrays.stream(get(EXCLUDED_EDGE_COLUMNS, DEFAULT.getExcludedColumns().toArray(new String[0])))
+                        .collect(
+                            Collectors.toSet()));
+            }
+        }
     }
 }

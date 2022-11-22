@@ -61,6 +61,7 @@ import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
@@ -69,6 +70,7 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -80,7 +82,7 @@ import org.openide.windows.TopComponent;
     autostore = false)
 @TopComponent.Description(preferredID = "PreviewTopComponent",
     iconBase = "org/gephi/desktop/preview/resources/preview.png",
-    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewTopComponent")
 @ActionReference(path = "Menu/Window", position = 900)
@@ -92,20 +94,21 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private transient PreviewUIModel model;
     private transient G2DTarget target;
     private transient PreviewSketch sketch;
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backgroundButton;
-    private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel busyLabel;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JToggleButton globalCanvasSizeButton;
     private javax.swing.JButton minusButton;
     private javax.swing.JButton plusButton;
     private javax.swing.JPanel previewPanel;
-    private javax.swing.JButton refreshButton;
     private javax.swing.JPanel refreshPanel;
     private javax.swing.JButton resetZoomButton;
     private javax.swing.JPanel sketchPanel;
     private javax.swing.JLabel southBusyLabel;
     private javax.swing.JToolBar southToolbar;
+    // End of variables declaration//GEN-END:variables
 
     public PreviewTopComponent() {
         initComponents();
@@ -118,6 +121,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             southToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
+        //TODO: Remove banner panel completely
         bannerPanel.setVisible(false);
 
         //background color
@@ -126,10 +130,13 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-                    previewController.getModel().getProperties()
-                        .putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
-                    PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-                    previewUIController.refreshPreview();
+                    PreviewProperties properties = previewController.getModel().getProperties();
+                    Color oldColor = properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+                    if (oldColor == null || !oldColor.equals(evt.getNewValue())) {
+                        properties.putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
+                        PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                        previewUIController.refreshPreview();
+                    }
                 }
             });
         southBusyLabel.setVisible(false);
@@ -150,6 +157,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             public void actionPerformed(ActionEvent e) {
                 sketch.zoomMinus();
             }
+        });
+        globalCanvasSizeButton.addActionListener(e -> {
+            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+            previewController.setGlobalCanvasSize(globalCanvasSizeButton.isSelected());
         });
 
         PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
@@ -211,12 +222,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             });
         } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHING)) {
             setRefresh((Boolean) evt.getNewValue());
-        } else if (evt.getPropertyName().equals(PreviewUIController.GRAPH_CHANGED)) {
-            if ((Boolean) evt.getNewValue()) {
-                showBannerPanel();
-            } else {
-                hideBannerPanel();
-            }
         }
     }
 
@@ -274,7 +279,9 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             minusButton.setEnabled(true);
             backgroundButton.setEnabled(true);
             resetZoomButton.setEnabled(true);
-        } else if (previewUIModel == null) {
+            globalCanvasSizeButton.setEnabled(true);
+            globalCanvasSizeButton.setSelected(previewModel.isGlobalCanvasSize());
+        } else {
             if (sketch != null) {
                 sketchPanel.remove(sketch);
                 sketch = null;
@@ -284,35 +291,13 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             minusButton.setEnabled(false);
             backgroundButton.setEnabled(false);
             resetZoomButton.setEnabled(false);
+            globalCanvasSizeButton.setEnabled(false);
+            globalCanvasSizeButton.setSelected(false);
         }
-    }
-
-    /**
-     * Shows the banner panel.
-     */
-    public void showBannerPanel() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                bannerPanel.setVisible(true);
-            }
-        });
     }
 
     public void setBackgroundColor(Color color) {
         ((JColorButton) backgroundButton).setColor(color);
-    }
-
-    /**
-     * Hides the banner panel.
-     */
-    public void hideBannerPanel() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                bannerPanel.setVisible(false);
-            }
-        });
     }
 
     /**
@@ -324,19 +309,19 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        southBusyLabel = new JXBusyLabel(new Dimension(14, 14));
+        southBusyLabel = new JXBusyLabel(new Dimension(14,14));
         bannerPanel = new javax.swing.JPanel();
-        bannerLabel = new javax.swing.JLabel();
-        refreshButton = new javax.swing.JButton();
         previewPanel = new javax.swing.JPanel();
         sketchPanel = new javax.swing.JPanel();
         refreshPanel = new javax.swing.JPanel();
-        busyLabel = new JXBusyLabel(new Dimension(20, 20));
+        busyLabel = new JXBusyLabel(new Dimension(20,20));
         southToolbar = new javax.swing.JToolBar();
         backgroundButton = new JColorButton(Color.WHITE);
         resetZoomButton = new javax.swing.JButton();
         minusButton = new javax.swing.JButton();
         plusButton = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        globalCanvasSizeButton = new javax.swing.JToggleButton();
 
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -349,35 +334,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setBackground(new java.awt.Color(178, 223, 240));
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
-
-        bannerLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
-        bannerPanel.add(bannerLabel, gridBagConstraints);
-
-        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.refreshButton.text")); // NOI18N
-        refreshButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 1);
-        bannerPanel.add(refreshButton, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -387,7 +343,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
         previewPanel.setLayout(new java.awt.CardLayout());
 
-        sketchPanel.setBackground(new java.awt.Color(255, 255, 255));
         sketchPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         sketchPanel.setLayout(new java.awt.BorderLayout());
         previewPanel.add(sketchPanel, "previewCard");
@@ -396,8 +351,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         refreshPanel.setLayout(new java.awt.GridBagLayout());
 
         busyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        org.openide.awt.Mnemonics.setLocalizedText(busyLabel, org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.busyLabel.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(busyLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.busyLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -414,36 +368,40 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.weighty = 1.0;
         add(previewPanel, gridBagConstraints);
 
-        southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
         backgroundButton.setFocusable(false);
         southToolbar.add(backgroundButton);
 
-        org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
         resetZoomButton.setFocusable(false);
         resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(resetZoomButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(minusButton, "-"); // NOI18N
-        minusButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
+        minusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
         minusButton.setFocusable(false);
         minusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         minusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(minusButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(plusButton, "+"); // NOI18N
-        plusButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
+        plusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
         plusButton.setFocusable(false);
         plusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         plusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(plusButton);
+        southToolbar.add(filler1);
+
+        globalCanvasSizeButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/globalCanvasSize.png", false)
+        );
+        globalCanvasSizeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.globalCanvasSizeButton.toolTipText")); // NOI18N
+        globalCanvasSizeButton.setFocusable(false);
+        globalCanvasSizeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        globalCanvasSizeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(globalCanvasSizeButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -452,12 +410,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.weightx = 1.0;
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration                   
-
-    private void refreshButtonActionPerformed(
-        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
-    }//GEN-LAST:event_refreshButtonActionPerformed
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

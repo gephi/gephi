@@ -68,7 +68,7 @@ public class RootNode extends AbstractNode {
     public RootNode(Children children) {
         super(children);
         setName(NbBundle.getMessage(RootNode.class, "RootNode.name"));
-        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/queries.png");
+        setIconBaseWithExtension("DesktopFilters/queries.png");
     }
 
     @Override

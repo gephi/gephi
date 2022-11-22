@@ -177,6 +177,10 @@ public class PaletteManager {
         return presets;
     }
 
+    public Preset getPreset(String name) {
+        return presets.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
+    }
+
     public Collection<Palette> getDefaultPalette(int colorCount) {
         List<Palette> palettes = new ArrayList<>();
         for (Palette p : defaultPalettes) {

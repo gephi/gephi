@@ -72,7 +72,7 @@ public class OpenOrdLayout implements Layout, LongTask {
     private boolean running = true;
     private ProgressTicket progressTicket;
     //Settings
-    private Params param;
+    private Params param = Params.DEFAULT;
     private float edgeCut;
     private int numThreads;
     private long randSeed;

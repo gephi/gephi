@@ -383,7 +383,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         public PalettePopupButton() {
             setText(NbBundle
                 .getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.paletteButton"));
-            setClickedColor(new Color(0, 51, 255));
             setFocusPainted(false);
             setFocusable(false);
             paletteManager = PaletteManager.getInstance();

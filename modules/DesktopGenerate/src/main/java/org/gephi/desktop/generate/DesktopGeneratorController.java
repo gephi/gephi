@@ -43,9 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.generate;
 
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
@@ -53,11 +50,11 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
-import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -91,17 +88,7 @@ public class DesktopGeneratorController implements GeneratorController {
         if (ui != null) {
             ui.setup(generator);
             JPanel panel = ui.getPanel();
-            final DialogDescriptor dd = new DialogDescriptor(panel, title);
-            if (panel instanceof ValidationPanel) {
-                ValidationPanel vp = (ValidationPanel) panel;
-                vp.addChangeListener(new ChangeListener() {
-
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                    }
-                });
-            }
+            final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(panel, title);
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result != NotifyDescriptor.OK_OPTION) {
                 return;
@@ -138,15 +125,7 @@ public class DesktopGeneratorController implements GeneratorController {
     private void finishGenerate(Container container) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-        Workspace workspace;
-        if (pc.getCurrentProject() == null) {
-            pcui.newProject();
-            workspace = pc.getCurrentWorkspace();
-        } else {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
+        Workspace workspace = pc.openNewWorkspace();
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }

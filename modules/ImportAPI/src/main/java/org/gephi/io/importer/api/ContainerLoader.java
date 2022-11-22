@@ -285,6 +285,13 @@ public interface ContainerLoader {
      */
     void setTimeZone(DateTimeZone timeZone);
 
+    /**
+     * Sets the (optional) graph metadata.
+     *
+     * @param metadata graph metadata
+     */
+    void setMetadata(MetadataDraft metadata);
+
     //PARAMETERS SETTERS
     void setAllowSelfLoop(boolean value);
 

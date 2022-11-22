@@ -35,7 +35,7 @@ public class ElementDraftTest {
     public void testColorUnparsable() {
         EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
         edge.setColor("foo");
-        assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "foo");
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "foo");
     }
 
     @Test
@@ -85,6 +85,22 @@ public class ElementDraftTest {
     }
 
     @Test
+    public void testSetValueDuplicateInterval() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", "bar", 1.0, 2.0);
+        edge.setValue("foo", "hello", 1.0, 2.0);
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "hello");
+    }
+
+    @Test
+    public void testSetValueDuplicateTimestamp() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.setValue("foo", "bar", 1.0);
+        edge.setValue("foo", "hello", 1.0);
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.WARNING, "hello");
+    }
+
+    @Test
     public void testParseAndSetValue() {
         EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
         edge.container.addEdgeColumn("foo", String.class);
@@ -106,21 +122,5 @@ public class ElementDraftTest {
         edge.container.addEdgeColumn("foo", String.class);
         edge.parseAndSetValue("foo", null);
         Assert.assertNull(edge.getValue("foo"));
-    }
-
-
-    // Utility
-
-    private static void assertContainerIssues(Report report, Issue.Level level, String message) {
-        report.close();
-        boolean found = false;
-        Iterator<Issue> issues = report.getIssues(1);
-        while (issues.hasNext()) {
-            Issue issue = issues.next();
-            if (issue.getLevel().equals(level) && issue.getMessage().contains(message)) {
-                found = true;
-            }
-        }
-        Assert.assertTrue(found);
     }
 }

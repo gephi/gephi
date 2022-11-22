@@ -223,11 +223,11 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         if (model == null || !model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/run.gif", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/run.gif", false));
             runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.tooltip"));
         } else if (model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/stop.png", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/stop.png", false));
             runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.tooltip"));
         }
 
@@ -358,8 +358,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(layoutCombobox, gridBagConstraints);
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/layout/resources/layoutInfo.png"))); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/layoutInfo.png", false)); // NOI18N
         infoLabel
             .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -370,7 +369,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(infoLabel, gridBagConstraints);
 
         runButton.setIcon(
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/run.gif"))); // NOI18N
+            ImageUtilities.loadImageIcon("DesktopLayout/run.gif", false)); // NOI18N
         runButton
             .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
         runButton.setIconTextGap(5);
@@ -392,8 +391,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar.setRollover(true);
         layoutToolbar.setOpaque(false);
 
-        presetsButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/layout/resources/preset.png"))); // NOI18N
+        presetsButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/preset.png", false)); // NOI18N
         presetsButton.setText(
             org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
         presetsButton.setFocusable(false);
@@ -514,8 +512,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         public LayoutDescriptionImage(LayoutUI layoutUI) {
             this.layoutUI = layoutUI;
-            greenIcon = ImageUtilities.loadImage("org/gephi/desktop/layout/resources/yellow.png");
-            grayIcon = ImageUtilities.loadImage("org/gephi/desktop/layout/resources/grey.png");
+            greenIcon = ImageUtilities.loadImage("DesktopLayout/yellow.png", false);
+            grayIcon = ImageUtilities.loadImage("DesktopLayout/grey.png", false);
             qualityStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.quality");
             speedStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.speed");
         }

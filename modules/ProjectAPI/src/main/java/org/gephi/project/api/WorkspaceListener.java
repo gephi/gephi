@@ -65,7 +65,7 @@ public interface WorkspaceListener {
 
     /**
      * Notify another workspace will be selected. The <code>select()</code>
-     * always follows.
+     * always follows, unless the project is being closed.
      *
      * @param workspace the workspace that is currently the selected workspace
      */

@@ -1,0 +1,9 @@
+{
+  "options": {
+    "multi": false,
+    "allowSelfLoops": true,
+    "type": "directed"
+  },
+  "nodes": [],
+  "edges": []
+}

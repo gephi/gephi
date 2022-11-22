@@ -44,9 +44,9 @@ package org.gephi.ui.exporter.plugin;
 
 import org.gephi.io.exporter.plugin.ExporterGML;
 import org.gephi.lib.validation.ValidationClient;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * @author megaterik
@@ -234,7 +234,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
 
     @Override
     public void validate(ValidationGroup group) {
-        group.add(spacesTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER,
-            Validators.REQUIRE_VALID_INTEGER);
+        group.add(spacesTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER,
+            StringValidators.REQUIRE_VALID_INTEGER);
     }
 }

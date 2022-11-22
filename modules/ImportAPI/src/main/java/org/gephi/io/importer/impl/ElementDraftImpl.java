@@ -259,7 +259,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
         }
         ColumnDraft column = getColumn(key, AttributeUtils.getTimestampMapType(value.getClass()));
         try {
-            setAttributeValue(column, value, timestamp);
+            if (!setAttributeValue(column, value, timestamp)) {
+                String message = NbBundle
+                    .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueTimestampDuplicate", value.toString(),
+                        id, timestamp);
+                container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+            }
         } catch (Exception ex) {
             String message = NbBundle
                 .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueTimestampError", value.toString(),
@@ -298,7 +303,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
         }
         ColumnDraft column = getColumn(key, AttributeUtils.getIntervalMapType(value.getClass()));
         try {
-            setAttributeValue(column, value, start, end);
+            if (!setAttributeValue(column, value, start, end)) {
+                String interval = "[" + start + "," + end + "]";
+                String message = NbBundle
+                    .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueIntervalDuplicate", value.toString(),
+                        id, interval);
+                container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+            }
         } catch (Exception ex) {
             String interval = "[" + start + "," + end + "]";
             String message = NbBundle
@@ -515,7 +526,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
         attributes[index] = value;
     }
 
-    protected void setAttributeValue(ColumnDraft column, Object value, double timestamp) throws Exception {
+    protected boolean setAttributeValue(ColumnDraft column, Object value, double timestamp) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
         Class typeClass = column.getTypeClass();
         value = AttributeUtils.standardizeValue(value);
@@ -536,10 +547,10 @@ public abstract class ElementDraftImpl implements ElementDraft {
             m = AttributeUtils.getTimestampMapType(column.getTypeClass()).newInstance();
             attributes[index] = m;
         }
-        m.put(timestamp, value);
+        return m.put(timestamp, value);
     }
 
-    protected void setAttributeValue(ColumnDraft column, Object value, double start, double end) throws Exception {
+    protected boolean setAttributeValue(ColumnDraft column, Object value, double start, double end) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
         value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
@@ -561,7 +572,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
             m = AttributeUtils.getIntervalMapType(column.getTypeClass()).newInstance();
             attributes[index] = m;
         }
-        m.put(interval, value);
+        return m.put(interval, value);
     }
 
     protected Object getAttributeValue(int index) {

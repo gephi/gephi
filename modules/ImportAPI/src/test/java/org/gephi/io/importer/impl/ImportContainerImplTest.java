@@ -48,6 +48,7 @@ import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.junit.Assert;
 import org.junit.Test;
@@ -120,6 +121,29 @@ public class ImportContainerImplTest {
 
         Assert.assertTrue(importContainer.verify());
         Assert.assertEquals(1, importContainer.getUnloader().getEdgeCount());
+    }
+
+    @Test
+    public void testCheckSpecialCharacterNode() {
+        ImportContainerImpl container = new ImportContainerImpl();
+
+        container.addNode(new NodeDraftImpl(container, "foo ", 1));
+        container.verify();
+        Utils.assertContainerIssues(container.getReport(), Issue.Level.WARNING, "foo ");
+    }
+
+    @Test
+    public void testCheckSpecialCharacterEdge() {
+        ImportContainerImpl container = new ImportContainerImpl();
+
+        NodeDraft node = new NodeDraftImpl(container, "0", 1);
+        container.addNode(node);
+        EdgeDraft edge = new EdgeDraftImpl(container, "bar ");
+        edge.setSource(node);
+        edge.setTarget(node);
+        container.addEdge(edge);
+        container.verify();
+        Utils.assertContainerIssues(container.getReport(), Issue.Level.WARNING, "bar ");
     }
 
     // Utility

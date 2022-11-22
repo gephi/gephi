@@ -43,6 +43,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.statistics.api;
 
+import org.gephi.project.spi.Model;
 import org.gephi.statistics.spi.Statistics;
 
 /**
@@ -51,7 +52,7 @@ import org.gephi.statistics.spi.Statistics;
  * @author Patrick J. McSweeney, Mathieu Bastian
  * @see StatisticsController
  */
-public interface StatisticsModel {
+public interface StatisticsModel extends Model {
 
     /**
      * Returns the report for the given statistics class or <code>null</code> if no report

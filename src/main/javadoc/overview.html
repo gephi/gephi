@@ -15,6 +15,34 @@
         </p>
         <hr>
         <h2>API Changes</h2>
+        <h3>0.10.0</h3>
+        <h4>Project API</h4>
+        <ul>
+            <li><code>ProjectController</code> now executes all methods synchronously, protected by an internal lock. The <code>openProject()</code>, <code>saveProject()</code> no longer return a <code>Runnable</code>.</li>
+            <li>Addition of a <code>ProjectListener</code> to receive events from <code>ProjectController</code>.</li>
+            <li>New <code>ProjectController.openNewWorkspace()</code> to simplify usage.</li>
+            <li>New <code>WorkspaceMetaData</code> object in <code>Workspace</code> to manage description.</li>
+            <li>Creation of new SPI classes: <code>Controller</code> and <code>Model</code> to facilitate workspace model creation. It can replace usage of <code>WorkspaceListener</code> to handle model creation and maintenance.</li>
+            <li>Removal of <code>org.gephi.project.spi.ProjectPropertiesUI</code> as it had no clear purpose.</li>
+            <li>The <code>ProjectController.startup()</code> method was removed as it wasn't used.</li>
+            <li>Deprecation of <code>ProjectInformation</code>. Relevant methods have been ported to <code>Project</code>.</li>
+            <li>Also deprecation of <code>WorkspaceInformation</code>. Relevant methods have been ported to <code>Workspace</code>.</li>
+            <li>Finally, deprecation of <code>WorkspaceProvider</code>. Relevant methods were ported to <code>Project</code>.</li>
+            <li>The duplication of workspaces is now managed through existing persistence providers. Therefore the <code>WorkspaceDuplicateProvider</code> SPI has been removed.</li>
+        </ul>
+        <h4>LongTask API</h4>
+        <ul>
+            <li>The <code>LongTaskExecutor</code> now has <code>execute</code> methods that also support <code>Callable</code> in addition of <code>Runnable</code>.</li>
+        </ul>
+        <h4>Preview API</h4>
+        <ul>
+            <li>The <code>PDFTarget</code> interface now gives access to the PDFBox objects as it has been migrated from iText to Apache PDFBox. All <code>Renderer</code> implementation need to adapt the PDF rendering accordingly.</li>
+            <li>A <code>setGlobalCanvasSize(boolean)</code> method was added to the <code>PreviewController</code> to control whether the full or filtered (default) graph is used when calculating canvas size.</li>
+        </ul>
+        <h4>Import API</h4>
+        <ul>
+            <li>The <code>ContainerLoader</code> now has a <code>setMetadata()</code> method to provide graph metadata.</li>
+        </ul>
         <h3>0.9.3</h3>
         <h4>Graph API</h4>
         <ul>
@@ -37,7 +65,7 @@
             <li>Add <code>getNormalizedValue()</code> to <code>Ranking</code> to more easily retrieve the normalised value.</li>
             <li><code>Partition</code> now has a static <code>DEFAULT_COLOR</code> when the color is not found for a given value.</li>
             <li>Removed <code>Partition.setColors()</code> as it was prone to confusion.</li>
-            <li>Add <code>transformAll(Iterable<? extends Element>)</code> to <code>Function</code>.</li>
+            <li>Add <code>transformAll(Iterable&#60;&#63; extends Element&#62;)</code> to <code>Function</code>.</li>
             <li>Split <code>isLocalScale()</code> into <code>isRankingLocalScale()</code> and <code>isPartitionLocalScale()</code> in <code>AppearanceModel</code>.</li>
             <li>Make <code>Function</code> getters in <code>AppearanceModel</code> independent from <code>Graph</code> as this should be handled automatically based on the local/global state.</li>
         </ul>

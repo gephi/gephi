@@ -128,7 +128,7 @@ public class LinkNodes extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/edge.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edge.png", false);
     }
 
     public Node[] getNodes() {

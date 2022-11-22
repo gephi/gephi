@@ -43,6 +43,7 @@
 package org.gephi.preview;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -56,85 +57,61 @@ import org.gephi.preview.api.PreviewMouseEvent;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.MouseResponsiveRenderer;
 import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.RenderTargetBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = PreviewController.class)
-public class PreviewControllerImpl implements PreviewController {
+@ServiceProviders({
+    @ServiceProvider(service = PreviewController.class),
+    @ServiceProvider(service = Controller.class)})
+public class PreviewControllerImpl implements PreviewController, Controller<PreviewModelImpl> {
 
-    //Other controllers
-    private final GraphController graphController;
-    private PreviewModelImpl model;
     //Registered renderers
     private Renderer[] registeredRenderers = null;
     private Boolean anyPluginRendererRegistered = null;
     private boolean mousePressed = false;
 
-    public PreviewControllerImpl() {
-        graphController = Lookup.getDefault().lookup(GraphController.class);
+    @Override
+    public PreviewModelImpl newModel(Workspace workspace) {
+        return new PreviewModelImpl(workspace);
+    }
 
-        //Workspace events
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-            }
+    @Override
+    public Class<PreviewModelImpl> getModelClass() {
+        return PreviewModelImpl.class;
+    }
 
-            @Override
-            public void select(Workspace workspace) {
-                model = workspace.getLookup().lookup(PreviewModelImpl.class);
-                if (model == null) {
-                    model = new PreviewModelImpl(workspace);
-                    workspace.add(model);
-                }
-            }
+    @Override
+    public PreviewModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
+    }
 
-            @Override
-            public void unselect(Workspace workspace) {
-                model = null;
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                model = null;
-            }
-        });
-
-        if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(PreviewModelImpl.class);
-            if (model == null) {
-                model = new PreviewModelImpl(pc.getCurrentWorkspace(), this);
-                pc.getCurrentWorkspace().add(model);
-            }
-        }
+    @Override
+    public PreviewModelImpl getModel() {
+        return Controller.super.getModel();
     }
 
     @Override
     public void refreshPreview() {
-        refreshPreview(model.getWorkspace());
+        refreshPreview(getModel().getWorkspace());
     }
 
     @Override
     public synchronized void refreshPreview(Workspace workspace) {
-        GraphModel graphModel = graphController.getGraphModel(workspace);
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         PreviewModelImpl previewModel = getModel(workspace);
         previewModel.clear();
 
@@ -159,10 +136,10 @@ public class PreviewControllerImpl implements PreviewController {
 
         Renderer[] renderers;
         if (!mousePressed) {
-            renderers = model.getManagedEnabledRenderers();
+            renderers = previewModel.getManagedEnabledRenderers();
         } else {
             ArrayList<Renderer> renderersList = new ArrayList<>();
-            for (Renderer renderer : model.getManagedEnabledRenderers()) {
+            for (Renderer renderer : previewModel.getManagedEnabledRenderers()) {
                 //Only mouse responsive renderers will be called while mouse is pressed
                 if (renderer instanceof MouseResponsiveRenderer) {
                     renderersList.add(renderer);
@@ -177,39 +154,28 @@ public class PreviewControllerImpl implements PreviewController {
         }
 
         //Build items
-        for (ItemBuilder b : Lookup.getDefault().lookupAll(ItemBuilder.class)) {
-            //Only build items of this builder if some renderer needs it:
-            if (isItemBuilderNeeded(b, previewModel.getProperties(), renderers)) {
-                try {
-                    Item[] items = b.getItems(graph);
-                    if (items != null) {
-                        previewModel.loadItems(b.getType(), items);
-                    }
-                } catch (Exception e) {
-                    Exceptions.printStackTrace(e);
-                }
-            }
+        boolean globalCanvasSize = previewModel.isGlobalCanvasSize() && !graph.getView().isMainView();
+        previewModel.buildAndLoadItems(renderers, globalCanvasSize ? graph.getModel().getGraph() : graph);
+
+        //Pre process renderers
+        Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
+
+        //Canvas size
+        previewModel.updateCanvasSize(renderers);
+
+        if (globalCanvasSize) {
+            // Clear and rebuild with just the filtered graph
+            previewModel.clear();
+            previewModel.buildAndLoadItems(renderers, graph);
+
+            //Pre process renderers
+            Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
         }
 
         //Destroy view
         if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
             graphModel.destroyView(graph.getView());
         }
-
-        //Pre process renderers
-        for (Renderer r : renderers) {
-            r.preProcess(model);
-        }
-    }
-
-    private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
-        for (Renderer r : renderers) {
-            if (r.needsItemBuilder(itemBuilder, properties)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -266,7 +232,11 @@ public class PreviewControllerImpl implements PreviewController {
                     for (String type : previewModel.getItemTypes()) {
                         for (Item item : previewModel.getItems(type)) {
                             if (r.isRendererForitem(item, properties)) {
-                                r.render(item, target, properties);
+                                try {
+                                    r.render(item, target, properties);
+                                } catch (Exception e) {
+                                    Exceptions.printStackTrace(e);
+                                }
                                 Progress.progress(progressTicket);
                                 if (target instanceof AbstractRenderTarget) {
                                     if (((AbstractRenderTarget) target).isCancelled()) {
@@ -286,27 +256,6 @@ public class PreviewControllerImpl implements PreviewController {
 
             Progress.finish(progressTicket);
         }
-    }
-
-    @Override
-    public synchronized PreviewModelImpl getModel() {
-        if (model == null) {
-            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            if (pc.getCurrentWorkspace() != null) {
-                return getModel(pc.getCurrentWorkspace());
-            }
-        }
-        return model;
-    }
-
-    @Override
-    public synchronized PreviewModelImpl getModel(Workspace workspace) {
-        PreviewModelImpl m = workspace.getLookup().lookup(PreviewModelImpl.class);
-        if (m == null) {
-            m = new PreviewModelImpl(workspace);
-            workspace.add(m);
-        }
-        return m;
     }
 
     @Override
@@ -405,5 +354,13 @@ public class PreviewControllerImpl implements PreviewController {
 
         mousePressed = false;//Avoid drag events arriving to listeners if they did not consume previous press event.
         return false;
+    }
+
+    @Override
+    public void setGlobalCanvasSize(boolean globalCanvasSize) {
+        PreviewModelImpl model = getModel();
+        if (model != null) {
+            model.setGlobalCanvasSize(globalCanvasSize);
+        }
     }
 }

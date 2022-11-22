@@ -52,7 +52,7 @@ jobs:
           OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
 
       - name: Build and publish modules
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -DstagingRepositoryId=${{ env.staging_repository_id }} deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -DstagingRepositoryId=${{ env.staging_repository_id }} site deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
@@ -98,6 +98,9 @@ jobs:
           - task: create-dmg,notarize-dmg
             os: macos-11
             arch: x64
+          - task: create-dmg,notarize-dmg
+            os: macos-11
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

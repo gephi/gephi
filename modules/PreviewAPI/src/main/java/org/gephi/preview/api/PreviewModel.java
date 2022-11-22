@@ -48,6 +48,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.Renderer;
+import org.gephi.project.api.Workspace;
 
 /**
  * The Preview Model contains all items and all preview properties. <p> Items are the visual elements built from the {@link Graph} by {@link ItemBuilder} implementations and can be retrieved from this
@@ -141,4 +142,19 @@ public interface PreviewModel {
      * @return the graphics canvas size
      */
     CanvasSize getGraphicsCanvasSize();
+
+    /**
+     * Returns <code>true</code> if the canvas size returned by {@link #getGraphicsCanvasSize()} is based on the full graph,
+     * as opposed to the visible graph. The default is <code>false</code>: the canvas size is based on the visible graph.
+     *
+     * @return true if canvas size is global, false otherwise
+     */
+    boolean isGlobalCanvasSize();
+
+    /**
+     * Returns the workspace this model is attached to.
+     *
+     * @return the workspace
+     */
+    Workspace getWorkspace();
 }

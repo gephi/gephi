@@ -42,11 +42,18 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.io.export;
 
+import java.io.IOException;
+import java.util.Collection;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.spi.Exporter;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -78,10 +85,17 @@ public class DesktopExportController implements ExportControllerUI {
     }
 
     @Override
+    public void exportFiles(FileObject folder, Exporter exporter, final String extension) {
+        checkExporter(exporter);
+
+        MultipleWorkspacesExporter task = new MultipleWorkspacesExporter(exporter, folder, extension);
+        executor.execute(task, task);
+    }
+
+    @Override
     public void exportFile(final FileObject fileObject, final Exporter exporter) {
-        if (exporter == null) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_exporter"));
-        }
+        checkExporter(exporter);
+
         //Export Task
         LongTask task = null;
         if (exporter instanceof LongTask) {
@@ -109,5 +123,78 @@ public class DesktopExportController implements ExportControllerUI {
     @Override
     public ExportController getExportController() {
         return controller;
+    }
+
+    private void checkExporter(Exporter exporter) {
+        if (exporter == null) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_exporter"));
+        }
+    }
+
+    private class MultipleWorkspacesExporter implements Runnable, LongTask {
+
+        private final Exporter exporter;
+        private final FileObject folder;
+        private final String extension;
+        private boolean cancel = false;
+        private ProgressTicket progressTicket;
+
+        public MultipleWorkspacesExporter(Exporter exporter, FileObject folder, String extension) {
+            this.exporter = exporter;
+            this.folder = folder;
+            this.extension = extension.replace(".", "");
+        }
+
+        @Override
+        public void run() {
+            Project project = Lookup.getDefault().lookup(ProjectController.class).getCurrentProject();
+            if (project != null) {
+                Collection<Workspace> workspaceCollection = project.getWorkspaces();
+                Progress.start(progressTicket, workspaceCollection.size());
+
+                for(Workspace workspace :workspaceCollection) {
+                    if (cancel) {
+                        break;
+                    }
+                    try {
+                        FileObject file;
+                        String workspaceName = workspace.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
+                        if (folder.getFileObject(workspaceName, extension) == null) {
+                            file = folder.createData(workspaceName, extension);
+                        } else {
+                            // Overwrite
+                            file = folder.getFileObject(workspaceName, extension);
+                        }
+                        String taskmsg = NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.exportTaskName",
+                            file.getNameExt());
+                        Progress.setDisplayName(progressTicket, taskmsg);
+
+                        exporter.setWorkspace(workspace);
+                        controller.exportFile(FileUtil.toFile(file), exporter);
+                        Progress.progress(progressTicket);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                Progress.finish(progressTicket);
+
+                if(!cancel) {
+                    StatusDisplayer.getDefault().setStatusText(NbBundle
+                        .getMessage(DesktopExportController.class, "DesktopExportController.status.exportAllSuccess",
+                            workspaceCollection.size(), folder.getPath()));
+                }
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            cancel = true;
+            return true;
+        }
+
+        @Override
+        public void setProgressTicket(ProgressTicket progressTicket) {
+            this.progressTicket = progressTicket;
+        }
     }
 }

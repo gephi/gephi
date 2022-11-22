@@ -81,15 +81,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;
-    //normalization
-    private double minX;
-    private double maxX;
-    private double minY;
-    private double maxY;
-    private double minSize;
-    private double maxSize;
-    private double getLow;//borders for dynamic edge weight
-    private double getHigh;
+    private NormalizationHelper normalization;
 
     @Override
     public boolean isExportVisible() {
@@ -124,9 +116,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private void exportData(Graph graph) throws IOException {
-        if (normalize) {
-            calculateMinMaxForNormalization(graph);
-        }
+        normalization = NormalizationHelper.build(normalize, graph);
+
         if (exportAttributes && atLeastOneNonStandartAttribute(graph.getModel())) {
             exportNodeData(graph);
         }
@@ -201,33 +192,6 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
-    private void calculateMinMaxForNormalization(Graph graph) {
-        minX = Double.POSITIVE_INFINITY;
-        maxX = Double.NEGATIVE_INFINITY;
-
-        minY = Double.POSITIVE_INFINITY;
-        maxY = Double.NEGATIVE_INFINITY;
-
-        minSize = Double.POSITIVE_INFINITY;
-        maxSize = Double.NEGATIVE_INFINITY;
-
-        NodeIterable nodeIterable = graph.getNodes();
-        for (Node node : nodeIterable) {
-            if (cancel) {
-                nodeIterable.doBreak();
-                break;
-            }
-            minX = Math.min(minX, node.x());
-            maxX = Math.max(maxX, node.x());
-
-            minY = Math.min(minY, node.y());
-            maxY = Math.max(maxY, node.y());
-
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
-        }
-    }
-
     /*
      * prints node properties as "id (x)? (y)? (size)? (color)? (shortlabel)?"
      */
@@ -259,19 +223,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             }
             writer.append(node.getId().toString());
             if (exportCoords) {
-                if (!normalize) {
-                    writer.append(" ").append(Float.toString(node.x())).append(" ").append(Float.toString(node.y()));
-                } else {
-                    writer.append(" ").append(Double.toString((node.x() - minX) / (maxX - minX))).append(" ")
-                        .append(Double.toString((node.y() - minY) / (maxY - minY)));
-                }
+                float x = normalization.normalizeX(node.x());
+                float y = normalization.normalizeY(node.y());
+                writer.append(" ").append(Float.toString(x)).append(" ").append(Float.toString(y));
             }
             if (exportSize) {
-                if (!normalize) {
-                    writer.append(" ").append(Float.toString(node.size()));
-                } else {
-                    writer.append(" ").append(Double.toString((node.size() - minSize) / (maxSize - minSize)));
-                }
+                float size = normalization.normalizeSize(node.size());
+                writer.append(" ").append(Float.toString(size));
             }
             if (exportColor) {
                 writer.append(" ").append(Integer.toString((int) (node.r() * 255f)));//[0..1] to [0..255]

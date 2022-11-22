@@ -57,19 +57,13 @@ import org.gephi.preview.types.DependantOriginalColor;
  *
  * @author Mathieu Bastian
  */
-public class BasicDependantOriginalColorPropertyEditor extends PropertyEditorSupport {
+public class BasicDependantOriginalColorPropertyEditor extends AbstractColorPropertyEditor {
 
     @Override
     public String getAsText() {
         DependantOriginalColor c = (DependantOriginalColor) getValue();
         if (c.getMode().equals(DependantOriginalColor.Mode.CUSTOM)) {
-            Color color = c.getCustomColor() == null ? Color.BLACK : c.getCustomColor();
-            return String.format(
-                "%s [%d,%d,%d]",
-                c.getMode().name().toLowerCase(),
-                color.getRed(),
-                color.getGreen(),
-                color.getBlue());
+            return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
             return c.getMode().name().toLowerCase();
         }
@@ -80,15 +74,7 @@ public class BasicDependantOriginalColorPropertyEditor extends PropertyEditorSup
     public void setAsText(String s) {
 
         if (matchColorMode(s, DependantOriginalColor.Mode.CUSTOM.name().toLowerCase())) {
-            Pattern p = Pattern.compile("\\w+\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
-            Matcher m = p.matcher(s);
-            if (m.lookingAt()) {
-                int r = Integer.valueOf(m.group(1));
-                int g = Integer.valueOf(m.group(2));
-                int b = Integer.valueOf(m.group(3));
-
-                setValue(new DependantOriginalColor(new Color(r, g, b)));
-            }
+            setValue(new DependantOriginalColor(toColor(s)));
         } else if (matchColorMode(s, DependantOriginalColor.Mode.ORIGINAL.name().toLowerCase())) {
             setValue(new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
         } else if (matchColorMode(s, DependantOriginalColor.Mode.PARENT.name().toLowerCase())) {
@@ -99,12 +85,5 @@ public class BasicDependantOriginalColorPropertyEditor extends PropertyEditorSup
     @Override
     public boolean supportsCustomEditor() {
         return false;
-    }
-
-    private boolean matchColorMode(String s, String identifier) {
-        String regexp = String.format("\\s*%s\\s*", identifier);
-        Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(s);
-        return m.lookingAt();
     }
 }

@@ -110,6 +110,6 @@ public class SelectEdgesOnTable extends BasicNodesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
+            .loadImageIcon("DataLaboratoryPlugin/table-select-row.png", false);
     }
 }

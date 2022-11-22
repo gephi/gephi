@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>core-library-wrapper</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>CoreLibraryWrapper</name>
@@ -18,13 +18,13 @@
     <properties>
         <gephi.stax-utils.version>snapshot-20100402</gephi.stax-utils.version>
         <gephi.commons-codec.version>1.15</gephi.commons-codec.version>
-        <gephi.commons-compress.version>1.21</gephi.commons-compress.version>
+        <gephi.commons-compress.version>1.22</gephi.commons-compress.version>
         <gephi.commons-csv.version>1.9.0</gephi.commons-csv.version>
         <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
-        <gephi.itextpdf.version>5.5.13.3</gephi.itextpdf.version>
+        <gephi.pdfbox.version>2.0.27</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
-        <gephi.gson.version>2.9.1</gephi.gson.version>
+        <gephi.gson.version>2.10</gephi.gson.version>
     </properties>
 
     <dependencies>
@@ -64,9 +64,9 @@
             <version>${gephi.commons-csv.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>${gephi.itextpdf.version}</version>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>${gephi.pdfbox.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -88,7 +88,8 @@
                         <publicPackage>org.jfree.*</publicPackage>
                         <publicPackage>gnu.trove.*</publicPackage>
                         <publicPackage>org.apache.commons.csv.*</publicPackage>
-                        <publicPackage>com.itextpdf.text.*</publicPackage>
+                        <publicPackage>org.apache.pdfbox.*</publicPackage>
+                        <publicPackage>org.apache.fontbox.*</publicPackage>
                         <publicPackage>javanet.staxutils.*</publicPackage>
                         <publicPackage>com.google.gson.*</publicPackage>
                     </publicPackages>
