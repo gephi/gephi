@@ -60,6 +60,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
         </dependency>
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graph-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
     </dependencies>
 
     <build>
