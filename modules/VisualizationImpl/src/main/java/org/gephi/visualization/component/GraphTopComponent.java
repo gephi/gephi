@@ -69,7 +69,7 @@ import org.openide.windows.WindowManager;
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
-    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
 @ActionReference(path = "Menu/Window", position = 500)
