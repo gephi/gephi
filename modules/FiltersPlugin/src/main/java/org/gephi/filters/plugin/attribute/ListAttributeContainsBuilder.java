@@ -42,6 +42,7 @@
 
 package org.gephi.filters.plugin.attribute;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -69,12 +70,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Sukankana Chakraborty
  */
 @ServiceProvider(service = CategoryBuilder.class)
-public class AttributeContainsBuilder implements CategoryBuilder {
+public class ListAttributeContainsBuilder implements CategoryBuilder {
 
     private final static Category CONTAINS = new Category(
-            NbBundle.getMessage(AttributeContainsBuilder.class, "AttributeContainsBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(ListAttributeContainsBuilder.class, "AttributeContainsBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -86,49 +87,50 @@ public class AttributeContainsBuilder implements CategoryBuilder {
         List<FilterBuilder> builders = new ArrayList<>();
         GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         for (Column col : am.getNodeTable()) {
-            System.out.println(col.isArray());
             if (col.isArray()) {
                 AttributeContainsFilterBuilder b = new AttributeContainsFilterBuilder(col);
-                /* to do: insert loop to add each element in the list */
                 builders.add(b);
             }
         }
         for (Column col : am.getEdgeTable()) {
             if (col.isArray()) {
                 AttributeContainsFilterBuilder b = new AttributeContainsFilterBuilder(col);
-                /* to do: insert loop to add each element in the list */
                 builders.add(b);
             }
         }
         return builders.toArray(new FilterBuilder[0]);
     }
 
-    private static class AttributeContainsFilterBuilder extends AbstractAttributeFilterBuilder {
+    public static class AttributeContainsFilterBuilder extends AbstractAttributeFilterBuilder {
 
         public AttributeContainsFilterBuilder(Column column) {
             super(column,
-                    CONTAINS,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeContainsBuilder.description"),
-                    null);
+                CONTAINS,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeContainsBuilder.description"),
+                null);
         }
 
         @Override
         public AttributeContainsFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new AttributeContainsFilter.Node(column) :
-                    new AttributeContainsFilter.Edge(column);
+                new AttributeContainsFilter.Edge(column);
         }
 
         @Override
         public JPanel getPanel(Filter filter) {
-            return null;
+            return Lookup.getDefault().lookup(ListContainsUI.class).getPanel((AttributeContainsFilter) filter);
         }
     }
 
     public static abstract class AttributeContainsFilter<K extends Element> extends AbstractAttributeFilter<K> {
 
+        private Object match;
+
         public AttributeContainsFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeContainsBuilder.name"),
-                    column);
+                column);
+
+            addProperty(Object.class, "match");
         }
 
         @Override
@@ -143,11 +145,40 @@ public class AttributeContainsBuilder implements CategoryBuilder {
 
         @Override
         public boolean evaluate(Graph graph, Element element) {
-            return element.getAttribute(column) != null;
+            if (match != null) {
+                Object array = element.getAttribute(column);
+                if (array != null) {
+                    int length = Array.getLength(array);
+                    Class componentType = array.getClass().getComponentType();
+                    Class matchType = match.getClass();
+                    boolean sameType = componentType.equals(matchType);
+                    for (int i = 0; i < length; i++) {
+                        Object val = Array.get(array, i);
+                        if (sameType) {
+                            if (val.equals(match)) {
+                                return true;
+                            }
+                        } else {
+                            if (val.equals(AttributeUtils.parse(match.toString(), componentType))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
         public void finish() {
+        }
+
+        public void setMatch(Object match) {
+            this.match = match;
+        }
+
+        public Object getMatch() {
+            return match;
         }
 
         public static class Node extends AttributeContainsFilter<org.gephi.graph.api.Node> implements NodeFilter {
