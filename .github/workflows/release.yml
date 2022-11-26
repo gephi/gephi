@@ -98,6 +98,9 @@ jobs:
           - task: create-dmg,notarize-dmg
             os: macos-11
             arch: x64
+          - task: create-dmg,notarize-dmg
+            os: macos-11
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
