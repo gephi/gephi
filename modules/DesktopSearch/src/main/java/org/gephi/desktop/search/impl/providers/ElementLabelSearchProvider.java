@@ -1,7 +1,7 @@
 package org.gephi.desktop.search.impl.providers;
 
 import org.gephi.desktop.search.api.SearchRequest;
-import org.gephi.desktop.search.api.SearchCategory;
+import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.api.Element;
@@ -23,15 +23,15 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
         String query = request.getQuery();
 
         // Exact node label
-        matchElementLabel(graphModel.getGraphVisible().getNodes(), query, resultsBuilder);
+        if (request.isCategoryIncluded(SearchCategoryImpl.NODES())) {
+            matchElementLabel(graphModel.getGraphVisible().getNodes(), query, resultsBuilder);
+        }
+
 
         // Exact edge label
-        matchElementLabel(graphModel.getGraphVisible().getEdges(), query, resultsBuilder);
-    }
-
-    @Override
-    public SearchCategory getCategory() {
-        return new GraphCategory();
+        if (request.isCategoryIncluded(SearchCategoryImpl.EDGES())) {
+            matchElementLabel(graphModel.getGraphVisible().getEdges(), query, resultsBuilder);
+        }
     }
 
     protected void matchElementLabel(ElementIterable<? extends Element> iterable, String query,

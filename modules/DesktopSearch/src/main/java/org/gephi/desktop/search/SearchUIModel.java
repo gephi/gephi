@@ -1,5 +1,6 @@
 package org.gephi.desktop.search;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.gephi.desktop.search.api.SearchCategory;
@@ -16,10 +17,7 @@ public class SearchUIModel {
         this.category = category;
     }
 
-    protected Set<SearchCategory> getCategories() {
-        LinkedHashSet<SearchCategory> categories = new LinkedHashSet<>();
-        Lookup.getDefault().lookupAll(SearchProvider.class)
-            .stream().map(SearchProvider::getCategory).forEachOrdered(categories::add);
-        return categories;
+    protected Collection<? extends SearchCategory> getCategories() {
+        return Lookup.getDefault().lookupAll(SearchCategory.class);
     }
 }

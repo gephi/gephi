@@ -18,6 +18,7 @@ import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
+import org.gephi.desktop.search.popup.ActionPopup;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -67,6 +68,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         // Results list
         resultsList.setCellRenderer(new ResultRenderer());
+        resultsList.addMouseListener(new ActionPopup(resultsList));
 
         // Search
         searchField.setText(uiModel.query);

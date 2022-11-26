@@ -95,17 +95,15 @@ public class SearchControllerImpl implements SearchController {
         List<Runnable> tasks = new ArrayList<>();
         int position = 0;
         for (SearchProvider<T> provider : Lookup.getDefault().lookupAll(SearchProvider.class)) {
-            if (request.isCategoryIncluded(provider.getCategory())) {
-                final int providerPosition = position++;
-                tasks.add(() -> {
-                    SearchResultsBuilderImpl<T> resultsBuilder =
-                        new SearchResultsBuilderImpl<>(provider, providerPosition, MAX_RESULTS);
-                    session.addBuilder(resultsBuilder);
-                    provider.search(request, resultsBuilder);
+            final int providerPosition = position++;
+            tasks.add(() -> {
+                SearchResultsBuilderImpl<T> resultsBuilder =
+                    new SearchResultsBuilderImpl<>(provider, providerPosition, MAX_RESULTS);
+                session.addBuilder(resultsBuilder);
+                provider.search(request, resultsBuilder);
 
-                    session.addResult(resultsBuilder.getResults());
-                });
-            }
+                session.addResult(resultsBuilder.getResults());
+            });
         }
         return tasks;
     }

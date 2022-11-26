@@ -8,7 +8,6 @@ import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
-import org.gephi.desktop.search.impl.providers.GraphCategory;
 import org.gephi.desktop.search.impl.providers.NodeIdSearchProvider;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
@@ -147,7 +146,7 @@ public class SearchControllerImplTest {
     public void testCategoryFilter() {
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
 
-        SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, new GraphCategory());
+        SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, SearchCategoryImpl.NODES());
         Assert.assertFalse(toList(controller.search(request, Element.class)).isEmpty());
     }
 
@@ -172,11 +171,6 @@ public class SearchControllerImplTest {
                     e.printStackTrace();
                 }
             }
-        }
-
-        @Override
-        public SearchCategory getCategory() {
-            return null;
         }
     }
 
