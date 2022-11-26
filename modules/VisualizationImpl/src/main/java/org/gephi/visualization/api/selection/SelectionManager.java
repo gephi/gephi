@@ -42,18 +42,18 @@
 
 package org.gephi.visualization.api.selection;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.AbstractEngine;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Mathieu Bastian
@@ -69,6 +69,10 @@ public class SelectionManager implements VizArchitecture {
     private boolean selectionUpdateWhileDragging;
     //States
     private boolean blocked = false;
+    private boolean wasAutoSelectNeighbors = false;
+    private boolean wasRectangleSelection = false;
+    private boolean wasDragSelection = false;
+    private boolean wasDirectSelection = false;
 
     public SelectionManager() {
         listeners = new ArrayList<>();
@@ -104,48 +108,54 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setRectangleSelection() {
-        engine.setRectangleSelection(true);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
         vizConfig.setSelectionEnable(true);
+        engine.setRectangleSelection(true);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setDirectMouseSelection() {
-        engine.setRectangleSelection(false);
         vizConfig.setSelectionEnable(true);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
+        engine.setRectangleSelection(false);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setDraggingMouseSelection() {
-        engine.setRectangleSelection(false);
         vizConfig.setDraggingEnable(true);
         vizConfig.setMouseSelectionUpdateWhileDragging(false);
         vizConfig.setSelectionEnable(true);
         vizConfig.setCustomSelection(false);
+        engine.setRectangleSelection(false);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setCustomSelection() {
-        engine.setRectangleSelection(false);
         vizConfig.setSelectionEnable(false);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
+        engine.setRectangleSelection(false);
         //this.blocked = true;
         fireChangeEvent();
     }
 
-    public void resetSelection() {
+    public void resetSelection(VizModel vizModel) {
         if (isCustomSelection()) {
-            vizConfig.setCustomSelection(false);
-            setDirectMouseSelection();
+            engine.resetSelection();
+            vizModel.setAutoSelectNeighbor(wasAutoSelectNeighbors);
+            if (wasRectangleSelection) {
+                setRectangleSelection();
+            } else if (wasDragSelection) {
+                setDraggingMouseSelection();
+            } else if (wasDirectSelection) {
+                setDirectMouseSelection();
+            }
         }
-        engine.resetSelection();
     }
 
     public List<Node> getSelectedNodes() {
@@ -156,16 +166,13 @@ public class SelectionManager implements VizArchitecture {
         return engine.getSelectedUnderlyingEdges();
     }
 
-    public void selectNode(Node node) {
-        selectNodes(new Node[] {node});
-    }
-
-    public void selectEdge(Edge edge) {
-        selectEdges(new Edge[] {edge});
-    }
-
-    public void selectNodes(Node[] nodes) {
+    public void selectNodes(Node[] nodes, VizModel vizModel) {
         if (!isCustomSelection()) {
+            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
+            wasDragSelection = isDraggingEnabled();
+            wasDirectSelection = isDirectMouseSelection();
+            wasRectangleSelection = isRectangleSelection();
+            vizModel.setAutoSelectNeighbor(false);
             setCustomSelection();
         }
 
@@ -173,8 +180,13 @@ public class SelectionManager implements VizArchitecture {
         engine.selectObject(models);
     }
 
-    public void selectEdges(Edge[] edges) {
+    public void selectEdges(Edge[] edges, VizModel vizModel) {
         if (!isCustomSelection()) {
+            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
+            wasDragSelection = isDraggingEnabled();
+            wasDirectSelection = isDirectMouseSelection();
+            wasRectangleSelection = isRectangleSelection();
+            vizModel.setAutoSelectNeighbor(false);
             setCustomSelection();
         }
 
@@ -184,7 +196,20 @@ public class SelectionManager implements VizArchitecture {
 
     public void centerOnNode(Node node) {
         if (node != null) {
-            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 40);
+            VizController.getInstance().getGraphIO()
+                .centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 40);
+            engine.getScheduler().requireUpdateVisible();
+        }
+    }
+
+    public void centerOnEdge(Edge edge) {
+        if (edge != null) {
+            Node source = edge.getSource();
+            Node target = edge.getTarget();
+            float len = (float) Math.hypot(source.x() - target.x(), source.y() - target.y());
+            VizController.getInstance().getGraphIO()
+                .centerOnCoordinate((source.x() + target.x()) / 2f, (source.y() + target.y()) / 2f,
+                    (source.z() + target.z()) / 2f + len * 5);
             engine.getScheduler().requireUpdateVisible();
         }
     }

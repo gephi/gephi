@@ -208,21 +208,21 @@ public class VizController implements VisualizationController {
     @Override
     public void resetSelection() {
         if (selectionManager != null) {
-            selectionManager.resetSelection();
+            selectionManager.resetSelection(currentModel);
         }
     }
 
     @Override
-    public void resetNodesSelection() {
+    public void centerOnNode(Node node) {
         if (selectionManager != null) {
-            selectionManager.selectNodes(null);
+            selectionManager.centerOnNode(node);
         }
     }
 
     @Override
-    public void resetEdgesSelection() {
+    public void centerOnEdge(Edge edge) {
         if (selectionManager != null) {
-            selectionManager.selectEdges(null);
+            selectionManager.centerOnEdge(edge);
         }
     }
 
@@ -237,16 +237,14 @@ public class VizController implements VisualizationController {
     @Override
     public void selectNodes(Node[] nodes) {
         if (selectionManager != null) {
-            currentModel.setAutoSelectNeighbor(false);
-            selectionManager.selectNodes(nodes);
+            selectionManager.selectNodes(nodes, currentModel);
         }
     }
 
     @Override
     public void selectEdges(Edge[] edges) {
         if (selectionManager != null) {
-            currentModel.setAutoSelectNeighbor(false);
-            selectionManager.selectEdges(edges);
+            selectionManager.selectEdges(edges, currentModel);
         }
     }
 
