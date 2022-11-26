@@ -59,8 +59,6 @@ public interface VisualizationController {
 
     public void centerOnEdge(Edge edge);
 
-    public void centerOnNode(Node node);
-
     public void selectNodes(Node[] nodes);
 
     public void selectEdges(Edge[] edges);

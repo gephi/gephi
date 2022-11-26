@@ -226,13 +226,6 @@ public class VizController implements VisualizationController {
         }
     }
 
-    @Override
-    public void centerOnNode(Node node) {
-        if (selectionManager != null) {
-            selectionManager.centerOnNode(node);
-        }
-    }
-
     public void selectNode(Node node) {
         selectNodes(new Node[] {node});
     }
