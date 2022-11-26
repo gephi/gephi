@@ -1,6 +1,11 @@
 package org.gephi.desktop.search;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -10,10 +15,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
@@ -21,6 +30,7 @@ import org.gephi.desktop.search.api.SearchResult;
 import org.gephi.desktop.search.popup.ActionPopup;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
@@ -69,11 +79,41 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         // Results list
         resultsList.setCellRenderer(new ResultRenderer());
         resultsList.addMouseListener(new ActionPopup(resultsList));
+        resultsList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    click();
+                }
+            }
+        });
+        resultsList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    select();
+                }
+            }
+        });
 
         // Search
         searchField.setText(uiModel.query);
         searchField.getDocument().addDocumentListener((SimpleDocumentListener) e -> {
             search();
+        });
+        searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "none");
+        searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "none");
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_UP) {
+                    resultsList.setSelectedIndex(Math.max(0, resultsList.getSelectedIndex() - 1));
+                } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+                    resultsList.setSelectedIndex(resultsList.getSelectedIndex() + 1);
+                } else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    click();
+                }
+            }
         });
 
         // Search if query isn't empty
@@ -97,6 +137,37 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         }
     }
 
+    protected void click() {
+        SearchResult result = resultsList.getSelectedValue();
+        if (result != null) {
+            Object val = result.getResult();
+            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
+            if (val instanceof Node) {
+                visualizationController.centerOnNode((Node) val);
+            } else if (val instanceof Edge) {
+                visualizationController.centerOnEdge((Edge) val);
+            }
+        }
+    }
+
+    protected void select() {
+        SearchResult result = resultsList.getSelectedValue();
+        if (result != null) {
+            Object val = result.getResult();
+            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
+            if (val instanceof Node) {
+                visualizationController.resetSelection();
+                visualizationController.selectNodes(new Node[] {(Node) val});
+            } else if (val instanceof Edge) {
+                visualizationController.resetSelection();
+                visualizationController.selectEdges(new Edge[] {(Edge) val});
+            }
+        } else {
+            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
+            visualizationController.resetSelection();
+        }
+    }
+
     @Override
     public void started(SearchRequest request) {
 
@@ -111,6 +182,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
     public void finished(SearchRequest request, List<SearchResult> results) {
         SwingUtilities.invokeLater(() -> {
             resultsList.setModel(new ResultsListModel(results));
+            resultsList.setSelectedIndex(0);
         });
     }
 
@@ -122,11 +194,20 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         private final ImageIcon nodeIcon = ImageUtilities.loadImageIcon("DesktopSearch/node.svg", false);
         private final ImageIcon edgeIcon = ImageUtilities.loadImageIcon("DesktopSearch/edge.svg", false);
 
+        private final Color selectionBackground = UIManager.getColor("List.selectionBackground");
+        private final Color selectionForeground = UIManager.getColor("List.selectionForeground");
+
         @Override
         public Component getListCellRendererComponent(JList<? extends SearchResult> list, SearchResult value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
-                isSelected, cellHasFocus);
+                isSelected, isSelected);
+
+            // So it looks like if the list had focus
+            if (isSelected) {
+                renderer.setBackground(selectionBackground);
+                renderer.setForeground(selectionForeground);
+            }
 
             Object val = value.getResult();
             if (val instanceof Node) {
