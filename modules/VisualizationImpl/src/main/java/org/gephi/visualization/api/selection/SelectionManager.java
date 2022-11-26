@@ -184,7 +184,7 @@ public class SelectionManager implements VizArchitecture {
 
     public void centerOnNode(Node node) {
         if (node != null) {
-            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 8);
+            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 40);
             engine.getScheduler().requireUpdateVisible();
         }
     }

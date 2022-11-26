@@ -505,12 +505,14 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     @Override
     public void centerOnCoordinate(float x, float y, float z) {
-        graphDrawable.cameraTarget[0] = x;
-        graphDrawable.cameraTarget[1] = y;
-        graphDrawable.cameraTarget[2] = z;
+        float globalScale = graphDrawable.getGlobalScale();
 
-        graphDrawable.cameraLocation[0] = x;
-        graphDrawable.cameraLocation[1] = y;
+        graphDrawable.cameraTarget[0] = x * globalScale;
+        graphDrawable.cameraTarget[1] = y * globalScale;
+        graphDrawable.cameraTarget[2] = 0;
+
+        graphDrawable.cameraLocation[0] = x * globalScale;
+        graphDrawable.cameraLocation[1] = y * globalScale;
         graphDrawable.cameraLocation[2] = z + 100;
     }
 
