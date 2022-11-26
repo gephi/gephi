@@ -55,9 +55,9 @@ public interface VisualizationController {
 
     public void resetSelection();
 
-    public void resetNodesSelection();
+    public void centerOnNode(Node node);
 
-    public void resetEdgesSelection();
+    public void centerOnEdge(Edge edge);
 
     public void centerOnNode(Node node);
 
