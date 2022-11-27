@@ -80,6 +80,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         });
 
         // Results list
+        resultsList.setFocusable(false);
         resultsList.setCellRenderer(new ResultRenderer());
         resultsList.addMouseListener(new ActionPopup(resultsList));
         resultsList.addMouseListener(new MouseAdapter() {
@@ -126,6 +127,10 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         // Focus
         searchField.requestFocusInWindow();
+    }
+
+    protected void unsetup() {
+        resetSelection();
     }
 
     protected void search() {
@@ -198,18 +203,22 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
                 }
             }
         } else {
-            if (isGraphOpened()) {
-                VisualizationController visualizationController =
-                    Lookup.getDefault().lookup(VisualizationController.class);
-                if (visualizationController != null) {
-                    visualizationController.resetSelection();
-                }
+            resetSelection();
+        }
+    }
+
+    private void resetSelection() {
+        if (isGraphOpened()) {
+            VisualizationController visualizationController =
+                Lookup.getDefault().lookup(VisualizationController.class);
+            if (visualizationController != null) {
+                visualizationController.resetSelection();
             }
-            if (isDataLabOpened()) {
-                DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
-                if (dataTablesController != null) {
-                    dataTablesController.clearSelection();
-                }
+        }
+        if (isDataLabOpened()) {
+            DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
+            if (dataTablesController != null) {
+                dataTablesController.clearSelection();
             }
         }
     }

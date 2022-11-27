@@ -1,7 +1,6 @@
-package org.gephi.desktop.search.impl.providers;
+package org.gephi.desktop.search.plugin;
 
 import org.gephi.desktop.search.api.SearchRequest;
-import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
@@ -20,7 +19,8 @@ public class EdgeIdSearchProvider implements SearchProvider<Edge> {
             Edge edge = graphModel.getGraphVisible().getEdge(request.getQuery());
 
             if (edge != null) {
-                resultsBuilder.addResult(edge, toHtmlDisplay(edge));
+                resultsBuilder.addResult(edge, toHtmlDisplay(edge), NbBundle.getMessage(EdgeIdSearchProvider.class,
+                    "EdgeIdSearchProvider.match"));
             }
         }
     }

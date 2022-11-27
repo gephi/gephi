@@ -1,4 +1,4 @@
-package org.gephi.desktop.search.impl.providers;
+package org.gephi.desktop.search.plugin;
 
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.impl.SearchCategoryImpl;
@@ -7,7 +7,6 @@ import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,10 +35,12 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
 
     protected void matchElementLabel(ElementIterable<? extends Element> iterable, String query,
                                      SearchResultsBuilder<Element> resultsBuilder) {
+        final String matchLocation = toMatchLocation();
+
         // Exact Node label
         for (Element element : iterable) {
             if (match(element, query)) {
-                if (!resultsBuilder.addResult(element, toHtmlDisplay(element, query))) {
+                if (!resultsBuilder.addResult(element, toHtmlDisplay(element, query), matchLocation)) {
                     iterable.doBreak();
                     break;
                 }
@@ -55,9 +56,12 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
         return element.getLabel() != null && element.getLabel().equalsIgnoreCase(query);
     }
 
+    protected String toMatchLocation() {
+        return NbBundle.getMessage(ElementLabelSearchProvider.class, "ElementLabelSearchProvider.match");
+    }
+
     protected String toHtmlDisplay(Element element, String query) {
         return NbBundle.getMessage(ElementLabelSearchProvider.class,
-            "ElementLabelSearchProvider." + (element instanceof Node ? "node" : "edge") + ".result",
-            element.getLabel());
+            "ElementLabelSearchProvider.result", element.getLabel());
     }
 }

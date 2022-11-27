@@ -8,7 +8,7 @@ import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
-import org.gephi.desktop.search.impl.providers.NodeIdSearchProvider;
+import org.gephi.desktop.search.plugin.NodeIdSearchProvider;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.GraphGenerator;

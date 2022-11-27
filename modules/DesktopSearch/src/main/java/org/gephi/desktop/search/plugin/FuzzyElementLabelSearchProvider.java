@@ -1,7 +1,5 @@
-package org.gephi.desktop.search.impl.providers;
+package org.gephi.desktop.search.plugin;
 
-import org.gephi.desktop.search.api.SearchCategory;
-import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
@@ -9,7 +7,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 
-@ServiceProvider(service = SearchProvider.class, position = 130)
+@ServiceProvider(service = SearchProvider.class, position = 140)
 public class FuzzyElementLabelSearchProvider extends ElementLabelSearchProvider {
 
     @Override
@@ -19,14 +17,21 @@ public class FuzzyElementLabelSearchProvider extends ElementLabelSearchProvider 
     }
 
     @Override
+    protected String toMatchLocation() {
+        return NbBundle.getMessage(FuzzyElementLabelSearchProvider.class, "FuzzyElementLabelSearchProvider.match");
+    }
+
+    @Override
     protected String toHtmlDisplay(Element element, String query) {
         String label = element.getLabel();
+
         int index = label.toLowerCase().indexOf(query.toLowerCase());
         String before = label.substring(0, index);
+        String match = label.substring(index, index + query.length());
         String after = label.substring(index + query.length());
         return NbBundle.getMessage(FuzzyElementLabelSearchProvider.class,
-            "FuzzyElementLabelSearchProvider." + (element instanceof Node ? "node" : "edge") + ".result",
-            before, query, after);
+            "FuzzyElementLabelSearchProvider.result",
+            before, match, after);
     }
 }
 

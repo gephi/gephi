@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
@@ -158,7 +159,7 @@ public class SearchControllerImpl implements SearchController {
 
         protected List<SearchResult<T>> getResults() {
             this.finished = true;
-            return List.copyOf(resultSet.values());
+            return resultSet.values().stream().sorted().collect(Collectors.toList());
         }
 
         protected boolean passClassFilters(T result) {

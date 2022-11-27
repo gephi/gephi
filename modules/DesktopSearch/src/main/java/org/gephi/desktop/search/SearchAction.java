@@ -9,6 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.gephi.project.api.ProjectController;
 import org.openide.awt.ActionID;
@@ -46,13 +47,13 @@ public final class SearchAction extends AbstractAction {
             // Close behavior
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.getRootPane().registerKeyboardAction(e -> {
-                dialog.dispose();
+                closeDialog(panel, dialog);
             }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
             dialog.addWindowFocusListener(new WindowAdapter() {
 
                 @Override
                 public void windowLostFocus(WindowEvent e) {
-                    dialog.dispose();
+                    closeDialog(panel, dialog);
                 }
             });
 
@@ -61,6 +62,13 @@ public final class SearchAction extends AbstractAction {
             dialog.setBounds(212, 237, 679, 378);
             dialog.setVisible(true);
         }
+    }
+
+    private void closeDialog(SearchDialog panel, JDialog dialog) {
+        SwingUtilities.invokeLater(() -> {
+            panel.unsetup();
+            dialog.dispose();
+        });
     }
 
     @Override

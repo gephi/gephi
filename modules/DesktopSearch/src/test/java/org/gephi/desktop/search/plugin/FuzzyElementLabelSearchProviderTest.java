@@ -1,5 +1,6 @@
-package org.gephi.desktop.search.impl.providers;
+package org.gephi.desktop.search.plugin;
 
+import org.gephi.desktop.search.plugin.FuzzyElementLabelSearchProvider;
 import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;

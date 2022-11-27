@@ -1,7 +1,6 @@
-package org.gephi.desktop.search.impl.providers;
+package org.gephi.desktop.search.plugin;
 
 import org.gephi.desktop.search.api.SearchRequest;
-import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
@@ -20,7 +19,8 @@ public class NodeIdSearchProvider implements SearchProvider<Node> {
             Node node = graphModel.getGraphVisible().getNode(request.getQuery());
 
             if (node != null) {
-                resultsBuilder.addResult(node, toHtmlDisplay(node));
+                resultsBuilder.addResult(node, toHtmlDisplay(node), NbBundle.getMessage(NodeIdSearchProvider.class,
+                    "NodeIdSearchProvider.match"));
             }
         }
     }

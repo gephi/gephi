@@ -21,11 +21,11 @@ public class SearchResultsBuilderImpl<T> implements SearchResultsBuilder<T> {
     }
 
     @Override
-    public synchronized boolean addResult(T result, String htmlDisplayText) {
+    public synchronized boolean addResult(T result, String htmlDisplayText, String matchLocation) {
         if (result == null) {
             throw new NullPointerException("Result cannot be null");
         }
-        resultsList.add(new SearchResultImpl<>(provider, position, result, htmlDisplayText));
+        resultsList.add(new SearchResultImpl<>(provider, position, result, htmlDisplayText, matchLocation));
         return !obsolete && resultsList.size() < maxResults;
     }
 
