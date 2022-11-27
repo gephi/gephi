@@ -23,6 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
@@ -33,6 +34,8 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * @author mathieu.bastian
@@ -141,11 +144,28 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         SearchResult result = resultsList.getSelectedValue();
         if (result != null) {
             Object val = result.getResult();
-            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
-            if (val instanceof Node) {
-                visualizationController.centerOnNode((Node) val);
-            } else if (val instanceof Edge) {
-                visualizationController.centerOnEdge((Edge) val);
+            if (isGraphOpened()) {
+                VisualizationController visualizationController =
+                    Lookup.getDefault().lookup(VisualizationController.class);
+                if (visualizationController != null) {
+                    if (val instanceof Node) {
+                        visualizationController.centerOnNode((Node) val);
+                    } else if (val instanceof Edge) {
+                        visualizationController.centerOnEdge((Edge) val);
+                    }
+                }
+            }
+            if (isDataLabOpened()) {
+                DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
+                if (dataTablesController != null) {
+                    if (val instanceof Node) {
+                        dataTablesController.selectNodesTable();
+                        dataTablesController.setNodeTableSelection(new Node[] {(Node) val});
+                    } else if (val instanceof Edge) {
+                        dataTablesController.selectEdgesTable();
+                        dataTablesController.setEdgeTableSelection(new Edge[] {(Edge) val});
+                    }
+                }
             }
         }
     }
@@ -154,17 +174,43 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         SearchResult result = resultsList.getSelectedValue();
         if (result != null) {
             Object val = result.getResult();
-            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
-            if (val instanceof Node) {
-                visualizationController.resetSelection();
-                visualizationController.selectNodes(new Node[] {(Node) val});
-            } else if (val instanceof Edge) {
-                visualizationController.resetSelection();
-                visualizationController.selectEdges(new Edge[] {(Edge) val});
+            if (isGraphOpened()) {
+                VisualizationController visualizationController =
+                    Lookup.getDefault().lookup(VisualizationController.class);
+                if (visualizationController != null) {
+                    if (val instanceof Node) {
+                        visualizationController.resetSelection();
+                        visualizationController.selectNodes(new Node[] {(Node) val});
+                    } else if (val instanceof Edge) {
+                        visualizationController.resetSelection();
+                        visualizationController.selectEdges(new Edge[] {(Edge) val});
+                    }
+                }
+            }
+            if (isDataLabOpened()) {
+                DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
+                if (dataTablesController != null) {
+                    if (val instanceof Node && dataTablesController.isNodeTableMode()) {
+                        dataTablesController.setNodeTableSelection(new Node[] {(Node) val});
+                    } else if (val instanceof Edge && dataTablesController.isEdgeTableMode()) {
+                        dataTablesController.setEdgeTableSelection(new Edge[] {(Edge) val});
+                    }
+                }
             }
         } else {
-            VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
-            visualizationController.resetSelection();
+            if (isGraphOpened()) {
+                VisualizationController visualizationController =
+                    Lookup.getDefault().lookup(VisualizationController.class);
+                if (visualizationController != null) {
+                    visualizationController.resetSelection();
+                }
+            }
+            if (isDataLabOpened()) {
+                DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
+                if (dataTablesController != null) {
+                    dataTablesController.clearSelection();
+                }
+            }
         }
     }
 
@@ -257,6 +303,18 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         default void changedUpdate(DocumentEvent e) {
             update(e);
         }
+    }
+
+    public static boolean isGraphOpened() {
+        return TopComponent.getRegistry().getOpened().stream()
+            .map(tc -> WindowManager.getDefault().findTopComponentID(tc))
+            .anyMatch(id -> id.equals("GraphTopComponent"));
+    }
+
+    public static boolean isDataLabOpened() {
+        return TopComponent.getRegistry().getOpened().stream()
+            .map(tc -> WindowManager.getDefault().findTopComponentID(tc))
+            .anyMatch(id -> id.equals("DataTableTopComponent"));
     }
 
     /**
