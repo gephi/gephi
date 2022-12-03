@@ -117,6 +117,16 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                         new ActionEvent(tabData.getUserObject(), 0, null));
 
                     tabActionEvent.consume();
+                } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE_ALL)) {
+                    Actions.forID("File", "org.gephi.desktop.project.actions.CloseProject").actionPerformed(null);
+                    tabActionEvent.consume();
+                } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE_ALL_BUT_THIS)) {
+                    TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
+
+                    Actions.forID("Workspace", "org.gephi.desktop.project.actions.DeleteOtherWorkspaces").actionPerformed(
+                        new ActionEvent(tabData.getUserObject(), 0, null));
+
+                    tabActionEvent.consume();
                 } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_SELECT)) {
                     TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
                     ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -217,6 +227,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                         if (tabbedContainer.getSelectionModel().getSelectedIndex() != i) {
                             tabbedContainer.getSelectionModel().setSelectedIndex(i);
                         }
+                        tabDataModel.setText(i, workspace.getName());
                         workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(WorkspacePanel.this);
                         break;
                     }
