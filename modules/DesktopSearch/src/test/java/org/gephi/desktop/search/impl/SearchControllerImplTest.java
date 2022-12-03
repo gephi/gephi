@@ -192,10 +192,10 @@ public class SearchControllerImplTest {
     }
 
     private SearchRequest buildRequest(String query, GraphGenerator generator) {
-        return SearchRequest.builder().query(query).workspace(generator.getWorkspace()).build();
+        return SearchRequest.builder().query(query).graph(generator.getGraph()).build();
     }
 
     private SearchRequest buildRequest(String query, GraphGenerator generator, SearchCategory category) {
-        return SearchRequest.builder().query(query).workspace(generator.getWorkspace()).category(category).build();
+        return SearchRequest.builder().query(query).graph(generator.getGraph()).category(category).build();
     }
 }

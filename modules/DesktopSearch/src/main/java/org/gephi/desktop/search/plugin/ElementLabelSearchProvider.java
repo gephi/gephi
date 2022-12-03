@@ -16,20 +16,18 @@ public class ElementLabelSearchProvider implements SearchProvider<Element> {
 
     @Override
     public void search(SearchRequest request, SearchResultsBuilder<Element> resultsBuilder) {
-        Workspace workspace = request.getWorkspace();
-        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
         String query = request.getQuery();
 
         // Exact node label
         if (request.isCategoryIncluded(SearchCategoryImpl.NODES())) {
-            matchElementLabel(graphModel.getGraphVisible().getNodes(), query, resultsBuilder);
+            matchElementLabel(request.getGraph().getNodes(), query, resultsBuilder);
         }
 
 
         // Exact edge label
         if (request.isCategoryIncluded(SearchCategoryImpl.EDGES())) {
-            matchElementLabel(graphModel.getGraphVisible().getEdges(), query, resultsBuilder);
+            matchElementLabel(request.getGraph().getEdges(), query, resultsBuilder);
         }
     }
 

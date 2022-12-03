@@ -15,8 +15,7 @@ public class NodeIdSearchProvider implements SearchProvider<Node> {
     @Override
     public void search(SearchRequest request, SearchResultsBuilder<Node> resultsBuilder) {
         if (request.isCategoryIncluded(SearchCategoryImpl.NODES())) {
-            GraphModel graphModel = request.getWorkspace().getLookup().lookup(GraphModel.class);
-            Node node = graphModel.getGraphVisible().getNode(request.getQuery());
+            Node node = request.getGraph().getNode(request.getQuery());
 
             if (node != null) {
                 resultsBuilder.addResult(node, toHtmlDisplay(node), NbBundle.getMessage(NodeIdSearchProvider.class,

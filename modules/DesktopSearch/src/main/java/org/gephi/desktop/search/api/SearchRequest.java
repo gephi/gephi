@@ -2,6 +2,8 @@ package org.gephi.desktop.search.api;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -10,7 +12,7 @@ public interface SearchRequest {
 
     String getQuery();
 
-    Workspace getWorkspace();
+    Graph getGraph();
 
     Set<SearchCategory> getCategoryFilters();
 
@@ -30,7 +32,7 @@ public interface SearchRequest {
     class Builder {
 
         private String query;
-        private Workspace workspace;
+        private Graph graph;
         private boolean parallel = true;
         private boolean limitResults = true;
 
@@ -55,8 +57,8 @@ public interface SearchRequest {
             return this;
         }
 
-        public Builder workspace(Workspace workspace) {
-            this.workspace = workspace;
+        public Builder graph(Graph graph) {
+            this.graph = graph;
             return this;
         }
 
@@ -74,12 +76,12 @@ public interface SearchRequest {
             if (query == null || query.trim().isEmpty()) {
                 throw new IllegalArgumentException("Query cannot be null or empty");
             }
-            if (workspace == null) {
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                if (pc.getCurrentProject() == null) {
+            if (graph == null) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                if (gc.getGraphModel() == null) {
                     throw new IllegalStateException("Workspace cannot be null if there is no current project");
                 }
-                workspace = pc.getCurrentWorkspace();
+                graph = gc.getGraphModel().getGraph();
             }
             return new SearchRequest() {
                 @Override
@@ -88,8 +90,8 @@ public interface SearchRequest {
                 }
 
                 @Override
-                public Workspace getWorkspace() {
-                    return workspace;
+                public Graph getGraph() {
+                    return graph;
                 }
 
                 @Override

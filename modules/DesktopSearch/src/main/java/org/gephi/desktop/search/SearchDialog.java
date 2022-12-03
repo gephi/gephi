@@ -238,7 +238,6 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
                     ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setQuery(query);
                     ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setType(category.getId());
                     filterController.add(filterQuery);
-                    filterController.setCurrentQuery(filterQuery);
                 }
             }
         }

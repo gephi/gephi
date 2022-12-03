@@ -76,7 +76,7 @@ public class SearchFilterBuilder implements FilterBuilder {
                 return graph;
             }
             SearchRequest request =
-                SearchRequest.builder().query(query).workspace(workspace).parallel(false).limitResults(false).build();
+                SearchRequest.builder().query(query).graph(graph).parallel(false).limitResults(false).build();
             SearchController searchController = Lookup.getDefault().lookup(SearchController.class);
             Subgraph subgraph = graph.getModel().getGraph(graph.getView());
             if (type.equalsIgnoreCase(SearchCategoryImpl.NODES().getId())) {
@@ -91,7 +91,7 @@ public class SearchFilterBuilder implements FilterBuilder {
         }
 
         public String getName() {
-            return NbBundle.getMessage(SearchFilterBuilder.class, "SearchFilterBuilder.name");
+            return NbBundle.getMessage(SearchFilterBuilder.class, "SearchFilter.name");
         }
 
         public FilterProperty[] getProperties() {

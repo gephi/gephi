@@ -15,8 +15,7 @@ public class EdgeIdSearchProvider implements SearchProvider<Edge> {
     @Override
     public void search(SearchRequest request, SearchResultsBuilder<Edge> resultsBuilder) {
         if (request.isCategoryIncluded(SearchCategoryImpl.EDGES())) {
-            GraphModel graphModel = request.getWorkspace().getLookup().lookup(GraphModel.class);
-            Edge edge = graphModel.getGraphVisible().getEdge(request.getQuery());
+            Edge edge = request.getGraph().getEdge(request.getQuery());
 
             if (edge != null) {
                 resultsBuilder.addResult(edge, toHtmlDisplay(edge), NbBundle.getMessage(EdgeIdSearchProvider.class,
