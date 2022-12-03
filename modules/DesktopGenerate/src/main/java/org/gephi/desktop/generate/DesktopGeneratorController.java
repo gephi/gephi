@@ -51,8 +51,6 @@ import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.openide.DialogDescriptor;
@@ -97,7 +95,7 @@ public class DesktopGeneratorController implements GeneratorController {
         }
 
         final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
-        container.setSource("" + generator.getName());
+        container.setSource(generator.getName());
         container.setReport(new Report());
         String taskname = NbBundle
             .getMessage(DesktopGeneratorController.class, "DesktopGeneratorController.taskname", generator.getName());
@@ -123,18 +121,10 @@ public class DesktopGeneratorController implements GeneratorController {
     }
 
     private void finishGenerate(Container container) {
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = pc.openNewWorkspace();
-        if (container.getSource() != null) {
-            pc.setSource(workspace, container.getSource());
-        }
-
         container.closeLoader();
 
         DefaultProcessor defaultProcessor = new DefaultProcessor();
         defaultProcessor.setContainers(new ContainerUnloader[] {container.getUnloader()});
-        defaultProcessor.setWorkspace(workspace);
         defaultProcessor.process();
     }
 }
