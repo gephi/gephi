@@ -2,6 +2,7 @@ package org.gephi.desktop.search;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,6 +13,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JToggleButton;
@@ -23,6 +25,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
@@ -223,6 +226,12 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         }
     }
 
+    protected void instrumentDragListener(JDialog dialog) {
+        DragListener dragListener = new DragListener(dialog);
+        categoryToolbar.addMouseListener(dragListener);
+        categoryToolbar.addMouseMotionListener(dragListener);
+    }
+
     @Override
     public void started(SearchRequest request) {
 
@@ -311,6 +320,30 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         @Override
         default void changedUpdate(DocumentEvent e) {
             update(e);
+        }
+    }
+
+    /**
+     * Dialog that can be dragged by clicking anywhere on it.
+     */
+    private class DragListener extends MouseInputAdapter {
+        Point location;
+        MouseEvent pressed;
+        Component componentToMove;
+
+        public DragListener(JDialog dialog) {
+            componentToMove = dialog;
+        }
+
+        public void mousePressed(MouseEvent me) {
+            pressed = me;
+        }
+
+        public void mouseDragged(MouseEvent me) {
+            location = componentToMove.getLocation(location);
+            int x = location.x - pressed.getX() + me.getX();
+            int y = location.y - pressed.getY() + me.getY();
+            componentToMove.setLocation(x, y);
         }
     }
 

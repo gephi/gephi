@@ -1,21 +1,24 @@
 package org.gephi.desktop.search;
 
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.event.MouseInputAdapter;
 import org.gephi.project.api.ProjectController;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
@@ -32,7 +35,8 @@ public final class SearchAction extends AbstractAction {
     private final SearchUIModel uiModel;
 
     SearchAction() {
-        super(NbBundle.getMessage(SearchAction.class, "CTL_Search"));
+        super(NbBundle.getMessage(SearchAction.class, "CTL_Search"),
+            ImageUtilities.loadImageIcon("DesktopSearch/search.png", false));
 
         uiModel = new SearchUIModel();
     }
@@ -45,7 +49,6 @@ public final class SearchAction extends AbstractAction {
                 NbBundle.getMessage(SearchAction.class, "SearchDialog.title"), false);
 
             // Close behavior
-            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.getRootPane().registerKeyboardAction(e -> {
                 closeDialog(panel, dialog);
             }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -57,6 +60,10 @@ public final class SearchAction extends AbstractAction {
                 }
             });
 
+            // Drag behavior
+            panel.instrumentDragListener(dialog);
+
+            // Show dialog
             dialog.setUndecorated(true);
             dialog.getContentPane().add(panel);
             dialog.setBounds(212, 237, 679, 378);
