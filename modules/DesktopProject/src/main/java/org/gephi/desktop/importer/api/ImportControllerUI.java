@@ -61,7 +61,11 @@ public interface ImportControllerUI {
 
     void importStream(InputStream stream, String importerName);
 
+    void importStream(InputStream stream, String streamName, String importerName);
+
     void importFile(Reader reader, String importerName);
+
+    void importFile(Reader reader, String fileName, String importerName);
 
     void importDatabase(Database database, DatabaseImporter importer);
 
