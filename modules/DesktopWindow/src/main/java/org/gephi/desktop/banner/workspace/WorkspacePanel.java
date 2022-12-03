@@ -51,6 +51,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -105,6 +107,22 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
         };
 
         tabbedContainer = new TabDisplayer(tabDataModel, TabbedContainer.TYPE_EDITOR, ws);
+
+        // Only needed because of the popup switcher (which doesn't go through the action system)
+        tabbedContainer.getSelectionModel().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (tabbedContainer.getSelectionModel().getSelectedIndex() != -1) {
+                    TabData tabData = tabDataModel.getTab(tabbedContainer.getSelectionModel().getSelectedIndex());
+                    Workspace workspace = (Workspace) tabData.getUserObject();
+                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                    if (pc.getCurrentWorkspace() != null && pc.getCurrentWorkspace() != workspace) {
+                        pc.openWorkspace(workspace);
+                    }
+                }
+            }
+        });
 
         tabbedContainer.addActionListener(new ActionListener() {
 
