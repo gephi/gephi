@@ -14,6 +14,10 @@ public interface SearchRequest {
 
     Set<SearchCategory> getCategoryFilters();
 
+    boolean inParallel();
+
+    boolean isLimitResults();
+
     default boolean isCategoryIncluded(SearchCategory category) {
         Set<SearchCategory> categories = getCategoryFilters();
         return categories == null || categories.contains(category);
@@ -27,6 +31,8 @@ public interface SearchRequest {
 
         private String query;
         private Workspace workspace;
+        private boolean parallel = true;
+        private boolean limitResults = true;
 
         private Set<SearchCategory> categories;
 
@@ -51,6 +57,16 @@ public interface SearchRequest {
 
         public Builder workspace(Workspace workspace) {
             this.workspace = workspace;
+            return this;
+        }
+
+        public Builder parallel(boolean parallel) {
+            this.parallel = parallel;
+            return this;
+        }
+
+        public Builder limitResults(boolean limitResults) {
+            this.limitResults = limitResults;
             return this;
         }
 
@@ -79,6 +95,16 @@ public interface SearchRequest {
                 @Override
                 public Set<SearchCategory> getCategoryFilters() {
                     return categories;
+                }
+
+                @Override
+                public boolean inParallel() {
+                    return parallel;
+                }
+
+                @Override
+                public boolean isLimitResults() {
+                    return limitResults;
                 }
             };
         }

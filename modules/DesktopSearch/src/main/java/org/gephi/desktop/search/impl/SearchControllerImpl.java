@@ -45,8 +45,12 @@ public class SearchControllerImpl implements SearchController {
     public <T> List<SearchResult<T>> search(SearchRequest request, Class<T> typeFilter) {
         SearchSession<T> session = new SearchSession<>(request, Collections.singleton(typeFilter));
 
-        ForkJoinPool commonPool = ForkJoinPool.commonPool();
-        getProviderTasks(request, session).stream().map(commonPool::submit).forEach(ForkJoinTask::join);
+        if (request.inParallel()) {
+            ForkJoinPool commonPool = ForkJoinPool.commonPool();
+            getProviderTasks(request, session).stream().map(commonPool::submit).forEach(ForkJoinTask::join);
+        } else {
+            getProviderTasks(request, session).forEach(Runnable::run);
+        }
 
         return session.getResults();
     }
@@ -99,7 +103,8 @@ public class SearchControllerImpl implements SearchController {
             final int providerPosition = position++;
             tasks.add(() -> {
                 SearchResultsBuilderImpl<T> resultsBuilder =
-                    new SearchResultsBuilderImpl<>(provider, providerPosition, MAX_RESULTS);
+                    new SearchResultsBuilderImpl<>(provider, providerPosition,
+                        request.isLimitResults() ? MAX_RESULTS : Integer.MAX_VALUE);
                 session.addBuilder(resultsBuilder);
                 provider.search(request, resultsBuilder);
 
