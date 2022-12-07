@@ -16,7 +16,7 @@
     <name>BatikWrapper</name>
 
     <properties>
-        <gephi.batik.version>1.14</gephi.batik.version>
+        <gephi.batik.version>1.16</gephi.batik.version>
     </properties>
     
     <dependencies>
