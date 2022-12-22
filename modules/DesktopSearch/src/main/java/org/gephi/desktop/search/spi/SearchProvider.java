@@ -1,6 +1,5 @@
 package org.gephi.desktop.search.spi;
 
-import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.api.SearchRequest;
 
 

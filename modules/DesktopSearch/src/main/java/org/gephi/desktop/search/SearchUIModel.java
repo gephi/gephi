@@ -1,10 +1,7 @@
 package org.gephi.desktop.search;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.gephi.desktop.search.api.SearchCategory;
-import org.gephi.desktop.search.spi.SearchProvider;
 import org.openide.util.Lookup;
 
 public class SearchUIModel {

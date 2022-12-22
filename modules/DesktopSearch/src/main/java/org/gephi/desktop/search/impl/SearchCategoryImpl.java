@@ -38,7 +38,7 @@ public abstract class SearchCategoryImpl implements SearchCategory {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(SearchCategoryImpl.class, "Category."+getId()+".displayName");
+        return NbBundle.getMessage(SearchCategoryImpl.class, "Category." + getId() + ".displayName");
     }
 
     @Override

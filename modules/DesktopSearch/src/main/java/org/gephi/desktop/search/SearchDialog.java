@@ -3,8 +3,6 @@ package org.gephi.desktop.search;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -38,12 +36,9 @@ import org.gephi.desktop.search.filter.SearchFilterBuilder;
 import org.gephi.desktop.search.popup.ActionPopup;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
-import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -69,7 +64,6 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         // Tabs
         allCategoriesButton.addActionListener(e -> {
             uiModel.setCategory(null);
-            filterButton.setEnabled(false);
             search();
         });
         allCategoriesButton.putClientProperty("JButton.buttonType", "square");
@@ -86,7 +80,6 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
             categoryGroup.add(toggleButton);
             toggleButton.addActionListener(e -> {
                 uiModel.setCategory(category);
-                filterButton.setEnabled(true);
                 search();
             });
             if (uiModel.category == category) {
@@ -135,14 +128,14 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
             }
         });
 
+        // Filter button
+        filterButton.setEnabled(false);
+        filterButton.addActionListener(e -> filter());
+
         // Search if query isn't empty
         if (!uiModel.query.isEmpty()) {
             search();
         }
-
-        // Filter button
-        filterButton.setEnabled(uiModel.category != null);
-        filterButton.addActionListener(e -> filter());
 
         // Focus
         searchField.requestFocusInWindow();
@@ -161,6 +154,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
             searchController.search(request, this);
         } else {
             resultsList.setModel(new ResultsListModel(Collections.emptyList()));
+            filterButton.setEnabled(false);
         }
     }
 
@@ -280,7 +274,12 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         SwingUtilities.invokeLater(() -> {
             resultsList.setModel(new ResultsListModel(results));
             resultsList.setSelectedIndex(0);
+            enableFilterButton(results);
         });
+    }
+
+    private void enableFilterButton(List<SearchResult> results) {
+        filterButton.setEnabled(results.stream().map(r -> r.getResult().getClass()).distinct().count() == 1);
     }
 
     private static class ResultRenderer implements ListCellRenderer<SearchResult> {
@@ -417,7 +416,8 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopSearch/filter.png", false)
         );
-        filterButton.setToolTipText(org.openide.util.NbBundle.getMessage(SearchDialog.class, "SearchDialog.filterButton.toolTipText")); // NOI18N
+        filterButton.setToolTipText(org.openide.util.NbBundle.getMessage(SearchDialog.class,
+            "SearchDialog.filterButton.toolTipText")); // NOI18N
         filterButton.setFocusable(false);
         filterButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         filterButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -428,7 +428,9 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         categoryToolbar.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(allCategoriesButton, org.openide.util.NbBundle.getMessage(SearchDialog.class, "SearchDialog.allCategoriesButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(allCategoriesButton,
+            org.openide.util.NbBundle.getMessage(SearchDialog.class,
+                "SearchDialog.allCategoriesButton.text")); // NOI18N
         allCategoriesButton.setFocusable(false);
         allCategoriesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         allCategoriesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

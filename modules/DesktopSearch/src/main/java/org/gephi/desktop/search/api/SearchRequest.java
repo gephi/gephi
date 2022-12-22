@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 public interface SearchRequest {

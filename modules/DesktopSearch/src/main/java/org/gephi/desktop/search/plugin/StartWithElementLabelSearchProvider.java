@@ -17,7 +17,8 @@ public class StartWithElementLabelSearchProvider extends ElementLabelSearchProvi
 
     @Override
     protected String toMatchLocation() {
-        return NbBundle.getMessage(StartWithElementLabelSearchProvider.class, "StartWithElementLabelSearchProvider.match");
+        return NbBundle.getMessage(StartWithElementLabelSearchProvider.class,
+            "StartWithElementLabelSearchProvider.match");
     }
 
     @Override

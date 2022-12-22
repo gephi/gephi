@@ -1,6 +1,5 @@
 package org.gephi.desktop.search.api;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface SearchListener {

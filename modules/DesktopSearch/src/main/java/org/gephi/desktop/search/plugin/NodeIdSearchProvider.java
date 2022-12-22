@@ -4,7 +4,6 @@ import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;

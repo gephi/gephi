@@ -1,10 +1,7 @@
 package org.gephi.desktop.search;
 
-import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
@@ -12,7 +9,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputAdapter;
 import org.gephi.project.api.ProjectController;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;

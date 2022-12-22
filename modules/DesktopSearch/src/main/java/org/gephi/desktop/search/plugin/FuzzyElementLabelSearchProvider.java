@@ -2,7 +2,6 @@ package org.gephi.desktop.search.plugin;
 
 import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 

@@ -6,8 +6,6 @@ import org.gephi.desktop.search.spi.SearchProvider;
 import org.gephi.desktop.search.spi.SearchResultsBuilder;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 

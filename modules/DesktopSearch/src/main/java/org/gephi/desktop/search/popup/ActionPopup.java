@@ -9,8 +9,6 @@ import javax.swing.SwingUtilities;
 import org.gephi.desktop.search.api.SearchResult;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 public class ActionPopup extends MouseAdapter {
 

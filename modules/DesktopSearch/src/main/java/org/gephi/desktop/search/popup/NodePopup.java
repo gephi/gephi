@@ -1,10 +1,5 @@
 package org.gephi.desktop.search.popup;
 
-import java.awt.Component;
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JPopupMenu;
@@ -51,7 +46,7 @@ public class NodePopup {
                 if (!datalabOpened && datalabManipulators.contains(em.getClass())) {
                     continue;
                 }
-                em.setup(new Node[]{selectedElement}, selectedElement);
+                em.setup(new Node[] {selectedElement}, selectedElement);
                 if (lastManipulatorType == null) {
                     lastManipulatorType = em.getType();
                 }
@@ -61,7 +56,7 @@ public class NodePopup {
                 lastManipulatorType = em.getType();
                 if (em.isAvailable()) {
                     contextMenu.add(PopupMenuUtils
-                        .createMenuItemFromNodesManipulator(em, selectedElement, new Node[]{selectedElement}));
+                        .createMenuItemFromNodesManipulator(em, selectedElement, new Node[] {selectedElement}));
                 }
             }
         }
