@@ -47,12 +47,14 @@ public class SearchFilterBuilder implements FilterBuilder {
 
     @Override
     public Filter getFilter(Workspace workspace) {
-        return new SearchFilter(workspace);
+        return new SearchFilter();
     }
 
     @Override
     public JPanel getPanel(Filter filter) {
-        return null;
+        SearchPanel panel = new SearchPanel();
+        panel.setup((SearchFilter) filter);
+        return panel;
     }
 
     @Override
@@ -63,11 +65,10 @@ public class SearchFilterBuilder implements FilterBuilder {
     public static class SearchFilter implements ComplexFilter {
 
         private String query;
-        private final Workspace workspace;
         private String type;
 
-        public SearchFilter(Workspace workspace) {
-            this.workspace = workspace;
+        public SearchFilter() {
+            type = SearchCategoryImpl.NODES().getId();
         }
 
         @Override

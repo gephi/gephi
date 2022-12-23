@@ -63,6 +63,13 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator withWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+        workspace.add(graphModel);
+
+        return this;
+    }
+
     public GraphGenerator withTimeFormat(TimeFormat timeFormat) {
         graphModel.setTimeFormat(timeFormat);
         return this;
