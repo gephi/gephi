@@ -1,9 +1,12 @@
 package org.gephi.desktop.search.filter;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchRequest;
+import org.gephi.desktop.search.api.SearchResult;
 import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
@@ -81,13 +84,14 @@ public class SearchFilterBuilder implements FilterBuilder {
             SearchController searchController = Lookup.getDefault().lookup(SearchController.class);
             Subgraph subgraph = graph.getModel().getGraph(graph.getView());
             if (type.equalsIgnoreCase(SearchCategoryImpl.NODES().getId())) {
-                searchController.search(request, Node.class).forEach(r -> {
-                    subgraph.removeNode(r.getResult());
-                });
+                List<Node> nodes = searchController.search(request, Node.class).stream()
+                    .map(SearchResult::getResult).collect(Collectors.toList());
+                subgraph.retainNodes(nodes);
             } else if (type.equalsIgnoreCase(SearchCategoryImpl.EDGES().getId())) {
-                searchController.search(request, Edge.class).forEach(r -> subgraph.removeEdge(r.getResult()));
+                List<Edge> edges = searchController.search(request, Edge.class).stream()
+                    .map(SearchResult::getResult).collect(Collectors.toList());
+                subgraph.retainEdges(edges);
             }
-            subgraph.not();
             return subgraph;
         }
 
