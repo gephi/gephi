@@ -361,13 +361,15 @@ public class ProjectControllerImpl implements ProjectController {
     public Workspace openNewWorkspace() {
         synchronized (this) {
             Project project;
+            Workspace workspace;
             if (hasCurrentProject()) {
                 project = getCurrentProject();
+                workspace = newWorkspace(project);
+                openWorkspace(workspace);
             } else {
                 project = newProject();
+                workspace = project.getCurrentWorkspace();
             }
-            Workspace workspace = newWorkspace(project);
-            openWorkspace(workspace);
             return workspace;
         }
     }

@@ -95,14 +95,16 @@ public class DefaultProcessor extends AbstractProcessor {
             //Workspace
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (workspace == null) {
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
+                workspace = pc.openNewWorkspace();
             }
             processMeta(container, workspace);
             processConfiguration(container, workspace);
 
-            if (container.getSource() != null) {
+            if (container.getSource() != null && !container.getSource().isEmpty()) {
                 pc.setSource(workspace, container.getSource());
+
+                // Remove extensions
+                pc.renameWorkspace(workspace, container.getSource().replaceAll("(?<!^)[.].*", ""));
             }
 
             Progress.start(progressTicket, calculateWorkUnits());

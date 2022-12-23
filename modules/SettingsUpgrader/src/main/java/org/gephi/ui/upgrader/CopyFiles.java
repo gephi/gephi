@@ -77,6 +77,7 @@ public class CopyFiles {
             Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8); // NOI18N
             readPatterns(reader);
             reader.close();
+            is.close();
         } catch (IOException ex) {
         }
     }

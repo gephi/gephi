@@ -38,40 +38,53 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
- */
+*/
 
-package org.gephi.desktop.importer.api;
+package org.gephi.desktop.project.actions;
 
-import java.io.InputStream;
-import java.io.Reader;
-import org.gephi.io.importer.api.Database;
-import org.gephi.io.importer.api.ImportController;
-import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.WizardImporter;
-import org.openide.filesystems.FileObject;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.AbstractAction;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
+import org.gephi.project.api.Workspace;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
-/**
- * @author Mathieu Bastian
- */
-public interface ImportControllerUI {
+@ActionID(id = "org.gephi.desktop.project.actions.DeleteOtherWorkspaces", category = "Workspace")
+@ActionRegistration(displayName = "#CTL_DeleteOtherWorkspaces", lazy = false)
+public final class DeleteOtherWorkspaces extends AbstractAction {
 
-    void importFile(FileObject fileObject);
+    DeleteOtherWorkspaces() {
+        super(NbBundle.getMessage(DeleteOtherWorkspaces.class, "CTL_DeleteOtherWorkspaces"));
+    }
 
-    void importFiles(FileObject[] fileObjects);
+    @Override
+    public void actionPerformed(ActionEvent ev) {
+        if (isEnabled()) {
+            ProjectControllerUIImpl cui = Lookup.getDefault().lookup(ProjectControllerUIImpl.class);
+            Workspace workspace;
+            if (ev.getSource() != null && ev.getSource() instanceof Workspace) {
+                workspace = (Workspace) ev.getSource();
+            } else {
+                workspace = cui.getCurrentProject().getCurrentWorkspace();
+            }
+            if (workspace != null) {
+                List<Workspace> workspaces = new ArrayList<>(cui.getCurrentProject().getWorkspaces());
+                workspaces.remove(workspace);
+                if (!workspaces.isEmpty()) {
+                    cui.deleteWorkspaces(workspaces);
+                }
+            }
+        }
+    }
 
-    void importStream(InputStream stream, String importerName);
-
-    void importStream(InputStream stream, String streamName, String importerName);
-
-    void importFile(Reader reader, String importerName);
-
-    void importFile(Reader reader, String fileName, String importerName);
-
-    void importDatabase(Database database, DatabaseImporter importer);
-
-    void importDatabase(DatabaseImporter importer);
-
-    void importWizard(WizardImporter importer);
-
-    ImportController getImportController();
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canDeleteWorkspace();
+    }
 }

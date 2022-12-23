@@ -612,6 +612,21 @@ public class ProjectControllerUIImpl implements ProjectListener {
         }
     }
 
+    public void deleteWorkspaces(List<Workspace> workspaces) {
+        String message =
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "DeleteWorkspaces_confirm_message", workspaces.size());
+        String title = NbBundle.getMessage(ProjectControllerUIImpl.class, "DeleteWorkspaces_confirm_title");
+        NotifyDescriptor dd = new NotifyDescriptor(message, title,
+            NotifyDescriptor.YES_NO_OPTION,
+            NotifyDescriptor.QUESTION_MESSAGE, null, null);
+        Object retType = DialogDisplayer.getDefault().notify(dd);
+        if (retType == NotifyDescriptor.YES_OPTION) {
+            for (Workspace workspace : workspaces) {
+                controller.deleteWorkspace(workspace);
+            }
+        }
+    }
+
     public void renameWorkspace(String name) {
         controller.renameWorkspace(controller.getCurrentWorkspace(), name);
     }

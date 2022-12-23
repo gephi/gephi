@@ -172,7 +172,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 mostRecentFiles.addFile(fileObject.getPath());
             }
 
-            importFiles(readers, importers, fileObjects);
+            importFiles(readers, importers, fileObjects, null);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -180,6 +180,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importStream(final InputStream stream, String importerName) {
+        importStream(stream, null, importerName);
+    }
+
+    @Override
+    public void importStream(final InputStream stream, String streamName, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
@@ -191,7 +196,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
         try {
             Reader reader = ImportUtils.getTextReader(stream);
-            importFile(reader, importer);
+            importFile(reader, streamName, importer);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -199,6 +204,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importFile(final Reader reader, String importerName) {
+        importFile(reader, null, importerName);
+    }
+
+    @Override
+    public void importFile(final Reader reader, String fileName, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
@@ -208,18 +218,18 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             return;
         }
 
-        importFile(reader, importer);
+        importFile(reader, fileName, importer);
     }
 
-    private void importFile(final Reader reader, final FileImporter importer) {
-        importFiles(new Reader[] {reader}, new FileImporter[] {importer});
+    private void importFile(final Reader reader, final String fileName, final FileImporter importer) {
+        importFiles(new Reader[] {reader}, new FileImporter[] {importer}, new String[] {fileName});
     }
 
-    private void importFiles(final Reader[] readers, final FileImporter[] importers) {
-        importFiles(readers, importers, null);
+    private void importFiles(final Reader[] readers, final FileImporter[] importers, final String[] names) {
+        importFiles(readers, importers, null, names);
     }
 
-    private void importFiles(final Reader[] readers, final FileImporter[] importers, FileObject[] fileObjects) {
+    private void importFiles(final Reader[] readers, final FileImporter[] importers, FileObject[] fileObjects, String[] names) {
         try {
             File[] files = new File[readers.length];
 
@@ -300,7 +310,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             ImportErrorHandler errorHandler = new ImportErrorHandler();
             final List<Container> results = new ArrayList<>();
             for (int i = 0; i < importers.length; i++) {
-                doImport(results, readers[i], fileObjects != null ? fileObjects[i] : null, files[i], importers[i],
+                doImport(results, readers[i], names != null ? names[0] : null, fileObjects != null ? fileObjects[i] : null, files[i], importers[i],
                     errorHandler);
             }
 
@@ -309,7 +319,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 taskName = NbBundle
                     .getMessage(DesktopImportControllerUI.class,
                         "DesktopImportControllerUI.finishingImport",
-                        fileObjects != null ? fileObjects[0].getNameExt() : "");
+                        fileObjects != null ? fileObjects[0].getNameExt() : (names != null ? names[0] : null));
             } else {
                 taskName = NbBundle
                     .getMessage(DesktopImportControllerUI.class,
@@ -323,7 +333,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    private void doImport(final List<Container> results, final Reader reader, final FileObject fileObject,
+    private void doImport(final List<Container> results, final Reader reader, final String containerName, final FileObject fileObject,
                           final File file,
                           final FileImporter importer,
                           final ImportErrorHandler errorHandler) {
@@ -341,9 +351,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
 
         //Execute task
-        final String containerSource = fileObject != null ? fileObject.getNameExt() : NbBundle
+        final String containerSource = fileObject != null ? fileObject.getNameExt() : (containerName != null ? containerName : NbBundle
             .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource",
-                importer.getClass().getSimpleName());
+                importer.getClass().getSimpleName()));
         String taskName =
             NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
         executor.execute(task, new Runnable() {
