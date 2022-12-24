@@ -3,12 +3,14 @@ package org.gephi.desktop.search;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.AbstractListModel;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
@@ -27,12 +29,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputAdapter;
 import org.gephi.datalab.api.datatables.DataTablesController;
-import org.gephi.desktop.search.api.SearchCategory;
 import org.gephi.desktop.search.api.SearchController;
 import org.gephi.desktop.search.api.SearchListener;
 import org.gephi.desktop.search.api.SearchRequest;
 import org.gephi.desktop.search.api.SearchResult;
 import org.gephi.desktop.search.filter.SearchFilterBuilder;
+import org.gephi.desktop.search.impl.SearchCategoryImpl;
 import org.gephi.desktop.search.popup.ActionPopup;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
@@ -130,7 +132,6 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         // Filter button
         filterButton.setEnabled(false);
-        filterButton.addActionListener(e -> filter());
 
         // Search if query isn't empty
         if (!uiModel.query.isEmpty()) {
@@ -220,19 +221,16 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         }
     }
 
-    protected void filter() {
+    protected void filter(String type) {
         String query = searchField.getText();
         if (query != null && !query.trim().isEmpty()) {
-            SearchCategory category = uiModel.category;
-            if (category != null) {
-                FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                if (filterController != null) {
-                    FilterBuilder filterBuilder = Lookup.getDefault().lookup(SearchFilterBuilder.class);
-                    Query filterQuery = filterController.createQuery(filterBuilder);
-                    ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setQuery(query);
-                    ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setType(category.getId());
-                    filterController.add(filterQuery);
-                }
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            if (filterController != null) {
+                FilterBuilder filterBuilder = Lookup.getDefault().lookup(SearchFilterBuilder.class);
+                Query filterQuery = filterController.createQuery(filterBuilder);
+                ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setQuery(query);
+                ((SearchFilterBuilder.SearchFilter) filterQuery.getFilter()).setType(type);
+                filterController.add(filterQuery);
             }
         }
     }
@@ -278,8 +276,23 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         });
     }
 
-    private void enableFilterButton(List<SearchResult> results) {
-        filterButton.setEnabled(results.stream().map(r -> r.getResult().getClass()).distinct().count() == 1);
+    private synchronized void enableFilterButton(List<SearchResult> results) {
+        ActionListener[] listeners = filterButton.getActionListeners();
+        for (ActionListener listener : listeners) {
+            filterButton.removeActionListener(listener);
+        }
+        List<Class> types = results.stream()
+            .map(r -> r.getResult().getClass()).distinct().collect(Collectors.toUnmodifiableList());
+        boolean enabled = types.size() == 1 &&
+            (Node.class.isAssignableFrom(types.get(0)) || Edge.class.isAssignableFrom(types.get(0)));
+        filterButton.setEnabled(enabled);
+        if (enabled) {
+            if (Node.class.isAssignableFrom(types.get(0))) {
+                filterButton.addActionListener(e -> filter(SearchCategoryImpl.NODES().getId()));
+            } else if (Edge.class.isAssignableFrom(types.get(0))) {
+                filterButton.addActionListener(e -> filter(SearchCategoryImpl.EDGES().getId()));
+            }
+        }
     }
 
     private static class ResultRenderer implements ListCellRenderer<SearchResult> {
