@@ -44,7 +44,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testNodeId() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator);
         Collection<SearchResult<Node>> results = controller.search(request, Node.class);
@@ -55,7 +55,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testNodeLabel() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         generator.getGraph().getNode(GraphGenerator.FIRST_NODE).setLabel("foo");
 
@@ -70,7 +70,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testUniqueNode() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         generator.getGraph().getNode(GraphGenerator.FIRST_NODE).setLabel(GraphGenerator.FIRST_NODE);
 
@@ -85,7 +85,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testElement() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator);
         List<Element> results = toList(controller.search(request, Element.class));
@@ -97,7 +97,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testFuzzyLabel() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
         node.setLabel("foobar");
@@ -113,7 +113,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testAsync() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator);
         controller.search(request, searchListener);
@@ -127,7 +127,7 @@ public class SearchControllerImplTest {
     @Test
     public void testAsyncCancel() {
         MockServices.setServices(SleepProvider.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace();
+        GraphGenerator generator = GraphGenerator.build();
 
         SearchRequest request1 = buildRequest("sleep", generator);
         SearchRequest request2 = buildRequest("bar", generator);
@@ -144,7 +144,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testCategoryFilter() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, SearchCategoryImpl.NODES());
         Assert.assertFalse(toList(controller.search(request, Element.class)).isEmpty());
@@ -152,7 +152,7 @@ public class SearchControllerImplTest {
 
     @Test
     public void testFakeCategoryFilter() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
 
         SearchRequest request = buildRequest(GraphGenerator.FIRST_NODE, generator, new FakeCategory());
         Assert.assertTrue(toList(controller.search(request, Element.class)).isEmpty());

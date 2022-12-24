@@ -11,7 +11,7 @@ public class GEXFTest {
 
     @Test
     public void testInfinity() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addDoubleNodeColumn();
         Graph graph = graphGenerator.getGraph();
 
         graph.getNode(GraphGenerator.FIRST_NODE).setAttribute(GraphGenerator.DOUBLE_COLUMN, Double.POSITIVE_INFINITY);
@@ -22,7 +22,7 @@ public class GEXFTest {
 
     @Test
     public void testIncludeAttValues() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addDoubleNodeColumn();
 
         Graph graph = graphGenerator.getGraph();
 
@@ -34,7 +34,7 @@ public class GEXFTest {
 
     @Test
     public void testMeta() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace();
+        GraphGenerator graphGenerator = GraphGenerator.build();
         Workspace workspace = graphGenerator.getWorkspace();
         workspace.getWorkspaceMetadata().setTitle("title");
         workspace.getWorkspaceMetadata().setDescription("desc");

@@ -15,14 +15,14 @@ public class SpreadsheetTest {
 
     @Test
     public void testEmptyEdges() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace();
+        GraphGenerator graphGenerator = GraphGenerator.build();
 
         Utils.assertExporterMatch("spreadsheet/empty.csv", createExporter(graphGenerator));
     }
 
     @Test
     public void testSingleEdge() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         graphGenerator.getGraph().getEdge("1").setWeight(1.33);
 
         Utils.assertExporterMatch("spreadsheet/single.csv", createExporter(graphGenerator));
@@ -30,14 +30,14 @@ public class SpreadsheetTest {
 
     @Test
     public void testMultigraphEdges() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyMultiGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyMultiGraph();
 
         Utils.assertExporterMatch("spreadsheet/multigraph.csv", createExporter(graphGenerator));
     }
 
     @Test
     public void testFieldDelimiter() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setFieldDelimiter(';');
 
@@ -46,7 +46,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testEdgeLabelQuote() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         graphGenerator.getGraph().getEdge("1").setLabel("str with, and \"quotes\"");
 
         Utils.assertExporterMatch("spreadsheet/quotes.csv", createExporter(graphGenerator));
@@ -54,7 +54,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testNodeAttributeInt() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/int_attribute.csv", exporterSpreadsheet);
@@ -63,7 +63,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeAttributeArray() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addStringArrayNodeColumn();
+            GraphGenerator.build().generateTinyGraph().addStringArrayNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/array_attribute.csv", exporterSpreadsheet);
@@ -71,7 +71,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testExcludeColumn() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExcludedColumns(new LinkedHashSet<>(Arrays.asList("label", GraphGenerator.INT_COLUMN)));
 
@@ -80,7 +80,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testWithoutAttributes() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportAttributes(false);
 
@@ -90,7 +90,7 @@ public class SpreadsheetTest {
     @Test
     public void testInfinity() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+            GraphGenerator.build().generateTinyGraph().addDoubleNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         graphGenerator.getGraph().getNode(GraphGenerator.FIRST_NODE)
@@ -104,7 +104,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampSetOtherColumn() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampSetColumn();
+            GraphGenerator.build().generateTinyGraph().addTimestampSetColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/timestampset_column.csv", exporterSpreadsheet);
@@ -113,7 +113,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampSet() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().setTimestampSet();
+            GraphGenerator.build().generateTinyGraph().setTimestampSet();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/timestampset.csv", exporterSpreadsheet);
@@ -122,7 +122,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampDouble() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(true);
 
@@ -132,7 +132,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampDoubleWithTimeFormat() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().withTimeFormat(TimeFormat.DATE)
+            GraphGenerator.build().generateTinyGraph().withTimeFormat(TimeFormat.DATE)
                 .addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(true);
@@ -143,7 +143,7 @@ public class SpreadsheetTest {
     @Test
     public void testTimestampWithEstimator() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(false);
 
@@ -153,7 +153,7 @@ public class SpreadsheetTest {
     @Test
     public void testDecimalFormat() throws IOException {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.GERMAN);
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createExporter(graphGenerator);
         exporterSpreadsheet.setDecimalFormatSymbols(symbols);
         graphGenerator.getGraph().getEdge("1").setWeight(1.33);
@@ -164,7 +164,7 @@ public class SpreadsheetTest {
     @Test
     public void testNumberFormat() throws IOException {
         DecimalFormat numberFormat = new DecimalFormat("0.#");
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createExporter(graphGenerator);
         exporterSpreadsheet.setNumberFormat(numberFormat);
         graphGenerator.getGraph().getEdge("1").setWeight(1.353643);
@@ -174,7 +174,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testLargeNumber() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         graphGenerator.getGraph().getNode("1").setAttribute(GraphGenerator.INT_COLUMN, 1000000000);
 
@@ -183,7 +183,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testPositions() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportPosition(true);
 
@@ -192,7 +192,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testPositionsWithZ() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportPosition(true);
 
@@ -203,7 +203,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testSize() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportSize(true);
 
@@ -212,7 +212,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testNormalize() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportSize(true);
         exporterSpreadsheet.setExportPosition(true);
@@ -230,7 +230,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testColor() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportColors(true);
 
@@ -239,7 +239,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testEdgeColor() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         ExporterSpreadsheet exporterSpreadsheet = createExporter(graphGenerator);
         exporterSpreadsheet.setExportColors(true);
 
@@ -248,7 +248,7 @@ public class SpreadsheetTest {
 
     @Test
     public void testUtf8() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph();
         graphGenerator.getGraph().getNode(GraphGenerator.FIRST_NODE).setLabel("Säännöt");
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 

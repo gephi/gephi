@@ -13,7 +13,7 @@ public class Utils {
 
     public static AppearanceUIModel newAppearanceUIModel() {
         GraphGenerator generator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph();
+            GraphGenerator.build().generateTinyGraph();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         model.getWorkspace().add(model);
         AppearanceUIModel uiModel = new AppearanceUIModel(model);

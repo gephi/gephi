@@ -19,9 +19,11 @@ import org.openide.util.Lookup;
 public class SearchFilterTest {
 
     private Project project;
+    private FilterController filterController;
 
     @Before
     public void setUp() {
+        filterController = Lookup.getDefault().lookup(FilterController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         project = pc.newProject();
     }
@@ -36,10 +38,9 @@ public class SearchFilterTest {
     @Test
     public void testNodeFilter() {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace(project.getCurrentWorkspace()).generateTinyGraph();
+            GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph();
         Graph graph = graphGenerator.getGraph();
 
-        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
         FilterBuilder filterBuilder = Lookup.getDefault().lookup(SearchFilterBuilder.class);
         Assert.assertNotNull(filterBuilder);
 
@@ -55,10 +56,8 @@ public class SearchFilterTest {
     @Test
     public void testEdgeFilter() {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().withWorkspace(project.getCurrentWorkspace()).generateTinyMultiGraph();
+            GraphGenerator.build(project.getCurrentWorkspace()).generateTinyMultiGraph();
         Graph graph = graphGenerator.getGraph();
-
-        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
 
         Query query = filterController.createQuery(Lookup.getDefault().lookup(SearchFilterBuilder.class));
         SearchFilterBuilder.SearchFilter filter = (SearchFilterBuilder.SearchFilter) query.getFilter();
