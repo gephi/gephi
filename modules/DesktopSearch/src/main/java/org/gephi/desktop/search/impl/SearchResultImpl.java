@@ -46,7 +46,7 @@ public class SearchResultImpl<T> implements SearchResult<T>, Comparable<SearchRe
 
     @Override
     public String toString() {
-        return "<html>" + htmlDisplay + " <font color='#aaaaaa'>" + matchLocation + "</font></html>";
+        return "<html>" + getHtmlDisplay() + " <font color='#aaaaaa'>" + getMatchLocation() + "</font></html>";
     }
 
     @Override

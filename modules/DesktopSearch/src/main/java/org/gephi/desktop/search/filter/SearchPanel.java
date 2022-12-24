@@ -12,7 +12,8 @@ public class SearchPanel extends javax.swing.JPanel {
         // Combo
         DefaultComboBoxModel<SearchCategory> comboBoxModel = new DefaultComboBoxModel<>();
         comboBoxModel.addElement(SearchCategoryImpl.NODES());
-        comboBoxModel.addElement(SearchCategoryImpl.EDGES());;
+        comboBoxModel.addElement(SearchCategoryImpl.EDGES());
+        ;
         typeCombo.setModel(comboBoxModel);
         typeCombo.setSelectedIndex(0);
     }
