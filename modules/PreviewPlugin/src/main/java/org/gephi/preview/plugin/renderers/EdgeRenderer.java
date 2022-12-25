@@ -534,14 +534,15 @@ public class EdgeRenderer implements Renderer {
                 String path = String.format(
                     Locale.ENGLISH,
                     "M %f,%f A %f,%f %d,%d %d,%f,%f",
-                    h.x1, h.y1,
-                    h.r, h.r, 0, 0, 1, h.x2, h.y2);
+                    h.x1WithRadius, h.y1WithRadius,
+                    h.r, h.r, 0, 0, 1, h.x2WithRadius, h.y2WithRadius);
                 edgeElem.setAttribute("d", path);
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
                 edgeElem.setAttribute(
                     "stroke-width",
                     Float.toString(getThickness(item)
                         * svgTarget.getScaleRatio()));
+                edgeElem.setAttribute("stroke-linecap", "round");
                 edgeElem.setAttribute(
                     "stroke-opacity",
                     (color.getAlpha() / 255f) + "");
@@ -604,6 +605,10 @@ public class EdgeRenderer implements Renderer {
             public final double bbh;
             public final double astart;
             public final double asweep;
+            public final Float x1WithRadius;
+            public final Float x2WithRadius;
+            public final Float y1WithRadius;
+            public final Float y2WithRadius;
 
             public Helper(
                 final Item item,
@@ -664,6 +669,12 @@ public class EdgeRenderer implements Renderer {
                 if (targetRadius != null && targetRadius < 0) {
                     Double targetOffset = this.computeTheThing(r, (double) targetRadius);
                     angle2 += targetOffset;
+
+                    x2WithRadius = (float)(r*Math.cos(angle2) + xc);
+                    y2WithRadius = (float)(r*Math.sin(angle2) + yc);
+                } else {
+                    x2WithRadius = x2;
+                    y2WithRadius = y2;
                 }
 
                 // Source radius
@@ -672,6 +683,12 @@ public class EdgeRenderer implements Renderer {
                 if (sourceRadius != null && sourceRadius < 0) {
                     Double sourceOffset = this.computeTheThing(r, (double) sourceRadius);
                     angle1 -= sourceOffset;
+
+                    x1WithRadius = (float)(r*Math.cos(angle1) + xc);
+                    y1WithRadius = (float)(r*Math.sin(angle1) + yc);
+                } else {
+                    x1WithRadius = x1;
+                    y1WithRadius = y1;
                 }
 
                 bbx = xc - r;
@@ -705,19 +722,6 @@ public class EdgeRenderer implements Renderer {
                     return 0.;
                 }
                 return 2 * Math.atan2(rt / 2, x);
-            }
-
-            private Vector computeCtrlPoint(
-                final Float x,
-                final Float y,
-                final Vector direction,
-                final float factor,
-                final Vector normalVector) {
-                final Vector v = new Vector(direction.x, direction.y);
-                v.mult(factor);
-                v.add(new Vector(x, y));
-                v.add(normalVector);
-                return v;
             }
         }
     }
