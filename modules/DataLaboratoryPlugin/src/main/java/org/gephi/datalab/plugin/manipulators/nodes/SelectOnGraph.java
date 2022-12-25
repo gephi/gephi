@@ -46,7 +46,9 @@ import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -67,8 +69,11 @@ public class SelectOnGraph extends BasicNodesManipulator {
 
     @Override
     public void execute() {
-        VizController.getInstance().getSelectionManager().selectNodes(nodes);
-        VizController.getInstance().getSelectionManager().centerOnNode(clickedNode);
+        VisualizationController vc = Lookup.getDefault().lookup(VisualizationController.class);
+        if (vc != null) {
+            vc.selectNodes(nodes);
+            vc.centerOnNode(clickedNode);
+        }
     }
 
     @Override

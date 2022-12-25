@@ -126,3 +126,4 @@ src/macosx-launcher/.swiftpm
 src/macosx-launcher/Packages
 src/macosx-launcher/*.xcodeproj
 xcuserdata/
+projects.xml

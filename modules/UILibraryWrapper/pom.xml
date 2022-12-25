@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-swingx</artifactId>
-            <version>2.4</version>
+            <version>2.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -96,6 +96,14 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-libs-flatlaf</artifactId>
             <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
     </dependencies>
 

@@ -51,6 +51,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -106,6 +108,22 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
 
         tabbedContainer = new TabDisplayer(tabDataModel, TabbedContainer.TYPE_EDITOR, ws);
 
+        // Only needed because of the popup switcher (which doesn't go through the action system)
+        tabbedContainer.getSelectionModel().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (tabbedContainer.getSelectionModel().getSelectedIndex() != -1) {
+                    TabData tabData = tabDataModel.getTab(tabbedContainer.getSelectionModel().getSelectedIndex());
+                    Workspace workspace = (Workspace) tabData.getUserObject();
+                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                    if (pc.getCurrentWorkspace() != null && pc.getCurrentWorkspace() != workspace) {
+                        pc.openWorkspace(workspace);
+                    }
+                }
+            }
+        });
+
         tabbedContainer.addActionListener(new ActionListener() {
 
             @Override
@@ -114,6 +132,16 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                 if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE)) {
                     TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
                     Actions.forID("Workspace", "org.gephi.desktop.project.actions.DeleteWorkspace").actionPerformed(
+                        new ActionEvent(tabData.getUserObject(), 0, null));
+
+                    tabActionEvent.consume();
+                } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE_ALL)) {
+                    Actions.forID("File", "org.gephi.desktop.project.actions.CloseProject").actionPerformed(null);
+                    tabActionEvent.consume();
+                } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE_ALL_BUT_THIS)) {
+                    TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
+
+                    Actions.forID("Workspace", "org.gephi.desktop.project.actions.DeleteOtherWorkspaces").actionPerformed(
                         new ActionEvent(tabData.getUserObject(), 0, null));
 
                     tabActionEvent.consume();
@@ -217,6 +245,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                         if (tabbedContainer.getSelectionModel().getSelectedIndex() != i) {
                             tabbedContainer.getSelectionModel().setSelectedIndex(i);
                         }
+                        tabDataModel.setText(i, workspace.getName());
                         workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(WorkspacePanel.this);
                         break;
                     }

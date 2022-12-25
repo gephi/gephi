@@ -6,6 +6,7 @@ import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalDoubleMap;
@@ -36,31 +37,47 @@ public class GraphGenerator {
     public static final int INT_COLUMN_MIN_VALUE = 10;
     public static final double[][] TIMESTAMP_DOUBLE_COLUMN_VALUES = new double[][] {{3.0}, {6.0}};
     public static final double[] TIMESTAMP_SET_VALUES = new double[] {3.0, 6.0};
+    public static final double[][] INTERVAL_SET_VALUES = new double[][] {{2000.0, 2003.0}, {2002.0, 2005.0}};
     public static final String[][] STRING_ARRAY_COLUMN_VALUES = new String[][] {{"foo", "bar"}, {"foo"}};
 
     private final GraphModel graphModel;
     private Workspace workspace;
 
     private GraphGenerator() {
-        this(new Configuration());
+        this(null, new Configuration());
     }
 
-    private GraphGenerator(final Configuration config) {
-        this.graphModel = GraphModel.Factory.newInstance(config);
+    private GraphGenerator(final Workspace workspace, final Configuration config) {
+        GraphModel model = null;
+        if (workspace != null) {
+            this.workspace = workspace;
+            model = workspace.getLookup().lookup(GraphModel.class);
+        }
+        if (model == null) {
+            this.graphModel = GraphModel.Factory.newInstance(config);
+        } else {
+            this.graphModel = model;
+            model.setConfiguration(config);
+        }
+        if (workspace == null) {
+            this.workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+        }
     }
 
     public static GraphGenerator build() {
         return new GraphGenerator();
     }
 
-    public static GraphGenerator build(Configuration configuration) {
-        return new GraphGenerator(configuration);
+    public static GraphGenerator build(final Configuration config) {
+        return new GraphGenerator(null, config);
     }
 
-    public GraphGenerator withWorkspace() {
-        workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+    public static GraphGenerator build(final Workspace workspace) {
+        return new GraphGenerator(workspace, new Configuration());
+    }
 
-        return this;
+    public static GraphGenerator build(final Workspace workspace, final Configuration configuration) {
+        return new GraphGenerator(workspace, configuration);
     }
 
     public GraphGenerator withTimeFormat(TimeFormat timeFormat) {
@@ -219,6 +236,15 @@ public class GraphGenerator {
         int index = 0;
         for (Node node : graphModel.getGraph().getNodes()) {
             node.addTimestamp(TIMESTAMP_SET_VALUES[index++]);
+        }
+        return this;
+    }
+
+    public GraphGenerator setIntervalSet() {
+        int index = 0;
+        for (Node node : graphModel.getGraph().getNodes()) {
+            node.addInterval(new Interval(INTERVAL_SET_VALUES[index][0], INTERVAL_SET_VALUES[index][1]));
+            index++;
         }
         return this;
     }

@@ -739,6 +739,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void selectDisplayTable(DisplayTable newDisplayTable) {
+        if (newDisplayTable == this.displayTable) {
+            return;
+        }
         filterTextByDisplayTable.put(displayTable, filterTextField.getText());
         filterColumnIndexByDisplayTable.put(displayTable, columnComboBox.getSelectedIndex());
 
@@ -811,6 +814,20 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             public void run() {
                 edgeTable.setElementsSelection(edges);
                 edgeTable.scrollToFirstElementSelected();
+            }
+        });
+    }
+
+    @Override
+    public void clearSelection() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                nodeTable.setElementsSelection(new Node[0]);
+                edgeTable.setElementsSelection(new Edge[0]);
+                nodeTable.scrollToTop();
+                edgeTable.scrollToTop();
             }
         });
     }

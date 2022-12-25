@@ -259,7 +259,22 @@ public class ProjectControllerImplTest {
         Mockito.verify(workspaceListener).initialize(workspace);
         Mockito.verify(workspaceListener).select(workspace);
         Assert.assertNotNull(workspace.getLookup().lookup(MockModel.class));
+    }
 
+    @Test
+    public void testOpenNewWorkspaceNoProject() {
+        MockServices.setServices(MockController.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addWorkspaceListener(workspaceListener);
+        Workspace workspace = pc.openNewWorkspace();
+        Assert.assertNotNull(workspace);
+        Assert.assertTrue(workspace.isOpen());
+        Assert.assertSame(workspace, pc.getCurrentWorkspace());
+        Assert.assertEquals(1, pc.getCurrentProject().getWorkspaces().size());
+        Mockito.verify(workspaceListener).initialize(workspace);
+        Mockito.verify(workspaceListener).select(workspace);
+        Assert.assertNotNull(workspace.getLookup().lookup(MockModel.class));
     }
 
     @Test

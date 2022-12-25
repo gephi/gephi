@@ -226,13 +226,14 @@ public final class WelcomeTopComponent extends JPanel {
 
                 String fileName = s.substring(s.lastIndexOf('/') + 1);
                 final String importer = fileName.substring(fileName.lastIndexOf('.'));
+                final String fileNameNoExt = fileName.substring(0, fileName.lastIndexOf('.'));
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                        importController.importStream(stream, importer);
+                        importController.importStream(stream, fileNameNoExt, importer);
                         closeDialog();
                     }
                 });

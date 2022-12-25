@@ -148,6 +148,14 @@ public class SelectionToolbar extends JToolBar {
                     if (!buttonGroup.isSelected(mouseButton.getModel())) {
                         buttonGroup.setSelected(mouseButton.getModel(), true);
                     }
+                } else if (selectionManager.isRectangleSelection()) {
+                    if (!buttonGroup.isSelected(rectangleButton.getModel())) {
+                        buttonGroup.setSelected(rectangleButton.getModel(), true);
+                    }
+                } else if (selectionManager.isDraggingEnabled()) {
+                    if (!buttonGroup.isSelected(dragButton.getModel())) {
+                        buttonGroup.setSelected(dragButton.getModel(), true);
+                    }
                 }
             }
         });

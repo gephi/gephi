@@ -143,6 +143,13 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     @Override
+    public void clearSelection() {
+        if (listener != null) {
+            listener.clearSelection();
+        }
+    }
+
+    @Override
     public boolean isNodeTableMode() {
         if (listener != null) {
             return listener.isNodeTableMode();

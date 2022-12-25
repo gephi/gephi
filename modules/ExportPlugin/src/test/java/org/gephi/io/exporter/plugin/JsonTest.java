@@ -14,7 +14,7 @@ public class JsonTest {
     @Test
     public void testEmpty() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace();
+                GraphGenerator.build();
 
         Utils.assertExporterMatch("json/empty.json", createExporter(graphGenerator));
     }
@@ -22,7 +22,7 @@ public class JsonTest {
     @Test
     public void testTinyGraph() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyGraph();
+                GraphGenerator.build().generateTinyGraph();
 
         Utils.assertExporterMatch("json/tiny.json", createExporter(graphGenerator));
     }
@@ -30,7 +30,7 @@ public class JsonTest {
     @Test
     public void testNodeColumn() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+                GraphGenerator.build().generateTinyGraph().addDoubleNodeColumn();
 
         Utils.assertExporterMatch("json/column.json", createExporter(graphGenerator));
     }
@@ -38,7 +38,7 @@ public class JsonTest {
     @Test
     public void testLabels() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyGraph().addNodeLabels().addEdgeLabels();
+                GraphGenerator.build().generateTinyGraph().addNodeLabels().addEdgeLabels();
 
         Utils.assertExporterMatch("json/labels.json", createExporter(graphGenerator));
     }
@@ -46,7 +46,7 @@ public class JsonTest {
     @Test
     public void testMulti() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyMultiGraph();
+                GraphGenerator.build().generateTinyMultiGraph();
 
         Utils.assertExporterMatch("json/multi.json", createExporter(graphGenerator));
     }
@@ -54,7 +54,7 @@ public class JsonTest {
     @Test
     public void testUndirected() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyUndirectedGraph();
+                GraphGenerator.build().generateTinyUndirectedGraph();
 
         Utils.assertExporterMatch("json/undirected.json", createExporter(graphGenerator));
     }
@@ -62,7 +62,7 @@ public class JsonTest {
     @Test
     public void testMixed() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyMixedGraph();
+                GraphGenerator.build().generateTinyMixedGraph();
 
         Utils.assertExporterMatch("json/mixed.json", createExporter(graphGenerator));
     }
@@ -70,7 +70,7 @@ public class JsonTest {
     @Test
     public void testColors() throws IOException {
         GraphGenerator graphGenerator =
-                GraphGenerator.build().withWorkspace().generateTinyGraph();
+                GraphGenerator.build().generateTinyGraph();
         Graph graph = graphGenerator.getGraph();
         Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
         Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
