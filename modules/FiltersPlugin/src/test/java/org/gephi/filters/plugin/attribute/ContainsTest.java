@@ -11,7 +11,7 @@ public class ContainsTest {
 
     @Test
     public void testStringArray() {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addStringArrayNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addStringArrayNodeColumn();
         Graph graph = graphGenerator.getGraph();
 
         ListAttributeContainsBuilder builder = new ListAttributeContainsBuilder();
@@ -30,7 +30,7 @@ public class ContainsTest {
 
     @Test
     public void testFloatArrayStringMatch() {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addFloatArrayNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addFloatArrayNodeColumn();
         Graph graph = graphGenerator.getGraph();
 
         ListAttributeContainsBuilder builder = new ListAttributeContainsBuilder();

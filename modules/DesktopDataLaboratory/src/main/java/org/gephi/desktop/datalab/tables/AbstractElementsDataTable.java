@@ -341,6 +341,10 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         }
     }
 
+    public void scrollToTop() {
+        table.scrollRowToVisible(0);
+    }
+
     public boolean hasData() {
         return table.getRowCount() > 0;
     }

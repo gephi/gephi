@@ -742,6 +742,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-search</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.sentry</groupId>
                 <artifactId>sentry</artifactId>
                 <version>${gephi.sentry.version}</version>
@@ -1420,5 +1425,6 @@
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
         <module>modules/DesktopIcons</module>
+        <module>modules/DesktopSearch</module>
     </modules>
 </project>

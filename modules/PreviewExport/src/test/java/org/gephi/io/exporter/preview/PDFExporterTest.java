@@ -21,7 +21,7 @@ public class PDFExporterTest {
 
     @Test
     public void testPDFExporter() throws IOException {
-        Workspace workspace = GraphGenerator.build().withWorkspace()
+        Workspace workspace = GraphGenerator.build()
             .generateSmallRandomGraph().addRandomPositions().getWorkspace();
 
         Random random = new Random();

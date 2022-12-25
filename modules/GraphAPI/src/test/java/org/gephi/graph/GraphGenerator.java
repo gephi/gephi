@@ -42,25 +42,36 @@ public class GraphGenerator {
     private Workspace workspace;
 
     private GraphGenerator() {
-        this(new Configuration());
+        this(null, new Configuration());
     }
 
-    private GraphGenerator(final Configuration config) {
-        this.graphModel = GraphModel.Factory.newInstance(config);
+    private GraphGenerator(final Workspace workspace, final Configuration config) {
+        GraphModel model = null;
+        if (workspace != null) {
+            this.workspace = workspace;
+            model = workspace.getLookup().lookup(GraphModel.class);
+        }
+        if (model == null) {
+            this.graphModel = GraphModel.Factory.newInstance(config);
+        } else {
+            this.graphModel = model;
+            model.setConfiguration(config);
+        }
+        if (workspace == null) {
+            this.workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+        }
     }
 
     public static GraphGenerator build() {
         return new GraphGenerator();
     }
 
-    public static GraphGenerator build(Configuration configuration) {
-        return new GraphGenerator(configuration);
+    public static GraphGenerator build(final Workspace workspace) {
+        return new GraphGenerator(workspace, new Configuration());
     }
 
-    public GraphGenerator withWorkspace() {
-        workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
-
-        return this;
+    public static GraphGenerator build(final Workspace workspace, final Configuration configuration) {
+        return new GraphGenerator(workspace, configuration);
     }
 
     public GraphGenerator withTimeFormat(TimeFormat timeFormat) {

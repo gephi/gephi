@@ -10,7 +10,7 @@ public class VNATest {
 
     @Test
     public void testBasic() throws IOException {
-        GraphGenerator graphGenerator = GraphGenerator.build().withWorkspace().generateTinyGraph().addDoubleNodeColumn();
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addDoubleNodeColumn();
 
         Utils.assertExporterMatch("basic.vna", createExporter(graphGenerator));
     }

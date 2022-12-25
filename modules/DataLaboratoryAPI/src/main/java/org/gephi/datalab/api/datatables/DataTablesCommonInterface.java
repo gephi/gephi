@@ -184,4 +184,9 @@ interface DataTablesCommonInterface {
      * Requests to exports current table being shown as a file.
      */
     void exportCurrentTable();
+
+    /**
+     * Clears the current selected elements, if any.
+     */
+    void clearSelection();
 }

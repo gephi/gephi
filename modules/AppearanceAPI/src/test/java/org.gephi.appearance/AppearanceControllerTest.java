@@ -35,7 +35,7 @@ public class AppearanceControllerTest {
     @Test
     public void testTransform() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -70,7 +70,7 @@ public class AppearanceControllerTest {
     @Test
     public void testFilteredView() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -94,7 +94,7 @@ public class AppearanceControllerTest {
     @Test
     public void testLocalScale() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -125,7 +125,7 @@ public class AppearanceControllerTest {
     @Test
     public void testTransformNullValuesRanking() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -145,7 +145,7 @@ public class AppearanceControllerTest {
     @Test
     public void testNotTransformNullValuesRanking() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -165,7 +165,7 @@ public class AppearanceControllerTest {
     @Test
     public void testTransformNullValuesPartition() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -184,7 +184,7 @@ public class AppearanceControllerTest {
     @Test
     public void testNotTransformNullValuesPartition() {
         MockServices.setServices(FixedTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
@@ -204,7 +204,7 @@ public class AppearanceControllerTest {
     public void testRankingDynamicColumn() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();

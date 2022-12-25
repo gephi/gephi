@@ -27,7 +27,7 @@ public class AppearanceUIModelTest {
 
     @Test
     public void testDefault() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         AppearanceUIModel uiModel = new AppearanceUIModel(model);
 
