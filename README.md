@@ -41,6 +41,8 @@ Development builds are [generated regularly](https://github.com/gephi/gephi/acti
 
 - [gephi-0.10.0-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
 
+- [gephi-0.10.0-SNAPSHOT-macos-aarch64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=macos-aarch64&p=dmg) (Mac OS X Silicon)
+
 - [gephi-0.10.0-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.10.0-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
 
 ## Developer Introduction
