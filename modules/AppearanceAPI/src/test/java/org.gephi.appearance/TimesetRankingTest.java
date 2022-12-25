@@ -52,4 +52,14 @@ public class TimesetRankingTest {
         Assert.assertEquals(GraphGenerator.INTERVAL_SET_VALUES[0][0], timesetRanking.getMinValue(graph));
         Assert.assertEquals(GraphGenerator.INTERVAL_SET_VALUES[1][1], timesetRanking.getMaxValue(graph));
     }
+
+    @Test
+    public void testMinMaxOtherColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampSetColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_SET_COLUMN);
+        TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
+
+        Assert.assertEquals(GraphGenerator.TIMESTAMP_SET_VALUES[0], timesetRanking.getMinValue(graph));
+        Assert.assertEquals(GraphGenerator.TIMESTAMP_SET_VALUES[1], timesetRanking.getMaxValue(graph));
+    }
 }
