@@ -17,6 +17,7 @@
 
     <properties>
         <jogl.version>2.4.0-rc-20210111</jogl.version>
+        <jogl.version.jogl.all>2.4.0-rc-20221118</jogl.version.jogl.all>
         <jogl.version.natives.macos>2.4.0-rc4</jogl.version.natives.macos>
     </properties>
 
@@ -125,7 +126,7 @@
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
+            <version>${jogl.version.jogl.all}</version>
         </dependency>
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
