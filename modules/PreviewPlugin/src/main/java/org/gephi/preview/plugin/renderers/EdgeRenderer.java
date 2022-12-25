@@ -45,6 +45,7 @@ package org.gephi.preview.plugin.renderers;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.io.IOException;
@@ -76,7 +77,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- * @author Yudi Xue, Mathieu Bastian
+ * @author Yudi Xue, Mathieu Bastian, Mathieu Jacomy
  */
 @ServiceProvider(service = Renderer.class, position = 100)
 public class EdgeRenderer implements Renderer {
@@ -84,7 +85,12 @@ public class EdgeRenderer implements Renderer {
     //Custom properties
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
+    /**
+     * @deprecated We now use circle arcs to draw curved edges. See ARC_CURVENESS instead.
+     */
+    @Deprecated
     public static final String BEZIER_CURVENESS = "edge.bezier-curveness";
+    public static final String ARC_CURVENESS = "edge.arc-curveness";
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
     public static final String TARGET_RADIUS = "edge.target.radius";
@@ -103,7 +109,7 @@ public class EdgeRenderer implements Renderer {
     protected float defaultRescaleWeightMax = 1.0f;
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
-    protected float defaultBezierCurviness = 0.2f;
+    protected static float defaultArcCurviness = 1.2f;
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
@@ -172,9 +178,9 @@ public class EdgeRenderer implements Renderer {
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
 
-        //Put bezier curveness in properties
-        if (!properties.hasProperty(BEZIER_CURVENESS)) {
-            properties.putValue(BEZIER_CURVENESS, defaultBezierCurviness);
+        //Put arc curveness in properties
+        if (!properties.hasProperty(ARC_CURVENESS)) {
+            properties.putValue(ARC_CURVENESS, defaultArcCurviness);
         }
 
         //Rescale weight if necessary - and avoid negative weights
@@ -446,7 +452,7 @@ public class EdgeRenderer implements Renderer {
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Item sourceItem;
             public final Item targetItem;
@@ -509,13 +515,13 @@ public class EdgeRenderer implements Renderer {
 
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
-                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setStroke(new BasicStroke(
+                    getThickness(item),
+                    BasicStroke.CAP_ROUND,
+                    BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
-                final GeneralPath gp
-                    = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-                gp.moveTo(h.x1, h.y1);
-                gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2);
-                graphics.draw(gp);
+                // Arc
+                graphics.draw(new Arc2D.Double(h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep, Arc2D.OPEN));
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
@@ -524,16 +530,19 @@ public class EdgeRenderer implements Renderer {
                     SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
                     SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
                 ));
-                edgeElem.setAttribute("d", String.format(
+                // Elliptical arc
+                String path = String.format(
                     Locale.ENGLISH,
-                    "M %f,%f C %f,%f %f,%f %f,%f",
-                    h.x1, h.y1,
-                    h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
+                    "M %f,%f A %f,%f %d,%d %d,%f,%f",
+                    h.x1WithRadius, h.y1WithRadius,
+                    h.r, h.r, 0, 0, 1, h.x2WithRadius, h.y2WithRadius);
+                edgeElem.setAttribute("d", path);
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
                 edgeElem.setAttribute(
                     "stroke-width",
                     Float.toString(getThickness(item)
                         * svgTarget.getScaleRatio()));
+                edgeElem.setAttribute("stroke-linecap", "round");
                 edgeElem.setAttribute(
                     "stroke-opacity",
                     (color.getAlpha() / 255f) + "");
@@ -544,10 +553,11 @@ public class EdgeRenderer implements Renderer {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
-                    cb.moveTo(h.x1, -h.y1);
-                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                    PDFUtils.drawArc(cb, (float)h.bbx, (float)-h.bby, (float)(h.bbx+h.bbw), (float)-(h.bby+h.bbh), (float)h.astart, (float)h.asweep);
                     cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
+                    cb.setLineJoinStyle(1); //round
+                    cb.setLineCapStyle(1); //round
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
                         graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
@@ -566,20 +576,21 @@ public class EdgeRenderer implements Renderer {
 
         public CanvasSize getCanvasSize(
             final Item item,
-            final PreviewProperties properties) {
+            final PreviewProperties properties
+        ) {
             final Helper h = new Helper(item, properties);
             final float minX
-                = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.min(h.x1, h.x2);
             final float minY
-                = Math.min(Math.min(Math.min(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.min(h.y1, h.y2);
             final float maxX
-                = Math.max(Math.max(Math.max(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.max(h.x1, h.x2);
             final float maxY
-                = Math.max(Math.max(Math.max(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.max(h.y1, h.y2);
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Item sourceItem;
             public final Item targetItem;
@@ -587,8 +598,17 @@ public class EdgeRenderer implements Renderer {
             public final Float x2;
             public final Float y1;
             public final Float y2;
-            public final Vector v1;
-            public final Vector v2;
+            public final double r;
+            public final double bbx;
+            public final double bby;
+            public final double bbw;
+            public final double bbh;
+            public final double astart;
+            public final double asweep;
+            public final Float x1WithRadius;
+            public final Float x2WithRadius;
+            public final Float y1WithRadius;
+            public final Float y2WithRadius;
 
             public Helper(
                 final Item item,
@@ -607,27 +627,101 @@ public class EdgeRenderer implements Renderer {
                 final float length = direction.mag();
 
                 direction.normalize();
-                final float factor
-                    = properties.getFloatValue(BEZIER_CURVENESS) * length;
 
-                final Vector n = new Vector(direction.y, -direction.x);
-                n.mult(factor);
+                // Arc radius
+                r = length / properties.getDoubleValue(ARC_CURVENESS);
 
-                v1 = computeCtrlPoint(x1, y1, direction, factor, n);
-                v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
+                // Arc bounding box (for Graphics2D)
+                // Formulas from https://math.stackexchange.com/questions/1781438/finding-the-center-of-a-circle-given-two-points-and-a-radius-algebraically
+                double _xa = 0.5 * (x1 - x2);
+                double _ya = 0.5 * (y1 - y2);
+                double _x0 = x2 + _xa;
+                double _y0 = y2 + _ya;
+                double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
+                double _b = 0.;
+                if (_a < r) {
+                    // Note: geometrically, _a <= r is granted.
+                    // But in practice, we can have _a very close to r
+                    // and numerical approximations may produce _a > r.
+                    // This just corresponds to _b=0, but it would give a NaN.
+                    // This is why we have to do the check.
+                    _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
+                }
+                double xc = _x0 + (_b * _ya) / _a;
+                double yc = _y0 - (_b * _xa / _a);
+                double angle1 = Math.atan2(y1 - yc, x1 - xc);
+                double angle2 = Math.atan2(y2 - yc, x2 - xc);
+
+                while (angle2 < angle1) {
+                    angle2 += 2 * Math.PI;
+                }
+
+                // Target radius - to start at the base of the arrow
+                final Float targetRadius = item.getData(TARGET_RADIUS);
+                // Note: calling this a "radius" may be confusing.
+                // Clarification:
+                // This is about offsetting the arc at the end, using the
+                // node radius + the arrow size. It is a radius in the same
+                // sense as "node radius". It's not the radius of the edge curve.
+                // The same goes for sourceRadius below.
+
+                // Offset due to the source node
+                if (targetRadius != null && targetRadius < 0) {
+                    Double targetOffset = this.computeTheThing(r, (double) targetRadius);
+                    angle2 += targetOffset;
+
+                    x2WithRadius = (float)(r*Math.cos(angle2) + xc);
+                    y2WithRadius = (float)(r*Math.sin(angle2) + yc);
+                } else {
+                    x2WithRadius = x2;
+                    y2WithRadius = y2;
+                }
+
+                // Source radius
+                final Float sourceRadius = item.getData(SOURCE_RADIUS);
+                // Avoid edge from passing the node's center:
+                if (sourceRadius != null && sourceRadius < 0) {
+                    Double sourceOffset = this.computeTheThing(r, (double) sourceRadius);
+                    angle1 -= sourceOffset;
+
+                    x1WithRadius = (float)(r*Math.cos(angle1) + xc);
+                    y1WithRadius = (float)(r*Math.sin(angle1) + yc);
+                } else {
+                    x1WithRadius = x1;
+                    y1WithRadius = y1;
+                }
+
+                bbx = xc - r;
+                bby = yc - r;
+                bbw = 2 * r;
+                bbh = 2 * r;
+                astart = -180 * (angle1) / Math.PI;
+                if (0. < angle1 - angle2) {
+                    // This case corresponds to a negative length of the edge.
+                    // It may happen because the arrow or the nodes are too big and "swallow" the edge.
+                    // In that case we do not trace the edge (null length).
+                    asweep = 0.;
+                } else {
+                    asweep = (180 * (angle1 - angle2) / Math.PI + 720) % 360 - 360;
+                }
             }
 
-            private Vector computeCtrlPoint(
-                final Float x,
-                final Float y,
-                final Vector direction,
-                final float factor,
-                final Vector normalVector) {
-                final Vector v = new Vector(direction.x, direction.y);
-                v.mult(factor);
-                v.add(new Vector(x, y));
-                v.add(normalVector);
-                return v;
+            private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
+                // There is an edge that is a circle arc.
+                // We want to truncate that arc so that truncated part has a chord of a given length.
+                // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
+                // We give back the result as an angle, as it's how it's useful to us.
+                Double rt = truncature_length;
+                Double r = radius_curvature_edge;
+                double x;
+                if (r >= rt) {
+                    x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+                } else {
+                    // There is no solution to the problem
+                    // (this edge case is dealt with somewhere else)
+                    return 0.;
+                }
+                return 2 * Math.atan2(rt / 2, x);
             }
         }
     }
@@ -645,7 +739,10 @@ public class EdgeRenderer implements Renderer {
 
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
-                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setStroke(new BasicStroke(
+                    getThickness(item),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 final GeneralPath gp
                     = new GeneralPath(GeneralPath.WIND_NON_ZERO);
@@ -707,7 +804,7 @@ public class EdgeRenderer implements Renderer {
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
-        private class Helper {
+        private static class Helper {
 
             public final Float x;
             public final Float y;

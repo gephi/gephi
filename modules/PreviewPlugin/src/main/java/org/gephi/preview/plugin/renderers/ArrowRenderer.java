@@ -71,18 +71,25 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- * @author Yudi Xue, Mathieu Bastian
+ * @author Yudi Xue, Mathieu Bastian, Mathieu Jacomy
  */
 @ServiceProvider(service = Renderer.class, position = 200)
 public class ArrowRenderer implements Renderer {
 
     //Const
     protected final float BASE_RATIO = 0.5f;
+    public static final String ARC_CURVENESS = "edge.arc-curveness";
+    public static final String TARGET_RADIUS = "edge.target.radius";
     //Default values
     protected float defaultArrowSize = 3f;
 
     @Override
     public void preProcess(PreviewModel previewModel) {
+        final PreviewProperties properties = previewModel.getProperties();
+        //Put arc curveness in properties
+        if (!properties.hasProperty(ARC_CURVENESS)) {
+            properties.putValue(ARC_CURVENESS, EdgeRenderer.defaultArcCurviness);
+        }
     }
 
     @Override
@@ -175,7 +182,6 @@ public class ArrowRenderer implements Renderer {
     private boolean showArrows(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
             && properties.getBooleanValue(PreviewProperty.DIRECTED)
-            && !properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
             && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
@@ -231,23 +237,54 @@ public class ArrowRenderer implements Renderer {
 
             final Vector direction = new Vector(x2, y2);
             direction.sub(new Vector(x1, y1));
+            final float length = direction.mag();
             direction.normalize();
 
-            p1 = new Vector(direction.x, direction.y);
-            p1.mult(radius);
-            p1.add(new Vector(x2, y2));
+            if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+                // Change the direction to account for the curvature
+                double newAngle = Math.atan2(direction.y, direction.x);
+                double curvature = properties.getDoubleValue(ARC_CURVENESS);
+                double r = length / curvature;
+                double h = Math.sqrt(Math.pow(r, 2) - Math.pow(length / 2, 2));
+                newAngle += Math.PI / 2 - Math.atan2(h, length / 2);
+                final Float targetRadius = item.getData(TARGET_RADIUS);
+                double rt = -targetRadius;
+                double h2 = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+                newAngle -= Math.PI / 2 - Math.atan2(h2, rt / 2);
+                Vector newDirection = new Vector((float) Math.cos(newAngle), (float) Math.sin(newAngle));
 
-            final Vector p1r = new Vector(direction.x, direction.y);
-            p1r.mult(radius - size);
-            p1r.add(new Vector(x2, y2));
+                p1 = new Vector(newDirection.x, newDirection.y);
+                p1.mult(radius);
+                p1.add(new Vector(x2, y2));
 
-            p2 = new Vector(-direction.y, direction.x);
-            p2.mult(size * BASE_RATIO);
-            p2.add(p1r);
+                final Vector p1r = new Vector(newDirection.x, newDirection.y);
+                p1r.mult(radius - size);
+                p1r.add(new Vector(x2, y2));
 
-            p3 = new Vector(direction.y, -direction.x);
-            p3.mult(size * BASE_RATIO);
-            p3.add(p1r);
+                p2 = new Vector(-newDirection.y, newDirection.x);
+                p2.mult(size * BASE_RATIO);
+                p2.add(p1r);
+
+                p3 = new Vector(newDirection.y, -newDirection.x);
+                p3.mult(size * BASE_RATIO);
+                p3.add(p1r);
+            } else {
+                p1 = new Vector(direction.x, direction.y);
+                p1.mult(radius);
+                p1.add(new Vector(x2, y2));
+
+                final Vector p1r = new Vector(direction.x, direction.y);
+                p1r.mult(radius - size);
+                p1r.add(new Vector(x2, y2));
+
+                p2 = new Vector(-direction.y, direction.x);
+                p2.mult(size * BASE_RATIO);
+                p2.add(p1r);
+
+                p3 = new Vector(direction.y, -direction.x);
+                p3.mult(size * BASE_RATIO);
+                p3.add(p1r);
+            }
         }
     }
 }

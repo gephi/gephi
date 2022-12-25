@@ -61,5 +61,6 @@ public class DefaultCurved extends PreviewPreset {
         //Custom values
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
+        properties.put(PreviewProperty.ARROW_SIZE, 0);
     }
 }
