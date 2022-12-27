@@ -513,6 +513,11 @@ public class EdgeRenderer implements Renderer {
             final Helper h = new Helper(item, properties);
             final Color color = getColor(item, properties);
 
+            // Do not draw the edge if negative length
+            if (h.asweep == 0) {
+                return;
+            }
+
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
