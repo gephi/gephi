@@ -188,7 +188,7 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
                 return;
             }
 
-            if (!inited) {
+            if (!inited && m.getGraphicsCanvasSize() != null) {
                 CanvasSize cs = getSheetCanvasSize(m);
                 scaling = computeDefaultScaling(cs);
                 fit(cs);
