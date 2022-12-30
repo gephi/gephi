@@ -207,6 +207,9 @@ public class LayoutModelImpl implements LayoutModel, Model {
     }
 
     public void loadProperties(Layout layout) {
+        // In case some properties are only locally defined (like cooling in ForceAtlas)
+        layout.resetPropertiesValues();
+
         List<LayoutPropertyKey> layoutValues = new ArrayList<>();
         for (LayoutPropertyKey val : savedProperties.keySet()) {
             if (val.layoutClassName.equals(layout.getClass().getName())) {

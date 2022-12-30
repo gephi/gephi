@@ -15,6 +15,7 @@ public class MockLayout implements Layout {
     private final MockLayoutBuilder builder;
     private double angle;
     private Column column;
+    private double localProperty = 0.0;
 
     public MockLayout(MockLayoutBuilder builder) {
         this.builder = builder;
@@ -70,7 +71,11 @@ public class MockLayout implements Layout {
 
     @Override
     public void resetPropertiesValues() {
+        localProperty = 42.0;
+    }
 
+    public double getLocalProperty() {
+        return localProperty;
     }
 
     @Override
