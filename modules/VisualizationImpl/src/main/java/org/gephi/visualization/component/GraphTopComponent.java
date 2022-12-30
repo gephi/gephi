@@ -49,12 +49,10 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
-import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -63,6 +61,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -94,36 +93,36 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initComponents();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
-//        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
 
         //Request component activation and therefore initialize JOGL2 component
-        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+        if (!Utilities.isMac()) {
+            WindowManager.getDefault().invokeWhenUIReady(this::initDrawable);
+        }
+        initKeyEventContextMenuActionMappings();
+    }
+
+    private void initDrawable() {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                open();
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Init
-                        initCollapsePanel();
-                        initToolPanels();
-                        drawable = VizController.getInstance().getDrawable();
-                        engine = VizController.getInstance().getEngine();
+                //Init
+                initCollapsePanel();
+                initToolPanels();
+                drawable = VizController.getInstance().getDrawable();
+                engine = VizController.getInstance().getEngine();
 
-                        requestActive();
-                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-                        remove(waitingLabel);
-                    }
-                });
+                requestActive();
+                add(drawable.getGraphComponent(), BorderLayout.CENTER);
+                remove(waitingLabel);
+                drawable.initMouseEvents();
             }
         });
-        initKeyEventContextMenuActionMappings();
-
-//        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-//        remove(waitingLabel);
     }
 
     private void initCollapsePanel() {
+        if (vizBarController != null) {
+            return;
+        }
         vizBarController = new VizBarController();
         if (VizController.getInstance().getVizConfig().isShowVizVar()) {
             collapsePanel.init(vizBarController.getToolbar(), vizBarController.getExtendedBar(), false);
@@ -150,6 +149,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 //    }
 
     private void initToolPanels() {
+        if (toolbar != null) {
+            return;
+        }
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
@@ -307,5 +309,29 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    protected void componentClosed() {
+        super.componentClosed();
+
+        // On Mac we dispose the canvas to avoid haning issues
+        if (Utilities.isMac()) {
+            engine.stopDisplay();
+            drawable.destroy();
+            remove(drawable.getGraphComponent());
+            add(waitingLabel, BorderLayout.CENTER);
+        }
+    }
+
+    @Override
+    protected void componentOpened() {
+        super.componentOpened();
+
+        // On Mac we destroy and reinit the drawable here instead than once
+        // to address freeze issues within JOGL
+        if (Utilities.isMac()) {
+            initDrawable();
+        }
     }
 }

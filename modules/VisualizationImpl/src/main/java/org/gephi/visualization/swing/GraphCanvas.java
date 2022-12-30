@@ -124,10 +124,4 @@ public class GraphCanvas extends GLAbstractListener {
             }
         }
     }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        glCanvas.destroy();
-    }
 }

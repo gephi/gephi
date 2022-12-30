@@ -110,6 +110,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     private boolean showGLLog = true;
     private volatile boolean resizing = false;
     private double aspectRatio = 0;
+    private boolean destroyed = false;
 
     public GLAbstractListener() {
         this.vizController = VizController.getInstance();
@@ -129,9 +130,14 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
+        initMouseEvents();
+    }
+
+    @Override
+    public void initMouseEvents() {
         //Mouse events
-        if (vizController.getVizConfig().isReduceFpsWhenMouseOut() ||
-            vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+        if (graphMouseAdapter == null && (vizController.getVizConfig().isReduceFpsWhenMouseOut() ||
+            vizController.getVizConfig().isPauseLoopWhenMouseOut())) {
             graphMouseAdapter = new GraphMouseAdapter();
             if (window != null) {
                 graphMouseAdapterNewt = new MouseAdapter() {
@@ -179,6 +185,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
             caps.setAlphaBits(8);        //if NOT opaque
             caps.setDoubleBuffered(true);
             caps.setHardwareAccelerated(true);
+            caps.setOnscreen(true);
 
             //FSAA
             int antialisaing = vizController.getVizConfig().getAntialiasing();
@@ -386,6 +393,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     @Override
     public void destroy() {
+        destroyed = true;
         if (graphMouseAdapterNewt != null) {
             window.removeMouseListener(graphMouseAdapterNewt);
         } else if (graphMouseAdapterCanvas != null) {
@@ -393,6 +401,11 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         }
         graphMouseAdapter = null;
         drawable.destroy();
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     public void renderTestCube(GL2 gl) {

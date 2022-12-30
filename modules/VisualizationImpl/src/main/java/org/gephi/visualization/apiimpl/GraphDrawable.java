@@ -92,9 +92,13 @@ public interface GraphDrawable {
 
     public void initConfig(GL2 gl);
 
+    public void initMouseEvents();
+
     public GraphicalConfiguration getGraphicalConfiguration();
 
     public void destroy();
+
+    public boolean isDestroyed();
 
     public Point getLocationOnScreen();
 
