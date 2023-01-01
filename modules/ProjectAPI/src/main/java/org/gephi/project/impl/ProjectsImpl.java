@@ -121,7 +121,7 @@ public class ProjectsImpl implements Projects {
         if (file != null) {
             synchronized (projects) {
                 for (ProjectImpl p : projects) {
-                    if (p.getFile().equals(file)) {
+                    if (p.getFile() != null && p.getFile().equals(file)) {
                         return p;
                     }
                 }
