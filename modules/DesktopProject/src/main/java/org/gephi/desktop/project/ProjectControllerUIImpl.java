@@ -345,6 +345,17 @@ public class ProjectControllerUIImpl implements ProjectListener {
         return true;
     }
 
+    public void openProject(Project project) {
+        longTaskExecutor.execute(null, () -> {
+            if (controller.getCurrentProject() != null) {
+                if (!closeCurrentProject()) {
+                    return;
+                }
+            }
+            controller.openProject(project);
+        });
+    }
+
     public void openProject(File file) {
         longTaskExecutor.execute(null, () -> {
             if (controller.getCurrentProject() != null) {
@@ -353,6 +364,17 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 }
             }
             controller.openProject(file);
+        });
+    }
+
+    public void removeProject(Project project) {
+        longTaskExecutor.execute(null, () -> {
+            if (controller.getCurrentProject() == project) {
+                if (!closeCurrentProject()) {
+                    return;
+                }
+            }
+            controller.removeProject(project);
         });
     }
 
@@ -459,6 +481,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
         ProjectList panel = new ProjectList();
         DialogDescriptor dd = new DialogDescriptor(panel,
             NbBundle.getMessage(ProjectControllerUIImpl.class, "ManageProjects_dialog_title"));
+        dd.setOptions(new Object[] {NotifyDescriptor.CLOSED_OPTION});
         DialogDisplayer.getDefault().notify(dd);
     }
 

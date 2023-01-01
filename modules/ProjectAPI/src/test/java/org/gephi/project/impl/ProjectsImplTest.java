@@ -91,4 +91,19 @@ public class ProjectsImplTest {
         Assert.assertEquals("p1", projects.getProjectByIdentifier("i1").getName());
         Assert.assertEquals("p2", projects.getProjectByIdentifier("i2").getName());
     }
+
+    @Test
+    public void testDoesNotCreateNewProjectSameFile() throws IOException {
+        ProjectsImpl projects = new ProjectsImpl();
+        ProjectImpl p1 = new ProjectImpl("i1", "p1");
+        Assert.assertSame(p1, projects.addOrReplaceProject(p1));
+
+        File file = tempFolder.newFile("p1.gephi");
+        p1.setFile(file);
+
+        ProjectImpl p2 = new ProjectImpl("i2", "p2");
+        p2.setFile(file);
+
+        Assert.assertSame(p1, projects.addOrReplaceProject(p2));
+    }
 }

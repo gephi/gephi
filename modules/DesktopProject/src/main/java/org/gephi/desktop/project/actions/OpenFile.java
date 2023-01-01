@@ -48,6 +48,7 @@ import javax.swing.AbstractAction;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.project.api.Project;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
@@ -100,6 +101,8 @@ public final class OpenFile extends AbstractAction {
             } else if (ev != null && ev.getSource() != null && ev.getSource() instanceof FileImporterBuilder[]) {
                 Lookup.getDefault().lookup(ProjectControllerUIImpl.class)
                     .openFile((FileImporterBuilder[]) ev.getSource());
+            } else if (ev != null && ev.getSource() != null && ev.getSource() instanceof Project) {
+                Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openProject((Project) ev.getSource());
             } else {
                 Lookup.getDefault().lookup(ProjectControllerUIImpl.class).openFile();
             }

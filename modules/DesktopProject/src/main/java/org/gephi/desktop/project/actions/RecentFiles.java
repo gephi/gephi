@@ -123,6 +123,10 @@ public class RecentFiles extends AbstractAction implements DynamicMenuContent {
         }
         items.addAll(filesItems);
 
+        // Manage projects
+        items.add(new JSeparator());
+        items.add(new JMenuItem(Actions.forID("File", "org.gephi.desktop.project.actions.ManageProjects")));
+
         return items.toArray(new JComponent[0]);
     }
 

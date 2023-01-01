@@ -292,11 +292,11 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     private void openProjectInternal(Project project) {
-        final ProjectImpl projectImpl = (ProjectImpl) project;
+        ProjectImpl projectImpl = (ProjectImpl) project;
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
-        projects.addOrReplaceProject(projectImpl);
+        projectImpl = projects.addOrReplaceProject(projectImpl);
         projects.setCurrentProject(projectImpl);
 
         for (Workspace ws : projectImpl.getWorkspaces()) {

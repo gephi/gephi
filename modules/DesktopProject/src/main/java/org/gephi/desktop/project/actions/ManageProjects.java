@@ -12,7 +12,6 @@ import org.openide.util.NbBundle;
 
 @ActionID(id = "org.gephi.desktop.project.actions.ManageProjects", category = "File")
 @ActionRegistration(displayName = "#CTL_ManageProjects", lazy = false)
-@ActionReference(path = "Menu/File", position = 490)
 public final class ManageProjects extends AbstractAction {
 
     ManageProjects() {
@@ -21,7 +20,7 @@ public final class ManageProjects extends AbstractAction {
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUIImpl.class).canProjectProperties();
+        return true;
     }
 
     @Override

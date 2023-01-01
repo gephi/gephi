@@ -2,12 +2,15 @@ package org.gephi.ui.project;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.openide.awt.Actions;
 import org.openide.util.Lookup;
 
 public class ProjectList extends javax.swing.JPanel {
@@ -23,10 +26,25 @@ public class ProjectList extends javax.swing.JPanel {
         projectList.setCellRenderer(new ProjectCellRenderer());
         projectList.addListSelectionListener(evt -> {
             if (!evt.getValueIsAdjusting()) {
-                Project project = projectList.getModel().getElementAt(projectList.getSelectedIndex());
+                Project project = null;
+                if (projectList.getSelectedIndex() != -1) {
+                    project = projectList.getModel().getElementAt(projectList.getSelectedIndex());
+                }
                 openProjectButton.setEnabled(project != null && project.isClosed());
                 removeProjectButton.setEnabled(project != null);
             }
+        });
+
+        openProjectButton.addActionListener(evt -> {
+            Project project = projectList.getModel().getElementAt(projectList.getSelectedIndex());
+            Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+                new ActionEvent(project, 0, null));
+        });
+
+        removeProjectButton.addActionListener(evt -> {
+            Project project = projectList.getModel().getElementAt(projectList.getSelectedIndex());
+            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).removeProject(project);
+            ((DefaultListModel<Project>)projectList.getModel()).removeElement(project);
         });
 
         setup();
@@ -54,7 +72,11 @@ public class ProjectList extends javax.swing.JPanel {
             } else {
                 c.setFont(c.getFont().deriveFont(Font.PLAIN));
             }
-            c.setText(p.getName());
+            String name = p.getName();
+            if (p.getFileName() != null) {
+                name += " (" + p.getFileName() + ")";
+            }
+            c.setText(name);
             return c;
         }
     }
