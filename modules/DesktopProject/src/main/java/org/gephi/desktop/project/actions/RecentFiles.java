@@ -104,7 +104,7 @@ public class RecentFiles extends AbstractAction implements DynamicMenuContent {
         List<JMenuItem> projectsItems = new ArrayList<>();
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         for (Project project : projectController.getAllProjects()) {
-            if (project.isClosed() && project.hasFile()) {
+            if (project.hasFile()) {
                 JMenuItem menuItem = new JMenuItem(new OpenProjectAction(project));
                 projectsItems.add(menuItem);
             }
