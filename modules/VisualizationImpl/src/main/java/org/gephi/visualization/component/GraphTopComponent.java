@@ -102,24 +102,41 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void initDrawable() {
-        SwingUtilities.invokeLater(new Runnable() {
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                //Init
-                initCollapsePanel();
-                initToolPanels();
-                drawable = VizController.getInstance().getDrawable();
-                engine = VizController.getInstance().getEngine();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Init
+                        requestActive();
+                    }
+                });
 
-                requestActive();
-                add(drawable.getGraphComponent(), BorderLayout.CENTER);
-                remove(waitingLabel);
-                drawable.initMouseEvents();
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    drawable = VizController.getInstance().getDrawable();
+                    engine = VizController.getInstance().getEngine();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            initCollapsePanel();
+                            initToolPanels();
+                            add(drawable.getGraphComponent(), BorderLayout.CENTER);
+                            remove(waitingLabel);
+                            drawable.initMouseEvents();
+                        }
+                    });
+                }, "GraphTopComponent GL Init").start();
             }
         });
     }
 
-    private void initCollapsePanel() {
+        private void initCollapsePanel() {
         if (vizBarController != null) {
             return;
         }
@@ -315,10 +332,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     protected void componentClosed() {
         super.componentClosed();
 
-        // On Mac we dispose the canvas to avoid haning issues
+        // On Mac we dispose the canvas to avoid hanging issues
         if (Utilities.isMac()) {
             engine.stopDisplay();
-            drawable.destroy();
+
             remove(drawable.getGraphComponent());
             add(waitingLabel, BorderLayout.CENTER);
         }

@@ -402,7 +402,8 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 if (visible != TimelineTopComponent.this.isVisible()) {
 
                     TimelineTopComponent.this.setVisible(visible);
-                    VizController.getInstance().getDrawable().reinitWindow();
+                    // Not needed anymore
+                    // VizController.getInstance().getDrawable().reinitWindow();
                 }
             }
         });

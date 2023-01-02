@@ -51,9 +51,6 @@ public class Installer extends ModuleInstall {
     public void restored() {
         // Disable JOGL's default icons
         System.setProperty("newt.window.icons", "null,null");
-
-        //Init JOGL, recommended
-        GLProfile.initSingleton();
     }
 
     @Override
