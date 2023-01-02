@@ -48,6 +48,7 @@ public class VizEngineGraphCanvasManager {
     private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
 
     private final Workspace workspace;
+    private final boolean isWindows;
     private boolean initialized = false;
     private AWTGLCanvas glCanvas = null;
 
@@ -61,6 +62,7 @@ public class VizEngineGraphCanvasManager {
 
     public VizEngineGraphCanvasManager(Workspace workspace) {
         this.workspace = Objects.requireNonNull(workspace);
+        this.isWindows = Platform.get() == Platform.WINDOWS;
     }
 
     public synchronized void init(JComponent component) {
@@ -139,15 +141,21 @@ public class VizEngineGraphCanvasManager {
             @Override
             public void componentResized(ComponentEvent event) {
                 if (renderingTarget.getEngine() != null) {
-                    renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
+                    if (isWindows) {
+                        renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
+                    } else {
+                        renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
+                    }
                 }
             }
         });
         component.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent event) {
-                if (renderingTarget.getEngine() != null) {
+                if (isWindows) {
                     renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
+                } else {
+                    renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
                 }
             }
         });
