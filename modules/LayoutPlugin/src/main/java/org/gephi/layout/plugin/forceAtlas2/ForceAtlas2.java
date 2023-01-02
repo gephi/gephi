@@ -85,6 +85,7 @@ public class ForceAtlas2 implements Layout {
     private boolean linLogMode;
     private boolean normalizeEdgeWeights;
     private boolean strongGravityMode;
+    private boolean invertedEdgeWeightsMode;
     private int threadCount;
     private int currentThreadCount;
     private Region rootRegion;
@@ -130,11 +131,12 @@ public class ForceAtlas2 implements Layout {
     }
 
     private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
-        if (isDynamicWeight) {
-            return edge.getWeight(interval);
-        } else {
-            return edge.getWeight();
-        }
+        double w = edge.getWeight();
+        if (isDynamicWeight)
+            w = edge.getWeight(interval);
+        if (isInvertedEdgeWeightsMode())
+            return w == 0 ? 0 : 1/w;
+        return w;
     }
 
 
@@ -462,6 +464,14 @@ public class ForceAtlas2 implements Layout {
                 "isNormalizeEdgeWeights", "setNormalizeEdgeWeights"));
 
             properties.add(LayoutProperty.createProperty(
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "ForceAtlas2.invertedEdgeWeightsMode.name"),
+                FORCEATLAS2_BEHAVIOR,
+                "ForceAtlas2.invertedEdgeWeightsMode.name",
+                NbBundle.getMessage(getClass(), "ForceAtlas2.invertedEdgeWeightsMode.desc"),
+                "isInvertedEdgeWeightsMode", "setInvertedEdgeWeightsMode"));
+
+            properties.add(LayoutProperty.createProperty(
                 this, Double.class,
                 NbBundle.getMessage(getClass(), "ForceAtlas2.jitterTolerance.name"),
                 FORCEATLAS2_PERFORMANCE,
@@ -515,6 +525,7 @@ public class ForceAtlas2 implements Layout {
             setScalingRatio(10.0);
         }
         setStrongGravityMode(false);
+        setInvertedEdgeWeightsMode(false);
         setGravity(1.);
 
         // Behavior
@@ -597,6 +608,15 @@ public class ForceAtlas2 implements Layout {
 
     public void setStrongGravityMode(Boolean strongGravityMode) {
         this.strongGravityMode = strongGravityMode;
+    }
+
+
+    public Boolean isInvertedEdgeWeightsMode() {
+        return invertedEdgeWeightsMode;
+    }
+
+    public void setInvertedEdgeWeightsMode(Boolean invertedEdgeWeightsMode) {
+        this.invertedEdgeWeightsMode = invertedEdgeWeightsMode;
     }
 
     public Double getGravity() {
