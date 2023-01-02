@@ -1,7 +1,7 @@
 package org.gephi.layout.utils;
 
 import org.gephi.layout.LayoutModelImpl;
-import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceImpl;
 
 public class Utils {
 

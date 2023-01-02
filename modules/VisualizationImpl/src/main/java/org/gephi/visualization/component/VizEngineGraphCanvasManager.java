@@ -160,7 +160,7 @@ public class VizEngineGraphCanvasManager {
         engine.addInputListener(new InputListener<LWJGLRenderingTarget, LWJGLInputEvent>() {
             @Override
             public boolean processEvent(LWJGLInputEvent inputEvent) {
-                if (inputEvent instanceof MouseEvent) {
+                if (inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
                     if (vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent)) {
                         return true;
                     }

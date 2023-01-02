@@ -74,6 +74,7 @@ import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
+import org.gephi.io.importer.api.MetadataDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.joda.time.DateTimeZone;
@@ -99,6 +100,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2ObjectMap<String, ColumnDraft> edgeColumns;
     //MetaData
     private String source;
+    private MetadataDraft metadataDraft;
     private Class lastEdgeType;
     private Long2ObjectMap<int[]>[] edgeTypeSets;
     private EdgeDirectionDefault edgeDefault = EdgeDirectionDefault.MIXED;
@@ -784,6 +786,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         checkColorAlpha(nodeList, "Node");
         checkColorAlpha(edgeList, "Edge");
 
+        //Check special characters in elements ids
+        checkSpecialCharacter(nodeList, "Node");
+        checkSpecialCharacter(edgeList, "Edge");
+
         return true;
     }
 
@@ -919,6 +925,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 break;
         }
         dest.setWeight(result);
+    }
+
+    @Override
+    public void setMetadata(MetadataDraft metadata) {
+        this.metadataDraft = metadata;
+    }
+
+    @Override
+    public MetadataDraft getMetadata() {
+        return metadataDraft;
     }
 
     @Override
@@ -1148,6 +1164,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
         if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
+        }
+    }
+
+    void checkSpecialCharacter(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            for(ElementDraft element : new NullFilterIterable<>(objectList)) {
+                String id = element.getId();
+                if (id.contains(System.getProperty("line.separator")) || id.contains("\n" ) || !id.trim().equals(id)) {
+                    report.logIssue(new Issue(
+                            NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerWarning_"+elementType+"_Id_Special_Character", id),
+                            Level.WARNING));
+                }
+            }
         }
     }
 

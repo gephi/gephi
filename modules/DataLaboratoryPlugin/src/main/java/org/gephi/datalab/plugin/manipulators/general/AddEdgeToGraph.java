@@ -116,7 +116,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-white.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-white.png", false);
     }
 
     public boolean isDirected() {

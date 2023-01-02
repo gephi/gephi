@@ -68,6 +68,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
     private final Map<JCheckBox, StatisticsUI> uiMap = new HashMap<>();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel metricsPanel;
+    // End of variables declaration//GEN-END:variables
 
     public AvailableStatisticsChooser() {
         initComponents();
@@ -173,5 +174,4 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
 
         add(metricsPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

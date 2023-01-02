@@ -50,7 +50,7 @@ import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Severity;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
@@ -74,6 +74,7 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JLabel separatorLabel;
     private javax.swing.JComboBox sheetComboBox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form WizardVisualPanel1CSV
@@ -117,17 +118,20 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
         validationGroup.add(pathTextField, new Validator<String>() {
 
             @Override
-            public boolean validate(Problems prblms, String string, String t) {
+            public Class<String> modelType() {
+                return String.class;
+            }
+
+            @Override
+            public void validate(Problems prblms, String string, String t) {
                 if (!areValidColumnsForMode()) {
                     prblms.add(getMessage("WizardVisualPanel1CSV.validation.edges.no-source-target-columns"));
-                    return false;
                 }
                 if (hasRowsMissingSourcesOrTargets()) {
                     prblms.add(NbBundle.getMessage(WizardVisualPanel1Excel.class,
                         "WizardVisualPanel1CSV.validation.edges.empty-sources-or-targets"
                     ), Severity.WARNING);
                 }
-                return true;
             }
         });
         validationPanel.setName(getName());
@@ -321,5 +325,4 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
             refreshPreviewTable();
         }
     }//GEN-LAST:event_modeComboBoxItemStateChanged
-    // End of variables declaration//GEN-END:variables
 }

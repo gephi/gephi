@@ -56,7 +56,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.gephi.ui.utils.SupportedColumnTypeWrapper;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
@@ -75,6 +75,7 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
     private javax.swing.JTextField titleTextField;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form DuplicateColumnUI
@@ -219,5 +220,4 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

@@ -72,6 +72,7 @@ public final class WizardVisualPanel2 extends JPanel {
     private JComboBox timeRepresentationComboBox = new JComboBox();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scroll;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form WizardVisualPanel2
@@ -244,5 +245,4 @@ public final class WizardVisualPanel2 extends JPanel {
                 .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

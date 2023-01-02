@@ -169,21 +169,6 @@ public class PreviewUIControllerImpl implements PreviewUIController {
     }
 
     /**
-     * Shows the refresh notification when the structure of the workspace graph
-     * has changed.
-     *
-     * @param event
-     * @see GraphListener#graphChanged(org.gephi.graph.api.GraphEvent)
-     */
-//    public void graphChanged(GraphEvent event) {
-//        boolean previous = model.isWorkspaceBarVisible();
-//        model.setWorkspaceBarVisible(true);
-//        if (!previous) {
-//            fireEvent(GRAPH_CHANGED, true);
-//        }
-//    }
-
-    /**
      * Refreshes the preview applet.
      */
     @Override
@@ -203,7 +188,6 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
                     model.setRefreshing(false);
                     fireEvent(REFRESHING, false);
-                    fireEvent(GRAPH_CHANGED, false);
                 }
             }, "Refresh Preview");
             refreshThread.start();
@@ -219,7 +203,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
             public void run() {
                 PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault()
                     .findTopComponent("PreviewSettingsTopComponent");
-                pstc.enableRefreshButton();
+                if (pstc != null) {
+                    pstc.enableRefreshButton();
+                }
             }
         });
     }

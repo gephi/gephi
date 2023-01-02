@@ -43,73 +43,62 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.io.export;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.awt.Actions;
+import org.openide.awt.DynamicMenuContent;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 
-/**
- * @author Mathieu Bastian
- */
-public class Export extends CallableSystemAction {
+@ActionID(id = "org.gephi.desktop.project.actions.Export", category = "File")
+@ActionRegistration(displayName = "#CTL_Export", lazy = false)
+@ActionReference(path = "Menu/File", position = 1200, separatorBefore = 1190)
+public class Export extends AbstractAction implements DynamicMenuContent {
 
-    private final JMenu menu;
 
     public Export() {
-        menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export"));
-
-        Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
-
-            @Override
-            public void initialize(Workspace workspace) {
-            }
-
-            @Override
-            public void select(Workspace workspace) {
-                menu.setEnabled(true);
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                menu.setEnabled(false);
-            }
-        });
-        boolean enabled = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace() != null;
-        menu.setEnabled(enabled);
+        super(NbBundle.getMessage(Export.class, "CTL_Export"));
     }
 
     @Override
-    public void performAction() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void actionPerformed(ActionEvent e) {
+        // does nothing, this is a popup menu
     }
 
     @Override
-    public String getName() {
-        return "export";
+    public JComponent[] getMenuPresenters() {
+        return createMenu();
     }
 
     @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+    public JComponent[] synchMenuPresenters(JComponent[] items) {
+        return createMenu();
     }
 
-    @Override
-    public JMenuItem getMenuPresenter() {
+    private JComponent[] createMenu() {
+        JMenu menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export"));
+        menu.setEnabled(Lookup.getDefault().lookup(ProjectController.class).hasCurrentProject());
+
+        // Graph and image
+        menu.add(new JMenuItem(
+            Actions.forID("File", "org.gephi.desktop.io.export.ExportGraph")));
+        menu.add(new JMenuItem(
+            Actions.forID("File", "org.gephi.desktop.io.export.ExportImage")));
+
+        // Others
         for (final ExporterClassUI ui : Lookup.getDefault().lookupAll(ExporterClassUI.class)) {
             String menuName = ui.getName();
             JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
@@ -122,6 +111,6 @@ public class Export extends CallableSystemAction {
             menu.add(menuItem);
             menuItem.setEnabled(ui.isEnable());
         }
-        return menu;
+        return new JComponent[] {menu};
     }
 }

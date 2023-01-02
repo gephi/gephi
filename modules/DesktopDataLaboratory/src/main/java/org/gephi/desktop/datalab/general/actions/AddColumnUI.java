@@ -53,7 +53,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.gephi.ui.utils.SupportedColumnTypeWrapper;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -72,6 +72,7 @@ public class AddColumnUI extends javax.swing.JPanel {
     private javax.swing.JTextField titleTextField;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form AddColumnUI
@@ -243,5 +244,4 @@ public class AddColumnUI extends javax.swing.JPanel {
 
         NODES_TABLE, EDGES_TABLE
     }
-    // End of variables declaration//GEN-END:variables
 }

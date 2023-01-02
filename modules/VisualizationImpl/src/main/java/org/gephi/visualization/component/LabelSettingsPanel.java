@@ -44,7 +44,7 @@ package org.gephi.visualization.component;
 
 import java.awt.Color;
 import org.gephi.ui.components.JColorButton;
-
+import org.openide.util.ImageUtilities;
 /**
  * @author Mathieu Bastian
  */
@@ -75,6 +75,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showEdgeLabelsCheckbox;
     private javax.swing.JCheckBox showNodeLabelsCheckbox;
     private javax.swing.JComboBox sizeModeCombo;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form LabelSettingsPanel
@@ -541,8 +542,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
         configureLabelsButton.setFont(new java.awt.Font("Tahoma", 0, 10));
-        configureLabelsButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/visualization/component/configureLabels.png"))); // NOI18N
+        configureLabelsButton.setIcon(
+            ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.png", false)); // NOI18N
         configureLabelsButton.setText(org.openide.util.NbBundle
             .getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.configureLabelsButton.text")); // NOI18N
         configureLabelsButton.setBorder(null);
@@ -609,5 +610,4 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

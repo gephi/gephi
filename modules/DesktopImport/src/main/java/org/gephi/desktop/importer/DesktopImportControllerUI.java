@@ -62,11 +62,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
@@ -80,6 +77,8 @@ import org.gephi.io.importer.spi.ImporterWizardUI;
 import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
+import org.gephi.lib.validation.DialogDescriptorWithValidation;
+import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.CharsetToolkit;
@@ -88,7 +87,6 @@ import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
-import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -174,7 +172,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 mostRecentFiles.addFile(fileObject.getPath());
             }
 
-            importFiles(readers, importers, fileObjects);
+            importFiles(readers, importers, fileObjects, null);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -182,6 +180,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importStream(final InputStream stream, String importerName) {
+        importStream(stream, null, importerName);
+    }
+
+    @Override
+    public void importStream(final InputStream stream, String streamName, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
@@ -193,7 +196,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
         try {
             Reader reader = ImportUtils.getTextReader(stream);
-            importFile(reader, importer);
+            importFile(reader, streamName, importer);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -201,6 +204,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importFile(final Reader reader, String importerName) {
+        importFile(reader, null, importerName);
+    }
+
+    @Override
+    public void importFile(final Reader reader, String fileName, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
@@ -210,18 +218,18 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             return;
         }
 
-        importFile(reader, importer);
+        importFile(reader, fileName, importer);
     }
 
-    private void importFile(final Reader reader, final FileImporter importer) {
-        importFiles(new Reader[] {reader}, new FileImporter[] {importer});
+    private void importFile(final Reader reader, final String fileName, final FileImporter importer) {
+        importFiles(new Reader[] {reader}, new FileImporter[] {importer}, new String[] {fileName});
     }
 
-    private void importFiles(final Reader[] readers, final FileImporter[] importers) {
-        importFiles(readers, importers, null);
+    private void importFiles(final Reader[] readers, final FileImporter[] importers, final String[] names) {
+        importFiles(readers, importers, null, names);
     }
 
-    private void importFiles(final Reader[] readers, final FileImporter[] importers, FileObject[] fileObjects) {
+    private void importFiles(final Reader[] readers, final FileImporter[] importers, FileObject[] fileObjects, String[] names) {
         try {
             File[] files = new File[readers.length];
 
@@ -280,17 +288,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ui.setup(fi);
 
                 if (panel != null) {
-                    final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                    if (panel instanceof ValidationPanel) {
-                        ValidationPanel vp = (ValidationPanel) panel;
-                        vp.addChangeListener(new ChangeListener() {
-                            @Override
-                            public void stateChanged(ChangeEvent e) {
-                                dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                            }
-                        });
-                    }
-
+                    final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(panel, title);
                     Object result = DialogDisplayer.getDefault().notify(dd);
                     if (!result.equals(NotifyDescriptor.OK_OPTION)) {
                         ui.unsetup(false);
@@ -312,7 +310,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             ImportErrorHandler errorHandler = new ImportErrorHandler();
             final List<Container> results = new ArrayList<>();
             for (int i = 0; i < importers.length; i++) {
-                doImport(results, readers[i], fileObjects != null ? fileObjects[i] : null, files[i], importers[i],
+                doImport(results, readers[i], names != null ? names[0] : null, fileObjects != null ? fileObjects[i] : null, files[i], importers[i],
                     errorHandler);
             }
 
@@ -321,7 +319,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 taskName = NbBundle
                     .getMessage(DesktopImportControllerUI.class,
                         "DesktopImportControllerUI.finishingImport",
-                        fileObjects != null ? fileObjects[0].getNameExt() : "");
+                        fileObjects != null ? fileObjects[0].getNameExt() : (names != null ? names[0] : null));
             } else {
                 taskName = NbBundle
                     .getMessage(DesktopImportControllerUI.class,
@@ -335,7 +333,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    private void doImport(final List<Container> results, final Reader reader, final FileObject fileObject,
+    private void doImport(final List<Container> results, final Reader reader, final String containerName, final FileObject fileObject,
                           final File file,
                           final FileImporter importer,
                           final ImportErrorHandler errorHandler) {
@@ -353,9 +351,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
 
         //Execute task
-        final String containerSource = fileObject != null ? fileObject.getNameExt() : NbBundle
+        final String containerSource = fileObject != null ? fileObject.getNameExt() : (containerName != null ? containerName : NbBundle
             .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource",
-                importer.getClass().getSimpleName());
+                importer.getClass().getSimpleName()));
         String taskName =
             NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
         executor.execute(task, new Runnable() {
@@ -416,16 +414,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
                 ui.setup(new DatabaseImporter[] {importer});
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
+                final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(panel, title);
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
@@ -464,7 +453,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 }
             }, taskName, defaultErrorHandler);
         } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+            Logger.getLogger("").log(Level.SEVERE, "", ex);
         }
     }
 
@@ -488,17 +477,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         ui.getDisplayName());
                 JPanel panel = ui.getPanel();
                 ui.setup(new WizardImporter[] {importer});
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
-
+                final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(panel, title);
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
                     ui.unsetup(false);
@@ -670,10 +649,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 //Project
                 Workspace workspace = null;
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 if (pc.getCurrentProject() == null) {
-                    pcui.newProject();
-                    workspace = pc.getCurrentWorkspace();
+                    Project project = pc.newProject();
+                    workspace = project.getCurrentWorkspace();
                 }
 
                 //Process
@@ -690,17 +668,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                         "DesktopImportControllerUI.processor.ui.dialog.title");
 
                                     pui.setup(processor);
-                                    final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
-                                    if (panel instanceof ValidationPanel) {
-                                        ValidationPanel vp = (ValidationPanel) panel;
-                                        vp.addChangeListener(new ChangeListener() {
-                                            @Override
-                                            public void stateChanged(ChangeEvent e) {
-                                                dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                                            }
-                                        });
-                                        dd2.setValid(!vp.isProblem());
-                                    }
+                                    final DialogDescriptor dd2 = DialogDescriptorWithValidation.dialog(panel, title);
                                     Object result = DialogDisplayer.getDefault().notify(dd2);
                                     if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
                                         result.equals(NotifyDescriptor.CLOSED_OPTION)) {

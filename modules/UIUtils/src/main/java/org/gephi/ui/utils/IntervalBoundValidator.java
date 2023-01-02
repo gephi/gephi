@@ -68,7 +68,7 @@ public class IntervalBoundValidator implements Validator<String> {
     }
 
     @Override
-    public boolean validate(Problems prblms, String componentName, String value) {
+    public void validate(Problems prblms, String componentName, String value) {
         try {
             double time = AttributeUtils.parseDateTimeOrTimestamp(value);
             if (intervalStartTextField != null) {
@@ -78,20 +78,18 @@ public class IntervalBoundValidator implements Validator<String> {
                     if (time < startTime) {
                         prblms.add(NbBundle.getMessage(IntervalBoundValidator.class,
                             "IntervalBoundValidator.invalid.interval.message"));
-                        return false;
-                    } else {
-                        return true;
                     }
                 } catch (Exception parseException) {
-                    return true;
                 }
-            } else {
-                return true;
             }
         } catch (Exception ex) {
             prblms
                 .add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
-            return false;
         }
+    }
+
+    @Override
+    public Class<String> modelType() {
+        return String.class;
     }
 }

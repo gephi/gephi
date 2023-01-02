@@ -42,71 +42,233 @@
 
 package org.gephi.project.impl;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
+import org.gephi.project.io.SaveTask;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class ProjectsImpl implements Projects, Serializable {
+public class ProjectsImpl implements Projects {
 
     //Project
-    private final List<Project> projects;
+    private final List<ProjectImpl> projects;
     //Workspace ids
-    private final AtomicInteger projectIds;
     private ProjectImpl currentProject;
 
     public ProjectsImpl() {
         projects = new ArrayList<>();
-        projectIds = new AtomicInteger(1);
     }
 
-    public synchronized void addProject(Project project) {
-        if (!projects.contains(project)) {
-            projects.add(project);
+    public void addProject(ProjectImpl project) {
+        synchronized (projects) {
+            if (!projects.contains(project)) {
+                projects.add(project);
+            } else {
+                throw new IllegalArgumentException("The project " + project.getUniqueIdentifier() + " already exists");
+            }
         }
     }
 
-    public synchronized void removeProject(Project project) {
-        projects.remove(project);
+    public boolean containsProject(Project project) {
+        synchronized (projects) {
+            return projects.contains(project);
+        }
+    }
+
+    public ProjectImpl getProjectByIdentifier(String identifier) {
+        synchronized (projects) {
+            for (Project p : projects) {
+                if (p.getUniqueIdentifier().equals(identifier)) {
+                    return (ProjectImpl) p;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ProjectImpl addOrReplaceProject(ProjectImpl project) {
+        synchronized (projects) {
+            if (projects.contains(project)) {
+                projects.remove(project);
+                projects.add(project);
+            } else {
+                ProjectImpl projectWithSameFileName = findProjectByFile(project.getFile());
+                if (projectWithSameFileName != null) {
+                    return projectWithSameFileName;
+                }
+                projects.add(project);
+            }
+            return project;
+        }
+    }
+
+    private ProjectImpl findProjectByFile(File file) {
+        if (file != null) {
+            synchronized (projects) {
+                for (ProjectImpl p : projects) {
+                    if (p.getFile() != null && p.getFile().equals(file)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void removeProject(ProjectImpl project) {
+        synchronized (projects) {
+            projects.remove(project);
+        }
     }
 
     @Override
-    public synchronized Project[] getProjects() {
-        return projects.toArray(new Project[0]);
+    public ProjectImpl[] getProjects() {
+        synchronized (projects) {
+            ProjectImpl[] res = projects.toArray(new ProjectImpl[0]);
+            Arrays.sort(res);
+            return res;
+        }
     }
 
     @Override
-    public synchronized ProjectImpl getCurrentProject() {
-        return currentProject;
+    public ProjectImpl getCurrentProject() {
+        synchronized (projects) {
+            return currentProject;
+        }
     }
 
-    public synchronized void setCurrentProject(ProjectImpl currentProject) {
-        this.currentProject = currentProject;
+    public void setCurrentProject(ProjectImpl currentProject) {
+        synchronized (projects) {
+            this.currentProject = currentProject;
+            if (currentProject != null) {
+                currentProject.open();
+            }
+        }
     }
 
     @Override
-    public synchronized boolean hasCurrentProject() {
-        return currentProject != null;
+    public boolean hasCurrentProject() {
+        synchronized (projects) {
+            return currentProject != null;
+        }
     }
 
-    public synchronized void closeCurrentProject() {
-        this.currentProject = null;
+    public void closeCurrentProject() {
+        synchronized (projects) {
+            if (currentProject != null) {
+                currentProject.close();
+            }
+            this.currentProject = null;
+        }
     }
 
-    public int nextProjectId() {
-        return projectIds.getAndIncrement();
+    protected String nextUntitledProjectName() {
+        int i = 0;
+        while (true) {
+            final String name =
+                NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + (i > 0 ? " " + i : "");
+            if (projects.stream().noneMatch((p) -> (p.getName().equals(name)))) {
+                return name;
+            }
+            i++;
+        }
     }
 
-    public int getProjectIds() {
-        return projectIds.get();
+    @Override
+    public void saveProjects(File file) throws IOException {
+        synchronized (projects) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                XMLStreamWriter writer = SaveTask.newXMLWriter(fos);
+                writer.writeStartDocument("UTF-8", "1.0");
+                writer.writeStartElement("projects");
+                for (ProjectImpl p : getProjects()) {
+                    if (!p.hasFile() || (p.hasFile() && p.getFile().exists())) {
+                        writer.writeStartElement("project");
+                        if (p.hasFile()) {
+                            writer.writeAttribute("file", p.getFile().getAbsolutePath());
+                        }
+                        writer.writeAttribute("id", p.getUniqueIdentifier());
+                        writer.writeAttribute("name", p.getName());
+                        if (p.getLastOpened() != null) {
+                            writer.writeAttribute("lastOpened", String.valueOf(p.getLastOpened().toEpochMilli()));
+                        }
+                        writer.writeEndElement();
+                    } else {
+                        Logger.getLogger(ProjectsImpl.class.getName())
+                            .warning("Project " + p.getName() + " file does not exist");
+                    }
+                }
+                writer.writeEndDocument();
+            } catch (XMLStreamException ex) {
+                throw new IOException(ex);
+            }
+        }
     }
 
-    public void setProjectIds(int id) {
-        projectIds.set(id);
+    @Override
+    public void loadProjects(File file) throws IOException {
+        synchronized (projects) {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            try (FileInputStream fis = new FileInputStream(file)) {
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(fis, "UTF-8");
+
+                boolean end = false;
+                while (reader.hasNext() && !end) {
+                    int type = reader.next();
+
+                    switch (type) {
+                        case XMLStreamReader.START_ELEMENT:
+                            String name = reader.getLocalName();
+                            if ("project".equalsIgnoreCase(name)) {
+                                String filePath = reader.getAttributeValue(null, "file");
+                                String id = reader.getAttributeValue(null, "id");
+                                String projectName = reader.getAttributeValue(null, "name");
+                                String lastOpened = reader.getAttributeValue(null, "lastOpened");
+
+                                if (filePath == null || new File(filePath).exists()) {
+                                    ProjectImpl project = new ProjectImpl(id, projectName);
+                                    if (filePath != null) {
+                                        project.setFile(new File(filePath));
+                                    }
+                                    if (lastOpened != null) {
+                                        project.setLastOpened(Instant.ofEpochMilli(Long.parseLong(lastOpened)));
+                                    }
+                                    addOrReplaceProject(project);
+                                } else {
+                                    Logger.getLogger(ProjectsImpl.class.getName())
+                                        .warning("Project " + projectName + " file does not exist");
+                                }
+                            }
+                            break;
+                        case XMLStreamReader.END_ELEMENT:
+                            if ("projects".equalsIgnoreCase(reader.getLocalName())) {
+                                end = true;
+                            }
+                            break;
+                    }
+                }
+                reader.close();
+            } catch (XMLStreamException ex) {
+                throw new IOException(ex);
+            }
+        }
     }
 }

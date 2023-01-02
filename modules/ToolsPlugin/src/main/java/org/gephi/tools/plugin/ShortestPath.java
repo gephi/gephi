@@ -61,6 +61,7 @@ import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.ui.tools.plugin.ShortestPathPanel;
 import org.gephi.visualization.VizController;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -195,7 +196,7 @@ public class ShortestPath implements Tool {
 
             @Override
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tools/plugin/resources/shortestpath.png"));
+                return ImageUtilities.loadImageIcon("ToolsPlugin/shortestpath.png", false);
             }
 
             @Override

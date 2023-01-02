@@ -57,7 +57,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
@@ -79,6 +79,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
     private javax.swing.JTextField regexTextField;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CreateBooleanMatchesColumnUI
@@ -270,5 +271,4 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         BOOLEAN,
         MATCHING_GROUPS
     }
-    // End of variables declaration//GEN-END:variables
 }

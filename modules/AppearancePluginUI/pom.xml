@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>appearance-plugin-ui</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>AppearancePluginUI</name>
@@ -55,6 +55,14 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-icons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
         </dependency>
     </dependencies>
 

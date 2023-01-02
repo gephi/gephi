@@ -50,6 +50,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.visualization.VizController;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -156,7 +157,7 @@ public class VizBarController {
             });
             screenshotPopup.add(configureScreenshotItem);
             final JButton screenshotButton = new JDropDownButton(
-                new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/screenshot.png")),
+                ImageUtilities.loadImageIcon("VisualizationImpl/screenshot.png", false),
                 screenshotPopup);
             screenshotButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
@@ -205,32 +206,32 @@ public class VizBarController {
 
         @Override
         public JComponent[] getToolbarComponents() {
-//            //Show labels buttons
-//            VizModel vizModel = VizController.getInstance().getVizModel();
-//            final JToggleButton showLabelsButton = new JToggleButton();
-//            showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
-//            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showLabels"));
-//            showLabelsButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/showNodeLabels.png")));
-//            showLabelsButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    vizModel.getTextModel().setShowNodeLabels(showLabelsButton.isSelected());
-//                }
-//            });
-//            vizModel.getTextModel().addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//                    if (showLabelsButton.isSelected() != textModel.isShowNodeLabels()) {
-//                        showLabelsButton.setSelected(textModel.isShowNodeLabels());
-//                    }
-//                }
-//            });
-//            components[0] = showLabelsButton;
-//
-//            return components;
+            /*
+            //Show labels buttons
+            VizModel vizModel = VizController.getInstance().getVizModel();
+            final JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showLabels"));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showNodeLabels.png", false));
+            showLabelsButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.getTextModel().setShowNodeLabels(showLabelsButton.isSelected());
+                }
+            });
+            vizModel.getTextModel().addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
+                    if (showLabelsButton.isSelected() != textModel.isShowNodeLabels()) {
+                        showLabelsButton.setSelected(textModel.isShowNodeLabels());
+                    }
+                }
+            });
+            components[0] = showLabelsButton;
+            */
+
             //TODO
 
             return new JComponent[0];
@@ -273,111 +274,109 @@ public class VizBarController {
 
         @Override
         public JComponent[] getToolbarComponents() {
-//            //Show edges buttons
-//            VizModel vizModel = VizController.getInstance().getVizModel();
-//            final JToggleButton showEdgeButton = new JToggleButton();
-//            showEdgeButton.setSelected(vizModel.isShowEdges());
-//            showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
-//            showEdgeButton.setIcon(
-//                new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdges.png")));
-//            showEdgeButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    vizModel.setShowEdges(showEdgeButton.isSelected());
-//                }
-//            });
-//            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    if (evt.getPropertyName().equals("showEdges")) {
-//                        VizModel vizModel = VizController.getInstance().getVizModel();
-//                        if (showEdgeButton.isSelected() != vizModel.isShowEdges()) {
-//                            showEdgeButton.setSelected(vizModel.isShowEdges());
-//                        }
-//                    }
-//                }
-//            });
-//            components[0] = showEdgeButton;
-//
-//            //Edge color mode
-//            final JToggleButton edgeHasNodeColorButton = new JToggleButton();
-//            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
-//            edgeHasNodeColorButton
-//                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
-//            edgeHasNodeColorButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/edgeNodeColor.png")));
-//            edgeHasNodeColorButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    vizModel.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
-//                }
-//            });
-//            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    if (evt.getPropertyName().equals("edgeHasUniColor")) {
-//                        VizModel vizModel = VizController.getInstance().getVizModel();
-//                        if (edgeHasNodeColorButton.isSelected() != !vizModel.isEdgeHasUniColor()) {
-//                            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
-//                        }
-//                    }
-//                }
-//            });
-//            components[1] = edgeHasNodeColorButton;
-//
-//            //Show labels buttons
-//            final JToggleButton showLabelsButton = new JToggleButton();
-//            showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
-//            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
-//            showLabelsButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/showEdgeLabels.png")));
-//            showLabelsButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    vizModel.getTextModel().setShowEdgeLabels(showLabelsButton.isSelected());
-//                }
-//            });
-//            vizModel.getTextModel().addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//                    if (showLabelsButton.isSelected() != textModel.isShowEdgeLabels()) {
-//                        showLabelsButton.setSelected(textModel.isShowEdgeLabels());
-//                    }
-//                }
-//            });
-//            components[2] = showLabelsButton;
-//
-//            //EdgeScale slider
-//            final JSlider edgeScaleSlider = new JSlider(0, 100, (int) ((vizModel.getEdgeScale() - 0.1f) * 10));
-//            edgeScaleSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeScale"));
-//            edgeScaleSlider.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
-//                        vizModel.setEdgeScale(edgeScaleSlider.getValue() / 10f + 0.1f);
-//                    }
-//                }
-//            });
-//            edgeScaleSlider.setPreferredSize(new Dimension(100, 20));
-//            edgeScaleSlider.setMaximumSize(new Dimension(100, 20));
-//            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    if (evt.getPropertyName().equals("edgeScale")) {
-//                        VizModel vizModel = VizController.getInstance().getVizModel();
-//                        if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
-//                            edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
-//                        }
-//                    }
-//                }
-//            });
-//            components[3] = edgeScaleSlider;
-//            return components;
+            /*//Show edges buttons
+            VizModel vizModel = VizController.getInstance().getVizModel();
+            final JToggleButton showEdgeButton = new JToggleButton();
+            showEdgeButton.setSelected(vizModel.isShowEdges());
+            showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
+            showEdgeButton.setIcon(
+                ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.png", false));
+            showEdgeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setShowEdges(showEdgeButton.isSelected());
+                }
+            });
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("showEdges")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (showEdgeButton.isSelected() != vizModel.isShowEdges()) {
+                            showEdgeButton.setSelected(vizModel.isShowEdges());
+                        }
+                    }
+                }
+            });
+            components[0] = showEdgeButton;
+
+            //Edge color mode
+            final JToggleButton edgeHasNodeColorButton = new JToggleButton();
+            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
+            edgeHasNodeColorButton
+                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
+            edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.png", false));
+            edgeHasNodeColorButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
+                }
+            });
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("edgeHasUniColor")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (edgeHasNodeColorButton.isSelected() != !vizModel.isEdgeHasUniColor()) {
+                            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
+                        }
+                    }
+                }
+            });
+            components[1] = edgeHasNodeColorButton;
+
+            //Show labels buttons
+            final JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showEdgeLabels.png", false));
+            showLabelsButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.getTextModel().setShowEdgeLabels(showLabelsButton.isSelected());
+                }
+            });
+            vizModel.getTextModel().addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
+                    if (showLabelsButton.isSelected() != textModel.isShowEdgeLabels()) {
+                        showLabelsButton.setSelected(textModel.isShowEdgeLabels());
+                    }
+                }
+            });
+            components[2] = showLabelsButton;
+
+            //EdgeScale slider
+            final JSlider edgeScaleSlider = new JSlider(0, 100, (int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+            edgeScaleSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeScale"));
+            edgeScaleSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
+                        vizModel.setEdgeScale(edgeScaleSlider.getValue() / 10f + 0.1f);
+                    }
+                }
+            });
+            edgeScaleSlider.setPreferredSize(new Dimension(100, 20));
+            edgeScaleSlider.setMaximumSize(new Dimension(100, 20));
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("edgeScale")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
+                            edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+                        }
+                    }
+                }
+            });
+            components[3] = edgeScaleSlider;
+            return components;*/
 
             //TODO
 
@@ -423,163 +422,161 @@ public class VizBarController {
 
         @Override
         public JComponent[] getToolbarComponents() {
-//            TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//
-//            //Mode
-//            final JPopupButton labelSizeModeButton = new JPopupButton();
-//            TextManager textManager = VizController.getInstance().getTextManager();
-//            for (final SizeMode sm : textManager.getSizeModes()) {
-//                labelSizeModeButton.addItem(sm, sm.getIcon());
-//            }
-//            labelSizeModeButton.setSelectedItem(model.getSizeMode());
-//            labelSizeModeButton.setChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    SizeMode sm = (SizeMode) e.getSource();
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    model.setSizeMode(sm);
-//                }
-//            });
-//            labelSizeModeButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
-//            labelSizeModeButton
-//                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
-//            model.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (model.getSizeMode() != labelSizeModeButton.getSelectedItem()) {
-//                        labelSizeModeButton.setSelectedItem(model.getSizeMode());
-//                    }
-//                }
-//            });
-//            components[0] = labelSizeModeButton;
-//
-//            //Color mode
-//            final JPopupButton labelColorModeButton = new JPopupButton();
-//            for (final ColorMode cm : textManager.getColorModes()) {
-//                labelColorModeButton.addItem(cm, cm.getIcon());
-//            }
-//            labelColorModeButton.setSelectedItem(textManager.getModel().getColorMode());
-//            labelColorModeButton.setChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    ColorMode cm = (ColorMode) e.getSource();
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    model.setColorMode(cm);
-//                }
-//            });
-//            labelColorModeButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/labelColorMode.png")));
-//            labelColorModeButton
-//                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
-//            model.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (model.getColorMode() != labelColorModeButton.getSelectedItem()) {
-//                        labelColorModeButton.setSelectedItem(model.getColorMode());
-//                    }
-//                }
-//            });
-//            components[1] = labelColorModeButton;
-//
-//            //Font
-//            final JButton fontButton =
-//                new JButton(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
-//            fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
-//            fontButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    Font font =
-//                        JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
-//                    if (font != null && font != model.getNodeFont()) {
-//                        model.setNodeFont(font);
-//                    }
-//                }
-//            });
-//            model.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    fontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
-//                }
-//            });
-//            components[2] = fontButton;
-//
-//            //Font size
-//            final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getNodeSizeFactor() * 100f));
-//            fontSizeSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.fontScale"));
-//            fontSizeSlider.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    model.setNodeSizeFactor(fontSizeSlider.getValue() / 100f);
-//                }
-//            });
-//            fontSizeSlider.setPreferredSize(new Dimension(100, 20));
-//            fontSizeSlider.setMaximumSize(new Dimension(100, 20));
-//            model.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (((int) (model.getNodeSizeFactor() * 100f)) != fontSizeSlider.getValue()) {
-//                        fontSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
-//                    }
-//                }
-//            });
-//            components[3] = fontSizeSlider;
-//
-//            //Color
-//            final ColorChooser colorChooser = new ColorChooser(model.getNodeColor());
-//            colorChooser.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.defaultColor"));
-//            colorChooser.setPreferredSize(new Dimension(16, 16));
-//            colorChooser.setMaximumSize(new Dimension(16, 16));
-//            colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-//                        TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                        model.setNodeColor(colorChooser.getColor());
-//                    }
-//                }
-//            });
-//            model.addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (!model.getNodeColor().equals(colorChooser.getColor())) {
-//                        colorChooser.setColor(model.getNodeColor());
-//                    }
-//                }
-//            });
-//            components[4] = colorChooser;
-//
-//            //Attributes
-//            final JButton attributesButton = new JButton();
-//            attributesButton.setIcon(new javax.swing.ImageIcon(
-//                getClass().getResource("/org/gephi/visualization/component/configureLabels.png")));
-//            attributesButton
-//                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.attributes"));
-//            attributesButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    LabelAttributesPanel panel = new LabelAttributesPanel();
-//                    panel.setup(model);
-//                    DialogDescriptor dd = new DialogDescriptor(panel,
-//                        NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
-//                        NotifyDescriptor.OK_CANCEL_OPTION, null, null);
-//                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-//                        panel.unsetup();
-//                        return;
-//                    }
-//                }
-//            });
-//            components[5] = attributesButton;
-//
-//            return components;
+            /*TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+
+            //Mode
+            final JPopupButton labelSizeModeButton = new JPopupButton();
+            TextManager textManager = VizController.getInstance().getTextManager();
+            for (final SizeMode sm : textManager.getSizeModes()) {
+                labelSizeModeButton.addItem(sm, sm.getIcon());
+            }
+            labelSizeModeButton.setSelectedItem(model.getSizeMode());
+            labelSizeModeButton.setChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    SizeMode sm = (SizeMode) e.getSource();
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    model.setSizeMode(sm);
+                }
+            });
+            labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelSizeMode.png", false));
+            labelSizeModeButton
+                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            model.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    if (model.getSizeMode() != labelSizeModeButton.getSelectedItem()) {
+                        labelSizeModeButton.setSelectedItem(model.getSizeMode());
+                    }
+                }
+            });
+            components[0] = labelSizeModeButton;
+
+            //Color mode
+            final JPopupButton labelColorModeButton = new JPopupButton();
+            for (final ColorMode cm : textManager.getColorModes()) {
+                labelColorModeButton.addItem(cm, cm.getIcon());
+            }
+            labelColorModeButton.setSelectedItem(textManager.getModel().getColorMode());
+            labelColorModeButton.setChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ColorMode cm = (ColorMode) e.getSource();
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    model.setColorMode(cm);
+                }
+            });
+            labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelColorMode.png", false));
+            labelColorModeButton
+                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
+            model.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    if (model.getColorMode() != labelColorModeButton.getSelectedItem()) {
+                        labelColorModeButton.setSelectedItem(model.getColorMode());
+                    }
+                }
+            });
+            components[1] = labelColorModeButton;
+
+            //Font
+            final JButton fontButton =
+                new JButton(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
+            fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
+            fontButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    Font font =
+                        JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
+                    if (font != null && font != model.getNodeFont()) {
+                        model.setNodeFont(font);
+                    }
+                }
+            });
+            model.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    fontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
+                }
+            });
+            components[2] = fontButton;
+
+            //Font size
+            final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getNodeSizeFactor() * 100f));
+            fontSizeSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.fontScale"));
+            fontSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    model.setNodeSizeFactor(fontSizeSlider.getValue() / 100f);
+                }
+            });
+            fontSizeSlider.setPreferredSize(new Dimension(100, 20));
+            fontSizeSlider.setMaximumSize(new Dimension(100, 20));
+            model.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    if (((int) (model.getNodeSizeFactor() * 100f)) != fontSizeSlider.getValue()) {
+                        fontSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
+                    }
+                }
+            });
+            components[3] = fontSizeSlider;
+
+            //Color
+            final ColorChooser colorChooser = new ColorChooser(model.getNodeColor());
+            colorChooser.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.defaultColor"));
+            colorChooser.setPreferredSize(new Dimension(16, 16));
+            colorChooser.setMaximumSize(new Dimension(16, 16));
+            colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                        TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                        model.setNodeColor(colorChooser.getColor());
+                    }
+                }
+            });
+            model.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    if (!model.getNodeColor().equals(colorChooser.getColor())) {
+                        colorChooser.setColor(model.getNodeColor());
+                    }
+                }
+            });
+            components[4] = colorChooser;
+
+            //Attributes
+            final JButton attributesButton = new JButton();
+            attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.png", false));
+            attributesButton
+                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.attributes"));
+            attributesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+                    LabelAttributesPanel panel = new LabelAttributesPanel();
+                    panel.setup(model);
+                    DialogDescriptor dd = new DialogDescriptor(panel,
+                        NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
+                        NotifyDescriptor.OK_CANCEL_OPTION, null, null);
+                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                        panel.unsetup();
+                        return;
+                    }
+                }
+            });
+            components[5] = attributesButton;
+
+            return components;*/
+
             //TODO
             return new JComponent[0];
         }

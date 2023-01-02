@@ -66,6 +66,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel selectionColorPanel;
     private javax.swing.JCheckBox showEdgesCheckbox;
     private javax.swing.JCheckBox sourceNodeColorCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EdgeSettingsPanel
@@ -454,5 +455,4 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

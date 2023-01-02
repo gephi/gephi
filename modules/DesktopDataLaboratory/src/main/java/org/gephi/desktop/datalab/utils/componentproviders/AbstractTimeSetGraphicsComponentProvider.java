@@ -3,8 +3,10 @@ package org.gephi.desktop.datalab.utils.componentproviders;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import org.gephi.graph.api.types.TimeSet;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TimeIntervalGraphics;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.ImagePainter;
@@ -17,10 +19,11 @@ import org.jdesktop.swingx.renderer.JRendererLabel;
  */
 public abstract class AbstractTimeSetGraphicsComponentProvider extends ComponentProvider<JLabel> {
 
-    protected static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
-    protected static final Color UNSELECTED_BACKGROUND = Color.white;
-    protected static final Color FILL_COLOR = new Color(153, 255, 255);
-    protected static final Color BORDER_COLOR = new Color(2, 104, 255);
+    protected static final Color SELECTED_BACKGROUND = UIManager.getColor("Table.selectionBackground");
+    protected static final Color UNSELECTED_BACKGROUND = UIManager.getColor("Table.background");
+    protected final Color lineColor;
+    protected final Color fillColor;
+    protected final Color borderColor;
 
     protected final TimeIntervalGraphics timeIntervalGraphics;
 
@@ -33,6 +36,16 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
         this.graphModelProvider = graphModelProvider;
         this.table = table;
         this.timeIntervalGraphics = new TimeIntervalGraphics(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+        if (UIUtils.isDarkLookAndFeel()) {
+            lineColor = Color.LIGHT_GRAY;
+            fillColor = new Color(94, 98, 100);
+            borderColor = Color.LIGHT_GRAY;;
+        } else {
+            lineColor = Color.BLUE;
+            fillColor = new Color(153, 255, 255);
+            borderColor = new Color(2, 104, 255);
+        }
     }
 
     private String getTextFromValue(Object value) {
@@ -92,8 +105,8 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
             params.ends,
             rendererLabel.getWidth() - 1,
             rendererLabel.getHeight() - 1,
-            FILL_COLOR,
-            BORDER_COLOR,
+            fillColor,
+            borderColor,
             background
         );
 

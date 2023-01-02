@@ -52,7 +52,7 @@ import org.gephi.filters.spi.FilterProperty;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Exceptions;
 
 /**
@@ -66,6 +66,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox regexCheckbox;
     private javax.swing.JTextField textField;
+    // End of variables declaration//GEN-END:variables
 
     public EqualStringPanel() {
         initComponents();
@@ -82,7 +83,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                innerPanel.okButton.setEnabled(!validationPanel.isProblem());
+                innerPanel.okButton.setEnabled(!validationPanel.isFatalProblem());
             }
         });
         //Node field
@@ -172,7 +173,6 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         add(okButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private static class RegexValidator implements Validator<String> {
 
@@ -183,7 +183,12 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         }
 
         @Override
-        public boolean validate(Problems problems, String compName, String model) {
+        public Class<String> modelType() {
+            return String.class;
+        }
+
+        @Override
+        public void validate(Problems problems, String compName, String model) {
             boolean result = true;
             if (panel.regexCheckbox.isSelected()) {
                 try {
@@ -196,7 +201,6 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
                     problems.add(message);
                 }
             }
-            return result;
         }
     }
 }

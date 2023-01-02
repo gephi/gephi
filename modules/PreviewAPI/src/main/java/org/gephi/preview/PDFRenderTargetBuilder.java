@@ -42,20 +42,29 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.preview;
 
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import java.awt.geom.AffineTransform;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.fontbox.ttf.TrueTypeFont;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.FontMappers;
+import org.apache.pdfbox.pdmodel.font.FontMapping;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.util.Matrix;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.utils.progress.Progress;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -79,14 +88,18 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         float marginLeft = properties.getFloatValue(PDFTarget.MARGIN_LEFT);
         float marginRight = properties.getFloatValue(PDFTarget.MARGIN_RIGHT);
         float marginTop = properties.getFloatValue(PDFTarget.MARGIN_TOP);
-        com.itextpdf.text.Rectangle pageSize
-            = properties.getValue(PDFTarget.PAGESIZE);
+        final PDRectangle pageSize = properties.getValue(PDFTarget.PAGESIZE);
         boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
-        PdfContentByte cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
+        boolean transparentBackground = properties.getBooleanValue(PDFTarget.TRANSPARENT_BACKGROUND);
+        Color backgroundColor = transparentBackground ? null : properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+        PDPageContentStream cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
+        PDDocument doc = properties.getValue(PDFTarget.PDF_DOCUMENT);
         PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(
+            doc,
             cb,
             cs,
             pageSize,
+            backgroundColor,
             marginLeft,
             marginRight,
             marginTop,
@@ -97,25 +110,30 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
 
     public static class PDFRenderTargetImpl extends AbstractRenderTarget implements PDFTarget {
 
-        private static boolean fontRegistered = false;
-        private final PdfContentByte cb;
+        private final PDPageContentStream cb;
+        private final PDDocument document;
         //Parameters
         private final float marginTop;
         private final float marginBottom;
         private final float marginLeft;
         private final float marginRight;
         private final boolean landscape;
-        private final com.itextpdf.text.Rectangle pageSize;
+        private final PDRectangle pageSize;
+
+        private Map<String, PDFont> fontMap;
 
         public PDFRenderTargetImpl(
-            PdfContentByte cb,
+            PDDocument doc,
+            PDPageContentStream cb,
             CanvasSize cs,
-            com.itextpdf.text.Rectangle size,
+            PDRectangle size,
+            Color backgroundColor,
             float marginLeft,
             float marginRight,
             float marginTop,
             float marginBottom,
             boolean landscape) {
+            this.document = doc;
             this.cb = cb;
             this.marginTop = marginTop;
             this.marginLeft = marginLeft;
@@ -123,6 +141,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             this.marginRight = marginRight;
             this.pageSize = size;
             this.landscape = landscape;
+            this.fontMap = new HashMap<>();
 
             double centerX = cs.getX() + cs.getWidth() / 2;
             double centerY = cs.getY() + cs.getHeight() / 2;
@@ -135,89 +154,53 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             double scale = (float) (ratioWidth < ratioHeight ? ratioWidth : ratioHeight);
             double translateX = (marginLeft + pageWidth / 2.) / scale;
             double translateY = (marginBottom + pageHeight / 2.) / scale;
-            cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, centerY * scale));
-            cb.transform(AffineTransform.getScaleInstance(scale, scale));
-            cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
+            try {
+                // Background
+                if (backgroundColor != null) {
+                    cb.setNonStrokingColor(backgroundColor);
+                    cb.addRect(0, 0, size.getWidth(), size.getHeight());
+                    cb.fill();
+                }
 
-            FontFactory.register("/org/gephi/preview/fonts/LiberationSans.ttf", "ArialMT");
+                // Transformations
+                cb.transform(Matrix.getTranslateInstance((float) (-centerX * scale), (float) (centerY * scale)));
+                cb.transform(Matrix.getScaleInstance((float) scale, (float) scale));
+                cb.transform(Matrix.getTranslateInstance((float) translateX, (float) translateY));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         @Override
-        public PdfContentByte getContentByte() {
+        public PDPageContentStream getContentStream() {
             return this.cb;
         }
 
-        @Override
-        public BaseFont getBaseFont(java.awt.Font font) {
-            try {
-                if (font != null) {
-                    BaseFont baseFont;
-                    if (!font.getFontName().equals(FontFactory.COURIER)
-                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                        && !font.getFontName().equals(FontFactory.COURIER_OBLIQUE)
-                        && !font.getFontName().equals(FontFactory.COURIER_BOLDOBLIQUE)
-                        && !font.getFontName().equals(FontFactory.HELVETICA)
-                        && !font.getFontName().equals(FontFactory.HELVETICA_BOLD)
-                        && !font.getFontName().equals(FontFactory.HELVETICA_BOLDOBLIQUE)
-                        && !font.getFontName().equals(FontFactory.HELVETICA_OBLIQUE)
-                        && !font.getFontName().equals(FontFactory.SYMBOL)
-                        && !font.getFontName().equals(FontFactory.TIMES_ROMAN)
-                        && !font.getFontName().equals(FontFactory.TIMES_BOLD)
-                        && !font.getFontName().equals(FontFactory.TIMES_ITALIC)
-                        && !font.getFontName().equals(FontFactory.TIMES_BOLDITALIC)
-                        && !font.getFontName().equals(FontFactory.ZAPFDINGBATS)
-                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
-
-                        com.itextpdf.text.Font itextFont = FontFactory
-                            .getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
-                        baseFont = itextFont.getBaseFont();
-                        if (baseFont == null && !PDFRenderTargetImpl.fontRegistered) {
-
-                            if (progressTicket != null) {
-                                String displayName = progressTicket.getDisplayName();
-                                Progress.setDisplayName(progressTicket, NbBundle
-                                    .getMessage(PDFRenderTargetImpl.class, "PDFRenderTargetImpl.font.registration"));
-                                registerFonts();
-                                Progress.setDisplayName(progressTicket, displayName);
-                            }
-
-                            itextFont = FontFactory
-                                .getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
-                            baseFont = itextFont.getBaseFont();
-
-                            PDFRenderTargetImpl.fontRegistered = true;
-                        }
-                    } else {
-                        com.itextpdf.text.Font itextFont =
-                            FontFactory.getFont(font.getFontName(), font.getSize(), font.getStyle());
-                        baseFont = itextFont.getBaseFont();
+        public PDFont getPDFont(java.awt.Font font) {
+            final String fontKey = getFontKey(font);
+            return fontMap.computeIfAbsent(fontKey, (key) -> {
+                FontMapping<TrueTypeFont> mapping = FontMappers.instance().getTrueTypeFont(fontKey, null);
+                if (mapping != null) {
+                    try {
+                        return PDType0Font.load(document, mapping.getFont(), true);
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
-
-                    if (baseFont != null) {
-                        return baseFont;
-                    }
-                    return BaseFont.createFont();
                 }
-                return BaseFont.createFont();
-            } catch (Exception e) {
-                Exceptions.printStackTrace(e);
-            }
-            return null;
+                return PDType1Font.HELVETICA;
+            });
         }
 
-        private void registerFonts() {
-            FontFactory.registerDirectories();
-            if (Utilities.isMac()) {
-                //Add user fonts folder
-                String userFonts = "/" + System.getProperty("user.home") + "/Library/Fonts";
-                FontFactory.registerDirectory(userFonts);
-
-                //Adobe font folder
-                String adobeFonts = "/Library/Application Support/Adobe/Fonts";
-                FontFactory.registerDirectory(adobeFonts);
+        private static String getFontKey(Font font) {
+            StringBuilder name = new StringBuilder(font.getName().replace(" ", "-"));
+            if (font.isBold()) {
+                name.append("-Bold");
             }
+            if (font.isItalic()) {
+                name.append("-Italic");
+            }
+
+            return name.toString();
         }
 
         @Override
@@ -246,7 +229,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public com.itextpdf.text.Rectangle getPageSize() {
+        public PDRectangle getPageSize() {
             return pageSize;
         }
     }

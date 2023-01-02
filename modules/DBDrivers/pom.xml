@@ -4,22 +4,22 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>db-drivers</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>DBDrivers</name>
 
     <properties>
         <gephi.sqlite.version>3.36.0.3</gephi.sqlite.version>
-        <gephi.mysql.version>8.0.28</gephi.mysql.version>
-        <gephi.postgresql.version>42.4.1</gephi.postgresql.version>
-        <gephi.sqlserver.version>10.2.0.jre11</gephi.sqlserver.version>
+        <gephi.mysql.version>8.0.31</gephi.mysql.version>
+        <gephi.postgresql.version>42.4.3</gephi.postgresql.version>
+        <gephi.sqlserver.version>11.2.1.jre11</gephi.sqlserver.version>
     </properties>
 
     <dependencies>

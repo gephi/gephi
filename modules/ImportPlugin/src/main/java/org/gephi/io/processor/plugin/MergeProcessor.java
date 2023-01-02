@@ -77,6 +77,7 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
                 workspace = pc.newWorkspace(pc.getCurrentProject());
                 pc.openWorkspace(workspace);
             }
+            processMeta(containers[0], workspace);
             processConfiguration(containers[0], workspace);
 
             Progress.start(progressTicket, calculateWorkUnits());

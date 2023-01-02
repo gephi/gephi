@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.gephi.Gephi</id>
+  <metadata_license>CC-BY-SA-3.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Gephi</name>
+  <summary>The Open Graph Viz Platform</summary>
+  <description>
+    <p>
+      Gephi is the leading open-source platform for visualizing and manipulating large graphs.
+    </p>
+    <p>
+      <ul>
+      	<li><b>Fast: </b>Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.</li>
+      	<li><b>Simple: </b>Easy to install and get started. An UI that is centered around the visualization. Like Photoshop™ for graphs.</li>
+      	<li><b>Extensible: </b>Extend Gephi with plug-ins.</li>
+      </ul>
+    </p>
+    <p>
+      Example datasets can be found on our wiki: https://github.com/gephi/gephi/wiki/Datasets
+    </p>
+    <p>Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech and German.</p>
+  </description>
+  <launchable type="desktop-id">org.gephi.Gephi.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://upload.wikimedia.org/wikipedia/commons/2/27/Gephi-07beta-screenshot.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://dashboard.snapcraft.io/site_media/appmedia/2022/01/preview4.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://dashboard.snapcraft.io/site_media/appmedia/2022/01/metricsresults.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://dashboard.snapcraft.io/site_media/appmedia/2022/01/layout2.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://dashboard.snapcraft.io/site_media/appmedia/2022/01/neighbours.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="bugtracker">https://github.com/gephi/gephi/issues</url>
+  <url type="help">https://gephi.org/users/</url>
+  <url type="homepage">https://gephi.org/</url>
+  <developer_name>Mathieu Bastian</developer_name>
+  <update_contact>contact@gephi.org</update_contact>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.9.7" date="2022-08-04"/>
+    <release version="0.9.6" date="2022-06-22"/>
+    <release version="0.9.5" date="2022-05-03"/>
+    <release version="0.9.4" date="2022-04-17"/>
+    <release version="0.9.3" date="2022-03-16"/>
+    <release version="0.9.2" date="2017-09-24"/>
+    <release version="0.9.1" date="2016-02-14"/>
+    <release version="0.9.0" date="2015-12-20"/>
+  </releases>
+</component>

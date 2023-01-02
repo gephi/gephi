@@ -64,6 +64,7 @@ public final class EditToolTopComponent extends TopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel propertySheet;
+    // End of variables declaration//GEN-END:variables
 
     public EditToolTopComponent() {
         initComponents();
@@ -142,7 +143,6 @@ public final class EditToolTopComponent extends TopComponent {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(propertySheet, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public void componentOpened() {

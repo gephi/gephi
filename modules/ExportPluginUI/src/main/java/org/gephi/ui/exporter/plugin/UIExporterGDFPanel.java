@@ -62,6 +62,7 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox simpleQuotesCheckbox;
     private javax.swing.JCheckBox visibilityCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form UIExporterGDFPanel
@@ -229,5 +230,5 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotesCheckboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_quotesCheckboxActionPerformed
-    // End of variables declaration//GEN-END:variables
+
 }

@@ -72,6 +72,7 @@ import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -96,6 +97,7 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
 
     public ProcessorIssuesReportPanel() {
         try {
@@ -140,13 +142,13 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     }
 
     public void initIcons() {
-        infoIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/info.png"));
+        infoIcon = ImageUtilities.loadImageIcon("DesktopImport/info.png", false);
         warningIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/warning.gif"));
+            ImageUtilities.loadImageIcon("DesktopImport/warning.gif", false);
         severeIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/severe.png"));
+            ImageUtilities.loadImageIcon("DesktopImport/severe.png", false);
         criticalIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/critical.png"));
+            ImageUtilities.loadImageIcon("DesktopImport/critical.png", false);
     }
 
     public void setData(Report report) {
@@ -259,7 +261,6 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class IssueTreeModel implements TreeModel {
 

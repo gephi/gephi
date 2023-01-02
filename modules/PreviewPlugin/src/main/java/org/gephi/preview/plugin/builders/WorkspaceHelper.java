@@ -17,6 +17,9 @@ public class WorkspaceHelper {
      */
     public static Workspace getWorkspace(Graph graph) {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        if (projectController.getCurrentProject() == null) {
+            return null;
+        }
         WorkspaceProvider workspaceProvider =
             projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
         for (Workspace workspace : workspaceProvider.getWorkspaces()) {

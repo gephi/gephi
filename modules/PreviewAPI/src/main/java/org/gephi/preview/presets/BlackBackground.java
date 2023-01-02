@@ -59,7 +59,7 @@ public class BlackBackground extends PreviewPreset {
         properties.putAll(defaultPreset.getProperties());
 
         //Custom values
-        properties.put(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
+        properties.put(PreviewProperty.BACKGROUND_COLOR, Color.DARK_GRAY);
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.WHITE));

@@ -68,6 +68,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
     private javax.swing.JPanel openglInfoPanel;
     private javax.swing.JButton resetButton;
     private javax.swing.JFormattedTextField octreeWidthTextField;
+    // End of variables declaration//GEN-END:variables
 
     OpenGLPanel(OpenGLOptionsPanelController controller) {
         this.controller = controller;
@@ -265,5 +266,4 @@ final class OpenGLPanel extends javax.swing.JPanel {
         // TODO check whether form is consistent and complete
         return true;
     }
-    // End of variables declaration//GEN-END:variables
 }

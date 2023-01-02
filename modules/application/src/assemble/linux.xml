@@ -10,5 +10,10 @@
             <outputDirectory></outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/../../flathub</directory>
+            <outputDirectory>flathub</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
     </fileSets>
 </assembly>

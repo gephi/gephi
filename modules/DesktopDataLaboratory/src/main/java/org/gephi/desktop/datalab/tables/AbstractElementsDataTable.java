@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
+import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -80,6 +81,7 @@ import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.api.types.TimestampSet;
+import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
@@ -121,10 +123,13 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
     public AbstractElementsDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
         table = new JXTable();
-        table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(false);
         table.setSortable(true);
         table.setAutoCreateRowSorter(true);
+
+        if (!UIUtils.isDarkLookAndFeel()) {
+            table.setHighlighters(HighlighterFactory.createAlternateStriping());
+        }
 
         intervalSetGraphicsComponentProvider = new IntervalSetGraphicsComponentProvider(this, table);
         timestampSetGraphicsComponentProvider = new TimestampSetGraphicsComponentProvider(this, table);
@@ -334,6 +339,10 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
             Rectangle rect = table.getCellRect(row, 0, true);
             table.scrollRectToVisible(rect);
         }
+    }
+
+    public void scrollToTop() {
+        table.scrollRowToVisible(0);
     }
 
     public boolean hasData() {

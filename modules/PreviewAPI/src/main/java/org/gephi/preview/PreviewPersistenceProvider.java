@@ -74,10 +74,6 @@ public class PreviewPersistenceProvider implements WorkspaceXMLPersistenceProvid
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         PreviewModelImpl model =
             (PreviewModelImpl) Lookup.getDefault().lookup(PreviewController.class).getModel(workspace);
-        if (model == null) {
-            model = new PreviewModelImpl(workspace);
-            workspace.add(model);
-        }
         try {
             model.readXML(reader);
         } catch (XMLStreamException ex) {

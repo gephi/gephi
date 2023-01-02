@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>appearance-api</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>AppearanceAPI</name>
@@ -38,6 +38,11 @@
         </dependency>
 
         <!-- Test only -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>

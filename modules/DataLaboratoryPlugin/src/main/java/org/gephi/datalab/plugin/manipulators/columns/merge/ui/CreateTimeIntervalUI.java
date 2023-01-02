@@ -57,7 +57,7 @@ import org.gephi.graph.api.Column;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -98,6 +98,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     private javax.swing.JRadioButton parseNumbersRadioButton;
     private javax.swing.JComboBox startColumnComboBox;
     private javax.swing.JLabel startColumnLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CreateTimeIntervalUI
@@ -242,25 +243,35 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         ValidationGroup group = validationPanel.getValidationGroup();
 
         group.add(dateFormatComboBox, new Validator<String>() {
+
             @Override
-            public boolean validate(Problems prblms, String string, String t) {
+            public Class<String> modelType() {
+                return String.class;
+            }
+
+            @Override
+            public void validate(Problems prblms, String string, String t) {
                 boolean valid = validateDateFormat(t);
                 if (!valid) {
                     prblms.add(
                         NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.dateformat"));
                 }
-                return valid;
             }
         });
 
         Validator<String> emptyOrNumberValidator = new Validator<String>() {
+
             @Override
-            public boolean validate(Problems prblms, String string, String t) {
+            public Class<String> modelType() {
+                return String.class;
+            }
+
+            @Override
+            public void validate(Problems prblms, String string, String t) {
                 boolean valid = validateNumberOrEmpty(t);
                 if (!valid) {
                     prblms.add(NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.number"));
                 }
-                return valid;
             }
         };
         group.add(defaultStartNumberText, emptyOrNumberValidator);
@@ -312,7 +323,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     private void refreshOkButton() {
         boolean enabled = getComboBoxColumn(startColumnComboBox) != null ||
             getComboBoxColumn(endColumnComboBox) != null;//At least 1 column not null
-        enabled &= validationPanel != null && !validationPanel.isProblem();
+        enabled &= validationPanel != null && !validationPanel.isFatalProblem();
         dialogControls.setOkButtonEnabled(enabled);
     }
 
@@ -571,5 +582,4 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             return column != null ? column.getTitle() : "";
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -42,18 +42,26 @@
 
 package org.gephi.project.impl;
 
-import java.io.Serializable;
+import java.io.File;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectMetaData;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
  * @author Mathieu Bastian
  */
-public class ProjectImpl implements Project, Lookup.Provider, Serializable {
+public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Provider {
 
     //Workspace ids
     private final AtomicInteger workspaceIds;
@@ -61,22 +69,35 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
 
-    public ProjectImpl(int id) {
-        this(NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + " " + id);
-    }
+    private final WorkspaceProviderImpl workspaceProvider;
+    private final ProjectInformationImpl projectInformation;
+    private final ProjectMetaDataImpl projectMetaData;
+    private final String uniqueIdentifier;
+
+    private Instant lastOpened;
 
     public ProjectImpl(String name) {
+        this(UUID.randomUUID().toString(), name);
+    }
+
+    public ProjectImpl(String uniqueIdentifier, String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be null or empty");
+        }
+        if (uniqueIdentifier == null || uniqueIdentifier.isEmpty()) {
+            throw new IllegalArgumentException("Project unique identifier cannot be null or empty");
+        }
+        this.uniqueIdentifier = uniqueIdentifier;
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         workspaceIds = new AtomicInteger(1);
 
-        //Init Default Content
-        ProjectMetaDataImpl metaDataImpl = new ProjectMetaDataImpl();
-        instanceContent.add(metaDataImpl);
-        ProjectInformationImpl projectInformationImpl = new ProjectInformationImpl(this, name);
-        instanceContent.add(projectInformationImpl);
-        WorkspaceProviderImpl workspaceProviderImpl = new WorkspaceProviderImpl(this);
-        instanceContent.add(workspaceProviderImpl);
+        workspaceProvider = new WorkspaceProviderImpl(this);
+        projectInformation = new ProjectInformationImpl(this, name);
+        projectMetaData = new ProjectMetaDataImpl();
+        instanceContent.add(projectMetaData);
+        instanceContent.add(projectInformation);
+        instanceContent.add(workspaceProvider);
     }
 
     @Override
@@ -94,8 +115,102 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return lookup;
     }
 
+    @Override
+    public WorkspaceImpl getCurrentWorkspace() {
+        return workspaceProvider.getCurrentWorkspace();
+    }
+
+    @Override
+    public boolean hasCurrentWorkspace() {
+        return workspaceProvider.hasCurrentWorkspace();
+    }
+
+    public Instant getLastOpened() {
+        return lastOpened;
+    }
+
+    public void setCurrentWorkspace(Workspace workspace) {
+        workspaceProvider.setCurrentWorkspace(workspace);
+    }
+
+    public WorkspaceImpl newWorkspace() {
+        return workspaceProvider.newWorkspace();
+    }
+
+    public WorkspaceImpl newWorkspace(int id) {
+        return workspaceProvider.newWorkspace(id);
+    }
+
+    @Override
+    public List<Workspace> getWorkspaces() {
+        return Collections.unmodifiableList(Arrays.asList(workspaceProvider.getWorkspaces()));
+    }
+
+    @Override
+    public Workspace getWorkspace(int id) {
+        return workspaceProvider.getWorkspace(id);
+    }
+
+    protected void setLastOpened() {
+        lastOpened = LocalDateTime.now().toInstant(ZoneOffset.UTC);
+    }
+
+    protected void setLastOpened(Instant lastOpened) {
+        this.lastOpened = lastOpened;
+    }
+
+    protected void open() {
+        setLastOpened();
+        projectInformation.open();
+    }
+
+    protected void close() {
+        projectInformation.close();
+        workspaceProvider.purge();
+    }
+
+    @Override
+    public boolean isOpen() {
+        return projectInformation.isOpen();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return projectInformation.isClosed();
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return projectInformation.isInvalid();
+    }
+
+    @Override
     public String getName() {
-        return lookup.lookup(ProjectInformationImpl.class).getName();
+        return projectInformation.getName();
+    }
+
+    @Override
+    public String getUniqueIdentifier() {
+        return uniqueIdentifier;
+    }
+
+    @Override
+    public boolean hasFile() {
+        return projectInformation.hasFile();
+    }
+
+    @Override
+    public String getFileName() {
+        return projectInformation.getFileName();
+    }
+
+    @Override
+    public File getFile() {
+        return projectInformation.getFile();
+    }
+
+    protected void setFile(File file) {
+        projectInformation.setFile(file);
     }
 
     public int nextWorkspaceId() {
@@ -108,5 +223,48 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
 
     public void setWorkspaceIds(int ids) {
         workspaceIds.set(ids);
+    }
+
+    @Override
+    public ProjectMetaData getProjectMetadata() {
+        return projectMetaData;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ProjectImpl project = (ProjectImpl) o;
+
+        return uniqueIdentifier.equals(project.uniqueIdentifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return uniqueIdentifier.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectImpl {" +
+            "uniqueIdentifier='" + uniqueIdentifier + '\'' +
+            '}';
+    }
+
+    @Override
+    public int compareTo(ProjectImpl o) {
+        if (o.getLastOpened() == null) {
+            return -1;
+        } else if (getLastOpened() == null) {
+            return 1;
+        } else {
+            return o.getLastOpened().compareTo(getLastOpened());
+        }
     }
 }

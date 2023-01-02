@@ -5,13 +5,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>visualization</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>VisualizationImpl</name>
@@ -157,6 +157,10 @@
             <artifactId>datalab-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-icons</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-options-api</artifactId>
         </dependency>
@@ -235,14 +239,24 @@
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
                         <publicPackage>org.gephi.lib.gleem.linalg</publicPackage>
                     </publicPackages>
-                    <nbmResources>
-                        <nbmResource>
-                            <directory>src/main/libs</directory>
-                            <targetPath>modules/lib</targetPath>
+                    <nbmResources> 
+                        <nbmResource> 
+                            <directory>src/main/libs</directory> 
+                            <targetPath>modules/lib</targetPath> 
                         </nbmResource>
                     </nbmResources>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>jogl-jzy3d</id>
+            <name>JOGL Jzy3d</name>
+            <url>https://maven.jzy3d.org/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

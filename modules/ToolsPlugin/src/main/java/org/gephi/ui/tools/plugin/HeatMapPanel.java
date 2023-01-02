@@ -79,6 +79,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox modeComboBox;
     private javax.swing.JPanel palettePanel;
     private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form HeatMapPanel
@@ -257,7 +258,6 @@ public class HeatMapPanel extends javax.swing.JPanel {
                     javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private static class PaletteIcon implements Icon {
 

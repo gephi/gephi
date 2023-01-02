@@ -44,6 +44,7 @@ package org.gephi.layout;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutModel;
@@ -60,6 +62,7 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.utils.Serialization;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -71,7 +74,7 @@ import org.openide.util.Lookup;
 /**
  * @author Mathieu Bastian
  */
-public class LayoutModelImpl implements LayoutModel {
+public class LayoutModelImpl implements LayoutModel, Model {
 
     //Listeners
     private final List<PropertyChangeListener> listeners;
@@ -190,6 +193,10 @@ public class LayoutModelImpl implements LayoutModel {
             try {
                 Object value = p.getProperty().getValue();
                 if (value != null) {
+                    if (value instanceof Column) {
+                        PropertyEditor propertyEditor = p.getProperty().getPropertyEditor();
+                        value = propertyEditor.getAsText();
+                    }
                     savedProperties
                         .put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
@@ -200,6 +207,9 @@ public class LayoutModelImpl implements LayoutModel {
     }
 
     public void loadProperties(Layout layout) {
+        // In case some properties are only locally defined (like cooling in ForceAtlas)
+        layout.resetPropertiesValues();
+
         List<LayoutPropertyKey> layoutValues = new ArrayList<>();
         for (LayoutPropertyKey val : savedProperties.keySet()) {
             if (val.layoutClassName.equals(layout.getClass().getName())) {
@@ -212,7 +222,12 @@ public class LayoutModelImpl implements LayoutModel {
                     || property.getProperty().getName().equalsIgnoreCase(
                     l.name)) {//Also compare with property name to maintain compatibility with old saved properties
                     try {
-                        property.getProperty().setValue(savedProperties.get(l));
+                        if (property.getProperty().getValueType().isAssignableFrom(Column.class)) {
+                            PropertyEditor propertyEditor = property.getProperty().getPropertyEditor();
+                            propertyEditor.setAsText(savedProperties.get(l).toString());
+                        } else {
+                            property.getProperty().setValue(savedProperties.get(l));
+                        }
                     } catch (Exception e) {
                         Exceptions.printStackTrace(e);
                     }
@@ -221,6 +236,7 @@ public class LayoutModelImpl implements LayoutModel {
         }
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }

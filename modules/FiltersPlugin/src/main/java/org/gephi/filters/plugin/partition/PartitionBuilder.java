@@ -42,9 +42,12 @@
 
 package org.gephi.filters.plugin.partition;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -231,6 +234,7 @@ public class PartitionBuilder implements CategoryBuilder {
         protected FilterProperty[] filterProperties;
         protected Set<Object> parts;
         protected Graph graph;
+        protected boolean flattenList;
 
         public PartitionFilter(Partition partition) {
             this(null, partition);
@@ -252,15 +256,30 @@ public class PartitionBuilder implements CategoryBuilder {
             Object value = partition.getValue(node, graph);
             if (value == null) {
                 return parts.contains(NULL);
+            } else if (flattenList && partition.getColumn().isArray()) {
+                return listContains(value);
             } else {
                 return parts.contains(value);
             }
+        }
+
+        private boolean listContains(Object value) {
+            int length = Array.getLength(value);
+            for (int i = 0; i < length; i++) {
+                Object val = Array.get(value, i);
+                if (parts.contains(val)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
             Object value = partition.getValue(edge, graph);
             if (value == null) {
                 return parts.contains(NULL);
+            } else if (flattenList && partition.getColumn().isArray()) {
+                return listContains(value);
             } else {
                 return parts.contains(value);
             }
@@ -293,8 +312,23 @@ public class PartitionBuilder implements CategoryBuilder {
             getProperties()[1].setValue(new HashSet<>());
         }
 
+        public Set getFlattenParts() {
+            HashSet allParts = new HashSet();
+            partition.getValues(graph).stream().filter(Objects::nonNull).forEach(value -> {
+                int length = Array.getLength(value);
+                for (int i = 0; i < length; i++) {
+                    allParts.add(Array.get(value, i));
+                }
+            });
+            return allParts;
+        }
+
         public void selectAll() {
-            getProperties()[1].setValue(new HashSet<>(partition.getValues(graph)));
+            if (flattenList && partition.getColumn().isArray()) {
+                getProperties()[1].setValue(getFlattenParts());
+            } else {
+                getProperties()[1].setValue(new HashSet<>(partition.getValues(graph)));
+            }
         }
 
         @Override
@@ -304,12 +338,21 @@ public class PartitionBuilder implements CategoryBuilder {
                 try {
                     filterProperties = new FilterProperty[] {
                         FilterProperty.createProperty(this, Column.class, "column"),
-                        FilterProperty.createProperty(this, Set.class, "parts")};
+                        FilterProperty.createProperty(this, Set.class, "parts"),
+                        FilterProperty.createProperty(this, Boolean.class, "flattenList"),};
                 } catch (Exception ex) {
                     Exceptions.printStackTrace(ex);
                 }
             }
             return filterProperties;
+        }
+
+        public boolean isFlattenList() {
+            return flattenList;
+        }
+
+        public void setFlattenList(boolean flattenList) {
+            this.flattenList = flattenList;
         }
 
         public Partition getPartition() {

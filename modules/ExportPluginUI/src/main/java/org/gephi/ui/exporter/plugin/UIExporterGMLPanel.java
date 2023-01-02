@@ -44,9 +44,9 @@ package org.gephi.ui.exporter.plugin;
 
 import org.gephi.io.exporter.plugin.ExporterGML;
 import org.gephi.lib.validation.ValidationClient;
-import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * @author megaterik
@@ -65,6 +65,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JLabel normalizeLabel;
     private javax.swing.JLabel spacesLabel;
     private javax.swing.JTextField spacesTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new customizer UIExporterGMLPanel
@@ -225,7 +226,6 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
         spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private void exportNotRecognizedCheckBoxActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportNotRecognizedCheckBoxActionPerformed
@@ -234,7 +234,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
 
     @Override
     public void validate(ValidationGroup group) {
-        group.add(spacesTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER,
-            Validators.REQUIRE_VALID_INTEGER);
+        group.add(spacesTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER,
+            StringValidators.REQUIRE_VALID_INTEGER);
     }
 }

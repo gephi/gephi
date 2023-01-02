@@ -47,6 +47,7 @@ package org.gephi.project.api;
  *
  * @author Mathieu Bastian
  * @see Project
+ * @deprecated All methods have been ported to {@link Project} directly.
  */
 public interface WorkspaceProvider {
 

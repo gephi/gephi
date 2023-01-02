@@ -61,7 +61,7 @@ import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -92,6 +92,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton removeColumnButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form MergeColumnsUI
@@ -316,8 +317,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         description.setText(
             org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.description.text")); // NOI18N
 
-        addColumnButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow.png"))); // NOI18N
+        addColumnButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/arrow.png", false)); // NOI18N
         addColumnButton.setText(org.openide.util.NbBundle
             .getMessage(MergeColumnsUI.class, "MergeColumnsUI.addColumnButton.text")); // NOI18N
         addColumnButton.addActionListener(new java.awt.event.ActionListener() {
@@ -327,8 +327,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             }
         });
 
-        removeColumnButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow-180.png"))); // NOI18N
+        removeColumnButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/arrow-180.png", false)); // NOI18N
         removeColumnButton.setText(org.openide.util.NbBundle
             .getMessage(MergeColumnsUI.class, "MergeColumnsUI.removeColumnButton.text")); // NOI18N
         removeColumnButton.addActionListener(new java.awt.event.ActionListener() {
@@ -366,8 +365,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         });
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/info.png", false)); // NOI18N
         infoLabel.setText(
             org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.infoLabel.text")); // NOI18N
         infoLabel.setEnabled(false);
@@ -495,19 +493,20 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean validate(Problems problems, String string, ComboBoxModel t) {
+        public Class<ComboBoxModel> modelType() {
+            return ComboBoxModel.class;
+        }
+
+        @Override
+        public void validate(Problems problems, String string, ComboBoxModel t) {
             if (t.getSelectedItem() != null) {
-                if (ui.canExecuteSelectedStrategy()) {
-                    return true;
-                } else {
+                if (!ui.canExecuteSelectedStrategy()) {
                     problems.add(
                         NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
-                    return false;
                 }
             } else {
                 problems.add(
                     NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.less_than_2_columns_selected"));
-                return false;
             }
         }
     }
@@ -536,5 +535,4 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             return column.getTitle() + " -- " + column.getTypeClass().getSimpleName();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

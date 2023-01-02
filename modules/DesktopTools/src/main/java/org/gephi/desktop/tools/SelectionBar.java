@@ -64,6 +64,7 @@ public class SelectionBar extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXHyperlink configureLink;
     private javax.swing.JSeparator endSeparator;
     private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SelectionBar
@@ -170,7 +171,6 @@ public class SelectionBar extends javax.swing.JPanel {
 
         configureLink.setText(
             org.openide.util.NbBundle.getMessage(SelectionBar.class, "SelectionBar.configureLink.text")); // NOI18N
-        configureLink.setClickedColor(new java.awt.Color(0, 51, 255));
         configureLink.setDefaultCapable(false);
         configureLink.setFocusable(false);
         configureLink.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
@@ -193,7 +193,6 @@ public class SelectionBar extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
         add(endSeparator, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public void setEnabled(final boolean enabled) {

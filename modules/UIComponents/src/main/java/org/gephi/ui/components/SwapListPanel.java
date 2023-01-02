@@ -47,6 +47,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import org.openide.util.ImageUtilities;
 
 //WORK IN PROGRESS, NOT WORKING NOT TESTED YET
 public class SwapListPanel extends javax.swing.JPanel {
@@ -58,6 +59,7 @@ public class SwapListPanel extends javax.swing.JPanel {
     private javax.swing.JButton rightButton;
     private javax.swing.JScrollPane scrollPane1;
     private javax.swing.JScrollPane scrollPane2;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form SwapListPanel
@@ -137,8 +139,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(scrollPane2, gridBagConstraints);
 
-        leftButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/components/resources/leftArrow.png"))); // NOI18N
+        leftButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/leftArrow.png", false)); // NOI18N
         leftButton.setText(
             org.openide.util.NbBundle.getMessage(SwapListPanel.class, "SwapListPanel.leftButton.text")); // NOI18N
         leftButton.setMinimumSize(new java.awt.Dimension(33, 23));
@@ -151,8 +152,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         add(leftButton, gridBagConstraints);
 
-        rightButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/components/resources/rightArrow.png"))); // NOI18N
+        rightButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/rightArrow.png", false)); // NOI18N
         rightButton.setText(
             org.openide.util.NbBundle.getMessage(SwapListPanel.class, "SwapListPanel.rightButton.text")); // NOI18N
         rightButton.setMinimumSize(new java.awt.Dimension(33, 23));
@@ -165,7 +165,6 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         add(rightButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class SwapListModel {
 

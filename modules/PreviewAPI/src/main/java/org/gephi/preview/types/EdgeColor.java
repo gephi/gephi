@@ -61,7 +61,7 @@ public class EdgeColor {
     private final Color customColor;
 
     public EdgeColor(Mode mode) {
-        customColor = Color.BLACK;
+        customColor = mode.equals(Mode.CUSTOM) ? Color.BLACK : null;
         this.mode = mode;
     }
 

@@ -53,6 +53,7 @@ import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.ui.tools.plugin.PainterPanel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -129,7 +130,7 @@ public class Painter implements Tool {
 
             @Override
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tools/plugin/resources/painter.png"));
+                return ImageUtilities.loadImageIcon("ToolsPlugin/painter.png", false);
             }
 
             @Override

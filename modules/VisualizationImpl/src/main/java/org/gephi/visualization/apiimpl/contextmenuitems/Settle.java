@@ -92,7 +92,7 @@ public class Settle extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/settle.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/settle.png", false);
     }
 
     @Override

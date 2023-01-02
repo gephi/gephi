@@ -42,9 +42,6 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -53,6 +50,11 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -154,32 +156,49 @@ public class EdgeLabelRenderer implements Renderer {
                 Float y2 = targetItem.getData(NodeItem.Y);
 
                 //Curved edges
-                Vector direction = new Vector(x2, y2);
+                final Vector direction = new Vector(x2, y2);
                 direction.sub(new Vector(x1, y1));
-                float length = direction.mag();
-                direction.normalize();
+                final float length = direction.mag();
+                // Arc radius
+                double r = length / properties.getDoubleValue(EdgeRenderer.ARC_CURVENESS);
+                // Arc bounding box
+                Double _xa = 0.5*(x1-x2);
+                Double _ya = 0.5*(y1-y2);
+                Double _x0 = x2+_xa;
+                Double _y0 = y2+_ya;
+                Double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
+                Double _b = 0.;
+                if (_a < r) {
+                    _b = Math.sqrt(Math.pow(r, 2) - Math.pow(_a, 2));
+                }
+                Double xc = _x0 + (_b * _ya) / _a;
+                Double yc = _y0 - (_b * _xa / _a);
+                Double angle1 = Math.atan2(y1-yc, x1-xc);
+                Double angle2 = Math.atan2(y2-yc, x2-xc);
+                while (angle2<angle1) {
+                    angle2 += 2*Math.PI;
+                }
+                // Target radius - to start at the base of the arrow
+                final Float targetRadius = item.getData(EdgeRenderer.TARGET_RADIUS);
+                // Offset due to the source node
+                if (targetRadius != null && targetRadius < 0) {
+                    Double targetOffset = computeTheThing(r, (double) targetRadius);
+                    angle2 += targetOffset;
+                }
+                // Source radius
+                final Float sourceRadius = item.getData(EdgeRenderer.SOURCE_RADIUS);
+                // Avoid edge from passing the node's center:
+                if (sourceRadius != null && sourceRadius < 0) {
+                    Double sourceOffset = computeTheThing(r, (double) sourceRadius);
+                    angle1 -= sourceOffset;
+                }
+                // Label coordinates
+                final Double lAngle = (angle1+angle2)/2;
+                final Float x = (float)(xc + r*Math.cos(lAngle));
+                final Float y = (float)(yc + r*Math.sin(lAngle));
+                item.setData(LABEL_X, x);
+                item.setData(LABEL_Y, y);
 
-                float factor = properties.getFloatValue(EdgeRenderer.BEZIER_CURVENESS) * length;
-
-                // normal vector to the edge
-                Vector n = new Vector(direction.y, -direction.x);
-                n.mult(factor);
-
-                // first control point
-                Vector v1 = new Vector(direction.x, direction.y);
-                v1.mult(factor);
-                v1.add(new Vector(x1, y1));
-                v1.add(n);
-
-                // second control point
-                Vector v2 = new Vector(direction.x, direction.y);
-                v2.mult(-factor);
-                v2.add(new Vector(x2, y2));
-                v2.add(n);
-
-                Vector middle = bezierPoint(x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2, 0.5f);
-                item.setData(LABEL_X, middle.x);
-                item.setData(LABEL_Y, middle.y);
             } else {
                 Float x = ((Float) sourceItem.getData(NodeItem.X) + (Float) targetItem.getData(NodeItem.X)) / 2f;
                 Float y = ((Float) sourceItem.getData(NodeItem.Y) + (Float) targetItem.getData(NodeItem.Y)) / 2f;
@@ -273,6 +292,25 @@ public class EdgeLabelRenderer implements Renderer {
         }
     }
 
+    private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
+        // There is an edge that is a circle arc.
+        // We want to truncate that arc so that truncated part has a chord of a given length.
+        // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
+        // We give back the result as an angle, as it's how it's useful to us.
+        Double rt = truncature_length;
+        Double r = radius_curvature_edge;
+        Double x;
+        if (r>=rt) {
+            x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+        } else {
+            // There is no solution to the problem
+            // (this edge case is dealt with somewhere else)
+            return 0.;
+        }
+        Double angle = 2*Math.atan2(rt/2, x);
+        return angle;
+    }
+
     public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize,
                           Color outlineColor) {
         Text labelText = target.createTextNode(label);
@@ -310,42 +348,55 @@ public class EdgeLabelRenderer implements Renderer {
 
     public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize,
                           Color outlineColor) {
-        PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        BaseFont bf = target.getBaseFont(font);
-        float textHeight = getTextHeight(bf, font.getSize(), label);
-        if (outlineSize > 0) {
-            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
-            cb.setRGBColorStroke(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
-            cb.setLineWidth(outlineSize);
-            cb.setLineJoin(PdfContentByte.LINE_JOIN_ROUND);
-            cb.setLineCap(PdfContentByte.LINE_CAP_ROUND);
-            if (outlineColor.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = outlineColor.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.beginText();
-            cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-            cb.endText();
-            if (outlineColor.getAlpha() < 255) {
-                cb.restoreState();
-            }
-        }
-        cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-        cb.beginText();
-        cb.setFontAndSize(bf, font.getSize());
-        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
-        cb.endText();
-    }
+        PDPageContentStream contentStream = target.getContentStream();
+        PDFont pdFont = target.getPDFont(font);
+        int fontSize = font.getSize();
 
-    private float getTextHeight(BaseFont baseFont, float fontSize, String text) {
-        float ascend = baseFont.getAscentPoint(text, fontSize);
-        float descend = baseFont.getDescentPoint(text, fontSize);
-        return ascend + descend;
+        try {
+            float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
+            float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
+
+            if (outlineSize > 0) {
+                contentStream.setRenderingMode(RenderingMode.STROKE);
+                contentStream.setStrokingColor(outlineColor);
+                contentStream.setLineWidth(outlineSize);
+                contentStream.setLineJoinStyle(1); //round
+                contentStream.setLineCapStyle(1); //round
+                if (outlineColor.getAlpha() < 255) {
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setStrokingAlphaConstant(outlineColor.getAlpha() / 255f);
+                    contentStream.saveGraphicsState();
+                    contentStream.setGraphicsStateParameters(graphicsState);
+                }
+                contentStream.beginText();
+                contentStream.setFont(pdFont, fontSize);
+                contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+                contentStream.showText(label);
+                contentStream.endText();
+                if (outlineColor.getAlpha() < 255) {
+                    contentStream.restoreGraphicsState();
+                }
+            }
+
+            if (color.getAlpha() < 255) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setNonStrokingAlphaConstant(color.getAlpha() / 255f);
+                contentStream.saveGraphicsState();
+                contentStream.setGraphicsStateParameters(graphicsState);
+            }
+            contentStream.beginText();
+            contentStream.setFont(pdFont, fontSize);
+            contentStream.setNonStrokingColor(color);
+            contentStream.setRenderingMode(RenderingMode.FILL);
+            contentStream.newLineAtOffset(x - (textWidth / 2f), -y - (textHeight / 2f));
+            contentStream.showText(label);
+            contentStream.endText();
+            if (color.getAlpha() < 255) {
+                contentStream.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

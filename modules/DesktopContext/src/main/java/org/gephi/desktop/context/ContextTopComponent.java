@@ -74,6 +74,7 @@ public final class ContextTopComponent extends TopComponent {
     private final transient ContextPanel contextPanel = new ContextPanel();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel mainPanel;
+    // End of variables declaration//GEN-END:variables
 
     public ContextTopComponent() {
         initComponents();
@@ -132,7 +133,6 @@ public final class ContextTopComponent extends TopComponent {
         mainPanel.setLayout(new java.awt.BorderLayout());
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

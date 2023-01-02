@@ -77,6 +77,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner limitColorSpinner;
     private javax.swing.JCheckBox limitColorsCheckbox;
     private javax.swing.JComboBox presetCombo;
+    // End of variables declaration//GEN-END:variables
 
     public PaletteGeneratorPanel() {
         initComponents();
@@ -292,5 +293,4 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
             return this;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

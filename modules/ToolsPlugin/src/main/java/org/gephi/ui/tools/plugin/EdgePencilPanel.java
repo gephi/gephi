@@ -62,6 +62,7 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JSpinner weightSpinner;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EdgePencilPanel
@@ -206,5 +207,4 @@ public class EdgePencilPanel extends javax.swing.JPanel {
             isDirected = false;
         }
     }//GEN-LAST:event_typeComboBoxActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

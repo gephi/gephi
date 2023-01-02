@@ -59,6 +59,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -68,6 +69,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
+import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.AttributeUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -79,9 +81,11 @@ public class PartitionPanel extends javax.swing.JPanel {
 
     private PartitionFilter filter;
     private JPopupMenu popupMenu;
+    private JMenuItem flattenItem;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList list;
+    // End of variables declaration//GEN-END:variables
 
     public PartitionPanel() {
         initComponents();
@@ -176,6 +180,8 @@ public class PartitionPanel extends javax.swing.JPanel {
 
     public void setup(final PartitionFilter filter) {
         this.filter = filter;
+        flattenItem.setEnabled(filter.getColumn().isArray());
+        flattenItem.setSelected(filter.isFlattenList());
         final Partition partition = filter.getPartition();
         if (partition != null) {
             refresh(partition, filter);
@@ -186,11 +192,21 @@ public class PartitionPanel extends javax.swing.JPanel {
         final DefaultListModel model = new DefaultListModel();
         Set<Object> currentParts = filter.getParts();
 
-        int i = 0;
-        for (Object p : partition.getSortedValues(filter.getGraph())) {
-            PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
-            pw.setEnabled(currentParts.contains(p));
-            model.add(i++, pw);
+        if (filter.isFlattenList() && filter.getColumn().isArray()) {
+            int i = 0;
+            for (Object p : filter.getFlattenParts()) {
+                PartWrapper pw = new PartWrapper(p, 0, new Color(0xDDDDDD));
+                pw.setFlattened(true);
+                pw.setEnabled(currentParts.contains(p));
+                model.add(i++, pw);
+            }
+        } else {
+            int i = 0;
+            for (Object p : partition.getSortedValues(filter.getGraph())) {
+                PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
+                pw.setEnabled(currentParts.contains(p));
+                model.add(i++, pw);
+            }
         }
         list.setModel(model);
     }
@@ -229,6 +245,19 @@ public class PartitionPanel extends javax.swing.JPanel {
             }
         });
         popupMenu.add(unselectItem);
+
+        flattenItem =
+            new JCheckBoxMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.flattenList"));
+        flattenItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FilterProperty flattenList = filter.getProperties()[2];
+                flattenList.setValue(!(Boolean)flattenList.getValue());
+                refresh(filter.getPartition(), filter);
+            }
+        });
+        popupMenu.add(flattenItem);
     }
 
     /**
@@ -263,6 +292,7 @@ public class PartitionPanel extends javax.swing.JPanel {
         private final PaletteIcon icon;
         private final PaletteIcon disabledIcon;
         private boolean enabled = false;
+        private boolean flattened = false;
 
         public PartWrapper(Object part, float percentage, Color color) {
             this.part = part;
@@ -284,12 +314,23 @@ public class PartitionPanel extends javax.swing.JPanel {
         public String toString() {
             String displayName = part == null ? "null" :
                 part.getClass().isArray() ? AttributeUtils.printArray(part) : part.toString();
+            if (flattened) {
+                return displayName;
+            }
             String percentageStr = FORMATTER.format(percentage / 100f);
             return displayName + " (" + percentageStr + ")";
         }
 
         public boolean isEnabled() {
             return enabled;
+        }
+
+        public boolean isFlattened() {
+            return flattened;
+        }
+
+        public void setFlattened(boolean flattened) {
+            this.flattened = flattened;
         }
 
         public void setEnabled(boolean enabled) {
@@ -337,5 +378,4 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

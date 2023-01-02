@@ -70,6 +70,7 @@ import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEvent.Type;
 import org.gephi.visualization.apiimpl.VizEventListener;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -190,7 +191,7 @@ public class DesktopToolController implements ToolController {
             if (toolUI.getIcon() != null) {
                 btn = new JToggleButton(toolUI.getIcon());
             } else {
-                btn = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/tool.png")));
+                btn = new JToggleButton(ImageUtilities.loadImageIcon("DesktopTools/tool.png", false));
             }
             btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());

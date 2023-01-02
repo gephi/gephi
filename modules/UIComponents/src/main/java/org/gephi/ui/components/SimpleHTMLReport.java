@@ -76,6 +76,7 @@ import javax.swing.text.View;
 import org.apache.commons.codec.binary.Base64;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -169,6 +170,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton printButton;
     private javax.swing.JButton saveButton;
+    // End of variables declaration//GEN-END:variables
 
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
@@ -218,8 +220,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        printButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
+        printButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/print.png", false)); // NOI18N
         printButton.setText(org.openide.util.NbBundle
             .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
@@ -231,7 +232,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(printButton);
 
         copyButton.setIcon(
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/copy.gif", false)); // NOI18N
         copyButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -243,7 +244,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(copyButton);
 
         saveButton.setIcon(
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/save.png", false)); // NOI18N
         saveButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -386,7 +387,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         dispose(); // TODO add your handling code here:
     }//GEN-LAST:event_closeButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {

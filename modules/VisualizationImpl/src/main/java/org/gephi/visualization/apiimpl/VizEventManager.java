@@ -51,15 +51,15 @@ import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
  */
 public interface VizEventManager extends VizArchitecture {
 
-    public boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent);
+    boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent);
 
-    public void addListener(VizEventListener listener);
+    void addListener(VizEventListener listener);
 
-    public void addListener(VizEventListener[] listeners);
+    void addListener(VizEventListener[] listeners);
 
-    public void removeListener(VizEventListener listener);
+    void removeListener(VizEventListener listener);
 
-    public void removeListener(VizEventListener[] listeners);
+    void removeListener(VizEventListener[] listeners);
 
-    public boolean hasListeners(VizEvent.Type type);
+    boolean hasListeners(VizEvent.Type type);
 }

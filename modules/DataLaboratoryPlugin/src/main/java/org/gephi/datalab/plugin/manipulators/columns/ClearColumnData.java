@@ -108,6 +108,6 @@ public class ClearColumnData implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-delete-column.png");
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-delete-column.png", false);
     }
 }

@@ -111,6 +111,6 @@ public class Settle extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/settle.png", true);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/settle.png", false);
     }
 }

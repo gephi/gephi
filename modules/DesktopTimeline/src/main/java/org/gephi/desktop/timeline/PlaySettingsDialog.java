@@ -45,6 +45,7 @@ package org.gephi.desktop.timeline;
 import javax.swing.SpinnerNumberModel;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -69,6 +70,7 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
     private javax.swing.JRadioButton oneBoundRadio;
     private javax.swing.JSpinner stepSizeSpinner;
     private javax.swing.JRadioButton twoBoundsRadio;
+    // End of variables declaration//GEN-END:variables
 
     public PlaySettingsDialog() {
         initComponents();
@@ -138,8 +140,7 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
 
         headerTitle.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "PlaySettingsDialog.headerTitle.description")); // NOI18N
-        headerTitle.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
+        headerTitle.setIcon(ImageUtilities.loadImageIcon("DesktopTimeline/enabled.png", false)); // NOI18N
         headerTitle.setTitle(
             NbBundle.getMessage(TimelineTopComponent.class, "PlaySettingsDialog.headerTitle.title")); // NOI18N
 
@@ -242,5 +243,4 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
                     .addContainerGap(39, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

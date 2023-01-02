@@ -59,6 +59,7 @@ public class ViewDataPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea textArea;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ViewDataPanel
@@ -113,5 +114,4 @@ public class ViewDataPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

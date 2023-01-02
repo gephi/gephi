@@ -52,7 +52,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * UI for general merge strategies that only need to select a title for the column to create.
@@ -69,6 +69,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GeneralColumnTitleChooserUI
@@ -178,5 +179,4 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

@@ -45,6 +45,7 @@ package org.gephi.visualization;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,11 +57,13 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
-import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
 import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
 import org.joml.Vector2fc;
+import org.gephi.ui.utils.UIUtils;
+import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Lookup;
 
 /**
@@ -134,7 +137,13 @@ public class VizModel {
         config = VizController.getInstance().getVizConfig();
         cameraPosition = Arrays.copyOf(config.getDefaultCameraPosition(), 3);
         cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
-        backgroundColor = config.getDefaultBackgroundColor();
+        //textModel = new TextModelImpl();
+        //TODO
+        if (UIUtils.isDarkLookAndFeel()) {
+            backgroundColor = config.getDefaultDarkBackgroundColor();
+        } else {
+            backgroundColor = config.getDefaultBackgroundColor();
+        }
         backgroundColorComponents = backgroundColor.getRGBComponents(backgroundColorComponents);
 
         showEdges = config.isDefaultShowEdges();
@@ -365,6 +374,22 @@ public class VizModel {
 
                     } else if ("edgeScale".equalsIgnoreCase(name)) {
                         setEdgeScale(Float.parseFloat(reader.getAttributeValue(null, "value")));
+                    } else if("screenshotMaker".equalsIgnoreCase(name)) {
+                        ScreenshotMaker screenshotMaker = VizController.getInstance().getScreenshotMaker();
+                        if (screenshotMaker != null) {
+                            screenshotMaker.setWidth(Integer.parseInt(reader.getAttributeValue(null, "width")));
+                            screenshotMaker.setHeight(Integer.parseInt(reader.getAttributeValue(null, "height")));
+                            screenshotMaker.setTransparentBackground(Boolean.parseBoolean(reader.getAttributeValue(null, "transparent")));
+                            screenshotMaker.setAutoSave(Boolean.parseBoolean(reader.getAttributeValue(null, "autosave")));
+                            screenshotMaker.setAntiAliasing(Integer.parseInt(reader.getAttributeValue(null, "antialiasing")));
+                            String path = reader.getAttributeValue(null, "path");
+                            if (path != null && !path.isEmpty()) {
+                                File file = new File(reader.getAttributeValue(null, "path"));
+                                if (file.exists()) {
+                                    screenshotMaker.setDefaultDirectory(file);
+                                }
+                            }
+                        }
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:
@@ -456,5 +481,20 @@ public class VizModel {
         writer.writeStartElement("edgeScale");
         writer.writeAttribute("value", String.valueOf(edgeScale));
         writer.writeEndElement();
+
+        //Screenshot settings
+        ScreenshotMaker screenshotMaker = VizController.getInstance().getScreenshotMaker();
+        if (screenshotMaker != null) {
+            writer.writeStartElement("screenshotMaker");
+            writer.writeAttribute("width", String.valueOf(screenshotMaker.getWidth()));
+            writer.writeAttribute("height", String.valueOf(screenshotMaker.getHeight()));
+            writer.writeAttribute("antialiasing", String.valueOf(screenshotMaker.getAntiAliasing()));
+            writer.writeAttribute("transparent", String.valueOf(screenshotMaker.isTransparentBackground()));
+            writer.writeAttribute("autosave", String.valueOf(screenshotMaker.isAutoSave()));
+            if (screenshotMaker.getDefaultDirectory() != null) {
+                writer.writeAttribute("path", screenshotMaker.getDefaultDirectory());
+            }
+            writer.writeEndElement();
+        }
     }
 }

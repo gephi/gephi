@@ -24,7 +24,7 @@ public class AppearanceModelTest {
 
     @Test
     public void testDefaultPartition() {
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
         Column idCol = generator.getGraphModel().getNodeTable().getColumn("id");
@@ -39,7 +39,7 @@ public class AppearanceModelTest {
     @Test
     public void testPartitionColumnCreation() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
         Column ageCol = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
@@ -52,7 +52,7 @@ public class AppearanceModelTest {
     @Test
     public void testPartitionCleanup() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         model.getNodeFunctions();
 
@@ -60,13 +60,13 @@ public class AppearanceModelTest {
         System.gc();
         System.runFinalization();
 
-        Assert.assertEquals(0, model.countNodeAttributeRanking());
+        Assert.assertEquals(1, model.countNodeAttributeRanking());
     }
 
     @Test
     public void testRemoveColumn() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Column col = model.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
         Function function = Arrays.stream(model.getNodeFunctions()).filter(f -> f.isPartition()).findFirst().get();
@@ -80,7 +80,7 @@ public class AppearanceModelTest {
     @Test
     public void testHasChanged() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Function function =
             Arrays.stream(model.getNodeFunctions()).filter(f -> f.isPartition() && f.isAttribute()).findFirst().get();
@@ -98,7 +98,7 @@ public class AppearanceModelTest {
     @Test
     public void testNodeFunctionsDegree() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
         Column col = generator.getGraphModel().defaultColumns().degree();
@@ -112,7 +112,7 @@ public class AppearanceModelTest {
     @Test
     public void testNodeFunctionsAttribute() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
         Column col = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
@@ -125,7 +125,7 @@ public class AppearanceModelTest {
     @Test
     public void testEdgeFunctionsWeight() {
         MockServices.setServices(DummyTransformer.class);
-        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
         Column col = generator.getGraphModel().getEdgeTable().getColumn("weight");

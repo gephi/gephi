@@ -64,7 +64,7 @@ public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
     private final static List<String> VERSION_TO_CHECK
-        = Arrays.asList("0.9.0", "0.9.1", "0.9.2");
+        = Arrays.asList("0.9.0", "0.9.1", "0.9.2", "0.9");
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();

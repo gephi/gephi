@@ -126,6 +126,8 @@ public interface ContainerUnloader {
 
     ElementIdType getElementIdType();
 
+    MetadataDraft getMetadata();
+
     //PARAMETERS GETTERS
     boolean allowSelfLoop();
 

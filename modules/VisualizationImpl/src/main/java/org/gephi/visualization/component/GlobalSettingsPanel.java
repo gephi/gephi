@@ -58,6 +58,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelZoom;
     private javax.swing.JPanel zoomPanel;
     private javax.swing.JSlider zoomSlider;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GlobalSettingsPanel
@@ -259,5 +260,4 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

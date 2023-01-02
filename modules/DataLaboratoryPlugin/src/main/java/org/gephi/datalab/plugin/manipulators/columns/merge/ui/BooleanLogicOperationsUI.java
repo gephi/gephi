@@ -56,7 +56,7 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationPanel;
+import org.netbeans.validation.api.ui.swing.ValidationPanel;
 
 /**
  * UI for BooleanLogicOperations AttributeColumnsMergeStrategy
@@ -75,6 +75,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     private javax.swing.JScrollPane scroll;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form BooleanLogicOperationsUI
@@ -223,5 +224,4 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

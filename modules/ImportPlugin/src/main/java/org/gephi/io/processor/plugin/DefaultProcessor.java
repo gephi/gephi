@@ -65,6 +65,7 @@ import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceMetaData;
 import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -94,13 +95,16 @@ public class DefaultProcessor extends AbstractProcessor {
             //Workspace
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (workspace == null) {
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
+                workspace = pc.openNewWorkspace();
             }
+            processMeta(container, workspace);
             processConfiguration(container, workspace);
 
-            if (container.getSource() != null) {
+            if (container.getSource() != null && !container.getSource().isEmpty()) {
                 pc.setSource(workspace, container.getSource());
+
+                // Remove extensions
+                pc.renameWorkspace(workspace, container.getSource().replaceAll("(?<!^)[.].*", ""));
             }
 
             Progress.start(progressTicket, calculateWorkUnits());
@@ -108,6 +112,18 @@ public class DefaultProcessor extends AbstractProcessor {
             Progress.finish(progressTicket);
         } finally {
             clean();
+        }
+    }
+
+    protected void processMeta(ContainerUnloader container, Workspace workspace) {
+        if (container.getMetadata() != null) {
+            WorkspaceMetaData metaData = workspace.getWorkspaceMetadata();
+            if (metaData.getDescription().isEmpty()) {
+                metaData.setDescription(container.getMetadata().getDescription());
+            }
+            if (metaData.getTitle().isEmpty()) {
+                metaData.setTitle(container.getMetadata().getTitle());
+            }
         }
     }
 

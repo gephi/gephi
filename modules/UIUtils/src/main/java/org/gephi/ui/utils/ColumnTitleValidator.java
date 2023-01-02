@@ -67,16 +67,17 @@ public class ColumnTitleValidator implements Validator<String> {
     }
 
     @Override
-    public boolean validate(Problems prblms, String string, String t) {
+    public void validate(Problems prblms, String string, String t) {
         if (!allowNoTitle && (t == null || t.isEmpty())) {
             prblms.add(NbBundle.getMessage(ColumnTitleValidator.class, "ColumnTitleValidator.title.empty"));
-            return false;
         } else if (table.hasColumn(t)) {
             prblms.add(NbBundle.getMessage(ColumnTitleValidator.class, "ColumnTitleValidator.title.repeated"));
-            return false;
-        } else {
-            return true;
         }
+    }
+
+    @Override
+    public Class<String> modelType() {
+        return String.class;
     }
 
     public boolean isAllowNoTitle() {

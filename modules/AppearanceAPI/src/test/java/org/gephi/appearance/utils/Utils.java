@@ -7,9 +7,7 @@ public class Utils {
 
     public static AppearanceModelImpl newAppearanceModel() {
         GraphGenerator generator =
-            GraphGenerator.build().withWorkspace().generateTinyGraph();
-        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
-        model.getWorkspace().add(model);
-        return model;
+            GraphGenerator.build().generateTinyGraph();
+        return generator.getWorkspace().getLookup().lookup(AppearanceModelImpl.class);
     }
 }

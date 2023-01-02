@@ -88,6 +88,7 @@ import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -151,6 +152,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
 
     public ReportPanel() {
         try {
@@ -253,13 +255,13 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public void initIcons() {
-        infoIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/info.png"));
+        infoIcon = ImageUtilities.loadImageIcon("DesktopImport/info.png", false);
         warningIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/warning.gif"));
+            ImageUtilities.loadImageIcon("DesktopImport/warning.gif", false);
         severeIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/severe.png"));
+            ImageUtilities.loadImageIcon("DesktopImport/severe.png", false);
         criticalIcon =
-            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/critical.png"));
+            ImageUtilities.loadImageIcon("DesktopImport/critical.png", false);
     }
 
     public void setData(Report report, Container[] containers) {
@@ -635,37 +637,28 @@ public class ReportPanel extends javax.swing.JPanel {
         graphTypeCombo = new javax.swing.JComboBox();
         moreOptionsLink = new org.jdesktop.swingx.JXHyperlink();
 
-        labelSrc
-            .setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelSrc.text")); // NOI18N
+        labelSrc.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelSrc.text")); // NOI18N
 
-        sourceLabel
-            .setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.sourceLabel.text")); // NOI18N
+        sourceLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.sourceLabel.text")); // NOI18N
 
         tab1ScrollPane.setViewportView(issuesOutline);
 
-        tabbedPane.addTab(org.openide.util.NbBundle
-                .getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"),
-            tab1ScrollPane); // NOI18N
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
         reportEditor.setEditable(false);
         reportEditor.setFocusable(false);
         tab2ScrollPane.setViewportView(reportEditor);
 
-        tabbedPane.addTab(org.openide.util.NbBundle
-                .getMessage(ReportPanel.class, "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"),
-            tab2ScrollPane); // NOI18N
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"), tab2ScrollPane); // NOI18N
 
-        labelGraphType.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphType.text")); // NOI18N
+        labelGraphType.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphType.text")); // NOI18N
 
         processorPanel.setLayout(new java.awt.GridBagLayout());
 
         statsPanel.setLayout(new java.awt.GridBagLayout());
 
-        labelNodeCount
-            .setFont(labelNodeCount.getFont().deriveFont(labelNodeCount.getFont().getStyle() | java.awt.Font.BOLD));
-        labelNodeCount.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
+        labelNodeCount.setFont(labelNodeCount.getFont().deriveFont(labelNodeCount.getFont().getStyle() | java.awt.Font.BOLD));
+        labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -673,10 +666,8 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 6, 0);
         statsPanel.add(labelNodeCount, gridBagConstraints);
 
-        labelEdgeCount
-            .setFont(labelEdgeCount.getFont().deriveFont(labelEdgeCount.getFont().getStyle() | java.awt.Font.BOLD));
-        labelEdgeCount.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEdgeCount.text")); // NOI18N
+        labelEdgeCount.setFont(labelEdgeCount.getFont().deriveFont(labelEdgeCount.getFont().getStyle() | java.awt.Font.BOLD));
+        labelEdgeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEdgeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -685,8 +676,7 @@ public class ReportPanel extends javax.swing.JPanel {
         statsPanel.add(labelEdgeCount, gridBagConstraints);
 
         nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        nodeCountLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
+        nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -696,8 +686,7 @@ public class ReportPanel extends javax.swing.JPanel {
         statsPanel.add(nodeCountLabel, gridBagConstraints);
 
         edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        edgeCountLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
+        edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -706,8 +695,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
         statsPanel.add(edgeCountLabel, gridBagConstraints);
 
-        dynamicLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.dynamicLabel.text")); // NOI18N
+        dynamicLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.dynamicLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -716,8 +704,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
         statsPanel.add(dynamicLabel, gridBagConstraints);
 
-        labelDynamic.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamic.text")); // NOI18N
+        labelDynamic.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamic.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -725,8 +712,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 6, 0);
         statsPanel.add(labelDynamic, gridBagConstraints);
 
-        labelMultiGraph.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelMultiGraph.text")); // NOI18N
+        labelMultiGraph.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelMultiGraph.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -734,8 +720,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 6, 0);
         statsPanel.add(labelMultiGraph, gridBagConstraints);
 
-        multigraphLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.multigraphLabel.text")); // NOI18N
+        multigraphLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.multigraphLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -744,8 +729,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
         statsPanel.add(multigraphLabel, gridBagConstraints);
 
-        labelDynamicAtts.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamicAtts.text")); // NOI18N
+        labelDynamicAtts.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamicAtts.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -753,8 +737,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 6, 0);
         statsPanel.add(labelDynamicAtts, gridBagConstraints);
 
-        dynamicAttsLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.dynamicAttsLabel.text")); // NOI18N
+        dynamicAttsLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.dynamicAttsLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -763,10 +746,8 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
         statsPanel.add(dynamicAttsLabel, gridBagConstraints);
 
-        labelGraphCount
-            .setFont(labelGraphCount.getFont().deriveFont(labelGraphCount.getFont().getStyle() | java.awt.Font.BOLD));
-        labelGraphCount.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphCount.text")); // NOI18N
+        labelGraphCount.setFont(labelGraphCount.getFont().deriveFont(labelGraphCount.getFont().getStyle() | java.awt.Font.BOLD));
+        labelGraphCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -775,8 +756,7 @@ public class ReportPanel extends javax.swing.JPanel {
         statsPanel.add(labelGraphCount, gridBagConstraints);
 
         graphCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        graphCountLabel.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphCountLabel.text")); // NOI18N
+        graphCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -790,10 +770,8 @@ public class ReportPanel extends javax.swing.JPanel {
 
         moreOptionsLeftPanel.setLayout(new java.awt.GridBagLayout());
 
-        autoscaleCheckbox.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.text")); // NOI18N
-        autoscaleCheckbox.setToolTipText(org.openide.util.NbBundle
-            .getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.toolTipText")); // NOI18N
+        autoscaleCheckbox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.text")); // NOI18N
+        autoscaleCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.toolTipText")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -802,10 +780,8 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
         moreOptionsLeftPanel.add(autoscaleCheckbox, gridBagConstraints);
 
-        createMissingNodesCheckbox.setText(org.openide.util.NbBundle
-            .getMessage(ReportPanel.class, "ReportPanel.createMissingNodesCheckbox.text")); // NOI18N
-        createMissingNodesCheckbox.setToolTipText(org.openide.util.NbBundle
-            .getMessage(ReportPanel.class, "ReportPanel.createMissingNodesCheckbox.toolTipText")); // NOI18N
+        createMissingNodesCheckbox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.createMissingNodesCheckbox.text")); // NOI18N
+        createMissingNodesCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.createMissingNodesCheckbox.toolTipText")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -814,10 +790,8 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         moreOptionsLeftPanel.add(createMissingNodesCheckbox, gridBagConstraints);
 
-        selfLoopCheckBox.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.selfLoopCheckBox.text")); // NOI18N
-        selfLoopCheckBox.setToolTipText(org.openide.util.NbBundle
-            .getMessage(ReportPanel.class, "ReportPanel.selfLoopCheckBox.toolTipText")); // NOI18N
+        selfLoopCheckBox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.selfLoopCheckBox.text")); // NOI18N
+        selfLoopCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.selfLoopCheckBox.toolTipText")); // NOI18N
         selfLoopCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -835,8 +809,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         moreOptionsPanel.add(moreOptionsLeftPanel, gridBagConstraints);
 
-        labelParallelEdgesMergeStrategy.setText(org.openide.util.NbBundle
-            .getMessage(ReportPanel.class, "ReportPanel.labelParallelEdgesMergeStrategy.text")); // NOI18N
+        labelParallelEdgesMergeStrategy.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelParallelEdgesMergeStrategy.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -852,71 +825,56 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
         moreOptionsPanel.add(edgesMergeStrategyCombo, gridBagConstraints);
 
-        moreOptionsLink.setText(
-            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.moreOptionsLink.text")); // NOI18N
-        moreOptionsLink.setClickedColor(new java.awt.Color(0, 51, 255));
+        moreOptionsLink.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.moreOptionsLink.text")); // NOI18N
+        moreOptionsLink.setFocusPainted(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
-                        .addComponent(moreOptionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(labelSrc)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 329,
-                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(labelGraphType)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 152,
-                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(moreOptionsLink, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
+                    .addComponent(moreOptionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelSrc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelGraphType)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(moreOptionsLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelSrc)
-                        .addComponent(sourceLabel))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 160,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelGraphType)
-                        .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(moreOptionsLink, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(moreOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 94,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
-                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelSrc)
+                    .addComponent(sourceLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelGraphType)
+                    .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(moreOptionsLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(moreOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
     private class IssueTreeModel implements TreeModel {
 

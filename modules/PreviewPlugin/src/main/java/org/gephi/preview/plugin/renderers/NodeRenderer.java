@@ -42,12 +42,13 @@
 
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
@@ -78,6 +79,9 @@ public class NodeRenderer implements Renderer {
     protected DependantColor defaultBorderColor = new DependantColor(Color.BLACK);
     protected float defaultOpacity = 100f;
     protected boolean defaultPerNodeOpacity = false;
+    protected boolean defaultFixedNodeBorder = true;
+    // Same as overview
+    protected float defaultBorderWidthFactor = 0.16f;
 
     @Override
     public void preProcess(PreviewModel previewModel) {
@@ -104,8 +108,7 @@ public class NodeRenderer implements Renderer {
         final PreviewProperties properties) {
         final float x = item.getData(NodeItem.X);
         final float y = item.getData(NodeItem.Y);
-        final float s = (Float) item.getData(NodeItem.SIZE)
-            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        final float s = item.getData(NodeItem.SIZE);
         final float r = s / 2F;
         final int intS = Math.round(s);
         return new CanvasSize(
@@ -115,6 +118,14 @@ public class NodeRenderer implements Renderer {
             intS);
     }
 
+    private float getBorderWidth(PreviewProperties properties, float nodeSize) {
+        if (properties.getBooleanValue(PreviewProperty.NODE_BORDER_FIXED)) {
+            return properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        } else {
+            return nodeSize * defaultBorderWidthFactor / 2f;
+        }
+    }
+
     public void renderG2D(Item item, G2DTarget target, PreviewProperties properties) {
         //Params
         Float x = item.getData(NodeItem.X);
@@ -122,7 +133,8 @@ public class NodeRenderer implements Renderer {
         Float size = item.getData(NodeItem.SIZE);
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
+
         int alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() :
             (int) ((properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
@@ -136,17 +148,34 @@ public class NodeRenderer implements Renderer {
         //Graphics
         Graphics2D graphics = target.getGraphics();
 
+        //Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
+
+        // Set size and pos
+        size = size - borderSize;
         x = x - (size / 2f);
         y = y - (size / 2f);
-        Ellipse2D.Float ellipse = new Ellipse2D.Float(x, y, size, size);
-        if (borderSize > 0) {
-            graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
-            graphics.setStroke(new BasicStroke(borderSize));
-            graphics.draw(ellipse);
-        }
 
+        //Draw fill
+        Ellipse2D.Float ellipse;
+        if (alpha == 255) {
+            // Allow the border and the fill to overlap a bit to avoid rendering artifacts
+            ellipse = new Ellipse2D.Float(x + borderSize / 4f, y + borderSize / 4f, size - borderSize / 2f,
+                size - borderSize / 2f);
+        } else {
+            // Special case making sure the border and the fill are not overlapping
+            ellipse =
+                new Ellipse2D.Float(x + borderSize / 2f, y + borderSize / 2f, size - borderSize, size - borderSize);
+        }
         graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
         graphics.fill(ellipse);
+
+        if (borderSize > 0) {
+            Ellipse2D.Float borderEllipse = new Ellipse2D.Float(x, y, size, size);
+            graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
+            graphics.setStroke(new BasicStroke(borderSize));
+            graphics.draw(borderEllipse);
+        }
     }
 
     public void renderSVG(Item item, SVGTarget target, PreviewProperties properties) {
@@ -155,10 +184,9 @@ public class NodeRenderer implements Renderer {
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
         Float size = item.getData(NodeItem.SIZE);
-        size /= 2f;
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
         float alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() / 255f :
             properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f;
@@ -166,64 +194,99 @@ public class NodeRenderer implements Renderer {
             alpha = 1;
         }
 
+        // Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
+
         Element nodeElem = target.createElement("circle");
+        Element nodeBorderElem = nodeElem;
         nodeElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
         nodeElem.setAttribute("cx", x.toString());
         nodeElem.setAttribute("cy", y.toString());
-        nodeElem.setAttribute("r", size.toString());
         nodeElem.setAttribute("fill", target.toHexString(color));
         nodeElem.setAttribute("fill-opacity", "" + alpha);
+
         if (borderSize > 0) {
-            nodeElem.setAttribute("stroke", target.toHexString(borderColor));
-            nodeElem.setAttribute(
+            if (alpha < 1) {
+                // Special case making sure the border and the fill are not overlapping
+                nodeBorderElem = target.createElement("circle");
+                nodeBorderElem.setAttribute("cx", x.toString());
+                nodeBorderElem.setAttribute("cy", y.toString());
+                nodeBorderElem.setAttribute("r", Float.toString((size / 2f) - borderSize / 2f));
+                nodeBorderElem.setAttribute("fill", "none");
+
+                nodeElem.setAttribute("r", Float.toString((size / 2f) - borderSize));
+                target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
+            } else {
+                nodeElem.setAttribute("r", Float.toString((size - borderSize) / 2f));
+            }
+            nodeBorderElem.setAttribute("stroke", target.toHexString(borderColor));
+            nodeBorderElem.setAttribute(
                 "stroke-width",
                 Float.toString(borderSize * target.getScaleRatio()));
-            nodeElem.setAttribute("stroke-opacity", "" + alpha);
+            nodeBorderElem.setAttribute("stroke-opacity", "" + alpha);
+        } else {
+            nodeElem.setAttribute("r", Float.toString((size - borderSize) / 2f));
         }
-        target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
+
+        target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeBorderElem);
     }
 
     public void renderPDF(Item item, PDFTarget target, PreviewProperties properties) {
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
         Float size = item.getData(NodeItem.SIZE);
-        size /= 2f;
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
-        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float borderSize = getBorderWidth(properties, size);
         float alpha = properties.getBooleanValue(PreviewProperty.NODE_PER_NODE_OPACITY) ?
             color.getAlpha() / 255f :
             properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f;
 
-        PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
-        cb.setLineWidth(borderSize);
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        if (alpha < 1f) {
-            cb.saveState();
-            PdfGState gState = new PdfGState();
-            gState.setFillOpacity(alpha);
-            gState.setStrokeOpacity(alpha);
-            cb.setGState(gState);
-        }
-        cb.circle(x, -y, size);
-        if (borderSize > 0) {
-            cb.fillStroke();
-        } else {
-            cb.fill();
-        }
-        if (alpha < 1f) {
-            cb.restoreState();
+        // Border can't be larger than size
+        borderSize = Math.min(borderSize, size / 2f);
+
+        PDPageContentStream cb = target.getContentStream();
+        try {
+            cb.setStrokingColor(borderColor);
+            cb.setLineWidth(borderSize);
+            cb.setNonStrokingColor(color);
+            if (alpha < 1f) {
+                PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                graphicsState.setStrokingAlphaConstant(alpha);
+                graphicsState.setNonStrokingAlphaConstant(alpha);
+                cb.saveGraphicsState();
+                cb.setGraphicsStateParameters(graphicsState);
+            }
+            PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize / 2f);
+            if (borderSize > 0 && alpha == 1f) {
+                cb.fillAndStroke();
+            } else if (borderSize > 0 && alpha < 1f) {
+                // Special case to make sure the border and the fill are not overlapping
+                cb.stroke();
+                PDFUtils.drawCircle(cb, x, -y, (size / 2f) - borderSize);
+                cb.fill();
+            } else {
+                cb.fill();
+            }
+            if (alpha < 1f) {
+                cb.restoreGraphicsState();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
     @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[] {
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_FIXED, Boolean.class,
+                NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.fixedBorderWidth.displayName"),
+                NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.fixedBorderWidth.description"),
+                PreviewProperty.CATEGORY_NODES).setValue(defaultFixedNodeBorder),
             PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_WIDTH, Float.class,
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.displayName"),
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.description"),
-                PreviewProperty.CATEGORY_NODES).setValue(defaultBorderWidth),
+                PreviewProperty.CATEGORY_NODES, PreviewProperty.NODE_BORDER_FIXED).setValue(defaultBorderWidth),
             PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
                 NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),

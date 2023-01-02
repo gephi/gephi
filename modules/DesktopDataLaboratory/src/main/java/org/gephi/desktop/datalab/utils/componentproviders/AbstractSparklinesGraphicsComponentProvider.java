@@ -3,7 +3,9 @@ package org.gephi.desktop.datalab.utils.componentproviders;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.sparklines.SparklineGraph;
 import org.gephi.utils.sparklines.SparklineParameters;
 import org.jdesktop.swingx.JXTable;
@@ -17,8 +19,9 @@ import org.jdesktop.swingx.renderer.JRendererLabel;
  */
 public abstract class AbstractSparklinesGraphicsComponentProvider extends ComponentProvider<JLabel> {
 
-    protected static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
-    protected static final Color UNSELECTED_BACKGROUND = Color.white;
+    protected static final Color SELECTED_BACKGROUND = UIManager.getColor("Table.selectionBackground");
+    protected static final Color UNSELECTED_BACKGROUND = UIManager.getColor("Table.background");
+    protected final Color lineColor;
 
     protected final GraphModelProvider graphModelProvider;
     protected final JXTable table;
@@ -28,6 +31,12 @@ public abstract class AbstractSparklinesGraphicsComponentProvider extends Compon
         super(null, JLabel.LEADING);
         this.graphModelProvider = graphModelProvider;
         this.table = table;
+
+        if (UIUtils.isDarkLookAndFeel()) {
+            lineColor = Color.LIGHT_GRAY;
+        } else {
+            lineColor = Color.BLUE;
+        }
     }
 
     public abstract String getTextFromValue(Object value);
@@ -89,7 +98,7 @@ public abstract class AbstractSparklinesGraphicsComponentProvider extends Compon
         final SparklineParameters sparklineParameters = new SparklineParameters(
             rendererLabel.getWidth() - 1,
             rendererLabel.getHeight() - 1,
-            Color.BLUE,
+            lineColor,
             background,
             Color.RED,
             Color.GREEN,

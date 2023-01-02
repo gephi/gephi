@@ -65,6 +65,7 @@ public class ContextPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelEdges;
     private javax.swing.JLabel labelNodes;
     private javax.swing.JLabel nodeLabel;
+    // End of variables declaration//GEN-END:variables
 
     public ContextPanel() {
         initComponents();
@@ -251,5 +252,4 @@ public class ContextPanel extends javax.swing.JPanel {
             }
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -43,8 +43,8 @@
 package org.gephi.ui.appearance.plugin.category;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import org.gephi.appearance.spi.TransformerCategory;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -60,12 +60,17 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/size.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/size.png", false);
+        }
+
+        @Override
+        public String getId() {
+            return "SIZE";
         }
 
         @Override
         public String toString() {
-            return "SIZE";
+            return getId();
         }
     };
     public static TransformerCategory COLOR = new TransformerCategory() {
@@ -76,12 +81,17 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/color.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/color.png", false);
+        }
+
+        @Override
+        public String getId() {
+            return "COLOR";
         }
 
         @Override
         public String toString() {
-            return "COLOR";
+            return getId();
         }
     };
     public static TransformerCategory LABEL_COLOR = new TransformerCategory() {
@@ -92,12 +102,17 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelcolor.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelcolor.png", false);
+        }
+
+        @Override
+        public String getId() {
+            return "LABEL_COLOR";
         }
 
         @Override
         public String toString() {
-            return "LABEL_COLOR";
+            return getId();
         }
     };
     public static TransformerCategory LABEL_SIZE = new TransformerCategory() {
@@ -108,12 +123,17 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelsize.png"));
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelsize.png", false);
+        }
+
+        @Override
+        public String getId() {
+            return "LABEL_SIZE";
         }
 
         @Override
         public String toString() {
-            return "LABEL_SIZE";
+            return getId();
         }
     };
 }

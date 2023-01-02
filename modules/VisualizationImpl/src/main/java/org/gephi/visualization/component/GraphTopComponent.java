@@ -48,19 +48,20 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
-import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
         autostore = false)
@@ -81,6 +82,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     // Variables declaration - do not modify                     
     private org.gephi.visualization.component.CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
+    // End of variables declaration//GEN-END:variables
 
     public GraphTopComponent() {
         initComponents();
@@ -90,7 +92,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initKeyEventContextMenuActionMappings();
 
         listenToWorkspaceEvents();
-        initTools();
     }
 
     private void listenToWorkspaceEvents() {
@@ -168,6 +169,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void initCollapsePanel() {
+        if (vizBarController != null) {
+            return;
+        }
         vizBarController = new VizBarController();
         if (VizController.getInstance().getVizConfig().isShowVizVar()) {
             collapsePanel.init(vizBarController.getToolbar(), vizBarController.getExtendedBar(), false);
@@ -209,7 +213,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 //        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
     }
 
-    private void initTools() {
+    private void initToolPanels() {
+        if (toolbar != null) {
+            return;
+        }
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
@@ -303,7 +310,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         add(waitingLabel, java.awt.BorderLayout.CENTER);
         add(collapsePanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration                   
 
     @Override
     protected void componentActivated() {

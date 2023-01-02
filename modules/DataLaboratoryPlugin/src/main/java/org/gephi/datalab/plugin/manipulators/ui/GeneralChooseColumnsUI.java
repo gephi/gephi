@@ -65,6 +65,7 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
     private javax.swing.JPanel contentPanel;
     private javax.swing.JScrollPane contentScrollPane;
     private javax.swing.JLabel descriptionLabel;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form GeneralChooseColumnsUI
@@ -193,5 +194,4 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
             return column;
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

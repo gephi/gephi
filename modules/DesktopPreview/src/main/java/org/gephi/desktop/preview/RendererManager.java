@@ -89,6 +89,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     private javax.swing.JButton selectAllButton;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JButton unselectAllButon;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form RendererManagerPanel
@@ -263,8 +264,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(restoreOrderButton);
         toolBar.add(jSeparator1);
 
-        selectAllButton.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/ui-check-box.png"))); // NOI18N
+        selectAllButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box.png", false)); // NOI18N
         selectAllButton.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.selectAllButton.text")); // NOI18N
         selectAllButton.setFocusable(false);
@@ -277,8 +277,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         });
         toolBar.add(selectAllButton);
 
-        unselectAllButon.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/ui-check-box-uncheck.png"))); // NOI18N
+        unselectAllButon.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box-uncheck.png", false)); // NOI18N
         unselectAllButon.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.unselectAllButon.text")); // NOI18N
         unselectAllButon.setFocusable(false);
@@ -292,8 +291,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(unselectAllButon);
         toolBar.add(glue);
 
-        infoLabel.setIcon(new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.png", false)); // NOI18N
         infoLabel.setText(
             org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.infoLabel.text")); // NOI18N
         toolBar.add(infoLabel);
@@ -379,7 +377,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
         public MoveRendererButton(int index, boolean up) {
             super(ImageUtilities
-                .loadImageIcon("org/gephi/desktop/preview/resources/" + (up ? "up" : "down") + ".png", false));
+                .loadImageIcon("DesktopPreview/" + (up ? "up" : "down") + ".png", false));
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
             this.up = up;
@@ -405,5 +403,4 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             refresh();
         }
     }
-    // End of variables declaration//GEN-END:variables
 }

@@ -68,10 +68,7 @@ import org.openide.util.Lookup;
  */
 public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
-    double minX, maxX;
-    double minY, maxY;
-    double minZ, maxZ;
-    double minSize, maxSize;
+    private NormalizationHelper normalization;
     private boolean exportVisible = false;
     private Workspace workspace;
     private GraphModel graphModel;
@@ -120,9 +117,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         graph.readLock();
 
         try {
-            if (normalize) {
-                computeNormalizeValues(graph);
-            }
+            normalization = NormalizationHelper.build(normalize, graph);
             exportData(graph);
         } catch (IOException e) {
             Logger.getLogger(ExporterGML.class.getName()).log(Level.SEVERE, null, e);
@@ -243,26 +238,15 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         if (exportCoordinates || exportNodeSize || exportColor) {
             printOpen("graphics");
             if (exportCoordinates) {
-                if (!normalize) {
-                    printTag("x " + node.x());
-                    printTag("y " + node.y());
-                    printTag("z " + node.z());
-                } else {
-                    printTag("x " + (node.x() - minX) / (maxX - minX));
-                    printTag("y " + (node.y() - minY) / (maxY - minY));
-                    printTag("z " + (node.z() - minZ) / (maxZ - minZ));
-                }
+                printTag("x " + normalization.normalizeX(node.x()));
+                printTag("y " + normalization.normalizeY(node.y()));
+                printTag("z " + normalization.normalizeZ(node.z()));
             }
             if (exportNodeSize) {
-                if (!normalize) {
-                    printTag("w " + node.size());
-                    printTag("h " + node.size());
-                    printTag("d " + node.size());
-                } else {
-                    printTag("w " + (node.size() - minSize) / (maxSize - minSize));
-                    printTag("h " + (node.size() - minSize) / (maxSize - minSize));
-                    printTag("d " + (node.size() - minSize) / (maxSize - minSize));
-                }
+                final float size = normalization.normalizeSize(node.size());
+                printTag("w " + size);
+                printTag("h " + size);
+                printTag("d " + size);
             }
             if (exportColor) {
                 Color color = node.getColor();
@@ -365,36 +349,6 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     public void setSpaces(int spaces) {
         this.spaces = spaces;
-    }
-
-    private void computeNormalizeValues(Graph graph) {
-        minX = Double.MAX_VALUE;
-        minY = Double.MAX_VALUE;
-        minZ = Double.MAX_VALUE;
-
-        maxX = Double.MIN_VALUE;
-        maxY = Double.MIN_VALUE;
-        maxZ = Double.MIN_VALUE;
-
-        minSize = Double.MAX_VALUE;
-        maxSize = Double.MIN_VALUE;
-        NodeIterable nodeIterable = graph.getNodes();
-        for (Node node : nodeIterable) {
-            if (cancel) {
-                nodeIterable.doBreak();
-                break;
-            }
-            minX = Math.min(minX, node.x());
-            minY = Math.min(minY, node.y());
-            minZ = Math.min(minZ, node.z());
-
-            maxX = Math.max(maxX, node.x());
-            maxY = Math.max(maxY, node.y());
-            maxZ = Math.max(maxZ, node.z());
-
-            minSize = Math.min(minSize, node.size());
-            maxSize = Math.max(maxSize, node.size());
-        }
     }
 
     /**

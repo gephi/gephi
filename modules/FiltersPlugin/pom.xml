@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
 	<relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>filters-plugin</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>FiltersPlugin</name>
@@ -36,6 +36,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-plugin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>algorithms-plugin</artifactId>
+        </dependency>
 <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>timeline</artifactId>
@@ -55,6 +59,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
+        </dependency>
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graph-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 

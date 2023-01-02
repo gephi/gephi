@@ -48,6 +48,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.visualization.VizController;
+import org.openide.util.ImageUtilities;
 
 /**
  * @author Mathieu Bastian
@@ -58,6 +60,7 @@ public class CollapsePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton extendButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form CollapsePanel
@@ -72,16 +75,13 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         this.extended = extended;
         if (extended) {
-            extendButton.setIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/org/gephi/visualization/component/arrowDown.png"))); // NOI18N
-            extendButton.setRolloverIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/org/gephi/visualization/component/arrowDown_rollover.png"))); // NOI18N
+            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.png", false)); // NOI18N
+            extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.png", false)); // NOI18N
 
         } else {
-            extendButton.setIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/org/gephi/visualization/component/arrowUp.png"))); // NOI18N
-            extendButton.setRolloverIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/org/gephi/visualization/component/arrowUp_rollover.png"))); // NOI18N
+            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.png", false)); // NOI18N
+            extendButton.setRolloverIcon(
+                ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.png", false)); // NOI18N
         }
         extendButton.addActionListener(new ActionListener() {
 
@@ -91,15 +91,11 @@ public class CollapsePanel extends javax.swing.JPanel {
                 ext = !ext;
                 CollapsePanel.this.extended = ext;
                 if (ext) {
-                    extendButton.setIcon(new javax.swing.ImageIcon(
-                        getClass().getResource("/org/gephi/visualization/component/arrowDown.png"))); // NOI18N
-                    extendButton.setRolloverIcon(new javax.swing.ImageIcon(
-                        getClass().getResource("/org/gephi/visualization/component/arrowDown_rollover.png"))); // NOI18N
+                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.png", false)); // NOI18N
+                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.png", false)); // NOI18N
                 } else {
-                    extendButton.setIcon(new javax.swing.ImageIcon(
-                        getClass().getResource("/org/gephi/visualization/component/arrowUp.png"))); // NOI18N
-                    extendButton.setRolloverIcon(new javax.swing.ImageIcon(
-                        getClass().getResource("/org/gephi/visualization/component/arrowUp_rollover.png"))); // NOI18N
+                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.png", false)); // NOI18N
+                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.png", false)); // NOI18N
                 }
                 extendedPanel.setVisible(ext);
             }
@@ -136,5 +132,4 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         add(buttonPanel, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }
