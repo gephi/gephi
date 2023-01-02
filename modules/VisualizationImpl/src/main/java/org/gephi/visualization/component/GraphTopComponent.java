@@ -42,13 +42,12 @@
 
 package org.gephi.visualization.component;
 
-import java.awt.AWTEvent;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+
+import javax.swing.*;
+
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -59,9 +58,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
         autostore = false)

@@ -54,6 +54,7 @@ public class VizEngineGraphCanvasManager {
 
     // Engine:
     private VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = null;
+    private LWJGLRenderingTargetAWT renderingTarget = null;
     // Engine state saved for when it's restarted:
     private Vector2fc engineTranslate = null;
     private float engineZoom = 0;
@@ -74,7 +75,7 @@ public class VizEngineGraphCanvasManager {
 
         final GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
-        final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT();
+        this.renderingTarget = new LWJGLRenderingTargetAWT();
 
         this.engine = VizEngineFactory.newEngine(
             renderingTarget,
@@ -99,9 +100,6 @@ public class VizEngineGraphCanvasManager {
         glOptions.setDebug(DEBUG);
 
         engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
-
-//        engine.getLookup().lookup(GraphRenderingOptions.class)
-//                .setShowEdges(false); //FIXME in viz engine locking
 
         renderingTarget.setup(engine);
 
@@ -138,25 +136,28 @@ public class VizEngineGraphCanvasManager {
         this.glCanvas = glCanvas;
 
         glCanvas.addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentShown(final ComponentEvent e) {
+                reshape();
+            }
+
             @Override
             public void componentResized(ComponentEvent event) {
-                if (renderingTarget.getEngine() != null) {
-                    if (isWindows) {
-                        renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
-                    } else {
-                        renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
-                    }
-                }
+                reshape();
             }
         });
+
         component.addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentShown(final ComponentEvent e) {
+                reshape();
+            }
+
             @Override
             public void componentResized(ComponentEvent event) {
-                if (isWindows) {
-                    renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
-                } else {
-                    renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
-                }
+                reshape();
             }
         });
 
@@ -165,7 +166,7 @@ public class VizEngineGraphCanvasManager {
 
         final VizController vizController = Lookup.getDefault().lookup(VizController.class);
 
-        engine.addInputListener(new InputListener<LWJGLRenderingTarget, LWJGLInputEvent>() {
+        engine.addInputListener(new InputListener<>() {
             @Override
             public boolean processEvent(LWJGLInputEvent inputEvent) {
                 if (inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
@@ -223,16 +224,29 @@ public class VizEngineGraphCanvasManager {
         THREAD_POOL.submit(graphicsAnimator);
     }
 
+    private void reshape() {
+        if (renderingTarget == null || renderingTarget.getEngine() == null) {
+            return;
+        }
+
+        if (isWindows) {
+            renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
+        } else {
+            renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
+        }
+    }
+
     public synchronized void destroy(JComponent component) {
         // Keep viz-engine state for when it's restarted:
         if (engine != null) {
-            this.engineTranslate = engine.getTranslate();
-            this.engineZoom = engine.getZoom();
-            this.engineBackgroundColor = engine.getBackgroundColor();
+            engineTranslate = engine.getTranslate();
+            engineZoom = engine.getZoom();
+            engineBackgroundColor = engine.getBackgroundColor();
 
             //TODO: Keep more state of GraphRenderingOptions
             workspace.remove(engine);
             engine = null;
+            renderingTarget = null;
         }
 
         if (glCanvas != null) {
@@ -241,11 +255,11 @@ public class VizEngineGraphCanvasManager {
             glCanvas = null;
         }
 
-        this.initialized = false;
+        initialized = false;
 
         if (graphicsAnimator != null) {
-            this.graphicsAnimator.shutdown();
-            this.graphicsAnimator = null;
+            graphicsAnimator.shutdown();
+            graphicsAnimator = null;
         }
     }
 }
