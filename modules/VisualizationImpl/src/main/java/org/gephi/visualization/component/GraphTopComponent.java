@@ -89,6 +89,14 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initKeyEventContextMenuActionMappings();
 
         listenToWorkspaceEvents();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                initCollapsePanel();
+                initToolPanels();
+            }
+        });
     }
 
     private void listenToWorkspaceEvents() {

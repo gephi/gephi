@@ -155,6 +155,13 @@ public class VizController implements VisualizationController {
     }
 
     @Override
+    public void centerOnGraph() {
+        if (selectionManager != null) {
+            selectionManager.centerOnGraph();
+        }
+    }
+
+    @Override
     public void centerOnNode(Node node) {
         if (selectionManager != null) {
             selectionManager.centerOnNode(node);

@@ -53,12 +53,14 @@ import javax.swing.event.ChangeListener;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.visualization.CurrentWorkspaceVizEngine;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
 import org.joml.Vector2f;
 import org.openide.util.Lookup;
 
@@ -228,6 +230,20 @@ public class SelectionManager implements VizArchitecture {
                     selection.setSelectedEdges(Arrays.asList(edges));
                 }
             });
+    }
+
+    public void centerOnGraph() {
+        currentVizEngine.getEngine().ifPresent(engine -> {
+            final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
+            final Rect2D visibleGraphBoundaries = index.getGraphBoundaries();
+
+            final float[] center = visibleGraphBoundaries.center();
+            engine.centerOn(
+                new Vector2f(center[0], center[1]),
+                visibleGraphBoundaries.width(),
+                visibleGraphBoundaries.height()
+            );
+        });
     }
 
     public void centerOnNode(Node node) {
