@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Gephi
+Comment=The Open Graph Viz Platform
+Exec=gephi %F
+Icon=org.gephi.Gephi
+Terminal=false
+Categories=Science;
+StartupNotify=true
+StartupWMClass=Gephi
