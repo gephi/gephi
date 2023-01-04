@@ -14,12 +14,14 @@ public class ProjectsImplTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    public void testProjectsSort() {
+    public void testProjectsSort() throws InterruptedException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("p1", "p1");
         p1.open();
+        Thread.sleep(10);
         ProjectImpl p2 = new ProjectImpl("p2", "p2");
         p2.open();
+        Thread.sleep(10);
         ProjectImpl p3 = new ProjectImpl("p3", "p3");
 
         projects.addProject(p3);
