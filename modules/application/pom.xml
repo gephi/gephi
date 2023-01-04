@@ -1063,6 +1063,33 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Sign the installer using the codesign certificate -->
+                    <plugin>
+                        <groupId>net.jsign</groupId>
+                        <artifactId>jsign-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-exe</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <fileset>
+                                        <directory>target</directory>
+                                        <includes>
+                                            <include>*.exe</include>
+                                        </includes>
+                                    </fileset>
+                                    <name>Gephi</name>
+                                    <url>https://gephi.org</url>
+                                    <keystore>${gephi.windows.codesign.keystore}</keystore>
+                                    <storepass>${gephi.windows.codesign.password}</storepass>
+                                    <tsaurl>http://timestamp.sectigo.com</tsaurl>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>

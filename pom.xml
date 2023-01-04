@@ -206,6 +206,10 @@
         <gephi.apple.notarization.password/>
         <gephi.apple.notarization.teamId/>
         <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
+
+        <!-- Windows signing settings -->
+        <gephi.windows.codesign.keystore>codesign.pfx</gephi.windows.codesign.keystore>
+        <gephi.windows.codesign.password/>
         
         <!--==== Dependency Versions ==================================================================================-->
         
@@ -262,6 +266,8 @@
         <gephi.versions-maven-plugin.version>2.9.0</gephi.versions-maven-plugin.version>
 
         <gephi.maven-checkstyle-plugin.version>3.1.2</gephi.maven-checkstyle-plugin.version>
+
+        <gephi.jsign.version>4.2</gephi.jsign.version>
 
         <gephi.checkstyle.version>9.3</gephi.checkstyle.version>
     </properties>
@@ -931,6 +937,11 @@
                             <version>${gephi.checkstyle.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>net.jsign</groupId>
+                    <artifactId>jsign-maven-plugin</artifactId>
+                    <version>${gephi.jsign.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
