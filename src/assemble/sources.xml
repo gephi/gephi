@@ -15,6 +15,7 @@
                 <exclude>**/*.log</exclude>
                 <exclude>**/*.asc</exclude>
                 <exclude>**/*.ks</exclude>
+                <exclude>**/*.pfx</exclude>
                 <exclude>**/.DS_Store</exclude>
                 <exclude>.github/**</exclude>
             </excludes>

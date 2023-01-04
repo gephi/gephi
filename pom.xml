@@ -206,6 +206,10 @@
         <gephi.apple.notarization.password/>
         <gephi.apple.notarization.teamId/>
         <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
+
+        <!-- Windows signing settings -->
+        <gephi.windows.codesign.keystore>codesign.pfx</gephi.windows.codesign.keystore>
+        <gephi.windows.codesign.password/>
         
         <!--==== Dependency Versions ==================================================================================-->
         

@@ -129,6 +129,16 @@ jobs:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: Windows Prepare Codesign
+        env:
+          CODESIGN_CERT: ${{ secrets.CODESIGN_CERT}}
+        run: |
+          New-Item -ItemType directory -Path certificate
+          Set-Content -Path codesign.txt -Value $env:CODESIGN_CERT
+          certutil -decode codesign.txt codesign.pfx
+          Remove-Item codesign.txt
+        if: runner.os == 'Windows'
+
       - name: Retrieve modules output
         uses: actions/download-artifact@v3
         with:
@@ -155,7 +165,7 @@ jobs:
 
       - name: Build and publish bundle
         shell: bash
-        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.windows.codesign.password=$CODESIGN_PASSWORD -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
         working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
@@ -164,10 +174,15 @@ jobs:
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          $CODESIGN_PASSWORD: ${{ secrets.$CODESIGN_PASSWORD }}
           
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
+
+      - name: CleanUp Windows codesign
+        run: Remove-Item codesign.pfx
+        if: runner.os == 'Windows'
 
   update-site:
     needs: bundle

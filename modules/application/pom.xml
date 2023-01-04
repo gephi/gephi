@@ -1063,6 +1063,32 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>net.jsign</groupId>
+                        <artifactId>jsign-maven-plugin</artifactId>
+                        <version>4.2</version>
+                        <executions>
+                            <execution>
+                                <id>sign-exe</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <fileset>
+                                        <directory>target</directory>
+                                        <includes>
+                                            <include>*.exe</include>
+                                        </includes>
+                                    </fileset>
+                                    <name>Gephi</name>
+                                    <url>https://gephi.org</url>
+                                    <keystore>${gephi.windows.codesign.keystore}</keystore>
+                                    <storepass>${gephi.windows.codesign.password}</storepass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
