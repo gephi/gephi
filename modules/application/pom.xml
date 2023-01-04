@@ -1064,10 +1064,10 @@
                         </executions>
                     </plugin>
 
+                    <!-- Sign the installer using the codesign certificate -->
                     <plugin>
                         <groupId>net.jsign</groupId>
                         <artifactId>jsign-maven-plugin</artifactId>
-                        <version>4.2</version>
                         <executions>
                             <execution>
                                 <id>sign-exe</id>
@@ -1085,6 +1085,7 @@
                                     <url>https://gephi.org</url>
                                     <keystore>${gephi.windows.codesign.keystore}</keystore>
                                     <storepass>${gephi.windows.codesign.password}</storepass>
+                                    <tsaurl>http://timestamp.sectigo.com</tsaurl>
                                 </configuration>
                             </execution>
                         </executions>

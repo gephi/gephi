@@ -137,6 +137,7 @@ jobs:
           Set-Content -Path codesign.txt -Value $env:CODESIGN_CERT
           certutil -decode codesign.txt codesign.pfx
           Remove-Item codesign.txt
+        working-directory: modules/application
         if: runner.os == 'Windows'
 
       - name: Retrieve modules output
@@ -174,7 +175,7 @@ jobs:
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          $CODESIGN_PASSWORD: ${{ secrets.$CODESIGN_PASSWORD }}
+          CODESIGN_PASSWORD: ${{ secrets.CODESIGN_PASSWORD }}
           
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
@@ -182,6 +183,7 @@ jobs:
 
       - name: CleanUp Windows codesign
         run: Remove-Item codesign.pfx
+        working-directory: modules/application
         if: runner.os == 'Windows'
 
   update-site:

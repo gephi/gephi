@@ -267,6 +267,8 @@
 
         <gephi.maven-checkstyle-plugin.version>3.1.2</gephi.maven-checkstyle-plugin.version>
 
+        <gephi.jsign.version>4.2</gephi.jsign.version>
+
         <gephi.checkstyle.version>9.3</gephi.checkstyle.version>
     </properties>
     
@@ -935,6 +937,11 @@
                             <version>${gephi.checkstyle.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>net.jsign</groupId>
+                    <artifactId>jsign-maven-plugin</artifactId>
+                    <version>${gephi.jsign.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
