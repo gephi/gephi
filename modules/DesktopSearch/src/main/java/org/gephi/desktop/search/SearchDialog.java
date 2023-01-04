@@ -421,6 +421,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         allCategoriesButton = new javax.swing.JToggleButton();
         resultsList = new javax.swing.JList<>();
 
+        setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.borderColor")));
         setLayout(new java.awt.BorderLayout());
 
         topPanel.setLayout(new java.awt.BorderLayout());
