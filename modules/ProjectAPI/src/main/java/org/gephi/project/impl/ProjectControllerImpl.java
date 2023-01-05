@@ -297,7 +297,7 @@ public class ProjectControllerImpl implements ProjectController {
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
-        projectImpl = projects.addOrReplaceProject(projectImpl);
+        projects.addOrReplaceProject(projectImpl);
         projects.setCurrentProject(projectImpl);
 
         for (Workspace ws : projectImpl.getWorkspaces()) {

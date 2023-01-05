@@ -95,17 +95,20 @@ public class ProjectsImplTest {
     }
 
     @Test
-    public void testDoesNotCreateNewProjectSameFile() throws IOException {
+    public void testCleanupProjectSameFile() throws IOException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("i1", "p1");
-        Assert.assertSame(p1, projects.addOrReplaceProject(p1));
+        projects.addOrReplaceProject(p1);
+        Assert.assertTrue(projects.containsProject(p1));
 
         File file = tempFolder.newFile("p1.gephi");
         p1.setFile(file);
 
         ProjectImpl p2 = new ProjectImpl("i2", "p2");
         p2.setFile(file);
+        projects.addOrReplaceProject(p2);
 
-        Assert.assertSame(p1, projects.addOrReplaceProject(p2));
+        Assert.assertTrue(projects.containsProject(p2));
+        Assert.assertFalse(projects.containsProject(p1));
     }
 }

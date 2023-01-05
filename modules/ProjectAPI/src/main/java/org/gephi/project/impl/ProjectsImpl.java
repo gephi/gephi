@@ -101,19 +101,18 @@ public class ProjectsImpl implements Projects {
         return null;
     }
 
-    public ProjectImpl addOrReplaceProject(ProjectImpl project) {
+    public void addOrReplaceProject(ProjectImpl project) {
         synchronized (projects) {
             if (projects.contains(project)) {
                 projects.remove(project);
                 projects.add(project);
             } else {
                 ProjectImpl projectWithSameFileName = findProjectByFile(project.getFile());
-                if (projectWithSameFileName != null) {
-                    return projectWithSameFileName;
+                if (projectWithSameFileName != null && projectWithSameFileName != project) {
+                    projects.remove(projectWithSameFileName);
                 }
                 projects.add(project);
             }
-            return project;
         }
     }
 
