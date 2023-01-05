@@ -63,6 +63,7 @@ import org.gephi.project.io.DuplicateTask;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -453,7 +454,13 @@ public class ProjectControllerImpl implements ProjectController {
             listeners = new ArrayList<>(projectListeners);
             listeners.addAll(Lookup.getDefault().lookupAll(ProjectListener.class));
         }
-        listeners.forEach(consumer);
+        for (ProjectListener listener : listeners) {
+            try {
+                consumer.accept(listener);
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
     }
 
     private void fireWorkspaceEvent(EventType event, Workspace workspace) {
@@ -463,22 +470,26 @@ public class ProjectControllerImpl implements ProjectController {
             listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
         }
         for (WorkspaceListener wl : listeners) {
-            switch (event) {
-                case INITIALIZE:
-                    wl.initialize(workspace);
-                    break;
-                case SELECT:
-                    wl.select(workspace);
-                    break;
-                case UNSELECT:
-                    wl.unselect(workspace);
-                    break;
-                case CLOSE:
-                    wl.close(workspace);
-                    break;
-                case DISABLE:
-                    wl.disable();
-                    break;
+            try {
+                switch (event) {
+                    case INITIALIZE:
+                        wl.initialize(workspace);
+                        break;
+                    case SELECT:
+                        wl.select(workspace);
+                        break;
+                    case UNSELECT:
+                        wl.unselect(workspace);
+                        break;
+                    case CLOSE:
+                        wl.close(workspace);
+                        break;
+                    case DISABLE:
+                        wl.disable();
+                        break;
+                }
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
             }
         }
     }
