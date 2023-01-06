@@ -80,6 +80,8 @@ public interface WorkspaceListener {
 
     /**
      * Notify no more workspace is currently selected, the project is empty.
+     * <p>
+     * <code>close()</code> is called beforehand for each workspace.
      */
     void disable();
 }

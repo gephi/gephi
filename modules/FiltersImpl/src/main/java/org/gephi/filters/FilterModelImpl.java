@@ -57,12 +57,13 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
-public class FilterModelImpl implements FilterModel {
+public class FilterModelImpl implements FilterModel, Model {
 
     private final FilterLibraryImpl filterLibraryImpl;
     private final LinkedList<Query> queries;
