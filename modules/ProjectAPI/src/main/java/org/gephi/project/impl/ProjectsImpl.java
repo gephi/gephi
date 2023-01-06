@@ -196,7 +196,7 @@ public class ProjectsImpl implements Projects {
                 writer.writeStartDocument("UTF-8", "1.0");
                 writer.writeStartElement("projects");
                 for (ProjectImpl p : getProjects()) {
-                    if (!p.hasFile() || (p.hasFile() && p.getFile().exists())) {
+                    if ((!p.hasFile() && p.isOpen()) || (p.hasFile() && p.getFile().exists())) {
                         writer.writeStartElement("project");
                         if (p.hasFile()) {
                             writer.writeAttribute("file", p.getFile().getAbsolutePath());
@@ -207,7 +207,7 @@ public class ProjectsImpl implements Projects {
                             writer.writeAttribute("lastOpened", String.valueOf(p.getLastOpened().toEpochMilli()));
                         }
                         writer.writeEndElement();
-                    } else {
+                    } else if (p.hasFile()) {
                         Logger.getLogger(ProjectsImpl.class.getName())
                             .warning("Project " + p.getName() + " file does not exist");
                     }

@@ -48,6 +48,7 @@ public class ProjectsImplTest {
     public void testPersistenceNoFile() throws IOException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("i1", "p1");
+        p1.open();
         projects.addProject(p1);
 
         File file = tempFolder.newFile("projects.xml");
@@ -56,6 +57,20 @@ public class ProjectsImplTest {
         projects = new ProjectsImpl();
         projects.loadProjects(file);
         Assert.assertEquals(1, projects.getProjects().length);
+    }
+
+    @Test
+    public void testPersistenceNoFileClosed() throws IOException {
+        ProjectsImpl projects = new ProjectsImpl();
+        ProjectImpl p1 = new ProjectImpl("i1", "p1");
+        projects.addProject(p1);
+
+        File file = tempFolder.newFile("projects.xml");
+        projects.saveProjects(file);
+
+        projects = new ProjectsImpl();
+        projects.loadProjects(file);
+        Assert.assertEquals(0, projects.getProjects().length);
     }
 
     @Test
