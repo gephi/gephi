@@ -42,6 +42,7 @@
 
 package org.gephi.branding.desktop;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +113,8 @@ public class CommandLineProcessor extends OptionProcessor {
                     DialogDisplayer.getDefault().notify(msg);
                     return;
                 }
-                Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(null);
+                Actions.forID("File", "org.gephi.desktop.project.actions.OpenFile").actionPerformed(
+                    new ActionEvent(file, 0, null));
             }
         } catch (OutOfMemoryError ex) {
             System.gc();
