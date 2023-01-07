@@ -4,12 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.0</version>
+        <version>0.10.1-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>io-importer-plugin</artifactId>
-    <version>0.10.0</version>
+    <version>0.10.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>ImportPlugin</name>

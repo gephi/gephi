@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ 0.9.8, 0.10.0 ]
+    branches: [ 0.11.0, 0.10.1 ]
 
 jobs:
   build-base:
