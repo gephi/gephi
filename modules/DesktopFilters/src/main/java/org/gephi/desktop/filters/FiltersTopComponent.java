@@ -68,10 +68,7 @@ import org.openide.windows.TopComponent;
     preferredID = "FiltersTopComponent")
 public final class FiltersTopComponent extends TopComponent {
 
-    static final String ICON_PATH = "DesktopFilters/small.png";
-    private static final String PREFERRED_ID = "FiltersTopComponent";
     private static final long AUTO_REFRESH_RATE_MILLISECONDS = 3000;
-    private static FiltersTopComponent instance;
     //Panel
     private final FiltersPanel panel;
     //Models
@@ -83,8 +80,6 @@ public final class FiltersTopComponent extends TopComponent {
     public FiltersTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(FiltersTopComponent.class, "CTL_FiltersTopComponent"));
-//        setToolTipText(NbBundle.getMessage(FiltersTopComponent.class, "HINT_FiltersTopComponent"));
-        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         panel = new FiltersPanel();
