@@ -100,6 +100,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         executor = Executors.newSingleThreadExecutor(r -> new Thread(r, "GraphTopComponent GL Init"));
 
         initKeyEventContextMenuActionMappings();
+
+        if (!Utilities.isMac()) {
+            initDrawable();
+        }
     }
 
     private void initDrawable() {
