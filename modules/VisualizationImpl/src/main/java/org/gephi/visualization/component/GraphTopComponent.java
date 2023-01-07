@@ -114,10 +114,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                 });
 
                 new Thread(() -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    if (Utilities.isMac()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     drawable = VizController.getInstance().getDrawable();
                     engine = VizController.getInstance().getEngine();

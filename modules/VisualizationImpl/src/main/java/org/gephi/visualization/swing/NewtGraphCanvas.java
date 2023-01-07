@@ -61,11 +61,13 @@ public class NewtGraphCanvas extends GLAbstractListener {
 
     private final GLUT glut = new GLUT();
 
+    private NewtCanvasAWT glCanvas;
+
     @Override
     protected GLAutoDrawable initDrawable() {
         GLWindow glWindow = GLWindow.create(getCaps());
 //        glWindow.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
-        NewtCanvasAWT glCanvas = new HighDPIFixCanvas(glWindow);
+        glCanvas = new HighDPIFixCanvas(glWindow);
 //        glCanvas = new NewtCanvasAWT(glWindow);
 
 //        glCanvas.setFocusable(true);
@@ -84,7 +86,7 @@ public class NewtGraphCanvas extends GLAbstractListener {
     @Override
     protected void init(GL2 gl) {
 //        globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
-        globalScale = (float) ((NewtCanvasAWT)drawable).getGraphicsConfiguration().getDefaultTransform().getScaleX();
+        globalScale = (float) glCanvas.getGraphicsConfiguration().getDefaultTransform().getScaleX();
         engine.startDisplay();
     }
 
@@ -142,7 +144,8 @@ public class NewtGraphCanvas extends GLAbstractListener {
     @Override
     public void destroy() {
         super.destroy();
-        ((NewtCanvasAWT)drawable).getNEWTChild().destroy();
+        glCanvas.getNEWTChild().destroy();
+        glCanvas = null;
     }
 
     public class HighDPIFixCanvas extends NewtCanvasAWT {
