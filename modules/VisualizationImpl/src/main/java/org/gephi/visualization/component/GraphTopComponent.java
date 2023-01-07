@@ -46,6 +46,9 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -80,6 +83,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private transient VizBarController vizBarController;
     //    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
     private transient GraphDrawable drawable;
+    private final ExecutorService executor;
     private SelectionToolbar selectionToolbar;
     private ActionsToolbar actionsToolbar;
     private JComponent toolbar;
@@ -91,13 +95,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
     public GraphTopComponent() {
         initComponents();
-
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
 
-        //Request component activation and therefore initialize JOGL2 component
-        if (!Utilities.isMac()) {
-            WindowManager.getDefault().invokeWhenUIReady(this::initDrawable);
-        }
+        executor = Executors.newSingleThreadExecutor(r -> new Thread(r, "GraphTopComponent GL Init"));
+
         initKeyEventContextMenuActionMappings();
     }
 
@@ -105,40 +106,37 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Init
-                        requestActive();
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    //Init
+                    requestActive();
                 });
-
-                new Thread(() -> {
+                executor.execute(() -> {
                     if (Utilities.isMac()) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(500);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
                     }
                     drawable = VizController.getInstance().getDrawable();
                     engine = VizController.getInstance().getEngine();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
+                    try {
+                        SwingUtilities.invokeAndWait(() -> {
                             initCollapsePanel();
                             initToolPanels();
                             add(drawable.getGraphComponent(), BorderLayout.CENTER);
                             remove(waitingLabel);
                             drawable.initMouseEvents();
-                        }
-                    });
-                }, "GraphTopComponent GL Init").start();
+                        });
+                    } catch (InterruptedException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         });
     }
 
-        private void initCollapsePanel() {
+    private void initCollapsePanel() {
         if (vizBarController != null) {
             return;
         }
@@ -338,8 +336,16 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         if (Utilities.isMac()) {
             engine.stopDisplay();
 
-            remove(drawable.getGraphComponent());
-            add(waitingLabel, BorderLayout.CENTER);
+            executor.execute(() -> {
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        remove(drawable.getGraphComponent());
+                        add(waitingLabel, BorderLayout.CENTER);
+                    });
+                } catch (InterruptedException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
