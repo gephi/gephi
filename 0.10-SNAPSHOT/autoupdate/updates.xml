@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE module_updates PUBLIC "-//NetBeans//DTD Autoupdate Catalog 2.8//EN" "https://netbeans.apache.org/dtds/autoupdate-catalog-2_8.dtd">
-<module_updates timestamp="11/09/08/07/01/2023">
+<module_updates timestamp="35/06/11/07/01/2023">
 
 
 
@@ -13,12 +13,12 @@
     <message_digest algorithm="SHA-512" value="5f4de38310f17044a7e402db200ac786a787956be05b622ab06fdc3a1398d4ef7561c138cd728e1dda61c30d8171ae9534c0b9e6b9cef3f5c1277a4e2962bbf3"/>
 </module>
 
-<module codenamebase="org.gephi.algorithms.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/algorithms-plugin/0.10.0-SNAPSHOT/algorithms-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="12431" homepage="https://gephi.org/modules/algorithms-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.algorithms.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/algorithms-plugin/0.10.0-SNAPSHOT/algorithms-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="12426" homepage="https://gephi.org/modules/algorithms-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.algorithms.plugin" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Basic graph theory algorithms" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Algorithms" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Basic graph theory algorithms" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="2f31eee2d55b227378a4df84987c77f2f653142bd718f67cdf4cec48c849f6fe49268bd94599b555bf4bddafe43bc063d482dada4bc78d699acb0534bce22898"/>
+    <message_digest algorithm="SHA-512" value="0a4fd7cd6ae646e3069471f6ce0729570a531ab2ddb96219d59476e47a0896a6c006244b57d78c66654a4354f7da16531ff89da75012a41065383c38932d4880"/>
 </module>
 
 <module codenamebase="org.netbeans.libs.felix" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-libs-felix/RELEASE160/org-netbeans-libs-felix-RELEASE160.nbm" downloadsize="753188" homepage="http://www.netbeans.org/" license="9741068B" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -29,20 +29,20 @@
     <message_digest algorithm="SHA-512" value="831260cb8dd0e26f03750066509f3add7aea66cefa7c393c92b7a250cf41561910bd36edf52fdc2e0e3d76c89f9815bdb74f8356cba7ce140c281dadd7e1e025"/>
 </module>
 
-<module codenamebase="org.gephi.appearance.api" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-api/0.10.0-SNAPSHOT/appearance-api-0.10.0-SNAPSHOT.nbm" downloadsize="52763" homepage="https://gephi.org/modules/appearance-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.appearance.api" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-api/0.10.0-SNAPSHOT/appearance-api-0.10.0-SNAPSHOT.nbm" downloadsize="52759" homepage="https://gephi.org/modules/appearance-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.appearance.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API for the visual appearance of elements" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Appearance API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API for the visual appearance of elements" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="9b81fef35d0988be540b7f39010c975b66acd0c53f8035119a945c054f9e72d45bb3410e51be0e5049bf168591f32876f99c8158e701c8073d65b0171ba961b2"/>
+    <message_digest algorithm="SHA-512" value="9f049731a168b790b4a541bf7508edbcd71add7e1d38d41ed17e327e24aaca1df756b46a75c5ed44922fdb5044cf6e08924063366c13efd44e27ccf3a77f7411"/>
 </module>
 
-<module codenamebase="org.gephi.appearance.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-plugin/0.10.0-SNAPSHOT/appearance-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="30943" homepage="https://gephi.org/modules/appearance-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.appearance.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-plugin/0.10.0-SNAPSHOT/appearance-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="30939" homepage="https://gephi.org/modules/appearance-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.appearance.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.appearance.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Appearance Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Partition transformers implementations with UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="a9989a51955f73eaa5b520b072c0ace86f3280c75df59e19a21be9365a4bb0c922ff5776d0ae61223568716647eb70a5ce3dce0d52a51267cc2ac535d255febc"/>
+    <message_digest algorithm="SHA-512" value="7e739c778bb5b38a6cc87e055cfd68b848650e86e174ef6264991e7683738f96cb9c8a71771d258d55ef02be12e3f907f8ca5d0d5e9bf5cc77d7c30b559dae32"/>
 </module>
 
 <module codenamebase="org.netbeans.modules.applemenu" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-modules-applemenu/RELEASE160/org-netbeans-modules-applemenu-RELEASE160.nbm" downloadsize="37212" eager="true" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="true" releasedate="2022/11/19" targetcluster="platform">
@@ -85,12 +85,12 @@
     <message_digest algorithm="SHA-512" value="97c7268423e3df3022f661d28443dd570233aae022dceae73526c148b86f657d609aab2385a206e355d36e5a512670dee6b9b91f67809228126c1a150f881cab"/>
 </module>
 
-<module autoload="true" codenamebase="org.gephi.batik.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/batik-wrapper/0.10.0-SNAPSHOT/batik-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="3593906" homepage="https://gephi.org/modules/batik-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module autoload="true" codenamebase="org.gephi.batik.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/batik-wrapper/0.10.0-SNAPSHOT/batik-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="3593904" homepage="https://gephi.org/modules/batik-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" AutoUpdate-Show-In-Client="false" OpenIDE-Module="org.gephi.batik.wrapper" OpenIDE-Module-Display-Category="Libraries" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Name="Batik Wrapper" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="6472d222957e629dd9b4f0ac507ad2e8bea31c0ed4a78f75467d0f8fb222bbf51d1641b27e196450fe2e431ef382434063e23e2407fb2c888e17a3ac12052943"/>
+    <message_digest algorithm="SHA-512" value="49f1a9c21a52b9c088447b39733ca6686cb61a2a27459ce54754274f744a18a9447f0a19c85d6970ab6c3aeab81cf0721e0854b93ad7bd4db01dc1f3660d1bc5"/>
 </module>
 
 <module codenamebase="org.netbeans.bootstrap" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-bootstrap/RELEASE160/org-netbeans-bootstrap-RELEASE160.nbm" downloadsize="571044" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -133,12 +133,12 @@
     <message_digest algorithm="SHA-512" value="2d8ed4f1f1851bc45d8328930a95e59b4d1b6afb8af1eb67ec4f0b57d260ac6ba16b746933bd1a9187166a7ed66d90fdb5fdf35e503743e30c961c43ad3ab47d"/>
 </module>
 
-<module codenamebase="org.gephi.core.library.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/core-library-wrapper/0.10.0-SNAPSHOT/core-library-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="11889088" homepage="https://gephi.org/modules/core-library-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.core.library.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/core-library-wrapper/0.10.0-SNAPSHOT/core-library-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="11889085" homepage="https://gephi.org/modules/core-library-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.core.library.wrapper" OpenIDE-Module-Display-Category="Libraries" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Name="Core Library Wrapper" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="764c5f4d070509abd429431bc6b3d68c7d6e2197a1529332dfc50d6e9bccfa637e50834ac67bdac6a8262744d98094bd7255309af67e3a4a701b8e585d652162"/>
+    <message_digest algorithm="SHA-512" value="ddf9b2e92ee4573ff70a5a7a991bb6f3e46131e1f424084f9cdf66d259ba00e93709a9a57d621e73b864c8bf1408b3e374ec5cb73c7b40e3bec5a9b0c7a610ad"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.core.network" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-core-network/RELEASE160/org-netbeans-core-network-RELEASE160.nbm" downloadsize="100601" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -173,20 +173,20 @@
     <message_digest algorithm="SHA-512" value="7af1a81a8164ff00b112c6cd38870b9790fc37864bc4c4b572ae99c69a6e8966c748665cfb84d0b813bb8ab0148689fca29952ebe800dcb6a6bb25f551a2bbff"/>
 </module>
 
-<module codenamebase="org.gephi.datalab.api" distribution="https://repo1.maven.org/maven2/org/gephi/datalab-api/0.10.0-SNAPSHOT/datalab-api-0.10.0-SNAPSHOT.nbm" downloadsize="68752" homepage="https://gephi.org/modules/datalab-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.datalab.api" distribution="https://repo1.maven.org/maven2/org/gephi/datalab-api/0.10.0-SNAPSHOT/datalab-api-0.10.0-SNAPSHOT.nbm" downloadsize="68779" homepage="https://gephi.org/modules/datalab-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.datalab.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for interacting with the Data Laboratory and extending it." OpenIDE-Module-Module-Dependencies="org.gephi.utils &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.dialogs &gt; 7.64, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Data Laboratory API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for interacting with the Data Laboratory and extending it" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="85160f1ac5e503451d75548c6bb2d984b3194775eb70ed24909a0bf4d7fc45e9e9aacea6397053ed7e7323d99d3d5bd1e12d8ac5e1d7dc5ef5038321a7115492"/>
+    <message_digest algorithm="SHA-512" value="75e6a5956d27c0a1ff76477266e2c2a093f87382397fb1321cdc17cb31f8b856353b40cc7448b9961ba963dfc360e712fe514a0f7331e7d296741fc086d2d840"/>
 </module>
 
-<module codenamebase="org.gephi.datalab.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/datalab-plugin/0.10.0-SNAPSHOT/datalab-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="347789" homepage="https://gephi.org/modules/datalab-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.datalab.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/datalab-plugin/0.10.0-SNAPSHOT/datalab-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="347823" homepage="https://gephi.org/modules/datalab-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.datalab.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.datalab.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.visualization.api &gt; 0.10.0, org.openide.dialogs &gt; 7.64, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.openide.windows &gt; 6.95, org.openide.awt &gt; 7.86, org.gephi.visualization &gt; 0.10.0" OpenIDE-Module-Name="Data Laboratory Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Implementation of some Data Laboratory manipulators" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="825a2fe9d0a6ae5f4f754c2144f0469eafcbd575870b84d6c0be3baa8210bb941ffdbdb6474eead681e21cdf7fd19c985f4d7de08ba1808bd213e4b597e2a852"/>
+    <message_digest algorithm="SHA-512" value="0d1ff427a7300ba86849a012094fad54db599a75e2e212078f93995b7a65d47fcab0cfc208a2e023d842cbb9c6e82c221a21ff54e9d48bb2c336593e002d8ae0"/>
 </module>
 
 <module autoload="true" codenamebase="org.openide.loaders" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-openide-loaders/RELEASE160/org-openide-loaders-RELEASE160.nbm" downloadsize="511169" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -197,76 +197,76 @@
     <message_digest algorithm="SHA-512" value="122b44fa79154ddb817831391d78ea65092777b27b2e84f9d158c816caca0a916b74a07b5f351dd910f9049d598b896f5afac40279e24f5cd630e41377a70c9e"/>
 </module>
 
-<module autoload="true" codenamebase="org.gephi.db.drivers" distribution="https://repo1.maven.org/maven2/org/gephi/db-drivers/0.10.0-SNAPSHOT/db-drivers-0.10.0-SNAPSHOT.nbm" downloadsize="16010368" homepage="https://gephi.org/modules/db-drivers" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module autoload="true" codenamebase="org.gephi.db.drivers" distribution="https://repo1.maven.org/maven2/org/gephi/db-drivers/0.10.0-SNAPSHOT/db-drivers-0.10.0-SNAPSHOT.nbm" downloadsize="16010367" homepage="https://gephi.org/modules/db-drivers" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" AutoUpdate-Show-In-Client="false" OpenIDE-Module="org.gephi.db.drivers" OpenIDE-Module-Display-Category="Libraries" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Database Drivers (MySQL, PostgreSQL, SQLite)" OpenIDE-Module-Module-Dependencies="org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="DBDrivers" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Database Drivers" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="af99d6b7e127a0634fd538d6eeab28b7f19ce8eb67e0ac538e12e3a4321132f7258b6b1f5c83bf45efecc256e07bcc0092a1a8314f1d66c46843416186f37e45"/>
+    <message_digest algorithm="SHA-512" value="0ea5b8966afdad9ea4f2a98ec51231f108231c26b9b765a8f32df9440bca8d6061a8bb94e2998d85b6711ee403cc7be4241c41674b8fd31e5d0439e05e81dc8a"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.appearance" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-appearance/0.10.0-SNAPSHOT/desktop-appearance-0.10.0-SNAPSHOT.nbm" downloadsize="78519" homepage="https://gephi.org/modules/desktop-appearance" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.appearance" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-appearance/0.10.0-SNAPSHOT/desktop-appearance-0.10.0-SNAPSHOT.nbm" downloadsize="78517" homepage="https://gephi.org/modules/desktop-appearance" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.appearance" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.project.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.appearance.api &gt; 0.10.0, org.gephi.appearance.plugin.ui &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.windows &gt; 6.95, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Desktop Appearance" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrated ranking UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="c8c3354924e03dfdfa24be4367f1d922475aae2da9300282fe4bdb33cb22ec7e67a5cd8008a03782f5c90a518a99a3ce8c738acd5421973a92d05a6d01c2ef86"/>
+    <message_digest algorithm="SHA-512" value="672cd16790e8542900f017c74baf72739c882cca0b1f72f34f5c7f46be644988c0efcd754443f458048169bd3f472a1207d698409ca9d5dc642817da3d5ffbd7"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.branding" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-branding/0.10.0-SNAPSHOT/desktop-branding-0.10.0-SNAPSHOT.nbm" downloadsize="642682" homepage="https://gephi.org/modules/desktop-branding" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.branding" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-branding/0.10.0-SNAPSHOT/desktop-branding-0.10.0-SNAPSHOT.nbm" downloadsize="642731" homepage="https://gephi.org/modules/desktop-branding" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.branding" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Desktop initialization and management" OpenIDE-Module-Module-Dependencies="org.gephi.desktop.window &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.windows &gt; 6.95, org.openide.dialogs &gt; 7.64, org.openide.modules &gt; 7.66, org.gephi.visualization &gt; 0.10.0, org.netbeans.modules.sendopts/2 &gt; 2.54, org.openide.filesystems &gt; 9.30, org.netbeans.api.progress/1 &gt; 1.66, org.netbeans.api.progress.nb &gt; 1.66, org.openide.nodes &gt; 7.63, org.openide.io &gt; 1.67, org.netbeans.core.output2/1 &gt; 1.60, org.openide.awt &gt; 7.86, org.netbeans.modules.autoupdate.services &gt; 1.73" OpenIDE-Module-Name="Desktop Branding" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Desktop initialization and management" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="81f4f7814aa809c75549efe3111a1a1124ba26758a6cd2e1b756b6f8fd727beed0a0752d786252a31cdd6e94fb00027244cd6f97737ef777d5139a3fdbaf5245"/>
+    <message_digest algorithm="SHA-512" value="f6a734320160e890b1547a7aa47bfe7cf9c51a5a8310f14b1962ea923bdc50aa30ba5f68211641591f5020eb204ec85c3fbd9771e1f890bb9e2288c8696e6d0f"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.context" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-context/0.10.0-SNAPSHOT/desktop-context-0.10.0-SNAPSHOT.nbm" downloadsize="20007" homepage="https://gephi.org/modules/desktop-context" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.context" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-context/0.10.0-SNAPSHOT/desktop-context-0.10.0-SNAPSHOT.nbm" downloadsize="20003" homepage="https://gephi.org/modules/desktop-context" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.context" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.windows &gt; 6.95, org.openide.awt &gt; 7.86, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Desktop Context" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Contextual information about current graph" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="7bfb629eb7ebff3c031f8e26f36f34cf691b9a6b0988b568ed9bbbb338ff6928c2668d751c314230728f37f40b179703a2be41bc258078f0f52a4ab2a822afa6"/>
+    <message_digest algorithm="SHA-512" value="3ebd56bb5d179c9f2a7f6c4d8fe99d5f0ae90d9eada483f407479ddbfa6c1985d016228af78a91f3767b7ee7f2b9d9aa6ea122b2421eef29fd3583442c308c3c"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.datalab" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-datalab/0.10.0-SNAPSHOT/desktop-datalab-0.10.0-SNAPSHOT.nbm" downloadsize="164753" homepage="https://gephi.org/modules/desktop-datalab" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.datalab" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-datalab/0.10.0-SNAPSHOT/desktop-datalab-0.10.0-SNAPSHOT.nbm" downloadsize="164755" homepage="https://gephi.org/modules/desktop-datalab" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.datalab" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Data Laboratory Table component and edit panels" OpenIDE-Module-Module-Dependencies="org.gephi.datalab.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.io.exporter.plugin &gt; 0.10.0, org.gephi.desktop.io.export &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.netbeans.swing.outline &gt; 1.52, org.openide.windows &gt; 6.95, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Desktop Data Laboratory" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Data Laboratory Table component and edit panels" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="44ae0ba08aa2dc627cdb711d73e7c9d92df7298f4786307cdfc41ddd0ae99ceffc2deb331a38fb8ff20aeaf1434769ccab91a68eb7bbc2ed6131168e806464bc"/>
+    <message_digest algorithm="SHA-512" value="fb354223c843d68875cfea66cc887679d124fa2fd9cacf74a5193de659d04add9798b6ec4e48f19171473814e7fc6ed63877a247bfd3cc191f92ce1eb6d2409d"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.io.export" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-io-export/0.10.0-SNAPSHOT/desktop-io-export-0.10.0-SNAPSHOT.nbm" downloadsize="45427" homepage="https://gephi.org/modules/desktop-io-export" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.io.export" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-io-export/0.10.0-SNAPSHOT/desktop-io-export-0.10.0-SNAPSHOT.nbm" downloadsize="45412" homepage="https://gephi.org/modules/desktop-io-export" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.io.export" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Integrate and manage export features in UI." OpenIDE-Module-Module-Dependencies="org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30" OpenIDE-Module-Name="Desktop Export" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrate export" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="ad1b4b4fea0b9f51d26f3ca70460ab8c64a3df64e8c693f1c3fa5eaa92d2d84f914926ec5eb174b0fb2c7be4530f86156903f4b41a09c5b338f29289a7257129"/>
+    <message_digest algorithm="SHA-512" value="d3e32617ecef35c6e585db4646677f6e9a6a5dae6b7a59eddf24868b703f617494e322c22c6f82a25edf958ca987ccf7d3a1f255b9b77659bf7a3efb952f7591"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.filters" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-filters/0.10.0-SNAPSHOT/desktop-filters-0.10.0-SNAPSHOT.nbm" downloadsize="82615" homepage="https://gephi.org/modules/desktop-filters" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.filters" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-filters/0.10.0-SNAPSHOT/desktop-filters-0.10.0-SNAPSHOT.nbm" downloadsize="82616" homepage="https://gephi.org/modules/desktop-filters" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.filters" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.filters.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.explorer &gt; 6.80, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63, org.openide.windows &gt; 6.95, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Desktop Filters" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrate Filters UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="48d6606568131dcfb991ff91744464f7353b6ca12a073e6b5ed26eb32a934ffcc4ae55bf09177e15effd669e691ab7558f2aefebfdc82069078eabd362d372fc"/>
+    <message_digest algorithm="SHA-512" value="75453fdaf3a01c8b2b273e87c65624eb5da14373543b38416ecc8e7e53615456f546a3330e67f1bc98c33f4878981be44a29cf34b1c92d072f23ea09d354f32f"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.generate" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-generate/0.10.0-SNAPSHOT/desktop-generate-0.10.0-SNAPSHOT.nbm" downloadsize="13735" homepage="https://gephi.org/modules/desktop-generate" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.generate" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-generate/0.10.0-SNAPSHOT/desktop-generate-0.10.0-SNAPSHOT.nbm" downloadsize="13731" homepage="https://gephi.org/modules/desktop-generate" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.generate" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.desktop.project &gt; 0.10.0, org.gephi.io.generator.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.io.importer.plugin &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.gephi.ui.library.wrapper &gt; 0.10.0" OpenIDE-Module-Name="Desktop Generate" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrate generators in UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="22f0abd1825594f52b735c3e73e6e821dc7231cf23c90a798e1ca0cb91bc41ede6d73d43e459b359ffb2a8535f0bab47794d3a53fb5340955c265e2f565b7cf6"/>
+    <message_digest algorithm="SHA-512" value="d95d24617a4b95d9c48638b7447c3525d24589ea9b717c0d57d36f673e8dab3093b8c0217a762d123900ad3c63aa3b21e4586c7a43b632a5ad43782c221f5c02"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.icons" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-icons/0.10.0-SNAPSHOT/desktop-icons-0.10.0-SNAPSHOT.nbm" downloadsize="217695" homepage="https://gephi.org/modules/desktop-icons" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.icons" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-icons/0.10.0-SNAPSHOT/desktop-icons-0.10.0-SNAPSHOT.nbm" downloadsize="217698" homepage="https://gephi.org/modules/desktop-icons" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.icons" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi Icons" OpenIDE-Module-Name="Desktop Icons" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Gephi Icons" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="408458312274f2b4b82c8540fefd1b7df441d99e58a2314f107e5f2aa7fafa3a468d00cba6ac04c412d022c0f1804fd4fc3ae0d94c36dbf0dc6f9121ba88f20c"/>
+    <message_digest algorithm="SHA-512" value="c8ad80cf019369830c9a1e79ca9cb4a94dbceeb1b9574d26cebd56e9afd3d9d9a470e516f242c5fe9c06e30123a7ee9c727b65c331e7451fa15cc05ff264a7d6"/>
 </module>
 
 <module codenamebase="org.gephi.desktop.import" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-import/0.10.0-SNAPSHOT/desktop-import-0.10.0-SNAPSHOT.nbm" downloadsize="101615" homepage="https://gephi.org/modules/desktop-import" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
@@ -274,55 +274,55 @@
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.import" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.mostrecentfiles.api &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.netbeans.swing.outline &gt; 1.52, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0" OpenIDE-Module-Name="Desktop Import" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrate import features in UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="1f83e1cd483943c978ff423fe01b3d664894c5d3db4223f66a6b0dfe0bde09f4e7d4de56ed38718d00f062ba919f8696d4e6490ab57d3c9faab720736ba27327"/>
+    <message_digest algorithm="SHA-512" value="fb685838f340a1ecc5c42a2ad2c1e7408910b4ce8e888036879202aa125a507410451f4cfa11d65ecfce5c552a9e1b85c965c4e223e8724b214b45de2c9e63fe"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.layout" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-layout/0.10.0-SNAPSHOT/desktop-layout-0.10.0-SNAPSHOT.nbm" downloadsize="38879" homepage="https://gephi.org/modules/desktop-layout" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.layout" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-layout/0.10.0-SNAPSHOT/desktop-layout-0.10.0-SNAPSHOT.nbm" downloadsize="38872" homepage="https://gephi.org/modules/desktop-layout" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.layout" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.layout.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.explorer &gt; 6.80, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63, org.openide.windows &gt; 6.95, org.netbeans.modules.settings/1 &gt; 1.67" OpenIDE-Module-Name="Desktop Layout" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Integrate layout UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="ece4543076f19aec6165fbbebb22d6560f2a30876d1351d6f87bc7d7fed9ac4d8994c1fe4676bf8c34ad4c942d95b6adf6dd2a187b2a0f519d7a9acfa026c9d1"/>
+    <message_digest algorithm="SHA-512" value="6ecaa3f1bc84f6ba1ec08172506a10646981e6a6217fa5c928edba3886558153b6878b5d79050bfb8669c6027edfe260a2963ce400409ec670fdaadd26e4a35b"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.preview" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-preview/0.10.0-SNAPSHOT/desktop-preview-0.10.0-SNAPSHOT.nbm" downloadsize="96994" homepage="https://gephi.org/modules/desktop-preview" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.preview" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-preview/0.10.0-SNAPSHOT/desktop-preview-0.10.0-SNAPSHOT.nbm" downloadsize="97004" homepage="https://gephi.org/modules/desktop-preview" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.preview" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.desktop.io.export &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.preview.api &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.explorer &gt; 6.80, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63, org.openide.windows &gt; 6.95, org.netbeans.modules.settings/1 &gt; 1.67" OpenIDE-Module-Name="Desktop Preview" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Preview and Preview settings components" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="fe42de8554fc55341595141edc47d3ae63c5a9bfe658a38f00eb204b0e1cfb1381d475bc89bf80863ca836d44bbd7021c4cf5fdb2110c2e291ce995827aee2ec"/>
+    <message_digest algorithm="SHA-512" value="7da2fd1dceda5ad22148f661dc5c1a45d700ed3ceb14c8a6113f13e73ede0938ce1ae2fdc96650b55b9986192d387f70c5fe8b9f34a2943880f8871031fd6b23"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.project" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-project/0.10.0-SNAPSHOT/desktop-project-0.10.0-SNAPSHOT.nbm" downloadsize="67189" homepage="https://gephi.org/modules/desktop-project" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.project" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-project/0.10.0-SNAPSHOT/desktop-project-0.10.0-SNAPSHOT.nbm" downloadsize="67188" homepage="https://gephi.org/modules/desktop-project" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.project" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Project management actions and user interaction" OpenIDE-Module-Module-Dependencies="org.gephi.mostrecentfiles.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.openide.windows &gt; 6.95, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.openide.nodes &gt; 7.63, org.openide.modules &gt; 7.66, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Desktop Project" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Project management actions and user interaction" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="62cb5e9e79ef38885e7dfec6fddd74a403698a5b06157c3773cb94fe7ef568eef62885ac5af5fc609ed80a7e4ec8d63fb52e04827448d26bc4eee0ebaa37608b"/>
+    <message_digest algorithm="SHA-512" value="b5cfa6814d4d1c411b79c99fb7a035b0a936a1fa11cd0252d9229f5abb9f76f91dad2bb9f3c07d136dad7d05cb70e6b6fca01c0cdd98a5d4098e3c28ab1d1af0"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.search" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-search/0.10.0-SNAPSHOT/desktop-search-0.10.0-SNAPSHOT.nbm" downloadsize="53291" homepage="https://gephi.org/modules/desktop-search" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.search" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-search/0.10.0-SNAPSHOT/desktop-search-0.10.0-SNAPSHOT.nbm" downloadsize="53277" homepage="https://gephi.org/modules/desktop-search" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.search" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Provide graph search functionality and its related UI" OpenIDE-Module-Module-Dependencies="org.gephi.project.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.visualization.api &gt; 0.10.0, org.gephi.datalab.api &gt; 0.10.0, org.gephi.desktop.datalab &gt; 0.10.0, org.gephi.datalab.plugin &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.filters.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.awt &gt; 7.86, org.openide.windows &gt; 6.95" OpenIDE-Module-Name="Desktop Search" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Search within the graph" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="8da8844d47d50c7f9c2e92de8f2a96d9813f17637af608edfd1c600d664b34dc5ffc2dd92bb2ac848931b4e2aa6c62437df3ea2ada195e67e78e785bc282087c"/>
+    <message_digest algorithm="SHA-512" value="0c78f67016006a55d23a92aedfb334e1b9186b0903cb4e1cd00d8023f84a2bfdc72313575936702cd11c1bfc55d3c6e5cc741e49a6718f5415b183ac64efc9cf"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.statistics" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-statistics/0.10.0-SNAPSHOT/desktop-statistics-0.10.0-SNAPSHOT.nbm" downloadsize="66294" homepage="https://gephi.org/modules/desktop-statistics" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.statistics" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-statistics/0.10.0-SNAPSHOT/desktop-statistics-0.10.0-SNAPSHOT.nbm" downloadsize="66313" homepage="https://gephi.org/modules/desktop-statistics" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.statistics" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.statistics.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.dialogs &gt; 7.64, org.openide.windows &gt; 6.95, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.awt &gt; 7.86, org.netbeans.modules.settings/1 &gt; 1.67, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Desktop Statistics" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Statistics and metrics UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="f350611b0bab499622d2f33e0506e8efe75e1348eb8214a397482d8d02d8bf5d917472b155d4fdf746702b31276f9810247e9d334e2213b8952ec92d99a6bc03"/>
+    <message_digest algorithm="SHA-512" value="1dcbee611de74af61d361c546bae085838cbe6830ea78549eb3dad653101b940d2608acba860d1cf8b59dfd0a019f8892fbd7240383989ab7841a814ad5b5e9b"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.timeline" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-timeline/0.10.0-SNAPSHOT/desktop-timeline-0.10.0-SNAPSHOT.nbm" downloadsize="86196" homepage="https://gephi.org/modules/desktop-timeline" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.timeline" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-timeline/0.10.0-SNAPSHOT/desktop-timeline-0.10.0-SNAPSHOT.nbm" downloadsize="86235" homepage="https://gephi.org/modules/desktop-timeline" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.timeline" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.netbeans.api.annotations.common/1 &gt; 1.46, org.gephi.desktop.window &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.timeline.api &gt; 0.10.0, org.gephi.visualization &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.windows &gt; 6.95, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.awt &gt; 7.86, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Desktop Timeline" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Timeline UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="5b23b014055df692637f56298dac558765d8e7e17f5fd2889441a33b738b744fddadd551c7dac0dbe7e9cdabd26e4bd9f41f3cc2af94525a2815d688173ee5b9"/>
+    <message_digest algorithm="SHA-512" value="15b87b730800f14a623fd27b82ae70fc798833e00834b6cc1dd96adda8de3d1c0096ecd2c7da3bfa6cab744cdcffa0046668f283244c133d6b846d44d6bacbd7"/>
 </module>
 
 <module codenamebase="org.gephi.desktop.tools" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-tools/0.10.0-SNAPSHOT/desktop-tools-0.10.0-SNAPSHOT.nbm" downloadsize="39980" homepage="https://gephi.org/modules/desktop-tools" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
@@ -330,15 +330,15 @@
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.tools" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.gephi.visualization &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Desktop Tools" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Implement ToolController and integrate tools UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="06fdce920ec15520cc86a0f70dee98bba436d9b12112fd4e569baa75fc3d426b4a191d85d685458e36c22bd6c034286781b7514cea24aecd6c3ecf8a5dd8789a"/>
+    <message_digest algorithm="SHA-512" value="a2e928b37d7eb0a3c27453a803f9491de92d940dd8817e86696d07e26b54d89b1ee7529e0f29fa6887f982129c03dddf8fbce8700bcf9b75938bdaa0cd7550ea"/>
 </module>
 
-<module codenamebase="org.gephi.desktop.window" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-window/0.10.0-SNAPSHOT/desktop-window-0.10.0-SNAPSHOT.nbm" downloadsize="31070" homepage="https://gephi.org/modules/desktop-window" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.desktop.window" distribution="https://repo1.maven.org/maven2/org/gephi/desktop-window/0.10.0-SNAPSHOT/desktop-window-0.10.0-SNAPSHOT.nbm" downloadsize="31075" homepage="https://gephi.org/modules/desktop-window" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.desktop.window" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Implementations of default perspectives and banner panel" OpenIDE-Module-Module-Dependencies="org.gephi.ui.utils &gt; 0.10.0, org.gephi.perspective.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.modules &gt; 7.66, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.windows &gt; 6.95, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63, org.openide.dialogs &gt; 7.64, org.netbeans.modules.options.api/1 &gt; 1.63, org.netbeans.swing.tabcontrol &gt; 1.75, org.netbeans.api.progress/1 &gt; 1.66, org.netbeans.api.progress.nb &gt; 1.66, org.openide.awt &gt; 7.86" OpenIDE-Module-Name="Desktop Window" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Implementations of default perspectives and banner panel" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="715c0db6dc872abe7100e0fc6f298fe7daeab85c3a55c517dab81c094e9f88c31b956eb205c9cdc9c5909498ba090c4b31285f84a2324eef0956c0d146dcc636"/>
+    <message_digest algorithm="SHA-512" value="52ed4f23f85d6eab3907429e0b06b4e6d06734dfcf3076a35c87ee142fd4fd7f09feaf55c013bd2effe054bf85f809a339d20ca45085cf99830a44e65d29764d"/>
 </module>
 
 <module autoload="true" codenamebase="org.openide.dialogs" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-openide-dialogs/RELEASE160/org-openide-dialogs-RELEASE160.nbm" downloadsize="109926" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -381,28 +381,28 @@
     <message_digest algorithm="SHA-512" value="fcfb45f3ac1c616ddc774e3fdf04b1f7140947a545781b19b37450da3daca32e82cccddf5b6a219a87dc984aedd9682be1e63383feeb28b920e18132546516eb"/>
 </module>
 
-<module codenamebase="org.gephi.io.exporter.api" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-api/0.10.0-SNAPSHOT/io-exporter-api-0.10.0-SNAPSHOT.nbm" downloadsize="14922" homepage="https://gephi.org/modules/io-exporter-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.exporter.api" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-api/0.10.0-SNAPSHOT/io-exporter-api-0.10.0-SNAPSHOT.nbm" downloadsize="14925" homepage="https://gephi.org/modules/io-exporter-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.exporter.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for exporters" OpenIDE-Module-Module-Dependencies="org.gephi.project.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.filesystems &gt; 9.30" OpenIDE-Module-Name="Export API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for exporters" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="312e92d3f22a36267c599972e86fe4b94d252ff523e408fec03cd0764a208ff1b0eae50f1e378003169d70e7ff4c6c456a481d0532ca938da090bbe50cae5f68"/>
+    <message_digest algorithm="SHA-512" value="78f9c16933d208b7877e877b3fa6d93e7bb48b42009e871f087a59354ec734ee8a0e6ff600d8ec41e8941637a58890e7b349f036bd5886670bb589347c1e34c7"/>
 </module>
 
-<module codenamebase="org.gephi.io.exporter.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-plugin/0.10.0-SNAPSHOT/io-exporter-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="99202" homepage="https://gephi.org/modules/io-exporter-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.exporter.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-plugin/0.10.0-SNAPSHOT/io-exporter-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="99169" homepage="https://gephi.org/modules/io-exporter-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.exporter.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Standard exporters implementations" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Export Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard exporters" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="51269d6fa1bedd5a381e4b8d35b70f8c23afdf89b0f3a20337e72813c6defac0d23b9702ecd634f8a93dd15cdb589d7ca058cac1647165d8511b36834895d8d5"/>
+    <message_digest algorithm="SHA-512" value="cb90396837b05558e12d863f13312c06e799d8a9714e9290d1e2b005cd4b781c038fdb964c8beaa4bb0879047936001cce0437f3da3a0f25d15a5f79b7a4c9c7"/>
 </module>
 
-<module codenamebase="org.gephi.export.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/export-plugin-ui/0.10.0-SNAPSHOT/export-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="73696" homepage="https://gephi.org/modules/export-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.export.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/export-plugin-ui/0.10.0-SNAPSHOT/export-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="73708" homepage="https://gephi.org/modules/export-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.export.plugin.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.io.exporter.plugin &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.gephi.ui.utils &gt; 0.10.0" OpenIDE-Module-Name="Export Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard exporters UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="93a0422efd1378dab37a5d091cd9b8788e58af1e2d846f9257081cab766ab0adc4661dbe5853cc5dbe205165aff44dd8190ff911b70da5f335a2f573731c3332"/>
+    <message_digest algorithm="SHA-512" value="e7cdf68e09e7885efa52c90f131858c05b37f936c6b84485b3054646d3b0fbeda309a3290a4be7ff4e4ecbb5d69a9c803809d1e1f681e9f9ffc8f39146deb8b1"/>
 </module>
 
 <module codenamebase="org.netbeans.modules.favorites" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-modules-favorites/RELEASE160/org-netbeans-modules-favorites-RELEASE160.nbm" downloadsize="59238" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -445,36 +445,36 @@
     <message_digest algorithm="SHA-512" value="b48b2552c61639a6bc0adb0ab195f1e6b69395d2f67a36ca5ad1b054cbecc0323c0e22971d8ce7c1081cddbb0e915a68a1e2dc0a9c73a3b0a8cb419a6a12c490"/>
 </module>
 
-<module codenamebase="org.gephi.filters.api" distribution="https://repo1.maven.org/maven2/org/gephi/filters-api/0.10.0-SNAPSHOT/filters-api-0.10.0-SNAPSHOT.nbm" downloadsize="20836" homepage="https://gephi.org/modules/filters-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.filters.api" distribution="https://repo1.maven.org/maven2/org/gephi/filters-api/0.10.0-SNAPSHOT/filters-api-0.10.0-SNAPSHOT.nbm" downloadsize="20844" homepage="https://gephi.org/modules/filters-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.filters.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for filters, define and control current filtering" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Filters API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for filters" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="4def64454faba855ed115c63cf789137fe075e4cb4b54d57b09684752272d2df27b39728efeee7cea937c1f7f181a408821fd6e148c1fdbce4dc8d4b10c36070"/>
+    <message_digest algorithm="SHA-512" value="9ec753d00412a90a5865ab3f7e1e6a36114892f0a2733fe689c139f43a26ffad0170dd76efad29fc23726c519773c2a327bdf18d0bb8fc76bbe22e8fe7dc07b9"/>
 </module>
 
-<module codenamebase="org.gephi.filters.impl" distribution="https://repo1.maven.org/maven2/org/gephi/filters-impl/0.10.0-SNAPSHOT/filters-impl-0.10.0-SNAPSHOT.nbm" downloadsize="49433" homepage="https://gephi.org/modules/filters-impl" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.filters.impl" distribution="https://repo1.maven.org/maven2/org/gephi/filters-impl/0.10.0-SNAPSHOT/filters-impl-0.10.0-SNAPSHOT.nbm" downloadsize="49437" homepage="https://gephi.org/modules/filters-impl" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.filters.impl" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.netbeans.api.annotations.common/1 &gt; 1.46, org.gephi.filters.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.visualization.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Filters Impl" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Implementation of Filters API" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="20972acefd387ebe7ca6a89161b807f1ff6f115e31680b9890bf4d314bd726b36beaebdee9d75d87682a1b8d9e0df35b734a66e502033d10752be70cd78f06d3"/>
+    <message_digest algorithm="SHA-512" value="56840542a73c5217df94a2a5c4d51a0e2b440e6a4322b70367129127067233546134232a39623619c1b32ca9eeb4be9f94c61a8a376cfb4c904f1e3bef5d403f"/>
 </module>
 
-<module codenamebase="org.gephi.filters.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/filters-plugin/0.10.0-SNAPSHOT/filters-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="142966" homepage="https://gephi.org/modules/filters-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.filters.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/filters-plugin/0.10.0-SNAPSHOT/filters-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="142967" homepage="https://gephi.org/modules/filters-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.filters.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Filters implementations, define new filters" OpenIDE-Module-Module-Dependencies="org.gephi.filters.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.appearance.api &gt; 0.10.0, org.gephi.statistics.api &gt; 0.10.0, org.gephi.statistics.plugin &gt; 0.10.0, org.gephi.algorithms.plugin &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.gephi.project.api &gt; 0.10.0" OpenIDE-Module-Name="Filters Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Filters implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="7b3702c7dfb92071be0c5fbd7549de4299ecb21ead2ac716f8cb2b1b70f28f102ddeae728eed390d7bce2fc8904e12716456ba98658c6d3bf4b28c214f10a442"/>
+    <message_digest algorithm="SHA-512" value="a5af9920b7c3d0ebe134769aafc9881044b23fde61349e40d7d8c38b25cda3862b7632bc72f60fb0f9aa3297cef97eff843261a5b512b67eaf617aea6f39da23"/>
 </module>
 
-<module codenamebase="org.gephi.filters.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/filters-plugin-ui/0.10.0-SNAPSHOT/filters-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="79267" homepage="https://gephi.org/modules/filters-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.filters.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/filters-plugin-ui/0.10.0-SNAPSHOT/filters-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="79232" homepage="https://gephi.org/modules/filters-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.filters.plugin.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.netbeans.api.annotations.common/1 &gt; 1.46, org.gephi.graph.api &gt; 0.10.0, org.gephi.filters.api &gt; 0.10.0, org.gephi.filters.plugin &gt; 0.10.0, org.gephi.appearance.api &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.windows &gt; 6.95, org.gephi.desktop.window &gt; 0.10.0, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Filters Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Filters implementations UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="35f7b564e48ef4c02b77ff7cc185c931ab506a65a4b12f882f2bf4b36e876a7794af84d9849260685158b938d015294d9c3c07fde6aa0021e5e86d2fe369653c"/>
+    <message_digest algorithm="SHA-512" value="6e84e3e682d36710cbd0ef7f6140b860f75b51d34c0a953d501c4513a36393089f9a57969a44622cefb693bffb003425eaec944b78106b636eb7d748b8a434c8"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.libs.flatlaf" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-libs-flatlaf/RELEASE160/org-netbeans-libs-flatlaf-RELEASE160.nbm" downloadsize="739231" homepage="http://www.netbeans.org/" license="9C29A636" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -506,31 +506,31 @@
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.generator.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Generator API/SPI, for defining new generators" OpenIDE-Module-Module-Dependencies="org.gephi.io.importer.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0" OpenIDE-Module-Name="Generator API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for generators" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="c1a7281f485da351c6ffa2ae644f1012e4c28ac7a5a5248083089a2f8c855b6bd6ef5e7c5b932dc5ac494f1085c5428852c8d1f3f39b243d3cad39bd3940483f"/>
+    <message_digest algorithm="SHA-512" value="16742ae1c2ac165a91113374be8965cc46344d6b8fdfc2d5d3b415d515e068a1f3a066894015a4d01d39e6592621eba1bb7cc4741f07b0e23c0e84eb36ebbb2b"/>
 </module>
 
-<module codenamebase="org.gephi.io.generator.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-generator-plugin/0.10.0-SNAPSHOT/io-generator-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="15095" homepage="https://gephi.org/modules/io-generator-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.generator.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-generator-plugin/0.10.0-SNAPSHOT/io-generator-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="15091" homepage="https://gephi.org/modules/io-generator-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.generator.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Standard generators implementations" OpenIDE-Module-Module-Dependencies="org.gephi.io.generator.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Generator Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard generators implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="f104343751faba5efd8e45719261996569a42a21aeb75dd391a77341dfedebe2efe0d77ee487d5b7f9ac1f2a2f033e5f5e90de3b738cefeea54e724fd4382843"/>
+    <message_digest algorithm="SHA-512" value="d187993b4c47577f8199fc2d76ce36b7432de4b719e7122e896669981fdc8dfd453fc7e68bc8aaae9fdf93ab444f00a5bf6a8aa1c020cc07f4b0e8c0192f7f52"/>
 </module>
 
-<module codenamebase="org.gephi.generator.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/generator-plugin-ui/0.10.0-SNAPSHOT/generator-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="12093" homepage="https://gephi.org/modules/generator-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.generator.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/generator-plugin-ui/0.10.0-SNAPSHOT/generator-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="12094" homepage="https://gephi.org/modules/generator-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.generator.plugin.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.io.generator.api &gt; 0.10.0, org.gephi.io.generator.plugin &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.gephi.ui.library.wrapper &gt; 0.10.0" OpenIDE-Module-Name="Generator Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard generators UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="92f45aa3fc1c229d7b62324716b1f3d1478c6355ef50c5ed9c3ac25f060c84957dc8113e86c6c622b3ef095b0d5130e9f0a5bbf3534786f08b13752eec951f56"/>
+    <message_digest algorithm="SHA-512" value="4043df0b3d073e88384915ce95029de7e93585fb6b9d7f3221c52efe399a7211e0dfae199555fe0b7fd4ad7520694e1628962a596c467b21bec13cc3aa0d7c4a"/>
 </module>
 
-<module codenamebase="org.gephi.graph.api" distribution="https://repo1.maven.org/maven2/org/gephi/graph-api/0.10.0-SNAPSHOT/graph-api-0.10.0-SNAPSHOT.nbm" downloadsize="22648400" homepage="https://gephi.org/modules/graph-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.graph.api" distribution="https://repo1.maven.org/maven2/org/gephi/graph-api/0.10.0-SNAPSHOT/graph-api-0.10.0-SNAPSHOT.nbm" downloadsize="22648396" homepage="https://gephi.org/modules/graph-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.graph.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API for accessing the graph" OpenIDE-Module-Module-Dependencies="org.gephi.project.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Graph API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API for accessing the graph" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="c6f72de9f5debebb2f71c87385bd1f367c884184b2503783716ebb045b0915b11818fc71128dc1caa69556f05955efc335135c26a6b317405948d70d24feac52"/>
+    <message_digest algorithm="SHA-512" value="5bbfa4f8d720ef610c67b4bee3b5a63c447efedb1b9c54775450652e2f37e6baa8cd3353b3636e82ca5bad780e599d3402166fad23d8a2d0208aabb4f458e103"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.api.io" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-api-io/RELEASE160/org-netbeans-api-io-RELEASE160.nbm" downloadsize="44343" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -557,28 +557,28 @@
     <message_digest algorithm="SHA-512" value="aeb817fed0a9bd4e44d5b37be2a439ddf28b4f882ca60f46b65dd95ab9c774c7ee3ee9c08471c52a7f999ff5018168ae43fc0d750ea1ccf884435b75de948823"/>
 </module>
 
-<module codenamebase="org.gephi.io.importer.api" distribution="https://repo1.maven.org/maven2/org/gephi/io-importer-api/0.10.0-SNAPSHOT/io-importer-api-0.10.0-SNAPSHOT.nbm" downloadsize="110052" homepage="https://gephi.org/modules/io-importer-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.importer.api" distribution="https://repo1.maven.org/maven2/org/gephi/io-importer-api/0.10.0-SNAPSHOT/io-importer-api-0.10.0-SNAPSHOT.nbm" downloadsize="110082" homepage="https://gephi.org/modules/io-importer-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.importer.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for importers" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.db.drivers &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Import API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for importers" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="f64844806973c5bbc14120c27bd39378863f578a3173d02619ff5c090b7de40d26f66e12ea35c642834a9d176b9534a6a1c462fe6f1afe54efa4b25a25d35f04"/>
+    <message_digest algorithm="SHA-512" value="28e161444c31e48f4dae8fbccf6052f57faecdd87ec60e07a0360822855bb4f5e1b7067c0e5e367a5d01cf07c96752d130ecd360cc430f360c92a434c9d21c7d"/>
 </module>
 
-<module codenamebase="org.gephi.io.importer.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-importer-plugin/0.10.0-SNAPSHOT/io-importer-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="14801608" homepage="https://gephi.org/modules/io-importer-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.importer.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/io-importer-plugin/0.10.0-SNAPSHOT/io-importer-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="14801661" homepage="https://gephi.org/modules/io-importer-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.importer.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Standard file and database importers implementations" OpenIDE-Module-Module-Dependencies="org.gephi.project.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.db.drivers &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.filesystems &gt; 9.30, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Import Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard file and database importers implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="2277862b984fc0a32699a5238e8185c17aff8e666c713d3d906664e287101290e6c7d04b5ebb761fc0e5d089bb02abbf4c1ee64e41904b7cb38bc3d71d06a9f9"/>
+    <message_digest algorithm="SHA-512" value="b5d5a07f096631fc4bc7b2a651015154df007da71aba9b563ad8019bf5bcc6a94a73f6a1741bf9a781cdf38303ed5cd0d24e08a1d144c7c23934fb8b228d0473"/>
 </module>
 
-<module codenamebase="org.gephi.import.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/import-plugin-ui/0.10.0-SNAPSHOT/import-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="87705" homepage="https://gephi.org/modules/import-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.import.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/import-plugin-ui/0.10.0-SNAPSHOT/import-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="87727" homepage="https://gephi.org/modules/import-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.import.plugin.ui" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.db.drivers &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.io.importer.plugin &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30" OpenIDE-Module-Name="Import Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard file and database settings UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="3a0d0d77fb42af10c0da8d6740e068ad707475385cfffffbe3b4432b54c259f11fe1463846310c84bcdefca9dd014e88ed204fc7f04c7b2a7f4ba6e0dfce926b"/>
+    <message_digest algorithm="SHA-512" value="5759cd4a70c595c08923a2f0106fc65fa0e9e3fd837c23476ef8b9e820974bc33e06038973fca6460bce732f6aab3e2329015f618055575ad74a4f17de4c0f9b"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.api.intent" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-api-intent/RELEASE160/org-netbeans-api-intent-RELEASE160.nbm" downloadsize="40450" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -658,15 +658,15 @@
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.layout.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for layout" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.nodes &gt; 7.63, org.gephi.utils &gt; 0.10.0" OpenIDE-Module-Name="Layout API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for layout" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="ce659a1f10db03b48049789fccd8f92b6066fabe328b34d3d15f4b10e1bb80c0c5f0ed5f16bbbb0852a5dae81f286f9a4c9e0c898d6aeb042c911e5e02031800"/>
+    <message_digest algorithm="SHA-512" value="b4bda6047243cdbaa43c87f8a0d294d6c6d10af9858cc093dd2daf280b48930ca15101ac5f367388b7febb372cb877033c271a6fb68cb46a4b7a5c408fe71076"/>
 </module>
 
-<module codenamebase="org.gephi.layout.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/layout-plugin/0.10.0-SNAPSHOT/layout-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="195824" homepage="https://gephi.org/modules/layout-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.layout.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/layout-plugin/0.10.0-SNAPSHOT/layout-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="195803" homepage="https://gephi.org/modules/layout-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.layout.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Standard layout implementations" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.layout.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Layout Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard layout implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="a4519e0c9885f73e269ed3bb49c77e407f294b36f8c1a380a6d5ab8595cf2674e0081bed4260ceae655430c256d61c218904bb6ae12be3e9988c889a1e7bd870"/>
+    <message_digest algorithm="SHA-512" value="6b7fde9ea92f6a50494cdb5c22603d68b43b069c0a19a4d99ffa257af7729b0d389277b064ec6a4d17ca08f12418967c44807d4185abe7907fc8daae8c4927fa"/>
 </module>
 
 <module codenamebase="nl.cloudfarming.client.lib.platform.l10n" distribution="https://repo1.maven.org/maven2/nl/cloudfarming/client/lib-platform-l10n/1.1-NB80/lib-platform-l10n-1.1-NB80.nbm" downloadsize="4972057" homepage="http://nb-library-wrappers.java.net" license="6B45B943" needsrestart="false" releasedate="2014/11/23" targetcluster="platform">
@@ -677,12 +677,12 @@
     <message_digest algorithm="SHA-512" value="058cc4cb49e0b849e6875caba0540a84e43df911a122f2d25788d7d5451db18a4853848bf473cd19906caf7715ac98584589a33c8d122efe1b926fd428086106"/>
 </module>
 
-<module codenamebase="org.gephi.utils.longtask" distribution="https://repo1.maven.org/maven2/org/gephi/utils-longtask/0.10.0-SNAPSHOT/utils-longtask-0.10.0-SNAPSHOT.nbm" downloadsize="17187" homepage="https://gephi.org/modules/utils-longtask" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.utils.longtask" distribution="https://repo1.maven.org/maven2/org/gephi/utils-longtask/0.10.0-SNAPSHOT/utils-longtask-0.10.0-SNAPSHOT.nbm" downloadsize="17190" homepage="https://gephi.org/modules/utils-longtask" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.utils.longtask" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API for executing long threaded task. Provide progress, cancel and integrated UI." OpenIDE-Module-Module-Dependencies="org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26" OpenIDE-Module-Name="LongTask API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API for executing long threaded task" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="ded6eb888a293c04f536ba3754b60fd48affa30a0fa29997b2b3da0903ef1639823c0e2b1aab604477924e6b057b32598d69a7ae179486332e4e9c52a209ae1e"/>
+    <message_digest algorithm="SHA-512" value="b0eab4ee299f42dad1998c294038c18c35f96fc387bfface12c86f32484f5126e736cb95a96a63d6c2092df22a7810fd5ae0bbed54e509fd01b05f2771ea933f"/>
 </module>
 
 <module codenamebase="org.netbeans.swing.plaf" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-swing-plaf/RELEASE160/org-netbeans-swing-plaf-RELEASE160.nbm" downloadsize="126269" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -765,12 +765,12 @@
     <message_digest algorithm="SHA-512" value="187590a2407b2cf54a95c0b06db2c77ddef967e48124eb1ca86cba11a9561bfc7b2f02ec2523837e6452370723cbf1d17f7636859dba064d5050c3918973d3c6"/>
 </module>
 
-<module codenamebase="org.gephi.mostrecentfiles.api" distribution="https://repo1.maven.org/maven2/org/gephi/mostrecentfiles-api/0.10.0-SNAPSHOT/mostrecentfiles-api-0.10.0-SNAPSHOT.nbm" downloadsize="10083" homepage="https://gephi.org/modules/mostrecentfiles-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.mostrecentfiles.api" distribution="https://repo1.maven.org/maven2/org/gephi/mostrecentfiles-api/0.10.0-SNAPSHOT/mostrecentfiles-api-0.10.0-SNAPSHOT.nbm" downloadsize="10102" homepage="https://gephi.org/modules/mostrecentfiles-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.mostrecentfiles.api" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="MostRecentFilesAPI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Access most recent files opened" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="097265cdf7434a066f9ad7016708423fd166e2c2c7a98f5a3ac44f81f347dda0984b682dace504fd8d06d663cecb57f0f77e1ad2a3cb61ad5f7e41ecf51b9e36"/>
+    <message_digest algorithm="SHA-512" value="72658750c788c190a9b87ec5c01fe338521ebad32c32594fc8c1fb8a45a91bf037d5566e22420c247ea5ff6ab4694efe54911085e7fbf9f3f2dddc882859be11"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.core.multitabs" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-core-multitabs/RELEASE160/org-netbeans-core-multitabs-RELEASE160.nbm" downloadsize="104551" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="true" releasedate="2022/11/19" targetcluster="platform">
@@ -837,52 +837,52 @@
     <message_digest algorithm="SHA-512" value="4885e23fceb2415fac24307678778455c388c15a8ad31491528bbc77ea4a09524af4fca973b44446d9eb3afcda15b60269b56a2d88d5e95bb334cc0bb9f424d2"/>
 </module>
 
-<module codenamebase="org.gephi.appearance.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-plugin-ui/0.10.0-SNAPSHOT/appearance-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="70660" homepage="https://gephi.org/modules/appearance-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.appearance.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/appearance-plugin-ui/0.10.0-SNAPSHOT/appearance-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="70683" homepage="https://gephi.org/modules/appearance-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.appearance.plugin.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.dialogs &gt; 7.64, org.gephi.graph.api &gt; 0.10.0, org.gephi.appearance.api &gt; 0.10.0, org.gephi.appearance.plugin &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Partition Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Partition transformers UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="5dd4869a190da6dc78618fce31421293eb05c94c7c4dc5d416e143c4f7797ab58c8a29860b0b517907416e4882738d9a09d5c5258e4f14b914ec200676e9a421"/>
+    <message_digest algorithm="SHA-512" value="02b7a9f7685ee7378cfc7f2876e1546af486e02f51162cd36de308ca95010b1ed6b3038ce23f7319f5c09b17580004afb6c0e33d62dc96e34c078c5bbe74fc2f"/>
 </module>
 
-<module codenamebase="org.gephi.perspective.api" distribution="https://repo1.maven.org/maven2/org/gephi/perspective-api/0.10.0-SNAPSHOT/perspective-api-0.10.0-SNAPSHOT.nbm" downloadsize="11049" homepage="https://gephi.org/modules/perspective-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.perspective.api" distribution="https://repo1.maven.org/maven2/org/gephi/perspective-api/0.10.0-SNAPSHOT/perspective-api-0.10.0-SNAPSHOT.nbm" downloadsize="11050" homepage="https://gephi.org/modules/perspective-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.perspective.api" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for perspectives and TopComponent management" OpenIDE-Module-Module-Dependencies="org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.windows &gt; 6.95, org.openide.filesystems &gt; 9.30, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Perspective API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for perspectives and TopComponent management" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="1868eb25bc0c817dd1965f65828628d223a2f0a9146a37a2babd0e91c53155861e6f65b5b91a11656dc3def6fe8d9babefe3c3cd1004397c866b76092b66f696"/>
+    <message_digest algorithm="SHA-512" value="1466bb8f714950e43324639427592034ac18084601612d0f6c2c3387b6a0b32e926f5ec8a95168aef96d25ad1cf537312e7942a5a6147123e4371b8df25ee23e"/>
 </module>
 
-<module codenamebase="org.gephi.preview.api" distribution="https://repo1.maven.org/maven2/org/gephi/preview-api/0.10.0-SNAPSHOT/preview-api-0.10.0-SNAPSHOT.nbm" downloadsize="77051" homepage="https://gephi.org/modules/preview-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.preview.api" distribution="https://repo1.maven.org/maven2/org/gephi/preview-api/0.10.0-SNAPSHOT/preview-api-0.10.0-SNAPSHOT.nbm" downloadsize="77045" homepage="https://gephi.org/modules/preview-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.preview.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for building the graph preview" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.batik.wrapper &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.gephi.utils &gt; 0.10.0" OpenIDE-Module-Name="Preview API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for building the graph preview" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="c5b424307b14edd9c77406462656753e99712c7d8b39222861b42b248809ef9d748be27998c522b39f51f62951ed2fc6abed0b67bd281d7961835fc0c779bc0a"/>
+    <message_digest algorithm="SHA-512" value="77d9d66ed116efb599731dd9b04c5e8cd9f53b478ba75ef3bbaafa4e8569b6d1053c67385f2c2a9449c2b7a1b9c9e052f28e861058e7f69568eaabe135d2c5e1"/>
 </module>
 
-<module codenamebase="org.gephi.io.exporter.preview" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-preview/0.10.0-SNAPSHOT/io-exporter-preview-0.10.0-SNAPSHOT.nbm" downloadsize="21218" homepage="https://gephi.org/modules/io-exporter-preview" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.io.exporter.preview" distribution="https://repo1.maven.org/maven2/org/gephi/io-exporter-preview/0.10.0-SNAPSHOT/io-exporter-preview-0.10.0-SNAPSHOT.nbm" downloadsize="21222" homepage="https://gephi.org/modules/io-exporter-preview" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.io.exporter.preview" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Vector exporters implementations" OpenIDE-Module-Module-Dependencies="org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.preview.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.batik.wrapper &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Preview Export" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Vector exporters implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="a7258847fa2b0bbf2a210b237bb4d1ffe091dc29a65a3dcc973f4de6d58114274b1c88aa46084e15153a60e9a45381a9c7f2cdff9b0031dbe1cba247a2ab0a7b"/>
+    <message_digest algorithm="SHA-512" value="d10eb824933fe09dd6f6def93811810f20a3756aff41cb1ff3279ff3c6178ded4d219052f62da49cde19b88b15830b47d4877c9ca2575dc9b314cdc51fe93d8a"/>
 </module>
 
-<module codenamebase="org.gephi.preview.export.ui" distribution="https://repo1.maven.org/maven2/org/gephi/preview-export-ui/0.10.0-SNAPSHOT/preview-export-ui-0.10.0-SNAPSHOT.nbm" downloadsize="39042" homepage="https://gephi.org/modules/preview-export-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.preview.export.ui" distribution="https://repo1.maven.org/maven2/org/gephi/preview-export-ui/0.10.0-SNAPSHOT/preview-export-ui-0.10.0-SNAPSHOT.nbm" downloadsize="39061" homepage="https://gephi.org/modules/preview-export-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.preview.export.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.io.exporter.api &gt; 0.10.0, org.gephi.preview.api &gt; 0.10.0, org.gephi.io.exporter.preview &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.ui.utils &gt; 0.10.0" OpenIDE-Module-Name="Preview Export UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Vectorial exporters user interfaces" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="6c70aa5b1bf811d94ae9c580d4d6d670bc8c7a94f2b4be593594a37f1bc434a17ae56fc28af69eb7b1d5d5605e7cd507a2135f91e7fc43be1e108307824fed66"/>
+    <message_digest algorithm="SHA-512" value="79f75edd89deedbfd855342ef262ff03b095edc0ecbb11297246cc7ab0579aee3eeab282f67cd8893d67a9babd5150950348465c3cfe0fd5ddcea6505eaf343e"/>
 </module>
 
-<module codenamebase="org.gephi.preview.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/preview-plugin/0.10.0-SNAPSHOT/preview-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="79256" homepage="https://gephi.org/modules/preview-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.preview.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/preview-plugin/0.10.0-SNAPSHOT/preview-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="79255" homepage="https://gephi.org/modules/preview-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.preview.plugin" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Implementations of Item Builders, Renderers and RenderTargets" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.preview.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.batik.wrapper &gt; 0.10.0, org.gephi.visualization.api &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.utils &gt; 0.10.0" OpenIDE-Module-Name="Preview Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Implementation of Preview SPI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="16822283b89eb09f6a1f20f7295999ea21908d6de13641cc45b476833ab7e78ef38846b0da47d970840f7e64927c00a23739136ed3f2cd07f8a47b5d2e53c4a9"/>
+    <message_digest algorithm="SHA-512" value="d12f2e365c5a8cdfde0dc6469ddb0659e8a4a12ae0016249a3c54d96c222309a346a5a0489883c8c6bc35b07d72dd70a6095e56cdada4c120f7748fdcb46878a"/>
 </module>
 
 <module codenamebase="org.netbeans.modules.print" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-modules-print/RELEASE160/org-netbeans-modules-print-RELEASE160.nbm" downloadsize="119519" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -925,12 +925,12 @@
     <message_digest algorithm="SHA-512" value="d67e01851c7897c411de49d432e282c40a0c4c7c494db0f180167de9e00cf9c793e1863b6f2a6e78a01a154d0d975c13c5e5060d75ca3279451f7dd6964faf54"/>
 </module>
 
-<module codenamebase="org.gephi.project.api" distribution="https://repo1.maven.org/maven2/org/gephi/project-api/0.10.0-SNAPSHOT/project-api-0.10.0-SNAPSHOT.nbm" downloadsize="77379" homepage="https://gephi.org/modules/project-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.project.api" distribution="https://repo1.maven.org/maven2/org/gephi/project-api/0.10.0-SNAPSHOT/project-api-0.10.0-SNAPSHOT.nbm" downloadsize="77349" homepage="https://gephi.org/modules/project-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.project.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API for projects and workspaces manipulation" OpenIDE-Module-Module-Dependencies="org.openide.filesystems &gt; 9.30, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.utils.longtask &gt; 0.10.0" OpenIDE-Module-Name="Project API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API for projects and workspaces manipulation" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="a58fe3cd837a35b7b69bce24a5bd945de172fdfd88c525e96d0a37558f2d6efcd74c9c1a89894e7f7baaa232c9e33b5935214636214a86aac6b545f05494d650"/>
+    <message_digest algorithm="SHA-512" value="29561bf6c97c952e7c6a5bcb84adb28b8ab472b9aefd5d90d2fbb1786f49d0bb8ad3ca74c97c069b53e43de2ab6c1557d0c7e0dc37c09b9229ec89c185b06194"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.spi.quicksearch" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-spi-quicksearch/RELEASE160/org-netbeans-spi-quicksearch-RELEASE160.nbm" downloadsize="86569" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -973,12 +973,12 @@
     <message_digest algorithm="SHA-512" value="1d70a2e875fdc4db5028dd4cfcec5b6c5cb4872bc9a7f3b6bcacf15df69e93cda3e1bb10c8f99277e5fd0bc27dd06faac9b653939b5510d06623bd24229e0a27"/>
 </module>
 
-<module codenamebase="org.gephi.settings.upgrader" distribution="https://repo1.maven.org/maven2/org/gephi/settings-upgrader/0.10.0-SNAPSHOT/settings-upgrader-0.10.0-SNAPSHOT.nbm" downloadsize="19973" homepage="https://gephi.org/modules/settings-upgrader" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.settings.upgrader" distribution="https://repo1.maven.org/maven2/org/gephi/settings-upgrader/0.10.0-SNAPSHOT/settings-upgrader-0.10.0-SNAPSHOT.nbm" downloadsize="19974" homepage="https://gephi.org/modules/settings-upgrader" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.settings.upgrader" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Import settings from previous Gephi installation" OpenIDE-Module-Module-Dependencies="org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.openide.modules &gt; 7.66, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.openide.windows &gt; 6.95, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Settings Upgrader" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Import settings from previous Gephi installation" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="041d243070571455e5b1e01a3fa3ae02ea552901ca9564eab736882a838f07b4b814fe8c9a9566e471ea5cefd4e0c1be8392c3a1b0b032080ae2929790273d9d"/>
+    <message_digest algorithm="SHA-512" value="b79613ba01195b6610addfb44cd16821142e9eef975807a475509c632108dd84c3d6bce8e9aa23509fd6f4227d381077379f271dcf90e4b2a32e2870376a39f6"/>
 </module>
 
 <module codenamebase="org.netbeans.core.startup" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-core-startup/RELEASE160/org-netbeans-core-startup-RELEASE160.nbm" downloadsize="421515" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -997,28 +997,28 @@
     <message_digest algorithm="SHA-512" value="639a6cbd5ab1461dbed33ec8bf006235fdcce042f4ca24b64dc0f3ea3e44f30b9bc375a44a2b36cc61e051ab8afd3ae6e0b9093275de11335d2a6c658d0ff60e"/>
 </module>
 
-<module codenamebase="org.gephi.statistics.api" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-api/0.10.0-SNAPSHOT/statistics-api-0.10.0-SNAPSHOT.nbm" downloadsize="23410" homepage="https://gephi.org/modules/statistics-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.statistics.api" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-api/0.10.0-SNAPSHOT/statistics-api-0.10.0-SNAPSHOT.nbm" downloadsize="23396" homepage="https://gephi.org/modules/statistics-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.statistics.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for statistics and metrics. Define and run various algorithms." OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.core.library.wrapper &gt; 0.10.0" OpenIDE-Module-Name="Statistics API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for statistics and metrics" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="e9cb5403a48ac556ead83134952bcd97d0d5b7fc0e7a8f1a5398d53b3c6cf58d7e6834bf4b5c726304f5759169f8f6fa0319edc14f9d439f7c1d36f5a46008ea"/>
+    <message_digest algorithm="SHA-512" value="f6992820e712e076ccbdc630738a9bb8efc1769446cd972c9750e82d7ad3bf6d5a23bb1ffa10d0af807a965b12d76700e6db8bcc2dedbc7bd0cf74a25b0b2aa8"/>
 </module>
 
-<module codenamebase="org.gephi.statistics.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-plugin/0.10.0-SNAPSHOT/statistics-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="123592" homepage="https://gephi.org/modules/statistics-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.statistics.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-plugin/0.10.0-SNAPSHOT/statistics-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="123621" homepage="https://gephi.org/modules/statistics-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.statistics.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Standard statistics and metrics algorithms" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.statistics.api &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Statistics Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard statistics and metrics algorithms" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="22b698daf3da2374a27bc6d001426e8d28b7effd41baef1846710b54b75af899a3f0b790ec1366a843f2ace399d59e4dfdaa24b3c4b198306304e7b7c3deda2c"/>
+    <message_digest algorithm="SHA-512" value="56468dae5ccdf98437bf594b836f8a792c57e12e59c590b79ac34a3d4cc8ccde9a413a133e4c76162f34fb99e9864cf7d02605d05a9214c9ab4905297041a98f"/>
 </module>
 
-<module codenamebase="org.gephi.statistics.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-plugin-ui/0.10.0-SNAPSHOT/statistics-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="103366" homepage="https://gephi.org/modules/statistics-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.statistics.plugin.ui" distribution="https://repo1.maven.org/maven2/org/gephi/statistics-plugin-ui/0.10.0-SNAPSHOT/statistics-plugin-ui-0.10.0-SNAPSHOT.nbm" downloadsize="103373" homepage="https://gephi.org/modules/statistics-plugin-ui" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.statistics.plugin.ui" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.statistics.api &gt; 0.10.0, org.gephi.statistics.plugin &gt; 0.10.0, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.ui.library.wrapper &gt; 0.10.0" OpenIDE-Module-Name="Statistics Plugin UI" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard statistics UI implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="62b18b7d69a0b05000dcd7d58acb3c6958f7b07c531b197f8a5da138b472a3480770a9fd392dd24f96060bb14b9d3813a60a6107f0bdc677c6e65b23545c0bc2"/>
+    <message_digest algorithm="SHA-512" value="9975ed1f1a938682e7668cdd2aed735008ac8c2e95b95c342de67f01dea92c185da79bce08add87f731970fb31d082deb62f767f094235c5c8ead97f3dafc789"/>
 </module>
 
 <module autoload="true" codenamebase="org.openide.util.ui.svg" distribution="https://repo1.maven.org/maven2/org/netbeans/modules/org-openide-util-ui-svg/RELEASE160/org-openide-util-ui-svg-RELEASE160.nbm" downloadsize="31178" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -1053,36 +1053,36 @@
     <message_digest algorithm="SHA-512" value="cabb02b338cad33cc9509c38467717a24aec2d161ccbf996e788ce3816ab5a3f7aa3f6528a4e045bf22f0d0f980843b0b69593a70f3c1f0a470a96a894d018dc"/>
 </module>
 
-<module codenamebase="org.gephi.timeline.api" distribution="https://repo1.maven.org/maven2/org/gephi/timeline-api/0.10.0-SNAPSHOT/timeline-api-0.10.0-SNAPSHOT.nbm" downloadsize="25954" homepage="https://gephi.org/modules/timeline-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.timeline.api" distribution="https://repo1.maven.org/maven2/org/gephi/timeline-api/0.10.0-SNAPSHOT/timeline-api-0.10.0-SNAPSHOT.nbm" downloadsize="25952" homepage="https://gephi.org/modules/timeline-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.timeline.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="The Timeline API provides access to the timeline data, control settings and animation." OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.filters.api &gt; 0.10.0, org.gephi.filters.plugin &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Timeline API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Timeline control API" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="89c2fbac53e82a9a8cf3894ea22ce65e1ec6cb4569c7ebe5c3795797c424c34bd3d0098b08e2927d52ceb51c2728adfbae1c566f033f6ece592a87ae7c1896d2"/>
+    <message_digest algorithm="SHA-512" value="29343693fae3f350eaec223dc47217521af54686f0e24425edff7f41cffe0c1b72ff095d1210408c4ec1aa0ea7bb5651d98b4e1fbc19419baede9b558064077a"/>
 </module>
 
-<module codenamebase="org.gephi.tools.api" distribution="https://repo1.maven.org/maven2/org/gephi/tools-api/0.10.0-SNAPSHOT/tools-api-0.10.0-SNAPSHOT.nbm" downloadsize="10757" homepage="https://gephi.org/modules/tools-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.tools.api" distribution="https://repo1.maven.org/maven2/org/gephi/tools-api/0.10.0-SNAPSHOT/tools-api-0.10.0-SNAPSHOT.nbm" downloadsize="10758" homepage="https://gephi.org/modules/tools-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.tools.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="API/SPI for tools that interact with visualization" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0" OpenIDE-Module-Name="Tools API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="API/SPI for tools that interact with visualization" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="7ce863a756305a616f9f6c278a063ee246a28cb8a3d2d5f5b03e34ef203bd2ae7ac93905c7a075a3a4ae6b3e7a1026564ef9fca3183da2024e99c99f7d4d9008"/>
+    <message_digest algorithm="SHA-512" value="45eb5efb2ebc4aadde691690f617879642384e45efa9d0a3ec68fb29b279030bc31e55a4afd7906b367605c00decaeb5cbeafdafbd4ae0756b2d3a9886f5b11c"/>
 </module>
 
-<module codenamebase="org.gephi.tools.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/tools-plugin/0.10.0-SNAPSHOT/tools-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="105578" homepage="https://gephi.org/modules/tools-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.tools.plugin" distribution="https://repo1.maven.org/maven2/org/gephi/tools-plugin/0.10.0-SNAPSHOT/tools-plugin-0.10.0-SNAPSHOT.nbm" downloadsize="105604" homepage="https://gephi.org/modules/tools-plugin" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.tools.plugin" OpenIDE-Module-Display-Category="Plugin" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.algorithms.plugin &gt; 0.10.0, org.gephi.datalab.api &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.visualization &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.nodes &gt; 7.63, org.openide.windows &gt; 6.95, org.gephi.utils &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.openide.explorer &gt; 6.80, org.netbeans.modules.settings/1 &gt; 1.67, org.gephi.ui.utils &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.openide.filesystems &gt; 9.30, org.openide.awt &gt; 7.86, org.openide.util.ui &gt; 9.26" OpenIDE-Module-Name="Tools Plugin" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Standard tools implementations" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="282660b6715c2349019455f03d95030959b620ceaf4942f101c1d06b214d03a7d8648853db1d9d4283896e6a686f56757fc15170f2dc9ce831de661f647891fc"/>
+    <message_digest algorithm="SHA-512" value="1a9c3dc3a3ede7a91dc870ed521b3bceb4e67abb6d1d98a538404a0f0f9ea02e4519128c9c4ddd4b3985c0eee7eaf01e63acafd700368981c52b217a1e203bc2"/>
 </module>
 
-<module codenamebase="org.gephi.ui.components" distribution="https://repo1.maven.org/maven2/org/gephi/ui-components/0.10.0-SNAPSHOT/ui-components-0.10.0-SNAPSHOT.nbm" downloadsize="194054" homepage="https://gephi.org/modules/ui-components" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.ui.components" distribution="https://repo1.maven.org/maven2/org/gephi/ui-components/0.10.0-SNAPSHOT/ui-components-0.10.0-SNAPSHOT.nbm" downloadsize="194097" homepage="https://gephi.org/modules/ui-components" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.ui.components" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Sharable Swing components that can be used for different purposes." OpenIDE-Module-Module-Dependencies="org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.utils &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.openide.awt &gt; 7.86, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.nodes &gt; 7.63, org.openide.windows &gt; 6.95" OpenIDE-Module-Name="UI Components" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Sharable Swing components" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="0a6ecb6c65a93530043f45c1f01f939f3f778e45e07d0cce6246128954e311d00461e3b428fd8e0b03f0c1b0b8026914452d9449eb5314447f437b735f39b63a"/>
+    <message_digest algorithm="SHA-512" value="86f3ba4deae504fcdda4e028abea51437e098c1ce2e0f15f2f63628ff8045a009e6041189746817f1eef02cbf2c98196941c96e995e6cf813df80f593b34d76f"/>
 </module>
 
 <module autoload="true" codenamebase="org.netbeans.modules.uihandler" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-netbeans-modules-uihandler/RELEASE160/org-netbeans-modules-uihandler-RELEASE160.nbm" downloadsize="161961" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -1101,12 +1101,12 @@
     <message_digest algorithm="SHA-512" value="eb33db03a8a364569d920cbdec94b33f221443ee298ea0ee6f219a40023086cd7aecbefa5b022c74dee69f95c404489cf15cdb350e652ef94e78098b11ac3043"/>
 </module>
 
-<module codenamebase="org.gephi.ui.library.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/ui-library-wrapper/0.10.0-SNAPSHOT/ui-library-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="2745649" homepage="https://gephi.org/modules/ui-library-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.ui.library.wrapper" distribution="https://repo1.maven.org/maven2/org/gephi/ui-library-wrapper/0.10.0-SNAPSHOT/ui-library-wrapper-0.10.0-SNAPSHOT.nbm" downloadsize="2745648" homepage="https://gephi.org/modules/ui-library-wrapper" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.ui.library.wrapper" OpenIDE-Module-Display-Category="Libraries" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.netbeans.libs.flatlaf/1 = 2.6, org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="UI Library Wrapper" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="64516a969d4bfaf9c878429b70757bfc409a86eece3fc5e2ae4a906b6b4915143783de30936b868639070523d45582cb7ff967f91f5d7ed21ad434d13aedf757"/>
+    <message_digest algorithm="SHA-512" value="d9d3405c22ccb2f77fb0742f9f1190e86bfecde4475283ff8ca4bfe17d828a82c3fed86ba177f8238df43c5d578524c1447a237aafb532373e9afb07861252fa"/>
 </module>
 
 <module autoload="true" codenamebase="org.openide.awt" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-openide-awt/RELEASE160/org-openide-awt-RELEASE160.nbm" downloadsize="328131" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -1117,12 +1117,12 @@
     <message_digest algorithm="SHA-512" value="32f46319002e599d5d9475c8e2d06de115c01d9e3eacf65e51ac35c48b5376a3effcd94f344f568f25e6c43db2ab35a01ae64dbd5a4a626341e96d347abec333"/>
 </module>
 
-<module codenamebase="org.gephi.ui.utils" distribution="https://repo1.maven.org/maven2/org/gephi/ui-utils/0.10.0-SNAPSHOT/ui-utils-0.10.0-SNAPSHOT.nbm" downloadsize="60071" homepage="https://gephi.org/modules/ui-utils" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.ui.utils" distribution="https://repo1.maven.org/maven2/org/gephi/ui-utils/0.10.0-SNAPSHOT/ui-utils-0.10.0-SNAPSHOT.nbm" downloadsize="60063" homepage="https://gephi.org/modules/ui-utils" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.ui.utils" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Utils classes for UI" OpenIDE-Module-Module-Dependencies="org.openide.util &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.gephi.utils &gt; 0.10.0, org.gephi.graph.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.openide.dialogs &gt; 7.64" OpenIDE-Module-Name="UI Utils" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Utils classes for UI" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="4c72a92e1525e0ad7d78850b00392434d4de3fbd47ad15dc7a4f68db209584c70d87ac0768109759f5c1e021cc985e4a4494176ff2b89b727e98d2fd5a119de0"/>
+    <message_digest algorithm="SHA-512" value="6d4dd66c5a3e1d2e178e5f0c4c5c7b368a4b1ad17809f37501b1ae0543465086455acbcd71594751a23278de861b1d415886e576bcd5715f461d18d23474a740"/>
 </module>
 
 <module codenamebase="org.openide.util.ui" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-openide-util-ui/RELEASE160/org-openide-util-ui-RELEASE160.nbm" downloadsize="129453" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
@@ -1133,36 +1133,36 @@
     <message_digest algorithm="SHA-512" value="911c850a054041604c03d14047cc1eb0831e89be6c6602a4b41557d178a09dccc1d04f8ccabe1c23ec3e59e37221ebe892fd6bc3932a2d353f948c1f2ea1b29f"/>
 </module>
 
-<module codenamebase="org.gephi.utils" distribution="https://repo1.maven.org/maven2/org/gephi/utils/0.10.0-SNAPSHOT/utils-0.10.0-SNAPSHOT.nbm" downloadsize="41828" homepage="https://gephi.org/modules/utils" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.utils" distribution="https://repo1.maven.org/maven2/org/gephi/utils/0.10.0-SNAPSHOT/utils-0.10.0-SNAPSHOT.nbm" downloadsize="41830" homepage="https://gephi.org/modules/utils" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.utils" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Utils classes for core" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.openide.util &gt; 9.26" OpenIDE-Module-Name="Utils" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Utils classes for core" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="02c6ef58a8f812e642cca7634478e1e52776481c06514b298ecebf18729cf1a7e69d323a7665aa759cbfd54ab6a8d42fd572dc4cb33534e788c7e7e5c40687f7"/>
+    <message_digest algorithm="SHA-512" value="e7971f29949a75d8994b651092d97c4351b713895cb0e17c281e52f0dd4c92188268ddd876873d59ee8f32164288dadfddbfb97ed82382994252dbc00ec68425"/>
 </module>
 
-<module codenamebase="org.gephi.visualization.api" distribution="https://repo1.maven.org/maven2/org/gephi/visualization-api/0.10.0-SNAPSHOT/visualization-api-0.10.0-SNAPSHOT.nbm" downloadsize="9511" homepage="https://gephi.org/modules/visualization-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.visualization.api" distribution="https://repo1.maven.org/maven2/org/gephi/visualization-api/0.10.0-SNAPSHOT/visualization-api-0.10.0-SNAPSHOT.nbm" downloadsize="9503" homepage="https://gephi.org/modules/visualization-api" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.visualization.api" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="The API allows access to graph visualization settings and control features" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.datalab.api &gt; 0.10.0, org.openide.util.lookup &gt; 8.52" OpenIDE-Module-Name="Visualization API" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Provides graph visualization control features" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="3f6adf442c6a61e7b34cc7a88e985f0968a12f1d1cf1f06f6fe8bea64936221244f140e91e98a47dbfbdc476663f10774fe013c63d438096ed856fde909ba675"/>
+    <message_digest algorithm="SHA-512" value="3b27d8b3caad2cdfbe2b36752e335ee8a807911d7fb2a965173ea41e128177331f6c9ac56d8a22d0a7cf6a0c296001ea8a32086f0db54ca765281e7894206750"/>
 </module>
 
-<module codenamebase="org.gephi.visualization" distribution="https://repo1.maven.org/maven2/org/gephi/visualization/0.10.0-SNAPSHOT/visualization-0.10.0-SNAPSHOT.nbm" downloadsize="5362981" homepage="https://gephi.org/modules/visualization" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.visualization" distribution="https://repo1.maven.org/maven2/org/gephi/visualization/0.10.0-SNAPSHOT/visualization-0.10.0-SNAPSHOT.nbm" downloadsize="5363010" homepage="https://gephi.org/modules/visualization" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest AutoUpdate-Essential-Module="true" OpenIDE-Module="org.gephi.visualization" OpenIDE-Module-Display-Category="Gephi Core" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Visualization module, not modularized" OpenIDE-Module-Module-Dependencies="org.gephi.graph.api &gt; 0.10.0, org.gephi.tools.api &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.core.library.wrapper &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.ui.utils &gt; 0.10.0, org.gephi.visualization.api &gt; 0.10.0, org.gephi.datalab.api &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.netbeans.modules.options.api/1 &gt; 1.63, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.awt &gt; 7.86, org.openide.windows &gt; 6.95, org.openide.util.lookup &gt; 8.52, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.dialogs &gt; 7.64, org.gephi.project.api &gt; 0.10.0, org.gephi.desktop.project &gt; 0.10.0, org.gephi.utils.longtask &gt; 0.10.0, org.openide.modules &gt; 7.66" OpenIDE-Module-Name="Visualization Module" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Visualization module, not modularized" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="35f0f2346898a7d674ba05cccd52688e2fd71b7d46a3198d5865cafdad3d37b3ab624f4d0658158663e41dc5121da0521e8b6d711cd359085145fe53caca6740"/>
+    <message_digest algorithm="SHA-512" value="3b52f62b6b3936b8cac034ada9502b1475c0f2b4e5f12ce0436c7389aed079bef55bce353d4c09cfcc1712bae349d8383685183278a49af5a9df96cffe54c5c2"/>
 </module>
 
-<module codenamebase="org.gephi.welcome.screen" distribution="https://repo1.maven.org/maven2/org/gephi/welcome-screen/0.10.0-SNAPSHOT/welcome-screen-0.10.0-SNAPSHOT.nbm" downloadsize="180252" homepage="https://gephi.org/modules/welcome-screen" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
+<module codenamebase="org.gephi.welcome.screen" distribution="https://repo1.maven.org/maven2/org/gephi/welcome-screen/0.10.0-SNAPSHOT/welcome-screen-0.10.0-SNAPSHOT.nbm" downloadsize="180250" homepage="https://gephi.org/modules/welcome-screen" license="1FFB3A7" moduleauthor="Gephi" needsrestart="true" releasedate="2023/01/07" targetcluster="gephi">
         
     <manifest OpenIDE-Module="org.gephi.welcome.screen" OpenIDE-Module-Display-Category="Gephi UI" OpenIDE-Module-Implementation-Version="0.10.0-20230107" OpenIDE-Module-Long-Description="Gephi - The Open Graph Viz Platform" OpenIDE-Module-Module-Dependencies="org.gephi.desktop.project &gt; 0.10.0, org.gephi.ui.components &gt; 0.10.0, org.gephi.ui.library.wrapper &gt; 0.10.0, org.gephi.io.importer.api &gt; 0.10.0, org.gephi.project.api &gt; 0.10.0, org.gephi.desktop.icons &gt; 0.10.0, org.netbeans.modules.settings/1 &gt; 1.67, org.openide.awt &gt; 7.86, org.openide.dialogs &gt; 7.64, org.openide.filesystems &gt; 9.30, org.openide.modules &gt; 7.66, org.openide.util &gt; 9.26, org.openide.util.ui &gt; 9.26, org.openide.util.lookup &gt; 8.52, org.openide.windows &gt; 6.95, org.gephi.mostrecentfiles.api &gt; 0.10.0, org.openide.nodes &gt; 7.63" OpenIDE-Module-Name="Welcome Screen" OpenIDE-Module-Requires="org.openide.modules.ModuleFormat1" OpenIDE-Module-Short-Description="Welcome screen component" OpenIDE-Module-Specification-Version="0.10.0"/>
         
 
-    <message_digest algorithm="SHA-512" value="06e7857ba3f0e0e45ab6e6dd2f902ccd287014274752b5f76c9771f51dfae232e2ab50b97dc89abecebc67dfe055473613129adcf017ae237bee140e9efac876"/>
+    <message_digest algorithm="SHA-512" value="71dc950dabe5b6b76ad75d37a9f0b4a6a755ef0a62449edd6dfc0327ab91280f65b46f5fc081a9cee630373f552d4498c7b7776945c70e0c6acb2702982b422e"/>
 </module>
 
 <module autoload="true" codenamebase="org.openide.windows" distribution="https://repo1.maven.org/maven2/org/netbeans/api/org-openide-windows/RELEASE160/org-openide-windows-RELEASE160.nbm" downloadsize="86034" homepage="http://www.netbeans.org/" license="2F40F20A" moduleauthor="" needsrestart="false" releasedate="2022/11/19" targetcluster="platform">
