@@ -4,12 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.10.0</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>datalab-plugin</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.10.0</version>
     <packaging>nbm</packaging>
 
     <name>DataLaboratoryPlugin</name>
