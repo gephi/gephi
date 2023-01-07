@@ -45,6 +45,7 @@ package org.gephi.visualization.swing;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
@@ -58,18 +59,15 @@ import org.gephi.ui.utils.UIUtils;
  */
 public class NewtGraphCanvas extends GLAbstractListener {
 
-    private final NewtCanvasAWT glCanvas;
-    private final GLWindow glWindow;
     private final GLUT glut = new GLUT();
 
-    public NewtGraphCanvas() {
-        super();
-        glWindow = GLWindow.create(getCaps());
+    @Override
+    protected GLAutoDrawable initDrawable() {
+        GLWindow glWindow = GLWindow.create(getCaps());
 //        glWindow.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
-        glCanvas = new HighDPIFixCanvas(glWindow);
+        NewtCanvasAWT glCanvas = new HighDPIFixCanvas(glWindow);
 //        glCanvas = new NewtCanvasAWT(glWindow);
 
-        super.initDrawable(glWindow);
 //        glCanvas.setFocusable(true);
 //        glCanvas.setIgnoreRepaint(true);
 //        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
@@ -80,15 +78,13 @@ public class NewtGraphCanvas extends GLAbstractListener {
         window = glWindow;
 //        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        //False lets the components appear on top of the canvas
-        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-        ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+        return glWindow;
     }
 
     @Override
     protected void init(GL2 gl) {
 //        globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
-        globalScale = (float) glCanvas.getGraphicsConfiguration().getDefaultTransform().getScaleX();
+        globalScale = (float) ((NewtCanvasAWT)drawable).getGraphicsConfiguration().getDefaultTransform().getScaleX();
         engine.startDisplay();
     }
 
@@ -97,8 +93,9 @@ public class NewtGraphCanvas extends GLAbstractListener {
         if (UIUtils.isAquaLookAndFeel()) {
             // Only used when collapse panel is set visible
             // Workaround for JOGL bug 1274
-            glCanvas.setNEWTChild(null);
-            glCanvas.setNEWTChild(glWindow);
+
+//            glCanvas.setNEWTChild(null);
+//            glCanvas.setNEWTChild(glWindow);
         } else {
             // Fix issue when closing the collapse panel
             Container c = graphComponent.getParent();
@@ -145,7 +142,7 @@ public class NewtGraphCanvas extends GLAbstractListener {
     @Override
     public void destroy() {
         super.destroy();
-        glCanvas.getNEWTChild().destroy();
+        ((NewtCanvasAWT)drawable).getNEWTChild().destroy();
     }
 
     public class HighDPIFixCanvas extends NewtCanvasAWT {

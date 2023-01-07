@@ -49,6 +49,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.glu.GLU;
@@ -59,6 +60,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JPopupMenu;
+import javax.swing.ToolTipManager;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -82,7 +85,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     public final float viewField = 30.0f;
     public final float nearDistance = 1.0f;
     public final float farDistance = 150000f;
-    public Component graphComponent;
+    protected Component graphComponent;
     //Architecture
     protected GLAutoDrawable drawable;
     protected VizController vizController;
@@ -116,10 +119,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         this.vizController = VizController.getInstance();
     }
 
-    protected void initDrawable(GLAutoDrawable drawable) {
-        this.drawable = drawable;
-        drawable.addGLEventListener(this);
-    }
+    protected abstract GLAutoDrawable initDrawable();
 
     @Override
     public void initArchitecture() {
@@ -129,8 +129,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
         cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
-
-        initMouseEvents();
     }
 
     @Override
@@ -544,7 +542,19 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     }
 
     @Override
-    public Component getGraphComponent() {
+    public synchronized Component getGraphComponent() {
+        if (this.drawable == null) {
+            // Also expected to init the graphComponent
+            this.drawable = initDrawable();
+
+            //False lets the components appear on top of the canvas
+            JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+            ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+
+            drawable.addGLEventListener(this);
+
+            initMouseEvents();
+        }
         return graphComponent;
     }
 

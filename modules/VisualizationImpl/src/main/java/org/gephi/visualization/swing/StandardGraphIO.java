@@ -69,7 +69,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     //Architecture
     protected GLAbstractListener graphDrawable;
-    protected Component graphComponent;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
     protected VizController vizController;
@@ -92,7 +91,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     @Override
     public void initArchitecture() {
         this.graphDrawable = (GLAbstractListener) VizController.getInstance().getDrawable();
-        this.graphComponent = graphDrawable.graphComponent;
         this.engine = VizController.getInstance().getEngine();
         this.vizEventManager = VizController.getInstance().getVizEventManager();
         this.vizController = VizController.getInstance();
@@ -133,7 +131,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
                 rightButtonMoving[1] = y;
 
                 //Change cursor
-                graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                graphDrawable.getGraphComponent().setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             }
 
             //Dispatch event
@@ -179,7 +177,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             vizEventManager.stopDrag();
         } else {
             //Set default cursor
-            graphComponent.setCursor(Cursor.getDefaultCursor());
+            graphDrawable.getGraphComponent().setCursor(Cursor.getDefaultCursor());
         }
 
         //Dispatch event

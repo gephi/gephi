@@ -84,6 +84,11 @@ public class OffscreenCanvas extends GLAbstractListener implements TileRendererB
     }
 
     @Override
+    protected GLAutoDrawable initDrawable() {
+        return drawable;
+    }
+
+    @Override
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
 
