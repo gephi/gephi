@@ -313,7 +313,7 @@ public class ProjectControllerImpl implements ProjectController {
                 openWorkspace(workspace);
             }
         } else {
-            fireWorkspaceEvent(EventType.SELECT, projectImpl.getCurrentWorkspace());
+            //fireWorkspaceEvent(EventType.SELECT, projectImpl.getCurrentWorkspace());
         }
     }
 

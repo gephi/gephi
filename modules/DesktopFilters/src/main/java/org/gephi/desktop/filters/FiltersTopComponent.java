@@ -102,7 +102,9 @@ public final class FiltersTopComponent extends TopComponent {
 
             @Override
             public void unselect(Workspace workspace) {
-                observers.destroy();
+                if(observers != null) {
+                    observers.destroy();
+                }
             }
 
             @Override
