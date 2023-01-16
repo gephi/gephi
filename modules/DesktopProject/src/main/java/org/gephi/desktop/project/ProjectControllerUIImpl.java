@@ -47,6 +47,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -222,22 +226,28 @@ public class ProjectControllerUIImpl implements ProjectListener {
         });
     }
 
-    private void saveProject(Project project, File file) {
-        longTaskExecutor.execute(null, () -> {
-            controller.saveProject(project, file);
+    private Future<Void> saveProject(Project project, File file) {
+
+
+        return longTaskExecutor.execute(null,   new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                controller.saveProject(project, file);
+                return null;
+            }
         });
     }
 
-    public void saveProject() {
+    public Future<Void> saveProject() {
         Project project = controller.getCurrentProject();
         if (project.hasFile()) {
-            saveProject(project, project.getFile());
+            return saveProject(project, project.getFile());
         } else {
-            saveAsProject();
+            return saveAsProject();
         }
     }
 
-    public void saveAsProject() {
+    public Future<Void> saveAsProject() {
         final String LAST_PATH = "SaveAsProject_Last_Path";
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
@@ -281,8 +291,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
             // Save file
-            saveProject(controller.getCurrentProject(), file);
+            return saveProject(controller.getCurrentProject(), file);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     private boolean canExport(JFileChooser chooser) {
@@ -335,7 +346,14 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 new Object[] {saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
             Object result = DialogDisplayer.getDefault().notify(msg);
             if (result == saveBundle) {
-                saveProject();
+                Future<Void> saveTask = saveProject();
+                if(saveTask !=null){
+                    try {
+                        saveTask.get();
+                    } catch (InterruptedException | ExecutionException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
             } else if (result == cancelBundle) {
                 return false;
             }
