@@ -1,0 +1,33 @@
+{
+  "options": {
+    "multi": false,
+    "allowSelfLoops": true,
+    "type": "directed"
+  },
+  "nodes": [
+    {
+      "key": "1",
+      "attributes": {
+        "x": 2.5,
+        "y": 4.7
+      }
+    },
+    {
+      "key": "2",
+      "attributes": {
+        "x": -3.3,
+        "y": -5.4
+      }
+    }
+  ],
+  "edges": [
+    {
+      "key": "1",
+      "source": "1",
+      "target": "2",
+      "attributes": {
+        "weight": 1.0
+      }
+    }
+  ]
+}

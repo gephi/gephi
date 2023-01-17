@@ -324,7 +324,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
                 float x = normalization.normalizeX(node.x());
                 float y = normalization.normalizeY(node.y());
                 float z = normalization.normalizeZ(node.z());
-                if (!(x == 0 && y == 0 && z == 0)) {
+                if (normalize || !(x == 0 && y == 0 && z == 0)) {
                     out.name("x");
                     out.value(x);
                     out.name("y");

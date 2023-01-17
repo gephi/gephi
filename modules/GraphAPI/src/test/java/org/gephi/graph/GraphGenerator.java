@@ -94,6 +94,20 @@ public class GraphGenerator {
         graphModel.getDirectedGraph().addEdge(e);
         return this;
     }
+    
+     public GraphGenerator generateTinyGraphWithPosition() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        n1.setX(2.5f);
+        n1.setY(4.7f);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        n2.setX(-3.3f);
+        n2.setY(-5.4f);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
 
     public GraphGenerator generateTinyUndirectedGraph() {
         Node n1 = graphModel.factory().newNode(FIRST_NODE);
