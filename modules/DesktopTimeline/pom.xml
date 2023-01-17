@@ -4,12 +4,12 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.1-SNAPSHOT</version>
+        <version>0.10.1</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>desktop-timeline</artifactId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.10.1</version>
     <packaging>nbm</packaging>
 
     <name>DesktopTimeline</name>
