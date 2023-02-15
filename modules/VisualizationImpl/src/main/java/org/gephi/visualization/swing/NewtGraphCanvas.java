@@ -53,6 +53,7 @@ import java.awt.*;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.Utilities;
 
 /**
  * @author Mathieu Bastian
@@ -67,8 +68,11 @@ public class NewtGraphCanvas extends GLAbstractListener {
     protected GLAutoDrawable initDrawable() {
         GLWindow glWindow = GLWindow.create(getCaps());
 //        glWindow.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
-        glCanvas = new HighDPIFixCanvas(glWindow);
-//        glCanvas = new NewtCanvasAWT(glWindow);
+        if (!Utilities.isMac()) {
+            glCanvas = new HighDPIFixCanvas(glWindow);
+        } else {
+            glCanvas = new NewtCanvasAWT(glWindow);
+        }
 
 //        glCanvas.setFocusable(true);
 //        glCanvas.setIgnoreRepaint(true);
