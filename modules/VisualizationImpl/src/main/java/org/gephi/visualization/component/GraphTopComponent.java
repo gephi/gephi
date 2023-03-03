@@ -130,6 +130,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                             initToolPanels();
                             add(drawable.getGraphComponent(), BorderLayout.CENTER);
                             remove(waitingLabel);
+                            revalidate();
                             drawable.initMouseEvents();
                         });
                     } catch (InterruptedException | InvocationTargetException e) {
@@ -345,6 +346,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                     SwingUtilities.invokeAndWait(() -> {
                         remove(drawable.getGraphComponent());
                         add(waitingLabel, BorderLayout.CENTER);
+                        revalidate();
                     });
                 } catch (InterruptedException | InvocationTargetException e) {
                     throw new RuntimeException(e);
