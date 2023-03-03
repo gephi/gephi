@@ -1,6 +1,6 @@
 
 <assembly>
-    <id>linux-x64</id>
+    <id>linux-${gephi.bundle.arch}</id>
     <formats>
         <format>tar.gz</format>
     </formats>
