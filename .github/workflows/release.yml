@@ -24,6 +24,11 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v.4.5
+        with:
+          maven-version: 3.8.7
+
       - name: Extract Maven project version
         id: project
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
