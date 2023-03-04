@@ -101,10 +101,10 @@ jobs:
             os: windows-latest
             arch: x64
           - task: create-dmg,notarize-dmg
-            os: macos-11
+            os: macos-latest
             arch: x64
           - task: create-dmg,notarize-dmg
-            os: macos-11
+            os: macos-latest
             arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
