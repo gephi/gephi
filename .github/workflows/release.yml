@@ -89,7 +89,7 @@ jobs:
       max-parallel: 1
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-11 ]
-        arch: [ x64, aarch64 ]
+        arch: [ x64 ]
         include:
           - task: create-targz
             os: ubuntu-latest
