@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3">
+  <graph mode="slice" defaultedgetype="directed" timerepresentation="timestamp" timestamp="2007">
+    <attributes class="node" type="dynamic">
+      <attribute id="price" title="Price" type="int"/>
+    </attributes>
+    <attributes class="edge" type="dynamic">
+       <attribute id="weight" title="Weight" type="double"/>
+    </attributes>
+    <nodes>
+      <node id="1" label="Node 1">
+        <attvalue for="price" value="12"/>
+      </node>
+      <node id="2" label="Node 2">
+        <attvalue for="price" value="8"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id ="0" source="1" target="2" weight="2" />
+    </edges>
+  </graph>
+</gexf>

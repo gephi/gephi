@@ -92,6 +92,18 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     //SETTERS
     @Override
     public void setWeight(double weight) {
+        if (getGraphInterval() != null || getGraphTimestamp() != null) {
+            // Slice mode
+            ColumnDraft draftColumn = container.getEdgeColumn("weight");
+            if (draftColumn != null && draftColumn.isDynamic()) {
+                if (getGraphInterval() != null) {
+                    setValue("weight", weight, getGraphInterval().getLow(), getGraphInterval().getHigh());
+                } else {
+                    setValue("weight", weight, getGraphTimestamp());
+                }
+                return;
+            }
+        }
         this.weight = weight;
     }
 

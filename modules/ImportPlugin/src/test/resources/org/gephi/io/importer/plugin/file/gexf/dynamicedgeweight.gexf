@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3">
+    <graph mode="dynamic" defaultedgetype="directed" timeformat="double" timerepresentation="timestamp">
+        <attributes class="edge" mode="dynamic">
+            <attribute id="weight" title="Weight" type="double"/>
+        </attributes>
+        <nodes>
+            <node id="0" label="Hello" />
+            <node id="1" label="Word" />
+        </nodes>
+        <edges>
+            <edge id="0" source="0" target="1" >
+                <attvalues>
+                    <attvalue for="weight" value="1" timestamp="2004"/>
+                    <attvalue for="weight" value="2" timestamp="2005"/>
+                </attvalues>
+            </edge>
+        </edges>
+    </graph>
+</gexf>

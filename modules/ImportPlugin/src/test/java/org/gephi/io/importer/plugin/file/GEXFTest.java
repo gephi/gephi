@@ -1,6 +1,8 @@
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.types.TimestampDoubleMap;
+import org.gephi.graph.api.types.TimestampIntegerMap;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.MetadataDraft;
@@ -83,5 +85,38 @@ public class GEXFTest {
         MetadataDraft meta = container.getUnloader().getMetadata();
         Assert.assertEquals("TITLE", meta.getTitle());
         Assert.assertEquals("DESCRIPTION", meta.getDescription());
+    }
+
+    @Test
+    public void testDynamicWeight() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("gexf/dynamicedgeweight.gexf"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        EdgeDraft edge = Utils.getEdge(container, "0");
+        Assert.assertEquals(new TimestampDoubleMap(new double[] {2004, 2005}, new double[] {1, 2}),
+            edge.getValue("weight"));
+    }
+
+    @Test
+    public void testSlice() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("gexf/slice.gexf"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        Assert.assertEquals(2007, container.getUnloader().getTimestamp(), 0.0);
+        Assert.assertTrue(container.getUnloader().getNodeColumn("price").isDynamic());
+        Assert.assertTrue(container.getUnloader().getEdgeColumn("weight").isDynamic());
+
+        NodeDraft node = Utils.getNode(container, "1");
+        Assert.assertEquals(new TimestampIntegerMap(new double[] {2007}, new int[] {12}), node.getValue("price"));
+
+        EdgeDraft edge = Utils.getEdge(container, "0");
+        Assert.assertEquals(new TimestampDoubleMap(new double[] {2007}, new double[] {2}),
+            edge.getValue("weight"));
     }
 }
