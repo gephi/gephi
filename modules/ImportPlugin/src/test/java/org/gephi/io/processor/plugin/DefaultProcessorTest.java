@@ -1,4 +1,4 @@
-package org.gephi.io.importer.plugin;
+package org.gephi.io.processor.plugin;
 
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;

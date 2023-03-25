@@ -79,6 +79,12 @@
         </dependency>
         <dependency>
             <groupId>org.gephi</groupId>
+            <artifactId>graph-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.gephi</groupId>
             <artifactId>io-exporter-plugin</artifactId>
             <scope>test</scope>
         </dependency>

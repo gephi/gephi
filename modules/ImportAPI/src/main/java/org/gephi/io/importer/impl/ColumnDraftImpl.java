@@ -141,4 +141,9 @@ public class ColumnDraftImpl implements ColumnDraft {
     public boolean isDynamic() {
         return dynamic;
     }
+
+    @Override
+    public String toString() {
+        return title + " (" + typeClass.toString() + ")";
+    }
 }
