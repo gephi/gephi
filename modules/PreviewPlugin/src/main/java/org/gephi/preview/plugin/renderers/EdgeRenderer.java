@@ -660,6 +660,10 @@ public class EdgeRenderer implements Renderer {
                 while (angle2 < angle1) {
                     angle2 += 2 * Math.PI;
                 }
+                double arcAngle = Math.abs(angle2 - angle1);
+                while (arcAngle >= Math.PI) {
+                    arcAngle -= Math.PI;
+                }
 
                 // Target radius - to start at the base of the arrow
                 final Float targetRadius = item.getData(TARGET_RADIUS);
@@ -670,9 +674,9 @@ public class EdgeRenderer implements Renderer {
                 // sense as "node radius". It's not the radius of the edge curve.
                 // The same goes for sourceRadius below.
 
-                // Offset due to the source node
+                // Offset due to the target node radius
                 if (targetRadius != null && targetRadius < 0) {
-                    Double targetOffset = this.computeTheThing(r, (double) targetRadius);
+                    Double targetOffset = this.computeTruncateAngle(r, (double) targetRadius, (double) arcAngle);
                     angle2 += targetOffset;
 
                     x2WithRadius = (float)(r*Math.cos(angle2) + xc);
@@ -686,7 +690,7 @@ public class EdgeRenderer implements Renderer {
                 final Float sourceRadius = item.getData(SOURCE_RADIUS);
                 // Avoid edge from passing the node's center:
                 if (sourceRadius != null && sourceRadius < 0) {
-                    Double sourceOffset = this.computeTheThing(r, (double) sourceRadius);
+                    Double sourceOffset = this.computeTruncateAngle(r, (double) sourceRadius, (double) arcAngle);
                     angle1 -= sourceOffset;
 
                     x1WithRadius = (float)(r*Math.cos(angle1) + xc);
@@ -701,31 +705,34 @@ public class EdgeRenderer implements Renderer {
                 bbw = 2 * r;
                 bbh = 2 * r;
                 astart = -180 * (angle1) / Math.PI;
-                if (0. < angle1 - angle2) {
+                if (0. <= angle1 - angle2 || length == 0) {
                     // This case corresponds to a negative length of the edge.
                     // It may happen because the arrow or the nodes are too big and "swallow" the edge.
                     // In that case we do not trace the edge (null length).
+                    // length is 0 when nodes occupy the same position.
                     asweep = 0.;
                 } else {
                     asweep = (180 * (angle1 - angle2) / Math.PI + 720) % 360 - 360;
                 }
             }
 
-            private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
-                // There is an edge that is a circle arc.
+            private Double computeTruncateAngle(Double radius_curvature_edge, Double truncature_length, Double arc_angle) {
+                // The edge is an arc of a circle.
                 // We want to truncate that arc so that truncated part has a chord of a given length.
                 // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
                 // We give back the result as an angle, as it's how it's useful to us.
                 Double rt = truncature_length;
                 Double r = radius_curvature_edge;
-                double x;
-                if (r >= rt) {
-                    x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
-                } else {
-                    // There is no solution to the problem
-                    // (this edge case is dealt with somewhere else)
-                    return 0.;
+                Double s = r * arc_angle;
+                if (s <= -rt) {
+                    // Can't truncate more than the arc length
+                    // Return a large value so later on we know the
+                    // edge shouldn't get drawn.
+                    return -arc_angle - 20;
                 }
+                // If you take a sector from a circle with radius r, and chord length |rt|,
+                // x is the length bisecting the two radii.
+                double x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
                 return 2 * Math.atan2(rt / 2, x);
             }
         }
