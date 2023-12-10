@@ -829,10 +829,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     }
                 }
             }
-
-            report.logIssue(new Issue(NbBundle.getMessage(
-                ImportContainerImpl.class, "ImportContainerClose_MutualEdgesRemoved", mutualEdgesRemoved
-            ), Level.WARNING));
+            if (mutualEdgesRemoved != 0)
+                report.logIssue(new Issue(NbBundle.getMessage(
+                    ImportContainerImpl.class, "ImportContainerClose_MutualEdgesRemoved", mutualEdgesRemoved
+                ), Level.WARNING));
         }
         //TODO check when mixed is forced
 
