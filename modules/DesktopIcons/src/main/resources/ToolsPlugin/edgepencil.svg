@@ -2,58 +2,179 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="15.999999"
+   width="16.000004"
    height="15.999999"
    viewBox="0 0 4.2333343 4.233333"
    version="1.1"
    id="svg19713"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   sodipodi:docname="new-icons.svg"
    xml:space="preserve"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
-     id="namedview19715"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="false"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     showgrid="true"
-     inkscape:zoom="3.920673"
-     inkscape:cx="114.39363"
-     inkscape:cy="-5.4837524"
-     inkscape:window-width="958"
-     inkscape:window-height="1008"
-     inkscape:window-x="953"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer7"><inkscape:grid
-       type="xygrid"
-       id="grid19834"
-       empspacing="16"
-       color="#737373"
-       opacity="0.14901961"
-       originx="0"
-       originy="0" /></sodipodi:namedview><defs
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
      id="defs19710"><style
        id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style></defs><g
-     inkscape:groupmode="layer"
+       id="style36538">.cls-1{fill:none;}</style><style
+       id="style48643">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style49369">.cls-1{fill:none;}</style><style
+       id="style68473">.cls-1{fill:none;}</style><style
+       id="style34301">.cls-1{fill:none;}</style><style
+       id="style40867">.cls-1{fill:none;}</style><style
+       id="style3486">.cls-1{fill:none;}</style><style
+       id="style16714">.cls-1{fill:none;}</style><style
+       id="style16734">.cls-1{fill:none;}</style><style
+       id="style598">.cls-1{fill:none;}</style><style
+       id="style938">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style953">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style988">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style6804">.cls-1{fill:none;}</style><style
+       id="style8295">.cls-1{fill:none;}</style><style
+       id="style9297">.cls-1{fill:none;}</style><style
+       id="style10710">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
+       id="style640">.cls-1{fill:none;}</style><style
+       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
+       id="style1166">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style1186">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style1201">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style2604">.cls-1{fill:none;}</style><style
+       id="style3041">.cls-1{fill:none;}</style><style
+       id="style34659">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
+       id="style1772">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style4214">.cls-1{fill:none;}</style><style
+       id="style5886">.cls-1{fill:none;}</style><style
+       id="style5923">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style5938">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style8494">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style8509">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style10257">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style10280">.cls-1{fill:none;}</style><style
+       id="style11171">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style1997">.cls-1{fill:none;}</style><style
+       id="style2928">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style2943">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style3863">.cls-1{fill:none;}</style><style
+       id="style3880">.cls-1{fill:none;}</style><style
+       id="style1078">
+      .cls-1 {
+        fill: none;
+      }
+    </style><style
+       id="style3954">.cls-1{fill:none;}</style></defs><g
      id="layer2"
-     inkscape:label="edgepencil"
-     transform="translate(-4.2333331)"><g
-       id="g37025"><path
+     style="display:inline"
+     transform="translate(-46.566687)"><g
+       id="g37025"
+       transform="translate(42.333354)"><path
          id="path24202"
-         style="color:#000000;display:inline;fill:#afb1b3;fill-opacity:1;stroke-width:1;paint-order:stroke fill markers"
+         style="color:#000000;display:inline;fill:#6e6e6e;fill-opacity:1;stroke-width:1;paint-order:stroke fill markers"
          d="m 5.2916659,0.52916648 c -0.290682,0 -0.529166,0.23874249 -0.529166,0.52942552 0,0.2906829 0.238484,0.5291664 0.529166,0.5291664 0.09759,0 0.189408,-0.02691 0.268201,-0.073639 l 1.393197,1.3924215 c -0.04689,0.078895 -0.07416,0.170681 -0.07416,0.268459 0,0.290683 0.238742,0.529425 0.529425,0.529425 0.290683,0 0.529167,-0.238742 0.529167,-0.529425 0,-0.2906825 -0.238484,-0.529425 -0.529167,-0.529425 -0.09765,0 -0.189374,0.02711 -0.268201,0.073897 l -1.392675,-1.392938 c 0.04673,-0.078792 0.07364,-0.1703534 0.07364,-0.2679419 0,-0.29068303 -0.238741,-0.52942552 -0.529425,-0.52942552 z m 1.852084,0 V 1.0583335 h -0.529167 v 0.2645829 h 0.529167 v 0.529167 h 0.264583 v -0.529167 h 0.529167 V 1.0583335 H 7.4083329 V 0.52916648 Z m -1.852084,0.26458349 c 0.147693,0 0.264584,0.11714999 0.264584,0.26484203 0,0.147692 -0.116891,0.2645829 -0.264584,0.2645829 -0.147691,0 -0.2645825,-0.1168909 -0.2645825,-0.2645829 0,-0.14769204 0.1168915,-0.26484203 0.2645825,-0.26484203 z m 2.116667,2.11666643 c 0.147692,0 0.264583,0.1168915 0.264583,0.2645835 0,0.1476925 -0.116891,0.2645835 -0.264583,0.2645835 -0.147692,0 -0.264583,-0.116891 -0.264583,-0.2645835 0,-0.147692 0.116891,-0.2645835 0.264583,-0.2645835 z" /><rect
          style="fill:none;fill-opacity:1;paint-order:stroke fill markers"
          id="rect36982"
          width="4.2333341"
          height="4.2333331"
          x="4.2333331"
-         y="0" /></g></g></svg>
+         y="0" /></g></g><style
+     type="text/css"
+     id="style578">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style968">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style3690">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style5365">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style596">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style660">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style5861">
+	.st0{fill:none;}
+</style><style
+     type="text/css"
+     id="style25784">
+	.st0{fill:none;}
+</style></svg>
