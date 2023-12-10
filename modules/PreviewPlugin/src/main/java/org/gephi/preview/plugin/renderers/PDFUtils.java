@@ -97,6 +97,10 @@ public class PDFUtils {
         return pdFont.getFontDescriptor().getCapHeight() / 1000 * fontSize;
     }
 
+    public static float getMaxTextHeight(PDFont pdFont, float fontSize) throws IOException {
+        return pdFont.getBoundingBox().getHeight() / 1000 * fontSize;
+    }
+
     public static float getTextWidth(PDFont pdFont, float fontSize, String text) throws IOException {
         return pdFont.getStringWidth(text) / 1000 * fontSize;
     }

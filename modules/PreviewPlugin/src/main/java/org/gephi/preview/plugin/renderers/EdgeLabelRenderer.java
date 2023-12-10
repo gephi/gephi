@@ -322,7 +322,7 @@ public class EdgeLabelRenderer implements Renderer {
             outlineElem.setAttribute("x", String.valueOf(x));
             outlineElem.setAttribute("y", String.valueOf(y));
             outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
-            outlineElem.setAttribute("fill", target.toHexString(color));
+            outlineElem.setAttribute("fill", "none");
             outlineElem.setAttribute("font-family", font.getFamily());
             outlineElem.setAttribute("font-size", font.getSize() + "");
             outlineElem.setAttribute("stroke", target.toHexString(outlineColor));
