@@ -48,6 +48,7 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
 import org.gephi.layout.plugin.noverlap.NoverlapLayoutBuilder;
+import org.gephi.layout.plugin.random.RandomLayout;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -68,9 +69,38 @@ public class NoverlapTest extends TestCase {
         int iterations = 10;
         for (int i = 0; i < iterations; i++) {
             layout.goAlgo();
+            if (layout.isConverged()) {
+                break;
+            }
+        }
+        if (layout.isConverged()) {
+            System.out.println("Noverlap has prevented all overlaps.");
         }
         layout.endAlgo();
 
     }
 
+    @Test
+    public void test1MnodesNoverlap() {
+        GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1000000);
+        System.out.println(graphModel.getGraph().getNodeCount() + " nodes; "+graphModel.getGraph().getEdgeCount()+" edges.");
+        
+        NoverlapLayoutBuilder layoutBuilder = new NoverlapLayoutBuilder();
+        NoverlapLayout layout = new NoverlapLayout(layoutBuilder);
+        layout.setGraphModel(graphModel);
+
+        layout.initAlgo();
+        int iterations = 10;
+        for (int i = 0; i < iterations; i++) {
+            layout.goAlgo();
+            if (layout.isConverged()) {
+                break;
+            }
+        }
+        if (layout.isConverged()) {
+            System.out.println("Noverlap has prevented all overlaps.");
+        }
+        layout.endAlgo();
+
+    }
 }
