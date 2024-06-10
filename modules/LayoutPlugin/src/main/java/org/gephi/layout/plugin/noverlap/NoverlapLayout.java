@@ -135,7 +135,22 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             this.ymin = ycenter - securityRatio * yheight / 2;
             this.ymax = ycenter + securityRatio * yheight / 2;
 
-            SpatialGrid grid = new SpatialGrid();
+            // Estimate necessary number of columns
+            double area = xwidth*yheight;
+            double areaPerNode = area / graph.getNodeCount();
+            // Explanation for the weird line below:
+            // If nodes were equally distributed in space, we would like to have grid cells that contain
+            // a small number of nodes, maybe about a dozen or something. We would like to balance the number of
+            // nodes per cell with the number of cells.
+            // But we basically know that in practice, the nodes are very concentrated. Because of this, the practical
+            // density is probably much higher than the average density. So we should lower the grid size consequently.
+            // In the end, we can eyeball this as targeting the same order of magnitude, hence the formula below.
+            // I keep it as such to make explicit that there is a ratio, even if we keep it to 1.
+            double targetAreaPerNode = 1. * areaPerNode;
+            double targetGridSize = Math.sqrt(targetAreaPerNode);
+            int columns_count = (int) Math.ceil(Math.min(xwidth, yheight) / targetGridSize);
+
+            SpatialGrid grid = new SpatialGrid(columns_count);
 
             // Put nodes in their boxes
             for (Node n : graph.getNodes()) {
@@ -342,11 +357,21 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     private class SpatialGrid {
 
         //Param
-        private final int COLUMNS_ROWS = 20;
+        private int COLUMNS_ROWS = 20;
         //Data
         private final Map<Cell, List<Node>> data = new HashMap<>();
 
         public SpatialGrid() {
+            for (int row = 0; row < COLUMNS_ROWS; row++) {
+                for (int col = 0; col < COLUMNS_ROWS; col++) {
+                    List<Node> localnodes = new ArrayList<>();
+                    data.put(new Cell(row, col), localnodes);
+                }
+            }
+        }
+
+        public SpatialGrid(int columns_rows) {
+            COLUMNS_ROWS = columns_rows;
             for (int row = 0; row < COLUMNS_ROWS; row++) {
                 for (int col = 0; col < COLUMNS_ROWS; col++) {
                     List<Node> localnodes = new ArrayList<>();
