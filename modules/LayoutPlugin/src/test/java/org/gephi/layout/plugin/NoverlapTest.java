@@ -42,14 +42,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.layout.plugin;
 
-import java.util.HashMap;
 import junit.framework.TestCase;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
+import org.gephi.layout.plugin.noverlap.NoverlapLayout;
+import org.gephi.layout.plugin.noverlap.NoverlapLayoutBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,9 +59,18 @@ public class NoverlapTest extends TestCase {
     @Test
     public void test10KnodesNoverlap() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "10K_randomlayout.gexf");
-        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
-        
+        NoverlapLayoutBuilder layoutBuilder = new NoverlapLayoutBuilder();
+        NoverlapLayout layout = new NoverlapLayout(layoutBuilder);
+        layout.setGraphModel(graphModel);
+
+        layout.initAlgo();
+        int iterations = 10;
+        for (int i = 0; i < iterations; i++) {
+            layout.goAlgo();
+        }
+        layout.endAlgo();
+
     }
 
 }
