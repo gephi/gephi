@@ -183,12 +183,12 @@ public class Region {
     public void applyForce(Node n, RepulsionForce Force, double theta) {
         if (nodes.size() < 2) {
             Node regionNode = nodes.get(0);
-            Force.apply(n, regionNode);
+            Force.applyClassicRepulsion(n, regionNode);
         } else {
             double distance = Math.sqrt(
                 (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
             if (distance * theta > size) {
-                Force.apply(n, this);
+                Force.applyBarnesHutRepulsion(n, this);
             } else {
                 for (Region subregion : subregions) {
                     subregion.applyForce(n, Force, theta);

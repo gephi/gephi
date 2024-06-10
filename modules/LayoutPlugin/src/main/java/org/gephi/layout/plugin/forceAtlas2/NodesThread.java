@@ -88,7 +88,7 @@ public class NodesThread implements Runnable {
                 Node n1 = nodes[n1Index];
                 for (int n2Index = 0; n2Index < n1Index; n2Index++) {
                     Node n2 = nodes[n2Index];
-                    repulsion.apply(n1, n2);
+                    repulsion.applyClassicRepulsion(n1, n2);
                 }
             }
         }
@@ -96,7 +96,7 @@ public class NodesThread implements Runnable {
         // Gravity
         for (int nIndex = from; nIndex < to; nIndex++) {
             Node n = nodes[nIndex];
-            gravityForce.apply(n, gravity / scaling);
+            gravityForce.applyGravity(n, gravity / scaling);
         }
     }
 }

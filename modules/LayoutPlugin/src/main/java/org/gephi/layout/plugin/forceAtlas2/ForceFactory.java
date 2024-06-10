@@ -109,11 +109,11 @@ public class ForceFactory {
 
     public abstract class RepulsionForce {
 
-        public abstract void apply(Node n1, Node n2);           // Model for node-node repulsion
+        public abstract void applyClassicRepulsion(Node n1, Node n2);           // Model for node-node repulsion
 
-        public abstract void apply(Node n, Region r);           // Model for Barnes Hut approximation
+        public abstract void applyBarnesHutRepulsion(Node n, Region r);           // Model for Barnes Hut approximation
 
-        public abstract void apply(Node n, double g);           // Model for gravitation (anti-repulsion)
+        public abstract void applyGravity(Node n, double g);           // Model for gravitation (anti-repulsion)
     }
 
     /*
@@ -128,7 +128,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n1, Node n2) {
+        public void applyClassicRepulsion(Node n1, Node n2) {
             ForceAtlas2LayoutData n1Layout = n1.getLayoutData();
             ForceAtlas2LayoutData n2Layout = n2.getLayoutData();
 
@@ -150,7 +150,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n, Region r) {
+        public void applyBarnesHutRepulsion(Node n, Region r) {
             ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
             // Get the distance
@@ -168,7 +168,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n, double g) {
+        public void applyGravity(Node n, double g) {
             ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
             // Get the distance
@@ -198,7 +198,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n1, Node n2) {
+        public void applyClassicRepulsion(Node n1, Node n2) {
             ForceAtlas2LayoutData n1Layout = n1.getLayoutData();
             ForceAtlas2LayoutData n2Layout = n2.getLayoutData();
 
@@ -229,7 +229,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n, Region r) {
+        public void applyBarnesHutRepulsion(Node n, Region r) {
             ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
             // Get the distance
@@ -252,7 +252,7 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n, double g) {
+        public void applyGravity(Node n, double g) {
             ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
             // Get the distance
@@ -279,17 +279,17 @@ public class ForceFactory {
         }
 
         @Override
-        public void apply(Node n1, Node n2) {
+        public void applyClassicRepulsion(Node n1, Node n2) {
             // Not Relevant
         }
 
         @Override
-        public void apply(Node n, Region r) {
+        public void applyBarnesHutRepulsion(Node n, Region r) {
             // Not Relevant
         }
 
         @Override
-        public void apply(Node n, double g) {
+        public void applyGravity(Node n, double g) {
             ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
             // Get the distance

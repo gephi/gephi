@@ -62,6 +62,6 @@ public class OperationNodeNodeRepulse extends Operation {
 
     @Override
     public void execute() {
-        f.apply(n1, n2);
+        f.applyClassicRepulsion(n1, n2);
     }
 }

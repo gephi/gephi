@@ -62,6 +62,6 @@ public class OperationNodeRepulse extends Operation {
 
     @Override
     public void execute() {
-        f.apply(n, coefficient);
+        f.applyGravity(n, coefficient);
     }
 }
