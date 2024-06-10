@@ -129,7 +129,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             double yheight = this.ymax - this.ymin;
             double xcenter = (this.xmin + this.xmax) / 2;
             double ycenter = (this.ymin + this.ymax) / 2;
-            double securityRatio = 1.1;
+            double securityRatio = 1.05;
             this.xmin = xcenter - securityRatio * xwidth / 2;
             this.xmax = xcenter + securityRatio * xwidth / 2;
             this.ymin = ycenter - securityRatio * yheight / 2;
@@ -149,7 +149,9 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             double targetAreaPerNode = 1. * areaPerNode;
             double targetGridSize = Math.sqrt(targetAreaPerNode);
             int columns_count = (int) Math.ceil(Math.min(xwidth, yheight) / targetGridSize);
+            System.out.println("Columns count: "+columns_count);
 
+            // Create the grid where neighborhood (potential overlap) is computed
             SpatialGrid grid = new SpatialGrid(columns_count);
 
             // Put nodes in their boxes
@@ -157,7 +159,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 grid.add(n);
             }
 
-            // Now we have cells with nodes in it. Nodes that are in the same cell, or in adjacent cells, are tested for repulsion.
+            // Now we have cells with nodes in it. Nodes that are in the same cell are tested for repulsion.
             // But they are not repulsed several times, even if they are in several cells...
             // So we build a relation of proximity between nodes.
             // Build proximities
@@ -165,17 +167,9 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 for (int col = 0; col < grid.countColumns() && !cancel; col++) {
                     for (Node n : grid.getContent(row, col)) {
                         NoverlapLayoutData lald = n.getLayoutData();
-
-                        // For node n in the box "box"...
-                        // We search nodes that are in the boxes that are adjacent or the same.
-                        for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
-                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1);
-                                 col2++) {
-                                for (Node n2 : grid.getContent(row2, col2)) {
-                                    if (n2 != n && !lald.neighbours.contains(n2)) {
-                                        lald.neighbours.add(n2);
-                                    }
-                                }
+                        for (Node n2 : grid.getContent(row, col)) {
+                            if (n2.getId() != n.getId() && !lald.neighbours.contains(n2)) {
+                                lald.neighbours.add(n2);
                             }
                         }
                     }
