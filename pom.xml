@@ -4,7 +4,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi-parent</artifactId>
-    <version>0.10.2-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>gephi</name>
