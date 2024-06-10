@@ -48,6 +48,7 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
 import org.gephi.layout.plugin.noverlap.NoverlapLayoutBuilder;
+import org.gephi.layout.plugin.random.Random;
 import org.gephi.layout.plugin.random.RandomLayout;
 import org.junit.Assert;
 import org.junit.Test;
@@ -84,7 +85,15 @@ public class NoverlapTest extends TestCase {
     public void test1MnodesNoverlap() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1000000);
         System.out.println(graphModel.getGraph().getNodeCount() + " nodes; "+graphModel.getGraph().getEdgeCount()+" edges.");
-        
+
+        // Apply random layout
+        RandomLayout randomLayout = new RandomLayout(new Random(), 10);
+        randomLayout.setGraphModel(graphModel);
+        randomLayout.initAlgo();
+        randomLayout.goAlgo();
+        randomLayout.endAlgo();
+
+        // Noverlap
         NoverlapLayoutBuilder layoutBuilder = new NoverlapLayoutBuilder();
         NoverlapLayout layout = new NoverlapLayout(layoutBuilder);
         layout.setGraphModel(graphModel);

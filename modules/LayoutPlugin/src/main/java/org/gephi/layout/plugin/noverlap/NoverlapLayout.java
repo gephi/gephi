@@ -150,7 +150,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             double targetGridSize = Math.sqrt(targetAreaPerNode);
             int columns_count = (int) Math.ceil(Math.min(xwidth, yheight) / targetGridSize);
             System.out.println("Columns count: "+columns_count);
-
+            
             // Create the grid where neighborhood (potential overlap) is computed
             SpatialGrid grid = new SpatialGrid(columns_count);
 
@@ -162,71 +162,85 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             // Now we have cells with nodes in it. Nodes that are in the same cell are tested for repulsion.
             // But they are not repulsed several times, even if they are in several cells...
             // So we build a relation of proximity between nodes.
-            // Build proximities
+            // Build proximity pairs
+            Map<String, Node[]> proximities = new HashMap<>();
             for (int row = 0; row < grid.countRows() && !cancel; row++) {
                 for (int col = 0; col < grid.countColumns() && !cancel; col++) {
                     for (Node n : grid.getContent(row, col)) {
-                        NoverlapLayoutData lald = n.getLayoutData();
+                        int nid = n.getStoreId();
                         for (Node n2 : grid.getContent(row, col)) {
-                            if (n2.getId() != n.getId() && !lald.neighbours.contains(n2)) {
-                                lald.neighbours.add(n2);
+                            int n2id = n2.getStoreId();
+                            if (n2id < nid) {
+                                Node[] nodePair = new Node[2];
+                                nodePair[0] = n;
+                                nodePair[1] = n2;
+
+                                proximities.put(nid+"|"+n2id, nodePair);
                             }
                         }
                     }
                 }
             }
 
-            // Proximities are built !
-            // Apply repulsion force - along proximities...
-            NodeIterable nodesIterable = graph.getNodes();
-            for (Node n1 : nodesIterable) {
-                NoverlapLayoutData lald = n1.getLayoutData();
-                for (Node n2 : lald.neighbours) {
-                    float n1x = n1.x();
-                    float n1y = n1.y();
-                    float n2x = n2.x();
-                    float n2y = n2.y();
-                    float n1radius = n1.size();
-                    float n2radius = n2.size();
+            // Move colliding nodes as registered in proximity
+            int collisions = 0;
+            for (Map.Entry<String, Node[]> entry : proximities.entrySet()) {
+                Node[] nodePair = entry.getValue();
+                Node n1 = nodePair[0];
+                Node n2 = nodePair[1];
 
-                    // Check sizes (spheric)
-                    double xDist = n2x - n1x;
-                    double yDist = n2y - n1y;
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
-                    boolean collision = dist < (n1radius * ratio + margin) + (n2radius * ratio + margin);
-                    if (collision) {
-                        setConverged(false);
-                        // n1 repulses n2, as strongly as it is big
-                        NoverlapLayoutData layoutData = n2.getLayoutData();
-                        double f = 1. + n1.size();
-                        if (dist > 0) {
-                            layoutData.dx += xDist / dist * f;
-                            layoutData.dy += yDist / dist * f;
-                        } else {
-                            // Same exact position, divide by zero impossible: jitter
-                            layoutData.dx += 0.01 * (0.5 - Math.random());
-                            layoutData.dy += 0.01 * (0.5 - Math.random());
-                        }
-                    }
-                    if (cancel) {
-                        break;
-                    }
+                float n1x = n1.x();
+                float n1y = n1.y();
+                float n2x = n2.x();
+                float n2y = n2.y();
+                float n1radius = (float) (n1.size() * ratio + margin);
+                float n2radius = (float) (n2.size() * ratio + margin);
+
+                // Check sizes
+                double xDist = n2x - n1x;
+                double yDist = n2y - n1y;
+                double angle = Math.atan2(yDist, xDist);
+                double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+                double overlap = n1radius + n2radius - dist;
+                boolean collision = overlap > 0;
+                if (collision) {
+                    collisions += 1;
+                    double xOverlap = 1.1 * overlap * Math.cos(angle);
+                    double yOverlap = 1.1 * overlap * Math.sin(angle);
+
+                    // n1 and n2 move each other of half the overlap
+                    NoverlapLayoutData n1ldata = n1.getLayoutData();
+                    n1ldata.dx -= xOverlap/2;
+                    n1ldata.dy -= yOverlap/2;
+
+                    NoverlapLayoutData n2ldata = n2.getLayoutData();
+                    n2ldata.dx += xOverlap/2;
+                    n2ldata.dy += yOverlap/2;
                 }
+
                 if (cancel) {
-                    nodesIterable.doBreak();
                     break;
                 }
             }
 
-            // apply forces
+            System.out.println(collisions + " collisions detected.");
+            if (collisions > 0) {
+                setConverged(false);
+            }
+
             for (Node n : graph.getNodes()) {
                 NoverlapLayoutData layoutData = n.getLayoutData();
                 if (!n.isFixed()) {
-                    layoutData.dx *= 0.1 * speed;
-                    layoutData.dy *= 0.1 * speed;
-                    float x = n.x() + layoutData.dx;
-                    float y = n.y() + layoutData.dy;
-
+                    float dist = (float) Math.sqrt(layoutData.dx*layoutData.dx + layoutData.dy*layoutData.dy);
+                    float radius = (float) Math.max(0.00000001, n.size());
+                    float dx = layoutData.dx;
+                    float dy = layoutData.dy;
+                    if (dist > radius) {
+                        dx = radius * dx/dist;
+                        dy = radius * dy/dist;
+                    }
+                    float x = n.x() + dx;
+                    float y = n.y() + dy;
                     n.setX(x);
                     n.setY(y);
                 }
@@ -389,7 +403,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         public void add(Node node) {
             float x = node.x();
             float y = node.y();
-            float radius = node.size();
+            float radius = (float) (node.size() * ratio + margin);
 
             // Get the rectangle occupied by the node
             double nxmin = x - (radius * ratio + margin);
