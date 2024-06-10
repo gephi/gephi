@@ -55,23 +55,23 @@ public class NodesThread implements Runnable {
     private final int to;
     private final Region rootRegion;
     private final boolean barnesHutOptimize;
-    private final RepulsionForce Repulsion;
+    private final RepulsionForce repulsion;
     private final double barnesHutTheta;
     private final double gravity;
-    private final RepulsionForce GravityForce;
+    private final RepulsionForce gravityForce;
     private final double scaling;
 
     public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
-                       RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {
+                       RepulsionForce gravityForce, double scaling, Region rootRegion, RepulsionForce repulsion) {
         this.nodes = nodes;
         this.from = from;
         this.to = to;
         this.rootRegion = rootRegion;
         this.barnesHutOptimize = barnesHutOptimize;
-        this.Repulsion = Repulsion;
+        this.repulsion = repulsion;
         this.barnesHutTheta = barnesHutTheta;
         this.gravity = gravity;
-        this.GravityForce = GravityForce;
+        this.gravityForce = gravityForce;
         this.scaling = scaling;
     }
 
@@ -81,14 +81,14 @@ public class NodesThread implements Runnable {
         if (barnesHutOptimize) {
             for (int nIndex = from; nIndex < to; nIndex++) {
                 Node n = nodes[nIndex];
-                rootRegion.applyForce(n, Repulsion, barnesHutTheta);
+                rootRegion.applyForce(n, repulsion, barnesHutTheta);
             }
         } else {
             for (int n1Index = from; n1Index < to; n1Index++) {
                 Node n1 = nodes[n1Index];
                 for (int n2Index = 0; n2Index < n1Index; n2Index++) {
                     Node n2 = nodes[n2Index];
-                    Repulsion.apply(n1, n2);
+                    repulsion.apply(n1, n2);
                 }
             }
         }
@@ -96,7 +96,7 @@ public class NodesThread implements Runnable {
         // Gravity
         for (int nIndex = from; nIndex < to; nIndex++) {
             Node n = nodes[nIndex];
-            GravityForce.apply(n, gravity / scaling);
+            gravityForce.apply(n, gravity / scaling);
         }
     }
 }
