@@ -39,7 +39,6 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
@@ -70,7 +69,7 @@ public class ForceFactory {
     }
 
     public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize,
-                                           double coefficient) {
+            double coefficient) {
         if (adjustBySize) {
             if (logAttraction) {
                 if (distributedAttraction) {
@@ -105,7 +104,7 @@ public class ForceFactory {
     public abstract class AttractionForce {
 
         public abstract void apply(Node n1, Node n2,
-                                   double e); // Model for node-node attraction (e is for edge weight if needed)
+                double e); // Model for node-node attraction (e is for edge weight if needed)
     }
 
     public abstract class RepulsionForce {
@@ -136,7 +135,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -157,7 +156,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x() - r.getMassCenterX();
             double yDist = n.y() - r.getMassCenterY();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -175,7 +174,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -236,7 +235,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x() - r.getMassCenterX();
             double yDist = n.y() - r.getMassCenterY();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -259,7 +258,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -296,7 +295,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -389,7 +388,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
 
@@ -424,7 +423,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
 
