@@ -73,6 +73,11 @@
             <artifactId>gson</artifactId>
             <version>${gephi.gson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.21.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -92,6 +97,7 @@
                         <publicPackage>org.apache.fontbox.*</publicPackage>
                         <publicPackage>javanet.staxutils.*</publicPackage>
                         <publicPackage>com.google.gson.*</publicPackage>
+                        <publicPackage>org.apache.logging.log4j.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
