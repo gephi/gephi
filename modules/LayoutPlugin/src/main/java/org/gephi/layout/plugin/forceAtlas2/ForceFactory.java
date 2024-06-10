@@ -576,4 +576,14 @@ public class ForceFactory {
             }
         }
     }
+    
+    public static double fastInverseSqrt(double x) {
+        double xhalf = 0.5d * x;
+        long i = Double.doubleToLongBits(x); // evil floating point bit level hacking
+        i = 0x5fe6ec85e7de30daL - (i >> 1);
+        x = Double.longBitsToDouble(i);
+        x = x * (1.5d - xhalf * x * x); // 1st iteration
+        // x = x * (1.5d - xhalf * x * x); // 2nd iteration can be added for more precision
+        return x;
+    }
 }
