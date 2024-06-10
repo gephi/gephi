@@ -41,162 +41,167 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 
 package org.gephi.desktop.timeline;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.DurationFieldType;
-import org.joda.time.Interval;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author Mathieu Bastian
+ * Author: Mathieu Bastian
  */
 public class DateTick {
 
-    //Consts
+    // Consts
     protected final static int MIN_PIXELS = 10;
-    //Fields
-    private final DateTime min;
-    private final DateTime max;
+    // Fields
+    private final Instant min;
+    private final Instant max;
     private final TickPeriod[] tickPeriods;
 
-    public DateTick(DateTime min, DateTime max, DateTimeFieldType[] types) {
+    public DateTick(Instant min, Instant max, ChronoUnit[] units) {
         this.min = min;
         this.max = max;
-        this.tickPeriods = new TickPeriod[types.length];
-        for (int i = 0; i < types.length; i++) {
-            this.tickPeriods[i] = new TickPeriod(min, max, types[i]);
+        this.tickPeriods = new TickPeriod[units.length];
+        for (int i = 0; i < units.length; i++) {
+            this.tickPeriods[i] = new TickPeriod(min, max, units[i]);
         }
     }
 
     public static DateTick create(double min, double max, int width) {
+        Instant minInstant = Instant.ofEpochMilli((long) min);
+        Instant maxInstant = Instant.ofEpochMilli((long) max);
 
-        DateTime minDate = new DateTime((long) min);
-        DateTime maxDate = new DateTime((long) max);
+        Duration duration = Duration.between(minInstant, maxInstant);
+        long days = duration.toDays();
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes();
+        long seconds = duration.getSeconds();
 
-        Period period = new Period(minDate, maxDate, PeriodType.yearMonthDayTime());
-        int years = period.getYears();
-        int months = period.getMonths();
-        int days = period.getDays();
-        int hours = period.getHours();
-        int minutes = period.getMinutes();
-        int seconds = period.getSeconds();
-
-        //Top type
-        DateTimeFieldType topType;
-        if (years > 0) {
-            topType = DateTimeFieldType.year();
-        } else if (months > 0) {
-            topType = DateTimeFieldType.monthOfYear();
-        } else if (days > 0) {
-            topType = DateTimeFieldType.dayOfMonth();
+        // Top unit
+        ChronoUnit topUnit;
+        if (days > 0) {
+            topUnit = ChronoUnit.DAYS;
         } else if (hours > 0) {
-            topType = DateTimeFieldType.hourOfDay();
+            topUnit = ChronoUnit.HOURS;
         } else if (minutes > 0) {
-            topType = DateTimeFieldType.minuteOfHour();
+            topUnit = ChronoUnit.MINUTES;
         } else if (seconds > 0) {
-            topType = DateTimeFieldType.secondOfMinute();
+            topUnit = ChronoUnit.SECONDS;
         } else {
-            topType = DateTimeFieldType.millisOfSecond();
+            topUnit = ChronoUnit.MILLIS;
         }
 
-        //Bottom type
-        if (topType != DateTimeFieldType.millisOfSecond()) {
-            DateTimeFieldType bottomType;
-            if (topType.equals(DateTimeFieldType.year())) {
-                bottomType = DateTimeFieldType.monthOfYear();
-            } else if (topType.equals(DateTimeFieldType.monthOfYear())) {
-                bottomType = DateTimeFieldType.dayOfMonth();
-            } else if (topType.equals(DateTimeFieldType.dayOfMonth())) {
-                bottomType = DateTimeFieldType.hourOfDay();
-            } else if (topType.equals(DateTimeFieldType.hourOfDay())) {
-                bottomType = DateTimeFieldType.minuteOfHour();
-            } else if (topType.equals(DateTimeFieldType.minuteOfHour())) {
-                bottomType = DateTimeFieldType.secondOfMinute();
+        // Bottom unit
+        if (topUnit != ChronoUnit.MILLIS) {
+            ChronoUnit bottomUnit;
+            if (topUnit == ChronoUnit.DAYS) {
+                bottomUnit = ChronoUnit.HOURS;
+            } else if (topUnit == ChronoUnit.HOURS) {
+                bottomUnit = ChronoUnit.MINUTES;
+            } else if (topUnit == ChronoUnit.MINUTES) {
+                bottomUnit = ChronoUnit.SECONDS;
             } else {
-                bottomType = DateTimeFieldType.millisOfSecond();
+                bottomUnit = ChronoUnit.MILLIS;
             }
 
-            //Number of ticks
-            Period p = new Period(minDate, maxDate,
-                PeriodType.forFields(new DurationFieldType[] {bottomType.getDurationType()}));
-            int intervals = p.get(bottomType.getDurationType());
+            // Number of ticks
+            long intervals = duration.toMillis() / bottomUnit.getDuration().toMillis();
             if (intervals > 0) {
-                int intervalSize = width / intervals;
+                int intervalSize = width / (int) intervals;
                 if (intervalSize >= MIN_PIXELS) {
-                    return new DateTick(minDate, maxDate, new DateTimeFieldType[] {topType, bottomType});
+                    return new DateTick(minInstant, maxInstant, new ChronoUnit[] { topUnit, bottomUnit });
                 }
             }
         }
 
-        return new DateTick(minDate, maxDate, new DateTimeFieldType[] {topType});
+        return new DateTick(minInstant, maxInstant, new ChronoUnit[] { topUnit });
     }
 
     public int getTypeCount() {
         return tickPeriods.length;
     }
 
-    public Interval[] getIntervals(int type) {
+    public List<Interval> getIntervals(int type) {
         return tickPeriods[type].getIntervals();
     }
 
-    public String getTickValue(int type, DateTime dateTime) {
-        return tickPeriods[type].getTickValue(dateTime);
+    public String getTickValue(int type, Instant instant) {
+        return tickPeriods[type].getTickValue(instant);
     }
 
-    public DurationFieldType getDurationType(int type) {
+    public ChronoUnit getDurationType(int type) {
         return tickPeriods[type].getDurationType();
     }
 
     public int getTickPixelPosition(long ms, int width) {
-        long minMs = min.getMillis();
-        long maxMs = max.getMillis();
+        long minMs = min.toEpochMilli();
+        long maxMs = max.toEpochMilli();
         long duration = maxMs - minMs;
         return (int) ((ms - minMs) * width / duration);
     }
 
     private static class TickPeriod {
 
-        protected final DateTime min;
-        protected final DateTime max;
-        protected final Period period;
-        protected final Interval interval;
-        protected final DateTimeFieldType type;
+        protected final Instant min;
+        protected final Instant max;
+        protected final Duration period;
+        protected final Instant interval;
+        protected final ChronoUnit unit;
 
-        public TickPeriod(DateTime min, DateTime max, DateTimeFieldType type) {
+        public TickPeriod(Instant min, Instant max, ChronoUnit unit) {
             this.min = min;
             this.max = max;
-            this.period = new Period(min, max, PeriodType.forFields(new DurationFieldType[] {type.getDurationType()}));
-            this.interval = new Interval(min, max);
-            this.type = type;
+            this.period = Duration.between(min, max);
+            this.interval = min;
+            this.unit = unit;
         }
 
-        public Interval[] getIntervals() {
-            int totalIntervals = period.get(type.getDurationType()) + 2;
-            Interval[] intervals = new Interval[totalIntervals];
+        public List<Interval> getIntervals() {
+            long totalIntervals = period.toMillis() / unit.getDuration().toMillis() + 2;
+            List<Interval> intervals = new ArrayList<>();
             for (int i = 0; i < totalIntervals; i++) {
-                Interval currentInterval;
+                Instant currentInterval;
                 if (i == 0) {
-                    currentInterval = min.property(type).toInterval();
+                    currentInterval = min;
                 } else {
-                    currentInterval = min.property(type).addToCopy(i).property(type).toInterval();
+                    currentInterval = min.plus(i, unit);
                 }
-                intervals[i] = currentInterval;
+                intervals.add(new Interval(currentInterval, currentInterval.plus(1, unit)));
             }
             return intervals;
         }
 
         public int getIntervalCount() {
-            return period.get(type.getDurationType());
+            return (int) (period.toMillis() / unit.getDuration().toMillis());
         }
 
-        public String getTickValue(DateTime dateTime) {
-            return dateTime.property(type).getAsShortText();
+        public String getTickValue(Instant instant) {
+            return instant.toString();
         }
 
-        public DurationFieldType getDurationType() {
-            return type.getDurationType();
+        public ChronoUnit getDurationType() {
+            return unit;
+        }
+    }
+
+    public static class Interval {
+        private final Instant start;
+        private final Instant end;
+
+        public Interval(Instant start, Instant end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public Instant getStart() {
+            return start;
+        }
+
+        public Instant getEnd() {
+            return end;
         }
     }
 }

@@ -53,11 +53,12 @@ import javax.swing.JComponent;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.ui.components.richtooltip.RichTooltip;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Mathieu Bastian
@@ -137,23 +138,23 @@ public class TimelineTooltip {
                 }
                 break;
             case DATE: {
-                DateTime minDate = new DateTime((long) model.getCustomMin());
-                DateTime maxDate = new DateTime((long) model.getCustomMax());
-                DateTime posDate = new DateTime((long) currentPosition);
-                DateTimeFormatter formatter = ISODateTimeFormat.date();
-                min = formatter.print(minDate);
-                max = formatter.print(maxDate);
-                position = formatter.print(posDate);
+                LocalDateTime minDate = Instant.ofEpochMilli((long) model.getCustomMin()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime maxDate = Instant.ofEpochMilli((long) model.getCustomMax()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime posDate = Instant.ofEpochMilli((long) currentPosition).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+                min = formatter.format(minDate);
+                max = formatter.format(maxDate);
+                position = formatter.format(posDate);
                 break;
             }
             default: {
-                DateTime minDate = new DateTime((long) model.getCustomMin());
-                DateTime maxDate = new DateTime((long) model.getCustomMax());
-                DateTime posDate = new DateTime((long) currentPosition);
-                DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-                min = formatter.print(minDate);
-                max = formatter.print(maxDate);
-                position = formatter.print(posDate);
+                LocalDateTime minDate = Instant.ofEpochMilli((long) model.getCustomMin()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime maxDate = Instant.ofEpochMilli((long) model.getCustomMax()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime posDate = Instant.ofEpochMilli((long) currentPosition).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                min = formatter.format(minDate);
+                max = formatter.format(maxDate);
+                position = formatter.format(posDate);
                 break;
             }
         }

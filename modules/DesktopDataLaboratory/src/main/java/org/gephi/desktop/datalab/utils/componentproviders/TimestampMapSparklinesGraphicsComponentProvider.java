@@ -1,10 +1,10 @@
 package org.gephi.desktop.datalab.utils.componentproviders;
 
+import java.time.ZoneId;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.TimestampMap;
 import org.jdesktop.swingx.JXTable;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -22,7 +22,7 @@ public class TimestampMapSparklinesGraphicsComponentProvider extends AbstractSpa
         }
 
         TimeFormat timeFormat = graphModelProvider.getGraphModel().getTimeFormat();
-        DateTimeZone timeZone = graphModelProvider.getGraphModel().getTimeZone();
+        ZoneId timeZone = graphModelProvider.getGraphModel().getTimeZone();
 
         return ((TimestampMap) value).toString(timeFormat, timeZone);
     }

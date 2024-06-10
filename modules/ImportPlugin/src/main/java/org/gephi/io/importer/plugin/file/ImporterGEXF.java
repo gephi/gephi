@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.ZoneId;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
@@ -69,7 +70,6 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.joda.time.DateTimeZone;
 import org.openide.util.NbBundle;
 
 /**
@@ -337,7 +337,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         //Timezone
         if (!timeZone.isEmpty()) {
             try {
-                container.setTimeZone(DateTimeZone.forID(timeZone));
+                container.setTimeZone(ZoneId.of(timeZone));
             } catch (IllegalArgumentException e) {
                 report.logIssue(
                     new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_timezone_parseerror"),

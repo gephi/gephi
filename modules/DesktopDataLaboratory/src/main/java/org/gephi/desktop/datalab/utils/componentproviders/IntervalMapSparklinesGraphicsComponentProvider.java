@@ -1,12 +1,12 @@
 package org.gephi.desktop.datalab.utils.componentproviders;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
 import org.jdesktop.swingx.JXTable;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -24,7 +24,7 @@ public class IntervalMapSparklinesGraphicsComponentProvider extends AbstractSpar
         }
 
         TimeFormat timeFormat = graphModelProvider.getGraphModel().getTimeFormat();
-        DateTimeZone timeZone = graphModelProvider.getGraphModel().getTimeZone();
+        ZoneId timeZone = graphModelProvider.getGraphModel().getTimeZone();
 
         return ((IntervalMap) value).toString(timeFormat, timeZone);
     }

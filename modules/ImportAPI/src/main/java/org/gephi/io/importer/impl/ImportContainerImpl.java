@@ -50,6 +50,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,7 +78,6 @@ import org.gephi.io.importer.api.Issue.Level;
 import org.gephi.io.importer.api.MetadataDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.joda.time.DateTimeZone;
 import org.openide.util.NbBundle;
 
 /**
@@ -118,7 +118,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
-    private DateTimeZone timeZone = DateTimeZone.getDefault();
+    private ZoneId timeZone = ZoneId.systemDefault();
     private Double timestamp;
     private Interval interval;
     //Report flag
@@ -480,12 +480,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
-    public DateTimeZone getTimeZone() {
+    public ZoneId getTimeZone() {
         return timeZone;
     }
 
     @Override
-    public void setTimeZone(DateTimeZone timeZone) {
+    public void setTimeZone(ZoneId timeZone) {
         this.timeZone = timeZone;
     }
 

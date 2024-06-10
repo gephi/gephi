@@ -42,7 +42,6 @@
                         <publicPackage>org.gephi.graph.api</publicPackage>
                         <publicPackage>org.gephi.graph.api.types</publicPackage>
                         <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
-                        <publicPackage>org.joda.time.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

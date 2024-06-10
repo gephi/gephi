@@ -44,6 +44,7 @@ package org.gephi.desktop.datalab;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.ZoneId;
 import java.util.TimeZone;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Configuration;
@@ -53,7 +54,6 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.ui.utils.TimeFormatWrapper;
 import org.gephi.ui.utils.TimeRepresentationWrapper;
 import org.gephi.ui.utils.TimeZoneWrapper;
-import org.joda.time.DateTimeZone;
 import org.openide.util.NbBundle;
 
 /**
@@ -107,17 +107,17 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         //Timezone:
         long currentTimestamp = System.currentTimeMillis();
-        DateTimeZone currentTimeZone = graphModel.getTimeZone();
+        ZoneId currentTimeZone = graphModel.getTimeZone();
 
         buildTimeZoneList();
-        timeZoneComboBox.setSelectedItem(new TimeZoneWrapper(currentTimeZone.toTimeZone(), currentTimestamp));
+        timeZoneComboBox.setSelectedItem(new TimeZoneWrapper(TimeZone.getTimeZone(currentTimeZone), currentTimestamp));
 
         timeZoneComboBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 TimeZone selected = ((TimeZoneWrapper) timeZoneComboBox.getSelectedItem()).getTimeZone();
-                graphModel.setTimeZone(DateTimeZone.forTimeZone(selected));
+                graphModel.setTimeZone(ZoneId.of(selected.getID()));
                 dataTableTopComponent.refreshCurrentTable();
             }
         });

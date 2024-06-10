@@ -44,6 +44,7 @@ package org.gephi.desktop.datalab.tables.celleditors;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.time.ZoneId;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -56,7 +57,6 @@ import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.api.types.TimestampSet;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -121,7 +121,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
                                                  Object value, boolean isSelected, int row, int column) {
 
         TimeFormat timeFormat = graphModelProvider.getGraphModel().getTimeFormat();
-        DateTimeZone timeZone = graphModelProvider.getGraphModel().getTimeZone();
+        ZoneId timeZone = graphModelProvider.getGraphModel().getTimeZone();
 
         String valueStr;
         if (value == null) {
