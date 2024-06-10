@@ -83,12 +83,14 @@ public class PropertiesBar extends JPanel {
 
     public void select(JPanel propertiesBar) {
         this.propertiesBar = propertiesBar;
-        propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        add(propertiesBar, BorderLayout.CENTER);
-        propertiesBar.setOpaque(true);
-        for (Component c : propertiesBar.getComponents()) {
-            if (c instanceof JPanel || c instanceof JToolBar) {
-                ((JComponent) c).setOpaque(true);
+        if (propertiesBar != null) {
+            propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+            add(propertiesBar, BorderLayout.CENTER);
+            propertiesBar.setOpaque(true);
+            for (Component c : propertiesBar.getComponents()) {
+                if (c instanceof JPanel || c instanceof JToolBar) {
+                    ((JComponent) c).setOpaque(true);
+                }
             }
         }
         revalidate();

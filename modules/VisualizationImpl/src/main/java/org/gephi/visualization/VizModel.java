@@ -53,13 +53,14 @@ import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
-import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.joml.Vector2fc;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -402,7 +403,7 @@ public class VizModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine =
+        final VizEngine<JOGLRenderingTarget, NEWTEvent> engine =
             Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class)
                 .getEngine(workspace).orElse(null);
 

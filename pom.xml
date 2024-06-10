@@ -138,8 +138,6 @@
 
         <!-- VizEngine version -->
         <gephi.viz-engine.version>1.0.0-SNAPSHOT</gephi.viz-engine.version>
-        <gephi.lwjgl.version>3.3.1</gephi.lwjgl.version>
-        <gephi.lwjgl3-awt.version>0.1.9-SNAPSHOT</gephi.lwjgl3-awt.version>
         <gephi.joml.version>1.10.5</gephi.joml.version>
         <netbeans.version>RELEASE160</netbeans.version>
         
@@ -441,141 +439,8 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>viz-engine-lwjgl</artifactId>
+                <artifactId>viz-engine-jogl</artifactId>
                 <version>${gephi.viz-engine.version}</version>
-            </dependency>
-
-            <!-- LWJGL -->
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-linux</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-macos</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-windows</classifier>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-jawt</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-glfw</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-glfw</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-linux</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-glfw</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-macos</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-glfw</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-windows</classifier>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-opengl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-opengl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-linux</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-opengl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-macos</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-opengl</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-windows</classifier>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-stb</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-stb</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-linux</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-stb</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-macos</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-stb</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-windows</classifier>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-jemalloc</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-jemalloc</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-linux</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-jemalloc</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-macos</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-jemalloc</artifactId>
-                <version>${gephi.lwjgl.version}</version>
-                <classifier>natives-windows</classifier>
-            </dependency>
-
-            <dependency>
-                <groupId>org.lwjglx</groupId>
-                <artifactId>lwjgl3-awt</artifactId>
-                <version>${gephi.lwjgl3-awt.version}</version>
             </dependency>
 
             <dependency>

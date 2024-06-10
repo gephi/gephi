@@ -72,11 +72,13 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
     /**
      * Notify mouse is dragging
      *
-     * @param displacementX distance x
-     * @param displacementY distance y
+     * @param displacementXScreen distance x in screen coordinates
+     * @param displacementYScreen distance y in screen cordinates
+     * @param displacementXWorld distance x in world coordinates
+     * @param displacementYWorld distance y in workd cordinates
      * @return Event consumed
      */
-    public boolean drag(float displacementX, float displacementY);
+    public boolean drag(float displacementXScreen, float displacementYScreen, float displacementXWorld, float displacementYWorld);
 
     /**
      * Notify mouse has been released.

@@ -1,69 +1,60 @@
 package org.gephi.visualization.component;
 
-import java.awt.BorderLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.swing.JComponent;
+
+import com.jogamp.newt.Display;
+import com.jogamp.newt.NewtFactory;
+import com.jogamp.newt.Screen;
+import com.jogamp.newt.Window;
+import com.jogamp.newt.awt.NewtCanvasAWT;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.NEWTEvent;
+import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.visualization.VizController;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineFactory;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTargetAWT;
-import org.gephi.viz.engine.lwjgl.VizEngineLWJGLConfigurator;
-import org.gephi.viz.engine.lwjgl.pipeline.events.AWTEventsListener;
-import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
-import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.util.gl.BasicFPSAnimator;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2fc;
-import org.lwjgl.opengl.awt.AWTGLCanvas;
-import org.lwjgl.opengl.awt.GLData;
 import org.openide.util.Lookup;
-import org.lwjgl.system.Platform;
 
 public class VizEngineGraphCanvasManager {
-
-    private static final String ANIMATOR_THREAD_NAME = "VizEngineGraphCanvas";
-    private static final ExecutorService THREAD_POOL = Executors.newSingleThreadExecutor(runnable -> {
-        return new Thread(runnable, ANIMATOR_THREAD_NAME);
-    });
-
-    private static final int MAX_FPS = 30;
 
     private static final boolean DISABLE_INDIRECT_RENDERING = false;
     private static final boolean DISABLE_INSTANCED_RENDERING = false;
     private static final boolean DISABLE_VAOS = false;
 
     private static final boolean DEBUG = false;
-    private static final boolean USE_OPENGL_ES = false;
 
     private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
 
     private final Workspace workspace;
-    private final boolean isWindows;
     private boolean initialized = false;
-    private AWTGLCanvas glCanvas = null;
+
+    private GLWindow glWindow;
+    private NewtCanvasAWT glCanvas;
 
     // Engine:
-    private VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = null;
-    private LWJGLRenderingTargetAWT renderingTarget = null;
+    private VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
+    private JOGLRenderingTarget renderingTarget = null;
     // Engine state saved for when it's restarted:
     private Vector2fc engineTranslate = null;
     private float engineZoom = 0;
     private float[] engineBackgroundColor = null;
-    private BasicFPSAnimator graphicsAnimator;
 
     public VizEngineGraphCanvasManager(Workspace workspace) {
         this.workspace = Objects.requireNonNull(workspace);
-        this.isWindows = Platform.get() == Platform.WINDOWS;
     }
 
     public synchronized void init(JComponent component) {
@@ -75,13 +66,24 @@ public class VizEngineGraphCanvasManager {
 
         final GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
-        this.renderingTarget = new LWJGLRenderingTargetAWT();
+        final GLCapabilities caps = VizEngineJOGLConfigurator.createCapabilities();
+
+        final Display display = NewtFactory.createDisplay(null);
+        final Screen screen = NewtFactory.createScreen(display, 0);
+
+        glWindow = GLWindow.create(screen, caps);
+
+        if (DEBUG) {
+            glWindow.setContextCreationFlags(GLContext.CTX_OPTION_DEBUG);
+        }
+
+        this.renderingTarget = new JOGLRenderingTarget(glWindow);
 
         this.engine = VizEngineFactory.newEngine(
             renderingTarget,
             graphModel,
             Collections.singletonList(
-                new VizEngineLWJGLConfigurator()
+                new VizEngineJOGLConfigurator()
             )
         );
 
@@ -103,76 +105,13 @@ public class VizEngineGraphCanvasManager {
 
         renderingTarget.setup(engine);
 
-        final GLData glData = new GLData();
-
-        if (USE_OPENGL_ES) {
-            glData.api = GLData.API.GLES;
-        }
-
-        if (Platform.get() == Platform.MACOSX) {
-            //In mac we have to set the version or it won't give the latest automatically
-
-            glData.majorVersion = 3;
-            glData.minorVersion = 2;
-            glData.forwardCompatible = true;
-        }
-
-        glData.samples = 4; //4 samples anti-aliasing
-        glData.swapInterval = 0;
-
-        final AWTGLCanvas glCanvas = new AWTGLCanvas(glData) {
-            @Override
-            public void initGL() {
-                renderingTarget.initializeContext();
-            }
-
-            @Override
-            public void paintGL() {
-                renderingTarget.display();
-                swapBuffers();
-            }
-        };
-
-        this.glCanvas = glCanvas;
-
-        glCanvas.addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentShown(final ComponentEvent e) {
-                reshape();
-            }
-
-            @Override
-            public void componentResized(ComponentEvent event) {
-                reshape();
-            }
-        });
-
-        component.addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentShown(final ComponentEvent e) {
-                reshape();
-            }
-
-            @Override
-            public void componentResized(ComponentEvent event) {
-                reshape();
-            }
-        });
-
-        final AWTEventsListener eventsListener = new AWTEventsListener(glCanvas, engine);
-        eventsListener.register();
-
         final VizController vizController = Lookup.getDefault().lookup(VizController.class);
 
         engine.addInputListener(new InputListener<>() {
             @Override
-            public boolean processEvent(LWJGLInputEvent inputEvent) {
+            public boolean processEvent(NEWTEvent inputEvent) {
                 if (inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
-                    if (vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent)) {
-                        return true;
-                    }
+                    return vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent);
                 }
 
                 return false;
@@ -194,7 +133,7 @@ public class VizEngineGraphCanvasManager {
             }
 
             @Override
-            public void init(LWJGLRenderingTarget lwjglRenderingTarget) {
+            public void init(JOGLRenderingTarget renderingTarget) {
                 //NOP
             }
 
@@ -204,36 +143,21 @@ public class VizEngineGraphCanvasManager {
             }
         });
 
+        /*
+        if (!Utilities.isMac()) {
+            newtCanvas = new HighDPIFixCanvas(glWindow);
+        } else {
+            newtCanvas = new NewtCanvasAWT(glWindow);
+        }
+        */
+
+        glCanvas = new NewtCanvasAWT(glWindow);
+
         component.add(glCanvas, BorderLayout.CENTER);
 
         engine.start();
 
-        initRenderingLoop(glCanvas);
-
         component.revalidate();
-    }
-
-    private void initRenderingLoop(AWTGLCanvas glCanvas) {
-        final Runnable renderLoop = () -> {
-            if (glCanvas.isValid()) {
-                glCanvas.render();
-            }
-        };
-
-        graphicsAnimator = new BasicFPSAnimator(renderLoop, MAX_FPS);
-        THREAD_POOL.submit(graphicsAnimator);
-    }
-
-    private void reshape() {
-        if (renderingTarget == null || renderingTarget.getEngine() == null) {
-            return;
-        }
-
-        if (isWindows) {
-            renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
-        } else {
-            renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
-        }
     }
 
     public synchronized void destroy(JComponent component) {
@@ -251,15 +175,14 @@ public class VizEngineGraphCanvasManager {
 
         if (glCanvas != null) {
             component.remove(glCanvas);
-            glCanvas.disposeCanvas();
+            glCanvas.destroy();
+            final Window newtChild = glCanvas.getNEWTChild();
+            if (newtChild != null) {
+                newtChild.destroy();
+            }
             glCanvas = null;
         }
 
         initialized = false;
-
-        if (graphicsAnimator != null) {
-            graphicsAnimator.shutdown();
-            graphicsAnimator = null;
-        }
     }
 }

@@ -52,13 +52,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.jogamp.newt.event.MouseEvent;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEventListener;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -68,8 +69,11 @@ import org.joml.Vector2i;
  */
 public class StandardVizEventManager implements VizEventManager {
 
+    private static final short MOUSE_LEFT_BUTTON = MouseEvent.BUTTON1;
+    private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
+    private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
+
     private static final int PRESSING_FREQUENCY = 5;
-    private static final int DRAGGING_FREQUENCY = 5;
     // State
     private final Vector2i dragStartMouseScreenPosition = new Vector2i(0, 0);
     private final Vector2f dragStartMouseWorldPosition2d = new Vector2f(0, 0);
@@ -82,8 +86,6 @@ public class StandardVizEventManager implements VizEventManager {
 
     //Architecture
     private VizEventTypeHandler[] handlers;
-    private int pressingTick = 0;
-    private int draggingTick = 0;
     private boolean dragging = false;
     private boolean pressing = false;
 
@@ -95,14 +97,14 @@ public class StandardVizEventManager implements VizEventManager {
         previousMouseScreenPosition.set(mouseScreenPosition);
         previousMouseWorldPosition2d.set(mouseWorldPosition);
 
-        mouseScreenPosition.set(mouseEvent.x, mouseEvent.y);
+        mouseScreenPosition.set(mouseEvent.getX(), mouseEvent.getY());
         engine.screenCoordinatesToWorldCoordinates(
-            mouseScreenPosition.x, mouseScreenPosition.y,
-            mouseWorldPosition
+                mouseScreenPosition.x, mouseScreenPosition.y,
+                mouseWorldPosition
         );
 
-        switch (mouseEvent.action) {
-            case DRAG:
+        switch (mouseEvent.getEventType()) {
+            case MouseEvent.EVENT_MOUSE_DRAGGED:
                 final boolean startDragConsumed;
                 if (!dragging) {
                     dragStartMouseScreenPosition.set(mouseScreenPosition);
@@ -115,49 +117,48 @@ public class StandardVizEventManager implements VizEventManager {
                 }
 
                 return drag(engine) || startDragConsumed;
-            case MOVE:
+            case MouseEvent.EVENT_MOUSE_MOVED:
                 return mouseMove(engine);
-            case CLICK:
-                switch (mouseEvent.button) {
-                    case LEFT:
+            case MouseEvent.EVENT_MOUSE_CLICKED:
+                switch (mouseEvent.getButton()) {
+                    case MOUSE_LEFT_BUTTON:
                         return mouseLeftClick(engine);
-                    case RIGHT:
+                    case MOUSE_RIGHT_BUTTON:
                         return mouseRightClick(engine);
-                    case MIDDLE:
+                    case MOUSE_WHEEL_BUTTON:
                         return mouseMiddleClick(engine);
                 }
                 return false;
-            case PRESS:
+            case MouseEvent.EVENT_MOUSE_PRESSED:
                 final boolean wasPressing = pressing;
                 pressing = true;
-                switch (mouseEvent.button) {
-                    case LEFT:
+                switch (mouseEvent.getButton()) {
+                    case MOUSE_LEFT_BUTTON:
                         if (wasPressing) {
                             return mouseLeftPressing(engine);
                         } else {
                             return mouseLeftPress(engine);
                         }
-                    case RIGHT:
+                    case MOUSE_RIGHT_BUTTON:
                         return mouseRightPress(engine);
-                    case MIDDLE:
+                    case MOUSE_WHEEL_BUTTON:
                         return mouseMiddlePress(engine);
                 }
                 return false;
-            case SCROLL:
+            case MouseEvent.EVENT_MOUSE_WHEEL_MOVED:
                 //NOOP
                 return false;
-            case RELEASE:
+            case MouseEvent.EVENT_MOUSE_RELEASED:
                 pressing = false;
                 if (dragging) {
+                    dragging = false;
                     stopDrag(engine);
                 }
                 mouseReleased(engine);
 
                 return false;//Never consume release events
-            case DOUBLE_CLICK:
-                //NOOP
-                return false;
             default:
+                //NOOP
                 return false;
         }
     }
@@ -200,7 +201,7 @@ public class StandardVizEventManager implements VizEventManager {
         if (nodeLeftClickHandler.hasListeners() && VizController.getInstance().getVizConfig().isSelectionEnable()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (selectedNodes.size() > 0) {
+            if (!selectedNodes.isEmpty()) {
                 if (nodeLeftClickHandler.dispatch(toArray(selectedNodes))) {
                     return true;
                 }
@@ -233,12 +234,11 @@ public class StandardVizEventManager implements VizEventManager {
         final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
 
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
-        pressingTick = PRESSING_FREQUENCY;
         final VizEventTypeHandler nodeLefPressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
         if (nodeLefPressHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (selectedNodes.size() > 0) {
+            if (!selectedNodes.isEmpty()) {
                 return nodeLefPressHandler.dispatch(toArray(selectedNodes));
             }
         }
@@ -273,16 +273,13 @@ public class StandardVizEventManager implements VizEventManager {
     public boolean mouseLeftPressing(VizEngine engine) {
         final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
 
-        if (pressingTick++ >= PRESSING_FREQUENCY) {
-            pressingTick = 0;
-            final VizEventTypeHandler nodeLeftPressingHandler
-                = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
-            if (nodeLeftPressingHandler.hasListeners()) {
-                //Check if some node are selected
-                final Set<Node> selectedNodes = index.getSelectedNodes();
-                if (selectedNodes.size() > 0) {
-                    return nodeLeftPressingHandler.dispatch(toArray(selectedNodes));
-                }
+        final VizEventTypeHandler nodeLeftPressingHandler
+            = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+        if (nodeLeftPressingHandler.hasListeners()) {
+            //Check if some node are selected
+            final Set<Node> selectedNodes = index.getSelectedNodes();
+            if (!selectedNodes.isEmpty()) {
+                return nodeLeftPressingHandler.dispatch(toArray(selectedNodes));
             }
         }
 
@@ -298,19 +295,16 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public boolean drag(VizEngine engine) {
-        if (draggingTick++ >= DRAGGING_FREQUENCY) {
-            draggingTick = 0;
-            final VizEventTypeHandler handler = handlers[VizEvent.Type.DRAG.ordinal()];
-            if (handler.hasListeners()) {
-                final Vector2i dragScreenDisplacement = new Vector2i(dragStartMouseScreenPosition);
-                dragScreenDisplacement.sub(mouseScreenPosition);
-                final Vector2f dragWorldDisplacement = new Vector2f(dragStartMouseWorldPosition2d);
-                dragWorldDisplacement.sub(mouseWorldPosition);
+        final VizEventTypeHandler handler = handlers[VizEvent.Type.DRAG.ordinal()];
+        if (handler.hasListeners()) {
+            final Vector2i dragScreenDisplacement = new Vector2i(mouseScreenPosition);
+            dragScreenDisplacement.sub(dragStartMouseScreenPosition);
+            final Vector2f dragWorldDisplacement = new Vector2f(mouseWorldPosition);
+            dragWorldDisplacement.sub(dragStartMouseWorldPosition2d);
 
-                return handler.dispatch(
-                    getScreenAndWorldPositionsArray(dragScreenDisplacement, dragWorldDisplacement)
-                );
-            }
+            return handler.dispatch(
+                getScreenAndWorldPositionsArray(dragScreenDisplacement, dragWorldDisplacement)
+            );
         }
 
         return false;
@@ -390,7 +384,7 @@ public class StandardVizEventManager implements VizEventManager {
                 return false;
             }
 
-            if (listeners.size() > 0) {
+            if (!listeners.isEmpty()) {
                 running = true;
 
                 final boolean consumed = fireVizEvent(null);
@@ -406,7 +400,7 @@ public class StandardVizEventManager implements VizEventManager {
             if (limitRunning && running) {
                 return false;
             }
-            if (listeners.size() > 0) {
+            if (!listeners.isEmpty()) {
                 running = true;
 
                 try {
@@ -445,7 +439,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         public boolean hasListeners() {
-            return listeners.size() > 0;
+            return !listeners.isEmpty();
         }
 
         protected int getIndex() {

@@ -73,14 +73,13 @@ public class SelectionManager implements VizArchitecture {
     private VizConfig vizConfig;
     private CurrentWorkspaceVizEngine currentVizEngine;
     //Settings
+    // TODO: use these options in the engine selection:
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportional;
-    private boolean selectionUpdateWhileDragging;
     //States
     private boolean blocked = false;
     private boolean wasAutoSelectNeighbors = false;
     private boolean wasRectangleSelection = false;
-    private boolean wasDragSelection = false;
     private boolean wasDirectSelection = false;
 
     public SelectionManager() {
@@ -92,7 +91,6 @@ public class SelectionManager implements VizArchitecture {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.currentVizEngine = Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class);
         mouseSelectionDiameter = vizConfig.getMouseSelectionDiameter();
-        selectionUpdateWhileDragging = vizConfig.isMouseSelectionUpdateWhileDragging();
     }
 
     private Optional<GraphSelection> currentEngineSelectionModel() {
@@ -117,61 +115,46 @@ public class SelectionManager implements VizArchitecture {
         fireChangeEvent();
     }
 
-    public void setDraggingEnable(boolean dragging) {
-        vizConfig.setMouseSelectionUpdateWhileDragging(!dragging);
-        fireChangeEvent();
-    }
-
     public void setRectangleSelection() {
-        vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
         vizConfig.setSelectionEnable(true);
-        //engine.setRectangleSelection(true);
-        //TODO
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setDirectMouseSelection() {
         vizConfig.setSelectionEnable(true);
-        vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
-        //engine.setRectangleSelection(false);
-        //TODO
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setDraggingMouseSelection() {
-        vizConfig.setDraggingEnable(true);
-        vizConfig.setMouseSelectionUpdateWhileDragging(false);
         vizConfig.setSelectionEnable(true);
         vizConfig.setCustomSelection(false);
-        //engine.setRectangleSelection(false);
-        //TODO
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         this.blocked = false;
         fireChangeEvent();
     }
 
     public void setCustomSelection() {
         vizConfig.setSelectionEnable(false);
-        vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
-        //vizConfig.setRectangleSelection(false);
-        //TODO
-        //this.blocked = true;
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        this.blocked = true;
         fireChangeEvent();
     }
 
     public void resetSelection(VizModel vizModel) {
         if (isCustomSelection()) {
-            //engine.resetSelection();
-            //TODO
+            currentEngineSelectionModel()
+                    .ifPresent(GraphSelection::clearSelection);
+
             vizModel.setAutoSelectNeighbor(wasAutoSelectNeighbors);
             if (wasRectangleSelection) {
                 setRectangleSelection();
-            } else if (wasDragSelection) {
-                setDraggingMouseSelection();
             } else if (wasDirectSelection) {
                 setDirectMouseSelection();
             }
@@ -193,7 +176,6 @@ public class SelectionManager implements VizArchitecture {
     public void selectNodes(Node[] nodes, VizModel vizModel) {
         if (!isCustomSelection()) {
             wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
-            wasDragSelection = isDraggingEnabled();
             wasDirectSelection = isDirectMouseSelection();
             wasRectangleSelection = isRectangleSelection();
             vizModel.setAutoSelectNeighbor(false);
@@ -204,7 +186,6 @@ public class SelectionManager implements VizArchitecture {
             .ifPresent(selection -> {
                 if (nodes == null) {
                     selection.clearSelectedNodes();
-
                 } else {
                     selection.setSelectedNodes(Arrays.asList(nodes));
                 }
@@ -214,7 +195,6 @@ public class SelectionManager implements VizArchitecture {
     public void selectEdges(Edge[] edges, VizModel vizModel) {
         if (!isCustomSelection()) {
             wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
-            wasDragSelection = isDraggingEnabled();
             wasDirectSelection = isDirectMouseSelection();
             wasRectangleSelection = isRectangleSelection();
             vizModel.setAutoSelectNeighbor(false);
@@ -230,6 +210,12 @@ public class SelectionManager implements VizArchitecture {
                     selection.setSelectedEdges(Arrays.asList(edges));
                 }
             });
+    }
+
+    private void setEngineSelectionMode(GraphSelection.GraphSelectionMode mode) {
+        currentEngineSelectionModel().ifPresent(graphSelection -> {
+            graphSelection.setMode(mode);
+        });
     }
 
     public void centerOnGraph() {
@@ -280,14 +266,6 @@ public class SelectionManager implements VizArchitecture {
         this.mouseSelectionZoomProportional = mouseSelectionZoomProportional;
     }
 
-    public boolean isSelectionUpdateWhileDragging() {
-        return selectionUpdateWhileDragging;
-    }
-
-    public void setSelectionUpdateWhileDragging(boolean selectionUpdateWhileDragging) {
-        this.selectionUpdateWhileDragging = selectionUpdateWhileDragging;
-    }
-
     public boolean isBlocked() {
         return blocked;
     }
@@ -297,7 +275,7 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public boolean isDirectMouseSelection() {
-        return vizConfig.isSelectionEnable() && !vizConfig.isRectangleSelection() && !vizConfig.isDraggingEnable();
+        return vizConfig.isSelectionEnable() && !vizConfig.isRectangleSelection();
     }
 
     public boolean isCustomSelection() {
@@ -306,10 +284,6 @@ public class SelectionManager implements VizArchitecture {
 
     public boolean isSelectionEnabled() {
         return vizConfig.isSelectionEnable();
-    }
-
-    public boolean isDraggingEnabled() {
-        return vizConfig.isDraggingEnable();
     }
 
     //Event

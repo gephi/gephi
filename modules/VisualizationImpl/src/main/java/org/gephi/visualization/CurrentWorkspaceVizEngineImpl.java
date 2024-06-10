@@ -1,12 +1,13 @@
 package org.gephi.visualization;
 
 import java.util.Optional;
+
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
-import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -44,12 +45,12 @@ public class CurrentWorkspaceVizEngineImpl implements CurrentWorkspaceVizEngine 
     }
 
     @Override
-    public Optional<VizEngine<LWJGLRenderingTarget, LWJGLInputEvent>> getEngine() {
+    public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
         return getEngine(currentWorkspace);
     }
 
     @Override
-    public Optional<VizEngine<LWJGLRenderingTarget, LWJGLInputEvent>> getEngine(Workspace workspace) {
+    public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine(Workspace workspace) {
         if (workspace == null) {
             return Optional.empty();
         }

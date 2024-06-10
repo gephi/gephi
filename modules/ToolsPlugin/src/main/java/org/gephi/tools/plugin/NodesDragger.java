@@ -1,5 +1,5 @@
 /*
- Copyright 2008-2010 Gephi
+ Copyright 2008-2024 Gephi
  Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
  Website : http://www.gephi.org
 
@@ -37,37 +37,30 @@
 
  Contributor(s):
 
- Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2024 Gephi Consortium.
  */
 
 package org.gephi.tools.plugin;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.spi.NodePressAndDraggingEventListener;
-import org.gephi.tools.spi.Tool;
-import org.gephi.tools.spi.ToolEventListener;
-import org.gephi.tools.spi.ToolSelectionType;
-import org.gephi.tools.spi.ToolUI;
-import org.gephi.ui.tools.plugin.SizerPanel;
+import org.gephi.tools.spi.*;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
+import javax.swing.*;
+
 /**
- * @author Mathieu Bastian
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = Tool.class)
-public class Sizer implements Tool {
+public class NodesDragger implements Tool {
 
-    private final float INTENSITY = 0.4f;
-    private final float LOWER_LIMIT = 0.3f;
-    private SizerPanel sizerPanel;
     private ToolEventListener[] listeners;
     //Vars
     private Node[] nodes;
-    private float[] sizes;
+    private float[] initialX;
+    private float[] initialY;
 
     @Override
     public void select() {
@@ -76,9 +69,7 @@ public class Sizer implements Tool {
     @Override
     public void unselect() {
         listeners = null;
-        sizerPanel = null;
         nodes = null;
-        sizes = null;
     }
 
     @Override
@@ -87,11 +78,14 @@ public class Sizer implements Tool {
         listeners[0] = new NodePressAndDraggingEventListener() {
             @Override
             public boolean pressNodes(Node[] nodes) {
-                Sizer.this.nodes = nodes;
-                sizes = new float[nodes.length];
+                NodesDragger.this.nodes = nodes;
+
+                initialX = new float[nodes.length];
+                initialY = new float[nodes.length];
                 for (int i = 0; i < nodes.length; i++) {
                     Node n = nodes[i];
-                    sizes[i] = n.size();
+                    initialX[i] = n.x();
+                    initialY[i] = n.y();
                 }
 
                 return true;
@@ -100,26 +94,17 @@ public class Sizer implements Tool {
             @Override
             public void released() {
                 nodes = null;
-                sizerPanel.setAvgSize(-1);
             }
 
             @Override
             public boolean drag(float displacementXScreen, float displacementYScreen,
                                 float displacementXWorld, float displacementYWorld) {
                 if (nodes != null) {
-                    float averageSize = 0f;
                     for (int i = 0; i < nodes.length; i++) {
                         Node n = nodes[i];
-                        float size = sizes[i];
-                        size += displacementYWorld * INTENSITY;
-                        if (size < LOWER_LIMIT) {
-                            size = LOWER_LIMIT;
-                        }
-                        averageSize += size;
-                        n.setSize(size);
+                        n.setX(initialX[i] + displacementXWorld);
+                        n.setY(initialY[i] + displacementYWorld);
                     }
-                    averageSize /= nodes.length;
-                    sizerPanel.setAvgSize(averageSize);
 
                     return true;
                 }
@@ -135,30 +120,30 @@ public class Sizer implements Tool {
         return new ToolUI() {
             @Override
             public JPanel getPropertiesBar(Tool tool) {
-                sizerPanel = new SizerPanel();
-                return sizerPanel;
+                return null;
             }
 
             @Override
             public String getName() {
-                return NbBundle.getMessage(Sizer.class, "Sizer.name");
+                return NbBundle.getMessage(NodesDragger.class, "NodesDragger.name");
             }
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/sizer.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/hand.png", false);
             }
 
             @Override
             public String getDescription() {
-                return NbBundle.getMessage(Sizer.class, "Sizer.description");
+                return NbBundle.getMessage(NodesDragger.class, "NodesDragger.description");
             }
 
             @Override
             public int getPosition() {
-                return 105;
+                return 0;
             }
         };
+
     }
 
     @Override

@@ -249,14 +249,6 @@ final class OpenGLPanel extends javax.swing.JPanel {
     void store() {
         NbPreferences.forModule(VizConfig.class).putInt(VizConfig.ANTIALIASING, antiAliasing);
         NbPreferences.forModule(VizConfig.class).putBoolean(VizConfig.SHOW_FPS, fpsCheckbox.isSelected());
-        try {
-            int width = NumberFormat.getInstance(Locale.ENGLISH).parse(octreeWidthTextField.getText()).intValue();
-            NbPreferences.forModule(VizConfig.class)
-                .putInt(VizConfig.OCTREE_WIDTH, width);
-            VizController.getInstance().getVizConfig().setOctreeWidth(width);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
 //        VizController.getInstance().getEngine().reinit();
         //TODO

@@ -128,10 +128,6 @@ public class SelectionBar extends javax.swing.JPanel {
                         configureLink.setVisible(true);
                         statusLabel.setText(
                             NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.mouseSelection"));
-                    } else if (manager.isDraggingEnabled()) {
-                        configureLink.setVisible(true);
-                        statusLabel
-                            .setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.dragging"));
                     }
                 } else {
                     configureLink.setVisible(false);

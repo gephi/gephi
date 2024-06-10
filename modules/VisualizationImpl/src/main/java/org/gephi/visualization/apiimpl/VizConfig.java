@@ -82,7 +82,6 @@ public class VizConfig {
     public static final String SELECTION = "VizConfig.selectionEnable";
     public static final String RECTANGLE_SELECTION = "VizConfig.rectangleSelection";
     public static final String RECTANGLE_SELECTION_COLOR = "VizConfig.rectangleSelectionColor";
-    public static final String DRAGGING = "VizConfig.draggingEnable";
     public static final String CAMERA_CONTROL = "VizConfig.cameraControlEnable";
     public static final String SHOW_FPS = "VizConfig.showFPS";
     public static final String REDUCE_FPS_MOUSE_OUT = "VizConfig.reduceFpsWhenMouseOut";
@@ -103,7 +102,6 @@ public class VizConfig {
     public static final String PROPERTIESBAR = "VizConfig.propertiesbar";
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
-    public static final String MOUSE_SELECTION_WHILE_DRAGGING = "VizConfig.mouseSelectionUpdateWhileDragging";
     public static final String DISABLE_LOD = "VizConfig.disableLOD";
     //Default values
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
@@ -134,7 +132,6 @@ public class VizConfig {
     public static final boolean DEFAULT_SELECTION = true;
     public static final boolean DEFAULT_RECTANGLE_SELECTION = false;
     public static final Color DEFAULT_RECTANGLE_SELECTION_COLOR = new Color(0.16f, 0.48f, 0.81f, 0.2f);
-    public static final boolean DEFAULT_DRAGGING = true;
     public static final boolean DEFAULT_CAMERA_CONTROL = true;
     public static final boolean DEFAULT_SHOW_FPS = false;
     public static final boolean DEFAULT_REDUCE_FPS_MOUSE_OUT = true;
@@ -156,7 +153,6 @@ public class VizConfig {
     public static final boolean DEFAULT_PROPERTIESBAR = true;
     public static final int DEFAULT_MOUSE_SELECTION_DIAMETER = 1;
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
-    public static final boolean DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final float DEFAULT_EDGE_SCALE = 2f;
     //Default config - loaded in the VizModel
@@ -220,7 +216,6 @@ public class VizConfig {
     protected Color rectangleSelectionColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
         .get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
     protected boolean customSelection = false;      //Overriden in Engine
-    protected boolean draggingEnable = NbPreferences.forModule(VizConfig.class).getBoolean(DRAGGING, DEFAULT_DRAGGING);
     protected boolean cameraControlEnable =
         NbPreferences.forModule(VizConfig.class).getBoolean(CAMERA_CONTROL, DEFAULT_CAMERA_CONTROL);
     protected boolean showFPS = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_FPS, DEFAULT_SHOW_FPS);
@@ -241,8 +236,6 @@ public class VizConfig {
     protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
             .get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR)))
         .getRGBColorComponents(null);
-    protected int octreeDepth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_DEPTH, DEFAULT_OCTREE_DEPTH);
-    protected int octreeWidth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_WIDTH, DEFAULT_OCTREE_WIDTH);
     protected boolean cleanDeletedModels =
         NbPreferences.forModule(VizConfig.class).getBoolean(CLEAN_DELETED_MODELS, DEFAULT_CLEAN_DELETED_MODELS);
     protected boolean labelMipMap =
@@ -261,8 +254,6 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class)
         .getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
-    protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class)
-        .getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
     protected boolean disableLOD =
         NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
     protected boolean enableAutoSelect = true;      //Overriden in Engine - Temporary used by tools like ShortestPath
@@ -367,14 +358,6 @@ public class VizConfig {
         return defaultShowEdges;
     }
 
-    public boolean isDraggingEnable() {
-        return draggingEnable;
-    }
-
-    public void setDraggingEnable(boolean draggingEnable) {
-        this.draggingEnable = draggingEnable;
-    }
-
     public boolean isDefaultEdgeSelectionColor() {
         return defaultEdgeSelectionColor;
     }
@@ -422,18 +405,6 @@ public class VizConfig {
     //Setters
     public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
-    }
-
-    public int getOctreeDepth() {
-        return octreeDepth;
-    }
-
-    public int getOctreeWidth() {
-        return octreeWidth;
-    }
-
-    public void setOctreeWidth(int octreeWidth) {
-        this.octreeWidth = octreeWidth;
     }
 
     public boolean isRectangleSelection() {
@@ -498,14 +469,6 @@ public class VizConfig {
 
     public boolean isMouseSelectionZoomProportionnal() {
         return mouseSelectionZoomProportionnal;
-    }
-
-    public boolean isMouseSelectionUpdateWhileDragging() {
-        return mouseSelectionUpdateWhileDragging;
-    }
-
-    public void setMouseSelectionUpdateWhileDragging(boolean mouseSelectionUpdateWhileDragging) {
-        this.mouseSelectionUpdateWhileDragging = mouseSelectionUpdateWhileDragging;
     }
 
     public boolean isCustomSelection() {

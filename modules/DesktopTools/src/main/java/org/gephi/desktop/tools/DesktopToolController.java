@@ -130,12 +130,8 @@ public class DesktopToolController implements ToolController {
                 VizController.getInstance().getSelectionManager().disableSelection();
                 break;
             case SELECTION:
-                VizController.getInstance().getSelectionManager().blockSelection(true);
-                VizController.getInstance().getSelectionManager().setDraggingEnable(false);
-                break;
             case SELECTION_AND_DRAGGING:
                 VizController.getInstance().getSelectionManager().blockSelection(true);
-                VizController.getInstance().getSelectionManager().setDraggingEnable(true);
                 break;
         }
         currentTool = tool;
@@ -143,7 +139,6 @@ public class DesktopToolController implements ToolController {
     }
 
     public void unselect() {
-
         if (currentTool != null) {
             //Disconnect events
             for (ToolEventHandler handler : currentHandlers) {
@@ -222,16 +217,13 @@ public class DesktopToolController implements ToolController {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+                final SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
 
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
                 } else if (selectionManager.isSelectionEnabled() && currentTool != null
                         && currentTool.getSelectionType() == ToolSelectionType.NONE) {
-                    toolbar.clearSelection();
-                    unselect();
-                } else if (selectionManager.isDraggingEnabled() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
                 }
@@ -366,7 +358,11 @@ public class DesktopToolController implements ToolController {
                 @Override
                 public boolean handleEvent(VizEvent event) {
                     float[] mouseDrag = (float[]) event.getData();
-                    return toolEventListener.drag(mouseDrag[0], mouseDrag[1]);
+                    return toolEventListener.drag(
+                            // Screen coordinates displacement:
+                            mouseDrag[0], mouseDrag[1],
+                            // World coordinates displacement:
+                            mouseDrag[2], mouseDrag[3]);
                 }
 
                 @Override

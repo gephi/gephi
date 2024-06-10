@@ -42,9 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.apiimpl;
 
+import com.jogamp.newt.event.MouseEvent;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 
 /**
  * @author Mathieu Bastian
