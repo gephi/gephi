@@ -56,6 +56,7 @@ import org.apache.pdfbox.pdmodel.font.FontMapping;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.util.Matrix;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PDFTarget;
@@ -187,7 +188,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                         Exceptions.printStackTrace(ex);
                     }
                 }
-                return PDType1Font.HELVETICA;
+                return new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
             });
         }
 

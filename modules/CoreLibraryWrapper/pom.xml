@@ -17,12 +17,12 @@
     
     <properties>
         <gephi.stax-utils.version>snapshot-20100402</gephi.stax-utils.version>
-        <gephi.commons-codec.version>1.15</gephi.commons-codec.version>
-        <gephi.commons-compress.version>1.25.0</gephi.commons-compress.version>
-        <gephi.commons-csv.version>1.9.0</gephi.commons-csv.version>
+        <gephi.commons-codec.version>1.17.0</gephi.commons-codec.version>
+        <gephi.commons-compress.version>1.26.2</gephi.commons-compress.version>
+        <gephi.commons-csv.version>1.11.0</gephi.commons-csv.version>
         <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
-        <gephi.pdfbox.version>2.0.27</gephi.pdfbox.version>
+        <gephi.pdfbox.version>3.0.2</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
         <gephi.gson.version>2.10</gephi.gson.version>
     </properties>
@@ -73,6 +73,11 @@
             <artifactId>gson</artifactId>
             <version>${gephi.gson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.21.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -92,6 +97,7 @@
                         <publicPackage>org.apache.fontbox.*</publicPackage>
                         <publicPackage>javanet.staxutils.*</publicPackage>
                         <publicPackage>com.google.gson.*</publicPackage>
+                        <publicPackage>org.apache.logging.log4j.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
