@@ -121,7 +121,7 @@ public class Region {
                 nodesLine.add(n);
             }
 
-            if (topleftNodes.size() > 0) {
+            if (!topleftNodes.isEmpty()) {
                 if (topleftNodes.size() < nodes.size()) {
                     Region subregion = new Region(topleftNodes);
                     subregions.add(subregion);
@@ -134,7 +134,7 @@ public class Region {
                     }
                 }
             }
-            if (bottomleftNodes.size() > 0) {
+            if (!bottomleftNodes.isEmpty()) {
                 if (bottomleftNodes.size() < nodes.size()) {
                     Region subregion = new Region(bottomleftNodes);
                     subregions.add(subregion);
@@ -147,7 +147,7 @@ public class Region {
                     }
                 }
             }
-            if (bottomrightNodes.size() > 0) {
+            if (!bottomrightNodes.isEmpty()) {
                 if (bottomrightNodes.size() < nodes.size()) {
                     Region subregion = new Region(bottomrightNodes);
                     subregions.add(subregion);
@@ -160,7 +160,7 @@ public class Region {
                     }
                 }
             }
-            if (toprightNodes.size() > 0) {
+            if (!toprightNodes.isEmpty()) {
                 if (toprightNodes.size() < nodes.size()) {
                     Region subregion = new Region(toprightNodes);
                     subregions.add(subregion);
