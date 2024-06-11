@@ -43,7 +43,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.plugin;
 
 import junit.framework.TestCase;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
@@ -59,7 +62,46 @@ import org.junit.Test;
 public class NoverlapTest extends TestCase {
 
     @Test
+    public void test2nodesNoverlap() {
+
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "2nodes.gexf");
+    
+        // Monitor node sizes
+        Graph graph = graphModel.getGraphVisible();
+        for (Node n : graph.getNodes()) {
+            System.out.println("Node "+n.getId()+": Size "+ n.size());
+        }
+
+        // Monitor distance
+        Node[] nodes = graph.getNodes().toArray();
+        Node n1 = nodes[0];
+        Node n2 = nodes[1];
+        double d = Math.sqrt(Math.pow(n2.x()-n1.x(), 2) + Math.pow(n2.y()-n1.y(), 2));
+        System.out.println("Distance: "+d);
+
+        NoverlapLayoutBuilder layoutBuilder = new NoverlapLayoutBuilder();
+        NoverlapLayout layout = new NoverlapLayout(layoutBuilder);
+        layout.setGraphModel(graphModel);
+
+        layout.initAlgo();
+        layout.resetPropertiesValues();
+        int iterations = 10;
+        for (int i = 0; i < iterations; i++) {
+            layout.goAlgo();
+            if (layout.isConverged()) {
+                break;
+            }
+        }
+        if (layout.isConverged()) {
+            System.out.println("Noverlap has prevented all overlaps.");
+        }
+        layout.endAlgo();
+
+    }
+
+    @Test
     public void test10KnodesNoverlap() {
+
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "10K_randomlayout.gexf");
 
         NoverlapLayoutBuilder layoutBuilder = new NoverlapLayoutBuilder();
@@ -67,6 +109,7 @@ public class NoverlapTest extends TestCase {
         layout.setGraphModel(graphModel);
 
         layout.initAlgo();
+        layout.resetPropertiesValues();
         int iterations = 10;
         for (int i = 0; i < iterations; i++) {
             layout.goAlgo();
@@ -99,6 +142,7 @@ public class NoverlapTest extends TestCase {
         layout.setGraphModel(graphModel);
 
         layout.initAlgo();
+        layout.resetPropertiesValues();
         int iterations = 10;
         for (int i = 0; i < iterations; i++) {
             layout.goAlgo();
