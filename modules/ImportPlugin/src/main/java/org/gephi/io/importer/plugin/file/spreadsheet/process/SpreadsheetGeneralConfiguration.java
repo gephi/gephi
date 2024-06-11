@@ -42,6 +42,7 @@ Portions Copyrighted 2016 Gephi Consortium.
 
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.TimeRepresentation;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -60,7 +60,7 @@ public class SpreadsheetGeneralConfiguration {
     protected final Map<String, Class> columnsClasses = new LinkedHashMap<>();
     protected Mode mode = Mode.NODES_TABLE;
     protected TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
-    protected DateTimeZone timeZone = DateTimeZone.UTC;
+    protected ZoneId timeZone = ZoneId.systemDefault();
 
     public Mode getMode() {
         return mode;
@@ -78,11 +78,11 @@ public class SpreadsheetGeneralConfiguration {
         this.timeRepresentation = timeRepresentation;
     }
 
-    public DateTimeZone getTimeZone() {
+    public ZoneId getTimeZone() {
         return timeZone;
     }
 
-    public void setTimeZone(DateTimeZone timeZone) {
+    public void setTimeZone(ZoneId timeZone) {
         this.timeZone = timeZone;
     }
 

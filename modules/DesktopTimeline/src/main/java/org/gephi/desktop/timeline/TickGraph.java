@@ -47,9 +47,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineModel;
-import org.joda.time.Interval;
 
 /**
  * @author Mathieu Bastian
@@ -127,12 +127,12 @@ public class TickGraph {
         if (dateTick.getTypeCount() > 1) {
             g.setFont(smallFont);
             g.setColor(parameters.getDateColor(LOWER_TICK));
-            Interval[] intervals = dateTick.getIntervals(LOWER_TICK);
+            List<DateTick.Interval> intervals = dateTick.getIntervals(LOWER_TICK);
             int previousXLabelEnd = Integer.MIN_VALUE;
 
             int labelWidth = smallMetrics != null ? smallMetrics.stringWidth("0000") : 0;
-            for (Interval interval : intervals) {
-                long ms = interval.getStartMillis();
+            for (DateTick.Interval interval : intervals) {
+                long ms = interval.getStart().toEpochMilli();
                 int x = dateTick.getTickPixelPosition(ms, width);
                 if (x >= 0) {
                     //Height
@@ -146,7 +146,7 @@ public class TickGraph {
                         g.drawLine(x, 0, x, h);
 
                         //Label                       
-                        if (smallFont != null && width / intervals.length > labelWidth) {
+                        if (smallFont != null && width / intervals.size() > labelWidth) {
                             String label = dateTick.getTickValue(LOWER_TICK, interval.getStart());
                             int xLabel = x + 4;
                             int yLabel = (int) (fontSize * 1.2);
@@ -164,11 +164,11 @@ public class TickGraph {
         if (dateTick.getTypeCount() > 0 && bigFont != null) {
             g.setFont(bigFont);
             g.setColor(parameters.getDateColor(TOP_TICK));
-            Interval[] intervals = dateTick.getIntervals(TOP_TICK);
+            List<DateTick.Interval> intervals = dateTick.getIntervals(TOP_TICK);
             int previousXLabelEnd = Integer.MIN_VALUE;
 
-            for (Interval interval : intervals) {
-                long ms = interval.getStartMillis();
+            for (DateTick.Interval interval : intervals) {
+                long ms = interval.getStart().toEpochMilli();
                 int x = dateTick.getTickPixelPosition(ms, width);
 
                 String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
@@ -183,7 +183,7 @@ public class TickGraph {
                 int yLabel = fontSize * 4;
                 if (x >= 0) {
                     xLabel = x + 4;
-                } else if (x > ((dateTick.getTickPixelPosition(interval.getEndMillis(), width) - x) / -2)) {
+                } else if (x > ((dateTick.getTickPixelPosition(interval.getEnd().toEpochMilli(), width) - x) / -2)) {
                     xLabel = 4;
                 }
 

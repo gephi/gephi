@@ -318,7 +318,29 @@ public class ProjectControllerImplTest {
         Mockito.verify(workspaceListener).initialize(duplicate);
         Mockito.verify(workspaceListener).select(duplicate);
         Assert.assertNotNull(duplicate.getLookup().lookup(MockModel.class));
+    }
 
+    @Test
+    public void testNewWorkspaceWithLookupObjects() {
+        MockServices.setServices(MockController.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addWorkspaceListener(workspaceListener);
+        Project project = pc.newProject();
+        String foo = "foo";
+        Workspace workspace = pc.newWorkspace(project, foo);
+        Assert.assertEquals(foo, workspace.getLookup().lookup(String.class));
+    }
+
+    @Test
+    public void testOpenNewWorkspaceWithLookupObjects() {
+        MockServices.setServices(MockController.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addWorkspaceListener(workspaceListener);
+        String foo = "foo";
+        Workspace workspace = pc.openNewWorkspace(foo);
+        Assert.assertEquals(foo, workspace.getLookup().lookup(String.class));
     }
 
     public static class MockModel implements Model {

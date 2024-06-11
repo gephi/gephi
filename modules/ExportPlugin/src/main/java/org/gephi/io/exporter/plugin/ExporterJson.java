@@ -7,6 +7,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import java.time.ZoneId;
 import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
@@ -15,7 +16,6 @@ import org.gephi.utils.VersionUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 
 import java.awt.*;
@@ -181,7 +181,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
                     out.name("timerepresentation");
                     out.value(graphConfig.getTimeRepresentation().toString().toLowerCase());
                     out.name("timezone");
-                    out.value(graph.getModel().getTimeZone().getID());
+                    out.value(graph.getModel().getTimeZone().getId());
                 }
                 out.endObject();
             }
@@ -206,7 +206,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
         protected void writeAttValues(JsonWriter out, T element) throws IOException {
             if (exportAttributes) {
                 TimeFormat timeFormat = graph.getModel().getTimeFormat();
-                DateTimeZone timeZone = graph.getModel().getTimeZone();
+                ZoneId timeZone = graph.getModel().getTimeZone();
 
                 Set<String> reservedKeys = getReservedKeys();
                 for (Column column : element.getAttributeColumns()) {

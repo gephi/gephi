@@ -95,8 +95,7 @@ public class JsonTest {
         ExporterJson exporterJson = createExporter(graphGenerator);
         exporterJson.setExportPosition(true);
         exporterJson.setNormalize(false);
-        
-        exporterJson.execute();
+
         Utils.assertExporterMatch("json/position.json", exporterJson);
     }
     
@@ -113,9 +112,7 @@ public class JsonTest {
         ExporterJson exporterJson = createExporter(graphGenerator);
         exporterJson.setExportPosition(true);
         exporterJson.setNormalize(true);
- 
-        
-        exporterJson.execute();
+
         Utils.assertExporterMatch("json/position_normalized.json", exporterJson);
     }
     

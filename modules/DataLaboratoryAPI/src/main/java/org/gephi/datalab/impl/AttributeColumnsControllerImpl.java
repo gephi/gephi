@@ -72,7 +72,7 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.utils.StatisticsUtils;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -301,7 +301,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Object value;
 
             TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
-            DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+            ZoneId timeZone = table.getGraph().getModel().getTimeZone();
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(column);
                 if (value != null) {
@@ -340,7 +340,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             ArrayList<String> foundGroups = new ArrayList<>();
 
             TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
-            DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+            ZoneId timeZone = table.getGraph().getModel().getTimeZone();
 
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(column);
@@ -730,7 +730,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         String strValue;
 
         TimeFormat timeFormat = graph.getModel().getTimeFormat();
-        DateTimeZone timeZone = graph.getModel().getTimeZone();
+        ZoneId timeZone = graph.getModel().getTimeZone();
 
         for (Node node : graph.getNodes().toArray()) {
             value = node.getAttribute(column);

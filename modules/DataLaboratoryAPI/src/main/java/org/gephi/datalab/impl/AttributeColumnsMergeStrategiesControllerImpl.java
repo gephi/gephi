@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.graph.api.AttributeUtils;
@@ -57,7 +58,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.utils.StatisticsUtils;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -96,7 +97,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         GraphModel graphModel = table.getGraph().getModel();
         TimeFormat timeFormat = graphModel.getTimeFormat();
-        DateTimeZone timeZone = graphModel.getTimeZone();
+        ZoneId timeZone = graphModel.getTimeZone();
 
         for (Element row : ac.getTableAttributeRows(table)) {
             sb = new StringBuilder();
@@ -247,8 +248,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         Column timeIntervalColumn = getTimeIntervalColumn(table);
-        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
-        dateFormat.setTimeZone(timeZone.toTimeZone());
+        ZoneId timeZone = table.getGraph().getModel().getTimeZone();
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
 
         final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
         final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;

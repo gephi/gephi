@@ -47,9 +47,12 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.math3.analysis.function.Abs;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
@@ -76,6 +79,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.Attributes;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 public abstract class AbstractProcessor implements Processor, LongTask {
@@ -98,7 +102,11 @@ public abstract class AbstractProcessor implements Processor, LongTask {
     }
 
     protected int calculateWorkUnits() {
-        return Arrays.stream(containers).map(c -> c.getNodeCount() + c.getEdgeCount()).reduce(0, Integer::sum);
+        return Arrays.stream(containers).map(AbstractProcessor::calculateWorkUnits).reduce(0, Integer::sum);
+    }
+
+    protected static int calculateWorkUnits(ContainerUnloader container) {
+        return container.getNodeCount() + container.getEdgeCount();
     }
 
     protected void flushColumns(ContainerUnloader container) {
@@ -473,6 +481,45 @@ public abstract class AbstractProcessor implements Processor, LongTask {
         }
 
         return merged;
+    }
+
+    protected Configuration createConfiguration(ContainerUnloader container) {
+        //Configuration
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        Configuration.Builder configBuilder = graphController.getDefaultConfigurationBuilder();
+
+        configBuilder.timeRepresentation(container.getTimeRepresentation());
+        if (container.getEdgeTypeLabelClass() != null) {
+            configBuilder.edgeLabelType(container.getEdgeTypeLabelClass());
+        }
+        configBuilder.nodeIdType(container.getElementIdType().getTypeClass());
+        configBuilder.edgeIdType(container.getElementIdType().getTypeClass());
+
+        ColumnDraft weightColumn = container.getEdgeColumn("weight");
+        if (weightColumn != null && weightColumn.isDynamic()) {
+            if (container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
+                configBuilder.edgeWeightType(IntervalDoubleMap.class);
+            } else {
+                configBuilder.edgeWeightType(TimestampDoubleMap.class);
+            }
+        }
+
+        return configBuilder.build();
+    }
+
+    protected boolean configurationMatchesExisting(Configuration newConfig, Workspace workspace) {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        Configuration existingConfig = graphController.getGraphModel(workspace).getConfiguration();
+        if(!newConfig.equals(graphController.getGraphModel(workspace).getConfiguration())) {
+            String message = NbBundle.getMessage(
+                DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
+                existingConfig.toString(),
+                newConfig.toString()
+            );
+            report.logIssue(new Issue(message, Issue.Level.SEVERE));
+            return false;
+        }
+        return true;
     }
 
     @Override
