@@ -45,6 +45,7 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -72,7 +73,6 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -143,7 +143,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
 
             TimeFormat timeFormat = graph.getModel().getTimeFormat();
-            DateTimeZone timeZone = graph.getModel().getTimeZone();
+            ZoneId timeZone = graph.getModel().getTimeZone();
 
             //Columns to export
             Collection<Column> columns = getExportableColumns(graph.getModel(), table).stream()

@@ -42,6 +42,7 @@
 
 package org.gephi.io.processor.plugin;
 
+import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -74,15 +75,27 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             //Workspace
             if (workspace == null) {
-                workspace = pc.newWorkspace(pc.getCurrentProject());
+                // Get config
+                Configuration config = createConfiguration(containers[0]);
+
+                workspace = pc.openNewWorkspace(config);
+            } else {
                 pc.openWorkspace(workspace);
             }
+
             processMeta(containers[0], workspace);
-            processConfiguration(containers[0], workspace);
+            if (containers[0].getSource() != null) {
+                pc.setSource(workspace, containers[0].getSource());
+            }
 
             Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
-                process(container, workspace);
+                Configuration config = createConfiguration(container);
+                if(configurationMatchesExisting(config, workspace)) {
+                    process(container, workspace);
+                } else {
+                    Progress.progress(progressTicket, AbstractProcessor.calculateWorkUnits(container));
+                }
             }
             Progress.finish(progressTicket);
         } finally {

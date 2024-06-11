@@ -45,6 +45,7 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +83,6 @@ import org.gephi.utils.VersionUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -234,8 +234,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             TimeRepresentation timeRepresentation = graphConfig.getTimeRepresentation();
             xmlWriter.writeAttribute(GRAPH_TIMEREPRESENTATION, timeRepresentation.toString().toLowerCase());
 
-            DateTimeZone timeZone = graph.getModel().getTimeZone();
-            xmlWriter.writeAttribute(GRAPH_TIMEZONE, timeZone.getID());
+            ZoneId timeZone = graph.getModel().getTimeZone();
+            xmlWriter.writeAttribute(GRAPH_TIMEZONE, timeZone.getId());
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
 
@@ -400,7 +400,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             Interval visibleInterval = graph.getView().getTimeInterval();
             TimeRepresentation timeRepresentation = graph.getModel().getConfiguration().getTimeRepresentation();
             TimeFormat timeFormat = graph.getModel().getTimeFormat();
-            DateTimeZone timeZone = graph.getModel().getTimeZone();
+            ZoneId timeZone = graph.getModel().getTimeZone();
             if (timeRepresentation.equals(TimeRepresentation.INTERVAL)) {
                 IntervalMap timeMap = (IntervalMap) element.getAttribute(column);
                 if (timeMap != null) {
@@ -517,7 +517,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         TimeRepresentation timeRepresentation = graph.getModel().getConfiguration().getTimeRepresentation();
         TimeSet timeSet = (TimeSet) element.getAttribute("timeset");
         TimeFormat timeFormat = graph.getModel().getTimeFormat();
-        DateTimeZone timeZone = graph.getModel().getTimeZone();
+        ZoneId timeZone = graph.getModel().getTimeZone();
         if (timeSet != null && !timeSet.isEmpty()) {
             if (timeSet.size() > 1) {
                 xmlWriter.writeStartElement(SPELLS);

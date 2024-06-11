@@ -63,18 +63,14 @@ public class WorkspaceImpl implements Workspace {
     private final WorkspaceInformationImpl workspaceInformation;
     private final WorkspaceMetaDataImpl workspaceMetaData;
 
-    public WorkspaceImpl(ProjectImpl project, int id) {
-        this(project, id, NbBundle.getMessage(WorkspaceImpl.class, "Workspace.default.prefix") + " " + id);
-    }
-
-    public WorkspaceImpl(ProjectImpl project, int id, String name, Object... objectsForLookup) {
+    public WorkspaceImpl(ProjectImpl project, int id, Object... objectsForLookup) {
         this.instanceContent = new InstanceContent();
         this.lookup = new AbstractLookup(instanceContent);
         this.id = id;
         this.project = project;
 
         //Init Default Content
-        workspaceInformation = new WorkspaceInformationImpl(name);
+        workspaceInformation = new WorkspaceInformationImpl(NbBundle.getMessage(WorkspaceImpl.class, "Workspace.default.prefix") + " " + id);
         instanceContent.add(workspaceInformation);
         for (Object o : objectsForLookup) {
             instanceContent.add(o);

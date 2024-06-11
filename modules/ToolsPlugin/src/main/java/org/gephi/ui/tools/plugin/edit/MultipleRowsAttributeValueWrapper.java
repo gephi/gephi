@@ -42,12 +42,12 @@
 
 package org.gephi.ui.tools.plugin.edit;
 
+import java.time.ZoneId;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
-import org.joda.time.DateTimeZone;
 
 /**
  * @author Eduardo Ramos
@@ -57,11 +57,11 @@ public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper 
     private final Element[] rows;
     private final Column column;
     private final TimeFormat currentTimeFormat;
-    private final DateTimeZone dateTimeZone;
+    private final ZoneId dateTimeZone;
     private Object value;
 
     public MultipleRowsAttributeValueWrapper(Element[] rows, Column column, TimeFormat currentTimeFormat,
-                                             DateTimeZone dateTimeZone) {
+                                             ZoneId dateTimeZone) {
         this.rows = rows;
         this.column = column;
         this.currentTimeFormat = currentTimeFormat;

@@ -69,4 +69,17 @@ public interface GraphController {
      * @return the <code>workspace</code>'s graph model
      */
     GraphModel getGraphModel(Workspace workspace);
+
+    /**
+     * Returns a new configuration builder with default values.
+     * <p>
+     * It's recommended to use this method to create a new configuration builder as it makes sure
+     * it has the default values and settings.
+     *
+     * @return a new configuration builder with default values
+     */
+    default Configuration.Builder getDefaultConfigurationBuilder() {
+        return Configuration.builder().timeRepresentation(TimeRepresentation.INTERVAL)
+            .enableSpatialIndex(true);
+    }
 }

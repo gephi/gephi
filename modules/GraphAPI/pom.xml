@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.2-SNAPSHOT</version>
+        <version>0.11.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>graph-api</artifactId>
-    <version>0.10.2-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>GraphAPI</name>
@@ -42,7 +42,6 @@
                         <publicPackage>org.gephi.graph.api</publicPackage>
                         <publicPackage>org.gephi.graph.api.types</publicPackage>
                         <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
-                        <publicPackage>org.joda.time.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -56,6 +55,12 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
+                        <configuration>
+                            <!-- Only this class is intended to be re-used other modules -->
+                            <includes>
+                                <include>**/GraphGenerator*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

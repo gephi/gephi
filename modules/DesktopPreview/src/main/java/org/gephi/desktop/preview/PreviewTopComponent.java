@@ -46,10 +46,12 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Field;
@@ -180,18 +182,9 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
         try {
             GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            Field field = retrieveField(graphicsDevice, "scale");
-            if (field == null) {
-                field = retrieveField(graphicsDevice, "scaleX");
-            }
-            if (field != null) {
-                field.setAccessible(true);
-                Object scale = field.get(graphicsDevice);
-                if (scale instanceof Number) {
-                    return ((Number) scale).floatValue();
-                }
-            }
-
+            GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
+            AffineTransform tx = graphicsConfiguration.getDefaultTransform();
+            return (float)tx.getScaleX();
         } catch (Exception e) {
             //Ignore
             e.printStackTrace();

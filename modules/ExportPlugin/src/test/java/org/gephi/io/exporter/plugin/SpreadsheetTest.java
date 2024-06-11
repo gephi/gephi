@@ -7,11 +7,16 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.Workspace;
 import org.junit.Test;
 
 public class SpreadsheetTest {
+
+    private final Configuration timestampConfiguration = Configuration.builder().timeRepresentation(
+        TimeRepresentation.TIMESTAMP).build();
 
     @Test
     public void testEmptyEdges() throws IOException {
@@ -104,7 +109,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampSetOtherColumn() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().generateTinyGraph().addTimestampSetColumn();
+            GraphGenerator.build(timestampConfiguration).generateTinyGraph().addTimestampSetColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/timestampset_column.csv", exporterSpreadsheet);
@@ -113,7 +118,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampSet() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().generateTinyGraph().setTimestampSet();
+            GraphGenerator.build(timestampConfiguration).generateTinyGraph().setTimestampSet();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
 
         Utils.assertExporterMatch("spreadsheet/timestampset.csv", exporterSpreadsheet);
@@ -122,7 +127,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampDouble() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build(timestampConfiguration).generateTinyGraph().addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(true);
 
@@ -132,7 +137,7 @@ public class SpreadsheetTest {
     @Test
     public void testNodeTimestampDoubleWithTimeFormat() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().generateTinyGraph().withTimeFormat(TimeFormat.DATE)
+            GraphGenerator.build(timestampConfiguration).generateTinyGraph().withTimeFormat(TimeFormat.DATE)
                 .addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(true);
@@ -143,7 +148,7 @@ public class SpreadsheetTest {
     @Test
     public void testTimestampWithEstimator() throws IOException {
         GraphGenerator graphGenerator =
-            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build(timestampConfiguration).generateTinyGraph().addTimestampDoubleColumn();
         ExporterSpreadsheet exporterSpreadsheet = createNodeExporter(graphGenerator);
         exporterSpreadsheet.setExportDynamic(false);
 

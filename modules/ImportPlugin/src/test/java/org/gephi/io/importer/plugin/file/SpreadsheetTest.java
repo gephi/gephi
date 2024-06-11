@@ -52,10 +52,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.Column;
@@ -95,18 +91,10 @@ public class SpreadsheetTest {
     private final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
     @Rule
     public TestName testName = new TestName();
-    private Workspace workspace;
-
-    @Before
-    public void setup() {
-        projectController.newProject();
-        workspace = projectController.getCurrentWorkspace();
-    }
 
     @After
     public void teardown() {
         projectController.closeCurrentProject();
-        workspace = null;
     }
 
     @Test
@@ -128,7 +116,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -144,7 +132,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -168,7 +156,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -182,7 +170,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -204,7 +192,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -229,7 +217,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertFalse(container.getReport().isEmpty());//Missing labels at the start
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -253,7 +241,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         Assert.assertFalse(container.getReport().isEmpty());//Repeated edge id issue
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -276,7 +264,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -300,7 +288,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(container);
         container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.NO_MERGE);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -324,9 +312,9 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
-        graphController.getGraphModel(workspace).setTimeFormat(TimeFormat.DATE);
+        graphController.getGraphModel().setTimeFormat(TimeFormat.DATE);
 
         checkEdgesSpreadsheet();
     }
@@ -350,9 +338,9 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
-        graphController.getGraphModel(workspace).setTimeFormat(TimeFormat.DATE);
+        graphController.getGraphModel().setTimeFormat(TimeFormat.DATE);
 
         checkEdgesSpreadsheet();
     }
@@ -376,7 +364,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -410,7 +398,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet(false);
     }
@@ -423,7 +411,7 @@ public class SpreadsheetTest {
         Container container = importController.importFile(file);
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet(false);
     }
@@ -460,7 +448,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkNodesSpreadsheet();
     }
@@ -488,7 +476,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkNodesSpreadsheet();
     }
@@ -509,7 +497,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkNodesSpreadsheet();
     }
@@ -531,7 +519,7 @@ public class SpreadsheetTest {
         );
         Assert.assertNotNull(container);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkNodesSpreadsheet();
     }
@@ -548,7 +536,7 @@ public class SpreadsheetTest {
         container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.SUM);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -566,7 +554,7 @@ public class SpreadsheetTest {
         container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.SUM);
 
-        importController.process(container, new DefaultProcessor(), workspace);
+        importController.process(container, new DefaultProcessor(), null);
 
         checkEdgesSpreadsheet();
     }
@@ -580,7 +568,7 @@ public class SpreadsheetTest {
         Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
-        exporter.setWorkspace(workspace);
+        exporter.setWorkspace(projectController.getCurrentWorkspace());
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.EDGES);
         exporter.setWriter(writer);
         exporter.setExportDynamic(true);
@@ -610,7 +598,7 @@ public class SpreadsheetTest {
         Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
-        exporter.setWorkspace(workspace);
+        exporter.setWorkspace(projectController.getCurrentWorkspace());
         exporter.setTableToExport(ExporterSpreadsheet.ExportTable.NODES);
         exporter.setWriter(writer);
         exporter.setExportDynamic(true);

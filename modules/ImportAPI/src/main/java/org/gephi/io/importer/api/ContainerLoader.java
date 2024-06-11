@@ -45,7 +45,7 @@ package org.gephi.io.importer.api;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.spi.Importer;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
 
 /**
  * Interface for loading a {@link Container} with graph and attributes data from
@@ -283,7 +283,7 @@ public interface ContainerLoader {
      *
      * @param timeZone time zone
      */
-    void setTimeZone(DateTimeZone timeZone);
+    void setTimeZone(ZoneId timeZone);
 
     /**
      * Sets the (optional) graph metadata.

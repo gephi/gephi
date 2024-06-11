@@ -45,6 +45,7 @@ package org.gephi.ui.tools.plugin.edit;
 import java.awt.Color;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.time.ZoneId;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -52,7 +53,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
-import org.joda.time.DateTimeZone;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -73,7 +73,7 @@ public class EditEdges extends AbstractNode {
     private final Edge[] edges;
     private final boolean multipleEdges;
     private final TimeFormat currentTimeFormat;
-    private final DateTimeZone dateTimeZone;
+    private final ZoneId dateTimeZone;
     private PropertySet[] propertySets;
 
     /**
