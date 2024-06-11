@@ -43,17 +43,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.plugin;
 
 import junit.framework.TestCase;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.GraphImporter;
 import org.gephi.layout.plugin.noverlap.NoverlapLayout;
 import org.gephi.layout.plugin.noverlap.NoverlapLayoutBuilder;
-import org.gephi.layout.plugin.random.Random;
-import org.gephi.layout.plugin.random.RandomLayout;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
