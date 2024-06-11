@@ -195,6 +195,10 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 float n2y = n2.y();
                 float n1radius = (float) (n1.size() * ratio + margin);
                 float n2radius = (float) (n2.size() * ratio + margin);
+                float n1Weight = n1radius * n1radius;
+                float n2Weight = n2radius * n2radius;
+                float n1Ratio = n2Weight / (n1Weight + n2Weight);
+                float n2Ratio = 1-n1Ratio;
 
                 // Check sizes
                 double xDist = n2x - n1x;
@@ -210,12 +214,12 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
                     // n1 and n2 move each other of half the overlap
                     NoverlapLayoutData n1ldata = n1.getLayoutData();
-                    n1ldata.dx -= xOverlap/2;
-                    n1ldata.dy -= yOverlap/2;
+                    n1ldata.dx -= n1Ratio * xOverlap;
+                    n1ldata.dy -= n1Ratio * yOverlap;
 
                     NoverlapLayoutData n2ldata = n2.getLayoutData();
-                    n2ldata.dx += xOverlap/2;
-                    n2ldata.dy += yOverlap/2;
+                    n2ldata.dx += n2Ratio * xOverlap;
+                    n2ldata.dy += n2Ratio * yOverlap;
                 }
 
                 if (cancel) {
@@ -231,16 +235,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             for (Node n : graph.getNodes()) {
                 NoverlapLayoutData layoutData = n.getLayoutData();
                 if (!n.isFixed()) {
-                    float dist = (float) Math.sqrt(layoutData.dx*layoutData.dx + layoutData.dy*layoutData.dy);
-                    float radius = (float) Math.max(0.00000001, n.size());
-                    float dx = layoutData.dx;
-                    float dy = layoutData.dy;
-                    if (dist > radius) {
-                        dx = radius * dx/dist;
-                        dy = radius * dy/dist;
-                    }
-                    float x = n.x() + dx;
-                    float y = n.y() + dy;
+                    float x = n.x() + layoutData.dx;
+                    float y = n.y() + layoutData.dy;
                     n.setX(x);
                     n.setY(y);
                 }
