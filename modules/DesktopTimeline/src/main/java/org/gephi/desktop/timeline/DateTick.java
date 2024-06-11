@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 
 package org.gephi.desktop.timeline;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
