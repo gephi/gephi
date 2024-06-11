@@ -150,8 +150,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             double targetAreaPerNode = 1. * areaPerNode;
             double targetGridSize = Math.sqrt(targetAreaPerNode);
             int columns_count = (int) Math.ceil(Math.min(xwidth, yheight) / targetGridSize);
-            System.out.println("Columns count: "+columns_count);
-            
+
             // Create the grid where neighborhood (potential overlap) is computed
             SpatialGrid grid = new SpatialGrid(columns_count);
 
@@ -182,9 +181,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     }
                 }
             }
-
-            // TODO: remove me
-            HashMap<Node, Boolean> movedNodes = new HashMap<>();
 
             // Move colliding nodes as registered in proximity
             int collisions = 0;
@@ -225,10 +221,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     NoverlapLayoutData n2ldata = n2.getLayoutData();
                     n2ldata.dx += n2Ratio * xOverlap;
                     n2ldata.dy += n2Ratio * yOverlap;
-
-                    // TODO: remove me
-                    movedNodes.put(n1, true);
-                    movedNodes.put(n2, true);
                 }
 
                 if (cancel) {
@@ -236,7 +228,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 }
             }
 
-            System.out.println(collisions + " collisions detected.");
             if (collisions > 0) {
                 setConverged(false);
             }
@@ -248,13 +239,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     float y = n.y() + layoutData.dy;
                     n.setX(x);
                     n.setY(y);
-                }
-
-                // TODO: remove me
-                if (movedNodes.containsKey(n)) {
-                    n.setColor(Color.RED);
-                } else {
-                    n.setColor(Color.BLACK);
                 }
             }
         } finally {
