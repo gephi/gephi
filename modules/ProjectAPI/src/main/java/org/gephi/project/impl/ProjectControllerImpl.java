@@ -101,6 +101,11 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public ProjectImpl newProject() {
+        return this.newProjectInternal();
+    }
+
+
+    private ProjectImpl newProjectInternal(Object... objectsForLookup) {
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
             ProjectImpl project = null;
@@ -108,7 +113,7 @@ public class ProjectControllerImpl implements ProjectController {
                 closeCurrentProject();
                 project = new ProjectImpl(projects.nextUntitledProjectName());
                 projects.addProject(project);
-                openProjectInternal(project);
+                openProjectInternal(project, objectsForLookup);
                 ProjectImpl finalProject = project;
                 fireProjectEvent((pl) -> pl.opened(finalProject));
                 return project;
@@ -256,8 +261,18 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace newWorkspace(Project project) {
+        return newWorkspaceInternal(project);
+    }
+
+    @Override
+    public Workspace newWorkspace(Project project, Object... objectsForLookup) {
+        return newWorkspaceInternal(project, objectsForLookup);
+    }
+
+    private Workspace newWorkspaceInternal(Project project, Object... objectsForLookup) {
         synchronized (this) {
-            Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
+            WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
+            Workspace workspace = workspaceProvider.newWorkspace(workspaceProvider.getProject().nextWorkspaceId(), objectsForLookup);
 
             //Event
             fireWorkspaceEvent(EventType.INITIALIZE, workspace);
@@ -292,7 +307,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private void openProjectInternal(Project project) {
+    private void openProjectInternal(Project project, Object... objectsForLookup) {
         ProjectImpl projectImpl = (ProjectImpl) project;
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
@@ -306,7 +321,7 @@ public class ProjectControllerImpl implements ProjectController {
 
         if (!projectImpl.hasCurrentWorkspace()) {
             if (projectImpl.getWorkspaces().isEmpty()) {
-                Workspace workspace = newWorkspace(project);
+                Workspace workspace = newWorkspace(project, objectsForLookup);
                 openWorkspace(workspace);
             } else {
                 Workspace workspace = projectImpl.getWorkspaces().get(0);
@@ -360,15 +375,24 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace openNewWorkspace() {
+        return openNewWorkspaceInternal();
+    }
+
+    @Override
+    public Workspace openNewWorkspace(Object... objectsForLookup) {
+        return openNewWorkspaceInternal(objectsForLookup);
+    }
+
+    private Workspace openNewWorkspaceInternal(Object... objectsForLookup) {
         synchronized (this) {
             Project project;
             Workspace workspace;
             if (hasCurrentProject()) {
                 project = getCurrentProject();
-                workspace = newWorkspace(project);
+                workspace = newWorkspace(project, objectsForLookup);
                 openWorkspace(workspace);
             } else {
-                project = newProject();
+                project = newProjectInternal(objectsForLookup);
                 workspace = project.getCurrentWorkspace();
             }
             return workspace;

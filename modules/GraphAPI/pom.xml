@@ -55,6 +55,12 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
+                        <configuration>
+                            <!-- Only this class is intended to be re-used other modules -->
+                            <includes>
+                                <include>**/GraphGenerator*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

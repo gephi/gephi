@@ -134,11 +134,15 @@ public class ProjectImpl implements Project, Comparable<ProjectImpl>, Lookup.Pro
     }
 
     public WorkspaceImpl newWorkspace() {
-        return workspaceProvider.newWorkspace();
+        return workspaceProvider.newWorkspace(workspaceProvider.getProject().nextWorkspaceId());
     }
 
     public WorkspaceImpl newWorkspace(int id) {
         return workspaceProvider.newWorkspace(id);
+    }
+
+    public WorkspaceImpl newWorkspace(int id, Object... objectsForLookup) {
+        return workspaceProvider.newWorkspace(id, objectsForLookup);
     }
 
     @Override

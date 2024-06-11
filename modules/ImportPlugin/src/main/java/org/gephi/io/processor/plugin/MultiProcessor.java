@@ -42,6 +42,7 @@
 
 package org.gephi.io.processor.plugin;
 
+import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -74,13 +75,13 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
 
             Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
-                if (workspace != null) {
+                Configuration config = createConfiguration(container);
+                if (workspace != null && configurationMatchesExisting(config, workspace)) {
                     pc.openWorkspace(workspace);
                 } else {
-                    workspace = pc.newWorkspace(pc.getCurrentProject());
+                    workspace = pc.newWorkspace(pc.getCurrentProject(), config);
                 }
                 processMeta(container, workspace);
-                processConfiguration(container, workspace);
                 process(container, workspace);
                 workspace = null;
             }

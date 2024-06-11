@@ -44,7 +44,7 @@ public class GraphGenerator {
     private Workspace workspace;
 
     private GraphGenerator() {
-        this(null, new Configuration());
+        this(null, Configuration.builder().build());
     }
 
     private GraphGenerator(final Workspace workspace, final Configuration config) {
@@ -56,11 +56,10 @@ public class GraphGenerator {
         if (model == null) {
             this.graphModel = GraphModel.Factory.newInstance(config);
         } else {
-            this.graphModel = model;
-            model.setConfiguration(config);
+            throw new RuntimeException("GraphModel already exists in the workspace");
         }
         if (workspace == null) {
-            this.workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+            this.workspace = new WorkspaceImpl(null, 0, graphModel);
         }
     }
 
@@ -73,7 +72,7 @@ public class GraphGenerator {
     }
 
     public static GraphGenerator build(final Workspace workspace) {
-        return new GraphGenerator(workspace, new Configuration());
+        return new GraphGenerator(workspace, Configuration.builder().build());
     }
 
     public static GraphGenerator build(final Workspace workspace, final Configuration configuration) {

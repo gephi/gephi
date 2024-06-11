@@ -42,8 +42,8 @@ public class TimesetRankingTest {
 
     @Test
     public void testMinMaxInterval() {
-        Configuration configuration = new Configuration();
-        configuration.setTimeRepresentation(TimeRepresentation.INTERVAL);
+        Configuration configuration = Configuration.builder().timeRepresentation(
+            TimeRepresentation.INTERVAL).build();
 
         Graph graph = GraphGenerator.build(configuration).generateTinyGraph().setIntervalSet().getGraph();
         Column column = graph.getModel().defaultColumns().nodeTimeSet();

@@ -164,6 +164,17 @@ public interface ProjectController {
     Workspace newWorkspace(Project project);
 
     /**
+     * Creates and adds a new workspace to the given project and adds objects to the workspace lookup.
+     * <p>
+     * The new workspace is not selected. Call {@link #openWorkspace(Workspace)} (org.gephi.project.api.Workspace)} to select it.
+     *
+     * @param project project to add the workspace to
+     * @param objectsForLookup objects to add to the workspace lookup
+     * @return workspace
+     */
+    Workspace newWorkspace(Project project, Object... objectsForLookup);
+
+    /**
      * Deletes the given workspace from its project.
      * <p>
      * If the workspace is currently selected, it's preceding workspace will be selected.
@@ -210,6 +221,16 @@ public interface ProjectController {
      * Creates and open a new workspace in the current project. If not project is opened, a new one is created.
      */
     Workspace openNewWorkspace();
+
+    /**
+     * Creates and open a new workspace in the current project and adds objects to the workspace lookup.
+     * <p>
+     *
+     * If not project is opened, a new one is created.
+     *
+     * @param objectsForLookup objects to add to the workspace lookup
+     */
+    Workspace openNewWorkspace(Object... objectsForLookup);
 
     /**
      * Unselects the current workspace.

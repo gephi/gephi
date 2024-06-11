@@ -42,7 +42,6 @@
 
 package org.gephi.io.processor.plugin;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Configuration;
@@ -51,10 +50,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.TimeRepresentation;
-import org.gephi.graph.api.types.IntervalDoubleMap;
-import org.gephi.graph.api.types.TimestampDoubleMap;
-import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -92,13 +87,18 @@ public class DefaultProcessor extends AbstractProcessor {
             }
             ContainerUnloader container = containers[0];
 
+            // Get config
+            Configuration config = createConfiguration(container);
+
             //Workspace
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (workspace == null) {
-                workspace = pc.openNewWorkspace();
+                workspace = pc.openNewWorkspace(config);
+            } else if(!configurationMatchesExisting(config, workspace)) {
+                // The configuration check failed, stop processing
+                return;
             }
             processMeta(container, workspace);
-            processConfiguration(container, workspace);
 
             if (container.getSource() != null && !container.getSource().isEmpty()) {
                 pc.setSource(workspace, container.getSource());
@@ -123,55 +123,6 @@ public class DefaultProcessor extends AbstractProcessor {
             }
             if (metaData.getTitle().isEmpty()) {
                 metaData.setTitle(container.getMetadata().getTitle());
-            }
-        }
-    }
-
-    protected void processConfiguration(ContainerUnloader container, Workspace workspace) {
-        //Configuration
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        Configuration configuration = new Configuration();
-        configuration.setTimeRepresentation(container.getTimeRepresentation());
-        if (container.getEdgeTypeLabelClass() != null) {
-            configuration.setEdgeLabelType(container.getEdgeTypeLabelClass());
-        }
-        configuration.setNodeIdType(container.getElementIdType().getTypeClass());
-        configuration.setEdgeIdType(container.getElementIdType().getTypeClass());
-
-        ColumnDraft weightColumn = container.getEdgeColumn("weight");
-        if (weightColumn != null && weightColumn.isDynamic()) {
-            if (container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
-                configuration.setEdgeWeightType(IntervalDoubleMap.class);
-            } else {
-                configuration.setEdgeWeightType(TimestampDoubleMap.class);
-            }
-        }
-
-        GraphConfigurationWrapper originalConfig =
-            new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration());
-        if (container.getEdgeCount() == 0) {
-            //Fix different config problems that are not actually problems since no edges are present:
-            //A case user-friendly specially for spreadsheet import
-
-            //Make weight types match:
-            if (!originalConfig.edgeWeightType.equals(configuration.getEdgeWeightType())) {
-                configuration.setEdgeWeightType(originalConfig.edgeWeightType);
-            }
-        }
-
-        GraphConfigurationWrapper newConfig = new GraphConfigurationWrapper(configuration);
-
-        if (!originalConfig.equals(newConfig)) {
-            try {
-                graphController.getGraphModel(workspace).setConfiguration(configuration);
-            } catch (Exception e) {
-                String message = NbBundle.getMessage(
-                    DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
-                    new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration())
-                        .toString(),
-                    new GraphConfigurationWrapper(configuration).toString()
-                );
-                report.logIssue(new Issue(message, Issue.Level.SEVERE));
             }
         }
     }
@@ -348,73 +299,5 @@ public class DefaultProcessor extends AbstractProcessor {
                 break;
         }
         return id;
-    }
-
-    private class GraphConfigurationWrapper {
-
-        private final Class nodeIdType;
-        private final Class edgeIdType;
-        private final Class edgeLabelType;
-        private final Class edgeWeightType;
-        private final Boolean edgeWeightColumn;
-        private final TimeRepresentation timeRepresentation;
-
-        public GraphConfigurationWrapper(Configuration configuration) {
-            nodeIdType = configuration.getNodeIdType();
-            edgeIdType = configuration.getEdgeIdType();
-            edgeLabelType = configuration.getEdgeLabelType();
-            edgeWeightType = configuration.getEdgeWeightType();
-            edgeWeightColumn = configuration.getEdgeWeightColumn();
-            timeRepresentation = configuration.getTimeRepresentation();
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 19 * hash + Objects.hashCode(this.nodeIdType);
-            hash = 19 * hash + Objects.hashCode(this.edgeIdType);
-            hash = 19 * hash + Objects.hashCode(this.edgeLabelType);
-            hash = 19 * hash + Objects.hashCode(this.edgeWeightType);
-            hash = 19 * hash + Objects.hashCode(this.edgeWeightColumn);
-            hash = 19 * hash + Objects.hashCode(this.timeRepresentation);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final GraphConfigurationWrapper other = (GraphConfigurationWrapper) obj;
-            if (!Objects.equals(this.nodeIdType, other.nodeIdType)) {
-                return false;
-            }
-            if (!Objects.equals(this.edgeIdType, other.edgeIdType)) {
-                return false;
-            }
-            if (!Objects.equals(this.edgeLabelType, other.edgeLabelType)) {
-                return false;
-            }
-            if (!Objects.equals(this.edgeWeightType, other.edgeWeightType)) {
-                return false;
-            }
-            if (!Objects.equals(this.edgeWeightColumn, other.edgeWeightColumn)) {
-                return false;
-            }
-            return this.timeRepresentation == other.timeRepresentation;
-        }
-
-        @Override
-        public String toString() {
-            return "GraphConfigurationWrapper{" + "nodeIdType=" + nodeIdType + ", edgeIdType=" + edgeIdType +
-                ", edgeLabelType=" + edgeLabelType + ", edgeWeightType=" + edgeWeightType + ", edgeWeightColumn=" +
-                edgeWeightColumn + ", timeRepresentation=" + timeRepresentation + '}';
-        }
     }
 }
