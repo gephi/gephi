@@ -2,9 +2,11 @@ package org.gephi.appearance;
 
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,7 +68,7 @@ public class AttributeRankingTest {
 
     @Test
     public void testDynamicTimestampColumn() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
+        Graph graph = GraphGenerator.build(Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP).build()).generateTinyGraph().addTimestampDoubleColumn().getGraph();
         Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
 
         AttributeRankingImpl p = new AttributeRankingImpl(column);

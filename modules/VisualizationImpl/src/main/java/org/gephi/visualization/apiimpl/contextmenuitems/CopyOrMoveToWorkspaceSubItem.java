@@ -138,10 +138,9 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
 
         GraphModel targetGraphModel;
         if (workspace == null) {
-            workspace = projectController.newWorkspace(currentWorkspace.getProject());
+            workspace = projectController.newWorkspace(currentWorkspace.getProject(), currentGraphModel.getConfiguration().copy());
             targetGraphModel = graphController.getGraphModel(workspace);
 
-            targetGraphModel.setConfiguration(currentGraphModel.getConfiguration());
             targetGraphModel.setTimeFormat(currentGraphModel.getTimeFormat());
             targetGraphModel.setTimeZone(currentGraphModel.getTimeZone());
         } else {

@@ -44,6 +44,7 @@ package org.gephi.datalab.plugin.manipulators.general.ui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.time.ZoneId;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
@@ -62,7 +63,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.utils.HTMLEscape;
-import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -262,7 +262,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             }
 
             TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
-            DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+            ZoneId timeZone = table.getGraph().getModel().getTimeZone();
 
             String columnName;
             if (mode == Mode.NODES_TABLE) {

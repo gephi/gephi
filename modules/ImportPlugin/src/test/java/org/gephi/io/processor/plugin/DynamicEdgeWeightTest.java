@@ -19,9 +19,9 @@ public class DynamicEdgeWeightTest {
 
     @Before
     public void setUp() {
-        Configuration configuration = new Configuration();
-        configuration.setEdgeWeightType(TimestampDoubleMap.class);
-        configuration.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
+        Configuration configuration = Configuration.builder()
+                .edgeWeightType(TimestampDoubleMap.class)
+                    .timeRepresentation(TimeRepresentation.TIMESTAMP).build();
         processor = new Utils.TestProcessor(
             GraphGenerator.build(configuration).generateTinyGraph().getGraphModel()
         );
