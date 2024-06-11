@@ -5,6 +5,7 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
@@ -15,6 +16,7 @@ import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.openide.util.Lookup;
 
 public class GraphGenerator {
 
@@ -44,7 +46,7 @@ public class GraphGenerator {
     private Workspace workspace;
 
     private GraphGenerator() {
-        this(null, Configuration.builder().build());
+        this(null, null);
     }
 
     private GraphGenerator(final Workspace workspace, final Configuration config) {
@@ -53,10 +55,13 @@ public class GraphGenerator {
             this.workspace = workspace;
             model = workspace.getLookup().lookup(GraphModel.class);
         }
+        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
         if (model == null) {
-            this.graphModel = GraphModel.Factory.newInstance(config);
+            this.graphModel = GraphModel.Factory.newInstance(config == null ? controller.getDefaultConfigurationBuilder().build() : config);
+        } else if (config != null && !model.getConfiguration().equals(config)) {
+            throw new RuntimeException("GraphModel configuration differs between the passed configuration and the existing one");
         } else {
-            throw new RuntimeException("GraphModel already exists in the workspace");
+            this.graphModel = model;
         }
         if (workspace == null) {
             this.workspace = new WorkspaceImpl(null, 0, graphModel);
@@ -72,7 +77,7 @@ public class GraphGenerator {
     }
 
     public static GraphGenerator build(final Workspace workspace) {
-        return new GraphGenerator(workspace, Configuration.builder().build());
+        return new GraphGenerator(workspace, null);
     }
 
     public static GraphGenerator build(final Workspace workspace, final Configuration configuration) {
