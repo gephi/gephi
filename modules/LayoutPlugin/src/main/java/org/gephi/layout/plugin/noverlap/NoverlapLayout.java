@@ -65,7 +65,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     protected boolean cancel;
     protected Graph graph;
-    private double speed;
     private double ratio;
     private double margin;
     private double xmin;
@@ -96,7 +95,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     n.setLayoutData(new NoverlapLayoutData());
                 }
                 NoverlapLayoutData layoutData = n.getLayoutData();
-                layoutData.neighbours.clear();
                 layoutData.dx = 0;
                 layoutData.dy = 0;
             }
@@ -264,12 +262,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         final String NOVERLAP_CATEGORY = "Noverlap";
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
-        }
-        try {
-            properties.add(LayoutProperty.createProperty(
                 this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -285,17 +277,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     @Override
     public void resetPropertiesValues() {
-        setSpeed(3.);
-        setRatio(1.2);
-        setMargin(5.);
-    }
-
-    public Double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(Double speed) {
-        this.speed = speed;
+        setRatio(1.1);
+        setMargin(2.5);
     }
 
     public Double getRatio() {
