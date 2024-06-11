@@ -13,10 +13,12 @@ import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -204,7 +206,7 @@ public class AppearanceControllerTest {
     public void testRankingDynamicColumn() {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator =
-            GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn();
+            GraphGenerator.build(Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP).build()).generateTinyGraph().addTimestampDoubleColumn();
 
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         Mockito.doReturn(model).when(controller).getModel();
