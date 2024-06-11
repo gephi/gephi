@@ -44,6 +44,8 @@ package org.gephi.visualization;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -105,7 +107,7 @@ public class VizController implements VisualizationController {
         screenshotMaker = new ScreenshotMaker();
 //        limits = new GraphLimits();
 //        textManager = new TextManager();
-        currentModel = new VizModel(true);
+        currentModel = null;
         selectionManager = new SelectionManager();
 
         //TODO
@@ -118,27 +120,27 @@ public class VizController implements VisualizationController {
     public void refreshWorkspace() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         VizModel model = null;
-        if (pc.getCurrentWorkspace() == null) {
-            model = new VizModel(true);
-        } else {
+        if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
             if (model == null) {
                 model = new VizModel(pc.getCurrentWorkspace());
                 pc.getCurrentWorkspace().add(model);
-
             }
         }
 
         if (model != currentModel) {
-            model.setListeners(currentModel.getListeners());
+            if (currentModel != null && model != null) {
+                model.setListeners(currentModel.getListeners());
+                currentModel.setListeners(null);
+            }
 //            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
             //TODO
-            currentModel.setListeners(null);
 //            currentModel.getTextModel().setListeners(null);
             currentModel = model;
-            currentModel.init();
+            if (currentModel != null) {
+                currentModel.init();
+            }
         }
-        //TODO
     }
 
     public void destroy() {
@@ -147,9 +149,22 @@ public class VizController implements VisualizationController {
         //TODO
     }
 
+    public Optional<VizModel> getVizModel() {
+        return Optional.ofNullable(currentModel)
+                .filter(VizModel::isReady);
+    }
+
+    public Optional<VizModel> getVizModelEvenIfNotReady() {
+        return Optional.ofNullable(currentModel);
+    }
+
+    public boolean vizModelReady() {
+        return currentModel != null && currentModel.isReady();
+    }
+
     @Override
     public void resetSelection() {
-        if (selectionManager != null) {
+        if (selectionManager != null && vizModelReady()) {
             selectionManager.resetSelection(currentModel);
         }
     }
@@ -193,14 +208,14 @@ public class VizController implements VisualizationController {
 
     @Override
     public void selectNodes(Node[] nodes) {
-        if (selectionManager != null) {
+        if (selectionManager != null && vizModelReady()) {
             selectionManager.selectNodes(nodes, currentModel);
         }
     }
 
     @Override
     public void selectEdges(Edge[] edges) {
-        if (selectionManager != null) {
+        if (selectionManager != null && vizModelReady()) {
             selectionManager.selectEdges(edges, currentModel);
         }
     }
@@ -223,7 +238,7 @@ public class VizController implements VisualizationController {
 
     @Override
     public Column[] getEdgeTextColumns() {
-        if (currentModel != null) {
+        if (vizModelReady()) {
             //TODO
             // return currentModel.textModel.getEdgeTextColumns();
         }
@@ -233,7 +248,7 @@ public class VizController implements VisualizationController {
     @Override
     public Column[] getEdgeTextColumns(Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-        if (vizModel != null) {
+        if (vizModel != null && vizModel.isReady()) {
             //TODO
             //return vizModel.textModel.getEdgeTextColumns();
         }
@@ -242,7 +257,7 @@ public class VizController implements VisualizationController {
 
     @Override
     public Column[] getNodeTextColumns() {
-        if (currentModel != null) {
+        if (vizModelReady()) {
             //TODO
             //return currentModel.textModel.getNodeTextColumns();
         }
@@ -252,7 +267,7 @@ public class VizController implements VisualizationController {
     @Override
     public Column[] getNodeTextColumns(Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-        if (vizModel != null) {
+        if (vizModel != null && vizModel.isReady()) {
             //TODO
             //return vizModel.textModel.getNodeTextColumns();
         }

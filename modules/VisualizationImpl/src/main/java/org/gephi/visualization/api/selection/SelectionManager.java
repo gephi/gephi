@@ -152,7 +152,7 @@ public class SelectionManager implements VizArchitecture {
             currentEngineSelectionModel()
                     .ifPresent(GraphSelection::clearSelection);
 
-            vizModel.setAutoSelectNeighbor(wasAutoSelectNeighbors);
+            vizModel.setAutoSelectNeighbors(wasAutoSelectNeighbors);
             if (wasRectangleSelection) {
                 setRectangleSelection();
             } else if (wasDirectSelection) {
@@ -175,10 +175,10 @@ public class SelectionManager implements VizArchitecture {
 
     public void selectNodes(Node[] nodes, VizModel vizModel) {
         if (!isCustomSelection()) {
-            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
+            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
             wasDirectSelection = isDirectMouseSelection();
             wasRectangleSelection = isRectangleSelection();
-            vizModel.setAutoSelectNeighbor(false);
+            vizModel.setAutoSelectNeighbors(false);
             setCustomSelection();
         }
 
@@ -194,10 +194,10 @@ public class SelectionManager implements VizArchitecture {
 
     public void selectEdges(Edge[] edges, VizModel vizModel) {
         if (!isCustomSelection()) {
-            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbor();
+            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
             wasDirectSelection = isDirectMouseSelection();
             wasRectangleSelection = isRectangleSelection();
-            vizModel.setAutoSelectNeighbor(false);
+            vizModel.setAutoSelectNeighbors(false);
             setCustomSelection();
         }
 
@@ -205,7 +205,6 @@ public class SelectionManager implements VizArchitecture {
             .ifPresent(selection -> {
                 if (edges == null) {
                     selection.clearSelectedEdges();
-
                 } else {
                     selection.setSelectedEdges(Arrays.asList(edges));
                 }

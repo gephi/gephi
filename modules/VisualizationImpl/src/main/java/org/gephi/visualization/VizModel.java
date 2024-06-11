@@ -47,8 +47,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -61,6 +61,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.joml.Vector2fc;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -73,46 +74,69 @@ import org.openide.util.Lookup;
 public class VizModel {
 
     private final Workspace workspace;
+    private VizEngine<?, ?> engine;
 
     protected VizConfig config;
     //Variable
-    protected float[] cameraPosition;
-    protected float[] cameraTarget;
-    protected Color backgroundColor;
     protected float[] backgroundColorComponents = new float[4];
-    protected boolean showEdges;
-    protected boolean lightenNonSelectedAuto;
-    protected boolean autoSelectNeighbor;
+
+    // TODO: these must be either removed or moved to viz-engine:
     protected boolean hideNonSelectedEdges;
     protected boolean uniColorSelected;
     protected boolean edgeHasUniColor;
     protected float[] edgeUniColor;
     protected boolean edgeSelectionColor;
-    protected float[] edgeInSelectionColor;
-    protected float[] edgeOutSelectionColor;
-    protected float[] edgeBothSelectionColor;
     protected boolean adjustByText;
     protected float edgeScale;
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<>();
-    private boolean defaultModel = false;
+    private GraphRenderingOptions renderingOptions;
 
     public VizModel(Workspace workspace) {
-        defaultValues();
+        Objects.requireNonNull(workspace, "workspace");
+        this.workspace = workspace;
 
         final GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.workspace = workspace;
 //        textModel.setTextColumns(new Column[] {gm.getNodeTable().getColumn("label")},
 //            new Column[] {gm.getEdgeTable().getColumn("label")});
         //TODO
     }
 
-    public VizModel(boolean defaultModel) {
-        this.defaultModel = defaultModel;
-        this.workspace = null;
+    private boolean loadEngine() {
+        engine = workspace.getLookup().lookup(VizEngine.class);
+        if (engine == null) {
+            return false; // Engine still not ready in the workspace
+        }
+        this.renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+
+        defaultValues();
+
+        return true;
     }
 
-    public void init() {
+    /**
+     * Getters and setters should only be called if the model is ready (has a backing viz-engine setup).
+     */
+    public boolean isReady() {
+        if (engine != null) {
+           return true;
+        }
+
+        return loadEngine();
+    }
+
+    private boolean initialized = false;
+    public boolean init() {
+        if (initialized) {
+            return true;
+        }
+
+        if (!loadEngine()) {
+            return false;
+        }
+
+        initialized = true;
+
         final PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -124,6 +148,8 @@ public class VizModel {
                 }
             }
         });
+
+        return initialized;
     }
 
     public List<PropertyChangeListener> getListeners() {
@@ -135,113 +161,130 @@ public class VizModel {
     }
 
     private void defaultValues() {
+        if (!isReady()) {
+            return;
+        }
+
         config = VizController.getInstance().getVizConfig();
-        cameraPosition = Arrays.copyOf(config.getDefaultCameraPosition(), 3);
-        cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
+
         //textModel = new TextModelImpl();
         //TODO
         if (UIUtils.isDarkLookAndFeel()) {
-            backgroundColor = config.getDefaultDarkBackgroundColor();
+            setBackgroundColor(config.getDefaultDarkBackgroundColor());
         } else {
-            backgroundColor = config.getDefaultBackgroundColor();
+            setBackgroundColor(config.getDefaultBackgroundColor());
         }
-        backgroundColorComponents = backgroundColor.getRGBComponents(backgroundColorComponents);
 
-        showEdges = config.isDefaultShowEdges();
-        lightenNonSelectedAuto = config.isDefaultLightenNonSelectedAuto();
-        autoSelectNeighbor = config.isDefaultAutoSelectNeighbor();
-        hideNonSelectedEdges = config.isDefaultHideNonSelectedEdges();
-        uniColorSelected = config.isDefaultUniColorSelected();
-        edgeHasUniColor = config.isDefaultEdgeHasUniColor();
-        edgeUniColor = config.getDefaultEdgeUniColor().getRGBComponents(null);
-        adjustByText = config.isDefaultAdjustByText();
-        edgeSelectionColor = config.isDefaultEdgeSelectionColor();
-        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor().getRGBComponents(null);
-        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor().getRGBComponents(null);
-        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor().getRGBComponents(null);
-        edgeScale = config.getDefaultEdgeScale();
+        setShowEdges(config.isDefaultShowEdges());
+        setLightenNonSelectedAuto(config.isDefaultLightenNonSelectedAuto());
+        setAutoSelectNeighbors(config.isDefaultAutoSelectNeighbor());
+        setHideNonSelectedEdges(config.isDefaultHideNonSelectedEdges());
+        setUniColorSelected(config.isDefaultUniColorSelected());
+        setEdgeHasUniColor(config.isDefaultEdgeHasUniColor());
+        setEdgeUniColor(config.getDefaultEdgeUniColor().getRGBComponents(null));
+        setAdjustByText(config.isDefaultAdjustByText());
+        setEdgeSelectionColor(config.isDefaultEdgeSelectionColor());
+        setEdgeInSelectionColor(config.getDefaultEdgeInSelectedColor().getRGBComponents(null));
+        setEdgeOutSelectionColor(config.getDefaultEdgeOutSelectedColor().getRGBComponents(null));
+        setEdgeBothSelectionColor(config.getDefaultEdgeBothSelectedColor().getRGBComponents(null));
+        setEdgeScale(config.getDefaultEdgeScale());
     }
 
-    //GETTERS
+    public float getZoom() {
+        return engine.getZoom();
+    }
+
+    public void setZoom(float zoom) {
+        engine.setZoom(zoom);
+    }
+
     public boolean isAdjustByText() {
+        //TODO
         return adjustByText;
     }
 
-    //SETTERS
     public void setAdjustByText(boolean adjustByText) {
+        //TODO
         this.adjustByText = adjustByText;
         fireProperyChange("adjustByText", null, adjustByText);
     }
 
-    public boolean isAutoSelectNeighbor() {
-        return autoSelectNeighbor;
+    public boolean isAutoSelectNeighbors() {
+        return renderingOptions.isAutoSelectNeighbours();
     }
 
-    public void setAutoSelectNeighbor(boolean autoSelectNeighbor) {
-        this.autoSelectNeighbor = autoSelectNeighbor;
+    public void setAutoSelectNeighbors(boolean autoSelectNeighbor) {
+        renderingOptions.setAutoSelectNeighbours(autoSelectNeighbor);
         fireProperyChange("autoSelectNeighbor", null, autoSelectNeighbor);
     }
 
     public Color getBackgroundColor() {
-        return backgroundColor;
+        engine.getBackgroundColor(backgroundColorComponents);
+
+        return new Color(backgroundColorComponents[0], backgroundColorComponents[1],
+                backgroundColorComponents[2], backgroundColorComponents[3]);
     }
 
     public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-        this.backgroundColorComponents = backgroundColor.getRGBComponents(this.backgroundColorComponents);
+        engine.setBackgroundColor(backgroundColor);
+
         fireProperyChange("backgroundColor", null, backgroundColor);
     }
 
     public float[] getBackgroundColorComponents() {
+        engine.getBackgroundColor(backgroundColorComponents);
+
         return backgroundColorComponents;
     }
 
-    public float[] getCameraPosition() {
-        return cameraPosition;
-    }
-
     public boolean isShowEdges() {
-        return showEdges;
+        return renderingOptions.isShowEdges();
     }
 
     public void setShowEdges(boolean showEdges) {
-        this.showEdges = showEdges;
+        renderingOptions.setShowEdges(showEdges);
         fireProperyChange("showEdges", null, showEdges);
     }
 
     public boolean isEdgeHasUniColor() {
+        //TODO
         return edgeHasUniColor;
     }
 
     public void setEdgeHasUniColor(boolean edgeHasUniColor) {
+        //TODO
         this.edgeHasUniColor = edgeHasUniColor;
         fireProperyChange("edgeHasUniColor", null, edgeHasUniColor);
     }
 
     public float[] getEdgeUniColor() {
+        //TODO
         return edgeUniColor;
     }
 
     public void setEdgeUniColor(float[] edgeUniColor) {
+        //TODO
         this.edgeUniColor = edgeUniColor;
         fireProperyChange("edgeUniColor", null, edgeUniColor);
     }
 
     public boolean isHideNonSelectedEdges() {
+        //TODO
         return hideNonSelectedEdges;
     }
 
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
+        //TODO
         this.hideNonSelectedEdges = hideNonSelectedEdges;
         fireProperyChange("hideNonSelectedEdges", null, hideNonSelectedEdges);
     }
 
     public boolean isLightenNonSelectedAuto() {
-        return lightenNonSelectedAuto;
+        return renderingOptions.isLightenNonSelected();
     }
 
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
-        this.lightenNonSelectedAuto = lightenNonSelectedAuto;
+        renderingOptions.setLightenNonSelected(lightenNonSelectedAuto);
         fireProperyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
     }
 
@@ -259,47 +302,60 @@ public class VizModel {
     }
 
     public boolean isEdgeSelectionColor() {
+        //TODO
         return edgeSelectionColor;
     }
 
     public void setEdgeSelectionColor(boolean edgeSelectionColor) {
+        //TODO
         this.edgeSelectionColor = edgeSelectionColor;
         fireProperyChange("edgeSelectionColor", null, edgeSelectionColor);
     }
 
     public float[] getEdgeInSelectionColor() {
-        return edgeInSelectionColor;
+        return renderingOptions.getEdgeInSelectionColor().getRGBComponents(null);
     }
 
     public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
-        this.edgeInSelectionColor = edgeInSelectionColor;
+        Color color = new Color(
+                edgeInSelectionColor[0], edgeInSelectionColor[1],
+                edgeInSelectionColor[2], edgeInSelectionColor[3]);
+        renderingOptions.setEdgeInSelectionColor(color);
+
         fireProperyChange("edgeInSelectionColor", null, edgeInSelectionColor);
     }
 
     public float[] getEdgeOutSelectionColor() {
-        return edgeOutSelectionColor;
+        return renderingOptions.getEdgeOutSelectionColor().getRGBComponents(null);
     }
 
     public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
-        this.edgeOutSelectionColor = edgeOutSelectionColor;
+        Color color = new Color(
+                edgeOutSelectionColor[0], edgeOutSelectionColor[1],
+                edgeOutSelectionColor[2], edgeOutSelectionColor[3]);
+        renderingOptions.setEdgeOutSelectionColor(color);
+
         fireProperyChange("edgeOutSelectionColor", null, edgeOutSelectionColor);
     }
 
     public float[] getEdgeBothSelectionColor() {
-        return edgeBothSelectionColor;
+        return renderingOptions.getEdgeBothSelectionColor().getRGBComponents(null);
     }
 
     public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
-        this.edgeBothSelectionColor = edgeBothSelectionColor;
+        Color color = new Color(
+                edgeBothSelectionColor[0], edgeBothSelectionColor[1],
+                edgeBothSelectionColor[2], edgeBothSelectionColor[3]);
+        renderingOptions.setEdgeBothSelectionColor(color);
         fireProperyChange("edgeBothSelectionColor", null, edgeBothSelectionColor);
     }
 
     public float getEdgeScale() {
-        return edgeScale;
+        return renderingOptions.getEdgeScale();
     }
 
     public void setEdgeScale(float edgeScale) {
-        this.edgeScale = edgeScale;
+        renderingOptions.setEdgeScale(edgeScale);
         fireProperyChange("edgeScale", null, edgeScale);
     }
 
@@ -321,7 +377,6 @@ public class VizModel {
 
     //XML
     public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
-
         boolean end = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
@@ -333,20 +388,18 @@ public class VizModel {
 //                        textModel.readXML(reader, workspace);
                         //TODO
                     } else if ("cameraposition".equalsIgnoreCase(name)) {
-                        cameraPosition[0] = Float.parseFloat(reader.getAttributeValue(null, "x"));
-                        cameraPosition[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));
-                        cameraPosition[2] = Float.parseFloat(reader.getAttributeValue(null, "z"));
+                        engine.setTranslate(
+                                Float.parseFloat(reader.getAttributeValue(null, "x")),
+                                Float.parseFloat(reader.getAttributeValue(null, "y"))
+                        );
                     } else if ("cameratarget".equalsIgnoreCase(name)) {
-                        cameraTarget[0] = Float.parseFloat(reader.getAttributeValue(null, "x"));
-                        cameraTarget[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));
-                        cameraTarget[2] = Float.parseFloat(reader.getAttributeValue(null, "z"));
-
+                        // No longer necessary
                     } else if ("showedges".equalsIgnoreCase(name)) {
                         setShowEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("lightennonselectedauto".equalsIgnoreCase(name)) {
                         setLightenNonSelectedAuto(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("autoselectneighbor".equalsIgnoreCase(name)) {
-                        setAutoSelectNeighbor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
+                        setAutoSelectNeighbors(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
                         setHideNonSelectedEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("unicolorselected".equalsIgnoreCase(name)) {
@@ -426,61 +479,61 @@ public class VizModel {
         writer.writeEndElement();
 
         writer.writeStartElement("showedges");
-        writer.writeAttribute("value", String.valueOf(showEdges));
+        writer.writeAttribute("value", String.valueOf(isShowEdges()));
         writer.writeEndElement();
 
         writer.writeStartElement("lightennonselectedauto");
-        writer.writeAttribute("value", String.valueOf(lightenNonSelectedAuto));
+        writer.writeAttribute("value", String.valueOf(isLightenNonSelectedAuto()));
         writer.writeEndElement();
 
         writer.writeStartElement("autoselectneighbor");
-        writer.writeAttribute("value", String.valueOf(autoSelectNeighbor));
+        writer.writeAttribute("value", String.valueOf(isAutoSelectNeighbors()));
         writer.writeEndElement();
 
         writer.writeStartElement("hidenonselectededges");
-        writer.writeAttribute("value", String.valueOf(hideNonSelectedEdges));
+        writer.writeAttribute("value", String.valueOf(isHideNonSelectedEdges()));
         writer.writeEndElement();
 
         writer.writeStartElement("unicolorselected");
-        writer.writeAttribute("value", String.valueOf(uniColorSelected));
+        writer.writeAttribute("value", String.valueOf(isUniColorSelected()));
         writer.writeEndElement();
 
         writer.writeStartElement("edgehasunicolor");
-        writer.writeAttribute("value", String.valueOf(edgeHasUniColor));
+        writer.writeAttribute("value", String.valueOf(isEdgeHasUniColor()));
         writer.writeEndElement();
 
         writer.writeStartElement("adjustbytext");
-        writer.writeAttribute("value", String.valueOf(adjustByText));
+        writer.writeAttribute("value", String.valueOf(isAdjustByText()));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeSelectionColor");
-        writer.writeAttribute("value", String.valueOf(edgeSelectionColor));
+        writer.writeAttribute("value", String.valueOf(isEdgeSelectionColor()));
         writer.writeEndElement();
 
         //Colors
         writer.writeStartElement("backgroundcolor");
-        writer.writeAttribute("value", ColorUtils.encode(backgroundColor));
+        writer.writeAttribute("value", ColorUtils.encode(getBackgroundColor()));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeunicolor");
-        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeUniColor)));
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(getEdgeUniColor())));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeInSelectionColor");
-        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeInSelectionColor)));
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(getEdgeInSelectionColor())));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeOutSelectionColor");
-        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeOutSelectionColor)));
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(getEdgeOutSelectionColor())));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeBothSelectionColor");
-        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeBothSelectionColor)));
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(getEdgeBothSelectionColor())));
         writer.writeEndElement();
 
         //Float
         writer.writeStartElement("edgeScale");
-        writer.writeAttribute("value", String.valueOf(edgeScale));
+        writer.writeAttribute("value", String.valueOf(getEdgeScale()));
         writer.writeEndElement();
 
         //Screenshot settings

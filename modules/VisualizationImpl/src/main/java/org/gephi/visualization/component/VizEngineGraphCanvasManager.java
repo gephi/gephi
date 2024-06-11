@@ -24,7 +24,6 @@ import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
-import org.gephi.viz.engine.util.gl.BasicFPSAnimator;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2fc;
 import org.openide.util.Lookup;
@@ -54,7 +53,7 @@ public class VizEngineGraphCanvasManager {
     private float[] engineBackgroundColor = null;
 
     public VizEngineGraphCanvasManager(Workspace workspace) {
-        this.workspace = Objects.requireNonNull(workspace);
+        this.workspace = Objects.requireNonNull(workspace, "workspace");
     }
 
     public synchronized void init(JComponent component) {
@@ -102,8 +101,6 @@ public class VizEngineGraphCanvasManager {
         glOptions.setDebug(DEBUG);
 
         engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
-
-        renderingTarget.setup(engine);
 
         final VizController vizController = Lookup.getDefault().lookup(VizController.class);
 

@@ -42,11 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -70,19 +72,18 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
 
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-//        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-//        if (vizModel == null) {
-//            vizModel = new VizModel(workspace);
-//            workspace.add(vizModel);
-//        }
-//        Lookup.getDefault().lookup(VizController.class)
-//            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
-//        try {
-//            vizModel.readXML(reader, workspace);
-//        } catch (XMLStreamException ex) {
-//            throw new RuntimeException(ex);
-//        }
-        //TODO
+        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel == null) {
+            vizModel = new VizModel(workspace);
+            workspace.add(vizModel);
+        }
+        Lookup.getDefault().lookup(VizController.class)
+            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
+        try {
+            vizModel.readXML(reader, workspace);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

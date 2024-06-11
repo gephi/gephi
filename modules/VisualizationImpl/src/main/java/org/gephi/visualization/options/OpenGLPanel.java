@@ -235,8 +235,6 @@ final class OpenGLPanel extends javax.swing.JPanel {
             .setSelectedIndex(antiAliasing == 0 ? 0 : Math.round((float) (Math.log(antiAliasing) / Math.log(2))));
         fpsCheckbox.setSelected(
             NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.SHOW_FPS, VizConfig.DEFAULT_SHOW_FPS));
-        octreeWidthTextField.setText(String.valueOf(
-            NbPreferences.forModule(VizConfig.class).getInt(VizConfig.OCTREE_WIDTH, VizConfig.DEFAULT_OCTREE_WIDTH)));
 
         //OpenGLInfo
 //        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();

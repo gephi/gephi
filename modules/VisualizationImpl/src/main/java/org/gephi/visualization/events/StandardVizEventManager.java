@@ -61,6 +61,7 @@ import org.gephi.visualization.apiimpl.VizEventListener;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -194,30 +195,33 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public boolean mouseLeftClick(VizEngine engine) {
-        final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
+        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
 
-        //Node Left click
+        final boolean selectionEnabled = VizController.getInstance().getVizConfig().isSelectionEnable();
+        final Node[] clickedNodes;
+
+        if (selectionEnabled) {
+            clickedNodes = index
+                    .getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y)
+                    .toArray();
+        } else {
+            clickedNodes = new Node[0];
+        }
+
+        //Node Left click:
         final VizEventTypeHandler nodeLeftClickHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
-        if (nodeLeftClickHandler.hasListeners() && VizController.getInstance().getVizConfig().isSelectionEnable()) {
-            //Check if some node are selected
-            final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (!selectedNodes.isEmpty()) {
-                if (nodeLeftClickHandler.dispatch(toArray(selectedNodes))) {
-                    return true;
-                }
+        if (nodeLeftClickHandler.hasListeners() && clickedNodes.length > 0) {
+            if (nodeLeftClickHandler.dispatch(clickedNodes)) {
+                return true;
             }
         }
 
-        //Mouse left click
+        //Mouse left click:
         final VizEventTypeHandler mouseLeftClickHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
-        if (mouseLeftClickHandler.hasListeners()) {
-            final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (selectedNodes.isEmpty() || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
-                if (mouseLeftClickHandler.dispatch(
-                    getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition))) {
-                    return true;
-                }
-            }
+        if (mouseLeftClickHandler.hasListeners() && clickedNodes.length == 0) {
+            return mouseLeftClickHandler.dispatch(
+                    getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition)
+            );
         }
 
         return false;

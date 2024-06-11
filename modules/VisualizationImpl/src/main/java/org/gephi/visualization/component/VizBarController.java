@@ -42,14 +42,22 @@
 
 package org.gephi.visualization.component;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import org.gephi.project.api.Workspace;
+import org.gephi.ui.components.JColorBlackWhiteSwitcher;
+import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -73,25 +81,10 @@ public class VizBarController {
         groups[1] = new NodeGroupBar();
         groups[2] = new EdgeGroupBar();
         groups[3] = new LabelGroupBar();
-
-//        model.addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                if (evt.getPropertyName().equals("init")) {
-//                    toolbar.setEnable(!model.isDefaultModel());
-//                    ((NodeGroupBar) groups[1]).setModelValues();
-//                    ((EdgeGroupBar) groups[2]).setModelValues();
-//                    ((LabelGroupBar) groups[3]).setModelValues();
-//                }
-//            }
-//        });
-        //TODO
     }
 
     public VizToolbar getToolbar() {
         toolbar = new VizToolbar(groups);
-//        toolbar.setEnable(!model.isDefaultModel());
-        //TODO
         return toolbar;
     }
 
@@ -100,55 +93,49 @@ public class VizBarController {
         return extendedBar;
     }
 
-    private static class GlobalGroupBar implements VizToolbarGroup {
-
-        @Override
-        public String getName() {
-            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.groupBarTitle");
+    public void workspaceSelected(Workspace workspace) {
+        if (workspace == null) {
+            return;
         }
 
-        @Override
-        public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[1];
+        final VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
 
-//            //Background color
-//            VizModel vizModel = VizController.getInstance().getVizModel();
-//            final JButton backgroundColorButton = new JColorBlackWhiteSwitcher(vizModel.getBackgroundColor());
-//            backgroundColorButton
-//                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
-//            backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    VizModel vizModel = VizController.getInstance().getVizModel();
-//                    Color backgroundColor = ((JColorBlackWhiteSwitcher) backgroundColorButton).getColor();
-//                    vizModel.setBackgroundColor(backgroundColor);
-//
+        ((GlobalGroupBar) groups[0]).setVizModel(vizModel);
+        ((NodeGroupBar) groups[1]).setModelValues();
+        ((EdgeGroupBar) groups[2]).setModelValues();
+        ((LabelGroupBar) groups[3]).setModelValues();
+    }
+
+    private static class GlobalGroupBar implements VizToolbarGroup {
+
+        private final JColorBlackWhiteSwitcher backgroundColorButton;
+        private final JDropDownButton screenshotButton;
+        private final PropertyChangeListener vizModelListener;
+
+        private final GlobalSettingsPanel globalSettingsPanel = new GlobalSettingsPanel();
+
+        private VizModel vizModel;
+
+        public GlobalGroupBar() {
+            backgroundColorButton = new JColorBlackWhiteSwitcher(Color.WHITE);
+            backgroundColorButton
+                    .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
+            backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, evt -> {
+                if (vizModel != null && vizModel.isReady()) {
+                    vizModel.setBackgroundColor(backgroundColorButton.getColor());
+                }
+
 //                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
 //                    boolean isDarkBackground =
 //                        (backgroundColor.getRed() + backgroundColor.getGreen() + backgroundColor.getBlue()) / 3 < 128;
 //                    textModel.setNodeColor(isDarkBackground ? Color.WHITE : Color.BLACK);
-//                }
-//            });
-//            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    if (evt.getPropertyName().equals("backgroundColor")) {
-//                        VizModel vizModel = VizController.getInstance().getVizModel();
-//                        if (!(((JColorBlackWhiteSwitcher) backgroundColorButton).getColor())
-//                            .equals(vizModel.getBackgroundColor())) {
-//                            ((JColorBlackWhiteSwitcher) backgroundColorButton).setColor(vizModel.getBackgroundColor());
-//                        }
-//                    }
-//                }
-//            });
-//            components[0] = backgroundColorButton;
-
-            //TODO
+                //TODO
+            });
 
             //Screenshots
             JPopupMenu screenshotPopup = new JPopupMenu();
             JMenuItem configureScreenshotItem =
-                new JMenuItem(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot.configure"));
+                    new JMenuItem(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot.configure"));
             configureScreenshotItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -156,27 +143,52 @@ public class VizBarController {
                 }
             });
             screenshotPopup.add(configureScreenshotItem);
-            final JButton screenshotButton = new JDropDownButton(
-                ImageUtilities.loadImageIcon("VisualizationImpl/screenshot.png", false),
-                screenshotPopup);
+            screenshotButton = new JDropDownButton(
+                    ImageUtilities.loadImageIcon("VisualizationImpl/screenshot.png", false),
+                    screenshotPopup);
             screenshotButton
-                .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
+                    .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
             screenshotButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     VizController.getInstance().getScreenshotMaker().takeScreenshot();
                 }
             });
-            components[0] = screenshotButton;
 
-            return components;
+            vizModelListener = evt -> {
+                if (evt.getPropertyName().equals("backgroundColor")) {
+                    backgroundColorButton.setColor(vizModel.getBackgroundColor());
+                }
+            };
+        }
+
+        @Override
+        public String getName() {
+            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.groupBarTitle");
+        }
+
+        public void setVizModel(VizModel vizModel) {
+            if (this.vizModel != null) {
+                this.vizModel.removePropertyChangeListener(vizModelListener);
+            }
+
+            this.vizModel = vizModel;
+            if (vizModel != null) {
+                vizModel.addPropertyChangeListener(vizModelListener);
+                backgroundColorButton.setColor(vizModel.getBackgroundColor());
+            }
+
+            globalSettingsPanel.setVizModel(vizModel);
+        }
+
+        @Override
+        public JComponent[] getToolbarComponents() {
+            return new JComponent[]{backgroundColorButton, screenshotButton};
         }
 
         @Override
         public JComponent getExtendedComponent() {
-            GlobalSettingsPanel panel = new GlobalSettingsPanel();
-            panel.setup();
-            return panel;
+            return globalSettingsPanel;
         }
 
         @Override

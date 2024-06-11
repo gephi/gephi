@@ -50,6 +50,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
@@ -140,17 +141,12 @@ public class JColorButton extends JButton {
     }
 
     public void setColor(Color color) {
-        if (color != this.color || (color != null && !color.equals(this.color))) {
+        if (!Objects.equals(color, this.color)) {
             Color oldColor = this.color;
             this.color = color;
             firePropertyChange(EVENT_COLOR, oldColor, color);
             repaint();
         }
-    }
-
-    public float[] getColorArray() {
-        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
-            color.getAlpha() / 255f};
     }
 
     public void setIncludeOpacity(boolean includeOpacity) {

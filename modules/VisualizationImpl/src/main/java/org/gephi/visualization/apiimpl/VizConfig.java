@@ -90,8 +90,6 @@ public class VizConfig {
     public static final String HIGHTLIGHT_ANIMATION = "VizConfig.lightenNonSelectedAnimation";
     public static final String NODE_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedColor";
     public static final String NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedNeigborColor";
-    public static final String OCTREE_DEPTH = "VizConfig.octreeDepth";
-    public static final String OCTREE_WIDTH = "VizConfig.octreeWidth";
     public static final String CLEAN_DELETED_MODELS = "VizConfig.cleanDeletedModels";
     public static final String LABEL_MIPMAP = "VizConfig.labelMipMap";
     public static final String LABEL_ANTIALIASED = "VizConfig.labelAntialiased";
@@ -141,8 +139,6 @@ public class VizConfig {
     public static final boolean DEFAULT_HIGHTLIGHT_ANIMATION = true;
     public static final Color DEFAULT_NODE_SELECTED_UNIQUE_COLOR = new Color(0.8f, 0.2f, 0.2f);
     public static final Color DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = new Color(0.2f, 1f, 0.3f);
-    public static final int DEFAULT_OCTREE_DEPTH = 5;
-    public static final int DEFAULT_OCTREE_WIDTH = 50000;
     public static final boolean DEFAULT_CLEAN_DELETED_MODELS = true;
     public static final boolean DEFAULT_LABEL_MIPMAP = true;
     public static final boolean DEFAULT_LABEL_ANTIALIASED = true;
@@ -155,6 +151,7 @@ public class VizConfig {
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final float DEFAULT_EDGE_SCALE = 2f;
+
     //Default config - loaded in the VizModel
     protected Color defaultBackgroundColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));

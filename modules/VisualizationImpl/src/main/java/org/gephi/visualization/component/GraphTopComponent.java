@@ -53,6 +53,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -90,12 +91,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
         listenToWorkspaceEvents();
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                initCollapsePanel();
-                initToolPanels();
-            }
+        SwingUtilities.invokeLater(() -> {
+            initCollapsePanel();
+            initToolPanels();
         });
     }
 
@@ -124,7 +122,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                     selectionToolbar.setEnabled(true);
                 }
 
+                VizController.getInstance().refreshWorkspace();
                 activateWorkspaceVizEngine(workspace);
+                vizBarController.workspaceSelected(workspace);
             }
 
             @Override
@@ -169,6 +169,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         }
 
         if (hasWorkspace) {
+            VizController.getInstance().refreshWorkspace();
             activateWorkspaceVizEngine(projectController.getCurrentWorkspace());
         }
     }
@@ -178,6 +179,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             return;
         }
         vizBarController = new VizBarController();
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        vizBarController.workspaceSelected(projectController.getCurrentWorkspace());
+
         if (VizController.getInstance().getVizConfig().isShowVizVar()) {
             collapsePanel.init(vizBarController.getToolbar(), vizBarController.getExtendedBar(), false);
         } else {
@@ -211,6 +215,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         } else {
             manager.destroy(this);
             manager.init(this);
+        }
+
+        // Now that the engine is ready, make sure the VizModel is initialized if already in workspace:
+        final VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+        if (vizModel != null) {
+            vizModel.init();
         }
     }
 
@@ -294,6 +304,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 //                }
 //                evt.consume();
 //            }
+            //TODO
         }
     }
 
@@ -343,6 +354,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        VizController.getInstance().refreshWorkspace();
         activateWorkspaceVizEngine(
                 Lookup.getDefault().lookup(ProjectController.class)
                         .getCurrentWorkspace()
@@ -352,6 +364,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     @Override
     protected void componentOpened() {
         super.componentOpened();
+        VizController.getInstance().refreshWorkspace();
         activateWorkspaceVizEngine(
                 Lookup.getDefault().lookup(ProjectController.class)
                         .getCurrentWorkspace()
