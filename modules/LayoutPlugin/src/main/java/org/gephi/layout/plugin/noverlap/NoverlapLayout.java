@@ -42,6 +42,7 @@
 
 package org.gephi.layout.plugin.noverlap;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
-            //Reset Layout Data
+            // Reset Layout Data
             for (Node n : graph.getNodes()) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {
                     n.setLayoutData(new NoverlapLayoutData());
@@ -182,6 +183,9 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 }
             }
 
+            // TODO: remove me
+            HashMap<Node, Boolean> movedNodes = new HashMap<>();
+
             // Move colliding nodes as registered in proximity
             int collisions = 0;
             for (Map.Entry<String, Node[]> entry : proximities.entrySet()) {
@@ -208,11 +212,12 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 double overlap = n1radius + n2radius - dist;
                 boolean collision = overlap > 0;
                 if (collision) {
+                    overlap += 0.05; // We need to overshoot a bit
                     collisions += 1;
-                    double xOverlap = 1.1 * overlap * Math.cos(angle);
-                    double yOverlap = 1.1 * overlap * Math.sin(angle);
+                    double xOverlap = 1. * overlap * Math.cos(angle);
+                    double yOverlap = 1. * overlap * Math.sin(angle);
 
-                    // n1 and n2 move each other of half the overlap
+                    // n1 and n2 move each other of part of the overlap
                     NoverlapLayoutData n1ldata = n1.getLayoutData();
                     n1ldata.dx -= n1Ratio * xOverlap;
                     n1ldata.dy -= n1Ratio * yOverlap;
@@ -220,6 +225,10 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     NoverlapLayoutData n2ldata = n2.getLayoutData();
                     n2ldata.dx += n2Ratio * xOverlap;
                     n2ldata.dy += n2Ratio * yOverlap;
+
+                    // TODO: remove me
+                    movedNodes.put(n1, true);
+                    movedNodes.put(n2, true);
                 }
 
                 if (cancel) {
@@ -239,6 +248,13 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     float y = n.y() + layoutData.dy;
                     n.setX(x);
                     n.setY(y);
+                }
+
+                // TODO: remove me
+                if (movedNodes.containsKey(n)) {
+                    n.setColor(Color.RED);
+                } else {
+                    n.setColor(Color.BLACK);
                 }
             }
         } finally {

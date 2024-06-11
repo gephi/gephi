@@ -65,7 +65,9 @@ public class NoverlapTest extends TestCase {
     public void test2nodesNoverlap() {
 
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "2nodes.gexf");
-    
+
+        // TODO: remove the two monitoring things below
+
         // Monitor node sizes
         Graph graph = graphModel.getGraphVisible();
         for (Node n : graph.getNodes()) {
