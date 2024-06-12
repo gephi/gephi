@@ -206,7 +206,7 @@ public class VizModel {
     public void setAdjustByText(boolean adjustByText) {
         //TODO
         this.adjustByText = adjustByText;
-        fireProperyChange("adjustByText", null, adjustByText);
+        firePropertyChange("adjustByText", null, adjustByText);
     }
 
     public boolean isAutoSelectNeighbors() {
@@ -215,7 +215,7 @@ public class VizModel {
 
     public void setAutoSelectNeighbors(boolean autoSelectNeighbor) {
         renderingOptions.setAutoSelectNeighbours(autoSelectNeighbor);
-        fireProperyChange("autoSelectNeighbor", null, autoSelectNeighbor);
+        firePropertyChange("autoSelectNeighbor", null, autoSelectNeighbor);
     }
 
     public Color getBackgroundColor() {
@@ -228,7 +228,7 @@ public class VizModel {
     public void setBackgroundColor(Color backgroundColor) {
         engine.setBackgroundColor(backgroundColor);
 
-        fireProperyChange("backgroundColor", null, backgroundColor);
+        firePropertyChange("backgroundColor", null, backgroundColor);
     }
 
     public float[] getBackgroundColorComponents() {
@@ -243,7 +243,7 @@ public class VizModel {
 
     public void setShowEdges(boolean showEdges) {
         renderingOptions.setShowEdges(showEdges);
-        fireProperyChange("showEdges", null, showEdges);
+        firePropertyChange("showEdges", null, showEdges);
     }
 
     public boolean isEdgeHasUniColor() {
@@ -254,7 +254,7 @@ public class VizModel {
     public void setEdgeHasUniColor(boolean edgeHasUniColor) {
         //TODO
         this.edgeHasUniColor = edgeHasUniColor;
-        fireProperyChange("edgeHasUniColor", null, edgeHasUniColor);
+        firePropertyChange("edgeHasUniColor", null, edgeHasUniColor);
     }
 
     public float[] getEdgeUniColor() {
@@ -265,7 +265,7 @@ public class VizModel {
     public void setEdgeUniColor(float[] edgeUniColor) {
         //TODO
         this.edgeUniColor = edgeUniColor;
-        fireProperyChange("edgeUniColor", null, edgeUniColor);
+        firePropertyChange("edgeUniColor", null, edgeUniColor);
     }
 
     public boolean isHideNonSelectedEdges() {
@@ -276,7 +276,7 @@ public class VizModel {
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
         //TODO
         this.hideNonSelectedEdges = hideNonSelectedEdges;
-        fireProperyChange("hideNonSelectedEdges", null, hideNonSelectedEdges);
+        firePropertyChange("hideNonSelectedEdges", null, hideNonSelectedEdges);
     }
 
     public boolean isLightenNonSelectedAuto() {
@@ -285,7 +285,7 @@ public class VizModel {
 
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
         renderingOptions.setLightenNonSelected(lightenNonSelectedAuto);
-        fireProperyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
+        firePropertyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
     }
 
     public boolean isUniColorSelected() {
@@ -294,7 +294,7 @@ public class VizModel {
 
     public void setUniColorSelected(boolean uniColorSelected) {
         this.uniColorSelected = uniColorSelected;
-        fireProperyChange("uniColorSelected", null, uniColorSelected);
+        firePropertyChange("uniColorSelected", null, uniColorSelected);
     }
 
     public VizConfig getConfig() {
@@ -309,7 +309,7 @@ public class VizModel {
     public void setEdgeSelectionColor(boolean edgeSelectionColor) {
         //TODO
         this.edgeSelectionColor = edgeSelectionColor;
-        fireProperyChange("edgeSelectionColor", null, edgeSelectionColor);
+        firePropertyChange("edgeSelectionColor", null, edgeSelectionColor);
     }
 
     public float[] getEdgeInSelectionColor() {
@@ -322,7 +322,7 @@ public class VizModel {
                 edgeInSelectionColor[2], edgeInSelectionColor[3]);
         renderingOptions.setEdgeInSelectionColor(color);
 
-        fireProperyChange("edgeInSelectionColor", null, edgeInSelectionColor);
+        firePropertyChange("edgeInSelectionColor", null, edgeInSelectionColor);
     }
 
     public float[] getEdgeOutSelectionColor() {
@@ -335,7 +335,7 @@ public class VizModel {
                 edgeOutSelectionColor[2], edgeOutSelectionColor[3]);
         renderingOptions.setEdgeOutSelectionColor(color);
 
-        fireProperyChange("edgeOutSelectionColor", null, edgeOutSelectionColor);
+        firePropertyChange("edgeOutSelectionColor", null, edgeOutSelectionColor);
     }
 
     public float[] getEdgeBothSelectionColor() {
@@ -347,7 +347,7 @@ public class VizModel {
                 edgeBothSelectionColor[0], edgeBothSelectionColor[1],
                 edgeBothSelectionColor[2], edgeBothSelectionColor[3]);
         renderingOptions.setEdgeBothSelectionColor(color);
-        fireProperyChange("edgeBothSelectionColor", null, edgeBothSelectionColor);
+        firePropertyChange("edgeBothSelectionColor", null, edgeBothSelectionColor);
     }
 
     public float getEdgeScale() {
@@ -356,7 +356,7 @@ public class VizModel {
 
     public void setEdgeScale(float edgeScale) {
         renderingOptions.setEdgeScale(edgeScale);
-        fireProperyChange("edgeScale", null, edgeScale);
+        firePropertyChange("edgeScale", null, edgeScale);
     }
 
     //EVENTS
@@ -368,7 +368,7 @@ public class VizModel {
         listeners.remove(listener);
     }
 
-    public void fireProperyChange(String propertyName, Object oldvalue, Object newValue) {
+    public void firePropertyChange(String propertyName, Object oldvalue, Object newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
         for (PropertyChangeListener l : listeners) {
             l.propertyChange(evt);

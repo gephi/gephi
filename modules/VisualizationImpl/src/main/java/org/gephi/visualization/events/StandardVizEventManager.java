@@ -55,6 +55,7 @@ import java.util.logging.Logger;
 
 import com.jogamp.newt.event.MouseEvent;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEventListener;
@@ -234,15 +235,27 @@ public class StandardVizEventManager implements VizEventManager {
         };
     }
 
+    private boolean isMouseOverAnyNode(VizEngine engine) {
+        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
+        final NodeIterable iterable = index
+                .getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y);
+
+        for (Node ignored: iterable) {
+            iterable.doBreak();
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean mouseLeftPress(VizEngine engine) {
-        final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
+        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
         final VizEventTypeHandler nodeLefPressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
-        if (nodeLefPressHandler.hasListeners()) {
-            //Check if some node are selected
-            final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (!selectedNodes.isEmpty()) {
+        if (nodeLefPressHandler.hasListeners()) {            //Check if some node are selected
+            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+            if (!selectedNodes.isEmpty() && isMouseOverAnyNode(engine)) {
                 return nodeLefPressHandler.dispatch(toArray(selectedNodes));
             }
         }

@@ -118,28 +118,21 @@ public class VizController implements VisualizationController {
     }
 
     public void refreshWorkspace() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final Workspace currentWorkspace = pc.getCurrentWorkspace();
+
         VizModel model = null;
-        if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
+        if (currentWorkspace != null) {
+            model = currentWorkspace.getLookup().lookup(VizModel.class);
             if (model == null) {
-                model = new VizModel(pc.getCurrentWorkspace());
-                pc.getCurrentWorkspace().add(model);
+                model = new VizModel(currentWorkspace);
+                currentWorkspace.add(model);
             }
         }
 
-        if (model != currentModel) {
-            if (currentModel != null && model != null) {
-                model.setListeners(currentModel.getListeners());
-                currentModel.setListeners(null);
-            }
-//            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
-            //TODO
-//            currentModel.getTextModel().setListeners(null);
-            currentModel = model;
-            if (currentModel != null) {
-                currentModel.init();
-            }
+        currentModel = model;
+        if (currentModel != null) {
+            currentModel.init();
         }
     }
 

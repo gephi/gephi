@@ -168,6 +168,10 @@ public class VizBarController {
         }
 
         public void setVizModel(VizModel vizModel) {
+            if (vizModel == this.vizModel) {
+                return;
+            }
+
             if (this.vizModel != null) {
                 this.vizModel.removePropertyChangeListener(vizModelListener);
             }

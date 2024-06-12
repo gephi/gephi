@@ -99,7 +99,7 @@ public class NodesDragger implements Tool {
             @Override
             public boolean drag(float displacementXScreen, float displacementYScreen,
                                 float displacementXWorld, float displacementYWorld) {
-                if (nodes != null) {
+                if (nodes != null && nodes.length > 0) {
                     for (int i = 0; i < nodes.length; i++) {
                         Node n = nodes[i];
                         n.setX(initialX[i] + displacementXWorld);

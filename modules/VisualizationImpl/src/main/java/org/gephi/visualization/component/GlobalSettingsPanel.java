@@ -123,6 +123,10 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     private final PropertyChangeListener vizModelListener;
 
     public void setVizModel(VizModel vizModel) {
+        if (vizModel == this.vizModel) {
+            return;
+        }
+
         if (this.vizModel != null) {
             this.vizModel.removePropertyChangeListener(vizModelListener);
         }
@@ -215,7 +219,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         zoomPanel.add(labelZoom, gridBagConstraints);
 
         zoomSlider.setMaximum(1000);
-        zoomSlider.setMinimum(1);
+        zoomSlider.setMinimum(10);
         zoomSlider.setValue(30);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
