@@ -14,6 +14,21 @@ import org.junit.Test;
 public class ConnectedClosenessTest extends TestCase {
 
     @Test
+    public void testStar() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "Star 30.gexf");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+
+        ConnectedCloseness cc = new ConnectedCloseness();
+        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph);
+
+        System.out.println("Indicators:");
+        System.out.println("Delta: "+indicators.Delta);
+        System.out.println("E_percent: "+indicators.E_percent);
+        System.out.println("p_percent: "+indicators.p_percent);
+        System.out.println("P_edge: "+indicators.P_edge);
+        System.out.println("C: "+indicators.C);
+    }
+
     public void testStable() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "Stable 30.gexf");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
