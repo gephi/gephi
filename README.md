@@ -49,7 +49,7 @@ Development builds are [generated regularly](https://github.com/gephi/gephi/acti
 
 Gephi is developed in Java and uses OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. Gephi is split into modules, which depend on other modules through well-written APIs. Plugins can reuse existing APIs, create new services and even replace a default implementation with a new one.
 
-Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html) for an overview of the APIs.
+Consult the [**Javadoc**](https://javadoc.io/doc/org.gephi/gephi/latest/index.html) for an overview of the APIs.
 
 ### Requirements
 
