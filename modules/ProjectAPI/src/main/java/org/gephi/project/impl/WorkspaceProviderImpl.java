@@ -146,4 +146,9 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
             return currentWorkspace != null;
         }
     }
+
+    @Override
+    public int getNextWorkspaceId() {
+        return project.getWorkspaceIds();
+    }
 }

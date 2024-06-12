@@ -27,11 +27,9 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="timeFormatLabel" min="-2" pref="96" max="-2" attributes="0"/>
                           <Component id="timeZoneLabel" min="-2" pref="106" max="-2" attributes="0"/>
-                          <Component id="timeRepresentationLabel" min="-2" pref="132" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="timeRepresentationComboBox" max="32767" attributes="0"/>
                           <Component id="timeFormatComboBox" max="32767" attributes="0"/>
                           <Component id="timeZoneComboBox" max="32767" attributes="0"/>
                       </Group>
@@ -61,11 +59,6 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="timeZoneLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="timeZoneComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="timeRepresentationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="timeRepresentationComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -135,23 +128,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="timeZoneComboBox">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="0"/>
-        </Property>
-      </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
-      </AuxValues>
-    </Component>
-    <Component class="javax.swing.JLabel" name="timeRepresentationLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/datalab/Bundle.properties" key="ConfigurationPanel.timeRepresentationLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="timeRepresentationComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>

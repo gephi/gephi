@@ -66,6 +66,7 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
+import org.gephi.ui.project.NewWorkspace;
 import org.gephi.ui.project.ProjectList;
 import org.gephi.ui.project.ProjectPropertiesEditor;
 import org.gephi.ui.project.WorkspacePropertiesEditor;
@@ -634,6 +635,19 @@ public class ProjectControllerUIImpl implements ProjectListener {
 
     public Workspace newWorkspace() {
         return controller.newWorkspace(controller.getCurrentProject());
+    }
+
+    public void newWorkspaceWithSettings() {
+        NewWorkspace panel = new NewWorkspace();
+        panel.setup();
+
+        DialogDescriptor dd = DialogDescriptorWithValidation
+            .dialog(NewWorkspace.createValidationPanel(panel),
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "NewWorkspace_dialog_title"));
+        Object result = DialogDisplayer.getDefault().notify(dd);
+        if (result == NotifyDescriptor.OK_OPTION) {
+            panel.unsetup();
+        }
     }
 
     public void deleteWorkspace() {
