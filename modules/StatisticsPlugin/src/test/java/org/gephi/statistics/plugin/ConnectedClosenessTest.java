@@ -19,7 +19,7 @@ public class ConnectedClosenessTest extends TestCase {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedCloseness cc = new ConnectedCloseness();
-        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph, true);
+        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph, false);
 
         System.out.println("Indicators:");
         System.out.println("Delta: "+indicators.Delta);
@@ -29,14 +29,19 @@ public class ConnectedClosenessTest extends TestCase {
         System.out.println("C: "+indicators.C);
     }
 
-    public void testStable() {
-        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "Stable 30.gexf");
+    @Test
+    public void test3nodes() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "3nodes.gexf");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedCloseness cc = new ConnectedCloseness();
-        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph);
+        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph, false);
 
-        System.out.println(indicators);
-
+        System.out.println("Indicators:");
+        System.out.println("Delta: "+indicators.Delta);
+        System.out.println("E_percent: "+indicators.E_percent);
+        System.out.println("p_percent: "+indicators.p_percent);
+        System.out.println("P_edge: "+indicators.P_edge);
+        System.out.println("C: "+indicators.C);
     }
 }
