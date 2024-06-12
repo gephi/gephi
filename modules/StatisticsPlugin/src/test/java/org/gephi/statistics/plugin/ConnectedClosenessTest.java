@@ -22,6 +22,6 @@ public class ConnectedClosenessTest extends TestCase {
         ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph);
 
         System.out.println(indicators);
-        
+
     }
 }

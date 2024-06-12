@@ -115,8 +115,15 @@ public class ConnectedCloseness implements Statistics, LongTask {
         }
 
         // Grid search for C_max
-
-        double[] range = {0, Math.max(Collections.max(pairs_of_nodes_sampled), Collections.max(connected_pairs))};
+        double max1 = 0;
+        if (pairs_of_nodes_sampled.size()>0) {
+            max1 = Collections.max(pairs_of_nodes_sampled);
+        }
+        double max2 = 0;
+        if (pairs_of_nodes_sampled.size()>0) {
+            max2 = Collections.max(connected_pairs);
+        }
+        double[] range = {0, Math.max(max1, max2)};
 
         double C_max = 0;
         Map<Double, IndicatorResults> distances_index = new HashMap<>();
