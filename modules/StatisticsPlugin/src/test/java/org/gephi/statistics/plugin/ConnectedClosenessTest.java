@@ -19,7 +19,7 @@ public class ConnectedClosenessTest extends TestCase {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedCloseness cc = new ConnectedCloseness();
-        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph);
+        ConnectedCloseness.IndicatorResults indicators = cc.computeConnectedCloseness(graph, true);
 
         System.out.println("Indicators:");
         System.out.println("Delta: "+indicators.Delta);

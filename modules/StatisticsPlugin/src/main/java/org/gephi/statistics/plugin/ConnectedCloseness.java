@@ -101,7 +101,19 @@ public class ConnectedCloseness implements Statistics, LongTask {
     }
 
     public IndicatorResults computeConnectedCloseness(Graph g) {
-        final List<Double> pairs_of_nodes_sampled = sample_pairs_of_nodes_distances(g);
+        return computeConnectedCloseness(g, false);
+    }
+
+    public IndicatorResults computeConnectedCloseness(Graph g, boolean sample) {
+
+        List<Double> pairs_of_nodes_sampled;
+        if (sample) {
+            pairs_of_nodes_sampled = sample_pairs_of_nodes_distances(g);
+        } else {
+            pairs_of_nodes_sampled = get_all_pairs_of_nodes(g);
+        }
+
+
         List<Double> connected_pairs = new ArrayList<>();
         for (Edge e : g.getEdges()) {
             Node n1 = e.getSource();
@@ -233,8 +245,25 @@ public class ConnectedCloseness implements Statistics, LongTask {
         }
     }
 
-    public ArrayList<Double> sample_pairs_of_nodes_distances(Graph g) {
-        ArrayList<Double> samples = new ArrayList<>();
+    public List<Double> get_all_pairs_of_nodes(Graph g) {
+        if (g.getNodeCount() < 2) {
+            return new ArrayList<Double>();
+        }
+        List<Double> pairs = new ArrayList<Double>();
+
+        for (Node n1:g.getNodes()) {
+            for (Node n2:g.getNodes()) {
+                if (n1 != n2) {
+                    double d = Math.sqrt(Math.pow(n1.x()-n2.x(), 2)+Math.pow(n1.y()-n2.y(), 2));
+                    pairs.add(d);
+                }
+            }
+        }
+        return pairs;
+    }
+
+    public List<Double> sample_pairs_of_nodes_distances(Graph g) {
+        List<Double> samples = new ArrayList<>();
 
         if (g.getNodeCount()<2) {
             return samples;
