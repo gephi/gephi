@@ -231,7 +231,7 @@
 
         <gephi.maven-enforcer-plugin.version>3.5.0</gephi.maven-enforcer-plugin.version>
 
-        <gephi.maven-gpg-plugin.version>3.2.4</gephi.maven-gpg-plugin.version>
+        <gephi.maven-gpg-plugin.version>3.0.1</gephi.maven-gpg-plugin.version>
 
         <gephi.maven-install-plugin.version>3.1.2</gephi.maven-install-plugin.version>
 
