@@ -81,4 +81,11 @@ public interface WorkspaceProvider {
      * @return found workspace or null if not found
      */
     Workspace getWorkspace(int id);
+
+    /**
+     * Return the next available workspace identifier.
+     *
+     * @return next available workspace identifier
+     */
+    int getNextWorkspaceId();
 }
