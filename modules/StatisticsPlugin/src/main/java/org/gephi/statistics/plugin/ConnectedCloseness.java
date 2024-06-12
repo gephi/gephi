@@ -43,14 +43,11 @@
 package org.gephi.statistics.plugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -142,7 +139,7 @@ public class ConnectedCloseness implements Statistics, LongTask {
             }
             old_C_max = C_max;
             C_max = 0;
-            indicators_over_Delta = (List<IndicatorResults>) distances_index.values();
+            indicators_over_Delta = new ArrayList<IndicatorResults>(distances_index.values());
             int i = 0;
             for (IndicatorResults indicators:indicators_over_Delta){
                 C = indicators.C;
@@ -170,19 +167,22 @@ public class ConnectedCloseness implements Statistics, LongTask {
     }
 
     public double find_Delta_max(List<IndicatorResults> indicators_over_Delta, double epsilon) {
-	  double C_max = Collections.max(
-          (List<Double>) indicators_over_Delta.stream().map(indicators -> {
-              return indicators.C;
-          })
-      );
-      double Delta_max = Collections.min(
-          (List<Double>) indicators_over_Delta.stream().filter(indicators -> {
-              return indicators.C >= (1-epsilon) * C_max;
-          }).map(indicators -> {
-              return indicators.Delta;
-          })
-      );
-      return Delta_max;
+
+        if (indicators_over_Delta.size()>0) {
+            double C_max = indicators_over_Delta.stream().map(indicators -> {
+                return indicators.C;
+            }).max(Double::compare).get();
+
+            double Delta_max = indicators_over_Delta.stream().filter(indicators -> {
+                return indicators.C >= (1 - epsilon) * C_max;
+            }).map(indicators -> {
+                return indicators.Delta;
+            }).min(Double::compare).get();
+
+            return Delta_max;
+        } else {
+            return Double.NaN;
+        }
     }
 
     // Compute indicators given a distance Delta
