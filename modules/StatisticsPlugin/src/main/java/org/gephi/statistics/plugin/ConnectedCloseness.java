@@ -91,7 +91,7 @@ public class ConnectedCloseness implements Statistics, LongTask {
         isCanceled = false;
 
         g.readLock();
-        
+
         IndicatorResults indicators = computeConnectedCloseness(g);
 
         // TODO: do something with the indicators

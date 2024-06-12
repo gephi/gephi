@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <creator>Generator of test networks</creator>
+    <name>Circle 30</name>
+    <description>Each node has two neighbors, in a circular chain</description>
+  </meta>
+  <graph defaultedgetype="undirected">
+    <nodes>
+      <node id="n0" label="n0">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="158.46339416503906" y="-75.88680267333984"/>
+      </node>
+      <node id="n1" label="n1">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="140.74766540527344" y="-106.5560302734375"/>
+      </node>
+      <node id="n2" label="n2">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="116.60608673095703" y="-132.43299865722656"/>
+      </node>
+      <node id="n3" label="n3">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="87.20155334472656" y="-152.28904724121094"/>
+      </node>
+      <node id="n4" label="n4">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="53.94584655761719" y="-165.23109436035156"/>
+      </node>
+      <node id="n5" label="n5">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="18.39385986328125" y="-170.77989196777344"/>
+      </node>
+      <node id="n6" label="n6">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-17.857248306274414" y="-168.8207244873047"/>
+      </node>
+      <node id="n7" label="n7">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-53.250675201416016" y="-159.57313537597656"/>
+      </node>
+      <node id="n8" label="n8">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-86.32673645019531" y="-143.51963806152344"/>
+      </node>
+      <node id="n9" label="n9">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-115.76007080078125" y="-121.35124969482422"/>
+      </node>
+      <node id="n10" label="n10">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-140.3756866455078" y="-93.96565246582031"/>
+      </node>
+      <node id="n11" label="n11">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-159.158935546875" y="-62.45063018798828"/>
+      </node>
+      <node id="n12" label="n12">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-171.2691650390625" y="-28.071502685546875"/>
+      </node>
+      <node id="n13" label="n13">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-176.08871459960938" y="7.748594284057617"/>
+      </node>
+      <node id="n14" label="n14">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-173.25550842285156" y="43.463340759277344"/>
+      </node>
+      <node id="n15" label="n15">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-162.77464294433594" y="77.456298828125"/>
+      </node>
+      <node id="n16" label="n16">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-145.05886840820312" y="108.12554931640625"/>
+      </node>
+      <node id="n17" label="n17">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-120.91731262207031" y="134.0024871826172"/>
+      </node>
+      <node id="n18" label="n18">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-91.51276397705078" y="153.85853576660156"/>
+      </node>
+      <node id="n19" label="n19">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-58.257049560546875" y="166.80056762695312"/>
+      </node>
+      <node id="n20" label="n20">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-22.705053329467773" y="172.349365234375"/>
+      </node>
+      <node id="n21" label="n21">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="13.546096801757812" y="170.3901824951172"/>
+      </node>
+      <node id="n22" label="n22">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="48.93942642211914" y="161.14259338378906"/>
+      </node>
+      <node id="n23" label="n23">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="82.01548767089844" y="145.08909606933594"/>
+      </node>
+      <node id="n24" label="n24">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="111.44881439208984" y="122.92072296142578"/>
+      </node>
+      <node id="n25" label="n25">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="136.0644073486328" y="95.53501892089844"/>
+      </node>
+      <node id="n26" label="n26">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="154.84767150878906" y="64.01972961425781"/>
+      </node>
+      <node id="n27" label="n27">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="166.9578857421875" y="29.640926361083984"/>
+      </node>
+      <node id="n28" label="n28">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="171.77749633789062" y="-6.179108619689941"/>
+      </node>
+      <node id="n29" label="n29">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="168.9442596435547" y="-41.893856048583984"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="_geid0_" source="n0" target="n29">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid1_" source="n1" target="n0">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid2_" source="n2" target="n1">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid3_" source="n3" target="n2">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid4_" source="n4" target="n3">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid5_" source="n5" target="n4">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid6_" source="n6" target="n5">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid7_" source="n7" target="n6">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid8_" source="n8" target="n7">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid9_" source="n9" target="n8">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid10_" source="n10" target="n9">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid11_" source="n11" target="n10">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid12_" source="n12" target="n11">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid13_" source="n13" target="n12">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid14_" source="n14" target="n13">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid15_" source="n15" target="n14">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid16_" source="n16" target="n15">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid17_" source="n17" target="n16">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid18_" source="n18" target="n17">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid19_" source="n19" target="n18">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid20_" source="n20" target="n19">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid21_" source="n21" target="n20">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid22_" source="n22" target="n21">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid23_" source="n23" target="n22">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid24_" source="n24" target="n23">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid25_" source="n25" target="n24">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid26_" source="n26" target="n25">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid27_" source="n27" target="n26">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid28_" source="n28" target="n27">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid29_" source="n29" target="n28">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

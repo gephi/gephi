@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <creator>Generator of test networks</creator>
+    <name>Star 30</name>
+    <description>One center nodes and the other nodes are only connected to that one</description>
+  </meta>
+  <graph defaultedgetype="undirected">
+    <attributes class="node">
+      <attribute id="type" title="type" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="n0" label="n0">
+        <attvalues>
+          <attvalue for="type" value="center"/>
+        </attvalues>
+        <viz:color r="144" g="57" b="230"/>
+        <viz:size value="5"/>
+        <viz:position x="1.0243499279022217" y="1.6417999267578125"/>
+      </node>
+      <node id="n1" label="n1">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="23.883827209472656" y="-28.822851181030273"/>
+      </node>
+      <node id="n2" label="n2">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-10.088318824768066" y="-34.06618881225586"/>
+      </node>
+      <node id="n3" label="n3">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="12.52424144744873" y="-29.227609634399414"/>
+      </node>
+      <node id="n4" label="n4">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-26.64835548400879" y="25.617183685302734"/>
+      </node>
+      <node id="n5" label="n5">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="37.69926834106445" y="-7.90761661529541"/>
+      </node>
+      <node id="n6" label="n6">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-0.9158990383148193" y="-27.356842041015625"/>
+      </node>
+      <node id="n7" label="n7">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-16.811992645263672" y="24.36065673828125"/>
+      </node>
+      <node id="n8" label="n8">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-22.7076473236084" y="-26.905128479003906"/>
+      </node>
+      <node id="n9" label="n9">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="4.640351295471191" y="-36.01848220825195"/>
+      </node>
+      <node id="n10" label="n10">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="19.633426666259766" y="-19.488088607788086"/>
+      </node>
+      <node id="n11" label="n11">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-35.23542404174805" y="-6.744034290313721"/>
+      </node>
+      <node id="n12" label="n12">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-2.2326407432556152" y="38.97692108154297"/>
+      </node>
+      <node id="n13" label="n13">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="34.5620002746582" y="19.348413467407227"/>
+      </node>
+      <node id="n14" label="n14">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-15.77446174621582" y="35.1213264465332"/>
+      </node>
+      <node id="n15" label="n15">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="28.382160186767578" y="-4.901054859161377"/>
+      </node>
+      <node id="n16" label="n16">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-34.78403854370117" y="3.9848179817199707"/>
+      </node>
+      <node id="n17" label="n17">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-25.648239135742188" y="9.768121719360352"/>
+      </node>
+      <node id="n18" label="n18">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-25.120912551879883" y="-8.590642929077148"/>
+      </node>
+      <node id="n19" label="n19">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="10.14716911315918" y="37.81686782836914"/>
+      </node>
+      <node id="n20" label="n20">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="11.454596519470215" y="28.192880630493164"/>
+      </node>
+      <node id="n21" label="n21">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="37.70798873901367" y="4.839734077453613"/>
+      </node>
+      <node id="n22" label="n22">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="28.751283645629883" y="10.16696548461914"/>
+      </node>
+      <node id="n23" label="n23">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-4.133154392242432" y="29.701623916625977"/>
+      </node>
+      <node id="n24" label="n24">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="23.909313201904297" y="21.908489227294922"/>
+      </node>
+      <node id="n25" label="n25">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="22.936983108520508" y="31.999134063720703"/>
+      </node>
+      <node id="n26" label="n26">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-13.802170753479004" y="-23.02670669555664"/>
+      </node>
+      <node id="n27" label="n27">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="30.989633560180664" y="-17.864665985107422"/>
+      </node>
+      <node id="n28" label="n28">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-33.31548309326172" y="16.51889419555664"/>
+      </node>
+      <node id="n29" label="n29">
+        <attvalues>
+          <attvalue for="type" value="leave"/>
+        </attvalues>
+        <viz:color r="131" g="66" b="224"/>
+        <viz:size value="5"/>
+        <viz:position x="-29.24116325378418" y="-18.217674255371094"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="_geid0_" source="n0" target="n1">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid1_" source="n0" target="n2">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid2_" source="n0" target="n3">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid3_" source="n0" target="n4">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid4_" source="n0" target="n5">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid5_" source="n0" target="n6">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid6_" source="n0" target="n7">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid7_" source="n0" target="n8">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid8_" source="n0" target="n9">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid9_" source="n0" target="n10">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid10_" source="n0" target="n11">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid11_" source="n0" target="n12">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid12_" source="n0" target="n13">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid13_" source="n0" target="n14">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid14_" source="n0" target="n15">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid15_" source="n0" target="n16">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid16_" source="n0" target="n17">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid17_" source="n0" target="n18">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid18_" source="n0" target="n19">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid19_" source="n0" target="n20">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid20_" source="n0" target="n21">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid21_" source="n0" target="n22">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid22_" source="n0" target="n23">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid23_" source="n0" target="n24">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid24_" source="n0" target="n25">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid25_" source="n0" target="n26">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid26_" source="n0" target="n27">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid27_" source="n0" target="n28">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="_geid28_" source="n0" target="n29">
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

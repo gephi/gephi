@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <creator>Generator of test networks</creator>
+    <name>Stable 30</name>
+    <description>There are no links</description>
+  </meta>
+  <graph defaultedgetype="undirected">
+    <nodes>
+      <node id="n0" label="n0">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="24.896778106689453" y="-403.0455627441406"/>
+      </node>
+      <node id="n1" label="n1">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-330.09613037109375" y="-165.81671142578125"/>
+      </node>
+      <node id="n2" label="n2">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-30.8173885345459" y="184.0762939453125"/>
+      </node>
+      <node id="n3" label="n3">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-102.8669204711914" y="84.5283203125"/>
+      </node>
+      <node id="n4" label="n4">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-46.22418975830078" y="351.6186218261719"/>
+      </node>
+      <node id="n5" label="n5">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="95.60176849365234" y="61.639949798583984"/>
+      </node>
+      <node id="n6" label="n6">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="106.7679672241211" y="231.45040893554688"/>
+      </node>
+      <node id="n7" label="n7">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="273.0372314453125" y="-293.24383544921875"/>
+      </node>
+      <node id="n8" label="n8">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-13.173417091369629" y="-54.140953063964844"/>
+      </node>
+      <node id="n9" label="n9">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-102.55435943603516" y="-310.2470703125"/>
+      </node>
+      <node id="n10" label="n10">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="348.2720947265625" y="20.70354461669922"/>
+      </node>
+      <node id="n11" label="n11">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-15.753290176391602" y="-175.26304626464844"/>
+      </node>
+      <node id="n12" label="n12">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-343.5883483886719" y="144.4040069580078"/>
+      </node>
+      <node id="n13" label="n13">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-140.04241943359375" y="-119.7605209350586"/>
+      </node>
+      <node id="n14" label="n14">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-211.0739288330078" y="-17.040388107299805"/>
+      </node>
+      <node id="n15" label="n15">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="58.54918670654297" y="-59.07191848754883"/>
+      </node>
+      <node id="n16" label="n16">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-386.94970703125" y="-0.017579421401023865"/>
+      </node>
+      <node id="n17" label="n17">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="353.8409729003906" y="-131.93394470214844"/>
+      </node>
+      <node id="n18" label="n18">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-1.1178483963012695" y="1.929997444152832"/>
+      </node>
+      <node id="n19" label="n19">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-245.2405548095703" y="-294.4600524902344"/>
+      </node>
+      <node id="n20" label="n20">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="360.8173522949219" y="176.19204711914062"/>
+      </node>
+      <node id="n21" label="n21">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="177.92990112304688" y="-12.414552688598633"/>
+      </node>
+      <node id="n22" label="n22">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-211.52154541015625" y="341.4930725097656"/>
+      </node>
+      <node id="n23" label="n23">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="129.9148712158203" y="390.3169860839844"/>
+      </node>
+      <node id="n24" label="n24">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="210.1923828125" y="176.6834716796875"/>
+      </node>
+      <node id="n25" label="n25">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="8.366625785827637" y="65.20515441894531"/>
+      </node>
+      <node id="n26" label="n26">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="166.12620544433594" y="-132.493896484375"/>
+      </node>
+      <node id="n27" label="n27">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="112.58118438720703" y="-265.0245056152344"/>
+      </node>
+      <node id="n28" label="n28">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-199.6101837158203" y="182.19212341308594"/>
+      </node>
+      <node id="n29" label="n29">
+        <viz:color r="128" g="128" b="128"/>
+        <viz:size value="5"/>
+        <viz:position x="-69.4535140991211" y="-7.409821510314941"/>
+      </node>
+    </nodes>
+    <edges/>
+  </graph>
+</gexf>
