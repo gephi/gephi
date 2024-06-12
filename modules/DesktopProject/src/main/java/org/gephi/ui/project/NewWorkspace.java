@@ -9,6 +9,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.utils.TimeRepresentationWrapper;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
@@ -42,7 +43,7 @@ public class NewWorkspace extends javax.swing.JPanel {
 
         ProjectController controller = Lookup.getDefault().lookup(ProjectController.class);
         WorkspaceProvider workspaceProvider = controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
-        String prefix = NbBundle.getMessage(NewWorkspace.class, "NewWorkspace.labelName.text");
+        String prefix = NbBundle.getMessage(NewWorkspace.class, "NewWorkspace.default.prefix");
 
         nameTextField.setText(prefix+" "+workspaceProvider.getNextWorkspaceId());
     }
@@ -55,8 +56,8 @@ public class NewWorkspace extends javax.swing.JPanel {
         Configuration configuration = defaultConfig.timeRepresentation(selected).build();
 
         ProjectController controller = Lookup.getDefault().lookup(ProjectController.class);
-        controller.newWorkspace(controller.getCurrentProject(), configuration);
-        controller.renameWorkspace(controller.getCurrentWorkspace(), nameTextField.getText());
+        Workspace workspace = controller.newWorkspace(controller.getCurrentProject(), configuration);
+        controller.renameWorkspace(workspace, nameTextField.getText());
     }
 
     public static ValidationPanel createValidationPanel(NewWorkspace innerPanel) {
@@ -101,7 +102,7 @@ public class NewWorkspace extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(labelTimeRepresentation)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(timeRepresentationComboBox, 0, 174, Short.MAX_VALUE)
+                .addComponent(timeRepresentationComboBox, 0, 200, Short.MAX_VALUE)
                 .addContainerGap())
         );
         innerPanelLayout.setVerticalGroup(
@@ -135,9 +136,9 @@ public class NewWorkspace extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(innerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -38,9 +38,9 @@
                   <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="labelName" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
               <Component id="innerPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -73,7 +73,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labelTimeRepresentation" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="timeRepresentationComboBox" pref="174" max="32767" attributes="0"/>
+                  <Component id="timeRepresentationComboBox" pref="200" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
