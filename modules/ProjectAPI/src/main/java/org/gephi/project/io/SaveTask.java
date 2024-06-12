@@ -116,7 +116,7 @@ public class SaveTask implements LongTask {
 
         File writeFile = file;
         try {
-            if (file.exists()) {
+            if (file.exists() && file.length() > 0) {
                 String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
                 writeFile = new File(file.getParent(), tempFileName);
             }
@@ -215,7 +215,7 @@ public class SaveTask implements LongTask {
             }
             throw new GephiFormatException(SaveTask.class, ex);
         } finally {
-            if (writeFile != null && writeFile.exists()) {
+            if (writeFile != null && writeFile.exists() && writeFile != file) {
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
                 if (tempFileObject != null) {
                     try {

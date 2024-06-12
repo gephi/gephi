@@ -224,8 +224,6 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                     workspaceInformation.getName(),
                     workspaceInformation.getSource()));
                 if (tabDataModel.size() == 1) {
-                    tabbedContainer.getSelectionModel().setSelectedIndex(0);
-
                     add(tabbedContainer, BorderLayout.CENTER);
                     getParent().revalidate();
                 }

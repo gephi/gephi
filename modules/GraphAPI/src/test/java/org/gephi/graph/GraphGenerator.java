@@ -5,6 +5,7 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
@@ -15,6 +16,7 @@ import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.openide.util.Lookup;
 
 public class GraphGenerator {
 
@@ -44,7 +46,7 @@ public class GraphGenerator {
     private Workspace workspace;
 
     private GraphGenerator() {
-        this(null, new Configuration());
+        this(null, null);
     }
 
     private GraphGenerator(final Workspace workspace, final Configuration config) {
@@ -53,14 +55,16 @@ public class GraphGenerator {
             this.workspace = workspace;
             model = workspace.getLookup().lookup(GraphModel.class);
         }
+        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
         if (model == null) {
-            this.graphModel = GraphModel.Factory.newInstance(config);
+            this.graphModel = GraphModel.Factory.newInstance(config == null ? controller.getDefaultConfigurationBuilder().build() : config);
+        } else if (config != null && !model.getConfiguration().equals(config)) {
+            throw new RuntimeException("GraphModel configuration differs between the passed configuration and the existing one");
         } else {
             this.graphModel = model;
-            model.setConfiguration(config);
         }
         if (workspace == null) {
-            this.workspace = new WorkspaceImpl(null, 0, "Workspace", graphModel);
+            this.workspace = new WorkspaceImpl(null, 0, graphModel);
         }
     }
 
@@ -73,7 +77,7 @@ public class GraphGenerator {
     }
 
     public static GraphGenerator build(final Workspace workspace) {
-        return new GraphGenerator(workspace, new Configuration());
+        return new GraphGenerator(workspace, null);
     }
 
     public static GraphGenerator build(final Workspace workspace, final Configuration configuration) {
@@ -88,6 +92,20 @@ public class GraphGenerator {
     public GraphGenerator generateTinyGraph() {
         Node n1 = graphModel.factory().newNode(FIRST_NODE);
         Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e);
+        return this;
+    }
+    
+     public GraphGenerator generateTinyGraphWithPosition() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        n1.setX(2.5f);
+        n1.setY(4.7f);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        n2.setX(-3.3f);
+        n2.setY(-5.4f);
         Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
         graphModel.getDirectedGraph().addNode(n1);
         graphModel.getDirectedGraph().addNode(n2);

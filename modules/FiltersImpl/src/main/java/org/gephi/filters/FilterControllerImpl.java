@@ -71,6 +71,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.utils.progress.ProgressTicketProvider;
@@ -84,12 +85,11 @@ import org.openide.util.lookup.ServiceProviders;
  * @author Mathieu Bastian
  */
 @ServiceProviders({
-    @ServiceProvider(service = FilterController.class)
-    ,
+    @ServiceProvider(service = FilterController.class),
+    @ServiceProvider(service = Controller.class),
     @ServiceProvider(service = PropertyExecutor.class)})
-public class FilterControllerImpl implements FilterController, PropertyExecutor {
+public class FilterControllerImpl implements FilterController, PropertyExecutor, Controller<FilterModelImpl> {
 
-    private FilterModelImpl model;
 
     public FilterControllerImpl() {
         //Register range editor
@@ -104,16 +104,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new FilterModelImpl(workspace));
             }
 
             @Override
             public void select(Workspace workspace) {
-                model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
-                if (model == null) {
-                    model = new FilterModelImpl(workspace);
-                    workspace.add(model);
-                }
             }
 
             @Override
@@ -125,35 +119,42 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (m != null) {
                     m.destroy();
+                    if (m.getCurrentResult() != null && m.getGraphModel() != null) {
+                        m.getGraphModel().destroyView(m.getCurrentResult());
+                        m.setCurrentResult(null);
+                    }
                 }
             }
 
             @Override
             public void disable() {
-                if (model != null && model.getCurrentResult() != null) {
-                    GraphModel graphModel = model.getGraphModel();
-                    if (graphModel != null) {
-                        graphModel.destroyView(model.getCurrentResult());
-                    }
-
-                    model.setCurrentResult(null);
-                }
-                model = null;
             }
         });
-        if (pc.getCurrentWorkspace() != null) {
-            Workspace workspace = pc.getCurrentWorkspace();
-            model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
-            if (model == null) {
-                model = new FilterModelImpl(workspace);
-                workspace.add(model);
-            }
-        }
+    }
+
+    @Override
+    public FilterModelImpl newModel(Workspace workspace) {
+        return new FilterModelImpl(workspace);
+    }
+
+    @Override
+    public Class<FilterModelImpl> getModelClass() {
+        return FilterModelImpl.class;
+    }
+
+    @Override
+    public FilterModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
+    }
+
+    @Override
+    public FilterModelImpl getModel() {
+        return Controller.super.getModel();
     }
 
     @Override
     public Query createQuery(FilterBuilder builder) {
-        Filter filter = builder.getFilter(model.getWorkspace());
+        Filter filter = builder.getFilter(getModel().getWorkspace());
         if (filter instanceof Operator) {
             return new OperatorQueryImpl((Operator) filter);
         }
@@ -170,6 +171,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void add(Query query) {
+        FilterModelImpl model = getModel();
+
         AbstractQueryImpl absQuery = ((AbstractQueryImpl) query);
         absQuery = absQuery.getRoot();
         if (!model.hasQuery(absQuery)) {
@@ -177,7 +180,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
             //Init filters with default graph
             Graph graph;
-            if (model != null && model.getGraphModel() != null) {
+            if (model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
             } else {
                 GraphModel graphModel =
@@ -197,6 +200,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void remove(Query query) {
+        FilterModelImpl model = getModel();
         if (model.getCurrentQuery() == query) {
             if (model.isSelecting()) {
                 selectVisible(null);
@@ -210,11 +214,13 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void rename(Query query, String name) {
+        FilterModelImpl model = getModel();
         model.rename(query, name);
     }
 
     @Override
     public void setSubQuery(Query query, Query subQuery) {
+        FilterModelImpl model = getModel();
         //Init subquery when new filter
         if (subQuery.getParent() == null && subQuery != model.getCurrentQuery()) {
             Graph graph;
@@ -237,11 +243,12 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void removeSubQuery(Query query, Query parent) {
-        model.removeSubQuery(query, parent);
+        getModel().removeSubQuery(query, parent);
     }
 
     @Override
     public void filterVisible(Query query) {
+        FilterModelImpl model = getModel();
         if (query != null && model.getCurrentQuery() == query && model.isFiltering()) {
             return;
         }
@@ -268,6 +275,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public GraphView filter(Query query) {
+        FilterModelImpl model = getModel();
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = model.getGraphModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
@@ -276,6 +284,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void selectVisible(Query query) {
+        FilterModelImpl model = getModel();
         if (query != null && model.getCurrentQuery() == query && model.isSelecting()) {
             return;
         }
@@ -308,6 +317,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void exportToColumn(String title, Query query) {
+        FilterModelImpl model = getModel();
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
@@ -348,6 +358,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void exportToNewWorkspace(Query query) {
+        FilterModelImpl model = getModel();
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
@@ -375,9 +386,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 }
                 Progress.start(ticket);
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject());
+                Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject(), graphView.getModel().getConfiguration().copy());
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(newWorkspace);
-                graphModel.setConfiguration(graphView.getModel().getConfiguration());
                 graphModel.bridge().copyNodes(graphView.getNodes().toArray());
                 Graph graph = graphModel.getGraph();
                 List<Edge> edgesToRemove = new ArrayList<>();
@@ -399,6 +409,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void exportToLabelVisible(Query query) {
+        FilterModelImpl model = getModel();
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
@@ -430,6 +441,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void setAutoRefresh(boolean autoRefresh) {
+        FilterModelImpl model = getModel();
         if (model != null) {
             model.setAutoRefresh(autoRefresh);
         }
@@ -437,28 +449,15 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public void setCurrentQuery(Query query) {
+        FilterModelImpl model = getModel();
         if (model != null) {
             model.setCurrentQuery(query);
         }
     }
 
     @Override
-    public FilterModel getModel() {
-        return model;
-    }
-
-    @Override
-    public synchronized FilterModel getModel(Workspace workspace) {
-        FilterModel filterModel = workspace.getLookup().lookup(FilterModel.class);
-        if (filterModel == null) {
-            filterModel = new FilterModelImpl(workspace);
-            workspace.add(filterModel);
-        }
-        return filterModel;
-    }
-
-    @Override
     public void setValue(FilterProperty property, Object value, Callback callback) {
+        FilterModelImpl model = getModel();
         if (model != null) {
             Query query = model.getQuery(property.getFilter());
             if (query == null) {

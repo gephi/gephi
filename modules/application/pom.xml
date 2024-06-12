@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.11.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
     <name>gephi-app</name>
     
     <properties>
@@ -493,6 +493,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Since 3.11 we need that as the application module doesn't produce a jar, just artifacts -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <allowIncompleteProjects>true</allowIncompleteProjects>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -1059,6 +1068,33 @@
                                             <filtering>false</filtering>
                                         </resource>
                                     </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Sign the installer using the codesign certificate -->
+                    <plugin>
+                        <groupId>net.jsign</groupId>
+                        <artifactId>jsign-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-exe</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <fileset>
+                                        <directory>target</directory>
+                                        <includes>
+                                            <include>*.exe</include>
+                                        </includes>
+                                    </fileset>
+                                    <name>Gephi</name>
+                                    <url>https://gephi.org</url>
+                                    <keystore>${gephi.windows.codesign.keystore}</keystore>
+                                    <storepass>${gephi.windows.codesign.password}</storepass>
+                                    <tsaurl>http://timestamp.sectigo.com</tsaurl>
                                 </configuration>
                             </execution>
                         </executions>

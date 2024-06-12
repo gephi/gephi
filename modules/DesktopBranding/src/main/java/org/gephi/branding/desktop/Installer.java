@@ -153,27 +153,6 @@ public class Installer extends ModuleInstall {
         }
     }
 
-    @Override
-    public boolean closing() {
-        if (Lookup.getDefault().lookup(ProjectController.class).getCurrentProject() == null) {
-            //Close directly if no project open
-            return true;
-        }
-
-        int option = JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(),
-            NbBundle.getMessage(Installer.class, "CloseConfirmation.message"),
-            NbBundle.getMessage(Installer.class, "CloseConfirmation.message"),
-            JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.WARNING_MESSAGE);
-        if (option == JOptionPane.YES_OPTION) {
-            Actions.forID("File", "org.gephi.desktop.project.actions.SaveAsProject").actionPerformed(null);
-        } else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-            return false;//Exit canceled
-        }
-        Lookup.getDefault().lookup(ProjectController.class).closeCurrentProject();
-        return true;
-    }
-
     private void checkForNewMajorRelease() {
         boolean doCheck =
             NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);

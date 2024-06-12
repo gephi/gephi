@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.tools.plugin.edit;
 
+import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -81,7 +82,9 @@ public final class EditToolTopComponent extends TopComponent {
 
             @Override
             public void select(Workspace workspace) {
-                propertySheet.setEnabled(true);
+                SwingUtilities.invokeLater(() -> {
+                    propertySheet.setEnabled(true);
+                });
             }
 
             @Override
@@ -95,8 +98,10 @@ public final class EditToolTopComponent extends TopComponent {
 
             @Override
             public void disable() {
-                propertySheet.setEnabled(false);
-                EditToolTopComponent.this.close();
+                SwingUtilities.invokeLater(() -> {
+                    propertySheet.setEnabled(false);
+                    EditToolTopComponent.this.close();
+                });
             }
         });
     }

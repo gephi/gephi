@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.11.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>ui-library-wrapper</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>UILibraryWrapper</name>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>com.mastfrog</groupId>
             <artifactId>colorchooser</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-swingx</artifactId>
-            <version>2.6</version>
+            <version>3.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>

@@ -56,7 +56,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -153,7 +153,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
 
             GraphModel graphModel = column.getTable().getGraph().getModel();
             TimeFormat timeFormat = graphModel.getTimeFormat();
-            DateTimeZone timeZone = graphModel.getTimeZone();
+            ZoneId timeZone = graphModel.getTimeZone();
 
             value = attributes.getAttribute(column);
 
@@ -216,7 +216,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Object value;
 
         TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
-        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+        ZoneId timeZone = table.getGraph().getModel().getTimeZone();
 
         for (; rowIndex < nodes.length; rowIndex++) {
             if (!gec.isNodeInGraph(nodes[rowIndex])) {
@@ -253,7 +253,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Object value;
 
         TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
-        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+        ZoneId timeZone = table.getGraph().getModel().getTimeZone();
 
         for (; rowIndex < edges.length; rowIndex++) {
             if (!gec.isEdgeInGraph(edges[rowIndex])) {
@@ -279,7 +279,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
     }
 
     private SearchResult matchRegex(Object value, SearchOptions searchOptions, int rowIndex, int columnIndex,
-                                    TimeFormat timeFormat, DateTimeZone timeZone) {
+                                    TimeFormat timeFormat, ZoneId timeZone) {
         boolean found;
 
         String str = value != null ? AttributeUtils.print(value, timeFormat, timeZone) : "";

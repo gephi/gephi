@@ -63,6 +63,7 @@ import org.gephi.project.io.DuplicateTask;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -100,6 +101,11 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public ProjectImpl newProject() {
+        return this.newProjectInternal();
+    }
+
+
+    private ProjectImpl newProjectInternal(Object... objectsForLookup) {
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
             ProjectImpl project = null;
@@ -107,7 +113,7 @@ public class ProjectControllerImpl implements ProjectController {
                 closeCurrentProject();
                 project = new ProjectImpl(projects.nextUntitledProjectName());
                 projects.addProject(project);
-                openProjectInternal(project);
+                openProjectInternal(project, objectsForLookup);
                 ProjectImpl finalProject = project;
                 fireProjectEvent((pl) -> pl.opened(finalProject));
                 return project;
@@ -255,8 +261,18 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace newWorkspace(Project project) {
+        return newWorkspaceInternal(project);
+    }
+
+    @Override
+    public Workspace newWorkspace(Project project, Object... objectsForLookup) {
+        return newWorkspaceInternal(project, objectsForLookup);
+    }
+
+    private Workspace newWorkspaceInternal(Project project, Object... objectsForLookup) {
         synchronized (this) {
-            Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
+            WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
+            Workspace workspace = workspaceProvider.newWorkspace(workspaceProvider.getProject().nextWorkspaceId(), objectsForLookup);
 
             //Event
             fireWorkspaceEvent(EventType.INITIALIZE, workspace);
@@ -291,12 +307,12 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    private void openProjectInternal(Project project) {
+    private void openProjectInternal(Project project, Object... objectsForLookup) {
         ProjectImpl projectImpl = (ProjectImpl) project;
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
-        projectImpl = projects.addOrReplaceProject(projectImpl);
+        projects.addOrReplaceProject(projectImpl);
         projects.setCurrentProject(projectImpl);
 
         for (Workspace ws : projectImpl.getWorkspaces()) {
@@ -305,7 +321,7 @@ public class ProjectControllerImpl implements ProjectController {
 
         if (!projectImpl.hasCurrentWorkspace()) {
             if (projectImpl.getWorkspaces().isEmpty()) {
-                Workspace workspace = newWorkspace(project);
+                Workspace workspace = newWorkspace(project, objectsForLookup);
                 openWorkspace(workspace);
             } else {
                 Workspace workspace = projectImpl.getWorkspaces().get(0);
@@ -359,15 +375,24 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace openNewWorkspace() {
+        return openNewWorkspaceInternal();
+    }
+
+    @Override
+    public Workspace openNewWorkspace(Object... objectsForLookup) {
+        return openNewWorkspaceInternal(objectsForLookup);
+    }
+
+    private Workspace openNewWorkspaceInternal(Object... objectsForLookup) {
         synchronized (this) {
             Project project;
             Workspace workspace;
             if (hasCurrentProject()) {
                 project = getCurrentProject();
-                workspace = newWorkspace(project);
+                workspace = newWorkspace(project, objectsForLookup);
                 openWorkspace(workspace);
             } else {
-                project = newProject();
+                project = newProjectInternal(objectsForLookup);
                 workspace = project.getCurrentWorkspace();
             }
             return workspace;
@@ -453,7 +478,13 @@ public class ProjectControllerImpl implements ProjectController {
             listeners = new ArrayList<>(projectListeners);
             listeners.addAll(Lookup.getDefault().lookupAll(ProjectListener.class));
         }
-        listeners.forEach(consumer);
+        for (ProjectListener listener : listeners) {
+            try {
+                consumer.accept(listener);
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
     }
 
     private void fireWorkspaceEvent(EventType event, Workspace workspace) {
@@ -463,22 +494,26 @@ public class ProjectControllerImpl implements ProjectController {
             listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
         }
         for (WorkspaceListener wl : listeners) {
-            switch (event) {
-                case INITIALIZE:
-                    wl.initialize(workspace);
-                    break;
-                case SELECT:
-                    wl.select(workspace);
-                    break;
-                case UNSELECT:
-                    wl.unselect(workspace);
-                    break;
-                case CLOSE:
-                    wl.close(workspace);
-                    break;
-                case DISABLE:
-                    wl.disable();
-                    break;
+            try {
+                switch (event) {
+                    case INITIALIZE:
+                        wl.initialize(workspace);
+                        break;
+                    case SELECT:
+                        wl.select(workspace);
+                        break;
+                    case UNSELECT:
+                        wl.unselect(workspace);
+                        break;
+                    case CLOSE:
+                        wl.close(workspace);
+                        break;
+                    case DISABLE:
+                        wl.disable();
+                        break;
+                }
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
             }
         }
     }

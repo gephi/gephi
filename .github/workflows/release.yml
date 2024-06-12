@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ 0.9.8, 0.10.0 ]
+    branches: [ 0.11.0, 0.10.2 ]
 
 jobs:
   build-base:
@@ -11,9 +11,9 @@ jobs:
       staging-repository-id: ${{ steps.create-nexus-staging.outputs.staging-repository-id }}
       project-version: ${{ steps.project.outputs.version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
@@ -23,6 +23,11 @@ jobs:
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v.4.5
+        with:
+          maven-version: 3.8.7
 
       - name: Extract Maven project version
         id: project
@@ -83,29 +88,29 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-11 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         arch: [ x64 ]
         include:
           - task: create-targz
             os: ubuntu-latest
             arch: x64
+          - task: create-targz
+            os: ubuntu-latest
+            arch: aarch64
           - task: create-exe
             os: windows-latest
             arch: x64
-          - task: create-exe
-            os: windows-latest
-            arch: x32
           - task: create-dmg,notarize-dmg
-            os: macos-11
+            os: macos-latest
             arch: x64
           - task: create-dmg,notarize-dmg
-            os: macos-11
+            os: macos-latest
             arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
@@ -128,6 +133,17 @@ jobs:
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Windows Prepare Codesign
+        env:
+          CODESIGN_CERT: ${{ secrets.CODESIGN_CERT}}
+        run: |
+          New-Item -ItemType directory -Path certificate
+          Set-Content -Path codesign.txt -Value $env:CODESIGN_CERT
+          certutil -decode codesign.txt codesign.pfx
+          Remove-Item codesign.txt
+        working-directory: modules/application
+        if: runner.os == 'Windows'
 
       - name: Retrieve modules output
         uses: actions/download-artifact@v3
@@ -155,7 +171,7 @@ jobs:
 
       - name: Build and publish bundle
         shell: bash
-        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.windows.codesign.password=$CODESIGN_PASSWORD -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
         working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
@@ -164,18 +180,24 @@ jobs:
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          CODESIGN_PASSWORD: ${{ secrets.CODESIGN_PASSWORD }}
           
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/release/remove-key.sh
         if: runner.os == 'macOS'
 
+      - name: CleanUp Windows codesign
+        run: Remove-Item codesign.pfx
+        working-directory: modules/application
+        if: runner.os == 'Windows'
+
   update-site:
     needs: bundle
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'

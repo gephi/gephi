@@ -15,6 +15,18 @@
         </p>
         <hr>
         <h2>API Changes</h2>
+        <h3>0.11.0</h3>
+        <h4>ProjectAPI</h4>
+        <ul>
+            <li>Addition of additional <code>newWorkspace()</code> and <code>openNewWorkspace()</code> methods in <code>ProjectController</code> with the option to pass objects that will be added to the <code>Workspace</code>'s lookup at creation time.</li>
+        </ul>
+        <h4>Graph API</h4>
+        <ul>
+            <li>Dependency on <code>Joda-Time</code> has been removed and replaced by <code>java.time</code>.</li>
+            <li>A new configuration builder has been added in <code>Configuration.Builder</code> to facilitate configuration customization. A number of configurations - which previously lived as static fields - have been migrated into it. The <code>GraphModel.setConfiguration()</code> method has been deprecated. Configurations is therefore expected to be defined when <code>GraphModel</code> is created.</li>
+            <li>Addition of a <code>getDefaultConfigurationBuilder()</code> method in <code>GraphController</code> that returns the default graph configuration used when creating new <code>GraphModel</code> instances. This should be used as a basis configuration by users willing to create <code>GraphModel</code> with custom configurations.</li>
+            <li><code>Instant</code> is now supported as an element type. This allows to store dates and times, but unfortunately it wasn't possible to make the Serialization backward compatible. In other words, if an Instant column is used , it won't be possible to be loaded in previous versions.</li>
+        </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>
         <ul>
@@ -29,6 +41,11 @@
             <li>Also deprecation of <code>WorkspaceInformation</code>. Relevant methods have been ported to <code>Workspace</code>.</li>
             <li>Finally, deprecation of <code>WorkspaceProvider</code>. Relevant methods were ported to <code>Project</code>.</li>
             <li>The duplication of workspaces is now managed through existing persistence providers. Therefore the <code>WorkspaceDuplicateProvider</code> SPI has been removed.</li>
+        </ul>
+        <h4>GraphAPI</h4>
+        <ul>
+            <li>New methods <code>retainNodes()</code> and <code>retainEdges()</code> have been added to <code>Graph</code>.</li>
+            <li>Make edge types editable via <code>Edge.setType()</code>.</li>
         </ul>
         <h4>LongTask API</h4>
         <ul>

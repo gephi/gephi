@@ -4,19 +4,19 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.11.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>batik-wrapper</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>BatikWrapper</name>
 
     <properties>
-        <gephi.batik.version>1.16</gephi.batik.version>
+        <gephi.batik.version>1.17</gephi.batik.version>
     </properties>
     
     <dependencies>

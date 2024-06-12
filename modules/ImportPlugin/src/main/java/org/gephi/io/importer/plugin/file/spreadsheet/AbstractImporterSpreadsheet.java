@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,7 +84,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
-import org.joda.time.DateTimeZone;
 import org.openide.util.Exceptions;
 
 /**
@@ -449,11 +449,11 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
         generalConfig.setTimeRepresentation(timeRepresentation);
     }
 
-    public DateTimeZone getTimeZone() {
+    public ZoneId getTimeZone() {
         return generalConfig.getTimeZone();
     }
 
-    public void setTimeZone(DateTimeZone timeZone) {
+    public void setTimeZone(ZoneId timeZone) {
         generalConfig.setTimeZone(timeZone);
     }
 

@@ -14,12 +14,14 @@ public class ProjectsImplTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    public void testProjectsSort() {
+    public void testProjectsSort() throws InterruptedException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("p1", "p1");
         p1.open();
+        Thread.sleep(10);
         ProjectImpl p2 = new ProjectImpl("p2", "p2");
         p2.open();
+        Thread.sleep(10);
         ProjectImpl p3 = new ProjectImpl("p3", "p3");
 
         projects.addProject(p3);
@@ -46,6 +48,7 @@ public class ProjectsImplTest {
     public void testPersistenceNoFile() throws IOException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("i1", "p1");
+        p1.open();
         projects.addProject(p1);
 
         File file = tempFolder.newFile("projects.xml");
@@ -54,6 +57,20 @@ public class ProjectsImplTest {
         projects = new ProjectsImpl();
         projects.loadProjects(file);
         Assert.assertEquals(1, projects.getProjects().length);
+    }
+
+    @Test
+    public void testPersistenceNoFileClosed() throws IOException {
+        ProjectsImpl projects = new ProjectsImpl();
+        ProjectImpl p1 = new ProjectImpl("i1", "p1");
+        projects.addProject(p1);
+
+        File file = tempFolder.newFile("projects.xml");
+        projects.saveProjects(file);
+
+        projects = new ProjectsImpl();
+        projects.loadProjects(file);
+        Assert.assertEquals(0, projects.getProjects().length);
     }
 
     @Test
@@ -93,17 +110,20 @@ public class ProjectsImplTest {
     }
 
     @Test
-    public void testDoesNotCreateNewProjectSameFile() throws IOException {
+    public void testCleanupProjectSameFile() throws IOException {
         ProjectsImpl projects = new ProjectsImpl();
         ProjectImpl p1 = new ProjectImpl("i1", "p1");
-        Assert.assertSame(p1, projects.addOrReplaceProject(p1));
+        projects.addOrReplaceProject(p1);
+        Assert.assertTrue(projects.containsProject(p1));
 
         File file = tempFolder.newFile("p1.gephi");
         p1.setFile(file);
 
         ProjectImpl p2 = new ProjectImpl("i2", "p2");
         p2.setFile(file);
+        projects.addOrReplaceProject(p2);
 
-        Assert.assertSame(p1, projects.addOrReplaceProject(p2));
+        Assert.assertTrue(projects.containsProject(p2));
+        Assert.assertFalse(projects.containsProject(p1));
     }
 }

@@ -356,24 +356,21 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 importer.getClass().getSimpleName()));
         String taskName =
             NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
-        executor.execute(task, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Container container;
-                    if (importer instanceof FileImporter.FileAware && file != null) {
-                        container = controller.importFile(file, importer);
-                    } else {
-                        container = controller.importFile(reader, importer);
-                    }
-
-                    if (container != null) {
-                        container.setSource(containerSource);
-                        results.add(container);
-                    }
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+        executor.execute(task, () -> {
+            try {
+                Container container;
+                if (importer instanceof FileImporter.FileAware && file != null) {
+                    container = controller.importFile(file, importer);
+                } else {
+                    container = controller.importFile(reader, importer);
                 }
+
+                if (container != null) {
+                    container.setSource(containerSource);
+                    results.add(container);
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         }, taskName, errorHandler.createHandler(containerSource));
     }

@@ -363,9 +363,9 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         if (event.getEventType().equals(TimelineModelEvent.EventType.MODEL)) {
             setup(event.getSource());
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.ENABLED)) {
-            enableTimeline(event.getSource());
+            SwingUtilities.invokeLater(() -> enableTimeline(event.getSource()));
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.VALID_BOUNDS)) {
-            enableTimeline(event.getSource());
+            SwingUtilities.invokeLater(() -> enableTimeline(event.getSource()));
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_START)) {
             setPlaying(true);
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_STOP)) {

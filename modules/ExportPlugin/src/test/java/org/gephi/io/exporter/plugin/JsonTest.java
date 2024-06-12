@@ -81,7 +81,41 @@ public class JsonTest {
         exporterJson.setExportColors(true);
         Utils.assertExporterMatch("json/colors.json", exporterJson);
     }
+    
+    @Test
+    public void testPosition() throws IOException {
+                GraphGenerator graphGenerator =
+                GraphGenerator.build().generateTinyGraphWithPosition();
+        Graph graph = graphGenerator.getGraph();
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
+        n1.setColor(Color.CYAN);
+        n2.setColor(new Color(255, 100, 120, 254));
 
+        ExporterJson exporterJson = createExporter(graphGenerator);
+        exporterJson.setExportPosition(true);
+        exporterJson.setNormalize(false);
+
+        Utils.assertExporterMatch("json/position.json", exporterJson);
+    }
+    
+    @Test
+    public void testPositionNormalized() throws IOException {
+                GraphGenerator graphGenerator =
+                GraphGenerator.build().generateTinyGraphWithPosition();
+        Graph graph = graphGenerator.getGraph();
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
+        n1.setColor(Color.CYAN);
+        n2.setColor(new Color(255, 100, 120, 254));
+
+        ExporterJson exporterJson = createExporter(graphGenerator);
+        exporterJson.setExportPosition(true);
+        exporterJson.setNormalize(true);
+
+        Utils.assertExporterMatch("json/position_normalized.json", exporterJson);
+    }
+    
     private static ExporterJson createExporter(GraphGenerator graphGenerator) {
         Workspace workspace = graphGenerator.getWorkspace();
         ExporterJson exporterJson = new ExporterJson();
@@ -92,4 +126,5 @@ public class JsonTest {
         exporterJson.setExportSize(false);
         return exporterJson;
     }
+    
 }

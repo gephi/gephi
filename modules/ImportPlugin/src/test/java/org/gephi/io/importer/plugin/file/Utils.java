@@ -39,6 +39,11 @@ public class Utils {
         return Arrays.stream(nodes).filter(n -> n.getId().equals(id)).findFirst().orElse(null);
     }
 
+    public static EdgeDraft getEdge(Container container, String id) {
+        EdgeDraft[] edges = toEdgesArray(container);
+        return Arrays.stream(edges).filter(n -> n.getId().equals(id)).findFirst().orElse(null);
+    }
+
     public static EdgeDraft[] toEdgesArray(Container container) {
         List<EdgeDraft> result = new ArrayList<>();
         container.getUnloader().getEdges().iterator().forEachRemaining(result::add);

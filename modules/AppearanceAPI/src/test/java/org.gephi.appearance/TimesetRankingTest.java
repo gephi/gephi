@@ -10,9 +10,14 @@ import org.junit.Test;
 
 public class TimesetRankingTest {
 
+    private final Configuration intervalConfiguration = Configuration.builder().timeRepresentation(
+        TimeRepresentation.INTERVAL).build();
+    private final Configuration timestampConfiguration = Configuration.builder().timeRepresentation(
+        TimeRepresentation.TIMESTAMP).build();
+
     @Test
     public void testEmpty() {
-        Graph graph = GraphGenerator.build().getGraph();
+        Graph graph = GraphGenerator.build(timestampConfiguration).getGraph();
         Column column = graph.getModel().defaultColumns().nodeTimeSet();
         TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
 
@@ -22,7 +27,7 @@ public class TimesetRankingTest {
 
     @Test
     public void testMinMax() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().setTimestampSet().getGraph();
+        Graph graph = GraphGenerator.build(timestampConfiguration).generateTinyGraph().setTimestampSet().getGraph();
         Column column = graph.getModel().defaultColumns().nodeTimeSet();
         TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
 
@@ -32,7 +37,7 @@ public class TimesetRankingTest {
 
     @Test
     public void testGetValue() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().setTimestampSet().getGraph();
+        Graph graph = GraphGenerator.build(timestampConfiguration).generateTinyGraph().setTimestampSet().getGraph();
         Column column = graph.getModel().defaultColumns().nodeTimeSet();
         TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
 
@@ -42,10 +47,7 @@ public class TimesetRankingTest {
 
     @Test
     public void testMinMaxInterval() {
-        Configuration configuration = new Configuration();
-        configuration.setTimeRepresentation(TimeRepresentation.INTERVAL);
-
-        Graph graph = GraphGenerator.build(configuration).generateTinyGraph().setIntervalSet().getGraph();
+        Graph graph = GraphGenerator.build(intervalConfiguration).generateTinyGraph().setIntervalSet().getGraph();
         Column column = graph.getModel().defaultColumns().nodeTimeSet();
         TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
 
@@ -55,7 +57,7 @@ public class TimesetRankingTest {
 
     @Test
     public void testMinMaxOtherColumn() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampSetColumn().getGraph();
+        Graph graph = GraphGenerator.build(timestampConfiguration).generateTinyGraph().addTimestampSetColumn().getGraph();
         Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_SET_COLUMN);
         TimesetRankingImpl timesetRanking = new TimesetRankingImpl(column);
 

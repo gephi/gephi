@@ -42,6 +42,7 @@
 
 package org.gephi.io.processor.plugin;
 
+import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -67,27 +68,33 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
     public void process() {
         try {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            //Workspace
             if (workspace == null) {
                 workspace = pc.getCurrentWorkspace();
             }
 
-            if (workspace != null) {
-                pc.openWorkspace(workspace);
+            if (workspace == null) {
+                // Get config
+                Configuration config = createConfiguration(containers[0]);
+
+                workspace = pc.openNewWorkspace(config);
             } else {
-                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
             }
 
             Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
-                processMeta(container, workspace);
-                processConfiguration(container, workspace);
+                Configuration config = createConfiguration(container);
+                if(configurationMatchesExisting(config, workspace)) {
+                    processMeta(container, workspace);
 
-                if (container.getSource() != null) {
-                    pc.setSource(workspace, container.getSource());
+                    if (container.getSource() != null) {
+                        pc.setSource(workspace, container.getSource());
+                    }
+
+                    process(container, workspace);
+                } else {
+                    Progress.progress(progressTicket, AbstractProcessor.calculateWorkUnits(container));
                 }
-
-                process(container, workspace);
             }
             Progress.finish(progressTicket);
         } finally {
