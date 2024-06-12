@@ -494,6 +494,15 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Since 3.11 we need that as the application module doesn't produce a jar, just artifacts -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <allowIncompleteProjects>true</allowIncompleteProjects>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
