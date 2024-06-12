@@ -44,6 +44,7 @@ public class VizEngineGraphCanvasManager {
     private final Workspace workspace;
     private boolean initialized = false;
 
+    private GLWindow glWindow;
     private NewtCanvasAWT glCanvas;
 
     // Engine:
@@ -71,7 +72,7 @@ public class VizEngineGraphCanvasManager {
         final Display display = NewtFactory.createDisplay(null);
         final Screen screen = NewtFactory.createScreen(display, 0);
 
-        final GLWindow glWindow = GLWindow.create(screen, caps);
+        this.glWindow = GLWindow.create(screen, caps);
 
         if (DEBUG) {
             glWindow.setContextCreationFlags(GLContext.CTX_OPTION_DEBUG);
@@ -172,13 +173,10 @@ public class VizEngineGraphCanvasManager {
             engine = null;
         }
 
-        if (glCanvas != null) {
+        if (glWindow != null) {
             component.remove(glCanvas);
-            glCanvas.destroy();
-            final Window newtChild = glCanvas.getNEWTChild();
-            if (newtChild != null) {
-                newtChild.destroy();
-            }
+            glWindow.destroy();
+            glWindow = null;
             glCanvas = null;
         }
 
