@@ -141,7 +141,7 @@
         <gephi.joml.version>1.10.5</gephi.joml.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.7.1</graphstore.version>
+        <graphstore.version>0.7.2-SNAPSHOT</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>

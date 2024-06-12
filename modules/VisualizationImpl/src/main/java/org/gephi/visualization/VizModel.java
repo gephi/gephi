@@ -142,7 +142,9 @@ public class VizModel {
             @Override
             public void run() {
                 if (listeners != null) {
-                    for (PropertyChangeListener l : listeners) {
+                    //Copy to avoid possible concurrent modification:
+                    final PropertyChangeListener[] listenersCopy = listeners.toArray(new PropertyChangeListener[0]);
+                    for (PropertyChangeListener l : listenersCopy) {
                         l.propertyChange(evt);
                     }
                 }
@@ -369,8 +371,11 @@ public class VizModel {
     }
 
     public void firePropertyChange(String propertyName, Object oldvalue, Object newValue) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
-        for (PropertyChangeListener l : listeners) {
+        //Copy to avoid possible concurrent modification:
+        final PropertyChangeListener[] listenersCopy = listeners.toArray(new PropertyChangeListener[0]);
+
+        final PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
+        for (PropertyChangeListener l : listenersCopy) {
             l.propertyChange(evt);
         }
     }
