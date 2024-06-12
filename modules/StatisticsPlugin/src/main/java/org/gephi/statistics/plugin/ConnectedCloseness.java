@@ -113,7 +113,6 @@ public class ConnectedCloseness implements Statistics, LongTask {
             pairs_of_nodes_sampled = get_all_pairs_of_nodes(g);
         }
 
-
         List<Double> connected_pairs = new ArrayList<>();
         for (Edge e : g.getEdges()) {
             Node n1 = e.getSource();
@@ -129,7 +128,7 @@ public class ConnectedCloseness implements Statistics, LongTask {
             max1 = Collections.max(pairs_of_nodes_sampled);
         }
         double max2 = 0;
-        if (pairs_of_nodes_sampled.size()>0) {
+        if (connected_pairs.size()>0) {
             max2 = Collections.max(connected_pairs);
         }
         double[] range = {0, Math.max(max1, max2)};
@@ -152,6 +151,8 @@ public class ConnectedCloseness implements Statistics, LongTask {
             old_C_max = C_max;
             C_max = 0;
             indicators_over_Delta = new ArrayList<IndicatorResults>(distances_index.values());
+            Collections.sort(indicators_over_Delta, (a, b) -> Double.compare(a.Delta, b.Delta));
+
             int i = 0;
             for (IndicatorResults indicators:indicators_over_Delta){
                 C = indicators.C;
@@ -164,6 +165,7 @@ public class ConnectedCloseness implements Statistics, LongTask {
 
             range = new double[] {indicators_over_Delta.get((int) Math.max(0, target_index - 1)).Delta,
                 indicators_over_Delta.get((int) Math.min(indicators_over_Delta.size() - 1, target_index + 1)).Delta};
+
         } while ( (C_max-old_C_max)/C_max >= epsilon/10 );
 
         double Delta_max = find_Delta_max(indicators_over_Delta, epsilon);
