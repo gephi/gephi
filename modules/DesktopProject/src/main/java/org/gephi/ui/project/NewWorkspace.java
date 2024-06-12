@@ -17,12 +17,15 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  *
  * @author mathieu.bastian
  */
 public class NewWorkspace extends javax.swing.JPanel {
+
+    private static final String TIME_REPRESENTATION_SAVED_PREFERENCES = "NewWorkspace_timerepresentation";
 
     /**
      * Creates new form NewWorkspace
@@ -38,8 +41,15 @@ public class NewWorkspace extends javax.swing.JPanel {
     public void setup() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Configuration defaultConfig = graphController.getDefaultConfigurationBuilder().build();
-        timeRepresentationComboBox
-            .setSelectedItem(new TimeRepresentationWrapper(defaultConfig.getTimeRepresentation()));
+
+        // Load preference
+        int savedPreference = NbPreferences.forModule(NewWorkspace.class).getInt(TIME_REPRESENTATION_SAVED_PREFERENCES, -1);
+        if (savedPreference != -1) {
+            timeRepresentationComboBox.setSelectedIndex(savedPreference);
+        } else {
+            timeRepresentationComboBox
+                .setSelectedItem(new TimeRepresentationWrapper(defaultConfig.getTimeRepresentation()));
+        }
 
         ProjectController controller = Lookup.getDefault().lookup(ProjectController.class);
         WorkspaceProvider workspaceProvider = controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
@@ -58,6 +68,10 @@ public class NewWorkspace extends javax.swing.JPanel {
         ProjectController controller = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = controller.newWorkspace(controller.getCurrentProject(), configuration);
         controller.renameWorkspace(workspace, nameTextField.getText());
+
+        // Save preference
+        NbPreferences.forModule(NewWorkspace.class)
+            .putInt(TIME_REPRESENTATION_SAVED_PREFERENCES, timeRepresentationComboBox.getSelectedIndex());
     }
 
     public static ValidationPanel createValidationPanel(NewWorkspace innerPanel) {
