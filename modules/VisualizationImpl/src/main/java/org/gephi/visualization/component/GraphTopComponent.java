@@ -206,15 +206,14 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             return;
         }
 
-        VizEngineGraphCanvasManager manager = workspace.getLookup().lookup(VizEngineGraphCanvasManager.class);
+        VizEngineGraphCanvasManager canvasManager = workspace.getLookup().lookup(VizEngineGraphCanvasManager.class);
 
-        if (manager == null) {
-            manager = new VizEngineGraphCanvasManager(workspace);
-            workspace.add(manager);
-            manager.init(this);
+        if (canvasManager == null) {
+            canvasManager = new VizEngineGraphCanvasManager(workspace);
+            workspace.add(canvasManager);
+            canvasManager.init(this);
         } else {
-            manager.destroy(this);
-            manager.init(this);
+            canvasManager.reinit(this);
         }
 
         // Now that the engine is ready, make sure the VizModel is initialized if already in workspace:

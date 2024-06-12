@@ -30,23 +30,24 @@ import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
 
+    // Normally all of these options should be false
+    // because the engine will auto-detect what's compatible with OpenGL Driver.
     private static final boolean DISABLE_INDIRECT_RENDERING = false;
     private static final boolean DISABLE_INSTANCED_RENDERING = false;
     private static final boolean DISABLE_VAOS = false;
 
-    private static final boolean DEBUG = false;
+    private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE
+            = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
 
-    private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
+    private static final boolean DEBUG = false;
 
     private final Workspace workspace;
     private boolean initialized = false;
 
-    private GLWindow glWindow;
     private NewtCanvasAWT glCanvas;
 
     // Engine:
     private VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
-    private JOGLRenderingTarget renderingTarget = null;
     // Engine state saved for when it's restarted:
     private Vector2fc engineTranslate = null;
     private float engineZoom = 0;
@@ -70,21 +71,22 @@ public class VizEngineGraphCanvasManager {
         final Display display = NewtFactory.createDisplay(null);
         final Screen screen = NewtFactory.createScreen(display, 0);
 
-        glWindow = GLWindow.create(screen, caps);
+        final GLWindow glWindow = GLWindow.create(screen, caps);
 
         if (DEBUG) {
             glWindow.setContextCreationFlags(GLContext.CTX_OPTION_DEBUG);
         }
 
-        this.renderingTarget = new JOGLRenderingTarget(glWindow);
+        final JOGLRenderingTarget renderingTarget = new JOGLRenderingTarget(glWindow);
 
-        this.engine = VizEngineFactory.newEngine(
+        final VizEngine<JOGLRenderingTarget, NEWTEvent> engine = VizEngineFactory.newEngine(
             renderingTarget,
             graphModel,
             Collections.singletonList(
                 new VizEngineJOGLConfigurator()
             )
         );
+        this.engine = engine;
 
         workspace.add(engine);
 
@@ -166,8 +168,8 @@ public class VizEngineGraphCanvasManager {
 
             //TODO: Keep more state of GraphRenderingOptions
             workspace.remove(engine);
+            engine.destroy();
             engine = null;
-            renderingTarget = null;
         }
 
         if (glCanvas != null) {
@@ -181,5 +183,10 @@ public class VizEngineGraphCanvasManager {
         }
 
         initialized = false;
+    }
+
+    public synchronized void reinit(JComponent component) {
+        destroy(component);
+        init(component);
     }
 }

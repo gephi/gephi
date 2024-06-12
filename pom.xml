@@ -141,7 +141,7 @@
         <gephi.joml.version>1.10.5</gephi.joml.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.7.0</graphstore.version>
+        <graphstore.version>0.7.1</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -431,7 +431,7 @@
                 <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
-            
+
             <!-- Viz engine -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
