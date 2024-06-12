@@ -3,12 +3,12 @@ package org.gephi.visualization.component;
 import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
-import com.jogamp.newt.Window;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
@@ -48,7 +48,8 @@ public class VizEngineGraphCanvasManager {
     private NewtCanvasAWT glCanvas;
 
     // Engine:
-    private VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
+    private transient VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
+
     // Engine state saved for when it's restarted:
     private Vector2fc engineTranslate = null;
     private float engineZoom = 0;
@@ -80,17 +81,17 @@ public class VizEngineGraphCanvasManager {
 
         final JOGLRenderingTarget renderingTarget = new JOGLRenderingTarget(glWindow);
 
-        final VizEngine<JOGLRenderingTarget, NEWTEvent> engine = VizEngineFactory.newEngine(
+        this.engine = VizEngineFactory.newEngine(
             renderingTarget,
             graphModel,
             Collections.singletonList(
                 new VizEngineJOGLConfigurator()
             )
         );
-        this.engine = engine;
 
         workspace.add(engine);
 
+        // Previous state for this workspace? keep it:
         if (engineTranslate != null) {
             engine.setTranslate(engineTranslate);
             engine.setZoom(engineZoom);
@@ -110,7 +111,7 @@ public class VizEngineGraphCanvasManager {
         engine.addInputListener(new InputListener<>() {
             @Override
             public boolean processEvent(NEWTEvent inputEvent) {
-                if (inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
+                if (engine != null && inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
                     return vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent);
                 }
 
@@ -139,17 +140,10 @@ public class VizEngineGraphCanvasManager {
 
             @Override
             public int getOrder() {
-                return -100; // Execute before default listener of viz engine (has order = 0)
+                int i = -100;
+                return i; // Execute before default listener of viz engine (has order = 0)
             }
         });
-
-        /*
-        if (!Utilities.isMac()) {
-            newtCanvas = new HighDPIFixCanvas(glWindow);
-        } else {
-            newtCanvas = new NewtCanvasAWT(glWindow);
-        }
-        */
 
         glCanvas = new NewtCanvasAWT(glWindow);
 
@@ -161,20 +155,27 @@ public class VizEngineGraphCanvasManager {
     }
 
     public synchronized void destroy(JComponent component) {
+        if (glCanvas != null) {
+            component.remove(glCanvas);
+            component.revalidate();
+        }
+
         // Keep viz-engine state for when it's restarted:
         if (engine != null) {
+            engine.pause();
+
             engineTranslate = engine.getTranslate();
             engineZoom = engine.getZoom();
             engineBackgroundColor = engine.getBackgroundColor();
 
             //TODO: Keep more state of GraphRenderingOptions
             workspace.remove(engine);
-            engine.destroy();
-            engine = null;
+            //Logger.getLogger("").info("Destroying viz-engine...");
+            //engine.destroy(); // This crashes in windows!!
         }
 
         if (glWindow != null) {
-            component.remove(glCanvas);
+            //Logger.getLogger("").info("Destroying glWindow...");
             glWindow.destroy();
             glWindow = null;
             glCanvas = null;

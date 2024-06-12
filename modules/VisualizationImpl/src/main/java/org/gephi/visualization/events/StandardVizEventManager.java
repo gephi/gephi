@@ -197,16 +197,17 @@ public class StandardVizEventManager implements VizEventManager {
 
     public boolean mouseLeftClick(VizEngine engine) {
         final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
+        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
         final boolean selectionEnabled = VizController.getInstance().getVizConfig().isSelectionEnable();
         final Node[] clickedNodes;
 
         if (selectionEnabled) {
+            clickedNodes = selectionIndex.getSelectedNodes().toArray(new Node[0]);
+        } else {
             clickedNodes = index
                     .getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y)
                     .toArray();
-        } else {
-            clickedNodes = new Node[0];
         }
 
         //Node Left click:
@@ -251,16 +252,16 @@ public class StandardVizEventManager implements VizEventManager {
     public boolean mouseLeftPress(VizEngine engine) {
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
-        handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
         final VizEventTypeHandler nodeLefPressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
-        if (nodeLefPressHandler.hasListeners()) {            //Check if some node are selected
+        if (nodeLefPressHandler.hasListeners()) {
+            //Check if some node are selected
             final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
             if (!selectedNodes.isEmpty() && isMouseOverAnyNode(engine)) {
                 return nodeLefPressHandler.dispatch(toArray(selectedNodes));
             }
         }
 
-        return false;
+        return handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
     }
 
     private Node[] toArray(Collection<Node> selectedNodes) {
@@ -290,17 +291,16 @@ public class StandardVizEventManager implements VizEventManager {
     public boolean mouseLeftPressing(VizEngine engine) {
         final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
 
-        final VizEventTypeHandler nodeLeftPressingHandler
-            = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+        final VizEventTypeHandler nodeLeftPressingHandler = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
         if (nodeLeftPressingHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (!selectedNodes.isEmpty()) {
+            if (!selectedNodes.isEmpty() && isMouseOverAnyNode(engine)) {
                 return nodeLeftPressingHandler.dispatch(toArray(selectedNodes));
             }
         }
 
-        return false;
+        return handlers[VizEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
     }
 
     public boolean startDrag(VizEngine engine) {
