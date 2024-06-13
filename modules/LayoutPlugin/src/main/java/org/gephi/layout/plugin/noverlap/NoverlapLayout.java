@@ -42,6 +42,7 @@
 
 package org.gephi.layout.plugin.noverlap;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     protected boolean cancel;
     protected Graph graph;
-    private double speed;
     private double ratio;
     private double margin;
     private double xmin;
@@ -89,13 +89,12 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
-            //Reset Layout Data
+            // Reset Layout Data
             for (Node n : graph.getNodes()) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {
                     n.setLayoutData(new NoverlapLayoutData());
                 }
                 NoverlapLayoutData layoutData = n.getLayoutData();
-                layoutData.neighbours.clear();
                 layoutData.dx = 0;
                 layoutData.dy = 0;
             }
@@ -129,95 +128,113 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             double yheight = this.ymax - this.ymin;
             double xcenter = (this.xmin + this.xmax) / 2;
             double ycenter = (this.ymin + this.ymax) / 2;
-            double securityRatio = 1.1;
+            double securityRatio = 1.05;
             this.xmin = xcenter - securityRatio * xwidth / 2;
             this.xmax = xcenter + securityRatio * xwidth / 2;
             this.ymin = ycenter - securityRatio * yheight / 2;
             this.ymax = ycenter + securityRatio * yheight / 2;
 
-            SpatialGrid grid = new SpatialGrid();
+            // Estimate necessary number of columns
+            double area = xwidth*yheight;
+            double areaPerNode = area / graph.getNodeCount();
+            // Explanation for the weird line below:
+            // If nodes were equally distributed in space, we would like to have grid cells that contain
+            // a small number of nodes, maybe about a dozen or something. We would like to balance the number of
+            // nodes per cell with the number of cells.
+            // But we basically know that in practice, the nodes are very concentrated. Because of this, the practical
+            // density is probably much higher than the average density. So we should lower the grid size consequently.
+            // In the end, we can eyeball this as targeting the same order of magnitude, hence the formula below.
+            // I keep it as such to make explicit that there is a ratio, even if we keep it to 1.
+            double targetAreaPerNode = 1. * areaPerNode;
+            double targetGridSize = Math.sqrt(targetAreaPerNode);
+            int columns_count = (int) Math.ceil(Math.min(xwidth, yheight) / targetGridSize);
+
+            // Create the grid where neighborhood (potential overlap) is computed
+            SpatialGrid grid = new SpatialGrid(columns_count);
 
             // Put nodes in their boxes
             for (Node n : graph.getNodes()) {
                 grid.add(n);
             }
 
-            // Now we have cells with nodes in it. Nodes that are in the same cell, or in adjacent cells, are tested for repulsion.
+            // Now we have cells with nodes in it. Nodes that are in the same cell are tested for repulsion.
             // But they are not repulsed several times, even if they are in several cells...
             // So we build a relation of proximity between nodes.
-            // Build proximities
+            // Build proximity pairs
+            Map<String, Node[]> proximities = new HashMap<>();
             for (int row = 0; row < grid.countRows() && !cancel; row++) {
                 for (int col = 0; col < grid.countColumns() && !cancel; col++) {
                     for (Node n : grid.getContent(row, col)) {
-                        NoverlapLayoutData lald = n.getLayoutData();
+                        int nid = n.getStoreId();
+                        for (Node n2 : grid.getContent(row, col)) {
+                            int n2id = n2.getStoreId();
+                            if (n2id < nid) {
+                                Node[] nodePair = new Node[2];
+                                nodePair[0] = n;
+                                nodePair[1] = n2;
 
-                        // For node n in the box "box"...
-                        // We search nodes that are in the boxes that are adjacent or the same.
-                        for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
-                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1);
-                                 col2++) {
-                                for (Node n2 : grid.getContent(row2, col2)) {
-                                    if (n2 != n && !lald.neighbours.contains(n2)) {
-                                        lald.neighbours.add(n2);
-                                    }
-                                }
+                                proximities.put(nid+"|"+n2id, nodePair);
                             }
                         }
                     }
                 }
             }
 
-            // Proximities are built !
-            // Apply repulsion force - along proximities...
-            NodeIterable nodesIterable = graph.getNodes();
-            for (Node n1 : nodesIterable) {
-                NoverlapLayoutData lald = n1.getLayoutData();
-                for (Node n2 : lald.neighbours) {
-                    float n1x = n1.x();
-                    float n1y = n1.y();
-                    float n2x = n2.x();
-                    float n2y = n2.y();
-                    float n1radius = n1.size();
-                    float n2radius = n2.size();
+            // Move colliding nodes as registered in proximity
+            int collisions = 0;
+            for (Map.Entry<String, Node[]> entry : proximities.entrySet()) {
+                Node[] nodePair = entry.getValue();
+                Node n1 = nodePair[0];
+                Node n2 = nodePair[1];
 
-                    // Check sizes (spheric)
-                    double xDist = n2x - n1x;
-                    double yDist = n2y - n1y;
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
-                    boolean collision = dist < (n1radius * ratio + margin) + (n2radius * ratio + margin);
-                    if (collision) {
-                        setConverged(false);
-                        // n1 repulses n2, as strongly as it is big
-                        NoverlapLayoutData layoutData = n2.getLayoutData();
-                        double f = 1. + n1.size();
-                        if (dist > 0) {
-                            layoutData.dx += xDist / dist * f;
-                            layoutData.dy += yDist / dist * f;
-                        } else {
-                            // Same exact position, divide by zero impossible: jitter
-                            layoutData.dx += 0.01 * (0.5 - Math.random());
-                            layoutData.dy += 0.01 * (0.5 - Math.random());
-                        }
-                    }
-                    if (cancel) {
-                        break;
-                    }
+                float n1x = n1.x();
+                float n1y = n1.y();
+                float n2x = n2.x();
+                float n2y = n2.y();
+                float n1radius = (float) (n1.size() * ratio + margin);
+                float n2radius = (float) (n2.size() * ratio + margin);
+                float n1Weight = n1radius * n1radius;
+                float n2Weight = n2radius * n2radius;
+                float n1Ratio = n2Weight / (n1Weight + n2Weight);
+                float n2Ratio = 1-n1Ratio;
+
+                // Check sizes
+                double xDist = n2x - n1x;
+                double yDist = n2y - n1y;
+                double angle = Math.atan2(yDist, xDist);
+                double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+                double overlap = n1radius + n2radius - dist;
+                boolean collision = overlap > 0;
+                if (collision) {
+                    overlap += 0.05; // We need to overshoot a bit
+                    collisions += 1;
+                    double xOverlap = 1. * overlap * Math.cos(angle);
+                    double yOverlap = 1. * overlap * Math.sin(angle);
+
+                    // n1 and n2 move each other of part of the overlap
+                    NoverlapLayoutData n1ldata = n1.getLayoutData();
+                    n1ldata.dx -= n1Ratio * xOverlap;
+                    n1ldata.dy -= n1Ratio * yOverlap;
+
+                    NoverlapLayoutData n2ldata = n2.getLayoutData();
+                    n2ldata.dx += n2Ratio * xOverlap;
+                    n2ldata.dy += n2Ratio * yOverlap;
                 }
+
                 if (cancel) {
-                    nodesIterable.doBreak();
                     break;
                 }
             }
 
-            // apply forces
+            if (collisions > 0) {
+                setConverged(false);
+            }
+
             for (Node n : graph.getNodes()) {
                 NoverlapLayoutData layoutData = n.getLayoutData();
                 if (!n.isFixed()) {
-                    layoutData.dx *= 0.1 * speed;
-                    layoutData.dy *= 0.1 * speed;
                     float x = n.x() + layoutData.dx;
                     float y = n.y() + layoutData.dy;
-
                     n.setX(x);
                     n.setY(y);
                 }
@@ -245,12 +262,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         final String NOVERLAP_CATEGORY = "Noverlap";
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
-        }
-        try {
-            properties.add(LayoutProperty.createProperty(
                 this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -266,17 +277,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     @Override
     public void resetPropertiesValues() {
-        setSpeed(3.);
-        setRatio(1.2);
-        setMargin(5.);
-    }
-
-    public Double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(Double speed) {
-        this.speed = speed;
+        setRatio(1.1);
+        setMargin(2.5);
     }
 
     public Double getRatio() {
@@ -342,11 +344,21 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     private class SpatialGrid {
 
         //Param
-        private final int COLUMNS_ROWS = 20;
+        private int COLUMNS_ROWS = 20;
         //Data
         private final Map<Cell, List<Node>> data = new HashMap<>();
 
         public SpatialGrid() {
+            for (int row = 0; row < COLUMNS_ROWS; row++) {
+                for (int col = 0; col < COLUMNS_ROWS; col++) {
+                    List<Node> localnodes = new ArrayList<>();
+                    data.put(new Cell(row, col), localnodes);
+                }
+            }
+        }
+
+        public SpatialGrid(int columns_rows) {
+            COLUMNS_ROWS = columns_rows;
             for (int row = 0; row < COLUMNS_ROWS; row++) {
                 for (int col = 0; col < COLUMNS_ROWS; col++) {
                     List<Node> localnodes = new ArrayList<>();
@@ -370,7 +382,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         public void add(Node node) {
             float x = node.x();
             float y = node.y();
-            float radius = node.size();
+            float radius = (float) (node.size() * ratio + margin);
 
             // Get the rectangle occupied by the node
             double nxmin = x - (radius * ratio + margin);
