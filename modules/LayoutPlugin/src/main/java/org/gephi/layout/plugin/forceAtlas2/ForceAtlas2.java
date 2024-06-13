@@ -89,15 +89,12 @@ public class ForceAtlas2 implements Layout {
     private int currentThreadCount;
     private Region rootRegion;
     private ExecutorService pool;
-    private long duration = 0;
+    private long durationRepulsion = 0;
+    private long durationAttraction = 0;
 
     public ForceAtlas2(ForceAtlas2Builder layoutBuilder) {
         this.layoutBuilder = layoutBuilder;
         this.threadCount = Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
-    }
-
-    public long getDuration() {
-        return duration;
     }
 
     @Override
@@ -148,8 +145,6 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void goAlgo() {
 
-        long start = System.currentTimeMillis();
-
         // Initialize graph data
         if (graphModel == null) {
             return;
@@ -176,6 +171,8 @@ public class ForceAtlas2 implements Layout {
                 nLayout.dx = 0;
                 nLayout.dy = 0;
             }
+
+            long startRepulsion = System.currentTimeMillis();
 
             // If Barnes Hut active, initialize root region
             if (isBarnesHutOptimize()) {
@@ -218,10 +215,12 @@ public class ForceAtlas2 implements Layout {
                 }
             }
 
-            long endOfTask = System.currentTimeMillis();
-            duration = duration + (endOfTask - start);
+            long endOfRepulsion = System.currentTimeMillis();
+            durationRepulsion = durationRepulsion + (endOfRepulsion - startRepulsion);
 
             // Attraction
+            long startAttraction = System.currentTimeMillis();
+
             AttractionForce Attraction = ForceFactory.builder
                     .buildAttraction(isLinLogMode(), isOutboundAttractionDistribution(), isAdjustSizes(),
                             1 * ((isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)));
@@ -282,6 +281,9 @@ public class ForceAtlas2 implements Layout {
                     }
                 }
             }
+
+            long endOfAttraction = System.currentTimeMillis();
+            durationAttraction = durationAttraction + (endOfAttraction - startAttraction);
 
             // Auto adjust speed
             double totalSwinging = 0d;  // How much irregular movement
@@ -520,6 +522,16 @@ public class ForceAtlas2 implements Layout {
 
         return properties.toArray(new LayoutProperty[0]);
     }
+
+    public long getDurationRepulsion() {
+        return durationRepulsion;
+    }
+
+    public long getDurationAttraction() {
+        return durationAttraction;
+    }
+    
+    
 
     @Override
     public void resetPropertiesValues() {

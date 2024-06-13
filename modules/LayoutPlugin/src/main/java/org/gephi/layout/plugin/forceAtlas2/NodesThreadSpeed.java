@@ -41,8 +41,10 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout.plugin.forceAtlas2;
 
-import org.gephi.graph.api.Node;
+import java.util.stream.IntStream;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
 
 /**
  * @author Mathieu Jacomy
@@ -50,6 +52,7 @@ import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
 public class NodesThreadSpeed implements Runnable {
 
     private final double[] nodesInfo;
+    private final int[] nodesIndicesToIndexInNodesInfoArray;
     private final int from;
     private final int to;
     private final RegionSpeed rootRegion;
@@ -61,9 +64,10 @@ public class NodesThreadSpeed implements Runnable {
     private final double scaling;
     private final int VALUES_PER_NODE;
 
-    public NodesThreadSpeed(double[] nodesInfo, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
+    public NodesThreadSpeed(double[] nodesInfo, int[] nodesIndicesToIndexInNodesInfoArray, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
             RepulsionForce gravityForce, double scaling, RegionSpeed rootRegion, RepulsionForce repulsion, int VALUES_PER_NODE) {
         this.nodesInfo = nodesInfo;
+        this.nodesIndicesToIndexInNodesInfoArray = nodesIndicesToIndexInNodesInfoArray;
         this.from = from;
         this.to = to;
         this.rootRegion = rootRegion;
@@ -79,15 +83,21 @@ public class NodesThreadSpeed implements Runnable {
     @Override
     public void run() {
         // Repulsion
-        for (int n1Index = from; n1Index < to; n1Index += VALUES_PER_NODE) {
-            if (barnesHutOptimize) {
-//                rootRegion.applyForce(n, repulsion, barnesHutTheta);
-            } else {
-                for (int n2Index = 0; n2Index < n1Index; n2Index += VALUES_PER_NODE) {
-                    repulsion.applyClassicRepulsion(nodesInfo, n1Index, n2Index);
-                }
-            }
-            gravityForce.applyGravity(nodesInfo, n1Index, gravity / scaling);
+        if (barnesHutOptimize) {
+            IntStream.range(from, to).parallel().forEach(n1Index -> {
+                int node1IndexInNodesInfo = nodesIndicesToIndexInNodesInfoArray[n1Index];
+                rootRegion.applyForce(nodesInfo, node1IndexInNodesInfo, repulsion, barnesHutTheta);
+                gravityForce.applyGravity(nodesInfo, node1IndexInNodesInfo, gravity / scaling);
+            });
+        } else {
+            IntStream.range(from, to).parallel().forEach(n1Index -> {
+                int node1IndexInNodesInfo = nodesIndicesToIndexInNodesInfoArray[n1Index];
+                IntStream.range(0, n1Index).parallel().forEach(n2Index -> {
+                    int node2IndexInNodesInfo = nodesIndicesToIndexInNodesInfoArray[n2Index];
+                    repulsion.applyClassicRepulsion(nodesInfo, node1IndexInNodesInfo, node2IndexInNodesInfo);
+                });
+                gravityForce.applyGravity(nodesInfo, node1IndexInNodesInfo, gravity / scaling);
+            });
         }
     }
 }

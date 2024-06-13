@@ -39,13 +39,10 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-
 package org.gephi.layout.plugin.forceAtlas2;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.List;
-import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
 
 /**
@@ -57,35 +54,36 @@ public class RegionSpeed {
 
     private final int[] nodesinRegion;
     private final double[] nodesInfo;
-    private final List<RegionSpeed> subregions = new ArrayList<>();
+    private final ArrayDeque<RegionSpeed> subregions = new ArrayDeque<>();
     private double mass;
     private double massCenterX;
     private double massCenterY;
     private double size;
+    private final int numberOfNodesInRegion;
 
-    public RegionSpeed(double[] nodesInfo, int[] nodes) {
+    public RegionSpeed(double[] nodesInfo, int[] nodes, int numberOfNodesInRegion) {
         this.nodesinRegion = nodes;
         this.nodesInfo = nodesInfo;
+        this.numberOfNodesInRegion = numberOfNodesInRegion;
         updateMassAndGeometry();
     }
-
-    public RegionSpeed(double[] nodesInfo, ArrayList<Integer> nodes) {
-        this.nodesInfo = nodesInfo;
-        this.nodesinRegion = nodes.stream().mapToInt(Integer::intValue).toArray();
-        updateMassAndGeometry();
-    }
-
 
     private void updateMassAndGeometry() {
-        if (nodesinRegion.length > 1) {
-            // Compute Mass
+        if (numberOfNodesInRegion > 1) {
             mass = 0;
             double massSumX = 0;
             double massSumY = 0;
             for (int n : nodesinRegion) {
-                mass += nodesInfo[n+1];
-                massSumX += nodesInfo[n+2] * nodesInfo[n+1];
-                massSumY += nodesInfo[n+3] * nodesInfo[n+1];
+                if (n == 0) {
+                    continue;
+                }
+                double massElement = nodesInfo[n + 1];
+                double xElement = nodesInfo[n + 2];
+                double yElement = nodesInfo[n + 3];
+
+                mass += massElement;
+                massSumX += xElement * massElement;
+                massSumY += yElement * massElement;
             }
             massCenterX = massSumX / mass;
             massCenterY = massSumY / mass;
@@ -93,84 +91,139 @@ public class RegionSpeed {
             // Compute size
             size = Double.MIN_VALUE;
             for (int n : nodesinRegion) {
+                if (n == 0) {
+                    continue;
+                }
                 double distance = Math.sqrt(
-                    (nodesInfo[n+2] - massCenterX) * (nodesInfo[n+2] - massCenterX) + (nodesInfo[n+3] - massCenterY) * (nodesInfo[n+3] - massCenterY));
+                        (nodesInfo[n + 2] - massCenterX) * (nodesInfo[n + 2] - massCenterX) + (nodesInfo[n + 3] - massCenterY) * (nodesInfo[n + 3] - massCenterY));
                 size = Math.max(size, 2 * distance);
             }
         }
     }
 
     public synchronized void buildSubRegions() {
-        if (nodesinRegion.length > 1) {
-            ArrayList<Integer> leftNodes = new ArrayList<>();
-            ArrayList<Integer> rightNodes = new ArrayList<>();
+        int sizeLeft = 0;
+        int sizeRight = 0;
+        int sizeBottomLeft = 0;
+        int sizeTopLeft = 0;
+        int sizeBottomRight = 0;
+        int sizeTopRight = 0;
+        if (numberOfNodesInRegion > 1) {
+            int[] leftNodes = new int[numberOfNodesInRegion];
+            int[] rightNodes = new int[numberOfNodesInRegion];
+            int i = 0;
+            int j = 0;
+            
             for (int n : nodesinRegion) {
-                ArrayList<Integer> nodesColumn = (nodesInfo[n+2] < massCenterX) ? (leftNodes) : (rightNodes);
-                nodesColumn.add(n);
+                if (n == 0) {
+                    continue;
+                }
+                boolean nodeIsOnLeft = nodesInfo[n + 2] < massCenterX;
+                if (nodeIsOnLeft) {
+                    leftNodes[i++] = n;
+                    sizeLeft++;
+                } else {
+                    rightNodes[j++] = n;
+                    sizeRight++;
+                }
             }
 
-            ArrayList<Integer> topleftNodes = new ArrayList<>();
-            ArrayList<Integer> bottomleftNodes = new ArrayList<>();
-            for (Integer n : leftNodes) {
-                ArrayList<Integer> nodesLine = (nodesInfo[n+3] < massCenterY) ? (topleftNodes) : (bottomleftNodes);
-                nodesLine.add(n);
+            i = 0;
+            j = 0;
+            int[] topleftNodes = new int[numberOfNodesInRegion];
+            int[] bottomleftNodes = new int[numberOfNodesInRegion];
+            for (int n : leftNodes) {
+                if (n == 0) {
+                    continue;
+                }
+                boolean nodeIsOnTop = nodesInfo[n + 3] < massCenterY;
+                if (nodeIsOnTop) {
+                    topleftNodes[i++] = n;
+                    sizeTopLeft++;
+                } else {
+                    bottomleftNodes[j++] = n;
+                    sizeBottomLeft++;
+                }
             }
+            topleftNodes = Arrays.copyOf(topleftNodes, i);
+            bottomleftNodes = Arrays.copyOf(bottomleftNodes, j);
 
-            ArrayList<Integer> bottomrightNodes = new ArrayList<>();
-            ArrayList<Integer> toprightNodes = new ArrayList<>();
-            for (Integer n : rightNodes) {
-                ArrayList<Integer> nodesLine = (nodesInfo[n+3] < massCenterY) ? (toprightNodes) : (bottomrightNodes);
-                nodesLine.add(n);
+            i = 0;
+            j = 0;
+            int[] toprightNodes = new int[numberOfNodesInRegion];
+            int[] bottomrightNodes = new int[numberOfNodesInRegion];
+            for (int n : rightNodes) {
+                if (n == 0) {
+                    continue;
+                }
+                boolean nodeIsOnTop = nodesInfo[n + 3] < massCenterY;
+                if (nodeIsOnTop) {
+                    toprightNodes[i++] = n;
+                    sizeTopRight++;
+                } else {
+                    bottomrightNodes[j++] = n;
+                    sizeBottomRight++;
+                }
             }
+            toprightNodes = Arrays.copyOf(toprightNodes, i);
+            bottomrightNodes = Arrays.copyOf(bottomrightNodes, j);
 
-            if (!topleftNodes.isEmpty()) {
-                if (topleftNodes.size() < nodesinRegion.length) {
-                    RegionSpeed subregion = new RegionSpeed( this.nodesInfo, topleftNodes);
+            if (sizeTopLeft > 0) {
+                if (sizeTopLeft < numberOfNodesInRegion) {
+                    RegionSpeed subregion = new RegionSpeed(this.nodesInfo, topleftNodes, sizeTopLeft);
                     subregions.add(subregion);
                 } else {
-                    for (Integer n : topleftNodes) {
-                        ArrayList<Integer> oneNodeList = new ArrayList<>();
-                        oneNodeList.add(n);
-                        RegionSpeed subregion = new RegionSpeed( this.nodesInfo, oneNodeList);
+                    for (int n : topleftNodes) {
+                        if (n == 0) {
+                            continue;
+                        }
+                        int[] oneNode = new int[]{n};
+                        RegionSpeed subregion = new RegionSpeed(this.nodesInfo, oneNode, 1);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (!bottomleftNodes.isEmpty()) {
-                if (bottomleftNodes.size() < nodesinRegion.length) {
-                    RegionSpeed subregion = new RegionSpeed( this.nodesInfo, bottomleftNodes);
+            if (sizeBottomLeft > 0) {
+                if (sizeBottomLeft < numberOfNodesInRegion) {
+                    RegionSpeed subregion = new RegionSpeed(this.nodesInfo, bottomleftNodes, sizeBottomLeft);
                     subregions.add(subregion);
                 } else {
-                    for (Integer n : bottomleftNodes) {
-                        ArrayList<Integer> oneNodeList = new ArrayList<>();
-                        oneNodeList.add(n);
-                        RegionSpeed subregion = new RegionSpeed( this.nodesInfo, oneNodeList);
+                    for (int n : bottomleftNodes) {
+                        if (n == 0) {
+                            continue;
+                        }
+                        int[] oneNode = new int[]{n};
+                        RegionSpeed subregion = new RegionSpeed(this.nodesInfo, oneNode, 1);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (!bottomrightNodes.isEmpty()) {
-                if (bottomrightNodes.size() < nodesinRegion.length) {
-                    RegionSpeed subregion = new RegionSpeed( this.nodesInfo, bottomrightNodes);
+            if (sizeBottomRight > 0) {
+                if (sizeBottomRight < numberOfNodesInRegion) {
+                    RegionSpeed subregion = new RegionSpeed(this.nodesInfo, bottomrightNodes, sizeBottomRight);
                     subregions.add(subregion);
                 } else {
-                    for (Integer n : bottomrightNodes) {
-                        ArrayList<Integer> oneNodeList = new ArrayList<>();
-                        oneNodeList.add(n);
-                        RegionSpeed subregion = new RegionSpeed( this.nodesInfo, oneNodeList);
+                    for (int n : bottomrightNodes) {
+                        if (n == 0) {
+                            continue;
+                        }
+                        int[] oneNode = new int[]{n};
+                        RegionSpeed subregion = new RegionSpeed(this.nodesInfo, oneNode, 1);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (!toprightNodes.isEmpty()) {
-                if (toprightNodes.size() < nodesinRegion.length) {
-                    RegionSpeed subregion = new RegionSpeed( this.nodesInfo, toprightNodes);
+            if (sizeTopRight > 0) {
+                if (sizeTopRight < numberOfNodesInRegion) {
+                    RegionSpeed subregion = new RegionSpeed(this.nodesInfo, toprightNodes, sizeTopRight);
                     subregions.add(subregion);
                 } else {
-                    for (Integer n : toprightNodes) {
-                        ArrayList<Integer> oneNodeList = new ArrayList<>();
-                        oneNodeList.add(n);
-                        RegionSpeed subregion = new RegionSpeed( this.nodesInfo, oneNodeList);
+                    for (int n : toprightNodes) {
+                        if (n == 0) {
+                            continue;
+                        }
+                        int[] oneNode = new int[]{n};
+                        RegionSpeed subregion = new RegionSpeed(this.nodesInfo, oneNode, 1);
                         subregions.add(subregion);
                     }
                 }
@@ -183,11 +236,10 @@ public class RegionSpeed {
     }
 
     public void applyForce(double[] nodesInfo, int nodeIndex, RepulsionForce repulsionForce, double theta) {
-        if (nodesinRegion.length < 2) {
+        if (numberOfNodesInRegion < 2) {
             repulsionForce.applyClassicRepulsion(nodesInfo, nodeIndex, nodesinRegion[0]);
         } else {
-            double distance = Math.sqrt(
-                (nodesInfo[nodeIndex+2] - massCenterX) * (nodesInfo[nodeIndex+2] - massCenterX) + (nodesInfo[nodeIndex+3] - massCenterY) * (nodesInfo[nodeIndex+3] - massCenterY));
+            double distance = Math.sqrt((nodesInfo[nodeIndex + 2] - massCenterX) * (nodesInfo[nodeIndex + 2] - massCenterX) + (nodesInfo[nodeIndex + 3] - massCenterY) * (nodesInfo[nodeIndex + 3] - massCenterY));
             if (distance * theta > size) {
                 repulsionForce.applyBarnesHutRepulsion(nodesInfo, nodeIndex, this);
             } else {
