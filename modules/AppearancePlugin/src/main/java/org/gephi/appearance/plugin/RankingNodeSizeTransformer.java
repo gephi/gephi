@@ -60,11 +60,6 @@ public class RankingNodeSizeTransformer extends RankingSizeTransformer<Node> {
     }
 
     @Override
-    public boolean isNode() {
-        return true;
-    }
-
-    @Override
     public boolean isEdge() {
         return false;
     }
