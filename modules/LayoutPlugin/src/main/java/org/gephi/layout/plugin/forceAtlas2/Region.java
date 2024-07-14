@@ -100,25 +100,17 @@ public class Region {
 
     public synchronized void buildSubRegions() {
         if (nodes.size() > 1) {
-            ArrayList<Node> leftNodes = new ArrayList<>();
-            ArrayList<Node> rightNodes = new ArrayList<>();
-            for (Node n : nodes) {
-                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? (leftNodes) : (rightNodes);
-                nodesColumn.add(n);
-            }
 
             ArrayList<Node> topleftNodes = new ArrayList<>();
             ArrayList<Node> bottomleftNodes = new ArrayList<>();
-            for (Node n : leftNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes);
-                nodesLine.add(n);
-            }
-
+            
             ArrayList<Node> bottomrightNodes = new ArrayList<>();
             ArrayList<Node> toprightNodes = new ArrayList<>();
-            for (Node n : rightNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes);
-                nodesLine.add(n);
+            for (Node n : nodes) {
+                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? 
+                        ((n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes)): 
+                        ((n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes));
+                nodesColumn.add(n);
             }
 
             if (topleftNodes.size() > 0) {
