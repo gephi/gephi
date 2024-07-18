@@ -41,8 +41,8 @@
  */
 package org.gephi.layout.plugin.forceAtlas2;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
 
 /**
@@ -53,15 +53,16 @@ import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
 public class RegionSpeed {
 
     private final int[] nodesinRegion;
-    private final double[] nodesInfo;
-    private final ArrayDeque<RegionSpeed> subregions = new ArrayDeque<>();
-    private double mass;
-    private double massCenterX;
-    private double massCenterY;
-    private double size;
+    private final float[] nodesInfo;
+    private final ConcurrentLinkedDeque<RegionSpeed> subregions = new ConcurrentLinkedDeque<>();
+    private float mass;
+    private float massCenterX;
+    private float massCenterY;
+    private float size;
+    private float sizeSquared;
     private final int numberOfNodesInRegion;
 
-    public RegionSpeed(double[] nodesInfo, int[] nodes, int numberOfNodesInRegion) {
+    public RegionSpeed(float[] nodesInfo, int[] nodes, int numberOfNodesInRegion) {
         this.nodesinRegion = nodes;
         this.nodesInfo = nodesInfo;
         this.numberOfNodesInRegion = numberOfNodesInRegion;
@@ -71,15 +72,15 @@ public class RegionSpeed {
     private void updateMassAndGeometry() {
         if (numberOfNodesInRegion > 1) {
             mass = 0;
-            double massSumX = 0;
-            double massSumY = 0;
+            float massSumX = 0;
+            float massSumY = 0;
             for (int n : nodesinRegion) {
                 if (n == 0) {
                     continue;
                 }
-                double massElement = nodesInfo[n + 1];
-                double xElement = nodesInfo[n + 2];
-                double yElement = nodesInfo[n + 3];
+                float massElement = nodesInfo[n + 1];
+                float xElement = nodesInfo[n + 2];
+                float yElement = nodesInfo[n + 3];
 
                 mass += massElement;
                 massSumX += xElement * massElement;
@@ -89,19 +90,21 @@ public class RegionSpeed {
             massCenterY = massSumY / mass;
 
             // Compute size
-            size = Double.MIN_VALUE;
+            size = Float.MIN_VALUE;
             for (int n : nodesinRegion) {
                 if (n == 0) {
                     continue;
                 }
-                double distance = Math.sqrt(
-                        (nodesInfo[n + 2] - massCenterX) * (nodesInfo[n + 2] - massCenterX) + (nodesInfo[n + 3] - massCenterY) * (nodesInfo[n + 3] - massCenterY));
-                size = Math.max(size, 2 * distance);
+                float deltaX = nodesInfo[n + 2] - massCenterX;
+                float deltaY = nodesInfo[n + 3] - massCenterY;
+                size = Math.max(size, deltaX * deltaX + deltaY * deltaY);
             }
+            size = 2 * (float) Math.sqrt(size);
+            sizeSquared = size * size;
         }
     }
 
-    public synchronized void buildSubRegions() {
+    public void buildSubRegions() {
         int sizeLeft = 0;
         int sizeRight = 0;
         int sizeBottomLeft = 0;
@@ -113,7 +116,7 @@ public class RegionSpeed {
             int[] rightNodes = new int[numberOfNodesInRegion];
             int i = 0;
             int j = 0;
-            
+
             for (int n : nodesinRegion) {
                 if (n == 0) {
                     continue;
@@ -235,42 +238,44 @@ public class RegionSpeed {
         }
     }
 
-    public void applyForce(double[] nodesInfo, int nodeIndex, RepulsionForce repulsionForce, double theta) {
+    public void applyForce(float[] nodesInfo, int nodeIndex, RepulsionForce repulsionForce, float thetaSquared) {
         if (numberOfNodesInRegion < 2) {
             repulsionForce.applyClassicRepulsion(nodesInfo, nodeIndex, nodesinRegion[0]);
         } else {
-            double distance = Math.sqrt((nodesInfo[nodeIndex + 2] - massCenterX) * (nodesInfo[nodeIndex + 2] - massCenterX) + (nodesInfo[nodeIndex + 3] - massCenterY) * (nodesInfo[nodeIndex + 3] - massCenterY));
-            if (distance * theta > size) {
-                repulsionForce.applyBarnesHutRepulsion(nodesInfo, nodeIndex, this);
+            float xDist = nodesInfo[nodeIndex + 2] - massCenterX;
+            float yDist = nodesInfo[nodeIndex + 3] - massCenterY;
+            float distSquared = xDist * xDist + yDist * yDist;
+            if (distSquared * thetaSquared > sizeSquared) {
+                repulsionForce.applyBarnesHutRepulsion(nodesInfo, nodeIndex, this, distSquared, xDist, yDist);
             } else {
                 for (RegionSpeed subregion : subregions) {
-                    subregion.applyForce(nodesInfo, nodeIndex, repulsionForce, theta);
+                    subregion.applyForce(nodesInfo, nodeIndex, repulsionForce, thetaSquared);
                 }
             }
         }
     }
 
-    public double getMass() {
+    public float getMass() {
         return mass;
     }
 
-    public void setMass(double mass) {
+    public void setMass(float mass) {
         this.mass = mass;
     }
 
-    public double getMassCenterX() {
+    public float getMassCenterX() {
         return massCenterX;
     }
 
-    public void setMassCenterX(double massCenterX) {
+    public void setMassCenterX(float massCenterX) {
         this.massCenterX = massCenterX;
     }
 
-    public double getMassCenterY() {
+    public float getMassCenterY() {
         return massCenterY;
     }
 
-    public void setMassCenterY(double massCenterY) {
+    public void setMassCenterY(float massCenterY) {
         this.massCenterY = massCenterY;
     }
 }

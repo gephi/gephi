@@ -12,13 +12,13 @@ import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.AttractionForce;
  */
 public class EdgeSpeedProcessor implements Runnable {
 
-    private final double[] nodesInfo;
+    private final float[] nodesInfo;
     private final AttractionForce attraction;
     private final int sourceNodeIndexInNodeInfo;
     private final int targetNodeIndexInNodeInfo;
-    private final double edgeWeight;
+    private final float edgeWeight;
 
-    public EdgeSpeedProcessor(AttractionForce attraction, double[] nodesInfo, int sourceNodeIndexInNodeInfo, int targetNodeIndexInNodeInfo, double edgeWeight) {
+    public EdgeSpeedProcessor(AttractionForce attraction, float[] nodesInfo, int sourceNodeIndexInNodeInfo, int targetNodeIndexInNodeInfo, float edgeWeight) {
         this.nodesInfo = nodesInfo;
         this.attraction = attraction;
         this.sourceNodeIndexInNodeInfo = sourceNodeIndexInNodeInfo;

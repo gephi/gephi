@@ -41,9 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout.plugin.forceAtlas2;
 
-import java.util.stream.IntStream;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactorySpeed.RepulsionForce;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 
 /**
@@ -51,21 +49,21 @@ import java.util.stream.IntStream;
  */
 public class NodesThreadSpeed implements Runnable {
 
-    private final double[] nodesInfo;
+    private final float[] nodesInfo;
     private final int[] nodesIndicesToIndexInNodesInfoArray;
     private final int from;
     private final int to;
     private final RegionSpeed rootRegion;
     private final boolean barnesHutOptimize;
     private final RepulsionForce repulsion;
-    private final double barnesHutTheta;
-    private final double gravity;
+    private final float barnesHutThetaSquared;
+    private final float gravity;
     private final RepulsionForce gravityForce;
-    private final double scaling;
+    private final float scaling;
     private final int VALUES_PER_NODE;
 
-    public NodesThreadSpeed(double[] nodesInfo, int[] nodesIndicesToIndexInNodesInfoArray, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
-            RepulsionForce gravityForce, double scaling, RegionSpeed rootRegion, RepulsionForce repulsion, int VALUES_PER_NODE) {
+    public NodesThreadSpeed(float[] nodesInfo, int[] nodesIndicesToIndexInNodesInfoArray, int from, int to, boolean barnesHutOptimize, float barnesHutThetaSquared, float gravity,
+            RepulsionForce gravityForce, float scaling, RegionSpeed rootRegion, RepulsionForce repulsion, int VALUES_PER_NODE) {
         this.nodesInfo = nodesInfo;
         this.nodesIndicesToIndexInNodesInfoArray = nodesIndicesToIndexInNodesInfoArray;
         this.from = from;
@@ -73,7 +71,7 @@ public class NodesThreadSpeed implements Runnable {
         this.rootRegion = rootRegion;
         this.barnesHutOptimize = barnesHutOptimize;
         this.repulsion = repulsion;
-        this.barnesHutTheta = barnesHutTheta;
+        this.barnesHutThetaSquared = barnesHutThetaSquared;
         this.gravity = gravity;
         this.gravityForce = gravityForce;
         this.scaling = scaling;
@@ -86,7 +84,7 @@ public class NodesThreadSpeed implements Runnable {
         if (barnesHutOptimize) {
             IntStream.range(from, to).parallel().forEach(n1Index -> {
                 int node1IndexInNodesInfo = nodesIndicesToIndexInNodesInfoArray[n1Index];
-                rootRegion.applyForce(nodesInfo, node1IndexInNodesInfo, repulsion, barnesHutTheta);
+                rootRegion.applyForce(nodesInfo, node1IndexInNodesInfo, repulsion, barnesHutThetaSquared);
                 gravityForce.applyGravity(nodesInfo, node1IndexInNodesInfo, gravity / scaling);
             });
         } else {

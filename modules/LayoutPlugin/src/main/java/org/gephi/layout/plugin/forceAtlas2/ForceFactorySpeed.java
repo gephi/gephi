@@ -54,7 +54,7 @@ public class ForceFactorySpeed {
     private ForceFactorySpeed() {
     }
 
-    public RepulsionForce buildRepulsion(boolean adjustBySize, double scalingRatio) {
+    public RepulsionForce buildRepulsion(boolean adjustBySize, float scalingRatio) {
         if (adjustBySize) {
             return new linRepulsion_antiCollision(scalingRatio);
         } else {
@@ -62,12 +62,12 @@ public class ForceFactorySpeed {
         }
     }
 
-    public RepulsionForce getStrongGravity(double scalingRatio) {
+    public RepulsionForce getStrongGravity(float scalingRatio) {
         return new strongGravity(scalingRatio);
     }
 
     public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize,
-            double outboundAttCompensation) {
+            float outboundAttCompensation) {
         if (adjustBySize) {
             if (logAttraction) {
                 if (distributedAttraction) {
@@ -101,16 +101,16 @@ public class ForceFactorySpeed {
 
     public abstract class AttractionForce {
 
-        public abstract void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e); // Model for node-node attraction (e is for edge weight if needed)
+        public abstract void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e); // Model for node-node attraction (e is for edge weight if needed)
     }
 
     public abstract class RepulsionForce {
 
-        public abstract void applyClassicRepulsion(double[] nodesInfo, int indexNode1, int indexNode2);           // Model for node-node repulsion
+        public abstract void applyClassicRepulsion(float[] nodesInfo, int indexNode1, int indexNode2);           // Model for node-node repulsion
 
-        public abstract void applyBarnesHutRepulsion(double[] nodesInfo, int nodeIndex, RegionSpeed r);           // Model for Barnes Hut approximation
+        public abstract void applyBarnesHutRepulsion(float[] nodesInfo, int nodeIndex, RegionSpeed r, float distSquared, float xDistFromCenter, float yDistFromCenter);           // Model for Barnes Hut approximation
 
-        public abstract void applyGravity(double[] nodesInfo, int indexNode, double g);           // Model for gravitation (anti-repulsion)
+        public abstract void applyGravity(float[] nodesInfo, int indexNode, float g);           // Model for gravitation (anti-repulsion)
     }
 
     /*
@@ -118,64 +118,58 @@ public class ForceFactorySpeed {
      */
     private class linRepulsion extends RepulsionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public linRepulsion(double c) {
+        public linRepulsion(float c) {
             scalingRatio = c;
         }
 
         @Override
-        public void applyClassicRepulsion(double[] nodesInfo, int indexNode1, int indexNode2) {
+        public void applyClassicRepulsion(float[] nodesInfo, int indexNode1, int indexNode2) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
 
             if (distSquared > 0) {
                 // NB: factor = force / distance
-                double factor = scalingRatio * nodesInfo[indexNode1 + 1] * nodesInfo[indexNode2 + 1] / distSquared;
+                float factor = scalingRatio * nodesInfo[indexNode1 + 1] * nodesInfo[indexNode2 + 1] / distSquared;
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
 
         @Override
-        public void applyBarnesHutRepulsion(double[] nodesInfo, int nodeIndex, RegionSpeed r) {
-
-            // Get the distance
-            double xDist = nodesInfo[nodeIndex + 2] - r.getMassCenterX();
-            double yDist = nodesInfo[nodeIndex + 3] - r.getMassCenterY();
-            double distSquared = xDist * xDist + yDist * yDist;
-//            double distance = Math.sqrt(distSquared);
-
-//            if (distance > 0) {
-            if (distSquared > 0) {
+        public void applyBarnesHutRepulsion(float[] nodesInfo, int nodeIndex, RegionSpeed r, float distNodeFromCenterRegionSquared, float xDistFromCenter, float yDistFromCenter) {
+            if (distNodeFromCenterRegionSquared > 0) {
                 // NB: factor = force / distance
-                double factor = scalingRatio * nodesInfo[nodeIndex + 1] * r.getMass() / distSquared;
-//                double factor = coefficient * nodesInfo[nodeIndex + 1] * r.getMass() / distance / distance;
+                float factor = scalingRatio * nodesInfo[nodeIndex + 1] * r.getMass() / distNodeFromCenterRegionSquared;
 
-                nodesInfo[nodeIndex + 6] += xDist * factor;
-                nodesInfo[nodeIndex + 7] += yDist * factor;
+                nodesInfo[nodeIndex + 6] += xDistFromCenter * factor;
+                nodesInfo[nodeIndex + 7] += yDistFromCenter * factor;
             }
         }
 
         @Override
-        public void applyGravity(double[] nodesInfo, int indexNode, double g) {
+        public void applyGravity(float[] nodesInfo, int indexNode, float g) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode + 2];
-            double yDist = nodesInfo[indexNode + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared);
-            
-            if (distance > 0) {
+            float xDist = nodesInfo[indexNode + 2];
+            float yDist = nodesInfo[indexNode + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
+
+            if (distSquared > 0) {
                 // NB: factor = force / distance
-                double factor = scalingRatio * nodesInfo[indexNode + 1] * g / distance;
+                float distance = (float) Math.sqrt(distSquared);
+                float factor = scalingRatio * nodesInfo[indexNode + 1] * g / distance;
 
                 nodesInfo[indexNode + 6] -= xDist * factor;
                 nodesInfo[indexNode + 7] -= yDist * factor;
@@ -188,65 +182,62 @@ public class ForceFactorySpeed {
      */
     private class linRepulsion_antiCollision extends RepulsionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public linRepulsion_antiCollision(double scalingRatio) {
+        public linRepulsion_antiCollision(float scalingRatio) {
             this.scalingRatio = scalingRatio;
         }
 
         @Override
-        public void applyClassicRepulsion(double[] nodesInfo, int indexNode1, int indexNode2) {
+        public void applyClassicRepulsion(float[] nodesInfo, int indexNode1, int indexNode2) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
 
-            double factor = 1;
-            if (distance > 0) {
+            float factor = 1;
+            if (distSquared > 0) {
                 // NB: factor = force / distance
+                float distance = (float) Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
                 factor = scalingRatio * nodesInfo[indexNode1 + 1] * nodesInfo[indexNode2 + 1] / distance / distance;
-            } else if (distance < 0) {
+            } else if (distSquared < 0) {
                 factor = 100 * scalingRatio * nodesInfo[indexNode1 + 1] * nodesInfo[indexNode2 + 1];
             }
-            nodesInfo[indexNode1 + 6] += xDist * factor;
-            nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-            nodesInfo[indexNode2 + 6] -= xDist * factor;
-            nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
         }
 
         @Override
-        public void applyBarnesHutRepulsion(double[] nodesInfo, int nodeIndex, RegionSpeed r) {
+        public void applyBarnesHutRepulsion(float[] nodesInfo, int nodeIndex, RegionSpeed r, float distSquared, float xDistFromCenter, float yDistFromCenter) {
 
-            // Get the distance
-            double xDist = nodesInfo[nodeIndex + 2] - r.getMassCenterX();
-            double yDist = nodesInfo[nodeIndex + 3] - r.getMassCenterY();
-            double distSquared = xDist * xDist + yDist * yDist;
-//            double distance = Math.sqrt(distSquared);
-
-            double factor;
+            float factor;
             if (distSquared > 0) {
                 // NB: factor = force / distance
                 factor = scalingRatio * nodesInfo[nodeIndex + 1] * r.getMass() / distSquared;
-                nodesInfo[nodeIndex + 6] += xDist * factor;
-                nodesInfo[nodeIndex + 7] += yDist * factor;
+                nodesInfo[nodeIndex + 6] += xDistFromCenter * factor;
+                nodesInfo[nodeIndex + 7] += yDistFromCenter * factor;
             }
         }
 
         @Override
-        public void applyGravity(double[] nodesInfo, int indexNode, double g) {
+        public void applyGravity(float[] nodesInfo, int indexNode, float g) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode + 2];
-            double yDist = nodesInfo[indexNode + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared);
+            float xDist = nodesInfo[indexNode + 2];
+            float yDist = nodesInfo[indexNode + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
+            float distance = (float) Math.sqrt(distSquared);
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = scalingRatio * nodesInfo[indexNode + 1] * g / distance;
+                float factor = scalingRatio * nodesInfo[indexNode + 1] * g / distance;
 
                 nodesInfo[indexNode + 6] -= xDist * factor;
                 nodesInfo[indexNode + 7] -= yDist * factor;
@@ -256,35 +247,34 @@ public class ForceFactorySpeed {
 
     private class strongGravity extends RepulsionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public strongGravity(double scalingRatio) {
+        public strongGravity(float scalingRatio) {
             this.scalingRatio = scalingRatio;
         }
 
         @Override
-        public void applyClassicRepulsion(double[] nodesInfo, int indexNode1, int indexNode2) {
+        public void applyClassicRepulsion(float[] nodesInfo, int indexNode1, int indexNode2) {
             // Not Relevant
         }
 
         @Override
-        public void applyBarnesHutRepulsion(double[] nodesInfo, int nodeIndex, RegionSpeed r) {
+        public void applyBarnesHutRepulsion(float[] nodesInfo, int nodeIndex, RegionSpeed r, float distSquared, float xDistFromCenter, float yDistFromCenter) {
             // Not Relevant
         }
 
         @Override
-        public void applyGravity(double[] nodesInfo, int indexNode, double g) {
+        public void applyGravity(float[] nodesInfo, int indexNode, float g) {
             // Get the distance
-            double xDist = nodesInfo[indexNode + 2];
-            double yDist = nodesInfo[indexNode + 3];
-//            double distSquared = xDist * xDist + yDist * yDist;
-//            double distance = Math.sqrt(distSquared);
-    
-            boolean distanceIsNonZero = xDist!=0 & yDist!=0;
+            float xDist = nodesInfo[indexNode + 2];
+            float yDist = nodesInfo[indexNode + 3];
+//            float distSquared = xDist * xDist + yDist * yDist;
+//            float distance = Math.sqrt(distSquared);
+
+            boolean distanceIsNonZero = xDist != 0 & yDist != 0;
 
             if (distanceIsNonZero) {
-                double factor = scalingRatio * nodesInfo[indexNode + 1] * g;
-
+                float factor = scalingRatio * nodesInfo[indexNode + 1] * g;
                 nodesInfo[indexNode + 6] -= xDist * factor;
                 nodesInfo[indexNode + 7] -= yDist * factor;
             }
@@ -296,27 +286,30 @@ public class ForceFactorySpeed {
      */
     private class linAttraction extends AttractionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public linAttraction(double c) {
+        public linAttraction(float c) {
             scalingRatio = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
 
             // NB: factor = force / distance
-            double factor = -scalingRatio * e;
+            float factor = -scalingRatio * e;
 
-            nodesInfo[indexNode1 + 6] += xDist * factor;
-            nodesInfo[indexNode1 + 7] += yDist * factor;
+            float deltaX = xDist * factor;
+            float deltaY = yDist * factor;
 
-            nodesInfo[indexNode2 + 6] -= xDist * factor;
-            nodesInfo[indexNode2 + 7] -= yDist * factor;
+            nodesInfo[indexNode1 + 6] += deltaX;
+            nodesInfo[indexNode1 + 7] += deltaY;
+
+            nodesInfo[indexNode2 + 6] -= deltaX;
+            nodesInfo[indexNode2 + 7] -= deltaY;
         }
     }
 
@@ -325,27 +318,30 @@ public class ForceFactorySpeed {
      */
     private class linAttraction_massDistributed extends AttractionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public linAttraction_massDistributed(double c) {
+        public linAttraction_massDistributed(float c) {
             scalingRatio = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
 
             // NB: factor = force / distance
-            double factor = -scalingRatio * e / nodesInfo[indexNode1 + 1];
+            float factor = -scalingRatio * e / nodesInfo[indexNode1 + 1];
 
-            nodesInfo[indexNode1 + 6] += xDist * factor;
-            nodesInfo[indexNode1 + 7] += yDist * factor;
+            float deltaX = xDist * factor;
+            float deltaY = yDist * factor;
 
-            nodesInfo[indexNode2 + 6] -= xDist * factor;
-            nodesInfo[indexNode2 + 7] -= yDist * factor;
+            nodesInfo[indexNode1 + 6] += deltaX;
+            nodesInfo[indexNode1 + 7] += deltaY;
+
+            nodesInfo[indexNode2 + 6] -= deltaX;
+            nodesInfo[indexNode2 + 7] -= deltaY;
         }
     }
 
@@ -354,32 +350,34 @@ public class ForceFactorySpeed {
      */
     private class logAttraction extends AttractionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public logAttraction(double c) {
+        public logAttraction(float c) {
             scalingRatio = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            
-            
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+
+            float distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -scalingRatio * e * Math.log(1 + distance) / distance;
+                float factor = -scalingRatio * e * (float) Math.log(1f + distance) / distance;
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }
@@ -389,31 +387,34 @@ public class ForceFactorySpeed {
      */
     private class logAttraction_degreeDistributed extends AttractionForce {
 
-        private final double scalingRatio;
+        private final float scalingRatio;
 
-        public logAttraction_degreeDistributed(double c) {
+        public logAttraction_degreeDistributed(float c) {
             scalingRatio = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared);
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
+            float distance = (float) Math.sqrt(distSquared);
 
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -scalingRatio * e * Math.log(1 + distance) / distance / nodesInfo[indexNode1 + 1];
+                float factor = -scalingRatio * e * (float) Math.log(1 + distance) / distance / nodesInfo[indexNode1 + 1];
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }
@@ -423,30 +424,31 @@ public class ForceFactorySpeed {
      */
     private class linAttraction_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final float coefficient;
 
-        public linAttraction_antiCollision(double c) {
+        public linAttraction_antiCollision(float c) {
             coefficient = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
-
-            if (distance > 0) {
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            boolean distanceIsNonZero = xDist != 0 & yDist != 0;
+            if (distanceIsNonZero) {
                 // NB: factor = force / distance
-                double factor = -coefficient * e;
+                float factor = -coefficient * e;
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }
@@ -456,30 +458,31 @@ public class ForceFactorySpeed {
      */
     private class linAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final float coefficient;
 
-        public linAttraction_degreeDistributed_antiCollision(double c) {
+        public linAttraction_degreeDistributed_antiCollision(float c) {
             coefficient = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
-
-            if (distance > 0) {
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            boolean distanceIsNonZero = xDist != 0 & yDist != 0;
+            if (distanceIsNonZero) {
                 // NB: factor = force / distance
-                double factor = -coefficient * e / nodesInfo[indexNode1 + 1];
+                float factor = -coefficient * e / nodesInfo[indexNode1 + 1];
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }
@@ -489,31 +492,34 @@ public class ForceFactorySpeed {
      */
     private class logAttraction_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final float coefficient;
 
-        public logAttraction_antiCollision(double c) {
+        public logAttraction_antiCollision(float c) {
             coefficient = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
+            float distance = (float) Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
 
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance;
+                float factor = -coefficient * e * (float) Math.log(1 + distance) / distance;
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }
@@ -523,31 +529,34 @@ public class ForceFactorySpeed {
      */
     private class logAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final float coefficient;
 
-        public logAttraction_degreeDistributed_antiCollision(double c) {
+        public logAttraction_degreeDistributed_antiCollision(float c) {
             coefficient = c;
         }
 
         @Override
-        public void applyAttraction(double[] nodesInfo, int indexNode1, int indexNode2, double e) {
+        public void applyAttraction(float[] nodesInfo, int indexNode1, int indexNode2, float e) {
 
             // Get the distance
-            double xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
-            double yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
-            double distSquared = xDist * xDist + yDist * yDist;
-            double distance = Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
+            float xDist = nodesInfo[indexNode1 + 2] - nodesInfo[indexNode2 + 2];
+            float yDist = nodesInfo[indexNode1 + 3] - nodesInfo[indexNode2 + 3];
+            float distSquared = xDist * xDist + yDist * yDist;
+            float distance = (float) Math.sqrt(distSquared) - nodesInfo[indexNode1 + 8] - nodesInfo[indexNode2 + 8];
 
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance / nodesInfo[indexNode1 + 1];
+                float factor = -coefficient * e * (float) Math.log(1 + distance) / distance / nodesInfo[indexNode1 + 1];
 
-                nodesInfo[indexNode1 + 6] += xDist * factor;
-                nodesInfo[indexNode1 + 7] += yDist * factor;
+                float deltaX = xDist * factor;
+                float deltaY = yDist * factor;
 
-                nodesInfo[indexNode2 + 6] -= xDist * factor;
-                nodesInfo[indexNode2 + 7] -= yDist * factor;
+                nodesInfo[indexNode1 + 6] += deltaX;
+                nodesInfo[indexNode1 + 7] += deltaY;
+
+                nodesInfo[indexNode2 + 6] -= deltaX;
+                nodesInfo[indexNode2 + 7] -= deltaY;
             }
         }
     }

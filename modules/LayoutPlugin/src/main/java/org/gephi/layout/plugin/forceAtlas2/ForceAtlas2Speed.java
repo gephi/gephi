@@ -70,19 +70,20 @@ import org.openide.util.NbBundle;
 public class ForceAtlas2Speed implements Layout {
 
     private final ForceAtlas2Builder layoutBuilder;
-    double outboundAttCompensation = 1;
+    float outboundAttCompensation = 1;
     private GraphModel graphModel;
     private Graph graph;
-    private double edgeWeightInfluence;
-    private double jitterTolerance;
-    private double scalingRatio;
-    private double gravity;
-    private double speed;
-    private double speedEfficiency;
+    private float edgeWeightInfluence;
+    private float jitterTolerance;
+    private float scalingRatio;
+    private float gravity;
+    private float speed;
+    private float speedEfficiency;
     private boolean outboundAttractionDistribution;
     private boolean adjustSizes;
     private boolean barnesHutOptimize;
-    private double barnesHutTheta;
+    private float barnesHutTheta;
+    private float barnesHutThetaSquared;
     private boolean linLogMode;
     private boolean normalizeEdgeWeights;
     private boolean strongGravityMode;
@@ -91,7 +92,7 @@ public class ForceAtlas2Speed implements Layout {
     private int currentThreadCount;
     private RegionSpeed rootRegion;
     private ExecutorService pool;
-    private double[] nodesInfo;
+    private float[] nodesInfo;
     private int[] nodesIndicesToIndexInNodesInfoArray;
     private int[] nodesIndicesToNodeStoreId;
     private int[] nodesStoredIdsToNodesIndicesInNodesInfo;
@@ -122,8 +123,8 @@ public class ForceAtlas2Speed implements Layout {
             return;
         }
         AbstractLayout.ensureSafeLayoutNodePositions(graphModel);
-        speed = 1.;
-        speedEfficiency = 1.;
+        speed = 1f;
+        speedEfficiency = 1f;
         pool = Executors.newFixedThreadPool(threadCount);
         currentThreadCount = threadCount;
         graph = graphModel.getGraphVisible();
@@ -133,7 +134,7 @@ public class ForceAtlas2Speed implements Layout {
         // STARTING VALUE OF NODE INDICES IS ONE BECAUSE THE ZERO VALUE IS ALREADY USED AS A DEFAULT VALUE FOR AN ABSENT ELEMENT IN AN ARRAY
         int nodeIndex = 1;
 
-        nodesInfo = new double[(nodeCount + 1) * VALUES_PER_NODE];
+        nodesInfo = new float[(nodeCount + 1) * VALUES_PER_NODE];
         nodesIndicesToIndexInNodesInfoArray = new int[nodeCount + 1];
         nodesIndicesToNodeStoreId = new int[nodeCount + 1];
         nodesStoredIdsToNodesUserId = new Object[graph.getModel().getMaxNodeStoreId()];
@@ -151,12 +152,12 @@ public class ForceAtlas2Speed implements Layout {
             nodesInfo[arrayIndex++] = graph.getDegree(n) + 1;  // node mass
             nodesInfo[arrayIndex++] = n.x();  // node x
             nodesInfo[arrayIndex++] = n.y();  // node y
-            nodesInfo[arrayIndex++] = 0d;  // node old dx
-            nodesInfo[arrayIndex++] = 0d;  // node old dy
-            nodesInfo[arrayIndex++] = 0d;  // node dx
-            nodesInfo[arrayIndex++] = 0d;  // node dy
+            nodesInfo[arrayIndex++] = 0f;  // node old dx
+            nodesInfo[arrayIndex++] = 0f;  // node old dy
+            nodesInfo[arrayIndex++] = 0f;  // node dx
+            nodesInfo[arrayIndex++] = 0f;  // node dy
             nodesInfo[arrayIndex++] = n.size();  // node size
-            nodesInfo[arrayIndex++] = n.isFixed() ? 1d : 0d; // 1 is node is fixed, zero otherwise
+            nodesInfo[arrayIndex++] = n.isFixed() ? 1f : 0f; // 1 is node is fixed, zero otherwise
             // If outboundAttractionDistribution active, compensate.
         }
         if (isOutboundAttractionDistribution()) {
@@ -170,10 +171,10 @@ public class ForceAtlas2Speed implements Layout {
         interval = graph.getView().getTimeInterval();
     }
 
-    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
-        double w = edge.getWeight();
+    private float getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
+        float w = (float)edge.getWeight();
         if (isDynamicWeight) {
-            w = edge.getWeight(interval);
+            w = (float)edge.getWeight(interval);
         }
         if (isInvertedEdgeWeightsMode()) {
             return w == 0 ? 0 : 1 / w;
@@ -213,14 +214,14 @@ public class ForceAtlas2Speed implements Layout {
                 int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
                 int to = (int) Math.floor(nodes.length * t / taskCount);
                 RepulsionForce repulsionForceWithorWithoutGravity = isStrongGravityMode() ? (ForceFactorySpeed.builder.getStrongGravity(getScalingRatio())) : repulsionWithorWithoutSizeAdjustment;
-                Future future = pool.submit(new NodesThreadSpeed(nodesInfo, nodesIndicesToIndexInNodesInfoArray, from, to, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(),
+                Future future = pool.submit(new NodesThreadSpeed(nodesInfo, nodesIndicesToIndexInNodesInfoArray, from, to, isBarnesHutOptimize(), getBarnesHutThetaSquared(), getGravity(),
                         repulsionForceWithorWithoutGravity, getScalingRatio(), rootRegion, repulsionWithorWithoutSizeAdjustment, VALUES_PER_NODE));
                 threads.add(future);
             }
         }
         else {
             RepulsionForce repulsionForceWithorWithoutGravity = isStrongGravityMode() ? (ForceFactorySpeed.builder.getStrongGravity(getScalingRatio())) : repulsionWithorWithoutSizeAdjustment;
-            Future futureThread = pool.submit(new NodesThreadSpeed(nodesInfo, nodesIndicesToIndexInNodesInfoArray, 0, nodesIndicesToIndexInNodesInfoArray.length, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(),
+            Future futureThread = pool.submit(new NodesThreadSpeed(nodesInfo, nodesIndicesToIndexInNodesInfoArray, 0, nodesIndicesToIndexInNodesInfoArray.length, isBarnesHutOptimize(), getBarnesHutThetaSquared(), getGravity(),
                     repulsionForceWithorWithoutGravity, getScalingRatio(), rootRegion, repulsionWithorWithoutSizeAdjustment, VALUES_PER_NODE));
             threads.add(futureThread);
         }
@@ -251,9 +252,9 @@ public class ForceAtlas2Speed implements Layout {
             });
         } else if (getEdgeWeightInfluence() == 1) {
             if (isNormalizeEdgeWeights()) {
-                Double w;
-                Double edgeWeightMin = Double.MAX_VALUE;
-                Double edgeWeightMax = Double.MIN_VALUE;
+                float w;
+                float edgeWeightMin = Float.MAX_VALUE;
+                float edgeWeightMax = Float.MIN_VALUE;
                 for (Edge e : edges) {
                     w = getEdgeWeight(e, isDynamicWeight, interval);
                     edgeWeightMin = Math.min(w, edgeWeightMin);
@@ -288,9 +289,9 @@ public class ForceAtlas2Speed implements Layout {
             }
         } else {
             if (isNormalizeEdgeWeights()) {
-                Double w;
-                Double edgeWeightMin = Double.MAX_VALUE;
-                Double edgeWeightMax = Double.MIN_VALUE;
+                float w;
+                float edgeWeightMin = Float.MAX_VALUE;
+                float edgeWeightMax = Float.MIN_VALUE;
                 for (Edge e : edges) {
                     w = getEdgeWeight(e, isDynamicWeight, interval);
                     edgeWeightMin = Math.min(w, edgeWeightMin);
@@ -303,7 +304,7 @@ public class ForceAtlas2Speed implements Layout {
                         int targetNodeStoreId = e.getTarget().getStoreId();
                         int sourceNodeIndexInNodeInfo = nodesStoredIdsToNodesIndicesInNodesInfo[sourceNodeStoreId];
                         int targetNodeIndexInNodeInfo = nodesStoredIdsToNodesIndicesInNodesInfo[targetNodeStoreId];
-                        attraction.applyAttraction(nodesInfo, sourceNodeIndexInNodeInfo, targetNodeIndexInNodeInfo, Math.pow(w, edgeWeightInfluence));
+                        attraction.applyAttraction(nodesInfo, sourceNodeIndexInNodeInfo, targetNodeIndexInNodeInfo, (float)Math.pow(w, edgeWeightInfluence));
                     }
                 } else {
                     Arrays.stream(edges).parallel().forEach(e -> {
@@ -320,7 +321,7 @@ public class ForceAtlas2Speed implements Layout {
                     int targetNodeStoreId = e.getTarget().getStoreId();
                     int sourceNodeIndexInNodeInfo = nodesStoredIdsToNodesIndicesInNodesInfo[sourceNodeStoreId];
                     int targetNodeIndexInNodeInfo = nodesStoredIdsToNodesIndicesInNodesInfo[targetNodeStoreId];
-                    attraction.applyAttraction(nodesInfo, sourceNodeIndexInNodeInfo, targetNodeIndexInNodeInfo, Math.pow(getEdgeWeight(e, isDynamicWeight, interval), edgeWeightInfluence));
+                    attraction.applyAttraction(nodesInfo, sourceNodeIndexInNodeInfo, targetNodeIndexInNodeInfo, (float) Math.pow(getEdgeWeight(e, isDynamicWeight, interval), edgeWeightInfluence));
                 });
             }
         }
@@ -329,12 +330,12 @@ public class ForceAtlas2Speed implements Layout {
         durationAttraction = durationAttraction + (endOfAttraction - startAttraction);
 
         // Auto adjust speed
-        double totalSwinging = 0d;  // How much irregular movement
-        double totalEffectiveTraction = 0d;  // Hom much useful movement
+        float totalSwinging = 0f;  // How much irregular movement
+        float totalEffectiveTraction = 0f;  // Hom much useful movement
         for (int nodeIndex : nodesIndicesToIndexInNodesInfoArray) {
             if (nodesInfo[nodeIndex + 9] == 0) {
-                double swinging
-                        = Math.sqrt(Math.pow(nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6], 2) + Math.pow(nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7], 2));
+                float swinging
+                        = (float)Math.sqrt(Math.pow(nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6], 2) + (float) Math.pow(nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7], 2));
                 totalSwinging += nodesInfo[nodeIndex + 1]
                         * swinging;   // If the node has a burst change of direction, then it's not converging.
                 totalEffectiveTraction += nodesInfo[nodeIndex + 1] * 0.5
@@ -345,13 +346,13 @@ public class ForceAtlas2Speed implements Layout {
 
         // Optimize jitter tolerance
         // The 'right' jitter tolerance for this network. Bigger networks need more tolerance. Denser networks need less tolerance. Totally empiric.
-        double estimatedOptimalJitterTolerance = 0.05 * Math.sqrt(nodes.length);
-        double minJT = Math.sqrt(estimatedOptimalJitterTolerance);
-        double maxJT = 10;
-        double jt = jitterTolerance * Math.max(minJT,
+        float estimatedOptimalJitterTolerance = 0.05f * (float) Math.sqrt(nodes.length);
+        float minJT = (float) Math.sqrt(estimatedOptimalJitterTolerance);
+        float maxJT = 10;
+        float jt = jitterTolerance * (float) Math.max(minJT,
                 Math.min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction / Math.pow(nodes.length, 2)));
 
-        double minSpeedEfficiency = 0.05;
+        float minSpeedEfficiency = 0.05f;
 
         // Protection against erratic behavior
         if (totalSwinging / totalEffectiveTraction > 2.0) {
@@ -361,7 +362,7 @@ public class ForceAtlas2Speed implements Layout {
             jt = Math.max(jt, jitterTolerance);
         }
 
-        double targetSpeed = jt * speedEfficiency * totalEffectiveTraction / totalSwinging;
+        float targetSpeed = jt * speedEfficiency * totalEffectiveTraction / totalSwinging;
 
         // Speed efficiency is how the speed really corresponds to the swinging vs. convergence tradeoff
         // We adjust it slowly and carefully
@@ -374,7 +375,7 @@ public class ForceAtlas2Speed implements Layout {
         }
 
         // But the speed shoudn't rise too much too quickly, since it would make the convergence drop dramatically.
-        double maxRise = 0.5;   // Max rise: 50%
+        float maxRise = 0.5f;   // Max rise: 50%
         speed = speed + Math.min(targetSpeed - speed, maxRise * speed);
 
         // Apply forces
@@ -387,31 +388,31 @@ public class ForceAtlas2Speed implements Layout {
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
 // Compute differences only once
-                    double dx = nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6];
-                    double dy = nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7];
+                    float dx = nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6];
+                    float dy = nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7];
 
 // Compute squared distances
-                    double dxSquared = dx * dx;
-                    double dySquared = dy * dy;
+                    float dxSquared = dx * dx;
+                    float dySquared = dy * dy;
 
 // Compute swinging term
-                    double distance = Math.sqrt(dxSquared + dySquared);
-                    double swinging = nodesInfo[nodeIndex + 1] * distance;
+                    float distance = (float) Math.sqrt(dxSquared + dySquared);
+                    float swinging = nodesInfo[nodeIndex + 1] * distance;
 
 // Compute factor
-                    double sqrtSpeedSwinging = Math.sqrt(speed * swinging);
-                    double factor = 0.1 * speed / (1.0 + sqrtSpeedSwinging);
+                    float sqrtSpeedSwinging =  (float) Math.sqrt(speed * swinging);
+                    float factor = 0.1f * speed / (1f + sqrtSpeedSwinging);
 
 // Compute df
-                    double deltaX = nodesInfo[nodeIndex + 6];
-                    double deltaY = nodesInfo[nodeIndex + 7];
-                    double deltaDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    float deltaX = nodesInfo[nodeIndex + 6];
+                    float deltaY = nodesInfo[nodeIndex + 7];
+                    float deltaDistance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
 // Adjust factor with minimum function
-                    factor = Math.min(factor * deltaDistance, 10.0) / deltaDistance;
+                    factor = Math.min(factor * deltaDistance, 10f) / deltaDistance;
 
-                    double x = nodesInfo[nodeIndex + 2] + nodesInfo[nodeIndex + 6] * factor;
-                    double y = nodesInfo[nodeIndex + 3] + nodesInfo[nodeIndex + 7] * factor;
+                    float x = nodesInfo[nodeIndex + 2] + nodesInfo[nodeIndex + 6] * factor;
+                    float y = nodesInfo[nodeIndex + 3] + nodesInfo[nodeIndex + 7] * factor;
 
                     int nodStoredId = nodesIndicesToNodeStoreId[nodeIncrementalIndex];
 
@@ -432,25 +433,25 @@ public class ForceAtlas2Speed implements Layout {
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
 // Compute differences only once
-                    double dx = nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6];
-                    double dy = nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7];
+                    float dx = nodesInfo[nodeIndex + 4] - nodesInfo[nodeIndex + 6];
+                    float dy = nodesInfo[nodeIndex + 5] - nodesInfo[nodeIndex + 7];
 
 // Compute squared distances
-                    double dxSquared = dx * dx;
-                    double dySquared = dy * dy;
+                    float dxSquared = dx * dx;
+                    float dySquared = dy * dy;
 
 // Compute swinging term
-                    double distance = Math.sqrt(dxSquared + dySquared);
-                    double swinging = nodesInfo[nodeIndex + 1] * distance;
+                    float distance = (float) Math.sqrt(dxSquared + dySquared);
+                    float swinging = nodesInfo[nodeIndex + 1] * distance;
 
 // Compute factor
-                    double sqrtSpeedSwinging = Math.sqrt(speed * swinging);
-                    double factor = speed / (1.0 + sqrtSpeedSwinging);
+                    float sqrtSpeedSwinging = (float)Math.sqrt(speed * swinging);
+                    float factor = speed / (1f + sqrtSpeedSwinging);
 
-                    double x = nodesInfo[nodeIndex + 2] + nodesInfo[nodeIndex + 6] * factor;
-                    double y = nodesInfo[nodeIndex + 3] + nodesInfo[nodeIndex + 7] * factor;
+                    float x = nodesInfo[nodeIndex + 2] + nodesInfo[nodeIndex + 6] * factor;
+                    float y = nodesInfo[nodeIndex + 3] + nodesInfo[nodeIndex + 7] * factor;
 
-                    int nodStoredId = nodesIndicesToNodeStoreId[nodeIncrementalIndex];
+                    int nodStoredId = nodesIndicesToNodeStoreId[nodeIncrementalIndex ];
 
                     Object nodeUserId = nodesStoredIdsToNodesUserId[nodStoredId];
                     Node node = graph.getNode(nodeUserId);
@@ -486,7 +487,7 @@ public class ForceAtlas2Speed implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
+                    this, Float.class,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.scalingRatio.name"),
                     FORCEATLAS2_TUNING,
                     "ForceAtlas2.scalingRatio.name",
@@ -502,7 +503,7 @@ public class ForceAtlas2Speed implements Layout {
                     "isStrongGravityMode", "setStrongGravityMode"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
+                    this, Float.class,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.gravity.name"),
                     FORCEATLAS2_TUNING,
                     "ForceAtlas2.gravity.name",
@@ -534,7 +535,7 @@ public class ForceAtlas2Speed implements Layout {
                     "isAdjustSizes", "setAdjustSizes"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
+                    this, Float.class,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.edgeWeightInfluence.name"),
                     FORCEATLAS2_BEHAVIOR,
                     "ForceAtlas2.edgeWeightInfluence.name",
@@ -558,7 +559,7 @@ public class ForceAtlas2Speed implements Layout {
                     "isInvertedEdgeWeightsMode", "setInvertedEdgeWeightsMode"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
+                    this, Float.class,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.jitterTolerance.name"),
                     FORCEATLAS2_PERFORMANCE,
                     "ForceAtlas2.jitterTolerance.name",
@@ -574,7 +575,7 @@ public class ForceAtlas2Speed implements Layout {
                     "isBarnesHutOptimize", "setBarnesHutOptimize"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
+                    this, Float.class,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.barnesHutTheta.name"),
                     FORCEATLAS2_PERFORMANCE,
                     "ForceAtlas2.barnesHutTheta.name",
@@ -606,25 +607,25 @@ public class ForceAtlas2Speed implements Layout {
 
         // Tuning
         if (nodesCount >= 100) {
-            setScalingRatio(2.0);
+            setScalingRatio(2f);
         } else {
-            setScalingRatio(10.0);
+            setScalingRatio(10f);
         }
         setStrongGravityMode(false);
         setInvertedEdgeWeightsMode(false);
-        setGravity(1.);
+        setGravity(1f);
 
         // Behavior
         setOutboundAttractionDistribution(false);
         setLinLogMode(false);
         setAdjustSizes(false);
-        setEdgeWeightInfluence(1.);
+        setEdgeWeightInfluence(1f);
         setNormalizeEdgeWeights(false);
 
         // Performance
-        setJitterTolerance(1d);
+        setJitterTolerance(1f);
         setBarnesHutOptimize(nodesCount >= 1000);
-        setBarnesHutTheta(1.2);
+        setBarnesHutTheta(1.2f);
         setThreadsCount(Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }
 
@@ -640,27 +641,32 @@ public class ForceAtlas2Speed implements Layout {
         resetPropertiesValues();
     }
 
-    public Double getBarnesHutTheta() {
+    public float getBarnesHutTheta() {
         return barnesHutTheta;
     }
 
-    public void setBarnesHutTheta(Double barnesHutTheta) {
+    public void setBarnesHutTheta(float barnesHutTheta) {
         this.barnesHutTheta = barnesHutTheta;
+        this.barnesHutThetaSquared = barnesHutTheta * barnesHutTheta;
     }
 
-    public Double getEdgeWeightInfluence() {
+    public float getBarnesHutThetaSquared() {
+        return barnesHutThetaSquared;
+    }
+    
+    public float getEdgeWeightInfluence() {
         return edgeWeightInfluence;
     }
 
-    public void setEdgeWeightInfluence(Double edgeWeightInfluence) {
+    public void setEdgeWeightInfluence(float edgeWeightInfluence) {
         this.edgeWeightInfluence = edgeWeightInfluence;
     }
 
-    public Double getJitterTolerance() {
+    public float getJitterTolerance() {
         return jitterTolerance;
     }
 
-    public void setJitterTolerance(Double jitterTolerance) {
+    public void setJitterTolerance(float jitterTolerance) {
         this.jitterTolerance = jitterTolerance;
     }
 
@@ -680,11 +686,11 @@ public class ForceAtlas2Speed implements Layout {
         this.normalizeEdgeWeights = normalizeEdgeWeights;
     }
 
-    public Double getScalingRatio() {
+    public float getScalingRatio() {
         return scalingRatio;
     }
 
-    public void setScalingRatio(Double scalingRatio) {
+    public void setScalingRatio(float scalingRatio) {
         this.scalingRatio = scalingRatio;
     }
 
@@ -704,11 +710,11 @@ public class ForceAtlas2Speed implements Layout {
         this.invertedEdgeWeightsMode = invertedEdgeWeightsMode;
     }
 
-    public Double getGravity() {
+    public float getGravity() {
         return gravity;
     }
 
-    public void setGravity(Double gravity) {
+    public void setGravity(float gravity) {
         this.gravity = gravity;
     }
 
