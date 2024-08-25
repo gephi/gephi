@@ -52,7 +52,7 @@ import org.openide.util.ImageUtilities;
 //author S. Aubrecht from org.openide.awt
 public class IconWithArrow implements Icon {
 
-    private static final String ARROW_IMAGE_NAME = "org/openide/awt/resources/arrow.png"; //NOI18N
+    private static final String ARROW_IMAGE_NAME = "UIComponents/arrow.svg"; //NOI18N
     private static final int GAP = 6;
     private final Icon orig;
     private final Icon arrow = ImageUtilities.image2Icon(ImageUtilities.loadImage(ARROW_IMAGE_NAME, false));
