@@ -123,7 +123,7 @@ public final class LanguageAction extends CallableSystemAction {
         }
 
         // Add "support localization" button to language menu
-        JMenuItem support_localization = new JMenuItem(new AbstractAction("Support localization...") {
+        JMenuItem supportLocalization = new JMenuItem(new AbstractAction(NbBundle.getMessage(LanguageAction.class, "CTL_SupportLocalization")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,7 +142,7 @@ public final class LanguageAction extends CallableSystemAction {
             }
         });
 
-        menu.add(support_localization);
+        menu.add(supportLocalization);
 
         return menu;
     }
