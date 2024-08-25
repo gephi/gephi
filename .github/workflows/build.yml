@@ -27,4 +27,4 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build project with Maven
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true verify -P enableTests,enableCheckStyle
+        run: mvn -X -T 4 --batch-mode -Djava.awt.headless=true verify -P enableTests,enableCheckStyle
