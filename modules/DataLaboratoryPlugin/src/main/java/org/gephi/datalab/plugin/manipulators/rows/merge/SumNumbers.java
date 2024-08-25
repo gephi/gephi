@@ -116,6 +116,6 @@ public class SumNumbers implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-circle.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-circle.svg", false);
     }
 }

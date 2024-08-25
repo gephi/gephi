@@ -63,7 +63,7 @@ public final class RenameWorkspace extends AbstractAction {
 
     RenameWorkspace() {
         super(NbBundle.getMessage(DeleteWorkspace.class, "CTL_RenameWorkspace"),
-            ImageUtilities.loadImageIcon("DesktopProject/renameWorkspace.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/renameWorkspace.svg", false));
     }
 
     @Override

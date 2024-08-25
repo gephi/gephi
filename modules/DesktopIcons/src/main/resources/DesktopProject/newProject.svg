@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
+   width="15.999999"
+   height="15.999999"
    viewBox="0 0 4.2333333 4.2333333"
    version="1.1"
    id="svg19713"
@@ -132,20 +132,20 @@
       }
     </style><style
        id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer37"
+     id="layer52"
      style="display:inline"
-     transform="translate(-50.800026,16.933334)"><g
-       id="g1001"
-       transform="matrix(0.13229167,0,0,0.13229167,50.800026,-16.933334)"
+     transform="translate(-46.566669,118.53334)"><g
+       id="g15420"
+       transform="matrix(0.13229167,0,0,0.13229167,46.566669,-118.53334)"
        style="display:inline;stroke-width:2"><path
-         d="M 28,8 H 16 L 12.5857,4.5857 A 2,2 0 0 0 11.1716,4 H 4 A 2,2 0 0 0 2,6 v 20 a 2,2 0 0 0 2,2 h 12 a 2,2 0 0 0 2,-2 V 16.83 L 20.59,19.41 22,18 17,13 12,18 13.41,19.41 16,16.83 V 26 H 4 V 6 h 7.1716 l 4,4 H 28 v 16 h -6 v 2 h 6 a 2,2 0 0 0 2,-2 V 10 A 2,2 0 0 0 28,8 Z"
-         id="path992"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><rect
-         id="_Transparent_Rectangle_-3"
+         id="polygon15408"
+         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2"
+         d="m 7.9999892,2.0000574 a 2.0058,2.0058 0 0 0 -2,1.9999999 V 28.000057 a 2.0058,2.0058 0 0 0 2,1.999999 H 15.999989 V 28.000057 H 7.9999892 V 4.0000573 h 7.9999998 v 5.9999997 a 2.0058,2.0058 0 0 0 2,2 h 6 v 4 h 2 v -6 A 0.9092,0.9092 0 0 0 25.699207,9.3008384 L 18.699208,2.3008386 A 0.9087,0.9087 0 0 0 17.999989,2.0000574 Z m 9.9999998,2.3984374 5.601562,5.6015622 h -5.601562 z m 6,15.6015622 v 4 h -4 v 2 h 4 v 3.999999 h 2 v -3.999999 h 3.999999 v -2 h -3.999999 v -4 z" /><rect
+         id="_Transparent_Rectangle_-20"
          data-name="&lt;Transparent Rectangle&gt;"
          class="cls-1"
-         width="32"
-         height="32"
+         width="15.999999"
+         height="15.999999"
          x="0"
          y="0"
          style="fill:none;stroke-width:2" /></g></g><style

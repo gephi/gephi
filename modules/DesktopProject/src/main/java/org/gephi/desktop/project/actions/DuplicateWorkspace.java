@@ -20,7 +20,7 @@ public final class DuplicateWorkspace extends AbstractAction {
 
     DuplicateWorkspace() {
         super(NbBundle.getMessage(DuplicateWorkspace.class, "CTL_DuplicateWorkspace"),
-            ImageUtilities.loadImageIcon("DesktopProject/duplicateWorkspace.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/duplicateWorkspace.svg", false));
     }
 
     @Override

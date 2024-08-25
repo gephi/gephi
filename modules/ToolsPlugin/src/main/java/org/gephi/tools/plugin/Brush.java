@@ -172,7 +172,7 @@ public class Brush implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/brush.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/brush.svg", false);
             }
 
             @Override

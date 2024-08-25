@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
+   width="15.999999"
+   height="15.999999"
    viewBox="0 0 4.2333333 4.2333333"
    version="1.1"
    id="svg19713"
@@ -132,23 +132,25 @@
       }
     </style><style
        id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer53"
+     id="layer54"
      style="display:inline"
-     transform="translate(-55.033338,122.76667)"><g
-       id="g19326"
-       style="display:inline;stroke-width:2"
-       transform="matrix(0.50000003,0,0,0.50000003,-65.616671,-156.63334)"><path
-         id="path17488"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:0.529166"
-         d="m 242.35833,68.791666 a 0.52916666,0.52916666 0 0 0 -0.52917,0.529167 v 3.704166 h 0.52917 v -3.704166 h 3.70417 v -0.529167 z m 1.5875,1.5875 c -0.29225,0 -0.52917,0.236916 -0.52917,0.529167 v 3.704166 c 0,0.292251 0.23692,0.529167 0.52917,0.529167 h 4.7625 c 0.29225,0 0.52917,-0.236916 0.52917,-0.529167 v -3.704166 c 0,-0.292251 -0.23692,-0.529167 -0.52917,-0.529167 z m 0,0.529167 h 4.7625 v 0.529166 h -4.7625 z m 0,1.058333 h 4.7625 v 2.645833 h -4.7625 z" /><rect
-         id="_Transparent_Rectangle_-561"
+     transform="translate(-50.800003,122.76667)"><g
+       id="g11952"
+       transform="matrix(0.50000003,0,0,0.50000003,-21.166669,-150.28334)"
+       style="display:inline;stroke-width:2"><rect
+         id="rect6084"
          data-name="&lt;Transparent Rectangle&gt;"
          class="cls-1"
-         width="8.4666662"
-         height="8.4666662"
-         x="241.3"
+         width="15.999999"
+         height="15.999999"
+         x="207.43333"
          y="67.73333"
-         style="fill:none;stroke-width:0.529166" /></g></g><style
+         style="display:inline;fill:none;stroke-width:0.529166"
+         transform="translate(-63.499999,-12.7)" /><path
+         id="path6082"
+         style="display:inline;fill:#6e6e6e;fill-opacity:1;stroke-width:0.529166"
+         d="m 213.0981,68.262499 -0.3731,0.373104 0.94981,0.949813 -0.94981,0.949813 0.3731,0.373104 0.94981,-0.949813 0.94982,0.949813 0.3731,-0.373104 -0.94981,-0.949813 0.94981,-0.949813 -0.3731,-0.373104 -0.94982,0.949813 z m -4.60644,0.529167 a 0.52916666,0.52916666 0 0 0 -0.52916,0.529167 v 5.291666 a 0.52916666,0.52916666 0 0 0 0.52916,0.529167 h 6.35 a 0.52916666,0.52916666 0 0 0 0.52917,-0.529167 v -3.175 h -0.52917 v 3.175 h -6.35 v -4.233333 h 3.70417 v -0.529167 h -3.70417 v -0.529166 h 3.70417 v -0.529167 z"
+         transform="translate(-63.499999,-12.7)" /></g></g><style
      type="text/css"
      id="style578">
 	.st0{fill:none;}

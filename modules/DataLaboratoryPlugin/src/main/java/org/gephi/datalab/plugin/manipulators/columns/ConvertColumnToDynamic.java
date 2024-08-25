@@ -118,7 +118,7 @@ public class ConvertColumnToDynamic implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-insert-column.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-insert-column.svg", false);
     }
 
     public String getTitle() {

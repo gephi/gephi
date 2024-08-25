@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
+   width="15.999999"
+   height="15.999999"
    viewBox="0 0 4.2333333 4.2333333"
    version="1.1"
    id="svg19713"
@@ -132,19 +132,20 @@
       }
     </style><style
        id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="g26439"
-     transform="translate(-50.800026,16.933334)"><g
-       id="g26437"
-       transform="matrix(0.13229167,0,0,0.13229167,50.800026,-16.933334)"
+     id="layer50"
+     style="display:inline"
+     transform="translate(-55.033336,118.53334)"><g
+       id="g15402"
+       transform="matrix(0.13229167,0,0,0.13229167,55.033336,-118.53334)"
        style="display:inline;stroke-width:2"><path
-         d="M 28,8 H 16 L 12.5857,4.5857 A 2,2 0 0 0 11.1716,4 H 4 A 2,2 0 0 0 2,6 v 20 a 2,2 0 0 0 2,2 h 12 a 2,2 0 0 0 2,-2 V 16.83 L 20.59,19.41 22,18 17,13 12,18 13.41,19.41 16,16.83 V 26 H 4 V 6 h 7.1716 l 4,4 H 28 v 16 h -6 v 2 h 6 a 2,2 0 0 0 2,-2 V 10 A 2,2 0 0 0 28,8 Z"
-         id="path26433"
-         style="fill:#afb1b3;fill-opacity:1;stroke-width:2" /><rect
-         id="rect26435"
+         d="M 11.17,6 14.59,9.41 15.17,10 H 28 V 26 H 4 V 6 h 7.17 m 0,-2 H 4 A 2,2 0 0 0 2,6 v 20 a 2,2 0 0 0 2,2 h 24 a 2,2 0 0 0 2,-2 V 10 A 2,2 0 0 0 28,8 H 16 L 12.59,4.59 A 2,2 0 0 0 11.17,4 Z"
+         id="path15393"
+         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><rect
+         id="_Transparent_Rectangle_-177"
          data-name="&lt;Transparent Rectangle&gt;"
          class="cls-1"
-         width="32"
-         height="32"
+         width="15.999999"
+         height="15.999999"
          x="0"
          y="0"
          style="fill:none;stroke-width:2" /></g></g><style

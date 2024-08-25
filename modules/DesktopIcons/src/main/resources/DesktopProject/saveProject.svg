@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
+   width="15.999999"
+   height="15.999999"
    viewBox="0 0 4.2333333 4.2333333"
    version="1.1"
    id="svg19713"
@@ -132,20 +132,20 @@
       }
     </style><style
        id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer56"
-     style="display:inline"
-     transform="translate(-57.149989,55.033341)"><g
-       id="g835-4"
-       transform="matrix(0.13229167,0,0,0.13229167,57.149989,-55.033341)"
-       style="display:inline;stroke-width:2"><polygon
-         points="7,7.414 15.586,16 7,24.586 7,27 24,27 24,25 9.414,25 18.414,16 9.414,7 24,7 24,5 7,5 "
-         id="polygon826-5"
+     id="g14679"
+     transform="translate(-4.2333333,-16.933333)"
+     style="display:inline"><g
+       id="g14677"
+       transform="matrix(0.13229167,0,0,0.13229167,4.2333333,16.933333)"
+       style="display:inline;stroke-width:2"><path
+         d="m 27.71,9.29 -5,-5 A 1,1 0 0 0 22,4 H 6 A 2,2 0 0 0 4,6 v 20 a 2,2 0 0 0 2,2 h 20 a 2,2 0 0 0 2,-2 V 10 A 1,1 0 0 0 27.71,9.29 Z M 12,6 h 8 v 4 h -8 z m 8,20 h -8 v -8 h 8 z m 2,0 v -8 a 2,2 0 0 0 -2,-2 h -8 a 2,2 0 0 0 -2,2 v 8 H 6 V 6 h 4 v 4 a 2,2 0 0 0 2,2 h 8 a 2,2 0 0 0 2,-2 V 6.41 l 4,4 V 26 Z"
+         id="path14673"
          style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><rect
-         id="_Transparent_Rectangle_-0-4"
+         id="rect14675"
          data-name="&lt;Transparent Rectangle&gt;"
          class="cls-1"
-         width="32"
-         height="32"
+         width="15.999999"
+         height="15.999999"
          x="0"
          y="0"
          style="fill:none;stroke-width:2" /></g></g><style
