@@ -377,7 +377,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
         public MoveRendererButton(int index, boolean up) {
             super(ImageUtilities
-                .loadImageIcon("DesktopPreview/" + (up ? "up" : "down") + ".png", false));
+                .loadImageIcon("DesktopPreview/" + (up ? "up" : "down") + ".svg", false));
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
             this.up = up;

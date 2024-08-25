@@ -1040,7 +1040,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.png", false),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1074,7 +1074,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.png", false),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
