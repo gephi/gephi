@@ -74,7 +74,7 @@ public final class OpenFile extends AbstractAction {
 
     OpenFile() {
         super(NbBundle.getMessage(OpenFile.class, "CTL_OpenFile"),
-            ImageUtilities.loadImageIcon("DesktopProject/openProject.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/openProject.svg", false));
     }
 
     @Override

@@ -59,7 +59,7 @@ public final class NewWorkspaceWithSettings extends AbstractAction {
 
     NewWorkspaceWithSettings() {
         super(NbBundle.getMessage(NewWorkspaceWithSettings.class, "CTL_NewWorkspaceWithSettings"),
-            ImageUtilities.loadImageIcon("DesktopProject/newWorkspace.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/newWorkspace.svg", false));
     }
 
     @Override

@@ -59,7 +59,7 @@ public final class ProjectProperties extends AbstractAction {
 
     ProjectProperties() {
         super(NbBundle.getMessage(ProjectProperties.class, "CTL_ProjectProperties"),
-            ImageUtilities.loadImageIcon("DesktopProject/projectProperties.gif", false));
+            ImageUtilities.loadImageIcon("DesktopProject/projectProperties.svg", false));
     }
 
     @Override

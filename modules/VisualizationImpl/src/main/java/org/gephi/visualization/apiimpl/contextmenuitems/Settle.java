@@ -92,7 +92,7 @@ public class Settle extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/settle.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/settle.svg", false);
     }
 
     @Override

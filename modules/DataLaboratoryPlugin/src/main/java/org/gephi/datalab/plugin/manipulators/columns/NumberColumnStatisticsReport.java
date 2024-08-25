@@ -100,7 +100,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/statistics.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/statistics.svg", false);
     }
 
     public Number[] getColumnNumbers(final Table table, final Column column) {

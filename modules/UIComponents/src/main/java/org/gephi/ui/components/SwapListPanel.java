@@ -139,7 +139,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(scrollPane2, gridBagConstraints);
 
-        leftButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/leftArrow.png", false)); // NOI18N
+        leftButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/leftArrow.svg", false)); // NOI18N
         leftButton.setText(
             org.openide.util.NbBundle.getMessage(SwapListPanel.class, "SwapListPanel.leftButton.text")); // NOI18N
         leftButton.setMinimumSize(new java.awt.Dimension(33, 23));
@@ -152,7 +152,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         add(leftButton, gridBagConstraints);
 
-        rightButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/rightArrow.png", false)); // NOI18N
+        rightButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/rightArrow.svg", false)); // NOI18N
         rightButton.setText(
             org.openide.util.NbBundle.getMessage(SwapListPanel.class, "SwapListPanel.rightButton.text")); // NOI18N
         rightButton.setMinimumSize(new java.awt.Dimension(33, 23));

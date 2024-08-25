@@ -63,7 +63,7 @@ public final class DeleteWorkspace extends AbstractAction {
 
     DeleteWorkspace() {
         super(NbBundle.getMessage(DeleteWorkspace.class, "CTL_DeleteWorkspace"),
-            ImageUtilities.loadImageIcon("DesktopProject/deleteWorkspace.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/deleteWorkspace.svg", false));
     }
 
     @Override

@@ -255,9 +255,9 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public void initIcons() {
-        infoIcon = ImageUtilities.loadImageIcon("DesktopImport/info.png", false);
+        infoIcon = ImageUtilities.loadImageIcon("DesktopImport/info.svg", false);
         warningIcon =
-            ImageUtilities.loadImageIcon("DesktopImport/warning.gif", false);
+            ImageUtilities.loadImageIcon("DesktopImport/warning.svg", false);
         severeIcon =
             ImageUtilities.loadImageIcon("DesktopImport/severe.png", false);
         criticalIcon =

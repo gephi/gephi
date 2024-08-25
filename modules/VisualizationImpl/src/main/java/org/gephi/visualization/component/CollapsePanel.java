@@ -75,13 +75,13 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         this.extended = extended;
         if (extended) {
-            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.png", false)); // NOI18N
-            extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.png", false)); // NOI18N
+            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.svg", false)); // NOI18N
+            extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.svg", false)); // NOI18N
 
         } else {
-            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.png", false)); // NOI18N
+            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.svg", false)); // NOI18N
             extendButton.setRolloverIcon(
-                ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.png", false)); // NOI18N
+                ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.svg", false)); // NOI18N
         }
         extendButton.addActionListener(new ActionListener() {
 
@@ -91,11 +91,11 @@ public class CollapsePanel extends javax.swing.JPanel {
                 ext = !ext;
                 CollapsePanel.this.extended = ext;
                 if (ext) {
-                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.png", false)); // NOI18N
-                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.png", false)); // NOI18N
+                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown.svg", false)); // NOI18N
+                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowDown_rollover.svg", false)); // NOI18N
                 } else {
-                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.png", false)); // NOI18N
-                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.png", false)); // NOI18N
+                    extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp.svg", false)); // NOI18N
+                    extendButton.setRolloverIcon(ImageUtilities.loadImageIcon("VisualizationImpl/arrowUp_rollover.svg", false)); // NOI18N
                 }
                 extendedPanel.setVisible(ext);
 

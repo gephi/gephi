@@ -79,7 +79,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Mouse
         final JToggleButton mouseButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.png", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(new ActionListener() {
 
@@ -93,7 +93,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
-        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.png", false);
+        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.svg", false);
 
         //Rectangle
         final JToggleButton rectangleButton = new JToggleButton(icon);
@@ -113,7 +113,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Drag
         final JToggleButton dragButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.png", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.svg", false));
         dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
         dragButton.addActionListener(new ActionListener() {
 

@@ -220,7 +220,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        printButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/print.png", false)); // NOI18N
+        printButton.setIcon(ImageUtilities.loadImageIcon("UIComponents/print.svg", false)); // NOI18N
         printButton.setText(org.openide.util.NbBundle
             .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
@@ -232,7 +232,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(printButton);
 
         copyButton.setIcon(
-            ImageUtilities.loadImageIcon("UIComponents/copy.gif", false)); // NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/copy.svg", false)); // NOI18N
         copyButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
