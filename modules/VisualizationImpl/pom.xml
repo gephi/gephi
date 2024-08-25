@@ -205,7 +205,7 @@
         <repository>
             <id>jogl</id>
             <name>JOGL</name>
-            <url>https://jogamp.org/deployment/maven/</url>
+            <url>https://www.jogamp.org/deployment/maven/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
