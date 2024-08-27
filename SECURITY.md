@@ -52,7 +52,7 @@ Here is a history of security/data vulnerabilities:
 
 ## Reporting a Vulnerability
 
-In case you find a vulnerability or want to get in touch regarding security, reach out to us at contact [at] gephi.org.
+In case you find a vulnerability or want to get in touch regarding security, reach out to us at contact [at] gephi.org. Alternatively, you can [directly report via GitHub](https://github.com/gephi/gephi/security/advisories/new).
 
 Based on your analysis, we'll evaluate if there are any risks for our users. In case we decide to release a patched version, you'll be informed.
 
