@@ -23,4 +23,20 @@ public class GMLTest {
 
         Utils.assertSameIds(nodes, "A", "B", "C");
     }
+
+    @Test
+    public void testEmojis() {
+        ImporterGML importer = new ImporterGML();
+        importer.setReader(Utils.getReader("emojis.gml"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        Assert.assertTrue(container.verify());
+
+        NodeDraft[] nodes = Utils.toNodesArray(container);
+        NodeDraft node1 = nodes[0];
+
+        Assert.assertEquals("✅", node1.getLabel());
+    }
 }
