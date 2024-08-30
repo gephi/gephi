@@ -67,7 +67,44 @@ import org.openide.util.NbBundle;
  * @author Mathieu Jacomy
  */
 public class ForceAtlas2 implements Layout {
+    
+    public class ForceAtlas2Params{
 
+        public ForceAtlas2Params(double edgeWeightInfluence, double jitterTolerance, double scalingRatio, double gravity, double speed, double speedEfficiency, boolean outboundAttractionDistribution, boolean adjustSizes, boolean barnesHutOptimize, double barnesHutTheta, boolean linLogMode, boolean normalizeEdgeWeights, boolean strongGravityMode, boolean invertedEdgeWeightsMode, int threadCount, double outboundAttCompensation) {
+            this.edgeWeightInfluence = edgeWeightInfluence;
+            this.jitterTolerance = jitterTolerance;
+            this.scalingRatio = scalingRatio;
+            this.gravity = gravity;
+            this.speed = speed;
+            this.speedEfficiency = speedEfficiency;
+            this.outboundAttractionDistribution = outboundAttractionDistribution;
+            this.adjustSizes = adjustSizes;
+            this.barnesHutOptimize = barnesHutOptimize;
+            this.barnesHutTheta = barnesHutTheta;
+            this.linLogMode = linLogMode;
+            this.normalizeEdgeWeights = normalizeEdgeWeights;
+            this.strongGravityMode = strongGravityMode;
+            this.invertedEdgeWeightsMode = invertedEdgeWeightsMode;
+            this.threadCount = threadCount;
+            this.outboundAttCompensation = outboundAttCompensation;
+        }
+    final public double edgeWeightInfluence;
+    final public double jitterTolerance;
+    final public double scalingRatio;
+    final public double gravity;
+    final public double speed;
+    final public double speedEfficiency;
+    final public boolean outboundAttractionDistribution;
+    final public boolean adjustSizes;
+    final public boolean barnesHutOptimize;
+    final public double barnesHutTheta;
+    final public boolean linLogMode;
+    final public boolean normalizeEdgeWeights;
+    final public boolean strongGravityMode;
+    final public boolean invertedEdgeWeightsMode;
+    final public int threadCount;
+    final public double outboundAttCompensation;
+    }
     private final ForceAtlas2Builder layoutBuilder;
     double outboundAttCompensation = 1;
     private GraphModel graphModel;
@@ -142,7 +179,11 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void goAlgo() {
-        // Initialize graph data
+        // Instead of sending individual parameters that makes hard to generalize method, 
+        // we group that as a struct
+        // 
+       
+        
         if (graphModel == null) {
             return;
         }
@@ -184,10 +225,28 @@ public class ForceAtlas2 implements Layout {
                 }
                 outboundAttCompensation /= nodes.length;
             }
-
+            ForceAtlas2Params params = new ForceAtlas2Params(
+                       this.edgeWeightInfluence ,
+                       this.jitterTolerance ,
+                       this.scalingRatio,
+                       this.gravity ,
+                       this.speed,
+                       this.speedEfficiency,
+                       this.outboundAttractionDistribution,
+                       this.adjustSizes ,
+                       this.barnesHutOptimize ,
+                       this.barnesHutTheta,
+                       this.linLogMode ,
+                       this.normalizeEdgeWeights ,
+                       this.strongGravityMode ,
+                       this.invertedEdgeWeightsMode,
+                       this.threadCount,
+                       (isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)
+                   );
             // Repulsion (and gravity)
             // NB: Muti-threaded
-            RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(isAdjustSizes(), getScalingRatio());
+            RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(params);
+            RepulsionForce StrongGravity = (params.strongGravityMode) ? (ForceFactory.builder.getStrongGravity(params)) : (Repulsion);
 
             int taskCount = 8 *
                 currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
@@ -197,9 +256,7 @@ public class ForceAtlas2 implements Layout {
                 int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
                 int to = (int) Math.floor(nodes.length * t / taskCount);
                 Future future = pool.submit(
-                    new NodesThread(nodes, from, to, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(),
-                        (isStrongGravityMode()) ? (ForceFactory.builder.getStrongGravity(getScalingRatio())) :
-                            (Repulsion), getScalingRatio(), rootRegion, Repulsion));
+                    new NodesThread(nodes, from, to,  params, StrongGravity,  rootRegion, Repulsion));
                 threads.add(future);
             }
             for (Future future : threads) {
@@ -211,15 +268,13 @@ public class ForceAtlas2 implements Layout {
             }
 
             // Attraction
-            AttractionForce Attraction = ForceFactory.builder
-                .buildAttraction(isLinLogMode(), isOutboundAttractionDistribution(), isAdjustSizes(),
-                    1 * ((isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)));
-            if (getEdgeWeightInfluence() == 0) {
+            AttractionForce Attraction = ForceFactory.builder.buildAttraction(params);
+            if (params.edgeWeightInfluence == 0) {
                 for (Edge e : edges) {
                     Attraction.apply(e.getSource(), e.getTarget(), 1);
                 }
-            } else if (getEdgeWeightInfluence() == 1) {
-                if (isNormalizeEdgeWeights()) {
+            } else if (params.edgeWeightInfluence == 1) {
+                if (params.normalizeEdgeWeights) {
                     Double w;
                     Double edgeWeightMin = Double.MAX_VALUE;
                     Double edgeWeightMax = Double.MIN_VALUE;
@@ -244,7 +299,7 @@ public class ForceAtlas2 implements Layout {
                     }
                 }
             } else {
-                if (isNormalizeEdgeWeights()) {
+                if (params.normalizeEdgeWeights) {
                     Double w;
                     Double edgeWeightMin = Double.MAX_VALUE;
                     Double edgeWeightMax = Double.MIN_VALUE;
@@ -257,7 +312,7 @@ public class ForceAtlas2 implements Layout {
                         for (Edge e : edges) {
                             w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
                             Attraction.apply(e.getSource(), e.getTarget(),
-                                Math.pow(w, getEdgeWeightInfluence()));
+                                Math.pow(w, params.edgeWeightInfluence));
                         }
                     } else {
                         for (Edge e : edges) {
@@ -267,7 +322,7 @@ public class ForceAtlas2 implements Layout {
                 } else {
                     for (Edge e : edges) {
                         Attraction.apply(e.getSource(), e.getTarget(),
-                            Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
+                            Math.pow(getEdgeWeight(e, isDynamicWeight, interval), params.edgeWeightInfluence));
                     }
                 }
             }
@@ -323,7 +378,7 @@ public class ForceAtlas2 implements Layout {
             speed = speed + Math.min(targetSpeed - speed, maxRise * speed);
 
             // Apply forces
-            if (isAdjustSizes()) {
+            if (params.adjustSizes) {
                 // If nodes overlap prevention is active, it's not possible to trust the swinging mesure.
                 for (Node n : nodes) {
                     ForceAtlas2LayoutData nLayout = n.getLayoutData();

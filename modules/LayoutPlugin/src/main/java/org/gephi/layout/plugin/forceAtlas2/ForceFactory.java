@@ -57,46 +57,45 @@ public class ForceFactory {
     private ForceFactory() {
     }
 
-    public RepulsionForce buildRepulsion(boolean adjustBySize, double coefficient) {
-        if (adjustBySize) {
-            return new linRepulsion_antiCollision(coefficient);
+    public RepulsionForce buildRepulsion(ForceAtlas2.ForceAtlas2Params params) {
+        if (params.adjustSizes) {
+            return new linRepulsion_antiCollision(params);
         } else {
-            return new linRepulsion(coefficient);
+            return new linRepulsion(params);
         }
     }
 
-    public RepulsionForce getStrongGravity(double coefficient) {
-        return new strongGravity(coefficient);
+    public RepulsionForce getStrongGravity(ForceAtlas2.ForceAtlas2Params params) {
+        return new strongGravity(params);
     }
 
-    public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize,
-                                           double coefficient) {
-        if (adjustBySize) {
-            if (logAttraction) {
-                if (distributedAttraction) {
-                    return new logAttraction_degreeDistributed_antiCollision(coefficient);
+    public AttractionForce buildAttraction(ForceAtlas2.ForceAtlas2Params params) {
+        if (params.adjustSizes) {
+            if (params.linLogMode) {
+                if (params.outboundAttractionDistribution) {
+                    return new logAttraction_degreeDistributed_antiCollision(params);
                 } else {
-                    return new logAttraction_antiCollision(coefficient);
+                    return new logAttraction_antiCollision(params);
                 }
             } else {
-                if (distributedAttraction) {
-                    return new linAttraction_degreeDistributed_antiCollision(coefficient);
+                if (params.outboundAttractionDistribution) {
+                    return new linAttraction_degreeDistributed_antiCollision(params);
                 } else {
-                    return new linAttraction_antiCollision(coefficient);
+                    return new linAttraction_antiCollision(params);
                 }
             }
         } else {
-            if (logAttraction) {
-                if (distributedAttraction) {
-                    return new logAttraction_degreeDistributed(coefficient);
+            if (params.linLogMode) {
+                if (params.outboundAttractionDistribution) {
+                    return new logAttraction_degreeDistributed(params);
                 } else {
-                    return new logAttraction(coefficient);
+                    return new logAttraction(params);
                 }
             } else {
-                if (distributedAttraction) {
-                    return new linAttraction_massDistributed(coefficient);
+                if (params.outboundAttractionDistribution) {
+                    return new linAttraction_massDistributed(params);
                 } else {
-                    return new linAttraction(coefficient);
+                    return new linAttraction(params);
                 }
             }
         }
@@ -122,10 +121,10 @@ public class ForceFactory {
      */
     private class linRepulsion extends RepulsionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params  params;
 
-        public linRepulsion(double c) {
-            coefficient = c;
+        public linRepulsion(ForceAtlas2.ForceAtlas2Params params) {
+            this.params= params;
         }
 
         @Override
@@ -140,7 +139,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * n1Layout.mass * n2Layout.mass / distance / distance;
+                double factor = params.scalingRatio * n1Layout.mass * n2Layout.mass / distance / distance;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -161,7 +160,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * nLayout.mass * r.getMass() / distance / distance;
+                double factor = params.scalingRatio * nLayout.mass * r.getMass() / distance / distance;
 
                 nLayout.dx += xDist * factor;
                 nLayout.dy += yDist * factor;
@@ -179,7 +178,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * nLayout.mass * g / distance;
+                double factor = params.scalingRatio * nLayout.mass * g / distance;
 
                 nLayout.dx -= xDist * factor;
                 nLayout.dy -= yDist * factor;
@@ -192,10 +191,11 @@ public class ForceFactory {
      */
     private class linRepulsion_antiCollision extends RepulsionForce {
 
-        private final double coefficient;
 
-        public linRepulsion_antiCollision(double c) {
-            coefficient = c;
+        private final ForceAtlas2.ForceAtlas2Params params;
+        public linRepulsion_antiCollision(ForceAtlas2.ForceAtlas2Params params) {
+
+            this.params= params;
         }
 
         @Override
@@ -210,7 +210,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * n1Layout.mass * n2Layout.mass / distance / distance;
+                double factor = params.scalingRatio * n1Layout.mass * n2Layout.mass / distance / distance;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -219,7 +219,7 @@ public class ForceFactory {
                 n2Layout.dy -= yDist * factor;
 
             } else if (distance < 0) {
-                double factor = 100 * coefficient * n1Layout.mass * n2Layout.mass;
+                double factor = 100 * params.scalingRatio * n1Layout.mass * n2Layout.mass;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -240,12 +240,12 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * nLayout.mass * r.getMass() / distance / distance;
+                double factor = params.scalingRatio * nLayout.mass * r.getMass() / distance / distance;
 
                 nLayout.dx += xDist * factor;
                 nLayout.dy += yDist * factor;
             } else if (distance < 0) {
-                double factor = -coefficient * nLayout.mass * r.getMass() / distance;
+                double factor = -params.scalingRatio * nLayout.mass * r.getMass() / distance;
 
                 nLayout.dx += xDist * factor;
                 nLayout.dy += yDist * factor;
@@ -263,7 +263,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * nLayout.mass * g / distance;
+                double factor = params.scalingRatio * nLayout.mass * g / distance;
 
                 nLayout.dx -= xDist * factor;
                 nLayout.dy -= yDist * factor;
@@ -271,12 +271,13 @@ public class ForceFactory {
         }
     }
 
+    
     private class strongGravity extends RepulsionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public strongGravity(double c) {
-            coefficient = c;
+        public strongGravity(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -300,7 +301,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = coefficient * nLayout.mass * g;
+                double factor = params.scalingRatio * nLayout.mass * g;
 
                 nLayout.dx -= xDist * factor;
                 nLayout.dy -= yDist * factor;
@@ -313,10 +314,10 @@ public class ForceFactory {
      */
     private class linAttraction extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public linAttraction(double c) {
-            coefficient = c;
+        public linAttraction(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -329,7 +330,7 @@ public class ForceFactory {
             double yDist = n1.y() - n2.y();
 
             // NB: factor = force / distance
-            double factor = -coefficient * e;
+            double factor = -params.outboundAttCompensation * e;
 
             n1Layout.dx += xDist * factor;
             n1Layout.dy += yDist * factor;
@@ -344,10 +345,10 @@ public class ForceFactory {
      */
     private class linAttraction_massDistributed extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public linAttraction_massDistributed(double c) {
-            coefficient = c;
+        public linAttraction_massDistributed(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -360,7 +361,7 @@ public class ForceFactory {
             double yDist = n1.y() - n2.y();
 
             // NB: factor = force / distance
-            double factor = -coefficient * e / n1Layout.mass;
+            double factor = -params.outboundAttCompensation * e / n1Layout.mass;
 
             n1Layout.dx += xDist * factor;
             n1Layout.dy += yDist * factor;
@@ -375,10 +376,10 @@ public class ForceFactory {
      */
     private class logAttraction extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public logAttraction(double c) {
-            coefficient = c;
+        public logAttraction(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -394,7 +395,7 @@ public class ForceFactory {
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance;
+                double factor = -params.outboundAttCompensation * e * Math.log(1 + distance) / distance;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -410,10 +411,10 @@ public class ForceFactory {
      */
     private class logAttraction_degreeDistributed extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public logAttraction_degreeDistributed(double c) {
-            coefficient = c;
+        public logAttraction_degreeDistributed(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -429,7 +430,7 @@ public class ForceFactory {
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance / n1Layout.mass;
+                double factor = -params.outboundAttCompensation * e * Math.log(1 + distance) / distance / n1Layout.mass;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -445,10 +446,10 @@ public class ForceFactory {
      */
     private class linAttraction_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public linAttraction_antiCollision(double c) {
-            coefficient = c;
+        public linAttraction_antiCollision(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -463,7 +464,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = -coefficient * e;
+                double factor = -this.params.outboundAttCompensation * e;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -479,10 +480,10 @@ public class ForceFactory {
      */
     private class linAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public linAttraction_degreeDistributed_antiCollision(double c) {
-            coefficient = c;
+        public linAttraction_degreeDistributed_antiCollision(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -497,7 +498,7 @@ public class ForceFactory {
 
             if (distance > 0) {
                 // NB: factor = force / distance
-                double factor = -coefficient * e / n1Layout.mass;
+                double factor = -this.params.outboundAttCompensation * e / n1Layout.mass;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -513,10 +514,10 @@ public class ForceFactory {
      */
     private class logAttraction_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public logAttraction_antiCollision(double c) {
-            coefficient = c;
+        public logAttraction_antiCollision(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -532,7 +533,7 @@ public class ForceFactory {
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance;
+                double factor = -params.outboundAttCompensation * e * Math.log(1 + distance) / distance;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
@@ -548,10 +549,10 @@ public class ForceFactory {
      */
     private class logAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private final double coefficient;
+        private final ForceAtlas2.ForceAtlas2Params params;
 
-        public logAttraction_degreeDistributed_antiCollision(double c) {
-            coefficient = c;
+        public logAttraction_degreeDistributed_antiCollision(ForceAtlas2.ForceAtlas2Params params) {
+            this.params = params;
         }
 
         @Override
@@ -567,7 +568,7 @@ public class ForceFactory {
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -coefficient * e * Math.log(1 + distance) / distance / n1Layout.mass;
+                double factor = -this.params.outboundAttCompensation* e * Math.log(1 + distance) / distance / n1Layout.mass;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;

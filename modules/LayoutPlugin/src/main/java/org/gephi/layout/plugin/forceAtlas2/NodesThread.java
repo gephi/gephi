@@ -54,34 +54,32 @@ public class NodesThread implements Runnable {
     private final int from;
     private final int to;
     private final Region rootRegion;
-    private final boolean barnesHutOptimize;
     private final RepulsionForce Repulsion;
-    private final double barnesHutTheta;
-    private final double gravity;
     private final RepulsionForce GravityForce;
-    private final double scaling;
+    private final ForceAtlas2.ForceAtlas2Params params;
 
-    public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
-                       RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {
+
+    public NodesThread(Node[] nodes, int from, int to, ForceAtlas2.ForceAtlas2Params params,
+                       RepulsionForce GravityForce, Region rootRegion, RepulsionForce Repulsion) {
         this.nodes = nodes;
         this.from = from;
         this.to = to;
         this.rootRegion = rootRegion;
-        this.barnesHutOptimize = barnesHutOptimize;
+        this.params = params;
         this.Repulsion = Repulsion;
-        this.barnesHutTheta = barnesHutTheta;
-        this.gravity = gravity;
+   
         this.GravityForce = GravityForce;
-        this.scaling = scaling;
+     
     }
 
     @Override
     public void run() {
         // Repulsion
-        if (barnesHutOptimize) {
+        if (params.barnesHutOptimize) {
             for (int nIndex = from; nIndex < to; nIndex++) {
                 Node n = nodes[nIndex];
-                rootRegion.applyForce(n, Repulsion, barnesHutTheta);
+                rootRegion.applyForce(n, Repulsion, params.barnesHutTheta);
+                GravityForce.apply(n, params.gravity / params.scalingRatio);
             }
         } else {
             for (int n1Index = from; n1Index < to; n1Index++) {
@@ -90,13 +88,10 @@ public class NodesThread implements Runnable {
                     Node n2 = nodes[n2Index];
                     Repulsion.apply(n1, n2);
                 }
+                GravityForce.apply(n1, params.gravity / params.scalingRatio);
             }
         }
 
-        // Gravity
-        for (int nIndex = from; nIndex < to; nIndex++) {
-            Node n = nodes[nIndex];
-            GravityForce.apply(n, gravity / scaling);
-        }
+       
     }
 }
