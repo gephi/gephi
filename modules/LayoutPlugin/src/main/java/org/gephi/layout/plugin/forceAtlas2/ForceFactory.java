@@ -183,6 +183,8 @@ public class ForceFactory {
                 nLayout.dx -= xDist * factor;
                 nLayout.dy -= yDist * factor;
             }
+            
+            
         }
     }
 

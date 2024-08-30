@@ -55,6 +55,15 @@ import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.AttractionForce;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
+import org.gephi.layout.plugin.forceAtlas2.force.IGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNodeAntiCollision;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegion;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegionAntiCollision;
+import org.gephi.layout.plugin.forceAtlas2.force.NormalGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.StrongGravity;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
@@ -243,11 +252,18 @@ public class ForceAtlas2 implements Layout {
                        this.threadCount,
                        (isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)
                    );
+            
             // Repulsion (and gravity)
             // NB: Muti-threaded
             RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(params);
             RepulsionForce StrongGravity = (params.strongGravityMode) ? (ForceFactory.builder.getStrongGravity(params)) : (Repulsion);
 
+            IGravity gravityForce = params.strongGravityMode ?  new StrongGravity(params): new NormalGravity(params) ;
+            IRepulsionNode repulsionNode = params.adjustSizes ? new LinearRepulsionNodeAntiCollision(params): new LinearRepulsionNode(params);
+            IRepulsionRegion repulsionRegion = params.adjustSizes ?  new LinearRepulsionRegionAntiCollision(params):new LinearRepulsionRegion(params);
+            
+            
+            
             int taskCount = 8 *
                 currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
             // We make more tasks than threads because some tasks may need more time to compute.
@@ -256,7 +272,7 @@ public class ForceAtlas2 implements Layout {
                 int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
                 int to = (int) Math.floor(nodes.length * t / taskCount);
                 Future future = pool.submit(
-                    new NodesThread(nodes, from, to,  params, StrongGravity,  rootRegion, Repulsion));
+                    new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
                 threads.add(future);
             }
             for (Future future : threads) {

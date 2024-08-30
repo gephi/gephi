@@ -47,6 +47,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
+import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
 
 /**
  * Barnes Hut optimization
@@ -172,18 +174,18 @@ public class Region {
         }
     }
 
-    public void applyForce(Node n, RepulsionForce Force, double theta) {
+    public void applyForce(Node n, IRepulsionNode repulsionNode,IRepulsionRegion repulsionRegion, double theta) {
         if (nodes.size() < 2) {
             Node regionNode = nodes.get(0);
-            Force.apply(n, regionNode);
+            repulsionNode.accept(n, regionNode);
         } else {
             double distance = Math.sqrt(
                 (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
             if (distance * theta > size) {
-                Force.apply(n, this);
+                repulsionRegion.accept(n, this);
             } else {
                 for (Region subregion : subregions) {
-                    subregion.applyForce(n, Force, theta);
+                    subregion.applyForce(n, repulsionNode,repulsionRegion, theta);
                 }
             }
         }
