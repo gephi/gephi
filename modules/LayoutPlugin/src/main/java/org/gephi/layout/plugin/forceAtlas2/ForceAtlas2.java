@@ -228,7 +228,10 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void goAlgo() {
-        
+        /*
+        * INITIALISATION PHASE
+        * Fetch all data and default layout for this algo round
+        */
         if (graphModel == null) {
             return;
         }
@@ -270,6 +273,10 @@ public class ForceAtlas2 implements Layout {
                 }
                 outboundAttCompensation /= nodes.length;
             }
+            // Think of this as a simple C struct that will only be used
+            // for forces to fetch different parameters.
+            // It makes easier to generalize Forces class and easily
+            // uses differents flavors of forces.
             ForceAtlas2Params params = new ForceAtlas2Params(
                        this.edgeWeightInfluence ,
                        this.jitterTolerance ,
@@ -287,6 +294,13 @@ public class ForceAtlas2 implements Layout {
                        this.invertedEdgeWeightsMode,
                        (isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)
                    );
+            /*
+            * FORCE ATLAS 2 : MAIN PART
+            * FA2 is mainly the sum of 3 forces:
+            * - Gravity     :   Force that drags a node to the center.
+            * - Repulsion   :   Force that repulse 2 nodes.
+            * - Attraction  :   Force that attract 2 nodes if part of the same edge.
+            */
             
             // Repulsion (and gravity)
             // NB: Muti-threaded
@@ -299,11 +313,16 @@ public class ForceAtlas2 implements Layout {
             int taskCount = 8 * currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
             // We make more tasks than threads because some tasks may need more time to compute.
             try {
-                pool.invokeAll(IntStream.rangeClosed(1, taskCount).parallel().mapToObj((t) ->{
-                            int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
-                            int to = (int) Math.floor(nodes.length * t / taskCount);
-                            return Executors.callable(new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
-                        }).collect(Collectors.toList()));
+                pool.invokeAll(
+                        IntStream.rangeClosed(1, taskCount)
+                                .parallel()
+                                .mapToObj((t) ->{
+                                    int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
+                                    int to = (int) Math.floor(nodes.length * t / taskCount);
+                                    return Executors.callable(new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
+                                })
+                        .collect(Collectors.toList())
+                );
                   
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
@@ -368,6 +387,10 @@ public class ForceAtlas2 implements Layout {
                     }
                 }
             }
+            /*
+            * POST PROCESSING
+            * Bunch of post-processing that aim to stabilize the overall layout.
+            */
 
             // Auto adjust speed
             double totalSwinging = 0d;  // How much irregular movement
