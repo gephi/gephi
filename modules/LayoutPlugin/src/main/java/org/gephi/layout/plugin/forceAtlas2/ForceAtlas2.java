@@ -44,9 +44,12 @@ package org.gephi.layout.plugin.forceAtlas2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -264,23 +267,16 @@ public class ForceAtlas2 implements Layout {
             
             
             
-            int taskCount = 8 *
-                currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
+            int taskCount = 8 * currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
             // We make more tasks than threads because some tasks may need more time to compute.
-            ArrayList<Future> threads = new ArrayList();
-            for (int t = taskCount; t > 0; t--) {
-                int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
-                int to = (int) Math.floor(nodes.length * t / taskCount);
-                Future future = pool.submit(
-                    new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
-                threads.add(future);
-            }
-            for (Future future : threads) {
-                try {
-                    future.get();
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to layout " + this.getClass().getSimpleName() + ".", e);
-                }
+            try {
+                pool.invokeAll(IntStream.rangeClosed(1, taskCount).parallel().mapToObj((t) ->{
+                            int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
+                            int to = (int) Math.floor(nodes.length * t / taskCount);
+                            return Executors.callable(new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
+                        }).collect(Collectors.toList()));
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
             }
 
             // Attraction
