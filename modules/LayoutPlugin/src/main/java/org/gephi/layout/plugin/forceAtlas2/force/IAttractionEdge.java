@@ -4,7 +4,7 @@
  */
 package org.gephi.layout.plugin.forceAtlas2.force;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import org.gephi.graph.api.Edge;
 
 
@@ -13,6 +13,6 @@ import org.gephi.graph.api.Edge;
  *
  * @author totetmatt
  */
-public interface IAttractionEdge extends Consumer<Edge> {
+public interface IAttractionEdge extends BiConsumer<Edge,Double> {
     
 }

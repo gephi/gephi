@@ -54,14 +54,22 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.AttractionForce;
+import org.gephi.layout.plugin.forceAtlas2.force.IAttractionEdge;
 import org.gephi.layout.plugin.forceAtlas2.force.IGravity;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionDegreeDistributedAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionMassDistributedEdge;
 import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNode;
 import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNodeAntiCollision;
 import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegion;
 import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegionAntiCollision;
+import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionDegreeDistributedAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionDegreeDistributedEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionEdge;
 import org.gephi.layout.plugin.forceAtlas2.force.NormalGravity;
 import org.gephi.layout.plugin.forceAtlas2.force.StrongGravity;
 import org.gephi.layout.spi.Layout;
@@ -78,25 +86,27 @@ import org.openide.util.NbBundle;
 public class ForceAtlas2 implements Layout {
     
     public class ForceAtlas2Params{
-
-        public ForceAtlas2Params(double edgeWeightInfluence, double jitterTolerance, double scalingRatio, double gravity, double speed, double speedEfficiency, boolean outboundAttractionDistribution, boolean adjustSizes, boolean barnesHutOptimize, double barnesHutTheta, boolean linLogMode, boolean normalizeEdgeWeights, boolean strongGravityMode, boolean invertedEdgeWeightsMode, int threadCount, double outboundAttCompensation) {
-            this.edgeWeightInfluence = edgeWeightInfluence;
-            this.jitterTolerance = jitterTolerance;
-            this.scalingRatio = scalingRatio;
-            this.gravity = gravity;
-            this.speed = speed;
-            this.speedEfficiency = speedEfficiency;
-            this.outboundAttractionDistribution = outboundAttractionDistribution;
-            this.adjustSizes = adjustSizes;
-            this.barnesHutOptimize = barnesHutOptimize;
-            this.barnesHutTheta = barnesHutTheta;
-            this.linLogMode = linLogMode;
-            this.normalizeEdgeWeights = normalizeEdgeWeights;
-            this.strongGravityMode = strongGravityMode;
-            this.invertedEdgeWeightsMode = invertedEdgeWeightsMode;
-            this.threadCount = threadCount;
-            this.outboundAttCompensation = outboundAttCompensation;
-        }
+    // Instead of sending individual parameters that makes hard to generalize method, 
+    // we group that as a struct that is shared on all forces
+       
+        
+    public ForceAtlas2Params(double edgeWeightInfluence, double jitterTolerance, double scalingRatio, double gravity, double speed, double speedEfficiency, boolean outboundAttractionDistribution, boolean adjustSizes, boolean barnesHutOptimize, double barnesHutTheta, boolean linLogMode, boolean normalizeEdgeWeights, boolean strongGravityMode, boolean invertedEdgeWeightsMode,  double outboundAttCompensation) {
+        this.edgeWeightInfluence = edgeWeightInfluence;
+        this.jitterTolerance = jitterTolerance;
+        this.scalingRatio = scalingRatio;
+        this.gravity = gravity;
+        this.speed = speed;
+        this.speedEfficiency = speedEfficiency;
+        this.outboundAttractionDistribution = outboundAttractionDistribution;
+        this.adjustSizes = adjustSizes;
+        this.barnesHutOptimize = barnesHutOptimize;
+        this.barnesHutTheta = barnesHutTheta;
+        this.linLogMode = linLogMode;
+        this.normalizeEdgeWeights = normalizeEdgeWeights;
+        this.strongGravityMode = strongGravityMode;
+        this.invertedEdgeWeightsMode = invertedEdgeWeightsMode;
+        this.outboundAttCompensation = outboundAttCompensation;
+    }
     final public double edgeWeightInfluence;
     final public double jitterTolerance;
     final public double scalingRatio;
@@ -111,7 +121,6 @@ public class ForceAtlas2 implements Layout {
     final public boolean normalizeEdgeWeights;
     final public boolean strongGravityMode;
     final public boolean invertedEdgeWeightsMode;
-    final public int threadCount;
     final public double outboundAttCompensation;
     }
     private final ForceAtlas2Builder layoutBuilder;
@@ -141,7 +150,37 @@ public class ForceAtlas2 implements Layout {
         this.layoutBuilder = layoutBuilder;
         this.threadCount = Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }
-
+    private IAttractionEdge getAttractionForce(ForceAtlas2.ForceAtlas2Params params){
+        if (params.adjustSizes) {
+            if (params.linLogMode) {
+                if (params.outboundAttractionDistribution) {
+                    return new LogAttractionDegreeDistributedAntiCollisionEdge(params);
+                } else {
+                    return new LogAttractionAntiCollisionEdge(params);
+                }
+            } else {
+                if (params.outboundAttractionDistribution) {
+                    return new LinearAttractionDegreeDistributedAntiCollisionEdge(params);
+                } else {
+                    return new LinearAttractionAntiCollisionEdge(params);
+                }
+            }
+        } else {
+            if (params.linLogMode) {
+                if (params.outboundAttractionDistribution) {
+                    return new LogAttractionDegreeDistributedEdge(params);
+                } else {
+                    return new LogAttractionEdge(params);
+                }
+            } else {
+                if (params.outboundAttractionDistribution) {
+                    return new LinearAttractionMassDistributedEdge(params);
+                } else {
+                    return new LinearAttractionEdge(params);
+                }
+            }
+        }
+       }
     @Override
     public void initAlgo() {
         AbstractLayout.ensureSafeLayoutNodePositions(graphModel);
@@ -188,10 +227,6 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void goAlgo() {
-        // Instead of sending individual parameters that makes hard to generalize method, 
-        // we group that as a struct
-        // 
-       
         
         if (graphModel == null) {
             return;
@@ -249,7 +284,6 @@ public class ForceAtlas2 implements Layout {
                        this.normalizeEdgeWeights ,
                        this.strongGravityMode ,
                        this.invertedEdgeWeightsMode,
-                       this.threadCount,
                        (isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)
                    );
             
@@ -277,10 +311,12 @@ public class ForceAtlas2 implements Layout {
             }
  
             // Attraction
-            AttractionForce Attraction = ForceFactory.builder.buildAttraction(params);
+          
+            IAttractionEdge attractionForce = this.getAttractionForce(params);
             if (params.edgeWeightInfluence == 0) {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), 1);
+
+                    attractionForce.accept(e, 1.0);
                 }
             } else if (params.edgeWeightInfluence == 1) {
                 if (params.normalizeEdgeWeights) {
@@ -295,16 +331,19 @@ public class ForceAtlas2 implements Layout {
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
                             w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
-                            Attraction.apply(e.getSource(), e.getTarget(), w);
+                
+                            attractionForce.accept(e, w);
                         }
                     } else {
                         for (Edge e : edges) {
-                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+         
+                            attractionForce.accept(e,1.);
                         }
                     }
                 } else {
                     for (Edge e : edges) {
-                        Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
+       
+                        attractionForce.accept(e,getEdgeWeight(e, isDynamicWeight, interval));
                     }
                 }
             } else {
@@ -320,18 +359,18 @@ public class ForceAtlas2 implements Layout {
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
                             w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
-                            Attraction.apply(e.getSource(), e.getTarget(),
-                                Math.pow(w, params.edgeWeightInfluence));
+                             attractionForce.accept(e,w);
                         }
                     } else {
                         for (Edge e : edges) {
-                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+
+                             attractionForce.accept(e,1.);
                         }
                     }
                 } else {
                     for (Edge e : edges) {
-                        Attraction.apply(e.getSource(), e.getTarget(),
-                            Math.pow(getEdgeWeight(e, isDynamicWeight, interval), params.edgeWeightInfluence));
+
+                        attractionForce.accept(e, Math.pow(getEdgeWeight(e, isDynamicWeight, interval), params.edgeWeightInfluence));
                     }
                 }
             }
