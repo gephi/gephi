@@ -44,10 +44,8 @@ package org.gephi.layout.plugin.forceAtlas2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.gephi.graph.api.Edge;
@@ -57,7 +55,6 @@ import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.AttractionForce;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 import org.gephi.layout.plugin.forceAtlas2.force.IGravity;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
@@ -258,9 +255,8 @@ public class ForceAtlas2 implements Layout {
             
             // Repulsion (and gravity)
             // NB: Muti-threaded
-            RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(params);
-            RepulsionForce StrongGravity = (params.strongGravityMode) ? (ForceFactory.builder.getStrongGravity(params)) : (Repulsion);
-
+     
+     
             IGravity gravityForce = params.strongGravityMode ?  new StrongGravity(params): new NormalGravity(params) ;
             IRepulsionNode repulsionNode = params.adjustSizes ? new LinearRepulsionNodeAntiCollision(params): new LinearRepulsionNode(params);
             IRepulsionRegion repulsionRegion = params.adjustSizes ?  new LinearRepulsionRegionAntiCollision(params):new LinearRepulsionRegion(params);
@@ -275,10 +271,11 @@ public class ForceAtlas2 implements Layout {
                             int to = (int) Math.floor(nodes.length * t / taskCount);
                             return Executors.callable(new NodesThread(nodes, from, to,  params, rootRegion, gravityForce, repulsionNode, repulsionRegion));
                         }).collect(Collectors.toList()));
+                  
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
-
+ 
             // Attraction
             AttractionForce Attraction = ForceFactory.builder.buildAttraction(params);
             if (params.edgeWeightInfluence == 0) {

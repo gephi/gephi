@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.gephi.graph.api.Node;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
 

@@ -43,7 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 import org.gephi.layout.plugin.forceAtlas2.force.IGravity;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
 import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
