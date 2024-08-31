@@ -178,24 +178,28 @@ public class EdgeLabelRenderer implements Renderer {
                 while (angle2<angle1) {
                     angle2 += 2*Math.PI;
                 }
+                double arcAngle = Math.abs(angle2 - angle1);
+                while (arcAngle >= Math.PI) {
+                    arcAngle -= Math.PI;
+                }
                 // Target radius - to start at the base of the arrow
-                final Float targetRadius = item.getData(EdgeRenderer.TARGET_RADIUS);
+                final Float targetRadius = edgeItem.getData(EdgeRenderer.TARGET_RADIUS);
                 // Offset due to the source node
                 if (targetRadius != null && targetRadius < 0) {
-                    Double targetOffset = computeTheThing(r, (double) targetRadius);
+                    Double targetOffset = computeTruncateAngle(r, (double) targetRadius, (double) arcAngle);
                     angle2 += targetOffset;
                 }
                 // Source radius
-                final Float sourceRadius = item.getData(EdgeRenderer.SOURCE_RADIUS);
+                final Float sourceRadius = edgeItem.getData(EdgeRenderer.SOURCE_RADIUS);
                 // Avoid edge from passing the node's center:
                 if (sourceRadius != null && sourceRadius < 0) {
-                    Double sourceOffset = computeTheThing(r, (double) sourceRadius);
+                    Double sourceOffset = computeTruncateAngle(r, (double) targetRadius, (double) arcAngle);
                     angle1 -= sourceOffset;
                 }
                 // Label coordinates
                 final Double lAngle = (angle1+angle2)/2;
-                final Float x = (float)(xc + r*Math.cos(lAngle));
-                final Float y = (float)(yc + r*Math.sin(lAngle));
+                final Float x = length != 0 ? (float)(xc + r*Math.cos(lAngle)) : x1;
+                final Float y = length != 0 ? (float)(yc + r*Math.sin(lAngle)) : y1;
                 item.setData(LABEL_X, x);
                 item.setData(LABEL_Y, y);
 
@@ -292,23 +296,24 @@ public class EdgeLabelRenderer implements Renderer {
         }
     }
 
-    private Double computeTheThing(Double radius_curvature_edge, Double truncature_length) {
-        // There is an edge that is a circle arc.
+    private Double computeTruncateAngle(Double radius_curvature_edge, Double truncature_length, Double arc_angle) {
+        // The edge is an arc of a circle.
         // We want to truncate that arc so that truncated part has a chord of a given length.
         // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
         // We give back the result as an angle, as it's how it's useful to us.
         Double rt = truncature_length;
         Double r = radius_curvature_edge;
-        Double x;
-        if (r>=rt) {
-            x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
-        } else {
-            // There is no solution to the problem
-            // (this edge case is dealt with somewhere else)
+        Double s = r * arc_angle;
+        if (s <= -rt) {
+            // Can't truncate more than the arc length
+            // Return 0 so the node's center is used to determine
+            // where to draw the label
             return 0.;
         }
-        Double angle = 2*Math.atan2(rt/2, x);
-        return angle;
+        // If you take a sector from a circle with radius r, and chord length |rt|,
+        // x is the length bisecting the two radii.
+        double x = Math.sqrt(Math.pow(r, 2) - Math.pow(rt / 2, 2));
+        return 2 * Math.atan2(rt / 2, x);
     }
 
     public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize,

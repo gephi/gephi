@@ -115,7 +115,7 @@ public class SumNumbers implements AttributeColumnsMergeStrategy, GeneralColumnT
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-circle.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/plus-circle.svg", false);
     }
 
     @Override

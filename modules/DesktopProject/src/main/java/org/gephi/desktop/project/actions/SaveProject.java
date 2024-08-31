@@ -63,7 +63,7 @@ public final class SaveProject extends AbstractAction {
 
     SaveProject() {
         super(NbBundle.getMessage(ProjectProperties.class, "CTL_SaveProject"),
-            ImageUtilities.loadImageIcon("DesktopProject/saveProject.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/saveProject.svg", false));
     }
 
     @Override

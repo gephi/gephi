@@ -92,7 +92,7 @@ public class Free extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/free.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/free.svg", false);
     }
 
     @Override

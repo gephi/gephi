@@ -75,7 +75,7 @@ public class ScaledSizeMode implements SizeMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.svg", false);
     }
 
     @Override

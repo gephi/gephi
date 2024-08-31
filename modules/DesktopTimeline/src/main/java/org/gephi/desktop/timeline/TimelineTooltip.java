@@ -183,7 +183,7 @@ public class TimelineTooltip {
         richTooltip.setTitle(getPosition());
 
         //Img
-        richTooltip.setMainImage(ImageUtilities.loadImage("DesktopTimeline/info.png", false));
+        richTooltip.setMainImage(ImageUtilities.loadImage("DesktopTimeline/info.svg", false));
 
         //Chart
         if (getY() != null) {
@@ -192,7 +192,7 @@ public class TimelineTooltip {
                 .addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img
-            richTooltip.setFooterImage(ImageUtilities.loadImage("DesktopTimeline/chart.png", false));
+            richTooltip.setFooterImage(ImageUtilities.loadImage("DesktopTimeline/chart.svg", false));
         }
 
         return richTooltip;

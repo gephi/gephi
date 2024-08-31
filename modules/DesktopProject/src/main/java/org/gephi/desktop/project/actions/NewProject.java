@@ -63,7 +63,7 @@ public final class NewProject extends AbstractAction {
 
     NewProject() {
         super(NbBundle.getMessage(NewProject.class, "CTL_NewProject"),
-            ImageUtilities.loadImageIcon("DesktopProject/newProject.png", false));
+            ImageUtilities.loadImageIcon("DesktopProject/newProject.svg", false));
     }
 
     @Override

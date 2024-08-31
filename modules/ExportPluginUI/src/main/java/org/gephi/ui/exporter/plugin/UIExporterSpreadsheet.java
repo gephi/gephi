@@ -107,7 +107,6 @@ public class UIExporterSpreadsheet implements ExporterUI {
         private final static String EXPORT_DYNAMICS = "Spreadsheet_exportDynamics";
         private final static String SEPARATOR = "Spreadsheet_separator";
         private final static String DECIMAL_SEPARATOR = "Spreadsheet_decimalSeparator";
-        private final static String TABLE = "Spreadsheet_table";
         private final static String EXCLUDED_NODE_COLUMNS = "Spreadsheet_excludedNodeColumns";
         private final static String EXCLUDED_EDGE_COLUMNS = "Spreadsheet_excludedEdgeColumns";
         // Default
@@ -121,7 +120,6 @@ public class UIExporterSpreadsheet implements ExporterUI {
             put(EXPORT_ATTRIBUTES, exporterSpreadsheet.isExportAttributes());
             put(EXPORT_DYNAMICS, exporterSpreadsheet.isExportDynamic());
             put(SEPARATOR, exporterSpreadsheet.getFieldDelimiter());
-            put(TABLE, exporterSpreadsheet.getTableToExport().name());
             put(DECIMAL_SEPARATOR, exporterSpreadsheet.getDecimalFormatSymbols().getDecimalSeparator());
             if (exporterSpreadsheet.getTableToExport().equals(ExporterSpreadsheet.ExportTable.NODES)) {
                 put(EXCLUDED_NODE_COLUMNS, exporterSpreadsheet.getExcludedColumns().toArray(new String[0]));
@@ -138,8 +136,6 @@ public class UIExporterSpreadsheet implements ExporterUI {
             exporterSpreadsheet.setExportSize(get(EXPORT_SIZE, DEFAULT.isExportSize()));
             exporterSpreadsheet.setExportDynamic(get(EXPORT_DYNAMICS, DEFAULT.isExportDynamic()));
             exporterSpreadsheet.setFieldDelimiter(get(SEPARATOR, DEFAULT.getFieldDelimiter()));
-            exporterSpreadsheet.setTableToExport(
-                ExporterSpreadsheet.ExportTable.valueOf(get(TABLE, DEFAULT.getTableToExport().name())));
 
             DecimalFormatSymbols dfs = exporterSpreadsheet.getDecimalFormatSymbols();
             dfs.setDecimalSeparator(get(DECIMAL_SEPARATOR, DEFAULT.getDecimalFormatSymbols().getDecimalSeparator()));

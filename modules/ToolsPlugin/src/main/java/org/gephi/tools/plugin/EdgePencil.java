@@ -189,7 +189,7 @@ public class EdgePencil implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/edgepencil.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/edgepencil.svg", false);
             }
 
             @Override

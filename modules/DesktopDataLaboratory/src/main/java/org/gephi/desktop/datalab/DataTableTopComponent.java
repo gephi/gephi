@@ -1040,7 +1040,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.svg", false),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1074,7 +1074,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"),
             ImageWrapperResizableIcon
-                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.png", true),
+                .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.svg", false),
                     new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1366,7 +1366,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         controlToolbar.add(separator);
 
         configurationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        configurationButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/gear-small.png", false)); // NOI18N
+        configurationButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/gear-small.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
         configurationButton.setFocusable(false);
@@ -1437,7 +1437,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        labelBanner.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/info.png", false)); // NOI18N
+        labelBanner.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/info.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelBanner, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.labelBanner.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
