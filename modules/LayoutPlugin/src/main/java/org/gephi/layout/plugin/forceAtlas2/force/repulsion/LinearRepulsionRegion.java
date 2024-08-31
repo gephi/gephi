@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.gephi.layout.plugin.forceAtlas2.force;
+package org.gephi.layout.plugin.forceAtlas2.force.repulsion;
 
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2LayoutData;
 import org.gephi.layout.plugin.forceAtlas2.Region;
+import org.gephi.layout.plugin.forceAtlas2.force.AFA2Force;
 
 /**
  *

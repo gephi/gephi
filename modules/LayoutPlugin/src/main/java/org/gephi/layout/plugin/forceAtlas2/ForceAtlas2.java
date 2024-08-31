@@ -43,6 +43,7 @@
 package org.gephi.layout.plugin.forceAtlas2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,24 +55,24 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.plugin.forceAtlas2.force.IAttractionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.IGravity;
-import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionNode;
-import org.gephi.layout.plugin.forceAtlas2.force.IRepulsionRegion;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionAntiCollisionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionDegreeDistributedAntiCollisionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearAttractionMassDistributedEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNode;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionNodeAntiCollision;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegion;
-import org.gephi.layout.plugin.forceAtlas2.force.LinearRepulsionRegionAntiCollision;
-import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionAntiCollisionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionDegreeDistributedAntiCollisionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionDegreeDistributedEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.LogAttractionEdge;
-import org.gephi.layout.plugin.forceAtlas2.force.NormalGravity;
-import org.gephi.layout.plugin.forceAtlas2.force.StrongGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.IAttractionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.gravity.IGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionRegion;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LinearAttractionAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LinearAttractionDegreeDistributedAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LinearAttractionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LinearAttractionMassDistributedEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.LinearRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.LinearRepulsionNodeAntiCollision;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.LinearRepulsionRegion;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.LinearRepulsionRegionAntiCollision;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LogAttractionAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LogAttractionDegreeDistributedAntiCollisionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LogAttractionDegreeDistributedEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.attraction.LogAttractionEdge;
+import org.gephi.layout.plugin.forceAtlas2.force.gravity.NormalGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.gravity.StrongGravity;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
@@ -289,8 +290,6 @@ public class ForceAtlas2 implements Layout {
             
             // Repulsion (and gravity)
             // NB: Muti-threaded
-     
-     
             IGravity gravityForce = params.strongGravityMode ?  new StrongGravity(params): new NormalGravity(params) ;
             IRepulsionNode repulsionNode = params.adjustSizes ? new LinearRepulsionNodeAntiCollision(params): new LinearRepulsionNode(params);
             IRepulsionRegion repulsionRegion = params.adjustSizes ?  new LinearRepulsionRegionAntiCollision(params):new LinearRepulsionRegion(params);
@@ -311,11 +310,9 @@ public class ForceAtlas2 implements Layout {
             }
  
             // Attraction
-          
             IAttractionEdge attractionForce = this.getAttractionForce(params);
             if (params.edgeWeightInfluence == 0) {
                 for (Edge e : edges) {
-
                     attractionForce.accept(e, 1.0);
                 }
             } else if (params.edgeWeightInfluence == 1) {
@@ -328,21 +325,19 @@ public class ForceAtlas2 implements Layout {
                         edgeWeightMin = Math.min(w, edgeWeightMin);
                         edgeWeightMax = Math.max(w, edgeWeightMax);
                     }
+                    
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
                             w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
-                
                             attractionForce.accept(e, w);
                         }
                     } else {
                         for (Edge e : edges) {
-         
                             attractionForce.accept(e,1.);
                         }
                     }
                 } else {
                     for (Edge e : edges) {
-       
                         attractionForce.accept(e,getEdgeWeight(e, isDynamicWeight, interval));
                     }
                 }
@@ -363,7 +358,6 @@ public class ForceAtlas2 implements Layout {
                         }
                     } else {
                         for (Edge e : edges) {
-
                              attractionForce.accept(e,1.);
                         }
                     }

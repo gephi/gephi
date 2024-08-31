@@ -2,20 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.gephi.layout.plugin.forceAtlas2.force;
+package org.gephi.layout.plugin.forceAtlas2.force.attraction;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2LayoutData;
+import org.gephi.layout.plugin.forceAtlas2.force.AFA2Force;
 
 /**
  *
  * @author totetmatt
  */
-public class LogAttractionAntiCollisionEdge extends AFA2Force implements IAttractionEdge {
+public class LogAttractionDegreeDistributedEdge extends AFA2Force implements IAttractionEdge {
 
-    public LogAttractionAntiCollisionEdge(ForceAtlas2.ForceAtlas2Params params) {
+    public LogAttractionDegreeDistributedEdge(ForceAtlas2.ForceAtlas2Params params) {
         super(params);
     }
 
@@ -29,12 +30,12 @@ public class LogAttractionAntiCollisionEdge extends AFA2Force implements IAttrac
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
             if (distance > 0) {
 
                 // NB: factor = force / distance
-                double factor = -params.outboundAttCompensation * e * Math.log(1 + distance) / distance;
+                double factor = -params.outboundAttCompensation * e * Math.log(1 + distance) / distance / n1Layout.mass;
 
                 n1Layout.dx += xDist * factor;
                 n1Layout.dy += yDist * factor;
