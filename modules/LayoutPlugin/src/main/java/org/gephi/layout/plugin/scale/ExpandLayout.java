@@ -50,4 +50,8 @@ public class ExpandLayout extends AbstractScaleLayout {
         super(layoutBuilder, scale);
     }
 
+    @Override
+    public void resetPropertiesValues() {
+        setScale(1.2);
+    }
 }

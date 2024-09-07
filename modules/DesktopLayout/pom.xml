@@ -80,6 +80,18 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
         </dependency>
+
+        <!-- Test only -->
+        <dependency>
+            <groupId>org.gephi</groupId>
+            <artifactId>layout-plugin</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-masterfs</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
