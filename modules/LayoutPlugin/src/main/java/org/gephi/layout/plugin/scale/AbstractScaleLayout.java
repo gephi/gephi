@@ -122,10 +122,6 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
         return properties.toArray(new LayoutProperty[0]);
     }
 
-    @Override
-    public void resetPropertiesValues() {
-    }
-
     /**
      * @return the scale
      */
