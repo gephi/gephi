@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +136,10 @@ public class LayoutPresetPersistence {
             if (folder == null) {
                 folder = FileUtil.getConfigRoot().createFolder("layoutpresets");
             }
-            File presetFile = new File(FileUtil.toFile(folder), name + ".xml");
+            FileObject presetFile = folder.getFileObject(name + ".xml");
+            if (presetFile == null) {
+                presetFile = folder.createData(name, "xml");
+            }
 
             //Create doc
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -148,22 +152,16 @@ public class LayoutPresetPersistence {
             preset.writeXML(document);
 
             //Write XML file
-            fos = new FileOutputStream(presetFile);
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(fos);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
-        } catch (Exception e) {
-            Logger.getLogger("").log(Level.SEVERE, "Error while writing preset file", e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                }
+            try (OutputStream outputStream = presetFile.getOutputStream()) {
+                Source source = new DOMSource(document);
+                Result result = new StreamResult(outputStream);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.transform(source, result);
             }
+        } catch (Exception e) {
+            Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while writing preset file", e);
         }
     }
 
@@ -181,7 +179,7 @@ public class LayoutPresetPersistence {
                 try {
                     file.delete();
                 } catch (IOException ex) {
-                    Logger.getLogger("").log(Level.SEVERE, "Error while deleting preset file", ex);
+                    Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while deleting preset file", ex);
                 }
             }
         }
@@ -209,7 +207,7 @@ public class LayoutPresetPersistence {
                     try {
                         p.getProperty().setValue(preset.propertyValues.get(i));
                     } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while setting preset property", e);
+                        Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while setting preset property", e);
                     }
                 }
             }
@@ -234,7 +232,7 @@ public class LayoutPresetPersistence {
                         Preset preset = new Preset(document);
                         addPreset(preset);
                     } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while reading preset file", e);
+                        Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while reading preset file", e);
                     }
                 }
             }
@@ -252,4 +250,11 @@ public class LayoutPresetPersistence {
         return preset;
     }
 
+    protected void reset() {
+        for(String layoutClassName : presets.keySet()) {
+            for(Preset preset : presets.get(layoutClassName).toArray(new Preset[0])) {
+                deletePreset(preset);
+            }
+        }
+    }
 }
