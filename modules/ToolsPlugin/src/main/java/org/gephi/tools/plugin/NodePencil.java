@@ -132,7 +132,7 @@ public class NodePencil implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/nodepencil.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/nodepencil.svg", false);
             }
 
             @Override

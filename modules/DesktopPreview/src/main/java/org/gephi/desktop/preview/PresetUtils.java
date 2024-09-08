@@ -77,6 +77,23 @@ public class PresetUtils {
 
     private List<PreviewPreset> presets;
 
+    public void removePreset(PreviewPreset preset) {
+        presets.remove(preset);
+
+        try {
+            FileObject folder = FileUtil.getConfigFile("previewpresets");
+            if (folder != null) {
+                String filename = DigestUtils.sha1Hex(preset.getName());
+                FileObject presetFile = folder.getFileObject(filename, "xml");
+                if (presetFile != null) {
+                    presetFile.delete();
+                }
+            }
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
     public void savePreset(PreviewPreset preset) {
         int exist = -1;
         for (int i = 0; i < presets.size(); i++) {
@@ -136,6 +153,15 @@ public class PresetUtils {
             loadPresets();
         }
         return presets.toArray(new PreviewPreset[0]);
+    }
+
+    public boolean hasPreset(String name) {
+        for (PreviewPreset preset : presets) {
+            if (preset.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void loadPresets() {

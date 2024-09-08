@@ -196,7 +196,7 @@ public class ShortestPath implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/shortestpath.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/shortestpath.svg", false);
             }
 
             @Override

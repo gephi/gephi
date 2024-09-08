@@ -121,9 +121,14 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
         injectGraph();
         if (selectedLayout != null) {
-            loadProperties(selectedLayout);
+            boolean onlyDefaults = loadProperties(selectedLayout);
+            firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
+            if (onlyDefaults) {
+                firePropertyChangeEvent(DEFAULTS_APPLIED, null, null);
+            }
+        } else {
+            firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, null);
         }
-        firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
     }
 
     @Override
@@ -172,12 +177,18 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
     private void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
         PropertyChangeEvent evt = null;
-        if (propertyName.equals(SELECTED_LAYOUT)) {
-            evt = new PropertyChangeEvent(this, SELECTED_LAYOUT, oldValue, newValue);
-        } else if (propertyName.equals(RUNNING)) {
-            evt = new PropertyChangeEvent(this, RUNNING, oldValue, newValue);
-        } else {
-            return;
+        switch (propertyName) {
+            case SELECTED_LAYOUT:
+                evt = new PropertyChangeEvent(this, SELECTED_LAYOUT, oldValue, newValue);
+                break;
+            case RUNNING:
+                evt = new PropertyChangeEvent(this, RUNNING, oldValue, newValue);
+                break;
+            case DEFAULTS_APPLIED:
+                evt = new PropertyChangeEvent(this, DEFAULTS_APPLIED, oldValue, newValue);
+                break;
+            default:
+                return;
         }
         for (PropertyChangeListener l : listeners) {
             l.propertyChange(evt);
@@ -206,10 +217,12 @@ public class LayoutModelImpl implements LayoutModel, Model {
         }
     }
 
-    public void loadProperties(Layout layout) {
+    // Returns true if only the default values were applied (no saved properties)
+    public boolean loadProperties(Layout layout) {
         // In case some properties are only locally defined (like cooling in ForceAtlas)
         layout.resetPropertiesValues();
 
+        boolean onlyDefaults = true;
         List<LayoutPropertyKey> layoutValues = new ArrayList<>();
         for (LayoutPropertyKey val : savedProperties.keySet()) {
             if (val.layoutClassName.equals(layout.getClass().getName())) {
@@ -225,8 +238,10 @@ public class LayoutModelImpl implements LayoutModel, Model {
                         if (property.getProperty().getValueType().isAssignableFrom(Column.class)) {
                             PropertyEditor propertyEditor = property.getProperty().getPropertyEditor();
                             propertyEditor.setAsText(savedProperties.get(l).toString());
+                            onlyDefaults = false;
                         } else {
                             property.getProperty().setValue(savedProperties.get(l));
+                            onlyDefaults = false;
                         }
                     } catch (Exception e) {
                         Exceptions.printStackTrace(e);
@@ -234,6 +249,7 @@ public class LayoutModelImpl implements LayoutModel, Model {
                 }
             }
         }
+        return onlyDefaults;
     }
 
     @Override

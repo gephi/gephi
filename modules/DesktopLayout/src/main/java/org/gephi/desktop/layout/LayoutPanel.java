@@ -59,13 +59,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
 import org.gephi.ui.components.richtooltip.RichTooltip;
@@ -148,20 +150,71 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 JPopupMenu menu = new JPopupMenu();
                 List<Preset> presets = layoutPresetPersistence.getPresets(model.getSelectedLayout());
                 if (presets != null && !presets.isEmpty()) {
+                    // One item per present to apply
                     for (final Preset p : presets) {
                         JMenuItem item = new JMenuItem(p.toString());
                         item.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
+                                Preset appliedPreset = layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
                                 refreshProperties();
-                                StatusDisplayer.getDefault().setStatusText(NbBundle
-                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset",
-                                        model.getSelectedBuilder().getName(), p.toString()));
+                                if (appliedPreset != null) {
+                                    StatusDisplayer.getDefault().setStatusText(NbBundle
+                                        .getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset",
+                                            model.getSelectedBuilder().getName(), p.toString()));
+                                }
                             }
                         });
                         menu.add(item);
                     }
+
+                    JMenu setDefault = new JMenu(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.setDefault"));
+                    if (layoutPresetPersistence.hasDefaultPreset(model.getSelectedLayout())) {
+                        JMenuItem item = new JMenuItem(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.setDefault.remove"));
+                        item.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                layoutPresetPersistence.setDefaultPresent(null, model.getSelectedLayout());
+                                StatusDisplayer.getDefault().setStatusText(NbBundle
+                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.removeDefaultPreset",
+                                        model.getSelectedBuilder().getName()));
+                            }
+                        });
+                        setDefault.add(item);
+                    }
+                    for (final Preset p : presets) {
+                        boolean isDefault = layoutPresetPersistence.isDefaultPreset(p.toString(), model.getSelectedLayout());
+                        JCheckBoxMenuItem item = new JCheckBoxMenuItem(p.toString(), isDefault);
+                        item.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                layoutPresetPersistence.setDefaultPresent(p.toString(), model.getSelectedLayout());
+                                StatusDisplayer.getDefault().setStatusText(NbBundle
+                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.setDefaultPreset",
+                                        model.getSelectedBuilder().getName(), p.toString()));
+                            }
+                        });
+                        setDefault.add(item);
+                    }
+                    menu.add(new JSeparator());
+                    menu.add(setDefault);
+
+                    JMenu deletePresets = new JMenu(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.deletePresets"));
+                    for (final Preset p : presets) {
+                        JMenuItem item = new JMenuItem(p.toString());
+                        item.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                layoutPresetPersistence.deletePreset(p);
+                                StatusDisplayer.getDefault().setStatusText(NbBundle
+                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.deletePreset",
+                                        model.getSelectedBuilder().getName(), p.toString()));
+                            }
+                        });
+                        deletePresets.add(item);
+                    }
+                    menu.add(new JSeparator());
+                    menu.add(deletePresets);
                 } else {
                     menu.add(
                         "<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.nopreset") +
@@ -182,6 +235,18 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                         if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                             String input = question.getInputText();
                             if (input != null && !input.isEmpty()) {
+                                if (layoutPresetPersistence.hasPreset(input, model.getSelectedLayout().getClass().getName())) {
+                                    String message =
+                                        NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePresetReplace.text");
+                                    String title = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePresetReplace.title");
+                                    NotifyDescriptor dd = new NotifyDescriptor(message, title,
+                                        NotifyDescriptor.YES_NO_OPTION,
+                                        NotifyDescriptor.QUESTION_MESSAGE, null, null);
+                                    Object retType = DialogDisplayer.getDefault().notify(dd);
+                                    if (retType == NotifyDescriptor.NO_OPTION) {
+                                        return;
+                                    }
+                                }
                                 layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
                                 StatusDisplayer.getDefault().setStatusText(NbBundle
                                     .getMessage(LayoutPanel.class, "LayoutPanel.status.savePreset",
@@ -214,6 +279,21 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             refreshModel();
         } else if (evt.getPropertyName().equals(LayoutModel.RUNNING)) {
             refreshModel();
+        } else if (evt.getPropertyName().equals(LayoutModel.DEFAULTS_APPLIED)) {
+            loadDefaultProperties();
+        }
+    }
+
+    private void loadDefaultProperties() {
+        Layout layout = model.getSelectedLayout();
+        if (layout != null) {
+            Preset appliedPreset = layoutPresetPersistence.loadDefaultPreset(layout);
+            if (appliedPreset != null) {
+                StatusDisplayer.getDefault().setStatusText(NbBundle
+                    .getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset",
+                        model.getSelectedBuilder().getName(), appliedPreset.toString()));
+            }
+            refreshProperties();
         }
     }
 
@@ -223,11 +303,11 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         if (model == null || !model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/run.gif", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/run.svg", false));
             runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.tooltip"));
         } else if (model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/stop.png", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/stop.svg", false));
             runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.tooltip"));
         }
 
@@ -307,13 +387,17 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     }
 
     private void setSelectedLayout(LayoutBuilder builder) {
-        controller.setLayout(builder != null ? model.getLayout(builder) : null);
+        Layout layout = builder != null ? builder.buildLayout() : null;
+        controller.setLayout(layout);
     }
 
     private void reset() {
         if (model.getSelectedLayout() != null) {
-            model.getSelectedLayout().resetPropertiesValues();
+            layoutPresetPersistence.loadDefaultPreset(model.getSelectedLayout());
             refreshProperties();
+            StatusDisplayer.getDefault().setStatusText(NbBundle
+                .getMessage(LayoutPanel.class, "LayoutPanel.status.reset",
+                    model.getSelectedBuilder().getName()));
         }
     }
 
@@ -358,7 +442,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(layoutCombobox, gridBagConstraints);
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/layoutInfo.png", false)); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/layoutInfo.svg", false)); // NOI18N
         infoLabel
             .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -369,7 +453,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(infoLabel, gridBagConstraints);
 
         runButton.setIcon(
-            ImageUtilities.loadImageIcon("DesktopLayout/run.gif", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DesktopLayout/run.svg", false)); // NOI18N
         runButton
             .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
         runButton.setIconTextGap(5);
@@ -391,7 +475,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar.setRollover(true);
         layoutToolbar.setOpaque(false);
 
-        presetsButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/preset.png", false)); // NOI18N
+        presetsButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/preset.svg", false)); // NOI18N
         presetsButton.setText(
             org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
         presetsButton.setFocusable(false);
@@ -504,7 +588,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         private static final int IMAGE_RIGHT_MARIN = 10;
         private final Image greenIcon;
         private final Image grayIcon;
-        private Graphics g;
         private final String qualityStr;
         private final String speedStr;
         private int textMaxSize;
@@ -512,8 +595,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         public LayoutDescriptionImage(LayoutUI layoutUI) {
             this.layoutUI = layoutUI;
-            greenIcon = ImageUtilities.loadImage("DesktopLayout/yellow.png", false);
-            grayIcon = ImageUtilities.loadImage("DesktopLayout/grey.png", false);
+            greenIcon = ImageUtilities.loadImage("DesktopLayout/yellow.svg", false);
+            grayIcon = ImageUtilities.loadImage("DesktopLayout/grey.svg", false);
             qualityStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.quality");
             speedStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.speed");
         }
@@ -537,7 +620,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
             //Paint
             BufferedImage img = new BufferedImage(imageWidth, 100, BufferedImage.TYPE_INT_ARGB);
-            this.g = img.getGraphics();
+            Graphics g = img.getGraphics();
             paint(g);
             return img;
         }

@@ -26,6 +26,8 @@
             <li>A new configuration builder has been added in <code>Configuration.Builder</code> to facilitate configuration customization. A number of configurations - which previously lived as static fields - have been migrated into it. The <code>GraphModel.setConfiguration()</code> method has been deprecated. Configurations is therefore expected to be defined when <code>GraphModel</code> is created.</li>
             <li>Addition of a <code>getDefaultConfigurationBuilder()</code> method in <code>GraphController</code> that returns the default graph configuration used when creating new <code>GraphModel</code> instances. This should be used as a basis configuration by users willing to create <code>GraphModel</code> with custom configurations.</li>
             <li><code>Instant</code> is now supported as an element type. This allows to store dates and times, but unfortunately it wasn't possible to make the Serialization backward compatible. In other words, if an Instant column is used , it won't be possible to be loaded in previous versions.</li>
+            <li>Addition of <code>Graph.getNodeByStoreId()</code> and <code>Graph.getEdgeByStoreId()</code> methods to retrieve elements based only on their store id.</li>
+            <li>Add new <code>SpatialIndex</code> that holds a quadtree-based spatial index of elements. It can be retrieved from <code>Graph</code>. The spatial index allows to retrieve nodes and edges based on a <code>Rect2D</code>.</li>
         </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>

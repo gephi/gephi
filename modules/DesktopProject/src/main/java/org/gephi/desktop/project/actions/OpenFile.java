@@ -57,6 +57,7 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -72,7 +73,8 @@ public final class OpenFile extends AbstractAction {
     private static final String GEPHI_EXTENSION = "gephi";
 
     OpenFile() {
-        super(NbBundle.getMessage(OpenFile.class, "CTL_OpenFile"));
+        super(NbBundle.getMessage(OpenFile.class, "CTL_OpenFile"),
+            ImageUtilities.loadImageIcon("DesktopProject/openProject.svg", false));
     }
 
     @Override

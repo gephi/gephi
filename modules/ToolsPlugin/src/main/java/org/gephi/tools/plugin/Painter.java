@@ -130,7 +130,7 @@ public class Painter implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/painter.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/painter.svg", false);
             }
 
             @Override

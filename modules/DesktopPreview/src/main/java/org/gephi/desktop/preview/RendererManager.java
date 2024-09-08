@@ -264,7 +264,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(restoreOrderButton);
         toolBar.add(jSeparator1);
 
-        selectAllButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box.png", false)); // NOI18N
+        selectAllButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box.svg", false)); // NOI18N
         selectAllButton.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.selectAllButton.text")); // NOI18N
         selectAllButton.setFocusable(false);
@@ -277,7 +277,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         });
         toolBar.add(selectAllButton);
 
-        unselectAllButon.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box-uncheck.png", false)); // NOI18N
+        unselectAllButon.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box-uncheck.svg", false)); // NOI18N
         unselectAllButon.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.unselectAllButon.text")); // NOI18N
         unselectAllButon.setFocusable(false);
@@ -291,7 +291,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(unselectAllButon);
         toolBar.add(glue);
 
-        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.png", false)); // NOI18N
+        infoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/info.svg", false)); // NOI18N
         infoLabel.setText(
             org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.infoLabel.text")); // NOI18N
         toolBar.add(infoLabel);
@@ -377,7 +377,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
         public MoveRendererButton(int index, boolean up) {
             super(ImageUtilities
-                .loadImageIcon("DesktopPreview/" + (up ? "up" : "down") + ".png", false));
+                .loadImageIcon("DesktopPreview/" + (up ? "up" : "down") + ".svg", false));
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
             this.up = up;

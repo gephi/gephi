@@ -46,10 +46,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -65,10 +67,8 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Mathieu Bastian
@@ -76,9 +76,54 @@ import org.w3c.dom.NodeList;
 public class LayoutPresetPersistence {
 
     private final Map<String, List<Preset>> presets = new HashMap<>();
+    private final Map<String, String> defaultPresets = new HashMap<>();
 
     public LayoutPresetPersistence() {
         loadPresets();
+
+        // Load defaults from preferences
+        for(String layoutClassName : presets.keySet()) {
+            String defaultPreset = NbPreferences.forModule(LayoutPresetPersistence.class).get("LayoutPresetPersistence_defaultPreset_"+layoutClassName, null);
+            if (defaultPreset != null && hasPreset(defaultPreset, layoutClassName)) {
+                defaultPresets.put(layoutClassName, defaultPreset);
+                Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.INFO, "Default preset for {0} loaded: {1}", new Object[]{layoutClassName, defaultPreset});
+            }
+        }
+    }
+
+    public boolean hasPreset(String name, String layoutClassName) {
+        List<Preset> layoutPresets = presets.get(layoutClassName);
+        return layoutPresets != null && layoutPresets.stream().anyMatch(p -> p.name.equals(name));
+    }
+
+    public Preset getPreset(String name, Layout layout) {
+        List<Preset> layoutPresets = presets.get(layout.getClass().getName());
+        if (layoutPresets == null) {
+            return null;
+        }
+        Optional<Preset> preset = layoutPresets.stream()
+            .filter(p -> p.name.equals(name))
+            .findFirst();
+        return preset.orElse(null);
+    }
+
+    public void setDefaultPresent(String name, Layout layout) {
+        if (name == null) {
+            defaultPresets.remove(layout.getClass().getName());
+            NbPreferences.forModule(LayoutPresetPersistence.class).remove("LayoutPresetPersistence_defaultPreset_"+layout.getClass().getName());
+        } else {
+            defaultPresets.put(layout.getClass().getName(), name);
+            NbPreferences.forModule(LayoutPresetPersistence.class).put("LayoutPresetPersistence_defaultPreset_"+layout.getClass().getName(), name);
+        }
+    }
+
+    public boolean hasDefaultPreset(Layout layout) {
+        return defaultPresets.containsKey(layout.getClass().getName());
+    }
+
+    public boolean isDefaultPreset(String name, Layout layout) {
+        String defaultPreset = defaultPresets.get(layout.getClass().getName());
+        return defaultPreset != null && defaultPreset.equals(name);
     }
 
     public void savePreset(String name, Layout layout) {
@@ -91,7 +136,10 @@ public class LayoutPresetPersistence {
             if (folder == null) {
                 folder = FileUtil.getConfigRoot().createFolder("layoutpresets");
             }
-            File presetFile = new File(FileUtil.toFile(folder), name + ".xml");
+            FileObject presetFile = folder.getFileObject(name + ".xml");
+            if (presetFile == null) {
+                presetFile = folder.createData(name, "xml");
+            }
 
             //Create doc
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -104,26 +152,53 @@ public class LayoutPresetPersistence {
             preset.writeXML(document);
 
             //Write XML file
-            fos = new FileOutputStream(presetFile);
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(fos);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
+            try (OutputStream outputStream = presetFile.getOutputStream()) {
+                Source source = new DOMSource(document);
+                Result result = new StreamResult(outputStream);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.transform(source, result);
+            }
         } catch (Exception e) {
-            Logger.getLogger("").log(Level.SEVERE, "Error while writing preset file", e);
-        } finally {
-            if (fos != null) {
+            Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while writing preset file", e);
+        }
+    }
+
+    public void deletePreset(Preset preset) {
+        // Remove default preset if needed
+        if (defaultPresets.containsKey(preset.layoutClassName) && defaultPresets.get(preset.layoutClassName).equals(preset.name)) {
+            defaultPresets.remove(preset.layoutClassName);
+        }
+        List<Preset> layoutPresets = presets.get(preset.layoutClassName);
+        layoutPresets.remove(preset);
+        FileObject folder = FileUtil.getConfigFile("layoutpresets");
+        if (folder != null) {
+            FileObject file = folder.getFileObject(preset.name + ".xml");
+            if (file != null) {
                 try {
-                    fos.close();
+                    file.delete();
                 } catch (IOException ex) {
+                    Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while deleting preset file", ex);
                 }
             }
         }
     }
 
-    public void loadPreset(Preset preset, Layout layout) {
+    public Preset loadDefaultPreset(Layout layout) {
+        String defaultPreset = defaultPresets.get(layout.getClass().getName());
+        if (defaultPreset != null) {
+            Preset preset = getPreset(defaultPreset, layout);
+            if (preset != null) {
+                return loadPreset(preset, layout);
+            }
+        } else {
+            layout.resetPropertiesValues();
+        }
+        return null;
+    }
+
+    public Preset loadPreset(Preset preset, Layout layout) {
         for (LayoutProperty p : layout.getProperties()) {
             for (int i = 0; i < preset.propertyNames.size(); i++) {
                 if (p.getCanonicalName().equalsIgnoreCase(preset.propertyNames.get(i))
@@ -132,11 +207,12 @@ public class LayoutPresetPersistence {
                     try {
                         p.getProperty().setValue(preset.propertyValues.get(i));
                     } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while setting preset property", e);
+                        Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while setting preset property", e);
                     }
                 }
             }
         }
+        return preset;
     }
 
     public List<Preset> getPresets(Layout layout) {
@@ -156,7 +232,7 @@ public class LayoutPresetPersistence {
                         Preset preset = new Preset(document);
                         addPreset(preset);
                     } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while reading preset file", e);
+                        Logger.getLogger(LayoutPresetPersistence.class.getName()).log(Level.SEVERE, "Error while reading preset file", e);
                     }
                 }
             }
@@ -164,11 +240,7 @@ public class LayoutPresetPersistence {
     }
 
     private Preset addPreset(Preset preset) {
-        List<Preset> layoutPresets = presets.get(preset.layoutClassName);
-        if (layoutPresets == null) {
-            layoutPresets = new ArrayList<>();
-            presets.put(preset.layoutClassName, layoutPresets);
-        }
+        List<Preset> layoutPresets = presets.computeIfAbsent(preset.layoutClassName, k -> new ArrayList<>());
         for (Preset p : layoutPresets) {
             if (p.equals(preset)) {
                 return p;
@@ -178,125 +250,11 @@ public class LayoutPresetPersistence {
         return preset;
     }
 
-    protected static class Preset {
-
-        private final List<String> propertyNames = new ArrayList<>();
-        private final List<Object> propertyValues = new ArrayList<>();
-        private String layoutClassName;
-        private String name;
-
-        private Preset(String name, Layout layout) {
-            this.name = name;
-            this.layoutClassName = layout.getClass().getName();
-            for (LayoutProperty p : layout.getProperties()) {
-                try {
-                    Object value = p.getProperty().getValue();
-                    if (value != null) {
-                        propertyNames.add(p.getCanonicalName());
-                        propertyValues.add(value);
-                    }
-                } catch (Exception e) {
-                }
+    protected void reset() {
+        for(String layoutClassName : presets.keySet()) {
+            for(Preset preset : presets.get(layoutClassName).toArray(new Preset[0])) {
+                deletePreset(preset);
             }
-        }
-
-        private Preset(Document document) {
-            readXML(document);
-        }
-
-        public void readXML(Document document) {
-            NodeList propertiesList = document.getDocumentElement().getElementsByTagName("properties");
-            if (propertiesList.getLength() > 0) {
-                for (int j = 0; j < propertiesList.getLength(); j++) {
-                    Node m = propertiesList.item(j);
-                    if (m.getNodeType() == Node.ELEMENT_NODE) {
-                        Element propertiesE = (Element) m;
-                        layoutClassName = propertiesE.getAttribute("layoutClassName");
-                        name = propertiesE.getAttribute("name");
-                        NodeList propertyList = propertiesE.getElementsByTagName("property");
-                        for (int i = 0; i < propertyList.getLength(); i++) {
-                            Node n = propertyList.item(i);
-                            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                                Element propertyE = (Element) n;
-                                String propStr = propertyE.getAttribute("property");
-                                String classStr = propertyE.getAttribute("class");
-                                String valStr = propertyE.getTextContent();
-                                Object value = parse(classStr, valStr);
-                                if (value != null) {
-                                    propertyNames.add(propStr);
-                                    propertyValues.add(value);
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        private Object parse(String classStr, String str) {
-            try {
-                Class c = Class.forName(classStr);
-                if (c.equals(Boolean.class)) {
-                    return new Boolean(str);
-                } else if (c.equals(Integer.class)) {
-                    return new Integer(str);
-                } else if (c.equals(Float.class)) {
-                    return new Float(str);
-                } else if (c.equals(Double.class)) {
-                    return new Double(str);
-                } else if (c.equals(Long.class)) {
-                    return new Long(str);
-                } else if (c.equals(String.class)) {
-                    return str;
-                }
-            } catch (ClassNotFoundException ex) {
-                return null;
-            }
-            return null;
-        }
-
-        public void writeXML(Document document) {
-            Element rootE = document.createElement("layoutproperties");
-
-            //Properties
-            Element propertiesE = document.createElement("properties");
-            propertiesE.setAttribute("layoutClassName", layoutClassName);
-            propertiesE.setAttribute("name", name);
-            propertiesE.setAttribute("version", "0.7");
-            for (int i = 0; i < propertyNames.size(); i++) {
-                Element propertyE = document.createElement("property");
-                propertyE.setAttribute("property", propertyNames.get(i));
-                propertyE.setAttribute("class", propertyValues.get(i).getClass().getName());
-                propertyE.setTextContent(propertyValues.get(i).toString());
-                propertiesE.appendChild(propertyE);
-            }
-            rootE.appendChild(propertiesE);
-            document.appendChild(rootE);
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Preset other = (Preset) obj;
-            return (this.name == null) ? (other.name == null) : this.name.equals(other.name);
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
-            return hash;
         }
     }
 }

@@ -104,6 +104,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
 
     @Override
     public void resetPropertiesValues() {
+        setAngle(90.0);
     }
 
     @Override

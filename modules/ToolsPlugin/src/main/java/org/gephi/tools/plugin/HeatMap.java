@@ -185,7 +185,7 @@ public class HeatMap implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/heatmap.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/heatmap.svg", false);
             }
 
             @Override

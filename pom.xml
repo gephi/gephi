@@ -141,7 +141,7 @@
         <gephi.joml.version>1.10.5</gephi.joml.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.7.2-SNAPSHOT</graphstore.version>
+        <graphstore.version>0.7.2</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -235,7 +235,7 @@
 
         <gephi.maven-enforcer-plugin.version>3.5.0</gephi.maven-enforcer-plugin.version>
 
-        <gephi.maven-gpg-plugin.version>3.2.4</gephi.maven-gpg-plugin.version>
+        <gephi.maven-gpg-plugin.version>3.0.1</gephi.maven-gpg-plugin.version>
 
         <gephi.maven-install-plugin.version>3.1.2</gephi.maven-install-plugin.version>
 
@@ -991,6 +991,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
                     <skipTests>true</skipTests>
                     <trimStackTrace>false</trimStackTrace>                                                              
                 </configuration>

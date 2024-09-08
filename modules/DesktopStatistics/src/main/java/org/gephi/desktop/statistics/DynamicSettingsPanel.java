@@ -411,7 +411,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         windowTextField.setName("window"); // NOI18N
 
-        windowInfoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopStatistics/info.png", false)); // NOI18N
+        windowInfoLabel.setIcon(ImageUtilities.loadImageIcon("DesktopStatistics/info.svg", false)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

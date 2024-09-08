@@ -79,7 +79,7 @@ public class SelectionToolbar extends JToolBar {
 
         //Mouse
         final JToggleButton mouseButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.png", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(new ActionListener() {
 
@@ -91,7 +91,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
-        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.png", false);
+        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.svg", false);
 
         //Rectangle
         final JToggleButton rectangleButton = new JToggleButton(icon);
@@ -106,6 +106,22 @@ public class SelectionToolbar extends JToolBar {
         });
         rectangleButton.setFocusPainted(false);
         add(rectangleButton);
+
+        //Drag
+        final JToggleButton dragButton =
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.svg", false));
+        dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
+        dragButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (dragButton.isSelected()) {
+                    VizController.getInstance().getSelectionManager().setDraggingMouseSelection();
+                }
+            }
+        });
+        dragButton.setFocusPainted(false);
+        add(dragButton);
         addSeparator();
 
         buttonGroup

@@ -50,4 +50,8 @@ public class ContractLayout extends AbstractScaleLayout {
         super(layoutBuilder, scale);
     }
 
+    @Override
+    public void resetPropertiesValues() {
+        setScale(0.8);
+    }
 }

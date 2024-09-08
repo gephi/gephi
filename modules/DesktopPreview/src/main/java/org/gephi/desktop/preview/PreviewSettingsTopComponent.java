@@ -43,6 +43,7 @@
 package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -50,10 +51,16 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.Objects;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.preview.api.PreviewUIController;
@@ -112,6 +119,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     private javax.swing.JLabel ratioLabel;
     private javax.swing.JSlider ratioSlider;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JButton removeButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JButton svgExportButton;
@@ -181,7 +189,12 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
                     if (previewModel.getCurrentPreset() != presetComboBox.getSelectedItem()) {
                         pc.setCurrentPreset((PreviewPreset) presetComboBox.getSelectedItem());
                         propertySheet.setNodes(new Node[] {new PreviewNode(propertySheet)});
+                        enableRemoveButtonIfNeeded();
+                        saveButton.setEnabled(true);
                     }
+                } else {
+                    removeButton.setEnabled(false);
+                    saveButton.setEnabled(false);
                 }
             }
         });
@@ -231,9 +244,10 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         //Presets
         if (previewModel == null) {
             saveButton.setEnabled(false);
+            removeButton.setEnabled(false);
             labelPreset.setEnabled(false);
             presetComboBox.setEnabled(false);
-            presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"---"}));
+            presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {NO_SELECTION}));
         } else {
             saveButton.setEnabled(true);
             labelPreset.setEnabled(true);
@@ -314,6 +328,16 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         svgExportButton.setEnabled(true);
     }
 
+    public void enableRemoveButtonIfNeeded() {
+        if (Objects.equals(presetComboBox.getSelectedItem(), NO_SELECTION)) {
+            removeButton.setEnabled(false);
+            return;
+        }
+        PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
+        PreviewPreset preset = previewController.getModel().getCurrentPreset();
+        removeButton.setEnabled(!isDefaultPreset(preset));
+    }
+
     /**
      * Disables the refresh button.
      */
@@ -349,6 +373,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         presetToolbar = new javax.swing.JToolBar();
         box = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
+        removeButton = new javax.swing.JButton();
         labelPreset = new javax.swing.JLabel();
         refreshButton = new javax.swing.JButton();
         propertiesPanel = new javax.swing.JPanel();
@@ -366,8 +391,9 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         presetPanel.setOpaque(false);
         presetPanel.setLayout(new java.awt.GridBagLayout());
 
-        presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"---"}));
+        presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {NO_SELECTION}));
         presetComboBox.setEnabled(false);
+        presetComboBox.setRenderer(new ComboBoxRenderer());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -388,7 +414,23 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
         presetToolbar.add(box);
 
-        saveButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/save.png", false)); // NOI18N
+        removeButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/remove.png", false)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(removeButton, org.openide.util.NbBundle
+            .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.removeButton.text")); // NOI18N
+        removeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
+            "PreviewSettingsTopComponent.removeButton.toolTipText")); // NOI18N
+        removeButton.setEnabled(false);
+        removeButton.setFocusable(false);
+        removeButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeButtonActionPerformed(evt);
+            }
+        });
+        presetToolbar.add(removeButton);
+
+        saveButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/save.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.saveButton.text")); // NOI18N
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
@@ -411,7 +453,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
         presetPanel.add(presetToolbar, gridBagConstraints);
 
-        labelPreset.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/preset.png", false)); // NOI18N
+        labelPreset.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/preset.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelPreset, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelPreset.text")); // NOI18N
         labelPreset.setEnabled(false);
@@ -429,7 +471,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         mainPanel.add(presetPanel, gridBagConstraints);
 
-        refreshButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/refresh.png", false)); // NOI18N
+        refreshButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/refresh.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle
             .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);
@@ -531,6 +573,31 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
 
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
+        PreviewPreset preset = previewController.getModel().getCurrentPreset();
+
+        String message =
+            NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.removePreset.text", preset.getName());
+        String title = NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.removePreset.title");
+        NotifyDescriptor dd = new NotifyDescriptor(message, title,
+            NotifyDescriptor.YES_NO_OPTION,
+            NotifyDescriptor.QUESTION_MESSAGE, null, null);
+        Object retType = DialogDisplayer.getDefault().notify(dd);
+        if (retType == NotifyDescriptor.YES_OPTION) {
+            previewController.removePreset(preset);
+
+            // Refresh combo
+            DefaultComboBoxModel model = (DefaultComboBoxModel)presetComboBox.getModel();
+            model.removeElement(preset);
+            presetComboBox.setSelectedIndex(0);
+
+            StatusDisplayer.getDefault().setStatusText(NbBundle
+                .getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.removePreset.status",
+                    preset.getName()));
+        }
+    }
+
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
         PreviewPreset preset = previewController.getModel().getCurrentPreset();
@@ -543,6 +610,19 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                 String input = question.getInputText();
                 if (input != null && !input.isEmpty()) {
+                    // Check if already exists
+                    if (previewController.hasPreset(input)) {
+                        String message =
+                            NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.savePresetReplace.text");
+                        String title = NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.savePresetReplace.title");
+                        NotifyDescriptor dd = new NotifyDescriptor(message, title,
+                            NotifyDescriptor.YES_NO_OPTION,
+                            NotifyDescriptor.QUESTION_MESSAGE, null, null);
+                        Object retType = DialogDisplayer.getDefault().notify(dd);
+                        if (retType == NotifyDescriptor.NO_OPTION) {
+                            return;
+                        }
+                    }
                     previewController.savePreset(input);
                     saved = true;
                     StatusDisplayer.getDefault().setStatusText(NbBundle
@@ -577,6 +657,34 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             presetComboBox.setModel(comboBoxModel);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
+        JSeparator separator;
+
+        public ComboBoxRenderer() {
+            setOpaque(true);
+            setBorder(new EmptyBorder(1, 1, 1, 1));
+            separator = new JSeparator(JSeparator.HORIZONTAL);
+        }
+
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            String str = (value == null) ? "" : value.toString();
+            if (NO_SELECTION.equals(str)) {
+                return separator;
+            }
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setFont(list.getFont());
+            setText(str);
+            return this;
+        }
+    }
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

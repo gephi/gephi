@@ -144,8 +144,8 @@ public class VizBarController {
             });
             screenshotPopup.add(configureScreenshotItem);
             screenshotButton = new JDropDownButton(
-                    ImageUtilities.loadImageIcon("VisualizationImpl/screenshot.png", false),
-                    screenshotPopup);
+                ImageUtilities.loadImageIcon("VisualizationImpl/screenshot.svg", false),
+                screenshotPopup);
             screenshotButton
                     .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
             screenshotButton.addActionListener(new ActionListener() {
@@ -228,7 +228,7 @@ public class VizBarController {
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showLabels"));
-            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showNodeLabels.png", false));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showNodeLabels.svg", false));
             showLabelsButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -347,7 +347,7 @@ public class VizBarController {
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
-            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showEdgeLabels.png", false));
+            showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showEdgeLabels.svg", false));
             showLabelsButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -455,7 +455,7 @@ public class VizBarController {
                     model.setSizeMode(sm);
                 }
             });
-            labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelSizeMode.png", false));
+            labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelSizeMode.svg", false));
             labelSizeModeButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
             model.addChangeListener(new ChangeListener() {
@@ -483,7 +483,7 @@ public class VizBarController {
                     model.setColorMode(cm);
                 }
             });
-            labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelColorMode.png", false));
+            labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelColorMode.svg", false));
             labelColorModeButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
             model.addChangeListener(new ChangeListener() {
@@ -571,7 +571,7 @@ public class VizBarController {
 
             //Attributes
             final JButton attributesButton = new JButton();
-            attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.png", false));
+            attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.svg", false));
             attributesButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.attributes"));
             attributesButton.addActionListener(new ActionListener() {

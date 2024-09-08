@@ -146,7 +146,7 @@ public class Sizer implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/sizer.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/sizer.svg", false);
             }
 
             @Override

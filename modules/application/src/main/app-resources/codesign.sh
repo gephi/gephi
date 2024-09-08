@@ -51,8 +51,13 @@ function codesignFile {
   codesign --verbose --entitlements src/main/resources/Entitlements.plist --deep --force --timestamp -i org.gephi --sign "$2" --options runtime $file
 }
 
-# Sign external JARs
+# Sign external JARs (gephi)
 for dir in "${1}/Contents/Resources/gephi/gephi/modules/ext" ; do
+  codesignJarsInDir "$dir" "${2}"
+done
+
+# Sign external JARs (platform)
+for dir in "${1}/Contents/Resources/gephi/platform/modules/ext" ; do
   codesignJarsInDir "$dir" "${2}"
 done
 

@@ -52,15 +52,15 @@ jobs:
           echo "staging_repository_id=$stagingRepositoryId" >> $GITHUB_ENV
           echo "::set-output name=staging-repository-id::$stagingRepositoryId"
         env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
           OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
 
       - name: Build and publish modules
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -DstagingRepositoryId=${{ env.staging_repository_id }} site deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Upload autoupdate output
@@ -134,6 +134,14 @@ jobs:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      # Workaround for "hdiutil: create failed - Resource busy" error
+      # https://github.com/actions/runner-images/issues/7522
+      - name: MacOS hdiutil workaround
+        run: |
+          echo killing...; sudo pkill -9 XProtect >/dev/null || true;
+          echo waiting...; while pgrep XProtect; do sleep 3; done;
+        if: runner.os == 'macOS'
+
       - name: Windows Prepare Codesign
         env:
           CODESIGN_CERT: ${{ secrets.CODESIGN_CERT}}
@@ -174,8 +182,8 @@ jobs:
         run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.windows.codesign.password=$CODESIGN_PASSWORD -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
         working-directory: modules/application
         env:
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
