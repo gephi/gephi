@@ -68,6 +68,10 @@ public interface PreviewUIController {
 
     void addPreset(PreviewPreset preset);
 
+    void removePreset(PreviewPreset preset);
+
+    boolean hasPreset(String name);
+
     void savePreset(String name);
 
     PreviewUIModel getModel();
