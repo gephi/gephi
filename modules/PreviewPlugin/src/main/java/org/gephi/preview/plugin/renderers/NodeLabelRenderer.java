@@ -109,6 +109,7 @@ public class NodeLabelRenderer implements Renderer {
     protected final int defaultOutlineOpacity = 40;
     protected final boolean defaultShowBox = false;
     protected final DependantColor defaultBoxColor = new DependantColor(DependantColor.Mode.PARENT);
+    protected final float defaultBoxStrokeSize = 0.16f;
     protected final int defaultBoxOpacity = 100;
     //Font cache
     protected Map<Integer, Font> fontCache;
@@ -202,16 +203,18 @@ public class NodeLabelRenderer implements Renderer {
         if (boxAlpha > 255) {
             boxAlpha = 255;
         }
+        float boxStrokeSize = showBox ? getBoxStrokeSize(properties, item) : 0f;
         boxColor = new Color(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue(), boxAlpha);
 
         if (target instanceof G2DTarget) {
-            renderG2D((G2DTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
+            renderG2D((G2DTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, showBox,
+                boxColor, boxStrokeSize);
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox,
-                boxColor);
+                boxColor, boxStrokeSize);
         } else if (target instanceof PDFTarget) {
             renderPDF((PDFTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox,
-                boxColor);
+                boxColor, boxStrokeSize);
         }
     }
 
@@ -237,8 +240,17 @@ public class NodeLabelRenderer implements Renderer {
         return new CanvasSize(x - textWidth / 2f, y - textHeight / 2f, textWidth, textHeight);
     }
 
+    private float getBoxStrokeSize(PreviewProperties properties, Item item) {
+        if (properties.getBooleanValue(PreviewProperty.NODE_BORDER_FIXED) ||
+            !properties.getBooleanValue(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE)) {
+            return properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        } else {
+            return (float) item.getData(NODE_SIZE) * defaultBoxStrokeSize / 2f;
+        }
+    }
+
     public void renderG2D(G2DTarget target, String label, float x, float y, int fontSize, Color color,
-                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
+                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor, float boxStrokeSize) {
         Graphics2D graphics = target.getGraphics();
 
         Font font = fontCache.get(fontSize);
@@ -252,12 +264,13 @@ public class NodeLabelRenderer implements Renderer {
 
         //Box
         if (showBox) {
+            graphics.setStroke(new BasicStroke(boxStrokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
             graphics.setColor(boxColor);
             Rectangle2D.Float rect = new Rectangle2D.Float();
-            rect.setFrame(posX - outlineSize / 2f,
-                y - (fm.getAscent() + fm.getDescent()) / 2f - outlineSize / 2f,
-                fm.stringWidth(label) + outlineSize,
-                fm.getAscent() + fm.getDescent() + outlineSize);
+            rect.setFrame(posX - (outlineSize + boxStrokeSize) / 2f,
+                y - (fm.getAscent() + fm.getDescent()) / 2f - (outlineSize + boxStrokeSize) / 2f,
+                fm.stringWidth(label) + outlineSize + boxStrokeSize,
+                fm.getAscent() + fm.getDescent() + outlineSize + boxStrokeSize);
             graphics.draw(rect);
         }
 
@@ -280,7 +293,7 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     public void renderSVG(SVGTarget target, Node node, String label, float x, float y, int fontSize, Color color,
-                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
+                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor, float boxStrokeSize) {
         Text labelText = target.createTextNode(label);
         Font font = fontCache.get(fontSize);
 
@@ -290,12 +303,12 @@ public class NodeLabelRenderer implements Renderer {
             outlineElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
             outlineElem.setAttribute("x", String.valueOf(x));
             outlineElem.setAttribute("y", String.valueOf(y));
-            outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
-            outlineElem.setAttribute("fill", target.toHexString(color));
+            outlineElem.setAttribute("style", "text-anchor: middle;");
             outlineElem.setAttribute("font-family", font.getFamily());
             outlineElem.setAttribute("font-size", String.valueOf(fontSize));
+            outlineElem.setAttribute("fill", "none");
             outlineElem.setAttribute("stroke", target.toHexString(outlineColor));
-            outlineElem.setAttribute("stroke-width", (outlineSize * target.getScaleRatio()) + "px");
+            outlineElem.setAttribute("stroke-width", Float.toString(outlineSize * target.getScaleRatio()));
             outlineElem.setAttribute("stroke-linecap", "round");
             outlineElem.setAttribute("stroke-linejoin", "round");
             outlineElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
@@ -303,6 +316,7 @@ public class NodeLabelRenderer implements Renderer {
             target.getTopElement(SVGTarget.TOP_NODE_LABELS_OUTLINE).appendChild(outlineElem);
 
             //Trick to center text vertically on node:
+            //Better results with dominant-baseline: central, but the bbox is wrong.
             SVGRect rect = ((SVGLocatable) outlineElem).getBBox();
             outlineElem.setAttribute("y", String.valueOf(y + (rect != null ? rect.getHeight() / 4f : 0)));
         }
@@ -311,54 +325,66 @@ public class NodeLabelRenderer implements Renderer {
         labelElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
         labelElem.setAttribute("x", String.valueOf(x));
         labelElem.setAttribute("y", String.valueOf(y));
-        labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
+        labelElem.setAttribute("style", "text-anchor: middle;");
         labelElem.setAttribute("fill", target.toHexString(color));
+        labelElem.setAttribute("fill-opacity", String.valueOf(color.getAlpha() / 255f));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", String.valueOf(fontSize));
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_NODE_LABELS).appendChild(labelElem);
 
         //Trick to center text vertically on node:
+        //Better results with dominant-baseline: central, but the bbox is wrong.
         SVGRect rect = ((SVGLocatable) labelElem).getBBox();
         labelElem.setAttribute("y", String.valueOf(y + (rect != null ? rect.getHeight() / 4f : 0)));
 
         //Box
         if (showBox) {
-            rect = ((SVGLocatable) labelElem).getBBox();
             Element boxElem = target.createElement("rect");
-            boxElem.setAttribute("x", Float.toString(rect.getX() - outlineSize / 2f));
-            boxElem.setAttribute("y", Float.toString(rect.getY() - outlineSize / 2f));
-            boxElem.setAttribute("width", Float.toString(rect.getWidth() + outlineSize));
-            boxElem.setAttribute("height", Float.toString(rect.getHeight() + outlineSize));
-            boxElem.setAttribute("fill", target.toHexString(boxColor));
+            float strokeWidth = boxStrokeSize * target.getScaleRatio();
+            float padding = strokeWidth + outlineSize * target.getScaleRatio();
+            boxElem.setAttribute("x", Float.toString(rect.getX() - padding / 2f));
+            boxElem.setAttribute("y", Float.toString(rect.getY() - padding / 2f));
+            boxElem.setAttribute("width", Float.toString(rect.getWidth() + padding));
+            boxElem.setAttribute("height", Float.toString(rect.getHeight() + padding));
+            boxElem.setAttribute("fill", "none");
+            boxElem.setAttribute("stroke", target.toHexString(boxColor));
+            boxElem.setAttribute("stroke-opacity", String.valueOf(boxColor.getAlpha() / 255f));
+            boxElem.setAttribute("stroke-width", Float.toString(strokeWidth));
             boxElem.setAttribute("opacity", String.valueOf(boxColor.getAlpha() / 255f));
             target.getTopElement(SVGTarget.TOP_NODE_LABELS).insertBefore(boxElem, labelElem);
         }
     }
 
     public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color,
-                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
+                          float outlineSize, Color outlineColor, boolean showBox, Color boxColor, float boxStrokeSize) {
         PDPageContentStream contentStream = target.getContentStream();
         Font font = fontCache.get(fontSize);
         PDFont pdFont = target.getPDFont(font);
 
         try {
             float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
+            float textMaxHeight = PDFUtils.getMaxTextHeight(pdFont, fontSize);
             float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
 
             if (showBox) {
-                contentStream.setNonStrokingColor(boxColor);
+                contentStream.setStrokingColor(boxColor);
+                contentStream.setRenderingMode(RenderingMode.STROKE);
+                contentStream.setLineJoinStyle(0); //miter
+                contentStream.setLineWidth(boxStrokeSize);
                 if (boxColor.getAlpha() < 255) {
                     PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
-                    graphicsState.setNonStrokingAlphaConstant(boxColor.getAlpha() / 255f);
+                    graphicsState.setStrokingAlphaConstant(boxColor.getAlpha() / 255f);
                     contentStream.saveGraphicsState();
                     contentStream.setGraphicsStateParameters(graphicsState);
                 }
 
-                contentStream.addRect(x - textWidth / 2f - outlineSize / 2f, -y - textHeight / 2f - outlineSize / 2f,
-                    textWidth + outlineSize, textHeight + outlineSize);
+                contentStream.addRect(x - (textWidth + outlineSize + boxStrokeSize) / 2f,
+                    -y - (textMaxHeight + outlineSize + boxStrokeSize) / 2f,
+                    textWidth + outlineSize + boxStrokeSize,
+                    textMaxHeight + outlineSize + boxStrokeSize);
 
-                contentStream.fill();
+                contentStream.stroke();
                 if (boxColor.getAlpha() < 255) {
                     contentStream.restoreGraphicsState();
                 }
