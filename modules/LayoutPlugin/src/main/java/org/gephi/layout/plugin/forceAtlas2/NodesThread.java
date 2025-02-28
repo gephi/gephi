@@ -62,16 +62,17 @@ public class NodesThread implements Runnable {
     private final IRepulsionRegion repulsionRegion;
 
 
-    public NodesThread(Node[] nodes, int from, int to, ForceAtlas2.ForceAtlas2Params params, Region rootRegion, IGravity GravityForce,IRepulsionNode repulsionNode,IRepulsionRegion repulsionRegion) {
+    public NodesThread(Node[] nodes, int from, int to, ForceAtlas2.ForceAtlas2Params params, Region rootRegion,
+                       IGravity GravityForce, IRepulsionNode repulsionNode, IRepulsionRegion repulsionRegion) {
         this.nodes = nodes;
         this.from = from;
         this.to = to;
         this.rootRegion = rootRegion;
         this.params = params;
-        this.repulsionNode=repulsionNode;
+        this.repulsionNode = repulsionNode;
         this.repulsionRegion = repulsionRegion;
         this.GravityForce = GravityForce;
-     
+
     }
 
     @Override
@@ -80,7 +81,7 @@ public class NodesThread implements Runnable {
         if (params.barnesHutOptimize) {
             for (int nIndex = from; nIndex < to; nIndex++) {
                 Node n = nodes[nIndex];
-                rootRegion.applyForce(n, this.repulsionNode,this.repulsionRegion, params.barnesHutTheta);
+                rootRegion.applyForce(n, this.repulsionNode, this.repulsionRegion, params.barnesHutTheta);
                 GravityForce.accept(n, params.gravity / params.scalingRatio);
             }
         } else {
@@ -94,6 +95,6 @@ public class NodesThread implements Runnable {
             }
         }
 
-       
+
     }
 }

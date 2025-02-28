@@ -6,7 +6,6 @@ import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2LayoutData;
 import org.gephi.layout.plugin.forceAtlas2.force.AFA2Force;
 
 /**
- *
  * @author totetmatt
  */
 public class LinearRepulsionNodeAntiCollision extends AFA2Force implements IRepulsionNode {
@@ -26,24 +25,24 @@ public class LinearRepulsionNodeAntiCollision extends AFA2Force implements IRepu
         double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
 
         if (distance > 0) {
-           // NB: factor = force / distance
-           double factor = params.scalingRatio * n1Layout.mass * n2Layout.mass / distance / distance;
+            // NB: factor = force / distance
+            double factor = params.scalingRatio * n1Layout.mass * n2Layout.mass / distance / distance;
 
-           n1Layout.dx += xDist * factor;
-           n1Layout.dy += yDist * factor;
+            n1Layout.dx += xDist * factor;
+            n1Layout.dy += yDist * factor;
 
-           n2Layout.dx -= xDist * factor;
-           n2Layout.dy -= yDist * factor;
+            n2Layout.dx -= xDist * factor;
+            n2Layout.dy -= yDist * factor;
 
         } else if (distance < 0) {
-           double factor = 100 * params.scalingRatio * n1Layout.mass * n2Layout.mass;
+            double factor = 100 * params.scalingRatio * n1Layout.mass * n2Layout.mass;
 
-           n1Layout.dx += xDist * factor;
-           n1Layout.dy += yDist * factor;
+            n1Layout.dx += xDist * factor;
+            n1Layout.dy += yDist * factor;
 
-           n2Layout.dx -= xDist * factor;
-           n2Layout.dy -= yDist * factor;
-        }   
+            n2Layout.dx -= xDist * factor;
+            n2Layout.dy -= yDist * factor;
+        }
     }
-    
+
 }

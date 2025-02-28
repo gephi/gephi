@@ -7,7 +7,6 @@ import org.gephi.layout.plugin.forceAtlas2.Region;
 import org.gephi.layout.plugin.forceAtlas2.force.AFA2Force;
 
 /**
- *
  * @author totetmatt
  */
 public class LinearRepulsionRegion extends AFA2Force implements IRepulsionRegion {
@@ -33,5 +32,5 @@ public class LinearRepulsionRegion extends AFA2Force implements IRepulsionRegion
             nLayout.dy += yDist * factor;
         }
     }
-    
+
 }

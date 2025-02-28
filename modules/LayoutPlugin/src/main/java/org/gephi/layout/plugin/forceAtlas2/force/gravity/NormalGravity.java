@@ -7,7 +7,6 @@ import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2LayoutData;
 import org.gephi.layout.plugin.forceAtlas2.force.AFA2Force;
 
 /**
- *
  * @author totetmatt
  */
 public class NormalGravity extends AFA2Force implements IGravity {
@@ -18,20 +17,20 @@ public class NormalGravity extends AFA2Force implements IGravity {
 
     @Override
     public void accept(Node n, Double g) {
-         ForceAtlas2LayoutData nLayout = n.getLayoutData();
+        ForceAtlas2LayoutData nLayout = n.getLayoutData();
 
-            // Get the distance
-            double xDist = n.x();
-            double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+        // Get the distance
+        double xDist = n.x();
+        double yDist = n.y();
+        double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
-            if (distance > 0) {
-                // NB: factor = force / distance
-                double factor = params.scalingRatio * nLayout.mass * g / distance;
+        if (distance > 0) {
+            // NB: factor = force / distance
+            double factor = params.scalingRatio * nLayout.mass * g / distance;
 
-                nLayout.dx -= xDist * factor;
-                nLayout.dy -= yDist * factor;
-            } 
+            nLayout.dx -= xDist * factor;
+            nLayout.dy -= yDist * factor;
+        }
     }
-    
+
 }

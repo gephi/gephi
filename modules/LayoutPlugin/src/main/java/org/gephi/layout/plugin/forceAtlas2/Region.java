@@ -104,13 +104,13 @@ public class Region {
 
             ArrayList<Node> topleftNodes = new ArrayList<>();
             ArrayList<Node> bottomleftNodes = new ArrayList<>();
-            
+
             ArrayList<Node> bottomrightNodes = new ArrayList<>();
             ArrayList<Node> toprightNodes = new ArrayList<>();
             for (Node n : nodes) {
-                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? 
-                        ((n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes)): 
-                        ((n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes));
+                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ?
+                    ((n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes)) :
+                    ((n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes));
                 nodesColumn.add(n);
             }
 
@@ -173,7 +173,7 @@ public class Region {
         }
     }
 
-    public void applyForce(Node n, IRepulsionNode repulsionNode,IRepulsionRegion repulsionRegion, double theta) {
+    public void applyForce(Node n, IRepulsionNode repulsionNode, IRepulsionRegion repulsionRegion, double theta) {
         if (nodes.size() < 2) {
             Node regionNode = nodes.get(0);
             repulsionNode.accept(n, regionNode);
@@ -184,7 +184,7 @@ public class Region {
                 repulsionRegion.accept(n, this);
             } else {
                 for (Region subregion : subregions) {
-                    subregion.applyForce(n, repulsionNode,repulsionRegion, theta);
+                    subregion.applyForce(n, repulsionNode, repulsionRegion, theta);
                 }
             }
         }
