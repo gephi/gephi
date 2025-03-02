@@ -42,10 +42,12 @@
 
 package org.gephi.ui.appearance.plugin;
 
+import java.util.prefs.Preferences;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueSizeTransformer;
+import org.openide.util.NbPreferences;
 
 /**
  * @author mbastian
@@ -58,20 +60,30 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner sizeSpinner;
     // End of variables declaration//GEN-END:variables
 
+    private ChangeListener sizeChangeListener = null;
+
+    static String getSizePreferenceKey(SimpleFunction function) {
+        return function.getId() + "_size";
+    }
+
     public UniqueSizeTransformerPanel() {
         initComponents();
-
-        sizeSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                transformer.setSize((Float) sizeSpinner.getValue());
-            }
-        });
     }
 
     public void setup(SimpleFunction function) {
         transformer = function.getTransformer();
+        Preferences preferences = NbPreferences.forModule(transformer.getClass());
+
+        sizeSpinner.setValue(preferences.getFloat(getSizePreferenceKey(function), transformer.getSize()));
+        if (sizeChangeListener != null) {
+            sizeSpinner.removeChangeListener(sizeChangeListener);
+        }
         sizeSpinner.setValue(transformer.getSize());
+        sizeChangeListener = (e -> {
+            transformer.setSize((Float) sizeSpinner.getValue());
+            preferences.putFloat(getSizePreferenceKey(function), transformer.getSize());
+        });
+        sizeSpinner.addChangeListener(sizeChangeListener);
     }
 
     /**
