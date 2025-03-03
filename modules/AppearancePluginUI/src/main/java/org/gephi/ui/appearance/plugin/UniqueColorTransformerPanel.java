@@ -93,16 +93,9 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
         byte[] prefColorByteArray = preferences.getByteArray(getUniqueColorPreferenceKey(function), null);
 
         Color prefColor = transformer.getColor();
-        if (prefColorByteArray != null) {
-            try (ByteArrayInputStream bis = new ByteArrayInputStream(prefColorByteArray);
-                 ObjectInputStream ois = new ObjectInputStream(bis)) {
-                prefColor = (Color) ois.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        if(prefColorByteArray != null) {
+            prefColor = (Color) TransformerPanelUtils.deserialize(prefColorByteArray);
         }
-
-
         colorChooser.setColor(prefColor);
         colorLabel.setText(getHex(prefColor));
         transformer.setColor(prefColor);
@@ -112,15 +105,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
                 if (!transformer.getColor().equals(color)) {
                     transformer.setColor(color);
                     colorLabel.setText(getHex(color));
-                    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                         ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-                        oos.writeObject(color);
-                        preferences.putByteArray(getUniqueColorPreferenceKey(function), bos.toByteArray());
-
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
+                    preferences.putByteArray(getUniqueColorPreferenceKey(function), TransformerPanelUtils.serialize(color));
                 }
             }
         });
