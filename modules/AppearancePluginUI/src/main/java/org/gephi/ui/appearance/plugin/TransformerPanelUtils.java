@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import org.gephi.appearance.api.Function;
 
 public class TransformerPanelUtils {
     static byte[] serialize(Object o) {
@@ -19,11 +20,12 @@ public class TransformerPanelUtils {
             throw new RuntimeException(e);
         }
     }
+
     static Object deserialize(byte[] bytes) {
         if (bytes != null) {
             try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
                  ObjectInputStream ois = new ObjectInputStream(bis)) {
-                  return ois.readObject();
+                return ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

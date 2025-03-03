@@ -49,10 +49,12 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.prefs.Preferences;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.appearance.api.RankingFunction;
+import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.gephi.ui.appearance.plugin.RecentPalettes;
 import org.gephi.ui.components.PaletteIcon;
@@ -62,6 +64,7 @@ import org.gephi.utils.PaletteUtils;
 import org.gephi.utils.PaletteUtils.Palette;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
@@ -76,7 +79,17 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar colorSwatchToolbar;
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
+
     // End of variables declaration//GEN-END:variables
+    static String getPositionsStartPreferenceKey(RankingFunction function) {
+        return function.getId() + "_positions_start";
+    }
+
+    static String getColorsStartPreferenceKey(RankingFunction function) {
+        return function.getId() + "_colors_start";
+    }
+
+    private PropertyChangeListener listener = null;
 
     public RankingColorTransformerPanel() {
         initComponents();
@@ -84,7 +97,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         //Init slider
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
-        gradientSlider.addPropertyChangeListener(new PropertyChangeListener() {
+        /*gradientSlider.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (colorTransformer != null
@@ -104,7 +117,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 //                prepareGradientTooltip();
                 }
             }
-        });
+        });*/
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
 
         //Color Swatch
@@ -117,14 +130,56 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         });
     }
 
+
     public void setup(RankingFunction function) {
         colorTransformer = function.getTransformer();
+        if (listener != null) {
+            gradientSlider.removePropertyChangeListener(listener);
+        }
+        Preferences preferences = NbPreferences.forModule(colorTransformer.getClass());
+
 
         float[] positionsStart = colorTransformer.getColorPositions();
         Color[] colorsStart = colorTransformer.getColors();
 
+        byte[] positionsStartBytes = preferences.getByteArray(getPositionsStartPreferenceKey(function), null);
+        byte[] colorsStartBytes = preferences.getByteArray(getColorsStartPreferenceKey(function), null);
+
+        if (positionsStartBytes != null) {
+            positionsStart = (float[]) TransformerPanelUtils.deserialize(positionsStartBytes);
+        }
+        if (colorsStartBytes != null) {
+            colorsStart = (Color[]) TransformerPanelUtils.deserialize(colorsStartBytes);
+        }
         //Gradient
         gradientSlider.setValues(positionsStart, colorsStart);
+
+        listener = (evt) -> {
+            if (colorTransformer != null
+                && ((!gradientSlider.isValueAdjusting() &&
+                evt.getPropertyName().equals(MultiThumbSlider.VALUES_PROPERTY))
+                || (evt.getPropertyName().equals(MultiThumbSlider.ADJUST_PROPERTY) &&
+                evt.getNewValue().equals(Boolean.FALSE)))) {
+                Color[] colors = gradientSlider.getColors();
+                float[] positions = gradientSlider.getThumbPositions();
+
+                if (!Arrays.equals(positions, colorTransformer.getColorPositions()) ||
+                    !Arrays.deepEquals(colors, colorTransformer.getColors())) {
+                    colorTransformer.setColors(Arrays.copyOf(colors, colors.length));
+                    colorTransformer.setColorPositions(Arrays.copyOf(positions, positions.length));
+
+                    byte[] colorsBytes = TransformerPanelUtils.serialize(Arrays.copyOf(colors, colors.length));
+                    byte[] colorPositionsBytes =
+                        TransformerPanelUtils.serialize(Arrays.copyOf(positions, positions.length));
+
+                    preferences.putByteArray(getColorsStartPreferenceKey(function), colorsBytes);
+                    preferences.putByteArray(getPositionsStartPreferenceKey(function), colorPositionsBytes);
+                    addRecentPalette();
+                }
+//                prepareGradientTooltip();
+            }
+        };
+        gradientSlider.addPropertyChangeListener(listener);
 
 //        prepareGradientTooltip();
         //Context
