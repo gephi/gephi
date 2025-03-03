@@ -43,11 +43,22 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.prefs.Preferences;
+import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueColorTransformer;
+import org.openide.util.NbPreferences;
 
 /**
  * @author mbastian
@@ -58,28 +69,62 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.java.dev.colorchooser.ColorChooser colorChooser;
     private javax.swing.JLabel colorLabel;
+
     // End of variables declaration//GEN-END:variables
+    static String getUniqueColorPreferenceKey(SimpleFunction function) {
+        return function.getId() + "_unique_color";
+    }
+
+    private PropertyChangeListener colorPropertyChangeListener = null;
 
     public UniqueColorTransformerPanel() {
         initComponents();
 
-        colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    if (!transformer.getColor().equals(colorChooser.getColor())) {
-                        transformer.setColor(colorChooser.getColor());
-                        colorLabel.setText(getHex(colorChooser.getColor()));
-                    }
-                }
-            }
-        });
+
     }
 
     public void setup(SimpleFunction function) {
         transformer = function.getTransformer();
-        colorChooser.setColor(transformer.getColor());
-        colorLabel.setText(getHex(transformer.getColor()));
+        Preferences preferences = NbPreferences.forModule(transformer.getClass());
+
+        if (colorPropertyChangeListener != null) {
+            colorChooser.removePropertyChangeListener(colorPropertyChangeListener);
+        }
+        byte[] prefColorByteArray = preferences.getByteArray(getUniqueColorPreferenceKey(function), null);
+
+        Color prefColor = transformer.getColor();
+        if (prefColorByteArray != null) {
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(prefColorByteArray);
+                 ObjectInputStream ois = new ObjectInputStream(bis)) {
+                prefColor = (Color) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+        colorChooser.setColor(prefColor);
+        colorLabel.setText(getHex(prefColor));
+        transformer.setColor(prefColor);
+        colorPropertyChangeListener = (evt -> {
+            if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                Color color = colorChooser.getColor();
+                if (!transformer.getColor().equals(color)) {
+                    transformer.setColor(color);
+                    colorLabel.setText(getHex(color));
+                    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                         ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+                        oos.writeObject(color);
+                        preferences.putByteArray(getUniqueColorPreferenceKey(function), bos.toByteArray());
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            }
+        });
+        colorChooser.addPropertyChangeListener(colorPropertyChangeListener);
     }
 
     private String getHex(Color color) {
