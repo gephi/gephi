@@ -43,7 +43,6 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.util.prefs.Preferences;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueSizeTransformer;

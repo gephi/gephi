@@ -43,19 +43,9 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.prefs.Preferences;
-import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
-import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueColorTransformer;
 import org.openide.util.NbPreferences;
@@ -93,7 +83,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
         byte[] prefColorByteArray = preferences.getByteArray(getUniqueColorPreferenceKey(function), null);
 
         Color prefColor = transformer.getColor();
-        if(prefColorByteArray != null) {
+        if (prefColorByteArray != null) {
             prefColor = (Color) TransformerPanelUtils.deserialize(prefColorByteArray);
         }
         colorChooser.setColor(prefColor);
@@ -105,7 +95,8 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
                 if (!transformer.getColor().equals(color)) {
                     transformer.setColor(color);
                     colorLabel.setText(getHex(color));
-                    preferences.putByteArray(getUniqueColorPreferenceKey(function), TransformerPanelUtils.serialize(color));
+                    preferences.putByteArray(getUniqueColorPreferenceKey(function),
+                        TransformerPanelUtils.serialize(color));
                 }
             }
         });

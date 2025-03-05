@@ -46,7 +46,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
@@ -54,9 +53,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.RankingElementColorTransformer;
-import org.gephi.ui.appearance.plugin.RecentPalettes;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 import org.gephi.ui.components.gradientslider.MultiThumbSlider;
@@ -97,27 +94,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         //Init slider
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
-        /*gradientSlider.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (colorTransformer != null
-                    && ((!gradientSlider.isValueAdjusting() &&
-                    evt.getPropertyName().equals(MultiThumbSlider.VALUES_PROPERTY))
-                    || (evt.getPropertyName().equals(MultiThumbSlider.ADJUST_PROPERTY) &&
-                    evt.getNewValue().equals(Boolean.FALSE)))) {
-                    Color[] colors = gradientSlider.getColors();
-                    float[] positions = gradientSlider.getThumbPositions();
-
-                    if (!Arrays.equals(positions, colorTransformer.getColorPositions()) ||
-                        !Arrays.deepEquals(colors, colorTransformer.getColors())) {
-                        colorTransformer.setColors(Arrays.copyOf(colors, colors.length));
-                        colorTransformer.setColorPositions(Arrays.copyOf(positions, positions.length));
-                        addRecentPalette();
-                    }
-//                prepareGradientTooltip();
-                }
-            }
-        });*/
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
 
         //Color Swatch

@@ -43,11 +43,8 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.util.prefs.Preferences;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
-import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
 import org.gephi.appearance.plugin.RankingSizeTransformer;
 import org.openide.util.NbPreferences;
 
