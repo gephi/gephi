@@ -149,6 +149,11 @@ public class JColorButton extends JButton {
         }
     }
 
+    public float[] getColorArray() {
+        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+            color.getAlpha() / 255f};
+    }
+
     public void setIncludeOpacity(boolean includeOpacity) {
         this.includeOpacity = includeOpacity;
     }

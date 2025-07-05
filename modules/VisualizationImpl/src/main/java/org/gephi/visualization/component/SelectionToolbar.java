@@ -57,9 +57,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.selection.SelectionManager;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -68,8 +68,10 @@ import org.openide.util.NbBundle;
 public class SelectionToolbar extends JToolBar {
 
     private final ButtonGroup buttonGroup;
+    private final VisualizationController visualizationController;
 
     public SelectionToolbar() {
+        this.visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
         initDesign();
         buttonGroup = new ButtonGroup();
         initContent();
@@ -85,7 +87,7 @@ public class SelectionToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                VizController.getInstance().getSelectionManager().setDirectMouseSelection();
+                visualizationController.setDirectMouseSelection();
             }
         });
         mouseButton.setFocusPainted(false);
@@ -101,7 +103,7 @@ public class SelectionToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                VizController.getInstance().getSelectionManager().setRectangleSelection();
+                visualizationController.setRectangleSelection();
             }
         });
         rectangleButton.setFocusPainted(false);
@@ -116,7 +118,7 @@ public class SelectionToolbar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (dragButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setDraggingMouseSelection();
+                    visualizationController.setDraggingMouseSelection();
                 }
             }
         });
@@ -124,32 +126,33 @@ public class SelectionToolbar extends JToolBar {
         add(dragButton);
         addSeparator();
 
-        buttonGroup
-            .setSelected(rectangleButton.getModel(), VizController.getInstance().getVizConfig().isRectangleSelection());
-        buttonGroup
-            .setSelected(mouseButton.getModel(), !VizController.getInstance().getVizConfig().isRectangleSelection());
-
-        //Init events
-        VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
-                if (selectionManager.isBlocked()) {
-                    buttonGroup.clearSelection();
-                } else if (!selectionManager.isSelectionEnabled()) {
-                    buttonGroup.clearSelection();
-                } else if (selectionManager.isDirectMouseSelection()) {
-                    if (!buttonGroup.isSelected(mouseButton.getModel())) {
-                        buttonGroup.setSelected(mouseButton.getModel(), true);
-                    }
-                } else if (selectionManager.isRectangleSelection()) {
-                    if (!buttonGroup.isSelected(rectangleButton.getModel())) {
-                        buttonGroup.setSelected(rectangleButton.getModel(), true);
-                    }
-                }
-            }
-        });
+        // TODO fix
+//        buttonGroup
+//            .setSelected(rectangleButton.getModel(), VizController.getInstance().getVizConfig().isRectangleSelection());
+//        buttonGroup
+//            .setSelected(mouseButton.getModel(), !VizController.getInstance().getVizConfig().isRectangleSelection());
+//
+//        //Init events
+//        VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
+//
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+//                if (selectionManager.isBlocked()) {
+//                    buttonGroup.clearSelection();
+//                } else if (!selectionManager.isSelectionEnabled()) {
+//                    buttonGroup.clearSelection();
+//                } else if (selectionManager.isDirectMouseSelection()) {
+//                    if (!buttonGroup.isSelected(mouseButton.getModel())) {
+//                        buttonGroup.setSelected(mouseButton.getModel(), true);
+//                    }
+//                } else if (selectionManager.isRectangleSelection()) {
+//                    if (!buttonGroup.isSelected(rectangleButton.getModel())) {
+//                        buttonGroup.setSelected(rectangleButton.getModel(), true);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void initDesign() {

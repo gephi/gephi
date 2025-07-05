@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>visualization</artifactId>
+            <artifactId>visualization-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

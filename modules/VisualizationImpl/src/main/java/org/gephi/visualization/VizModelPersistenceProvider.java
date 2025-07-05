@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
+import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -70,6 +71,18 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
         //TODO
     }
 
+    private void writeScreenshotModelImpl(XMLStreamWriter writer, ScreenshotModelImpl screenshotModel) {
+        // TODO fix
+//        writer.writeAttribute("width", String.valueOf(screenshotModel.getWidth()));
+//        writer.writeAttribute("height", String.valueOf(screenshotModel.getHeight()));
+//        writer.writeAttribute("antialiasing", String.valueOf(screenshotModel.getAntiAliasing()));
+//        writer.writeAttribute("transparent", String.valueOf(screenshotModel.isTransparentBackground()));
+//        writer.writeAttribute("autosave", String.valueOf(screenshotModel.isAutoSave()));
+//        if (screenshotModel.getDefaultDirectory() != null) {
+//            writer.writeAttribute("path", screenshotModel.getDefaultDirectory());
+//        }
+    }
+
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
@@ -77,8 +90,9 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
             vizModel = new VizModel(workspace);
             workspace.add(vizModel);
         }
-        Lookup.getDefault().lookup(VizController.class)
-            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
+        // TODo fix
+//        Lookup.getDefault().lookup(VizController.class)
+//            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
         try {
             vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {

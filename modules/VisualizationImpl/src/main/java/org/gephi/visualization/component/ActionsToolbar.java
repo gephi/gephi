@@ -86,7 +86,8 @@ public class ActionsToolbar extends JToolBar {
         centerOnGraphButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                VizController.getInstance().centerOnGraph();
+                // TODO Fix
+//                VizController.getInstance().centerOnGraph();
             }
         });
         add(centerOnGraphButton);

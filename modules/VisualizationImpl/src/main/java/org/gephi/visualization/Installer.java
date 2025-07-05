@@ -55,6 +55,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void close() {
         // Destroy JOGL
-        VizController.getInstance().destroy();
+        // Todo Fix
+//        VizController.getInstance().destroy();
     }
 }

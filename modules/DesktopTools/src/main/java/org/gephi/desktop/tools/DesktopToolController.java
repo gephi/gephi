@@ -65,11 +65,10 @@ import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.tools.spi.UnselectToolException;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.selection.SelectionManager;
-import org.gephi.visualization.apiimpl.VizEvent;
-import org.gephi.visualization.apiimpl.VizEvent.Type;
-import org.gephi.visualization.apiimpl.VizEventListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationEvent;
+import org.gephi.visualization.api.VisualizationEventListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -82,6 +81,7 @@ public class DesktopToolController implements ToolController {
 
     //Architecture
     private final Tool[] tools;
+    private final VisualizationController visualizationController;
     private PropertiesBar propertiesBar;
     //Current tool
     private Tool currentTool;
@@ -90,6 +90,7 @@ public class DesktopToolController implements ToolController {
     public DesktopToolController() {
         //Init tools
         tools = Lookup.getDefault().lookupAll(Tool.class).toArray(new Tool[0]);
+        visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
     }
 
     @Override
@@ -127,11 +128,11 @@ public class DesktopToolController implements ToolController {
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
         switch (tool.getSelectionType()) {
             case NONE:
-                VizController.getInstance().getSelectionManager().disableSelection();
+                visualizationController.disableSelection();
                 break;
             case SELECTION:
             case SELECTION_AND_DRAGGING:
-                VizController.getInstance().getSelectionManager().blockSelection(true);
+                visualizationController.blockSelection(true);
                 break;
         }
         currentTool = tool;
@@ -213,16 +214,16 @@ public class DesktopToolController implements ToolController {
         }
 
         //SelectionManager events
-        VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
+        visualizationController.addChangeListener(new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                final SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+                VisualisationModel model = visualizationController.getModel();
 
-                if (selectionManager.isRectangleSelection() && currentTool != null) {
+                if (model.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
-                } else if (selectionManager.isSelectionEnabled() && currentTool != null
+                } else if (model.isSelectionEnabled() && currentTool != null
                         && currentTool.getSelectionType() == ToolSelectionType.NONE) {
                     toolbar.clearSelection();
                     unselect();
@@ -251,7 +252,7 @@ public class DesktopToolController implements ToolController {
     private static class NodeClickEventHandler implements ToolEventHandler {
 
         private NodeClickEventListener toolEventListener;
-        private VizEventListener currentListener;
+        private VisualizationEventListener currentListener;
 
         public NodeClickEventHandler(ToolEventListener toolListener) {
             this.toolEventListener = (NodeClickEventListener) toolListener;
@@ -259,24 +260,26 @@ public class DesktopToolController implements ToolController {
 
         @Override
         public void select() {
-            currentListener = new VizEventListener() {
+            currentListener = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     return toolEventListener.clickNodes((Node[]) event.getData());
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.NODE_LEFT_CLICK;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.NODE_LEFT_CLICK;
                 }
             };
-            VizController.getInstance().getVizEventManager().addListener(currentListener);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.addListener(currentListener);
         }
 
         @Override
         public void unselect() {
-            VizController.getInstance().getVizEventManager().removeListener(currentListener);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.removeListener(currentListener);
             currentListener = null;
             toolEventListener = null;
         }
@@ -285,7 +288,7 @@ public class DesktopToolController implements ToolController {
     private static class NodePressingEventHandler implements ToolEventHandler {
 
         private NodePressingEventListener toolEventListener;
-        private VizEventListener[] currentListeners;
+        private VisualizationEventListener[] currentListeners;
 
         public NodePressingEventHandler(ToolEventListener toolListener) {
             this.toolEventListener = (NodePressingEventListener) toolListener;
@@ -293,37 +296,41 @@ public class DesktopToolController implements ToolController {
 
         @Override
         public void select() {
-            currentListeners = new VizEventListener[2];
-            currentListeners[0] = new VizEventListener() {
+            currentListeners = new VisualizationEventListener[2];
+            currentListeners[0] = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     return toolEventListener.pressingNodes((Node[]) event.getData());
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.NODE_LEFT_PRESSING;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.NODE_LEFT_PRESSING;
                 }
             };
-            currentListeners[1] = new VizEventListener() {
+            currentListeners[1] = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     return toolEventListener.released();
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.MOUSE_RELEASED;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.MOUSE_RELEASED;
                 }
             };
-            VizController.getInstance().getVizEventManager().addListener(currentListeners);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.addListener(currentListeners[0]);
+            vizController.addListener(currentListeners[1]);
         }
 
         @Override
         public void unselect() {
-            VizController.getInstance().getVizEventManager().removeListener(currentListeners);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.removeListener(currentListeners[0]);
+            vizController.removeListener(currentListeners[1]);
             toolEventListener = null;
             currentListeners = null;
         }
@@ -332,7 +339,7 @@ public class DesktopToolController implements ToolController {
     private static class NodePressAndDraggingEventHandler implements ToolEventHandler {
 
         private NodePressAndDraggingEventListener toolEventListener;
-        private VizEventListener[] currentListeners;
+        private VisualizationEventListener[] currentListeners;
 
         public NodePressAndDraggingEventHandler(ToolEventListener toolListener) {
             this.toolEventListener = (NodePressAndDraggingEventListener) toolListener;
@@ -340,23 +347,23 @@ public class DesktopToolController implements ToolController {
 
         @Override
         public void select() {
-            currentListeners = new VizEventListener[3];
-            currentListeners[0] = new VizEventListener() {
+            currentListeners = new VisualizationEventListener[3];
+            currentListeners[0] = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     return toolEventListener.pressNodes((Node[]) event.getData());
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.NODE_LEFT_PRESS;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.NODE_LEFT_PRESS;
                 }
             };
-            currentListeners[1] = new VizEventListener() {
+            currentListeners[1] = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     float[] mouseDrag = (float[]) event.getData();
                     return toolEventListener.drag(
                             // Screen coordinates displacement:
@@ -366,30 +373,34 @@ public class DesktopToolController implements ToolController {
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.DRAG;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.DRAG;
                 }
             };
-            currentListeners[2] = new VizEventListener() {
+            currentListeners[2] = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     toolEventListener.released();
 
                     return false;//Never consume release events
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.MOUSE_RELEASED;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.MOUSE_RELEASED;
                 }
             };
-            VizController.getInstance().getVizEventManager().addListener(currentListeners);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.addListener(currentListeners[0]);
+            vizController.addListener(currentListeners[1]);
         }
 
         @Override
         public void unselect() {
-            VizController.getInstance().getVizEventManager().removeListener(currentListeners);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.removeListener(currentListeners[0]);
+            vizController.removeListener(currentListeners[1]);
             toolEventListener = null;
             currentListeners = null;
         }
@@ -398,7 +409,7 @@ public class DesktopToolController implements ToolController {
     private static class MouseClickEventHandler implements ToolEventHandler {
 
         private MouseClickEventListener toolEventListener;
-        private VizEventListener currentListener;
+        private VisualizationEventListener currentListener;
 
         public MouseClickEventHandler(ToolEventListener toolListener) {
             this.toolEventListener = (MouseClickEventListener) toolListener;
@@ -406,10 +417,10 @@ public class DesktopToolController implements ToolController {
 
         @Override
         public void select() {
-            currentListener = new VizEventListener() {
+            currentListener = new VisualizationEventListener() {
 
                 @Override
-                public boolean handleEvent(VizEvent event) {
+                public boolean handleEvent(VisualizationEvent event) {
                     float[] data = (float[]) event.getData();
                     int[] viewport = new int[]{(int) data[0], (int) data[1]};
                     float[] worldPosition = new float[]{data[2], data[3]};
@@ -418,16 +429,18 @@ public class DesktopToolController implements ToolController {
                 }
 
                 @Override
-                public Type getType() {
-                    return VizEvent.Type.MOUSE_LEFT_CLICK;
+                public VisualizationEvent.Type getType() {
+                    return VisualizationEvent.Type.MOUSE_LEFT_CLICK;
                 }
             };
-            VizController.getInstance().getVizEventManager().addListener(currentListener);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.addListener(currentListener);
         }
 
         @Override
         public void unselect() {
-            VizController.getInstance().getVizEventManager().removeListener(currentListener);
+            VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+            vizController.removeListener(currentListener);
             toolEventListener = null;
             currentListener = null;
         }

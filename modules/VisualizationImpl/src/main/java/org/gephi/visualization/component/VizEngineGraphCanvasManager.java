@@ -3,6 +3,7 @@ package org.gephi.visualization.component;
 import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 
@@ -42,6 +43,9 @@ public class VizEngineGraphCanvasManager {
     private static final boolean DEBUG = false;
 
     private final Workspace workspace;
+    private final VizController vizController;
+    private final GraphModel graphModel;
+
     private boolean initialized = false;
 
     private GLWindow glWindow;
@@ -51,12 +55,16 @@ public class VizEngineGraphCanvasManager {
     private transient VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
 
     // Engine state saved for when it's restarted:
-    private Vector2fc engineTranslate = null;
-    private float engineZoom = 0;
-    private float[] engineBackgroundColor = null;
 
-    public VizEngineGraphCanvasManager(Workspace workspace) {
+
+    public VizEngineGraphCanvasManager(Workspace workspace, GraphModel graphModel) {
+        this.vizController = Lookup.getDefault().lookup(VizController.class);
         this.workspace = Objects.requireNonNull(workspace, "workspace");
+        this.graphModel = Objects.requireNonNull(graphModel, "graphModel");
+    }
+
+    public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
+        return Optional.ofNullable(engine);
     }
 
     public synchronized void init(JComponent component) {
@@ -65,8 +73,6 @@ public class VizEngineGraphCanvasManager {
         }
 
         this.initialized = true;
-
-        final GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
         final GLCapabilities caps = VizEngineJOGLConfigurator.createCapabilities();
 
@@ -89,14 +95,14 @@ public class VizEngineGraphCanvasManager {
             )
         );
 
-        workspace.add(engine);
+//        workspace.add(engine);
 
         // Previous state for this workspace? keep it:
-        if (engineTranslate != null) {
-            engine.setTranslate(engineTranslate);
-            engine.setZoom(engineZoom);
-            engine.setBackgroundColor(engineBackgroundColor);
-        }
+//        if (engineTranslate != null) {
+//            engine.setTranslate(engineTranslate);
+//            engine.setZoom(engineZoom);
+//            engine.setBackgroundColor(engineBackgroundColor);
+//        }
 
         final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
         glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
@@ -105,8 +111,6 @@ public class VizEngineGraphCanvasManager {
         glOptions.setDebug(DEBUG);
 
         engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
-
-        final VizController vizController = Lookup.getDefault().lookup(VizController.class);
 
         engine.addInputListener(new InputListener<>() {
             @Override
@@ -164,12 +168,12 @@ public class VizEngineGraphCanvasManager {
         if (engine != null) {
             engine.pause();
 
-            engineTranslate = engine.getTranslate();
-            engineZoom = engine.getZoom();
-            engineBackgroundColor = engine.getBackgroundColor();
+//            engineTranslate = engine.getTranslate();
+//            engineZoom = engine.getZoom();
+//            engineBackgroundColor = engine.getBackgroundColor();
 
             //TODO: Keep more state of GraphRenderingOptions
-            workspace.remove(engine);
+//            workspace.remove(engine);
             //Logger.getLogger("").info("Destroying viz-engine...");
             //engine.destroy(); // This crashes in windows!!
         }

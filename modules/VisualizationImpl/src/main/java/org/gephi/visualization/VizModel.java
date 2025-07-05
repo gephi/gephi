@@ -45,40 +45,43 @@ package org.gephi.visualization;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.jogamp.newt.event.NEWTEvent;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.component.VizEngineGraphCanvasManager;
+import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.joml.Vector2fc;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
-public class VizModel {
+public class VizModel implements VisualisationModel {
 
     private final Workspace workspace;
-    private VizEngine<?, ?> engine;
+    private final VizEngineGraphCanvasManager canvasManager;
 
-    protected VizConfig config;
-    //Variable
-    protected float[] backgroundColorComponents = new float[4];
+    protected final VizConfig config;
 
     // TODO: these must be either removed or moved to viz-engine:
     protected boolean hideNonSelectedEdges;
@@ -92,18 +95,52 @@ public class VizModel {
     protected List<PropertyChangeListener> listeners = new ArrayList<>();
     private GraphRenderingOptions renderingOptions;
 
-    public VizModel(Workspace workspace) {
-        Objects.requireNonNull(workspace, "workspace");
-        this.workspace = workspace;
+    //Settings dedicated to selection
+    // TODO: use these options in the engine selection:
 
-        final GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+    // States
+    private Vector2fc engineTranslate = null;
+    private float engineZoom = 0;
+    private float[] engineBackgroundColor = null;
+    // Selection
+    private final SelectionModelImpl selectionModel;
+
+
+    public VizModel(Workspace workspace) {
+        this.workspace = workspace;
+        this.config = new VizConfig();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        this.canvasManager = new VizEngineGraphCanvasManager(workspace, graphModel);
+        this.selectionModel = new SelectionModelImpl(this);
+
 //        textModel.setTextColumns(new Column[] {gm.getNodeTable().getColumn("label")},
 //            new Column[] {gm.getEdgeTable().getColumn("label")});
         //TODO
     }
 
+    public void destroy(JComponent component) {
+        canvasManager.destroy(component);
+    }
+
+    public SelectionModelImpl getSelectionModel() {
+        return selectionModel;
+    }
+
+    public ScreenshotModelImpl getScreenshotModel() {
+        return null;
+    }
+
+    @Override
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
+        return canvasManager.getEngine();
+    }
+
     private boolean loadEngine() {
-        engine = workspace.getLookup().lookup(VizEngine.class);
+        VizEngine<JOGLRenderingTarget, NEWTEvent> engine = canvasManager.getEngine().orElse(null);
         if (engine == null) {
             return false; // Engine still not ready in the workspace
         }
@@ -118,7 +155,7 @@ public class VizModel {
      * Getters and setters should only be called if the model is ready (has a backing viz-engine setup).
      */
     public boolean isReady() {
-        if (engine != null) {
+        if (canvasManager.getEngine().isPresent()) {
            return true;
         }
 
@@ -126,10 +163,14 @@ public class VizModel {
     }
 
     private boolean initialized = false;
-    public boolean init() {
+
+    public synchronized boolean init(JComponent component) {
         if (initialized) {
             return true;
         }
+
+        // Todo no idea if this should be here, and when to do reinit instead
+        canvasManager.init(component);
 
         if (!loadEngine()) {
             return false;
@@ -167,8 +208,6 @@ public class VizModel {
             return;
         }
 
-        config = VizController.getInstance().getVizConfig();
-
         //textModel = new TextModelImpl();
         //TODO
         if (UIUtils.isDarkLookAndFeel()) {
@@ -192,12 +231,13 @@ public class VizModel {
         setEdgeScale(config.getDefaultEdgeScale());
     }
 
+    @Override
     public float getZoom() {
-        return engine.getZoom();
+        return engineZoom;
     }
 
     public void setZoom(float zoom) {
-        engine.setZoom(zoom);
+        // TODO : set zoom in the engine
     }
 
     public boolean isAdjustByText() {
@@ -211,6 +251,7 @@ public class VizModel {
         firePropertyChange("adjustByText", null, adjustByText);
     }
 
+    @Override
     public boolean isAutoSelectNeighbors() {
         return renderingOptions.isAutoSelectNeighbours();
     }
@@ -220,23 +261,20 @@ public class VizModel {
         firePropertyChange("autoSelectNeighbor", null, autoSelectNeighbor);
     }
 
+    @Override
     public Color getBackgroundColor() {
-        engine.getBackgroundColor(backgroundColorComponents);
-
-        return new Color(backgroundColorComponents[0], backgroundColorComponents[1],
-                backgroundColorComponents[2], backgroundColorComponents[3]);
+        return new Color(engineBackgroundColor[0], engineBackgroundColor[1],
+            engineBackgroundColor[2], engineBackgroundColor[3]);
     }
 
     public void setBackgroundColor(Color backgroundColor) {
-        engine.setBackgroundColor(backgroundColor);
+        float[] backgroundColorComponents = new float[4];
+        backgroundColor.getRGBComponents(backgroundColorComponents);
+        this.engineBackgroundColor = backgroundColorComponents;
+
+        // TODO: set background color in the engine
 
         firePropertyChange("backgroundColor", null, backgroundColor);
-    }
-
-    public float[] getBackgroundColorComponents() {
-        engine.getBackgroundColor(backgroundColorComponents);
-
-        return backgroundColorComponents;
     }
 
     public boolean isShowEdges() {
@@ -299,10 +337,6 @@ public class VizModel {
         firePropertyChange("uniColorSelected", null, uniColorSelected);
     }
 
-    public VizConfig getConfig() {
-        return config;
-    }
-
     public boolean isEdgeSelectionColor() {
         //TODO
         return edgeSelectionColor;
@@ -362,11 +396,11 @@ public class VizModel {
     }
 
     //EVENTS
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener(VizModelPropertyChangeListener listener) {
         listeners.add(listener);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    public void removePropertyChangeListener(VizModelPropertyChangeListener listener) {
         listeners.remove(listener);
     }
 
@@ -378,6 +412,50 @@ public class VizModel {
         for (PropertyChangeListener l : listenersCopy) {
             l.propertyChange(evt);
         }
+    }
+
+    public int getMouseSelectionDiameter() {
+        return selectionModel.getMouseSelectionDiameter();
+    }
+
+    public boolean isMouseSelectionZoomProportional() {
+        return selectionModel.isMouseSelectionZoomProportional();
+    }
+
+    public boolean isBlocked() {
+        return selectionModel.isBlocked();
+    }
+
+    public boolean isRectangleSelection() {
+        return selectionModel.isRectangleSelection();
+    }
+
+    public boolean isDirectMouseSelection() {
+        return selectionModel.isDirectMouseSelection();
+    }
+
+    public boolean isCustomSelection() {
+        return selectionModel.isCustomSelection();
+    }
+
+    public boolean isSelectionEnabled() {
+        return selectionModel.isSelectionEnabled();
+    }
+
+    public List<Node> getSelectedNodes() {
+        return Collections.emptyList();
+        // TODO : fix
+//        return currentEngineSelectionModel()
+//            .map(selection -> (List<Node>) new ArrayList<>(selection.getSelectedNodes()))
+//            .orElse(Collections.emptyList());
+    }
+
+    public List<Edge> getSelectedEdges() {
+        return Collections.emptyList();
+        // TODO : fix
+//        return currentEngineSelectionModel()
+//            .map(selection -> (List<Edge>) new ArrayList<>(selection.getSelectedEdges()))
+//            .orElse(Collections.emptyList());
     }
 
     //XML
@@ -393,10 +471,11 @@ public class VizModel {
 //                        textModel.readXML(reader, workspace);
                         //TODO
                     } else if ("cameraposition".equalsIgnoreCase(name)) {
-                        engine.setTranslate(
-                                Float.parseFloat(reader.getAttributeValue(null, "x")),
-                                Float.parseFloat(reader.getAttributeValue(null, "y"))
-                        );
+                        // TODO FIx
+//                        engine.setTranslate(
+//                                Float.parseFloat(reader.getAttributeValue(null, "x")),
+//                                Float.parseFloat(reader.getAttributeValue(null, "y"))
+//                        );
                     } else if ("cameratarget".equalsIgnoreCase(name)) {
                         // No longer necessary
                     } else if ("showedges".equalsIgnoreCase(name)) {
@@ -434,21 +513,22 @@ public class VizModel {
                     } else if ("edgeScale".equalsIgnoreCase(name)) {
                         setEdgeScale(Float.parseFloat(reader.getAttributeValue(null, "value")));
                     } else if("screenshotMaker".equalsIgnoreCase(name)) {
-                        ScreenshotMaker screenshotMaker = VizController.getInstance().getScreenshotMaker();
-                        if (screenshotMaker != null) {
-                            screenshotMaker.setWidth(Integer.parseInt(reader.getAttributeValue(null, "width")));
-                            screenshotMaker.setHeight(Integer.parseInt(reader.getAttributeValue(null, "height")));
-                            screenshotMaker.setTransparentBackground(Boolean.parseBoolean(reader.getAttributeValue(null, "transparent")));
-                            screenshotMaker.setAutoSave(Boolean.parseBoolean(reader.getAttributeValue(null, "autosave")));
-                            screenshotMaker.setAntiAliasing(Integer.parseInt(reader.getAttributeValue(null, "antialiasing")));
-                            String path = reader.getAttributeValue(null, "path");
-                            if (path != null && !path.isEmpty()) {
-                                File file = new File(reader.getAttributeValue(null, "path"));
-                                if (file.exists()) {
-                                    screenshotMaker.setDefaultDirectory(file);
-                                }
-                            }
-                        }
+                        // TODO FIx
+//                        ScreenshotControllerImpl screenshotMaker = VizController.getInstance().getScreenshotMaker();
+//                        if (screenshotMaker != null) {
+//                            screenshotMaker.setWidth(Integer.parseInt(reader.getAttributeValue(null, "width")));
+//                            screenshotMaker.setHeight(Integer.parseInt(reader.getAttributeValue(null, "height")));
+//                            screenshotMaker.setTransparentBackground(Boolean.parseBoolean(reader.getAttributeValue(null, "transparent")));
+//                            screenshotMaker.setAutoSave(Boolean.parseBoolean(reader.getAttributeValue(null, "autosave")));
+//                            screenshotMaker.setAntiAliasing(Integer.parseInt(reader.getAttributeValue(null, "antialiasing")));
+//                            String path = reader.getAttributeValue(null, "path");
+//                            if (path != null && !path.isEmpty()) {
+//                                File file = new File(reader.getAttributeValue(null, "path"));
+//                                if (file.exists()) {
+//                                    screenshotMaker.setDefaultDirectory(file);
+//                                }
+//                            }
+//                        }
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:
@@ -461,16 +541,8 @@ public class VizModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        final VizEngine<JOGLRenderingTarget, NEWTEvent> engine =
-            Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class)
-                .getEngine(workspace).orElse(null);
-
-        if (engine == null) {
-            return;
-        }
-
         //Fast refresh
-        final Vector2fc cameraPosition = engine.getTranslate();
+        final Vector2fc cameraPosition = engineTranslate;
 
         //TextModel
         //        textModel.writeXML(writer);
@@ -542,18 +614,19 @@ public class VizModel {
         writer.writeEndElement();
 
         //Screenshot settings
-        ScreenshotMaker screenshotMaker = VizController.getInstance().getScreenshotMaker();
-        if (screenshotMaker != null) {
-            writer.writeStartElement("screenshotMaker");
-            writer.writeAttribute("width", String.valueOf(screenshotMaker.getWidth()));
-            writer.writeAttribute("height", String.valueOf(screenshotMaker.getHeight()));
-            writer.writeAttribute("antialiasing", String.valueOf(screenshotMaker.getAntiAliasing()));
-            writer.writeAttribute("transparent", String.valueOf(screenshotMaker.isTransparentBackground()));
-            writer.writeAttribute("autosave", String.valueOf(screenshotMaker.isAutoSave()));
-            if (screenshotMaker.getDefaultDirectory() != null) {
-                writer.writeAttribute("path", screenshotMaker.getDefaultDirectory());
-            }
-            writer.writeEndElement();
-        }
+        // TODO Fix
+//        ScreenshotControllerImpl screenshotMaker = VizController.getInstance().getScreenshotMaker();
+//        if (screenshotMaker != null) {
+//            writer.writeStartElement("screenshotMaker");
+//            writer.writeAttribute("width", String.valueOf(screenshotMaker.getWidth()));
+//            writer.writeAttribute("height", String.valueOf(screenshotMaker.getHeight()));
+//            writer.writeAttribute("antialiasing", String.valueOf(screenshotMaker.getAntiAliasing()));
+//            writer.writeAttribute("transparent", String.valueOf(screenshotMaker.isTransparentBackground()));
+//            writer.writeAttribute("autosave", String.valueOf(screenshotMaker.isAutoSave()));
+//            if (screenshotMaker.getDefaultDirectory() != null) {
+//                writer.writeAttribute("path", screenshotMaker.getDefaultDirectory());
+//            }
+//            writer.writeEndElement();
+//        }
     }
 }

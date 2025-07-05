@@ -42,102 +42,177 @@
 
 package org.gephi.visualization;
 
-import java.util.Collections;
-import java.util.List;
+import java.awt.Color;
+import java.util.Arrays;
 import java.util.Optional;
 
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Controller;
+import org.gephi.visualization.api.ScreenshotController;
 import org.gephi.visualization.api.VisualizationController;
-import org.gephi.visualization.api.selection.SelectionManager;
-import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.apiimpl.VizEventManager;
+import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.events.StandardVizEventManager;
-import org.gephi.visualization.screenshot.ScreenshotMaker;
-import org.openide.util.Lookup;
+import org.gephi.visualization.screenshot.ScreenshotControllerImpl;
+import org.gephi.viz.engine.status.GraphSelection;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = VisualizationController.class)
-public class VizController implements VisualizationController {
+@ServiceProviders({
+    @ServiceProvider(service = VisualizationController.class),
+    @ServiceProvider(service = Controller.class)})
+public class VizController implements VisualizationController, Controller<VizModel> {
 
-    //Singleton
-    private static VizController instance;
-    private CurrentWorkspaceVizEngine currentWorkspaceVizEngine;
     //Architecture
-    private VizEventManager vizEventManager;
-    private VizConfig vizConfig;
-    private ScreenshotMaker screenshotMaker;
-    private SelectionManager selectionManager;
-
+    private final StandardVizEventManager vizEventManager;
+    private final ScreenshotControllerImpl screenshotMaker;
     private VizModel currentModel;
 
     public VizController() {
-    }
-
-    public synchronized static VizController getInstance() {
-        if (instance == null) {
-            instance = (VizController) Lookup.getDefault().lookup(VisualizationController.class);
-            instance.initInstances();
-        }
-        return instance;
-    }
-
-    public VizModel getModel() {
-        final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        final Workspace workspace = projectController.getCurrentWorkspace();
-
-        if (workspace != null) {
-            return workspace.getLookup().lookup(VizModel.class);
-        }
-
-        return null;
-    }
-
-    public void initInstances() {
-        currentWorkspaceVizEngine = Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class);
-
-        vizConfig = new VizConfig();
         vizEventManager = new StandardVizEventManager();
-        screenshotMaker = new ScreenshotMaker();
+        screenshotMaker = new ScreenshotControllerImpl();
 //        limits = new GraphLimits();
 //        textManager = new TextManager();
         currentModel = null;
-        selectionManager = new SelectionManager();
 
         //TODO
 //        textManager.initArchitecture();
-        screenshotMaker.initArchitecture();
-        vizEventManager.initArchitecture();
-        selectionManager.initArchitecture();
+//        screenshotMaker.initArchitecture();
     }
 
-    public void refreshWorkspace() {
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final Workspace currentWorkspace = pc.getCurrentWorkspace();
-
-        VizModel model = null;
-        if (currentWorkspace != null) {
-            model = currentWorkspace.getLookup().lookup(VizModel.class);
-            if (model == null) {
-                model = new VizModel(currentWorkspace);
-                currentWorkspace.add(model);
-            }
-        }
-
-        currentModel = model;
-        if (currentModel != null) {
-            currentModel.init();
-        }
+    @Override
+    public VizModel newModel(Workspace workspace) {
+        return new VizModel(workspace);
     }
+
+    @Override
+    public VizModel getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
+    }
+
+    @Override
+    public Class<VizModel> getModelClass() {
+        return VizModel.class;
+    }
+
+    @Override
+    public VizModel getModel() {
+        return Controller.super.getModel();
+    }
+
+    @Override
+    public ScreenshotController getScreenshotController() {
+        return null;
+    }
+
+    @Override
+    public void addListener(VisualizationEventListener listener) {
+        vizEventManager.addListener(listener);
+    }
+
+    @Override
+    public void removeListener(VisualizationEventListener listener) {
+        vizEventManager.removeListener(listener);
+    }
+
+    @Override
+    public void setZoom(float zoom) {
+
+    }
+
+    @Override
+    public void setAutoSelectNeighbors(boolean autoSelectNeighbors) {
+
+    }
+
+    @Override
+    public void setBackgroundColor(Color color) {
+
+    }
+
+
+    public void setShowEdges(boolean showEdges) {
+        final VizModel model = getModel();
+        model.setShowEdges(showEdges);
+    }
+
+    public void setEdgeHasUniColor(boolean edgeHasUniColor) {
+        final VizModel model = getModel();
+        model.setEdgeHasUniColor(edgeHasUniColor);
+    }
+
+    public void setEdgeUniColor(float[] edgeUniColor) {
+        final VizModel model = getModel();
+        model.setEdgeUniColor(edgeUniColor);
+    }
+
+    public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
+        final VizModel model = getModel();
+        model.setHideNonSelectedEdges(hideNonSelectedEdges);
+    }
+
+    public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
+        final VizModel model = getModel();
+        model.setLightenNonSelectedAuto(lightenNonSelectedAuto);
+    }
+
+    public void setUniColorSelected(boolean uniColorSelected) {
+        final VizModel model = getModel();
+        model.setUniColorSelected(uniColorSelected);
+    }
+
+    public void setEdgeSelectionColor(boolean edgeSelectionColor) {
+        final VizModel model = getModel();
+        model.setEdgeSelectionColor(edgeSelectionColor);
+    }
+
+    public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
+        final VizModel model = getModel();
+        model.setEdgeInSelectionColor(edgeInSelectionColor);
+    }
+
+    public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
+        final VizModel model = getModel();
+        model.setEdgeOutSelectionColor(edgeOutSelectionColor);
+    }
+
+    public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
+        final VizModel model = getModel();
+        model.setEdgeBothSelectionColor(edgeBothSelectionColor);
+    }
+
+    public void setEdgeScale(float edgeScale) {
+        final VizModel model = getModel();
+        model.setEdgeScale(edgeScale);
+    }
+
+//    public void refreshWorkspace() {
+//        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+//        final Workspace currentWorkspace = pc.getCurrentWorkspace();
+//
+//        VizModel model = null;
+//        if (currentWorkspace != null) {
+//            model = currentWorkspace.getLookup().lookup(VizModel.class);
+//            if (model == null) {
+//                model = new VizModel(currentWorkspace);
+//                currentWorkspace.add(model);
+//            }
+//        }
+//
+//        currentModel = model;
+//        if (currentModel != null) {
+//            currentModel.init();
+//        }
+//    }
 
     public void destroy() {
-        vizEventManager = null;
+//        vizEventManager = null;
 //        textManager = null;
         //TODO
     }
@@ -155,79 +230,98 @@ public class VizController implements VisualizationController {
         return currentModel != null && currentModel.isReady();
     }
 
-    @Override
-    public void resetSelection() {
-        if (selectionManager != null && vizModelReady()) {
-            selectionManager.resetSelection(currentModel);
-        }
-    }
 
-    @Override
-    public void centerOnGraph() {
-        if (selectionManager != null) {
-            selectionManager.centerOnGraph();
-        }
-    }
-
-    @Override
-    public void centerOnNode(Node node) {
-        if (selectionManager != null) {
-            selectionManager.centerOnNode(node);
-        }
-    }
-
-    @Override
-    public void centerOnEdge(Edge edge) {
-        if (selectionManager != null) {
-            selectionManager.centerOnEdge(edge);
-        }
-    }
-
-    public void selectNode(Node node) {
-        if (node == null) {
-            selectNodes(null);
-        } else {
-            selectNodes(new Node[] {node});
-        }
-    }
-
-    public void selectEdge(Edge edge) {
-        if (edge == null) {
-            selectEdges(null);
-        } else {
-            selectEdges(new Edge[] {edge});
-        }
-    }
-
-    @Override
-    public void selectNodes(Node[] nodes) {
-        if (selectionManager != null && vizModelReady()) {
-            selectionManager.selectNodes(nodes, currentModel);
-        }
-    }
-
-    @Override
-    public void selectEdges(Edge[] edges) {
-        if (selectionManager != null && vizModelReady()) {
-            selectionManager.selectEdges(edges, currentModel);
-        }
-    }
-
-    @Override
-    public List<Node> getSelectedNodes() {
-        if (selectionManager != null) {
-            return selectionManager.getSelectedNodes();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<Edge> getSelectedEdges() {
-        if (selectionManager != null) {
-            return selectionManager.getSelectedEdges();
-        }
-        return Collections.emptyList();
-    }
+//    @Override
+//    public void selectNodes(Node[] nodes) {
+//        if (selectionManager != null && vizModelReady()) {
+//            selectionManager.selectNodes(nodes, currentModel);
+//        }
+//    }
+//
+//    @Override
+//    public void selectEdges(Edge[] edges) {
+//        if (selectionManager != null && vizModelReady()) {
+//            selectionManager.selectEdges(edges, currentModel);
+//        }
+//    }
+//
+//    @Override
+//    public List<Node> getSelectedNodes() {
+//        if (selectionManager != null) {
+//            return selectionManager.getSelectedNodes();
+//        }
+//        return Collections.emptyList();
+//    }
+//
+//    @Override
+//    public List<Edge> getSelectedEdges() {
+//        if (selectionManager != null) {
+//            return selectionManager.getSelectedEdges();
+//        }
+//        return Collections.emptyList();
+//    }
+//
+//    public void blockSelection(boolean block) {
+//        if (vizConfig.isRectangleSelection()) {
+//            this.blocked = block;
+//            vizConfig.setSelectionEnable(!block);
+//            fireChangeEvent();
+//        } else {
+//            setDirectMouseSelection();
+//        }
+//    }
+//
+//    public void disableSelection() {
+//        vizConfig.setSelectionEnable(false);
+//        this.blocked = false;
+//        fireChangeEvent();
+//    }
+//
+//    public void setRectangleSelection() {
+//        vizConfig.setCustomSelection(false);
+//        vizConfig.setSelectionEnable(true);
+//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
+//        this.blocked = false;
+//        fireChangeEvent();
+//    }
+//
+//    public void setDirectMouseSelection() {
+//        vizConfig.setSelectionEnable(true);
+//        vizConfig.setCustomSelection(false);
+//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+//        this.blocked = false;
+//        fireChangeEvent();
+//    }
+//
+//    public void setDraggingMouseSelection() {
+//        vizConfig.setSelectionEnable(true);
+//        vizConfig.setCustomSelection(false);
+//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+//        this.blocked = false;
+//        fireChangeEvent();
+//    }
+//
+//    public void setCustomSelection() {
+//        vizConfig.setSelectionEnable(false);
+//        vizConfig.setCustomSelection(true);
+//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+//        this.blocked = true;
+//        fireChangeEvent();
+//    }
+//
+//    public void resetSelection(VizModel vizModel) {
+//        if (isCustomSelection()) {
+//            currentEngineSelectionModel()
+//                .ifPresent(GraphSelection::clearSelection);
+//
+//            vizModel.setAutoSelectNeighbors(wasAutoSelectNeighbors);
+//            if (wasRectangleSelection) {
+//                setRectangleSelection();
+//            } else if (wasDirectSelection) {
+//                setDirectMouseSelection();
+//            }
+//        }
+//    }
 
     @Override
     public Column[] getEdgeTextColumns() {
@@ -267,19 +361,267 @@ public class VizController implements VisualizationController {
         return new Column[0];
     }
 
-    public VizConfig getVizConfig() {
-        return vizConfig;
-    }
-
-    public VizEventManager getVizEventManager() {
+    public StandardVizEventManager getVizEventManager() {
         return vizEventManager;
     }
 
-    public ScreenshotMaker getScreenshotMaker() {
+    public ScreenshotControllerImpl getScreenshotMaker() {
         return screenshotMaker;
     }
 
-    public SelectionManager getSelectionManager() {
-        return selectionManager;
+
+    public void centerOnGraph() {
+        //TODO fix
+//        currentVizEngine.getEngine().ifPresent(engine -> {
+//            final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
+//            final Rect2D visibleGraphBoundaries = index.getGraphBoundaries();
+//
+//            final float[] center = visibleGraphBoundaries.center();
+//            engine.centerOn(
+//                new Vector2f(center[0], center[1]),
+//                visibleGraphBoundaries.width(),
+//                visibleGraphBoundaries.height()
+//            );
+//        });
+    }
+
+    public void centerOnNode(Node node) {
+        // TODO fix
+//        if (node != null) {
+//            currentVizEngine.getEngine().ifPresent(engine -> {
+//                final Vector2f position = new Vector2f(node.x(), node.y());
+//                final float size = node.size();
+//                engine.centerOn(position, size, size);
+//            });
+//        }
+    }
+
+    public void centerOnEdge(Edge edge) {
+        // TODo fix
+//        if (edge != null) {
+//            currentVizEngine.getEngine().ifPresent(engine -> {
+//                //TODO center on edge
+//            });
+//        }
+    }
+
+    public void selectNodes(Node[] nodes, VizModel vizModel) {
+        // TODO fix
+//        if (!isCustomSelection()) {
+//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
+//            wasDirectSelection = isDirectMouseSelection();
+//            wasRectangleSelection = isRectangleSelection();
+//            vizModel.setAutoSelectNeighbors(false);
+//            setCustomSelection();
+//        }
+//
+//        currentEngineSelectionModel()
+//            .ifPresent(selection -> {
+//                if (nodes == null) {
+//                    selection.clearSelectedNodes();
+//                } else {
+//                    selection.setSelectedNodes(Arrays.asList(nodes));
+//                }
+//            });
+    }
+
+    public void selectEdges(Edge[] edges, VizModel vizModel) {
+        // TODO fix
+//        if (!isCustomSelection()) {
+//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
+//            wasDirectSelection = isDirectMouseSelection();
+//            wasRectangleSelection = isRectangleSelection();
+//            vizModel.setAutoSelectNeighbors(false);
+//            setCustomSelection();
+//        }
+//
+//        currentEngineSelectionModel()
+//            .ifPresent(selection -> {
+//                if (edges == null) {
+//                    selection.clearSelectedEdges();
+//                } else {
+//                    selection.setSelectedEdges(Arrays.asList(edges));
+//                }
+//            });
+    }
+
+
+    @Override
+    public void addChangeListener(ChangeListener listener) {
+
+    }
+
+    @Override
+    public synchronized void blockSelection(boolean block) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        if (model.isRectangleSelection()) {
+            model.getSelectionModel().setBlocked(block);
+            model.getSelectionModel().setSelectionEnable(!block);
+//            fireChangeEvent();
+        } else {
+            setDirectMouseSelection();
+        }
+    }
+
+    @Override
+    public synchronized void disableSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(false);
+        model.getSelectionModel().setBlocked(false);
+//        fireChangeEvent();
+    }
+
+    @Override
+    public void setMouseSelectionDiameter(int diameter) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setMouseSelectionDiameter(diameter);
+    }
+
+    @Override
+    public void setMouseSelectionZoomProportional(boolean proportional) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setMouseSelectionZoomProportional(proportional);
+    }
+
+    @Override
+    public synchronized void setRectangleSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setCustomSelection(false);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
+        model.getSelectionModel().setBlocked(false);
+//        fireChangeEvent();
+    }
+
+    @Override
+    public synchronized void setDirectMouseSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setCustomSelection(false);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        model.getSelectionModel().setBlocked(false);
+//        fireChangeEvent();
+    }
+
+    @Override
+    public synchronized void setDraggingMouseSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setCustomSelection(false);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        model.getSelectionModel().setBlocked(false);
+//        fireChangeEvent();
+    }
+
+    @Override
+    public synchronized void setCustomSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(false);
+        model.getSelectionModel().setCustomSelection(true);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        model.getSelectionModel().setBlocked(true);
+//        fireChangeEvent();
+    }
+
+    @Override
+    public synchronized void resetSelection() {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        if (model.isCustomSelection()) {
+            model.getSelectionModel().currentEngineSelectionModel()
+                .ifPresent(GraphSelection::clearSelection);
+
+            // TODO, it was enabled
+//            vizModel.setAutoSelectNeighbors(wasAutoSelectNeighbors);
+            if (model.getSelectionModel().wasRectangleSelection) {
+                setRectangleSelection();
+            } else if (model.getSelectionModel().wasDirectSelection) {
+                setDirectMouseSelection();
+            }
+        }
+    }
+
+    @Override
+    public void selectNodes(Node[] nodes) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        if (!model.isCustomSelection()) {
+//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
+//            wasDirectSelection = isDirectMouseSelection();
+//            wasRectangleSelection = isRectangleSelection();
+//            vizModel.setAutoSelectNeighbors(false);
+            setCustomSelection();
+        }
+
+        model.getSelectionModel().currentEngineSelectionModel()
+            .ifPresent(selection -> {
+                if (nodes == null) {
+                    selection.clearSelectedNodes();
+                } else {
+                    selection.setSelectedNodes(Arrays.asList(nodes));
+                }
+            });
+    }
+
+    @Override
+    public void selectEdges(Edge[] edges) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        if (!model.isCustomSelection()) {
+//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
+//            wasDirectSelection = isDirectMouseSelection();
+//            wasRectangleSelection = isRectangleSelection();
+//            vizModel.setAutoSelectNeighbors(false);
+            setCustomSelection();
+        }
+
+        model.getSelectionModel().currentEngineSelectionModel()
+            .ifPresent(selection -> {
+                if (edges == null) {
+                    selection.clearSelectedEdges();
+                } else {
+                    selection.setSelectedEdges(Arrays.asList(edges));
+                }
+            });
+    }
+
+    private void setEngineSelectionMode(GraphSelection.GraphSelectionMode mode) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().currentEngineSelectionModel().ifPresent(graphSelection -> {
+            graphSelection.setMode(mode);
+        });
     }
 }

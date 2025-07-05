@@ -57,9 +57,9 @@ import com.jogamp.newt.event.MouseEvent;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationEvent;
+import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.apiimpl.VizEvent;
-import org.gephi.visualization.apiimpl.VizEventListener;
-import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
@@ -69,7 +69,7 @@ import org.joml.Vector2i;
 /**
  * @author Mathieu Bastian
  */
-public class StandardVizEventManager implements VizEventManager {
+public class StandardVizEventManager {
 
     private static final short MOUSE_LEFT_BUTTON = MouseEvent.BUTTON1;
     private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
@@ -87,14 +87,39 @@ public class StandardVizEventManager implements VizEventManager {
     private final Vector2f mouseWorldPosition = new Vector2f(0, 0);
 
     //Architecture
-    private VizEventTypeHandler[] handlers;
+    private final VisualizationEventTypeHandler[] handlers;
     private boolean dragging = false;
     private boolean pressing = false;
 
     public StandardVizEventManager() {
+        //Set handlers
+        final ArrayList<VisualizationEventTypeHandler> handlersList = new ArrayList<>();
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_LEFT_CLICK, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_LEFT_PRESS, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_MIDDLE_CLICK, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_MIDDLE_PRESS, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_RIGHT_CLICK, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_RIGHT_PRESS, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_MOVE, true));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.START_DRAG, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.DRAG, true));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.STOP_DRAG, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.NODE_LEFT_CLICK, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_LEFT_PRESSING, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_RELEASED, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.NODE_LEFT_PRESS, false));
+        handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.NODE_LEFT_PRESSING, false));
+        Collections.sort(handlersList, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                VisualizationEvent.Type t1 = ((VisualizationEventTypeHandler) o1).type;
+                VisualizationEvent.Type t2 = ((VisualizationEventTypeHandler) o2).type;
+                return t1.compareTo(t2);
+            }
+        });
+        handlers = handlersList.toArray(new VisualizationEventTypeHandler[0]);
     }
 
-    @Override
     public boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent) {
         previousMouseScreenPosition.set(mouseScreenPosition);
         previousMouseWorldPosition2d.set(mouseWorldPosition);
@@ -165,41 +190,13 @@ public class StandardVizEventManager implements VizEventManager {
         }
     }
 
-    @Override
-    public void initArchitecture() {
-        //Set handlers
-        final ArrayList<VizEventTypeHandler> handlersList = new ArrayList<>();
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_CLICK, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESS, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MIDDLE_CLICK, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MIDDLE_PRESS, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RIGHT_CLICK, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RIGHT_PRESS, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MOVE, true));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.START_DRAG, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.DRAG, true));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.STOP_DRAG, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_CLICK, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESSING, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RELEASED, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESSING, false));
-        Collections.sort(handlersList, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                VizEvent.Type t1 = ((VizEventTypeHandler) o1).type;
-                VizEvent.Type t2 = ((VizEventTypeHandler) o2).type;
-                return t1.compareTo(t2);
-            }
-        });
-        handlers = handlersList.toArray(new VizEventTypeHandler[0]);
-    }
-
     public boolean mouseLeftClick(VizEngine engine) {
         final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
-        final boolean selectionEnabled = VizController.getInstance().getVizConfig().isSelectionEnable();
+        // Todo fix
+        final boolean selectionEnabled = false;
+//        final boolean selectionEnabled = VizController.getInstance().getVizConfig().isSelectionEnable();
         final Node[] clickedNodes;
 
         if (selectionEnabled) {
@@ -211,7 +208,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         //Node Left click:
-        final VizEventTypeHandler nodeLeftClickHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
+        final VisualizationEventTypeHandler nodeLeftClickHandler = handlers[VisualizationEvent.Type.NODE_LEFT_CLICK.ordinal()];
         if (nodeLeftClickHandler.hasListeners() && clickedNodes.length > 0) {
             if (nodeLeftClickHandler.dispatch(clickedNodes)) {
                 return true;
@@ -219,7 +216,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         //Mouse left click:
-        final VizEventTypeHandler mouseLeftClickHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
+        final VisualizationEventTypeHandler mouseLeftClickHandler = handlers[VisualizationEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
         if (mouseLeftClickHandler.hasListeners() && clickedNodes.length == 0) {
             return mouseLeftClickHandler.dispatch(
                     getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition)
@@ -252,7 +249,7 @@ public class StandardVizEventManager implements VizEventManager {
     public boolean mouseLeftPress(VizEngine engine) {
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
-        final VizEventTypeHandler nodeLefPressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
+        final VisualizationEventTypeHandler nodeLefPressHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESS.ordinal()];
         if (nodeLefPressHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
@@ -261,7 +258,7 @@ public class StandardVizEventManager implements VizEventManager {
             }
         }
 
-        return handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
     }
 
     private Node[] toArray(Collection<Node> selectedNodes) {
@@ -269,29 +266,29 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public boolean mouseMiddleClick(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_MIDDLE_CLICK.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_MIDDLE_CLICK.ordinal()].dispatch();
     }
 
     public boolean mouseMiddlePress(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_MIDDLE_PRESS.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_MIDDLE_PRESS.ordinal()].dispatch();
     }
 
     public boolean mouseMove(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
     }
 
     public boolean mouseRightClick(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();
     }
 
     public boolean mouseRightPress(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
 
     public boolean mouseLeftPressing(VizEngine engine) {
         final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
 
-        final VizEventTypeHandler nodeLeftPressingHandler = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+        final VisualizationEventTypeHandler nodeLeftPressingHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
         if (nodeLeftPressingHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = index.getSelectedNodes();
@@ -300,19 +297,19 @@ public class StandardVizEventManager implements VizEventManager {
             }
         }
 
-        return handlers[VizEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
     }
 
     public boolean startDrag(VizEngine engine) {
-        return handlers[VizEvent.Type.START_DRAG.ordinal()].dispatch();
+        return handlers[VisualizationEvent.Type.START_DRAG.ordinal()].dispatch();
     }
 
     public void stopDrag(VizEngine engine) {
-        handlers[VizEvent.Type.STOP_DRAG.ordinal()].dispatch();
+        handlers[VisualizationEvent.Type.STOP_DRAG.ordinal()].dispatch();
     }
 
     public boolean drag(VizEngine engine) {
-        final VizEventTypeHandler handler = handlers[VizEvent.Type.DRAG.ordinal()];
+        final VisualizationEventTypeHandler handler = handlers[VisualizationEvent.Type.DRAG.ordinal()];
         if (handler.hasListeners()) {
             final Vector2i dragScreenDisplacement = new Vector2i(mouseScreenPosition);
             dragScreenDisplacement.sub(dragStartMouseScreenPosition);
@@ -328,68 +325,63 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public void mouseReleased(VizEngine engine) {
-        handlers[VizEvent.Type.MOUSE_RELEASED.ordinal()].dispatch();
+        handlers[VisualizationEvent.Type.MOUSE_RELEASED.ordinal()].dispatch();
     }
 
     //Listeners
-    @Override
-    public boolean hasListeners(VizEvent.Type type) {
+    public boolean hasListeners(VisualizationEvent.Type type) {
         return handlers[type.ordinal()].hasListeners();
     }
 
-    @Override
-    public void addListener(VizEventListener listener) {
+    public void addListener(VisualizationEventListener listener) {
         handlers[listener.getType().ordinal()].addListener(listener);
     }
 
-    @Override
-    public void removeListener(VizEventListener listener) {
+    public void removeListener(VisualizationEventListener listener) {
         handlers[listener.getType().ordinal()].removeListener(listener);
     }
 
-    @Override
-    public void addListener(VizEventListener[] listeners) {
+    public void addListener(VisualizationEventListener[] listeners) {
         for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].addListener(listeners[i]);
         }
     }
 
-    @Override
-    public void removeListener(VizEventListener[] listeners) {
+    public void removeListener(VisualizationEventListener[] listeners) {
         for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].removeListener(listeners[i]);
         }
     }
 
-    private class VizEventTypeHandler {
+    private class VisualizationEventTypeHandler {
 
-        protected final VizEvent.Type type;
+        protected final VisualizationEvent.Type type;
         //Settings
         private final boolean limitRunning;
         //Data
-        protected List<WeakReference<VizEventListener>> listeners;
+        protected List<WeakReference<VisualizationEventListener>> listeners;
         protected Runnable runnable;
         //States
         protected boolean running;
 
-        public VizEventTypeHandler(VizEvent.Type type, boolean limitRunning) {
+        public VisualizationEventTypeHandler(VisualizationEvent.Type type, boolean limitRunning) {
             this.limitRunning = limitRunning;
             this.type = type;
             this.listeners = new ArrayList<>();
         }
 
-        protected synchronized void addListener(VizEventListener listener) {
+        protected synchronized void addListener(VisualizationEventListener listener) {
             if (listener == null) {
                 return;
             }
 
-            final WeakReference<VizEventListener> weakListener = new WeakReference<>(listener);
+            final WeakReference<VisualizationEventListener> weakListener = new WeakReference<>(listener);
             listeners.add(weakListener);
         }
 
-        protected synchronized void removeListener(VizEventListener listener) {
-            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext(); ) {
-                WeakReference<VizEventListener> li = itr.next();
+        protected synchronized void removeListener(VisualizationEventListener listener) {
+            for (Iterator<WeakReference<VisualizationEventListener>> itr = listeners.iterator(); itr.hasNext(); ) {
+                WeakReference<VisualizationEventListener> li = itr.next();
                 if (li.get() == listener) {
                     itr.remove();
                 }
@@ -404,7 +396,7 @@ public class StandardVizEventManager implements VizEventManager {
             if (!listeners.isEmpty()) {
                 running = true;
 
-                final boolean consumed = fireVizEvent(null);
+                final boolean consumed = fireVisualizationEvent(null);
                 running = false;
 
                 return consumed;
@@ -421,7 +413,7 @@ public class StandardVizEventManager implements VizEventManager {
                 running = true;
 
                 try {
-                    final boolean consumed = fireVizEvent(data);
+                    final boolean consumed = fireVisualizationEvent(data);
                     running = false;
 
                     return consumed;
@@ -437,11 +429,11 @@ public class StandardVizEventManager implements VizEventManager {
             return running;
         }
 
-        private synchronized boolean fireVizEvent(Object data) {
-            final VizEvent event = new VizEvent(this, type, data);
+        private synchronized boolean fireVisualizationEvent(Object data) {
+            final VisualizationEvent event = new VizEvent(this, type, data);
             for (int i = 0; i < listeners.size(); i++) {
-                final WeakReference<VizEventListener> weakListener = listeners.get(i);
-                final VizEventListener listener = weakListener.get();
+                final WeakReference<VisualizationEventListener> weakListener = listeners.get(i);
+                final VisualizationEventListener listener = weakListener.get();
 
                 if (listener != null) {
                     final boolean consumed = listener.handleEvent(event);

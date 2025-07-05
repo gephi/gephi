@@ -42,18 +42,33 @@
 
 package org.gephi.visualization.api;
 
+import java.awt.Color;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import java.util.List;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Controller;
 
 /**
  * @author Mathieu Bastian
  */
 public interface VisualizationController {
 
-    public void resetSelection();
+    VisualisationModel getModel();
+
+    VisualisationModel getModel(Workspace workspace);
+
+    ScreenshotController getScreenshotController();
+
+    public void setZoom(float zoom);
+
+    public void setAutoSelectNeighbors(boolean autoSelectNeighbors);
+
+    public void setBackgroundColor(Color color);
+
+
 
     public void centerOnGraph();
 
@@ -61,9 +76,7 @@ public interface VisualizationController {
 
     public void centerOnEdge(Edge edge);
 
-    public void selectNodes(Node[] nodes);
 
-    public void selectEdges(Edge[] edges);
 
     public Column[] getEdgeTextColumns();
 
@@ -73,7 +86,33 @@ public interface VisualizationController {
 
     public Column[] getNodeTextColumns(Workspace workspace);
 
-    public List<Node> getSelectedNodes();
+    void addListener(VisualizationEventListener listener);
 
-    public List<Edge> getSelectedEdges();
+    void removeListener(VisualizationEventListener listener);
+
+    // Selection
+
+    void addChangeListener(ChangeListener listener);
+
+    void blockSelection(boolean block);
+
+    void disableSelection();
+
+    void setRectangleSelection();
+
+    void setDirectMouseSelection();
+
+    void setDraggingMouseSelection();
+
+    void setCustomSelection();
+
+    void setMouseSelectionDiameter(int diameter);
+
+    void setMouseSelectionZoomProportional(boolean proportional);
+
+    void resetSelection();
+
+    void selectNodes(Node[] nodes);
+
+    void selectEdges(Edge[] edges);
 }
