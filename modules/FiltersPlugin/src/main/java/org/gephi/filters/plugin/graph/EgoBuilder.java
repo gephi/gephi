@@ -63,7 +63,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, flomzey
  */
 @ServiceProvider(service = FilterBuilder.class)
 public class EgoBuilder implements FilterBuilder {
