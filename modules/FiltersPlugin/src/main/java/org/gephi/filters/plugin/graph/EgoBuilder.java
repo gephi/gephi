@@ -112,10 +112,10 @@ public class EgoBuilder implements FilterBuilder {
             OUTGOING, INCOMING, BOTH
         }
 
-        private Mode mode = Mode.OUTGOING;
+        private Mode mode = Mode.BOTH;
         private String inputID = "";
         private boolean self = true;
-        private boolean considerNonDirected = false;
+        private boolean considerNonDirected = true;
         private String depth = "1";
 
         @Override
@@ -128,7 +128,7 @@ public class EgoBuilder implements FilterBuilder {
             HashSet<Node> nodes = new HashSet<>();
             HashSet<Edge> edges = new HashSet<>();
 
-            if (depthStr.equals("mx")) {
+            if (depthStr.isEmpty()) {
                 depth = Integer.MAX_VALUE;
             }
             if (depthStr.matches("[0-9]+")) {
