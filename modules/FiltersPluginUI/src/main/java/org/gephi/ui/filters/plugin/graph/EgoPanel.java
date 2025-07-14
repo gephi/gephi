@@ -196,11 +196,6 @@ public class EgoPanel extends javax.swing.JPanel {
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.text")); // NOI18N
         depthTextField.setToolTipText(
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.toolTipText")); // NOI18N
-        depthTextField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                depthTextFieldActionPerformed(evt);
-            }
-        });
 
         modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption0.text"),
@@ -263,8 +258,4 @@ public class EgoPanel extends javax.swing.JPanel {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void depthTextFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_depthTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_depthTextFieldActionPerformed
 }
