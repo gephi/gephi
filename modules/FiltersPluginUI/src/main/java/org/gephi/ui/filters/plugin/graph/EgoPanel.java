@@ -42,10 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.filters.plugin.graph;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import org.gephi.filters.plugin.graph.EgoBuilder.EgoFilter;
 
 import javax.swing.event.DocumentEvent;
@@ -197,7 +196,7 @@ public class EgoPanel extends javax.swing.JPanel {
         depthTextField.setToolTipText(
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.toolTipText")); // NOI18N
 
-        modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+        modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption0.text"),
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption1.text"),
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption2.text")}));

@@ -220,7 +220,7 @@ public class EgoBuilder implements FilterBuilder {
          *
          * @param ego current ego of the iteration
          * @param e   the questioned edge
-         * @return    whether {@param e} is relevant for current {@param ego}
+         * @return whether {@param e} is relevant for current {@param ego}
          */
         private boolean isRelevantEdge(Node ego, Edge e) {
             if (considerNonDirected && !e.isDirected()) {
@@ -255,7 +255,7 @@ public class EgoBuilder implements FilterBuilder {
         @Override
         public FilterProperty[] getProperties() {
             try {
-                return new FilterProperty[] {
+                return new FilterProperty[]{
                         FilterProperty.createProperty(this, String.class, "pattern"),
                         FilterProperty.createProperty(this, String.class, "depth"),
                         FilterProperty.createProperty(this, Boolean.class, "self"),
