@@ -151,6 +151,8 @@ public class EgoPanel extends javax.swing.JPanel {
         this.egoFilter = egoFilter;
         nodeIdTextField.setText(egoFilter.getPattern());
         withSelfCheckbox.setSelected(egoFilter.isSelf());
+        modeComboBox.setSelectedIndex(egoFilter.getMode().ordinal());
+        considerNonDirectEdgesCheckBox.setSelected(egoFilter.isConsiderNonDirected());
     }
 
     /**
