@@ -123,20 +123,23 @@ public class VizController implements VisualizationController, Controller<VizMod
 
     @Override
     public void setZoom(float zoom) {
-
+        final VizModel model = getModel();
+        model.setZoom(zoom);
     }
 
     @Override
     public void setAutoSelectNeighbors(boolean autoSelectNeighbors) {
-
+        final VizModel model = getModel();
+        model.setAutoSelectNeighbors(autoSelectNeighbors);
     }
 
     @Override
     public void setBackgroundColor(Color color) {
-
+        final VizModel model = getModel();
+        model.setBackgroundColor(color);
     }
 
-
+    @Override
     public void setShowEdges(boolean showEdges) {
         final VizModel model = getModel();
         model.setShowEdges(showEdges);
@@ -162,10 +165,6 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.setLightenNonSelectedAuto(lightenNonSelectedAuto);
     }
 
-    public void setUniColorSelected(boolean uniColorSelected) {
-        final VizModel model = getModel();
-        model.setUniColorSelected(uniColorSelected);
-    }
 
     public void setEdgeSelectionColor(boolean edgeSelectionColor) {
         final VizModel model = getModel();

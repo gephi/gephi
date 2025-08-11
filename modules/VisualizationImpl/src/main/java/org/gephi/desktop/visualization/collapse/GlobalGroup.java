@@ -77,6 +77,9 @@ public class GlobalGroup implements  CollapseGroup, VizModelPropertyChangeListen
 
     @Override
     public void setup(VizModel vizModel) {
+        for (JComponent component : getToolbarComponents()) {
+            component.setEnabled(true);
+        }
         backgroundColorButton.setColor(vizModel.getBackgroundColor());
         globalSettingsPanel.setup(vizModel);
         vizModel.addPropertyChangeListener(this);
@@ -91,6 +94,9 @@ public class GlobalGroup implements  CollapseGroup, VizModelPropertyChangeListen
     @Override
     public void disable() {
         globalSettingsPanel.setup(null);
+        for (JComponent component : getToolbarComponents()) {
+            component.setEnabled(false);
+        }
     }
 
     @Override

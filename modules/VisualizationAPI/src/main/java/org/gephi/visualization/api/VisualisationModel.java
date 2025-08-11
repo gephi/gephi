@@ -26,8 +26,6 @@ public interface VisualisationModel extends Model {
 
     boolean isLightenNonSelectedAuto();
 
-    boolean isUniColorSelected();
-
     boolean isEdgeSelectionColor();
 
     float[] getEdgeInSelectionColor();

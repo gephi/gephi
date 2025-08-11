@@ -92,7 +92,10 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements VizModelPro
         sourceNodeColorCheckbox.addItemListener(
             e -> controller.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected()));
         selectionColorCheckbox.addItemListener(
-            e -> controller.setEdgeSelectionColor(selectionColorCheckbox.isSelected()));
+            e -> {
+                controller.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
+                setEnable(true);
+            });
         edgeInSelectionColorChooser.addActionListener(
             ae -> controller.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null)));
         edgeBothSelectionColorChooser.addActionListener(
@@ -120,9 +123,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements VizModelPro
 
     @Override
     public void propertyChange(VizModel model, PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("init")) {
-            refreshSharedConfig(model);
-        } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
+        if (evt.getPropertyName().equals("edgeHasUniColor")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("showEdges")) {
             refreshSharedConfig(model);

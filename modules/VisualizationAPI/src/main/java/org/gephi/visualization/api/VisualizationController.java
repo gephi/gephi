@@ -68,7 +68,7 @@ public interface VisualizationController {
 
     public void setBackgroundColor(Color color);
 
-
+    public void setShowEdges(boolean showEdges);
 
     public void centerOnGraph();
 

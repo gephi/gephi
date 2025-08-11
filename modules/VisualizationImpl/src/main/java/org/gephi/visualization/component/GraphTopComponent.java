@@ -79,7 +79,6 @@ import org.openide.windows.TopComponent;
         preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
 
-    private transient VizBarController vizBarController;
     private final VizController controller;
     private SelectionToolbar selectionToolbar;
     private ActionsToolbar actionsToolbar;
@@ -98,11 +97,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initKeyEventContextMenuActionMappings();
 
         // Create groups
-        groups = new CollapseGroup[4];
-        groups[0] = new GlobalGroup();
-        groups[1] = new NodeGroup();
-        groups[2] = new EdgeGroup();
-        groups[3] = new LabelGroup();
+        groups = createCollapseGroups();
 
         listenToWorkspaceEvents();
 
@@ -113,6 +108,20 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             // Create the toolbar
             initToolPanels();
         });
+    }
+
+    private CollapseGroup[] createCollapseGroups() {
+        CollapseGroup[] groups = new CollapseGroup[4];
+        groups[0] = new GlobalGroup();
+        groups[1] = new NodeGroup();
+        groups[2] = new EdgeGroup();
+        groups[3] = new LabelGroup();
+
+        // Disable all groups
+        for (CollapseGroup group : groups) {
+            group.disable();
+        }
+        return groups;
     }
 
     private void listenToWorkspaceEvents() {
@@ -141,7 +150,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                 }
 
                 activateWorkspaceVizEngine(workspace);
-                vizBarController.workspaceSelected(workspace);
             }
 
             @Override
@@ -209,8 +217,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         }
         VizModel vizModel = controller.getModel(workspace);
         vizModel.init(this);
-
-        vizBarController.workspaceSelected(workspace);
 
         // Setup collapse groups
         for(CollapseGroup group : groups) {

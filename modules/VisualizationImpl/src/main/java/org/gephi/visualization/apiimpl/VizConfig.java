@@ -172,8 +172,6 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getBoolean(NEIGHBOUR_SELECT, DEFAULT_NEIGHBOUR_SELECT);
     protected boolean defaultHideNonSelectedEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
-    protected boolean defaultUniColorSelected = NbPreferences.forModule(VizConfig.class)
-        .getBoolean(SELECTEDNODE_UNIQUE_COLOR, DEFAULT_SELECTEDNODE_UNIQUE_COLOR);
     protected boolean defaultEdgeHasUniColor =
         NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_HAS_UNIQUE_COLOR, DEFAULT_EDGE_HAS_UNIQUE_COLOR);
     protected Color defaultEdgeUniColor = ColorUtils.decode(
@@ -345,10 +343,6 @@ public class VizConfig {
 
     public boolean isDefaultShowNodeLabels() {
         return defaultShowNodeLabels;
-    }
-
-    public boolean isDefaultUniColorSelected() {
-        return defaultUniColorSelected;
     }
 
     public boolean isDefaultShowEdges() {

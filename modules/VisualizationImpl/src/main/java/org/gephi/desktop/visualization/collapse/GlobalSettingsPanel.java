@@ -62,9 +62,6 @@ public class GlobalSettingsPanel extends javax.swing.JPanel implements VizModelP
     private javax.swing.JButton backgroundColorButton;
     private javax.swing.JCheckBox hightlightCheckBox;
     private javax.swing.JLabel labelBackgroundColor;
-    private javax.swing.JLabel labelZoom;
-    private javax.swing.JPanel zoomPanel;
-    private javax.swing.JSlider zoomSlider;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -87,25 +84,17 @@ public class GlobalSettingsPanel extends javax.swing.JPanel implements VizModelP
         autoSelectNeigborCheckbox.addItemListener(e -> {
             controller.setAutoSelectNeighbors(autoSelectNeigborCheckbox.isSelected());
         });
-
-        zoomSlider.addChangeListener(e -> {
-            float zoomFloatValue = zoomSlider.getValue() / 100.0f;
-            controller.setZoom(zoomFloatValue);
-        });
     }
 
     @Override
     public void propertyChange(VizModel model, PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("init")) {
-            refreshSharedConfig(model);
-        } else if (evt.getPropertyName().equals("backgroundColor")) {
+        if (evt.getPropertyName().equals("backgroundColor")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("autoSelectNeighbor")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("lightenNonSelectedAuto")) {
             refreshSharedConfig(model);
         }
-        refreshZoom(model);
     }
 
     public void setup(VizModel model) {
@@ -139,12 +128,6 @@ public class GlobalSettingsPanel extends javax.swing.JPanel implements VizModelP
         backgroundColorButton.setEnabled(enable);
         hightlightCheckBox.setEnabled(enable);
         labelBackgroundColor.setEnabled(enable);
-        labelZoom.setEnabled(enable);
-        zoomSlider.setEnabled(enable);
-    }
-
-    private void refreshZoom(VizModel model) {
-        zoomSlider.setValue((int) (model.getZoom() * 100));
     }
 
     /**
@@ -161,92 +144,49 @@ public class GlobalSettingsPanel extends javax.swing.JPanel implements VizModelP
         backgroundColorButton = new JColorButton(Color.BLACK);
         hightlightCheckBox = new javax.swing.JCheckBox();
         autoSelectNeigborCheckbox = new javax.swing.JCheckBox();
-        zoomPanel = new javax.swing.JPanel();
-        labelZoom = new javax.swing.JLabel();
-        zoomSlider = new javax.swing.JSlider();
 
-        labelBackgroundColor.setText(org.openide.util.NbBundle
-            .getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.labelBackgroundColor.text")); // NOI18N
+        labelBackgroundColor.setText(org.openide.util.NbBundle.getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.labelBackgroundColor.text")); // NOI18N
 
-        backgroundColorButton.setText(org.openide.util.NbBundle
-            .getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.backgroundColorButton.text")); // NOI18N
+        backgroundColorButton.setText(org.openide.util.NbBundle.getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.backgroundColorButton.text")); // NOI18N
 
-        hightlightCheckBox.setText(org.openide.util.NbBundle
-            .getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.hightlightCheckBox.text")); // NOI18N
+        hightlightCheckBox.setText(org.openide.util.NbBundle.getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.hightlightCheckBox.text")); // NOI18N
         hightlightCheckBox.setBorder(null);
         hightlightCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         hightlightCheckBox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
-        autoSelectNeigborCheckbox.setText(org.openide.util.NbBundle
-            .getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.autoSelectNeigborCheckbox.text")); // NOI18N
+        autoSelectNeigborCheckbox.setText(org.openide.util.NbBundle.getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.autoSelectNeigborCheckbox.text")); // NOI18N
         autoSelectNeigborCheckbox.setBorder(null);
         autoSelectNeigborCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         autoSelectNeigborCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
-
-        zoomPanel.setOpaque(true);
-        zoomPanel.setLayout(new java.awt.GridBagLayout());
-
-        labelZoom.setText(org.openide.util.NbBundle
-            .getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.labelZoom.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 2, 0);
-        zoomPanel.add(labelZoom, gridBagConstraints);
-
-        zoomSlider.setMaximum(1000);
-        zoomSlider.setMinimum(10);
-        zoomSlider.setValue(30);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        zoomPanel.add(zoomSlider, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(labelBackgroundColor)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(backgroundColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(autoSelectNeigborCheckbox))
-                    .addGap(27, 27, 27)
-                    .addComponent(zoomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 147,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(28, 28, 28)
-                    .addComponent(hightlightCheckBox)
-                    .addGap(32, 32, 32))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(autoSelectNeigborCheckbox)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelBackgroundColor)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(backgroundColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(hightlightCheckBox)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(hightlightCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 25,
-                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(zoomPanel, javax.swing.GroupLayout.Alignment.LEADING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(labelBackgroundColor, javax.swing.GroupLayout.Alignment.LEADING,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(backgroundColorButton, javax.swing.GroupLayout.Alignment.LEADING,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(autoSelectNeigborCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 26,
-                                    javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labelBackgroundColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(backgroundColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(hightlightCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autoSelectNeigborCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 }

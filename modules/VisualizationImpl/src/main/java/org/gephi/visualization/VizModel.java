@@ -83,25 +83,13 @@ public class VizModel implements VisualisationModel {
 
     protected final VizConfig config;
 
-    // TODO: these must be either removed or moved to viz-engine:
-    protected boolean hideNonSelectedEdges;
-    protected boolean uniColorSelected;
-    protected boolean edgeHasUniColor;
-    protected float[] edgeUniColor;
-    protected boolean edgeSelectionColor;
-    protected boolean adjustByText;
-    protected float edgeScale;
     //Listener
-    protected List<PropertyChangeListener> listeners = new ArrayList<>();
+    protected List<VizModelPropertyChangeListener> listeners = new ArrayList<>();
     private GraphRenderingOptions renderingOptions;
 
     //Settings dedicated to selection
     // TODO: use these options in the engine selection:
 
-    // States
-    private Vector2fc engineTranslate = null;
-    private float engineZoom = 0;
-    private float[] engineBackgroundColor = null;
     // Selection
     private final SelectionModelImpl selectionModel;
 
@@ -178,29 +166,11 @@ public class VizModel implements VisualisationModel {
 
         initialized = true;
 
-        final PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                if (listeners != null) {
-                    //Copy to avoid possible concurrent modification:
-                    final PropertyChangeListener[] listenersCopy = listeners.toArray(new PropertyChangeListener[0]);
-                    for (PropertyChangeListener l : listenersCopy) {
-                        l.propertyChange(evt);
-                    }
-                }
-            }
-        });
-
         return initialized;
     }
 
-    public List<PropertyChangeListener> getListeners() {
+    public List<VizModelPropertyChangeListener> getListeners() {
         return listeners;
-    }
-
-    public void setListeners(List<PropertyChangeListener> listeners) {
-        this.listeners = listeners;
     }
 
     private void defaultValues() {
@@ -220,7 +190,6 @@ public class VizModel implements VisualisationModel {
         setLightenNonSelectedAuto(config.isDefaultLightenNonSelectedAuto());
         setAutoSelectNeighbors(config.isDefaultAutoSelectNeighbor());
         setHideNonSelectedEdges(config.isDefaultHideNonSelectedEdges());
-        setUniColorSelected(config.isDefaultUniColorSelected());
         setEdgeHasUniColor(config.isDefaultEdgeHasUniColor());
         setEdgeUniColor(config.getDefaultEdgeUniColor().getRGBComponents(null));
         setAdjustByText(config.isDefaultAdjustByText());
@@ -233,7 +202,8 @@ public class VizModel implements VisualisationModel {
 
     @Override
     public float getZoom() {
-        return engineZoom;
+        return getEngine().map(VizEngine::getZoom)
+            .orElse(1.0f); // Default zoom if engine is not ready
     }
 
     public void setZoom(float zoom) {
@@ -241,14 +211,13 @@ public class VizModel implements VisualisationModel {
     }
 
     public boolean isAdjustByText() {
-        //TODO
-        return adjustByText;
+        // TODO: Needs to be added to the engine?
+        return false;
     }
 
     public void setAdjustByText(boolean adjustByText) {
-        //TODO
-        this.adjustByText = adjustByText;
-        firePropertyChange("adjustByText", null, adjustByText);
+        // TODO: Needs to be added to the engine?
+//        firePropertyChange("adjustByText", null, adjustByText);
     }
 
     @Override
@@ -257,22 +226,21 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setAutoSelectNeighbors(boolean autoSelectNeighbor) {
+        boolean oldValue = renderingOptions.isAutoSelectNeighbours();
         renderingOptions.setAutoSelectNeighbours(autoSelectNeighbor);
-        firePropertyChange("autoSelectNeighbor", null, autoSelectNeighbor);
+        firePropertyChange("autoSelectNeighbor", oldValue, autoSelectNeighbor);
     }
 
     @Override
     public Color getBackgroundColor() {
+        float[] engineBackgroundColor = getEngine().map(VizEngine::getBackgroundColor)
+            .orElse(config.getDefaultBackgroundColor().getRGBComponents(null));
         return new Color(engineBackgroundColor[0], engineBackgroundColor[1],
             engineBackgroundColor[2], engineBackgroundColor[3]);
     }
 
     public void setBackgroundColor(Color backgroundColor) {
-        float[] backgroundColorComponents = new float[4];
-        backgroundColor.getRGBComponents(backgroundColorComponents);
-        this.engineBackgroundColor = backgroundColorComponents;
-
-        // TODO: set background color in the engine
+        getEngine().ifPresent(vizEngine -> vizEngine.setBackgroundColor(backgroundColor));
 
         firePropertyChange("backgroundColor", null, backgroundColor);
     }
@@ -282,41 +250,39 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setShowEdges(boolean showEdges) {
+        boolean oldValue = renderingOptions.isShowEdges();
         renderingOptions.setShowEdges(showEdges);
-        firePropertyChange("showEdges", null, showEdges);
+        firePropertyChange("showEdges", oldValue, showEdges);
     }
 
     public boolean isEdgeHasUniColor() {
-        //TODO
-        return edgeHasUniColor;
+        //TODO: Needs to be added to the engine?
+        return false;
     }
 
     public void setEdgeHasUniColor(boolean edgeHasUniColor) {
-        //TODO
-        this.edgeHasUniColor = edgeHasUniColor;
-        firePropertyChange("edgeHasUniColor", null, edgeHasUniColor);
+        //TODO: Needs to be added to the engine?
+//        firePropertyChange("edgeHasUniColor", null, edgeHasUniColor);
     }
 
     public float[] getEdgeUniColor() {
-        //TODO
-        return edgeUniColor;
+        //TODO: Needs to be added to the engine?
+        return new float[] {0f, 0f, 0f, 1f}; // Default black color
     }
 
     public void setEdgeUniColor(float[] edgeUniColor) {
-        //TODO
-        this.edgeUniColor = edgeUniColor;
-        firePropertyChange("edgeUniColor", null, edgeUniColor);
+        //TODO: Needs to be added to the engine?
+//        firePropertyChange("edgeUniColor", null, edgeUniColor);
     }
 
     public boolean isHideNonSelectedEdges() {
-        //TODO
-        return hideNonSelectedEdges;
+        return renderingOptions.isHideNonSelected();
     }
 
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
-        //TODO
-        this.hideNonSelectedEdges = hideNonSelectedEdges;
-        firePropertyChange("hideNonSelectedEdges", null, hideNonSelectedEdges);
+        boolean oldValue = renderingOptions.isHideNonSelected();
+        renderingOptions.setHideNonSelected(hideNonSelectedEdges);
+        firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
     }
 
     public boolean isLightenNonSelectedAuto() {
@@ -324,28 +290,20 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
+        boolean oldValue = renderingOptions.isLightenNonSelected();
         renderingOptions.setLightenNonSelected(lightenNonSelectedAuto);
-        firePropertyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
-    }
-
-    public boolean isUniColorSelected() {
-        return uniColorSelected;
-    }
-
-    public void setUniColorSelected(boolean uniColorSelected) {
-        this.uniColorSelected = uniColorSelected;
-        firePropertyChange("uniColorSelected", null, uniColorSelected);
+        firePropertyChange("lightenNonSelectedAuto", oldValue, lightenNonSelectedAuto);
     }
 
     public boolean isEdgeSelectionColor() {
-        //TODO
-        return edgeSelectionColor;
+        return renderingOptions.isEdgeSelectionColor();
     }
 
     public void setEdgeSelectionColor(boolean edgeSelectionColor) {
-        //TODO
-        this.edgeSelectionColor = edgeSelectionColor;
-        firePropertyChange("edgeSelectionColor", null, edgeSelectionColor);
+        boolean oldValue = renderingOptions.isEdgeSelectionColor();
+        renderingOptions.setEdgeSelectionColor(edgeSelectionColor);
+
+        firePropertyChange("edgeSelectionColor", oldValue, edgeSelectionColor);
     }
 
     public float[] getEdgeInSelectionColor() {
@@ -353,12 +311,13 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
+        Color oldValue = renderingOptions.getEdgeInSelectionColor();
         Color color = new Color(
                 edgeInSelectionColor[0], edgeInSelectionColor[1],
                 edgeInSelectionColor[2], edgeInSelectionColor[3]);
         renderingOptions.setEdgeInSelectionColor(color);
 
-        firePropertyChange("edgeInSelectionColor", null, edgeInSelectionColor);
+        firePropertyChange("edgeInSelectionColor", oldValue, edgeInSelectionColor);
     }
 
     public float[] getEdgeOutSelectionColor() {
@@ -366,12 +325,13 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
+        Color oldValue = renderingOptions.getEdgeOutSelectionColor();
         Color color = new Color(
                 edgeOutSelectionColor[0], edgeOutSelectionColor[1],
                 edgeOutSelectionColor[2], edgeOutSelectionColor[3]);
         renderingOptions.setEdgeOutSelectionColor(color);
 
-        firePropertyChange("edgeOutSelectionColor", null, edgeOutSelectionColor);
+        firePropertyChange("edgeOutSelectionColor", oldValue, edgeOutSelectionColor);
     }
 
     public float[] getEdgeBothSelectionColor() {
@@ -379,11 +339,12 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
+        Color oldValue = renderingOptions.getEdgeBothSelectionColor();
         Color color = new Color(
                 edgeBothSelectionColor[0], edgeBothSelectionColor[1],
                 edgeBothSelectionColor[2], edgeBothSelectionColor[3]);
         renderingOptions.setEdgeBothSelectionColor(color);
-        firePropertyChange("edgeBothSelectionColor", null, edgeBothSelectionColor);
+        firePropertyChange("edgeBothSelectionColor", oldValue, edgeBothSelectionColor);
     }
 
     public float getEdgeScale() {
@@ -391,8 +352,9 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setEdgeScale(float edgeScale) {
+        float oldValue = renderingOptions.getEdgeScale();
         renderingOptions.setEdgeScale(edgeScale);
-        firePropertyChange("edgeScale", null, edgeScale);
+        firePropertyChange("edgeScale", oldValue, edgeScale);
     }
 
     //EVENTS
@@ -405,12 +367,23 @@ public class VizModel implements VisualisationModel {
     }
 
     public void firePropertyChange(String propertyName, Object oldvalue, Object newValue) {
+        // Do not fire if nothing has changed, supporting null values
+        if (oldvalue == null && newValue == null) {
+            return;
+        }
+        if (oldvalue != null && oldvalue.equals(newValue)) {
+            return;
+        }
+        if (newValue != null && newValue.equals(oldvalue)) {
+            return;
+        }
+
         //Copy to avoid possible concurrent modification:
-        final PropertyChangeListener[] listenersCopy = listeners.toArray(new PropertyChangeListener[0]);
+        final VizModelPropertyChangeListener[] listenersCopy = listeners.toArray(new VizModelPropertyChangeListener[0]);
 
         final PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
-        for (PropertyChangeListener l : listenersCopy) {
-            l.propertyChange(evt);
+        for (VizModelPropertyChangeListener l : listenersCopy) {
+            l.propertyChange(this, evt);
         }
     }
 
@@ -486,8 +459,6 @@ public class VizModel implements VisualisationModel {
                         setAutoSelectNeighbors(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
                         setHideNonSelectedEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
-                    } else if ("unicolorselected".equalsIgnoreCase(name)) {
-                        setUniColorSelected(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgehasunicolor".equalsIgnoreCase(name)) {
                         setEdgeHasUniColor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("adjustbytext".equalsIgnoreCase(name)) {
@@ -542,7 +513,8 @@ public class VizModel implements VisualisationModel {
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         //Fast refresh
-        final Vector2fc cameraPosition = engineTranslate;
+        // TODO: Fix
+        final Vector2fc cameraPosition = null;
 
         //TextModel
         //        textModel.writeXML(writer);
@@ -569,10 +541,6 @@ public class VizModel implements VisualisationModel {
 
         writer.writeStartElement("hidenonselectededges");
         writer.writeAttribute("value", String.valueOf(isHideNonSelectedEdges()));
-        writer.writeEndElement();
-
-        writer.writeStartElement("unicolorselected");
-        writer.writeAttribute("value", String.valueOf(isUniColorSelected()));
         writer.writeEndElement();
 
         writer.writeStartElement("edgehasunicolor");
