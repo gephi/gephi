@@ -77,6 +77,12 @@ public class ActionsToolbar extends JToolBar {
         this.visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
         initDesign();
         initContent();
+
+        // Disable
+        for (Component c : getComponents()) {
+            c.setEnabled(false);
+        }
+
     }
 
     private void initContent() {
@@ -96,15 +102,15 @@ public class ActionsToolbar extends JToolBar {
 
         //Center on zero
         final JButton centerOnZeroButton = new JButton();
-         centerOnZeroButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnZero"));
-         centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.svg", false));
-         centerOnZeroButton.addActionListener(new ActionListener() {
+        centerOnZeroButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnZero"));
+        centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.svg", false));
+        centerOnZeroButton.addActionListener(new ActionListener() {
 
-         public void actionPerformed(ActionEvent e) {
-            //TODO
-         }
-         });
-         add(centerOnZeroButton);
+            public void actionPerformed(ActionEvent e) {
+                visualizationController.centerOnZero();
+            }
+        });
+        add(centerOnZeroButton);
 
         //Reset colors
         final JColorButton resetColorButton = new JColorButton(color, true, false);

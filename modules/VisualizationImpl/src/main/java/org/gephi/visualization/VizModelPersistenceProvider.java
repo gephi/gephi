@@ -87,7 +87,7 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
         if (vizModel == null) {
-            vizModel = new VizModel(workspace);
+            vizModel = new VizModel(Lookup.getDefault().lookup(VizController.class), workspace);
             workspace.add(vizModel);
         }
         // TODo fix

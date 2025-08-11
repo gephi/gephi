@@ -70,7 +70,27 @@ public interface VisualizationController {
 
     public void setShowEdges(boolean showEdges);
 
+    public void setEdgeHasUniColor(boolean edgeHasUniColor);
+
+    public void setEdgeUniColor(Color edgeUniColor);
+
+    public void setEdgeSelectionColor(boolean edgeSelectionColor);
+
+    public void setEdgeInSelectionColor(Color edgeInSelectionColor);
+
+    public void setEdgeOutSelectionColor(Color edgeOutSelectionColor);
+
+    public void setEdgeBothSelectionColor(Color edgeBothSelectionColor);
+
+    public void setEdgeScale(float edgeScale);
+
+    public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
+
     public void centerOnGraph();
+
+    public void centerOnZero();
+
+    public void centerOn(float x, float y, float width, float height);
 
     public void centerOnNode(Node node);
 
@@ -86,13 +106,16 @@ public interface VisualizationController {
 
     public Column[] getNodeTextColumns(Workspace workspace);
 
+    void addPropertyChangeListener(VisualizationPropertyChangeListener listener);
+
+    void removePropertyChangeListener(VisualizationPropertyChangeListener listener);
+
     void addListener(VisualizationEventListener listener);
 
     void removeListener(VisualizationEventListener listener);
 
     // Selection
 
-    void addChangeListener(ChangeListener listener);
 
     void blockSelection(boolean block);
 

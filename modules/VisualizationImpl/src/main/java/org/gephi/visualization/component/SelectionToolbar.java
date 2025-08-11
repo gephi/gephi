@@ -75,6 +75,11 @@ public class SelectionToolbar extends JToolBar {
         initDesign();
         buttonGroup = new ButtonGroup();
         initContent();
+
+        // Disable
+        for (Component c : getComponents()) {
+            c.setEnabled(false);
+        }
     }
 
     private void initContent() {

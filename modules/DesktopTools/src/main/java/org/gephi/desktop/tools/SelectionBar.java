@@ -45,6 +45,7 @@ package org.gephi.desktop.tools;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -53,6 +54,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -73,11 +75,13 @@ public class SelectionBar extends javax.swing.JPanel {
     public SelectionBar() {
         initComponents();
         VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
-        visualizationController.addChangeListener(new ChangeListener() {
+        visualizationController.addPropertyChangeListener(new VisualizationPropertyChangeListener() {
 
             @Override
-            public void stateChanged(ChangeEvent e) {
-                refresh();
+            public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("selection")) {
+                    refresh();
+                }
             }
         });
         refresh();
@@ -122,6 +126,9 @@ public class SelectionBar extends javax.swing.JPanel {
             public void run() {
                 VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
                 VisualisationModel model = controller.getModel();
+                if (model == null) {
+                    return;
+                }
                 if (model.isSelectionEnabled()) {
                     if (model.isRectangleSelection()) {
                         configureLink.setVisible(false);

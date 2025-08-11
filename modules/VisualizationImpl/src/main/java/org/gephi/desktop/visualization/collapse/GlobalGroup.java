@@ -4,31 +4,30 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.ui.components.JColorBlackWhiteSwitcher;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.VizModelPropertyChangeListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class GlobalGroup implements  CollapseGroup, VizModelPropertyChangeListener {
+public class GlobalGroup implements  CollapseGroup, VisualizationPropertyChangeListener {
 
     private final JColorBlackWhiteSwitcher backgroundColorButton;
     private final JDropDownButton screenshotButton;
 
     private final GlobalSettingsPanel globalSettingsPanel = new GlobalSettingsPanel();
 
-    private final VizController vizController;
+    private final VisualizationController vizController;
 
     public GlobalGroup() {
-        vizController = Lookup.getDefault().lookup(VizController.class);
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
         backgroundColorButton = new JColorBlackWhiteSwitcher(Color.WHITE);
         backgroundColorButton
             .setToolTipText(NbBundle.getMessage(GlobalGroup.class, "VizToolbar.Global.background"));
@@ -69,25 +68,25 @@ public class GlobalGroup implements  CollapseGroup, VizModelPropertyChangeListen
     }
 
     @Override
-    public void propertyChange(VizModel vizModel, PropertyChangeEvent evt) {
+    public void propertyChange(VisualisationModel vizModel, PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("backgroundColor")) {
             backgroundColorButton.setColor(vizModel.getBackgroundColor());
         }
     }
 
     @Override
-    public void setup(VizModel vizModel) {
+    public void setup(VisualisationModel vizModel) {
         for (JComponent component : getToolbarComponents()) {
             component.setEnabled(true);
         }
         backgroundColorButton.setColor(vizModel.getBackgroundColor());
         globalSettingsPanel.setup(vizModel);
-        vizModel.addPropertyChangeListener(this);
+        vizController.addPropertyChangeListener(this);
     }
 
     @Override
-    public void unsetup(VizModel vizModel) {
-        vizModel.removePropertyChangeListener(this);
+    public void unsetup(VisualisationModel vizModel) {
+        vizController.removePropertyChangeListener(this);
         globalSettingsPanel.unsetup(vizModel);
     }
 

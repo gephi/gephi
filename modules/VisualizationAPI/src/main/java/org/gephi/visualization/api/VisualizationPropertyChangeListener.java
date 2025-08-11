@@ -1,8 +1,8 @@
-package org.gephi.visualization;
+package org.gephi.visualization.api;
 
 import java.beans.PropertyChangeEvent;
 
-public interface VizModelPropertyChangeListener extends java.util.EventListener {
+public interface VisualizationPropertyChangeListener extends java.util.EventListener {
 
     /**
      * This method gets called when a bound property is changed.
@@ -10,5 +10,5 @@ public interface VizModelPropertyChangeListener extends java.util.EventListener 
      *          and the property that has changed.
      */
 
-    void propertyChange(VizModel model, PropertyChangeEvent evt);
+    void propertyChange(VisualisationModel model, PropertyChangeEvent evt);
 }

@@ -46,16 +46,17 @@ import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.beans.PropertyChangeEvent;
 import org.gephi.ui.components.JColorButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.VizModelPropertyChangeListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
-public class EdgeSettingsPanel extends javax.swing.JPanel implements VizModelPropertyChangeListener {
+public class EdgeSettingsPanel extends javax.swing.JPanel implements VisualizationPropertyChangeListener {
 
+    private final VisualizationController vizController;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.java.dev.colorchooser.ColorChooser edgeBothSelectionColorChooser;
     private javax.swing.JButton edgeColorButton;
@@ -80,49 +81,49 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements VizModelPro
     public EdgeSettingsPanel() {
         initComponents();
 
-        final VizController controller = Lookup.getDefault().lookup(VizController.class);
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
         showEdgesCheckbox.addItemListener(e -> {
-            controller.setShowEdges(showEdgesCheckbox.isSelected());
+            vizController.setShowEdges(showEdgesCheckbox.isSelected());
             setEnable(true);
         });
         ((JColorButton) edgeColorButton)
             .addPropertyChangeListener(JColorButton.EVENT_COLOR,
-                evt -> controller.setEdgeUniColor(((JColorButton) edgeColorButton).getColorArray()));
+                evt -> vizController.setEdgeUniColor(((JColorButton) edgeColorButton).getColor()));
         sourceNodeColorCheckbox.addItemListener(
-            e -> controller.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected()));
+            e -> vizController.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected()));
         selectionColorCheckbox.addItemListener(
             e -> {
-                controller.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
+                vizController.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
                 setEnable(true);
             });
         edgeInSelectionColorChooser.addActionListener(
-            ae -> controller.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null)));
+            ae -> vizController.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor()));
         edgeBothSelectionColorChooser.addActionListener(
-            ae -> controller.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null)));
+            ae -> vizController.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor()));
         edgeOutSelectionColorChooser.addActionListener(
-            ae -> controller.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null)));
+            ae -> vizController.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor()));
         scaleSlider.addChangeListener(e -> {
-            controller.setEdgeScale(scaleSlider.getValue() / 10f + 0.1f);
+            vizController.setEdgeScale(scaleSlider.getValue() / 10f + 0.1f);
         });
     }
 
-    public void setup(VizModel model) {
+    public void setup(VisualisationModel model) {
         if (model == null) {
             setEnable(false);
             return;
         }
         refreshSharedConfig(model);
         setEnable(true);
-        model.addPropertyChangeListener(this);
+        vizController.addPropertyChangeListener(this);
     }
 
-    public void unsetup(VizModel model) {
-        model.removePropertyChangeListener(this);
+    public void unsetup(VisualisationModel model) {
+        vizController.removePropertyChangeListener(this);
     }
 
     @Override
-    public void propertyChange(VizModel model, PropertyChangeEvent evt) {
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("edgeHasUniColor")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("showEdges")) {
@@ -142,7 +143,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements VizModelPro
         }
     }
 
-    private void refreshSharedConfig(VizModel vizModel) {
+    private void refreshSharedConfig(VisualisationModel vizModel) {
         if (showEdgesCheckbox.isSelected() != vizModel.isShowEdges()) {
             showEdgesCheckbox.setSelected(vizModel.isShowEdges());
         }

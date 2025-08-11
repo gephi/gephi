@@ -59,6 +59,7 @@ import org.gephi.desktop.visualization.collapse.VizToolbar;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -98,6 +99,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
         // Create groups
         groups = createCollapseGroups();
+
+        // Create toolbars
+        selectionToolbar = new SelectionToolbar();
+        actionsToolbar = new ActionsToolbar();
 
         listenToWorkspaceEvents();
 
@@ -232,32 +237,26 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         if (toolbar != null) {
             return;
         }
-        // Todo fix
-//        final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
-//        if (tc != null) {
-//            if (VizController.getInstance().getVizConfig().isToolbar()) {
-//                JPanel westPanel = new JPanel(new BorderLayout(0, 0));
-//
-//                toolbar = tc.getToolbar();
-//                if (toolbar != null) {
-//                    westPanel.add(toolbar, BorderLayout.CENTER);
-//                }
-//                selectionToolbar = new SelectionToolbar();
-//                actionsToolbar = new ActionsToolbar();
-//
-//                westPanel.add(selectionToolbar, BorderLayout.NORTH);
-//                westPanel.add(actionsToolbar, BorderLayout.SOUTH);
-//                add(westPanel, BorderLayout.WEST);
-//            }
-//
-//            if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
-//                propertiesBar = tc.getPropertiesBar();
-//                if (propertiesBar != null) {
-//                    add(propertiesBar, BorderLayout.NORTH);
-//                }
-//            }
-//            //TODO
-//        }
+        JPanel westPanel = new JPanel(new BorderLayout(0, 0));
+
+        westPanel.add(selectionToolbar, BorderLayout.NORTH);
+        westPanel.add(actionsToolbar, BorderLayout.SOUTH);
+
+        final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
+        if (tc != null) {
+            toolbar = tc.getToolbar();
+            if (toolbar != null) {
+                westPanel.add(toolbar, BorderLayout.CENTER);
+            }
+            propertiesBar = tc.getPropertiesBar();
+            if (propertiesBar != null) {
+                add(propertiesBar, BorderLayout.NORTH);
+            }
+        } else {
+            toolbar = new JPanel();
+        }
+
+        add(westPanel, BorderLayout.WEST);
 
 //        final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 //        projectController.addWorkspaceListener(new WorkspaceListener() {

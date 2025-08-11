@@ -9,16 +9,16 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.VizModelPropertyChangeListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class EdgeGroup implements CollapseGroup, VizModelPropertyChangeListener {
+public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeListener {
 
-    private final VizController vizController;
+    private final VisualizationController vizController;
     private final EdgeSettingsPanel edgeSettingsPanel = new EdgeSettingsPanel();
     //Toolbar
     private final JToggleButton showEdgeButton;
@@ -27,7 +27,7 @@ public class EdgeGroup implements CollapseGroup, VizModelPropertyChangeListener 
     private final JSlider edgeScaleSlider;
 
     public EdgeGroup() {
-        vizController = Lookup.getDefault().lookup(VizController.class);
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
         //Toolbar
         showEdgeButton = new JToggleButton();
@@ -80,7 +80,7 @@ public class EdgeGroup implements CollapseGroup, VizModelPropertyChangeListener 
     }
 
     @Override
-    public void setup(VizModel vizModel) {
+    public void setup(VisualisationModel vizModel) {
         edgeSettingsPanel.setup(vizModel);
 
         // Toolbar
@@ -93,12 +93,12 @@ public class EdgeGroup implements CollapseGroup, VizModelPropertyChangeListener 
         edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
 
         // Listeners
-        vizModel.addPropertyChangeListener(this);
+        vizController.addPropertyChangeListener(this);
     }
 
     @Override
-    public void unsetup(VizModel vizModel) {
-        vizModel.removePropertyChangeListener(this);
+    public void unsetup(VisualisationModel vizModel) {
+        vizController.removePropertyChangeListener(this);
         edgeSettingsPanel.unsetup(vizModel);
     }
 
@@ -111,7 +111,7 @@ public class EdgeGroup implements CollapseGroup, VizModelPropertyChangeListener 
     }
 
     @Override
-    public void propertyChange(VizModel model, PropertyChangeEvent evt) {
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("showEdges")) {
             if (showEdgeButton.isSelected() != model.isShowEdges()) {
                 showEdgeButton.setSelected(model.isShowEdges());

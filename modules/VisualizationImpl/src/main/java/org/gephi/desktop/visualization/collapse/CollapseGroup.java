@@ -43,16 +43,16 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.visualization.collapse;
 
 import javax.swing.JComponent;
-import org.gephi.visualization.VizModel;
+import org.gephi.visualization.api.VisualisationModel;
 
 /**
  * @author Mathieu Bastian
  */
 public interface CollapseGroup {
 
-    void setup(VizModel vizModel);
+    void setup(VisualisationModel vizModel);
 
-    void unsetup(VizModel vizModel);
+    void unsetup(VisualisationModel vizModel);
 
     void disable();
 

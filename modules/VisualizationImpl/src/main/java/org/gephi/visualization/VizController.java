@@ -43,7 +43,9 @@
 package org.gephi.visualization;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.swing.event.ChangeListener;
@@ -55,9 +57,12 @@ import org.gephi.project.spi.Controller;
 import org.gephi.visualization.api.ScreenshotController;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationEventListener;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.visualization.screenshot.ScreenshotControllerImpl;
+import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.joml.Vector2f;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -70,6 +75,7 @@ import org.openide.util.lookup.ServiceProviders;
 public class VizController implements VisualizationController, Controller<VizModel> {
 
     //Architecture
+    protected final List<VisualizationPropertyChangeListener> listeners = new ArrayList<>();
     private final StandardVizEventManager vizEventManager;
     private final ScreenshotControllerImpl screenshotMaker;
     private VizModel currentModel;
@@ -88,7 +94,7 @@ public class VizController implements VisualizationController, Controller<VizMod
 
     @Override
     public VizModel newModel(Workspace workspace) {
-        return new VizModel(workspace);
+        return new VizModel(this, workspace);
     }
 
     @Override
@@ -109,6 +115,16 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public ScreenshotController getScreenshotController() {
         return null;
+    }
+
+    @Override
+    public void addPropertyChangeListener(VisualizationPropertyChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(VisualizationPropertyChangeListener listener) {
+        listeners.remove(listener);
     }
 
     @Override
@@ -145,14 +161,20 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.setShowEdges(showEdges);
     }
 
+    @Override
     public void setEdgeHasUniColor(boolean edgeHasUniColor) {
         final VizModel model = getModel();
         model.setEdgeHasUniColor(edgeHasUniColor);
     }
 
-    public void setEdgeUniColor(float[] edgeUniColor) {
+    @Override
+    public void setEdgeUniColor(Color edgeUniColor) {
         final VizModel model = getModel();
-        model.setEdgeUniColor(edgeUniColor);
+        model.setEdgeUniColor(VizController.toColorArray(edgeUniColor));
+    }
+
+    private static float[] toColorArray(Color color) {
+        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
     }
 
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
@@ -160,32 +182,37 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.setHideNonSelectedEdges(hideNonSelectedEdges);
     }
 
+    @Override
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
         final VizModel model = getModel();
         model.setLightenNonSelectedAuto(lightenNonSelectedAuto);
     }
 
-
+    @Override
     public void setEdgeSelectionColor(boolean edgeSelectionColor) {
         final VizModel model = getModel();
         model.setEdgeSelectionColor(edgeSelectionColor);
     }
 
-    public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
+    @Override
+    public void setEdgeInSelectionColor(Color edgeInSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeInSelectionColor(edgeInSelectionColor);
+        model.setEdgeInSelectionColor(VizController.toColorArray(edgeInSelectionColor));
     }
 
-    public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
+    @Override
+    public void setEdgeOutSelectionColor(Color edgeOutSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeOutSelectionColor(edgeOutSelectionColor);
+        model.setEdgeOutSelectionColor(VizController.toColorArray(edgeOutSelectionColor));
     }
 
-    public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
+    @Override
+    public void setEdgeBothSelectionColor(Color edgeBothSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeBothSelectionColor(edgeBothSelectionColor);
+        model.setEdgeBothSelectionColor(VizController.toColorArray(edgeBothSelectionColor));
     }
 
+    @Override
     public void setEdgeScale(float edgeScale) {
         final VizModel model = getModel();
         model.setEdgeScale(edgeScale);
@@ -368,40 +395,53 @@ public class VizController implements VisualizationController, Controller<VizMod
         return screenshotMaker;
     }
 
-
+    @Override
     public void centerOnGraph() {
-        //TODO fix
-//        currentVizEngine.getEngine().ifPresent(engine -> {
-//            final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
-//            final Rect2D visibleGraphBoundaries = index.getGraphBoundaries();
-//
-//            final float[] center = visibleGraphBoundaries.center();
-//            engine.centerOn(
-//                new Vector2f(center[0], center[1]),
-//                visibleGraphBoundaries.width(),
-//                visibleGraphBoundaries.height()
-//            );
-//        });
+        getModel().getEngine().ifPresent(
+            VizEngine::centerOnGraph
+        );
     }
 
+    @Override
+    public void centerOnZero() {
+        centerOn(0, 0, 1000, 1000);
+    }
+
+    @Override
+    public void centerOn(float x, float y, float width, float height) {
+        getModel().getEngine().ifPresent(
+            engine -> engine.centerOn(new Vector2f(x,y), width, height)
+        );
+    }
+
+    @Override
     public void centerOnNode(Node node) {
-        // TODO fix
-//        if (node != null) {
-//            currentVizEngine.getEngine().ifPresent(engine -> {
-//                final Vector2f position = new Vector2f(node.x(), node.y());
-//                final float size = node.size();
-//                engine.centerOn(position, size, size);
-//            });
-//        }
+        if (node == null) {
+            return;
+        }
+        getModel().getEngine().ifPresent(
+            engine -> {
+                final Vector2f position = new Vector2f(node.x(), node.y());
+                final float size = node.size() * 10f;
+                engine.centerOn(position, size, size);
+            }
+        );
     }
 
+    @Override
     public void centerOnEdge(Edge edge) {
-        // TODo fix
-//        if (edge != null) {
-//            currentVizEngine.getEngine().ifPresent(engine -> {
-//                //TODO center on edge
-//            });
-//        }
+        if (edge == null) {
+            return;
+        }
+        getModel().getEngine().ifPresent(
+            engine -> {
+                Node source = edge.getSource();
+                Node target = edge.getTarget();
+                float len = (float) Math.hypot(source.x() - target.x(), source.y() - target.y());
+                final Vector2f position = new Vector2f((source.x() + target.x()) / 2f, (source.y() + target.y()) / 2f);
+                engine.centerOn(position, len, len);
+            }
+        );
     }
 
     public void selectNodes(Node[] nodes, VizModel vizModel) {
@@ -444,12 +484,6 @@ public class VizController implements VisualizationController, Controller<VizMod
 //            });
     }
 
-
-    @Override
-    public void addChangeListener(ChangeListener listener) {
-
-    }
-
     @Override
     public synchronized void blockSelection(boolean block) {
         VizModel model = getModel();
@@ -459,10 +493,10 @@ public class VizController implements VisualizationController, Controller<VizMod
         if (model.isRectangleSelection()) {
             model.getSelectionModel().setBlocked(block);
             model.getSelectionModel().setSelectionEnable(!block);
-//            fireChangeEvent();
         } else {
             setDirectMouseSelection();
         }
+        model.fireSelectionChange();
     }
 
     @Override
@@ -473,7 +507,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         }
         model.getSelectionModel().setSelectionEnable(false);
         model.getSelectionModel().setBlocked(false);
-//        fireChangeEvent();
+        model.fireSelectionChange();
     }
 
     @Override
@@ -483,6 +517,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setMouseSelectionDiameter(diameter);
+        model.fireSelectionChange();
     }
 
     @Override
@@ -492,6 +527,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setMouseSelectionZoomProportional(proportional);
+        model.fireSelectionChange();
     }
 
     @Override
@@ -504,7 +540,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
         model.getSelectionModel().setBlocked(false);
-//        fireChangeEvent();
+        model.fireSelectionChange();
     }
 
     @Override
@@ -517,7 +553,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         model.getSelectionModel().setBlocked(false);
-//        fireChangeEvent();
+        model.fireSelectionChange();
     }
 
     @Override
@@ -530,7 +566,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         model.getSelectionModel().setBlocked(false);
-//        fireChangeEvent();
+        model.fireSelectionChange();
     }
 
     @Override
@@ -543,7 +579,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setCustomSelection(true);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         model.getSelectionModel().setBlocked(true);
-//        fireChangeEvent();
+        model.fireSelectionChange();
     }
 
     @Override

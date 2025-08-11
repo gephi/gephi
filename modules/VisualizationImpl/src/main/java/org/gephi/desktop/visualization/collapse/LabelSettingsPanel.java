@@ -45,6 +45,7 @@ package org.gephi.desktop.visualization.collapse;
 import java.awt.Color;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizModel;
+import org.gephi.visualization.api.VisualisationModel;
 import org.openide.util.ImageUtilities;
 /**
  * @author Mathieu Bastian
@@ -87,7 +88,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         nodeFontButton.setFont(nodeFontButton.getFont().deriveFont(11));
     }
 
-    public void setup(VizModel model) {
+    public void setup(VisualisationModel model) {
 //        TextModelImpl model = vizModel.getTextModel();
 //        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 //

@@ -63,6 +63,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.gephi.visualization.component.VizEngineGraphCanvasManager;
 import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.gephi.viz.engine.VizEngine;
@@ -78,13 +79,13 @@ import org.openide.util.Lookup;
  */
 public class VizModel implements VisualisationModel {
 
+    private final VizController vizController;
     private final Workspace workspace;
     private final VizEngineGraphCanvasManager canvasManager;
 
     protected final VizConfig config;
 
     //Listener
-    protected List<VizModelPropertyChangeListener> listeners = new ArrayList<>();
     private GraphRenderingOptions renderingOptions;
 
     //Settings dedicated to selection
@@ -94,7 +95,8 @@ public class VizModel implements VisualisationModel {
     private final SelectionModelImpl selectionModel;
 
 
-    public VizModel(Workspace workspace) {
+    public VizModel(VizController controller, Workspace workspace) {
+        this.vizController = controller;
         this.workspace = workspace;
         this.config = new VizConfig();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
@@ -169,10 +171,6 @@ public class VizModel implements VisualisationModel {
         return initialized;
     }
 
-    public List<VizModelPropertyChangeListener> getListeners() {
-        return listeners;
-    }
-
     private void defaultValues() {
         if (!isReady()) {
             return;
@@ -240,9 +238,10 @@ public class VizModel implements VisualisationModel {
     }
 
     public void setBackgroundColor(Color backgroundColor) {
+        Color oldValue = getBackgroundColor();
         getEngine().ifPresent(vizEngine -> vizEngine.setBackgroundColor(backgroundColor));
 
-        firePropertyChange("backgroundColor", null, backgroundColor);
+        firePropertyChange("backgroundColor", oldValue, backgroundColor);
     }
 
     public boolean isShowEdges() {
@@ -358,12 +357,15 @@ public class VizModel implements VisualisationModel {
     }
 
     //EVENTS
-    public void addPropertyChangeListener(VizModelPropertyChangeListener listener) {
-        listeners.add(listener);
-    }
 
-    public void removePropertyChangeListener(VizModelPropertyChangeListener listener) {
-        listeners.remove(listener);
+    public void fireSelectionChange() {
+        //Copy to avoid possible concurrent modification:
+        final VisualizationPropertyChangeListener[] listenersCopy = vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
+
+        final PropertyChangeEvent evt = new PropertyChangeEvent(this, "selection", null, null);
+        for (VisualizationPropertyChangeListener l : listenersCopy) {
+            l.propertyChange(this, evt);
+        }
     }
 
     public void firePropertyChange(String propertyName, Object oldvalue, Object newValue) {
@@ -379,10 +381,10 @@ public class VizModel implements VisualisationModel {
         }
 
         //Copy to avoid possible concurrent modification:
-        final VizModelPropertyChangeListener[] listenersCopy = listeners.toArray(new VizModelPropertyChangeListener[0]);
+        final VisualizationPropertyChangeListener[] listenersCopy = vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
 
         final PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
-        for (VizModelPropertyChangeListener l : listenersCopy) {
+        for (VisualizationPropertyChangeListener l : listenersCopy) {
             l.propertyChange(this, evt);
         }
     }

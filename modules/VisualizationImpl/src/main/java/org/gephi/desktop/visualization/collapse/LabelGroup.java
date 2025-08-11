@@ -13,16 +13,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JPopupButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.VizModelPropertyChangeListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class LabelGroup implements CollapseGroup, VizModelPropertyChangeListener {
+public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeListener {
 
-    private final VizController vizController;
+    private final VisualizationController vizController;
     private final LabelSettingsPanel labelSettingsPanel = new LabelSettingsPanel();
     //Toolbar
     private final JPopupButton labelSizeModeButton;
@@ -34,7 +34,7 @@ public class LabelGroup implements CollapseGroup, VizModelPropertyChangeListener
 
 
     public LabelGroup() {
-        vizController = Lookup.getDefault().lookup(VizController.class);
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
         //Toolbar
 
@@ -141,7 +141,7 @@ public class LabelGroup implements CollapseGroup, VizModelPropertyChangeListener
     }
 
     @Override
-    public void setup(VizModel vizModel) {
+    public void setup(VisualisationModel vizModel) {
         labelSettingsPanel.setup(vizModel);
         //Toolbar
 //        labelSizeModeButton.setSelectedItem(model.getSizeMode());
@@ -152,12 +152,12 @@ public class LabelGroup implements CollapseGroup, VizModelPropertyChangeListener
     }
 
     @Override
-    public void unsetup(VizModel vizModel) {
+    public void unsetup(VisualisationModel vizModel) {
 
     }
 
     @Override
-    public void propertyChange(VizModel vizModel, PropertyChangeEvent evt) {
+    public void propertyChange(VisualisationModel vizModel, PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("something about the label size mode")) {
 //            if (model.getSizeMode() != labelSizeModeButton.getSelectedItem()) {
 //                labelSizeModeButton.setSelectedItem(model.getSizeMode());

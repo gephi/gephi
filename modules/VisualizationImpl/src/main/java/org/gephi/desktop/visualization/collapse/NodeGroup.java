@@ -5,20 +5,20 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.VizModelPropertyChangeListener;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class NodeGroup implements CollapseGroup, VizModelPropertyChangeListener {
+public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeListener {
 
     private final JToggleButton showLabelsButton;
-    private final VizController vizController;
+    private final VisualizationController vizController;
 
     public NodeGroup() {
-        vizController = Lookup.getDefault().lookup(VizController.class);
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
         //Show labels buttons
         showLabelsButton = new JToggleButton();
@@ -43,16 +43,16 @@ public class NodeGroup implements CollapseGroup, VizModelPropertyChangeListener 
     }
 
     @Override
-    public void setup(VizModel vizModel) {
+    public void setup(VisualisationModel vizModel) {
         showLabelsButton.setEnabled(true);
 //        showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
 
-        vizModel.addPropertyChangeListener(this);
+        vizController.addPropertyChangeListener(this);
     }
 
     @Override
-    public void unsetup(VizModel vizModel) {
-        vizModel.removePropertyChangeListener(this);
+    public void unsetup(VisualisationModel vizModel) {
+        vizController.removePropertyChangeListener(this);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class NodeGroup implements CollapseGroup, VizModelPropertyChangeListener 
     }
 
     @Override
-    public void propertyChange(VizModel model, PropertyChangeEvent evt) {
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
         // TODO
     }
 

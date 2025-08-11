@@ -44,6 +44,7 @@ package org.gephi.desktop.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -69,6 +70,7 @@ import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationEvent;
 import org.gephi.visualization.api.VisualizationEventListener;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -214,19 +216,19 @@ public class DesktopToolController implements ToolController {
         }
 
         //SelectionManager events
-        visualizationController.addChangeListener(new ChangeListener() {
+        visualizationController.addPropertyChangeListener(new VisualizationPropertyChangeListener() {
 
             @Override
-            public void stateChanged(ChangeEvent e) {
-                VisualisationModel model = visualizationController.getModel();
-
-                if (model.isRectangleSelection() && currentTool != null) {
-                    toolbar.clearSelection();
-                    unselect();
-                } else if (model.isSelectionEnabled() && currentTool != null
+            public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("selection")) {
+                    if (model.isRectangleSelection() && currentTool != null) {
+                        toolbar.clearSelection();
+                        unselect();
+                    } else if (model.isSelectionEnabled() && currentTool != null
                         && currentTool.getSelectionType() == ToolSelectionType.NONE) {
-                    toolbar.clearSelection();
-                    unselect();
+                        toolbar.clearSelection();
+                        unselect();
+                    }
                 }
             }
         });
