@@ -1,6 +1,7 @@
 package org.gephi.visualization.api;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -55,4 +56,28 @@ public interface VisualisationModel extends Model {
     boolean isCustomSelection();
 
     boolean isSelectionEnabled();
+
+    // Text
+
+    boolean isShowNodeLabels();
+
+    boolean isShowEdgeLabels();
+
+    Color getNodeLabelColor();
+
+    Color getEdgeLabelColor();
+
+    LabelColorMode getNodeLabelColorMode();
+
+    LabelSizeMode getNodeLabelSizeMode();
+
+    Font getNodeLabelFont();
+
+    Font getEdgeLabelFont();
+
+    float getNodeLabelSize();
+
+    float getEdgeLabelSize();
+
+    boolean isHideNonSelectedLabels();
 }

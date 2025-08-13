@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.desktop.tools;
+package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -51,12 +51,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import org.gephi.desktop.visualization.selection.SelectionPropertiesToolbar;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -68,36 +68,33 @@ import org.openide.util.lookup.Lookups;
  */
 public class PropertiesBar extends JPanel {
 
-//    private final SelectionBar selectionBar;
-    private JPanel propertiesBar;
+    private final SelectionPropertiesToolbar selectionBar;
 
     public PropertiesBar() {
         super(new BorderLayout());
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setOpaque(true);
+        leftPanel.add(getFullScreenIcon(), BorderLayout.WEST);
+        leftPanel.add(selectionBar = new SelectionPropertiesToolbar(), BorderLayout.CENTER);
+        add(leftPanel, BorderLayout.WEST);
         setOpaque(true);
     }
 
-    public void select(JPanel propertiesBar) {
-        this.propertiesBar = propertiesBar;
-        if (propertiesBar != null) {
-            propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-            add(propertiesBar, BorderLayout.CENTER);
-            propertiesBar.setOpaque(true);
-            for (Component c : propertiesBar.getComponents()) {
-                if (c instanceof JPanel || c instanceof JToolBar) {
-                    ((JComponent) c).setOpaque(true);
-                }
-            }
-        }
-        revalidate();
+    public void addToolsPropertiesBar(JComponent component) {
+        add(component, BorderLayout.CENTER);
     }
 
-    public void unselect() {
-        if (propertiesBar != null) {
-            remove(propertiesBar);
-            revalidate();
-            repaint();
-            propertiesBar = null;
+    private JComponent getFullScreenIcon() {
+        int logoWidth = 27;
+        int logoHeight = 28;
+        //fullscreen icon size
+        if (UIUtils.isAquaLookAndFeel()) {
+            logoWidth = 34;
         }
+        JPanel c = new JPanel(new BorderLayout());
+        c.setPreferredSize(new Dimension(logoWidth, logoHeight));
+
+        return c;
     }
 
     @Override
@@ -109,8 +106,8 @@ public class PropertiesBar extends JPanel {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);
                 }
+                selectionBar.setEnabled(enabled);
             }
         });
-
     }
 }

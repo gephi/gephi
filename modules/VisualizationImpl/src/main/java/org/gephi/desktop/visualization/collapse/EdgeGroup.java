@@ -61,7 +61,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         showLabelsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                    vizModel.getTextModel().setShowEdgeLabels(showLabelsButton.isSelected());
+                vizController.setShowEdgeLabels(showLabelsButton.isSelected());
             }
         });
 
@@ -89,7 +89,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         }
         showEdgeButton.setSelected(vizModel.isShowEdges());
         edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
-//        showLabelsButton.setSelected(vizModel.isShowEdgeLabels());
+        showLabelsButton.setSelected(vizModel.isShowEdgeLabels());
         edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
 
         // Listeners
@@ -120,11 +120,10 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
             if (edgeHasNodeColorButton.isSelected() == model.isEdgeHasUniColor()) {
                 edgeHasNodeColorButton.setSelected(!model.isEdgeHasUniColor());
             }
-        } else if (evt.getPropertyName().equals("something abiut edge labels")) {
-//            TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//            if (showLabelsButton.isSelected() != textModel.isShowEdgeLabels()) {
-//                showLabelsButton.setSelected(textModel.isShowEdgeLabels());
-//            }
+        } else if (evt.getPropertyName().equals("showEdgeLabels")) {
+            if (showLabelsButton.isSelected() != model.isShowEdgeLabels()) {
+                showLabelsButton.setSelected(model.isShowEdgeLabels());
+            }
         } else if (evt.getPropertyName().equals("edgeScale")) {
             if (model.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
                 edgeScaleSlider.setValue((int) ((model.getEdgeScale() - 0.1f) * 10));

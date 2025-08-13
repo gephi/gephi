@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
 */
 
-package org.gephi.desktop.tools;
+package org.gephi.desktop.visualization.selection;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -55,7 +55,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
     private ChangeListener changeListener;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSlider diameterSlider;
+    private JSlider diameterSlider;
     private javax.swing.JLabel labelDiameter;
     private javax.swing.JLabel labelValue;
     private javax.swing.JCheckBox proportionnalZoomCheckbox;
@@ -128,7 +128,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         labelDiameter = new javax.swing.JLabel();
-        diameterSlider = new javax.swing.JSlider();
+        diameterSlider = new JSlider();
         labelValue = new javax.swing.JLabel();
         proportionnalZoomCheckbox = new javax.swing.JCheckBox();
 

@@ -43,6 +43,7 @@
 package org.gephi.visualization;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +55,8 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
+import org.gephi.visualization.api.LabelColorMode;
+import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.ScreenshotController;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationEventListener;
@@ -177,6 +180,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
     }
 
+    @Override
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
         final VizModel model = getModel();
         model.setHideNonSelectedEdges(hideNonSelectedEdges);
@@ -218,7 +222,75 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.setEdgeScale(edgeScale);
     }
 
-//    public void refreshWorkspace() {
+    // TEXT
+
+    @Override
+    public void setShowNodeLabels(boolean showNodeLabels) {
+        final VizModel model = getModel();
+        model.setShowNodeLabels(showNodeLabels);
+    }
+
+    @Override
+    public void setShowEdgeLabels(boolean showEdgeLabels) {
+        final VizModel model = getModel();
+        model.setShowEdgeLabels(showEdgeLabels);
+    }
+
+    @Override
+    public void setNodeLabelFont(Font font) {
+        final VizModel model = getModel();
+        model.setNodeLabelFont(font);
+    }
+
+    @Override
+    public void setEdgeLabelFont(Font font) {
+        final VizModel model = getModel();
+        model.setEdgeLabelFont(font);
+    }
+
+    @Override
+    public void setNodeLabelColor(Color color) {
+        final VizModel model = getModel();
+        model.setNodeLabelColor(color);
+    }
+
+    @Override
+    public void setEdgeLabelColor(Color color) {
+        final VizModel model = getModel();
+        model.setEdgeLabelColor(color);
+    }
+
+    @Override
+    public void setNodeLabelSize(float size) {
+        final VizModel model = getModel();
+        model.setNodeLabelSize(size);
+    }
+
+    @Override
+    public void setEdgeLabelSize(float size) {
+        final VizModel model = getModel();
+        model.setEdgeLabelSize(size);
+    }
+
+    @Override
+    public void setNodeLabelColorMode(LabelColorMode mode) {
+        final VizModel model = getModel();
+        model.setNodeLabelColorMode(mode);
+    }
+
+    @Override
+    public void setNodeLabelSizeMode(LabelSizeMode mode) {
+        final VizModel model = getModel();
+        model.setNodeLabelSizeMode(mode);
+    }
+
+    @Override
+    public void setHideNonSelectedLabels(boolean hideNonSelected) {
+        final VizModel model = getModel();
+        model.setHideNonSelectedLabels(hideNonSelected);
+    }
+
+    //    public void refreshWorkspace() {
 //        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 //        final Workspace currentWorkspace = pc.getCurrentWorkspace();
 //

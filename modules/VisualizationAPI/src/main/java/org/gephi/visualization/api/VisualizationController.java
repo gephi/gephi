@@ -43,6 +43,7 @@
 package org.gephi.visualization.api;
 
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -62,49 +63,41 @@ public interface VisualizationController {
 
     ScreenshotController getScreenshotController();
 
-    public void setZoom(float zoom);
+    void setZoom(float zoom);
 
-    public void setAutoSelectNeighbors(boolean autoSelectNeighbors);
+    void setAutoSelectNeighbors(boolean autoSelectNeighbors);
 
-    public void setBackgroundColor(Color color);
+    void setBackgroundColor(Color color);
 
-    public void setShowEdges(boolean showEdges);
+    void setShowEdges(boolean showEdges);
 
-    public void setEdgeHasUniColor(boolean edgeHasUniColor);
+    void setEdgeHasUniColor(boolean edgeHasUniColor);
 
-    public void setEdgeUniColor(Color edgeUniColor);
+    void setEdgeUniColor(Color edgeUniColor);
 
-    public void setEdgeSelectionColor(boolean edgeSelectionColor);
+    void setEdgeSelectionColor(boolean edgeSelectionColor);
 
-    public void setEdgeInSelectionColor(Color edgeInSelectionColor);
+    void setEdgeInSelectionColor(Color edgeInSelectionColor);
 
-    public void setEdgeOutSelectionColor(Color edgeOutSelectionColor);
+    void setEdgeOutSelectionColor(Color edgeOutSelectionColor);
 
-    public void setEdgeBothSelectionColor(Color edgeBothSelectionColor);
+    void setEdgeBothSelectionColor(Color edgeBothSelectionColor);
 
-    public void setEdgeScale(float edgeScale);
+    void setEdgeScale(float edgeScale);
 
-    public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
+    void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
 
-    public void centerOnGraph();
+    void setHideNonSelectedEdges(boolean hideNonSelectedEdges);
 
-    public void centerOnZero();
+    void centerOnGraph();
 
-    public void centerOn(float x, float y, float width, float height);
+    void centerOnZero();
 
-    public void centerOnNode(Node node);
+    void centerOn(float x, float y, float width, float height);
 
-    public void centerOnEdge(Edge edge);
+    void centerOnNode(Node node);
 
-
-
-    public Column[] getEdgeTextColumns();
-
-    public Column[] getNodeTextColumns();
-
-    public Column[] getEdgeTextColumns(Workspace workspace);
-
-    public Column[] getNodeTextColumns(Workspace workspace);
+    void centerOnEdge(Edge edge);
 
     void addPropertyChangeListener(VisualizationPropertyChangeListener listener);
 
@@ -115,7 +108,6 @@ public interface VisualizationController {
     void removeListener(VisualizationEventListener listener);
 
     // Selection
-
 
     void blockSelection(boolean block);
 
@@ -138,4 +130,36 @@ public interface VisualizationController {
     void selectNodes(Node[] nodes);
 
     void selectEdges(Edge[] edges);
+
+    // Text
+
+    void setShowEdgeLabels(boolean showEdgeLabels);
+
+    void setShowNodeLabels(boolean showNodeLabels);
+
+    void setNodeLabelFont(Font font);
+
+    void setNodeLabelColor(Color color);
+
+    void setNodeLabelSize(float size);
+
+    void setEdgeLabelFont(Font font);
+
+    void setEdgeLabelColor(Color color);
+
+    void setEdgeLabelSize(float size);
+
+    void setHideNonSelectedLabels(boolean hideNonSelected);
+
+    void setNodeLabelColorMode(LabelColorMode mode);
+
+    void setNodeLabelSizeMode(LabelSizeMode mode);
+
+    public Column[] getEdgeTextColumns();
+
+    public Column[] getNodeTextColumns();
+
+    public Column[] getEdgeTextColumns(Workspace workspace);
+
+    public Column[] getNodeTextColumns(Workspace workspace);
 }

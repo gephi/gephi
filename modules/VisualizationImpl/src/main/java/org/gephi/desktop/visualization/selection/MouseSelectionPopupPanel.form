@@ -19,7 +19,7 @@
     <Component class="javax.swing.JLabel" name="labelDiameter">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/tools/Bundle.properties" key="MouseSelectionPopupPanel.labelDiameter.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/desktop/visualization/selection/Bundle.properties" key="MouseSelectionPopupPanel.labelDiameter.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Constraints>
@@ -54,7 +54,7 @@
     <Component class="javax.swing.JCheckBox" name="proportionnalZoomCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/tools/Bundle.properties" key="MouseSelectionPopupPanel.proportionnalZoomCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/desktop/visualization/selection/Bundle.properties" key="MouseSelectionPopupPanel.proportionnalZoomCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>

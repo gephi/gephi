@@ -43,6 +43,7 @@
 package org.gephi.visualization;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -62,6 +63,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.visualization.api.LabelColorMode;
+import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.gephi.visualization.component.VizEngineGraphCanvasManager;
@@ -88,8 +91,19 @@ public class VizModel implements VisualisationModel {
     //Listener
     private GraphRenderingOptions renderingOptions;
 
-    //Settings dedicated to selection
-    // TODO: use these options in the engine selection:
+    // TODO: Delete after moved to the viz-engine
+    private boolean showNodeLabels = true;
+    private boolean showEdgeLabels = true;
+    private Font nodeLabelFont = new Font("Arial", Font.PLAIN, 12);
+    private Font edgeLabelFont = new Font("Arial", Font.PLAIN, 12);
+    private Color nodeLabelColor = Color.WHITE;
+    private Color edgeLabelColor = Color.WHITE;
+    private float nodeLabelSize = 12f;
+    private float edgeLabelSize = 12f;
+    private LabelColorMode nodeLabelColorMode = LabelColorMode.OBJECT;
+    private LabelSizeMode nodeLabelSizeMode = LabelSizeMode.FIXED;
+    private boolean hideNonSelectedLabels = false;
+    // TODO End
 
     // Selection
     private final SelectionModelImpl selectionModel;
@@ -196,6 +210,19 @@ public class VizModel implements VisualisationModel {
         setEdgeOutSelectionColor(config.getDefaultEdgeOutSelectedColor().getRGBComponents(null));
         setEdgeBothSelectionColor(config.getDefaultEdgeBothSelectedColor().getRGBComponents(null));
         setEdgeScale(config.getDefaultEdgeScale());
+
+        // Text
+        setShowNodeLabels(config.isDefaultShowNodeLabels());
+        setShowEdgeLabels(config.isDefaultShowEdgeLabels());
+        setNodeLabelColor(config.getDefaultNodeLabelColor());
+        setEdgeLabelColor(config.getDefaultEdgeLabelColor());
+        setNodeLabelColorMode(config.getDefaultNodeLabelColorMode());
+        setNodeLabelSizeMode(config.getDefaultNodeLabelSizeMode());
+        setNodeLabelFont(config.getDefaultNodeLabelFont());
+        setEdgeLabelFont(config.getDefaultEdgeLabelFont());
+        setNodeLabelSize(config.getDefaultNodeSizeFactor());
+        setEdgeLabelSize(config.getDefaultEdgeSizeFactor());
+        setHideNonSelectedLabels(config.isDefaultShowLabelOnSelectedOnly());
     }
 
     @Override
@@ -244,6 +271,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("backgroundColor", oldValue, backgroundColor);
     }
 
+    @Override
     public boolean isShowEdges() {
         return renderingOptions.isShowEdges();
     }
@@ -254,6 +282,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("showEdges", oldValue, showEdges);
     }
 
+    @Override
     public boolean isEdgeHasUniColor() {
         //TODO: Needs to be added to the engine?
         return false;
@@ -264,6 +293,7 @@ public class VizModel implements VisualisationModel {
 //        firePropertyChange("edgeHasUniColor", null, edgeHasUniColor);
     }
 
+    @Override
     public float[] getEdgeUniColor() {
         //TODO: Needs to be added to the engine?
         return new float[] {0f, 0f, 0f, 1f}; // Default black color
@@ -274,6 +304,7 @@ public class VizModel implements VisualisationModel {
 //        firePropertyChange("edgeUniColor", null, edgeUniColor);
     }
 
+    @Override
     public boolean isHideNonSelectedEdges() {
         return renderingOptions.isHideNonSelected();
     }
@@ -284,6 +315,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
     }
 
+    @Override
     public boolean isLightenNonSelectedAuto() {
         return renderingOptions.isLightenNonSelected();
     }
@@ -294,6 +326,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("lightenNonSelectedAuto", oldValue, lightenNonSelectedAuto);
     }
 
+    @Override
     public boolean isEdgeSelectionColor() {
         return renderingOptions.isEdgeSelectionColor();
     }
@@ -305,6 +338,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("edgeSelectionColor", oldValue, edgeSelectionColor);
     }
 
+    @Override
     public float[] getEdgeInSelectionColor() {
         return renderingOptions.getEdgeInSelectionColor().getRGBComponents(null);
     }
@@ -319,6 +353,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("edgeInSelectionColor", oldValue, edgeInSelectionColor);
     }
 
+    @Override
     public float[] getEdgeOutSelectionColor() {
         return renderingOptions.getEdgeOutSelectionColor().getRGBComponents(null);
     }
@@ -333,6 +368,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("edgeOutSelectionColor", oldValue, edgeOutSelectionColor);
     }
 
+    @Override
     public float[] getEdgeBothSelectionColor() {
         return renderingOptions.getEdgeBothSelectionColor().getRGBComponents(null);
     }
@@ -346,6 +382,7 @@ public class VizModel implements VisualisationModel {
         firePropertyChange("edgeBothSelectionColor", oldValue, edgeBothSelectionColor);
     }
 
+    @Override
     public float getEdgeScale() {
         return renderingOptions.getEdgeScale();
     }
@@ -354,6 +391,129 @@ public class VizModel implements VisualisationModel {
         float oldValue = renderingOptions.getEdgeScale();
         renderingOptions.setEdgeScale(edgeScale);
         firePropertyChange("edgeScale", oldValue, edgeScale);
+    }
+
+    // TEXT
+
+    @Override
+    public boolean isShowNodeLabels() {
+        return showNodeLabels;
+    }
+
+    public void setShowNodeLabels(boolean showNodeLabels) {
+        boolean oldValue = this.showNodeLabels;
+        this.showNodeLabels = showNodeLabels;
+        firePropertyChange("showNodeLabels", oldValue, showNodeLabels);
+    }
+
+    @Override
+    public boolean isShowEdgeLabels(){
+        return showEdgeLabels;
+    }
+
+    public void setShowEdgeLabels(boolean showEdgeLabels) {
+        boolean oldValue = this.showEdgeLabels;
+        this.showEdgeLabels = showEdgeLabels;
+        firePropertyChange("showEdgeLabels", oldValue, showEdgeLabels);
+    }
+
+    @Override
+    public Color getNodeLabelColor() {
+        return nodeLabelColor;
+    }
+
+    public void setNodeLabelColor(Color nodeLabelColor) {
+        Color oldValue = this.nodeLabelColor;
+        this.nodeLabelColor = nodeLabelColor;
+        firePropertyChange("nodeLabelColor", oldValue, nodeLabelColor);
+    }
+
+    @Override
+    public Color getEdgeLabelColor() {
+        return edgeLabelColor;
+    }
+
+    public void setEdgeLabelColor(Color edgeLabelColor) {
+        Color oldValue = this.edgeLabelColor;
+        this.edgeLabelColor = edgeLabelColor;
+        firePropertyChange("edgeLabelColor", oldValue, edgeLabelColor);
+    }
+
+    @Override
+    public LabelColorMode getNodeLabelColorMode() {
+        return nodeLabelColorMode;
+    }
+
+    public void setNodeLabelColorMode(LabelColorMode nodeLabelColorMode) {
+        LabelColorMode oldValue = this.nodeLabelColorMode;
+        this.nodeLabelColorMode = nodeLabelColorMode;
+        firePropertyChange("nodeLabelColorMode", oldValue, nodeLabelColorMode);
+    }
+
+    @Override
+    public LabelSizeMode getNodeLabelSizeMode() {
+        return nodeLabelSizeMode;
+    }
+
+    public void setNodeLabelSizeMode(LabelSizeMode nodeLabelSizeMode) {
+        LabelSizeMode oldValue = this.nodeLabelSizeMode;
+        this.nodeLabelSizeMode = nodeLabelSizeMode;
+        firePropertyChange("nodeLabelSizeMode", oldValue, nodeLabelSizeMode);
+    }
+
+    @Override
+    public Font getNodeLabelFont() {
+        return nodeLabelFont;
+    }
+
+    public void setNodeLabelFont(Font nodeLabelFont) {
+        Font oldValue = this.nodeLabelFont;
+        this.nodeLabelFont = nodeLabelFont;
+        firePropertyChange("nodeLabelFont", oldValue, nodeLabelFont);
+    }
+
+    @Override
+    public Font getEdgeLabelFont() {
+        return edgeLabelFont;
+    }
+
+    public void setEdgeLabelFont(Font edgeLabelFont) {
+        Font oldValue = this.edgeLabelFont;
+        this.edgeLabelFont = edgeLabelFont;
+        firePropertyChange("edgeLabelFont", oldValue, edgeLabelFont);
+    }
+
+    @Override
+    public float getNodeLabelSize() {
+        return nodeLabelSize;
+    }
+
+    public void setNodeLabelSize(float nodeLabelSize) {
+        float oldValue = this.nodeLabelSize;
+        this.nodeLabelSize = nodeLabelSize;
+        firePropertyChange("nodeLabelSize", oldValue, nodeLabelSize);
+    }
+
+    @Override
+    public float getEdgeLabelSize() {
+        return edgeLabelSize;
+    }
+
+    public void setEdgeLabelSize(float edgeLabelSize) {
+        float oldValue = this.edgeLabelSize;
+        this.edgeLabelSize = edgeLabelSize;
+        firePropertyChange("edgeLabelSize", oldValue, edgeLabelSize);
+    }
+
+    @Override
+    public boolean isHideNonSelectedLabels() {
+        return hideNonSelectedLabels;
+    }
+
+    public void setHideNonSelectedLabels(boolean hideNonSelectedLabels) {
+        boolean oldValue = this.hideNonSelectedLabels;
+        this.hideNonSelectedLabels = hideNonSelectedLabels;
+        firePropertyChange("hideNonSelectedLabels", oldValue, hideNonSelectedLabels);
     }
 
     //EVENTS
@@ -389,34 +549,42 @@ public class VizModel implements VisualisationModel {
         }
     }
 
+    @Override
     public int getMouseSelectionDiameter() {
         return selectionModel.getMouseSelectionDiameter();
     }
 
+    @Override
     public boolean isMouseSelectionZoomProportional() {
         return selectionModel.isMouseSelectionZoomProportional();
     }
 
+    @Override
     public boolean isBlocked() {
         return selectionModel.isBlocked();
     }
 
+    @Override
     public boolean isRectangleSelection() {
         return selectionModel.isRectangleSelection();
     }
 
+    @Override
     public boolean isDirectMouseSelection() {
         return selectionModel.isDirectMouseSelection();
     }
 
+    @Override
     public boolean isCustomSelection() {
         return selectionModel.isCustomSelection();
     }
 
+    @Override
     public boolean isSelectionEnabled() {
         return selectionModel.isSelectionEnabled();
     }
 
+    @Override
     public List<Node> getSelectedNodes() {
         return Collections.emptyList();
         // TODO : fix
@@ -425,6 +593,7 @@ public class VizModel implements VisualisationModel {
 //            .orElse(Collections.emptyList());
     }
 
+    @Override
     public List<Edge> getSelectedEdges() {
         return Collections.emptyList();
         // TODO : fix

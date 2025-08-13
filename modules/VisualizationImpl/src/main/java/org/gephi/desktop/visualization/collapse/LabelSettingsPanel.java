@@ -42,18 +42,35 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.visualization.collapse;
 
+import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JColorButton;
-import org.gephi.visualization.VizModel;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.LabelColorMode;
+import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.windows.WindowManager;
+
 /**
  * @author Mathieu Bastian
  */
-public class LabelSettingsPanel extends javax.swing.JPanel {
+public class LabelSettingsPanel extends javax.swing.JPanel implements VisualizationPropertyChangeListener {
 
+    private final VisualizationController vizController;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox colorModeCombo;
+    private javax.swing.JComboBox<LabelColorMode> colorModeCombo;
     private javax.swing.JButton configureLabelsButton;
     private javax.swing.JButton edgeColorButton;
     private javax.swing.JButton edgeFontButton;
@@ -76,159 +93,71 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JSlider nodeSizeSlider;
     private javax.swing.JCheckBox showEdgeLabelsCheckbox;
     private javax.swing.JCheckBox showNodeLabelsCheckbox;
-    private javax.swing.JComboBox sizeModeCombo;
+    private javax.swing.JComboBox<LabelSizeMode> sizeModeCombo;
     // End of variables declaration//GEN-END:variables
+
+
 
     /**
      * Creates new form LabelSettingsPanel
      */
     public LabelSettingsPanel() {
+        vizController = Lookup.getDefault().lookup(VizController.class);
+
         initComponents();
 
-        nodeFontButton.setFont(nodeFontButton.getFont().deriveFont(11));
-    }
+        showNodeLabelsCheckbox.addItemListener(e -> {
+            vizController.setShowNodeLabels(showNodeLabelsCheckbox.isSelected());
+            setEnable(true);
+        });
+        nodeFontButton.addActionListener(e -> {
+            VisualisationModel model = vizController.getModel();
+            Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeLabelFont());
+            if (font != null && font != model.getNodeLabelFont()) {
+                vizController.setNodeLabelFont(font);
+            }
+        });
+        ((JColorButton) nodeColorButton)
+            .addPropertyChangeListener(JColorButton.EVENT_COLOR,
+                evt -> vizController.setNodeLabelColor(((JColorButton) nodeColorButton).getColor()));
+        nodeSizeSlider.addChangeListener(e -> vizController.setNodeLabelSize(nodeSizeSlider.getValue() / 100f));
 
-    public void setup(VisualisationModel model) {
-//        TextModelImpl model = vizModel.getTextModel();
-//        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-//
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                if (evt.getPropertyName().equals("init")) {
-//                    refreshSharedConfig();
-//                }
-//            }
-//        });
-//
-//        //NodePanel
-//        showNodeLabelsCheckbox.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                boolean value = showNodeLabelsCheckbox.isSelected();
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (value != model.isShowNodeLabels()) {
-//                    model.setShowNodeLabels(value);
-//                    setEnable(true);
-//                }
-//            }
-//        });
-//        nodeFontButton.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
-//                if (font != null && font != model.getNodeFont()) {
-//                    model.setNodeFont(font);
-//                }
-//            }
-//        });
-//        ((JColorButton) nodeColorButton)
-//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-//
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (!model.getNodeColor().equals(((JColorButton) nodeColorButton).getColor())) {
-//                        model.setNodeColor(((JColorButton) nodeColorButton).getColor());
-//                    }
-//
-//                }
-//            });
-//        nodeSizeSlider.addChangeListener(new ChangeListener() {
-//
-//            @Override
-//            public void stateChanged(ChangeEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (model.getNodeSizeFactor() != nodeSizeSlider.getValue() / 100f) {
-//                    model.setNodeSizeFactor(nodeSizeSlider.getValue() / 100f);
-//                }
-//            }
-//        });
-//
-//        //EdgePanel
-//        showEdgeLabelsCheckbox.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                boolean value = showEdgeLabelsCheckbox.isSelected();
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (value != model.isShowEdgeLabels()) {
-//                    model.setShowEdgeLabels(value);
-//                    setEnable(true);
-//                }
-//            }
-//        });
-//        edgeFontButton.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getEdgeFont());
-//                if (font != null && font != model.getEdgeFont()) {
-//                    model.setEdgeFont(font);
-//                }
-//            }
-//        });
-//        ((JColorButton) edgeColorButton)
-//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-//
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    if (!model.getEdgeColor().equals(((JColorButton) edgeColorButton).getColor())) {
-//                        model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
-//                    }
-//                }
-//            });
-//        edgeSizeSlider.addChangeListener(new ChangeListener() {
-//
-//            @Override
-//            public void stateChanged(ChangeEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                model.setEdgeSizeFactor(edgeSizeSlider.getValue() / 100f);
-//            }
-//        });
-//
-//        //General
-//        final TextManager textManager = VizController.getInstance().getTextManager();
-//        final DefaultComboBoxModel sizeModeModel = new DefaultComboBoxModel(textManager.getSizeModes());
-//        sizeModeCombo.setModel(sizeModeModel);
-//        final DefaultComboBoxModel colorModeModel = new DefaultComboBoxModel(textManager.getColorModes());
-//        colorModeCombo.setModel(colorModeModel);
-//        sizeModeCombo.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (model.getSizeMode() != sizeModeModel.getSelectedItem()) {
-//                    model.setSizeMode((SizeMode) sizeModeModel.getSelectedItem());
-//                }
-//            }
-//        });
-//        colorModeCombo.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (model.getColorMode() != colorModeModel.getSelectedItem()) {
-//                    model.setColorMode((ColorMode) colorModeModel.getSelectedItem());
-//                }
-//            }
-//        });
-//        hideNonSelectedCheckbox.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                if (model.isSelectedOnly() != hideNonSelectedCheckbox.isSelected()) {
-//                    model.setSelectedOnly(hideNonSelectedCheckbox.isSelected());
-//                }
-//            }
-//        });
-//
-//        //Attributes
+        //EdgePanel
+        showEdgeLabelsCheckbox.addItemListener(e -> {
+            vizController.setShowEdgeLabels(showEdgeLabelsCheckbox.isSelected());
+            setEnable(true);
+        });
+        edgeFontButton.addActionListener(e -> {
+            VisualisationModel model = vizController.getModel();
+            Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getEdgeLabelFont());
+            if (font != null && font != model.getNodeLabelFont()) {
+                vizController.setEdgeLabelFont(font);
+            }
+        });
+        ((JColorButton) edgeColorButton)
+            .addPropertyChangeListener(JColorButton.EVENT_COLOR,
+                evt -> vizController.setEdgeLabelColor(((JColorButton) edgeColorButton).getColor()));
+        edgeSizeSlider.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                vizController.setEdgeLabelSize(edgeSizeSlider.getValue() / 100f);
+            }
+        });
+
+        //General
+        final DefaultComboBoxModel<LabelSizeMode> sizeModeModel = new DefaultComboBoxModel<>(LabelSizeMode.values());
+        sizeModeCombo.setModel(sizeModeModel);
+        final DefaultComboBoxModel<LabelColorMode> colorModeModel = new DefaultComboBoxModel<>(LabelColorMode.values());
+        colorModeCombo.setModel(colorModeModel);
+        sizeModeCombo.addActionListener(
+            e -> vizController.setNodeLabelSizeMode((LabelSizeMode) sizeModeModel.getSelectedItem()));
+        colorModeCombo.addActionListener(
+            e -> vizController.setNodeLabelColorMode((LabelColorMode) colorModeModel.getSelectedItem()));
+        hideNonSelectedCheckbox.addItemListener(
+            e -> vizController.setHideNonSelectedLabels(hideNonSelectedCheckbox.isSelected()));
+
+        // Attributes
 //        configureLabelsButton.addActionListener(new ActionListener() {
 //
 //            @Override
@@ -245,86 +174,146 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 //                }
 //            }
 //        });
-//
-//        //Evt
-//        model.addChangeListener(new ChangeListener() {
-//
-//            @Override
-//            public void stateChanged(ChangeEvent e) {
-//                refreshSharedConfig();
-//            }
-//        });
-//        refreshSharedConfig();
-        //TODO
+
+        // Renderers
+        sizeModeCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                                                          boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (value instanceof LabelSizeMode) {
+                    if (value == LabelSizeMode.FIXED) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "FixedSizeMode.name"));
+                    } else if (value == LabelSizeMode.SCALED) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "ScaledSizeMode.name"));
+                    } else if (value == LabelSizeMode.PROPORTIONAL) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class,
+                            "ProportionalSizeMode.name"));
+                    }
+                }
+                return this;
+            }
+        });
+        colorModeCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                                                          boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (value instanceof LabelColorMode) {
+                    if (value == LabelColorMode.UNIQUE) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "UniqueColorMode.name"));
+                    } else if (value == LabelColorMode.TEXT) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "TextColorMode.name"));
+                    } else if (value == LabelColorMode.OBJECT) {
+                        setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class,
+                            "ObjectColorMode.name"));
+                    }
+                }
+                return this;
+            }
+        });
+
     }
 
-    private void refreshSharedConfig() {
-//        VizModel vizModel = VizController.getInstance().getVizModel();
-//        setEnable(!vizModel.isDefaultModel());
-//        if (vizModel.isDefaultModel()) {
-//            return;
-//        }
-//        TextModelImpl model = vizModel.getTextModel();
-//
-//        //node
-//        nodeFontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
-//        ((JColorButton) nodeColorButton).setColor(model.getNodeColor());
-//        if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
-//            showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
-//        }
-//        if (nodeSizeSlider.getValue() / 100f != model.getNodeSizeFactor()) {
-//            nodeSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
-//        }
-//
-//        //edge
-//        edgeFontButton.setText(model.getEdgeFont().getFontName() + ", " + model.getEdgeFont().getSize());
-//        ((JColorButton) edgeColorButton).setColor(model.getEdgeColor());
-//        if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
-//            showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
-//        }
-//        if (edgeSizeSlider.getValue() / 100f != model.getEdgeSizeFactor()) {
-//            edgeSizeSlider.setValue((int) (model.getEdgeSizeFactor() * 100f));
-//        }
-//
-//        //general
-//        if (hideNonSelectedCheckbox.isSelected() != model.isSelectedOnly()) {
-//            hideNonSelectedCheckbox.setSelected(model.isSelectedOnly());
-//        }
-//        if (sizeModeCombo.getSelectedItem() != model.getSizeMode()) {
-//            sizeModeCombo.setSelectedItem(model.getSizeMode());
-//        }
-//        if (colorModeCombo.getSelectedItem() != model.getColorMode()) {
-//            colorModeCombo.setSelectedItem(model.getColorMode());
-//        }
-        //TODO
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
+        if(evt.getPropertyName().equals("showNodeLabels")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("showEdgeLabels")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("nodeLabelFont")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("nodeLabelColor")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("nodeLabelSize")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("edgeLabelFont")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("edgeLabelColor")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("edgeLabelSize")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("hideNonSelectedLabels")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("nodeLabelSizeMode")) {
+            refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("nodeLabelColorMode")) {
+            refreshSharedConfig(model);
+        }
+    }
+
+    public void setup(VisualisationModel model) {
+        if (model == null) {
+            setEnable(false);
+            return;
+        }
+        refreshSharedConfig(model);
+        setEnable(true);
+        vizController.addPropertyChangeListener(this);
+    }
+
+    public void unsetup(VisualisationModel model) {
+        vizController.removePropertyChangeListener(this);
+    }
+
+    private void refreshSharedConfig(VisualisationModel model) {
+        // Node
+        nodeFontButton.setText(model.getNodeLabelFont().getFontName() + ", " + model.getNodeLabelFont().getSize());
+        ((JColorButton) nodeColorButton).setColor(model.getNodeLabelColor());
+        if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
+            showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
+        }
+        if (nodeSizeSlider.getValue() / 100f != model.getNodeLabelSize()) {
+            nodeSizeSlider.setValue((int) (model.getNodeLabelSize() * 100f));
+        }
+
+        // Edge
+        edgeFontButton.setText(model.getEdgeLabelFont().getFontName() + ", " + model.getEdgeLabelFont().getSize());
+        ((JColorButton) edgeColorButton).setColor(model.getEdgeLabelColor());
+        if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
+            showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
+        }
+        if (edgeSizeSlider.getValue() / 100f != model.getEdgeLabelSize()) {
+            edgeSizeSlider.setValue((int) (model.getEdgeLabelSize() * 100f));
+        }
+
+        // General
+        if (hideNonSelectedCheckbox.isSelected() != model.isHideNonSelectedLabels()) {
+            hideNonSelectedCheckbox.setSelected(model.isHideNonSelectedLabels());
+        }
+        if (sizeModeCombo.getSelectedItem() != model.getNodeLabelSizeMode()) {
+            sizeModeCombo.setSelectedItem(model.getNodeLabelSizeMode());
+        }
+        if (colorModeCombo.getSelectedItem() != model.getNodeLabelColorMode()) {
+            colorModeCombo.setSelectedItem(model.getNodeLabelColorMode());
+        }
     }
 
     public void setEnable(boolean enable) {
-//        showEdgeLabelsCheckbox.setEnabled(enable);
-//        showNodeLabelsCheckbox.setEnabled(enable);
-//        sizeModeCombo.setEnabled(enable);
-//        colorModeCombo.setEnabled(enable);
-//        hideNonSelectedCheckbox.setEnabled(enable);
-//        labelColorMode.setEnabled(enable);
-//        labelSizeMode.setEnabled(enable);
-//        configureLabelsButton.setEnabled(enable);
-//
-//        TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//        boolean edgeValue = model.isShowEdgeLabels();
-//        edgeFontButton.setEnabled(enable && edgeValue);
-//        edgeColorButton.setEnabled(enable && edgeValue);
-//        edgeSizeSlider.setEnabled(enable && edgeValue);
-//        labelEdgeColor.setEnabled(enable && edgeValue);
-//        labelEdgeFont.setEnabled(enable && edgeValue);
-//        labelEdgeSize.setEnabled(enable && edgeValue);
-//        boolean nodeValue = model.isShowNodeLabels();
-//        nodeFontButton.setEnabled(enable && nodeValue);
-//        nodeColorButton.setEnabled(enable && nodeValue);
-//        nodeSizeSlider.setEnabled(enable && nodeValue);
-//        labelNodeColor.setEnabled(enable && nodeValue);
-//        labelNodeFont.setEnabled(enable && nodeValue);
-//        labelNodeSize.setEnabled(enable && nodeValue);
-        //TODO
+        showEdgeLabelsCheckbox.setEnabled(enable);
+        showNodeLabelsCheckbox.setEnabled(enable);
+        sizeModeCombo.setEnabled(enable);
+        colorModeCombo.setEnabled(enable);
+        hideNonSelectedCheckbox.setEnabled(enable);
+        labelColorMode.setEnabled(enable);
+        labelSizeMode.setEnabled(enable);
+        configureLabelsButton.setEnabled(enable);
+
+        boolean edgeValue =showEdgeLabelsCheckbox.isSelected();
+        edgeFontButton.setEnabled(enable && edgeValue);
+        edgeColorButton.setEnabled(enable && edgeValue);
+        edgeSizeSlider.setEnabled(enable && edgeValue);
+        labelEdgeColor.setEnabled(enable && edgeValue);
+        labelEdgeFont.setEnabled(enable && edgeValue);
+        labelEdgeSize.setEnabled(enable && edgeValue);
+        boolean nodeValue = showNodeLabelsCheckbox.isSelected();
+        nodeFontButton.setEnabled(enable && nodeValue);
+        nodeColorButton.setEnabled(enable && nodeValue);
+        nodeSizeSlider.setEnabled(enable && nodeValue);
+        labelNodeColor.setEnabled(enable && nodeValue);
+        labelNodeFont.setEnabled(enable && nodeValue);
+        labelNodeSize.setEnabled(enable && nodeValue);
     }
 
     /**

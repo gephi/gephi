@@ -81,10 +81,10 @@ import org.openide.windows.TopComponent;
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
 
     private final VizController controller;
-    private SelectionToolbar selectionToolbar;
-    private ActionsToolbar actionsToolbar;
+    private final SelectionToolbar selectionToolbar;
+    private final ActionsToolbar actionsToolbar;
     private JComponent toolbar;
-    private JComponent propertiesBar;
+    private final PropertiesBar propertiesBar;
     private final CollapseGroup[] groups;
     // Variables declaration - do not modify                     
     private CollapsePanel collapsePanel;
@@ -103,6 +103,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         // Create toolbars
         selectionToolbar = new SelectionToolbar();
         actionsToolbar = new ActionsToolbar();
+        propertiesBar = new PropertiesBar();
 
         listenToWorkspaceEvents();
 
@@ -241,6 +242,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
         westPanel.add(selectionToolbar, BorderLayout.NORTH);
         westPanel.add(actionsToolbar, BorderLayout.SOUTH);
+        add(propertiesBar, BorderLayout.NORTH);
 
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
@@ -248,9 +250,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             if (toolbar != null) {
                 westPanel.add(toolbar, BorderLayout.CENTER);
             }
-            propertiesBar = tc.getPropertiesBar();
-            if (propertiesBar != null) {
-                add(propertiesBar, BorderLayout.NORTH);
+            JComponent toolsPropertiesBar = tc.getPropertiesBar();
+            if (toolsPropertiesBar != null) {
+                propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
             }
         } else {
             toolbar = new JPanel();

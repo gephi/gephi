@@ -28,24 +28,15 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
         showLabelsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                    vizModel.getTextModel().setShowNodeLabels(showLabelsButton.isSelected());
+                vizController.setShowNodeLabels(showLabelsButton.isSelected());
             }
         });
-//            vizModel.getTextModel().addChangeListener(new ChangeListener() {
-//                @Override
-//                public void stateChanged(ChangeEvent e) {
-//                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//                    if (showLabelsButton.isSelected() != textModel.isShowNodeLabels()) {
-//                        showLabelsButton.setSelected(textModel.isShowNodeLabels());
-//                    }
-//                }
-//            });
     }
 
     @Override
     public void setup(VisualisationModel vizModel) {
         showLabelsButton.setEnabled(true);
-//        showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
+        showLabelsButton.setSelected(vizModel.isShowNodeLabels());
 
         vizController.addPropertyChangeListener(this);
     }
@@ -62,7 +53,9 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
     @Override
     public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
-        // TODO
+        if ("showNodeLabels".equals(evt.getPropertyName())) {
+            showLabelsButton.setSelected((Boolean) evt.getNewValue());
+        }
     }
 
     @Override

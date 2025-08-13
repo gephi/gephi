@@ -46,6 +46,8 @@ import java.awt.Color;
 import java.awt.Font;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.ui.utils.FontUtils;
+import org.gephi.visualization.api.LabelColorMode;
+import org.gephi.visualization.api.LabelSizeMode;
 import org.openide.util.NbPreferences;
 
 /**
@@ -101,6 +103,10 @@ public class VizConfig {
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
     public static final String DISABLE_LOD = "VizConfig.disableLOD";
+    public static final String EDGE_SIZE_FACTOR = "VizConfig.edgeSizeFactor";
+    public static final String NODE_SIZE_FACTOR = "VizConfig.nodeSizeFactor";
+    public static final String NODE_LABEL_SIZE_MODE = "VizConfig.nodeLabelSizeMode";
+    public static final String NODE_LABEL_COLOR_MODE = "VizConfig.nodeLabelColorMode";
     //Default values
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
     public static final Color DEFAULT_DARK_BACKGROUND_COLOR = Color.BLACK;
@@ -151,6 +157,10 @@ public class VizConfig {
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final float DEFAULT_EDGE_SCALE = 2f;
+    public static final float DEFAULT_NODE_SIZE_FACTOR = 0.5f;
+    public static final float DEFAULT_EDGE_SIZE_FACTOR = 0.5f;
+    public static final String DEFAULT_NODE_LABEL_SIZE_MODE = LabelSizeMode.SCALED.name();
+    public static final String DEFAULT_NODE_LABEL_COLOR_MODE = LabelColorMode.TEXT.name();
 
     //Default config - loaded in the VizModel
     protected Color defaultBackgroundColor = ColorUtils.decode(
@@ -199,6 +209,14 @@ public class VizConfig {
         .get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
     protected float defaultEdgeScale =
         NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
+    protected float getDefaultNodeSizeFactor =
+        NbPreferences.forModule(VizConfig.class).getFloat(NODE_SIZE_FACTOR, DEFAULT_NODE_SIZE_FACTOR);
+    protected float getDefaultEdgeSizeFactor =
+        NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SIZE_FACTOR, DEFAULT_EDGE_SIZE_FACTOR);
+    protected LabelSizeMode defaultNodeLabelSizeMode =
+        LabelSizeMode.valueOf(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_SIZE_MODE, DEFAULT_NODE_LABEL_SIZE_MODE));
+    protected LabelColorMode defaultNodeLabelColorMode =
+        LabelColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR_MODE, DEFAULT_NODE_LABEL_COLOR_MODE));
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean blending = NbPreferences.forModule(VizConfig.class).getBoolean(BLENDING, DEFAULT_BLENDING);
@@ -363,6 +381,19 @@ public class VizConfig {
 
     public Color getDefaultEdgeOutSelectedColor() {
         return defaultEdgeOutSelectedColor;
+    }
+
+    public float getDefaultNodeSizeFactor() {
+        return getDefaultNodeSizeFactor;
+    }
+    public float getDefaultEdgeSizeFactor() {
+        return getDefaultEdgeSizeFactor;
+    }
+    public LabelSizeMode getDefaultNodeLabelSizeMode() {
+        return defaultNodeLabelSizeMode;
+    }
+    public LabelColorMode getDefaultNodeLabelColorMode() {
+        return defaultNodeLabelColorMode;
     }
 
     public boolean isLabelAntialiased() {
