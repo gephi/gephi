@@ -14,8 +14,9 @@ import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class SelectionPropertiesToolbar extends javax.swing.JPanel {
+public class SelectionPropertiesToolbar extends javax.swing.JPanel implements VisualizationPropertyChangeListener {
 
+    private final VisualizationController vizController;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXHyperlink configureLink;
     private javax.swing.JSeparator endSeparator;
@@ -26,29 +27,31 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel {
      * Creates new form SelectionBar
      */
     public SelectionPropertiesToolbar() {
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
         initComponents();
-        VisualizationController visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
-        visualizationController.addPropertyChangeListener(new VisualizationPropertyChangeListener() {
-
-            @Override
-            public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("selection")) {
-                    refresh();
-                }
+        configureLink.addActionListener(e -> {
+            if (statusLabel.isEnabled()) {
+                JPopupMenu menu = createPopup();
+                menu.show(statusLabel, 0, statusLabel.getHeight());
             }
         });
-        refresh();
+        configureLink.setVisible(false);
+    }
 
-        configureLink.addActionListener(new ActionListener() {
+    @Override
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("selection")) {
+            refresh(model);
+        }
+    }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (statusLabel.isEnabled()) {
-                    JPopupMenu menu = createPopup();
-                    menu.show(statusLabel, 0, statusLabel.getHeight());
-                }
-            }
-        });
+    public void setup(VisualisationModel vizModel) {
+        vizController.addPropertyChangeListener(this);
+        refresh(vizModel);
+    }
+
+    public void unsetup() {
+        vizController.removePropertyChangeListener(this);
     }
 
     public JPopupMenu createPopup() {
@@ -58,13 +61,9 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel {
         final MouseSelectionPopupPanel popupPanel = new MouseSelectionPopupPanel();
         popupPanel.setDiameter(model.getMouseSelectionDiameter());
         popupPanel.setProportionnalToZoom(model.isMouseSelectionZoomProportional());
-        popupPanel.setChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                controller.setMouseSelectionDiameter(popupPanel.getDiameter());
-                controller.setMouseSelectionZoomProportional(popupPanel.isProportionnalToZoom());
-            }
+        popupPanel.setChangeListener(e -> {
+            controller.setMouseSelectionDiameter(popupPanel.getDiameter());
+            controller.setMouseSelectionZoomProportional(popupPanel.isProportionnalToZoom());
         });
 
         JPopupMenu menu = new JPopupMenu();
@@ -72,31 +71,28 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel {
         return menu;
     }
 
-    public void refresh() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
-                VisualisationModel model = controller.getModel();
-                if (model == null) {
-                    return;
-                }
-                if (model.isSelectionEnabled()) {
-                    if (model.isRectangleSelection()) {
-                        configureLink.setVisible(false);
-                        statusLabel.setText(
-                            NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.rectangleSelection"));
-                    } else if (model.isDirectMouseSelection()) {
-                        configureLink.setVisible(true);
-                        statusLabel.setText(
-                            NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.mouseSelection"));
-                    }
-                } else {
+    public void refresh(VisualisationModel vizModel) {
+        SwingUtilities.invokeLater(() -> {
+            if (vizModel == null) {
+                configureLink.setVisible(false);
+                statusLabel
+                    .setText(NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
+                return;
+            }
+            if (vizModel.isSelectionEnabled()) {
+                if (vizModel.isRectangleSelection()) {
                     configureLink.setVisible(false);
-                    statusLabel
-                        .setText(NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
+                    statusLabel.setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.rectangleSelection"));
+                } else if (vizModel.isDirectMouseSelection()) {
+                    configureLink.setVisible(true);
+                    statusLabel.setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.mouseSelection"));
                 }
+            } else {
+                configureLink.setVisible(false);
+                statusLabel
+                    .setText(NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
             }
         });
 

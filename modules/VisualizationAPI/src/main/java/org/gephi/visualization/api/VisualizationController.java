@@ -117,8 +117,6 @@ public interface VisualizationController {
 
     void setDirectMouseSelection();
 
-    void setDraggingMouseSelection();
-
     void setCustomSelection();
 
     void setMouseSelectionDiameter(int diameter);

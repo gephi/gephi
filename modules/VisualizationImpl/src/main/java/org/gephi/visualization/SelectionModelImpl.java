@@ -78,6 +78,10 @@ public class SelectionModelImpl {
         this.selectionEnable = selectionEnable;
     }
 
+    protected void setRectangleSelection(boolean rectangleSelection) {
+        this.rectangleSelection = rectangleSelection;
+    }
+
     protected void setCustomSelection(boolean customSelection) {
         this.customSelection = customSelection;
     }

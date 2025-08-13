@@ -552,6 +552,9 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setSelectionEnable(false);
+        model.getSelectionModel().setRectangleSelection(false);
+        model.getSelectionModel().setCustomSelection(false);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.NO_SELECTION);
         model.getSelectionModel().setBlocked(false);
         model.fireSelectionChange();
     }
@@ -583,6 +586,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setRectangleSelection(true);
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
         model.getSelectionModel().setBlocked(false);
@@ -596,19 +600,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setSelectionEnable(true);
-        model.getSelectionModel().setCustomSelection(false);
-        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-        model.getSelectionModel().setBlocked(false);
-        model.fireSelectionChange();
-    }
-
-    @Override
-    public synchronized void setDraggingMouseSelection() {
-        VizModel model = getModel();
-        if (model == null) {
-            return;
-        }
-        model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         model.getSelectionModel().setBlocked(false);
@@ -622,6 +614,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setSelectionEnable(false);
+        model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(true);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
         model.getSelectionModel().setBlocked(true);

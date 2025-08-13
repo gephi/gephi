@@ -58,6 +58,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import org.gephi.desktop.visualization.selection.SelectionPropertiesToolbar;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.visualization.api.VisualisationModel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -78,6 +79,14 @@ public class PropertiesBar extends JPanel {
         leftPanel.add(selectionBar = new SelectionPropertiesToolbar(), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.WEST);
         setOpaque(true);
+    }
+
+    public void setup(VisualisationModel vizModel) {
+        selectionBar.setup(vizModel);
+    }
+
+    public void unsetup() {
+        selectionBar.unsetup();
     }
 
     public void addToolsPropertiesBar(JComponent component) {

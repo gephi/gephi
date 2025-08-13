@@ -209,12 +209,20 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             return;
         }
         VizModel vizModel = controller.getModel(workspace);
-        vizModel.destroy(this);
 
         // Unsetup collapse groups
         for(CollapseGroup group : groups) {
             group.unsetup(vizModel);
         }
+
+        // Selection Bar
+        selectionToolbar.unsetup(vizModel);
+
+        // Properties Bar
+        propertiesBar.unsetup();
+
+        // Destroy
+        vizModel.destroy(this);
     }
 
     private void activateWorkspaceVizEngine(final Workspace workspace) {
@@ -228,6 +236,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         for(CollapseGroup group : groups) {
             group.setup(vizModel);
         }
+
+        // Selection Bar
+        selectionToolbar.setup(vizModel);
+
+        // Properties Bar
+        propertiesBar.setup(vizModel);
     }
 
     private void initKeyEventContextMenuActionMappings() {
