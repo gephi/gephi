@@ -583,11 +583,6 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
-    public boolean isBlocked() {
-        return selectionModel.isBlocked();
-    }
-
-    @Override
     public boolean isRectangleSelection() {
         return selectionModel.isRectangleSelection();
     }
@@ -608,21 +603,18 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
+    public boolean isSingleNodeSelection() {
+        return selectionModel.isSingleNodeSelection();
+    }
+
+    @Override
     public List<Node> getSelectedNodes() {
-        return Collections.emptyList();
-        // TODO : fix
-//        return currentEngineSelectionModel()
-//            .map(selection -> (List<Node>) new ArrayList<>(selection.getSelectedNodes()))
-//            .orElse(Collections.emptyList());
+        return selectionModel.getSelectedNodes();
     }
 
     @Override
     public List<Edge> getSelectedEdges() {
-        return Collections.emptyList();
-        // TODO : fix
-//        return currentEngineSelectionModel()
-//            .map(selection -> (List<Edge>) new ArrayList<>(selection.getSelectedEdges()))
-//            .orElse(Collections.emptyList());
+        return selectionModel.getSelectedEdges();
     }
 
     //XML

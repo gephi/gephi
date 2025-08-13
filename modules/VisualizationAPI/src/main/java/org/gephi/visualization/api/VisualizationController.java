@@ -109,13 +109,11 @@ public interface VisualizationController {
 
     // Selection
 
-    void blockSelection(boolean block);
-
     void disableSelection();
 
     void setRectangleSelection();
 
-    void setDirectMouseSelection();
+    void setDirectMouseSelection(boolean singleNodeSelection);
 
     void setCustomSelection();
 

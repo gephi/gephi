@@ -76,23 +76,37 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel implements Vi
             if (vizModel == null) {
                 configureLink.setVisible(false);
                 statusLabel
-                    .setText(NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
+                    .setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
                 return;
             }
             if (vizModel.isSelectionEnabled()) {
-                if (vizModel.isRectangleSelection()) {
+                if (vizModel.isCustomSelection()) {
                     configureLink.setVisible(false);
                     statusLabel.setText(
-                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.rectangleSelection"));
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class,
+                            "SelectionBar.statusLabel.customSelection"));
+                } else if (vizModel.isSingleNodeSelection()) {
+                    configureLink.setVisible(false);
+                    statusLabel.setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class,
+                            "SelectionBar.statusLabel.singleNodeSelection"));
+                } else if (vizModel.isRectangleSelection()) {
+                    configureLink.setVisible(false);
+                    statusLabel.setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class,
+                            "SelectionBar.statusLabel.rectangleSelection"));
                 } else if (vizModel.isDirectMouseSelection()) {
                     configureLink.setVisible(true);
                     statusLabel.setText(
-                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.mouseSelection"));
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class,
+                            "SelectionBar.statusLabel.mouseSelection"));
                 }
             } else {
                 configureLink.setVisible(false);
                 statusLabel
-                    .setText(NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
+                    .setText(
+                        NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.statusLabel.noSelection"));
             }
         });
 
@@ -125,7 +139,8 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel implements Vi
         add(statusLabel, gridBagConstraints);
 
         configureLink.setText(
-            org.openide.util.NbBundle.getMessage(SelectionPropertiesToolbar.class, "SelectionBar.configureLink.text")); // NOI18N
+            org.openide.util.NbBundle.getMessage(SelectionPropertiesToolbar.class,
+                "SelectionBar.configureLink.text")); // NOI18N
         configureLink.setDefaultCapable(false);
         configureLink.setFocusable(false);
         configureLink.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N

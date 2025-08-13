@@ -134,6 +134,7 @@ public class ShortestPath implements Tool {
                     double distance;
                     if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
                         targetNode.setColor(color);
+                        visualizationController.setCustomSelection();
                         visualizationController.selectNodes(new Node[]{targetNode});
                         Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
                         Node predecessor = algorithm.getPredecessor(targetNode);

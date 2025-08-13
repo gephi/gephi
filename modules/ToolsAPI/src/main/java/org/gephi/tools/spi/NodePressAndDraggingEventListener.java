@@ -45,7 +45,7 @@ package org.gephi.tools.spi;
 import org.gephi.graph.api.Node;
 
 /**
- * Tool mouse press and dragging listener. Listen to a single node press on the
+ * Tool mouse press and dragging listener. Listen to a single mouse press on the
  * visualization window and trigger selected nodes, then triggers continuously
  * the recorded drag displacement.
  * <p>

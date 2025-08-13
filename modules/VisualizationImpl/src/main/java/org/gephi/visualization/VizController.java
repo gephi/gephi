@@ -340,99 +340,6 @@ public class VizController implements VisualizationController, Controller<VizMod
         return currentModel != null && currentModel.isReady();
     }
 
-
-//    @Override
-//    public void selectNodes(Node[] nodes) {
-//        if (selectionManager != null && vizModelReady()) {
-//            selectionManager.selectNodes(nodes, currentModel);
-//        }
-//    }
-//
-//    @Override
-//    public void selectEdges(Edge[] edges) {
-//        if (selectionManager != null && vizModelReady()) {
-//            selectionManager.selectEdges(edges, currentModel);
-//        }
-//    }
-//
-//    @Override
-//    public List<Node> getSelectedNodes() {
-//        if (selectionManager != null) {
-//            return selectionManager.getSelectedNodes();
-//        }
-//        return Collections.emptyList();
-//    }
-//
-//    @Override
-//    public List<Edge> getSelectedEdges() {
-//        if (selectionManager != null) {
-//            return selectionManager.getSelectedEdges();
-//        }
-//        return Collections.emptyList();
-//    }
-//
-//    public void blockSelection(boolean block) {
-//        if (vizConfig.isRectangleSelection()) {
-//            this.blocked = block;
-//            vizConfig.setSelectionEnable(!block);
-//            fireChangeEvent();
-//        } else {
-//            setDirectMouseSelection();
-//        }
-//    }
-//
-//    public void disableSelection() {
-//        vizConfig.setSelectionEnable(false);
-//        this.blocked = false;
-//        fireChangeEvent();
-//    }
-//
-//    public void setRectangleSelection() {
-//        vizConfig.setCustomSelection(false);
-//        vizConfig.setSelectionEnable(true);
-//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
-//        this.blocked = false;
-//        fireChangeEvent();
-//    }
-//
-//    public void setDirectMouseSelection() {
-//        vizConfig.setSelectionEnable(true);
-//        vizConfig.setCustomSelection(false);
-//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-//        this.blocked = false;
-//        fireChangeEvent();
-//    }
-//
-//    public void setDraggingMouseSelection() {
-//        vizConfig.setSelectionEnable(true);
-//        vizConfig.setCustomSelection(false);
-//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-//        this.blocked = false;
-//        fireChangeEvent();
-//    }
-//
-//    public void setCustomSelection() {
-//        vizConfig.setSelectionEnable(false);
-//        vizConfig.setCustomSelection(true);
-//        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-//        this.blocked = true;
-//        fireChangeEvent();
-//    }
-//
-//    public void resetSelection(VizModel vizModel) {
-//        if (isCustomSelection()) {
-//            currentEngineSelectionModel()
-//                .ifPresent(GraphSelection::clearSelection);
-//
-//            vizModel.setAutoSelectNeighbors(wasAutoSelectNeighbors);
-//            if (wasRectangleSelection) {
-//                setRectangleSelection();
-//            } else if (wasDirectSelection) {
-//                setDirectMouseSelection();
-//            }
-//        }
-//    }
-
     public StandardVizEventManager getVizEventManager() {
         return vizEventManager;
     }
@@ -490,61 +397,6 @@ public class VizController implements VisualizationController, Controller<VizMod
         );
     }
 
-    public void selectNodes(Node[] nodes, VizModel vizModel) {
-        // TODO fix
-//        if (!isCustomSelection()) {
-//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
-//            wasDirectSelection = isDirectMouseSelection();
-//            wasRectangleSelection = isRectangleSelection();
-//            vizModel.setAutoSelectNeighbors(false);
-//            setCustomSelection();
-//        }
-//
-//        currentEngineSelectionModel()
-//            .ifPresent(selection -> {
-//                if (nodes == null) {
-//                    selection.clearSelectedNodes();
-//                } else {
-//                    selection.setSelectedNodes(Arrays.asList(nodes));
-//                }
-//            });
-    }
-
-    public void selectEdges(Edge[] edges, VizModel vizModel) {
-        // TODO fix
-//        if (!isCustomSelection()) {
-//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
-//            wasDirectSelection = isDirectMouseSelection();
-//            wasRectangleSelection = isRectangleSelection();
-//            vizModel.setAutoSelectNeighbors(false);
-//            setCustomSelection();
-//        }
-//
-//        currentEngineSelectionModel()
-//            .ifPresent(selection -> {
-//                if (edges == null) {
-//                    selection.clearSelectedEdges();
-//                } else {
-//                    selection.setSelectedEdges(Arrays.asList(edges));
-//                }
-//            });
-    }
-
-    @Override
-    public synchronized void blockSelection(boolean block) {
-        VizModel model = getModel();
-        if (model == null) {
-            return;
-        }
-        if (model.isRectangleSelection()) {
-            model.getSelectionModel().setBlocked(block);
-            model.getSelectionModel().setSelectionEnable(!block);
-        } else {
-            setDirectMouseSelection();
-        }
-        model.fireSelectionChange();
-    }
-
     @Override
     public synchronized void disableSelection() {
         VizModel model = getModel();
@@ -555,7 +407,6 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.NO_SELECTION);
-        model.getSelectionModel().setBlocked(false);
         model.fireSelectionChange();
     }
 
@@ -589,12 +440,11 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setRectangleSelection(true);
         model.getSelectionModel().setCustomSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
-        model.getSelectionModel().setBlocked(false);
         model.fireSelectionChange();
     }
 
     @Override
-    public synchronized void setDirectMouseSelection() {
+    public synchronized void setDirectMouseSelection(boolean singleNodeSelection) {
         VizModel model = getModel();
         if (model == null) {
             return;
@@ -602,8 +452,12 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setSelectionEnable(true);
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
-        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-        model.getSelectionModel().setBlocked(false);
+        model.getSelectionModel().setSingleNodeSelection(singleNodeSelection);
+        if(singleNodeSelection) {
+            setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
+        } else {
+            setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        }
         model.fireSelectionChange();
     }
 
@@ -613,11 +467,9 @@ public class VizController implements VisualizationController, Controller<VizMod
         if (model == null) {
             return;
         }
-        model.getSelectionModel().setSelectionEnable(false);
-        model.getSelectionModel().setRectangleSelection(false);
+        model.getSelectionModel().setSelectionEnable(true);
         model.getSelectionModel().setCustomSelection(true);
-        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
-        model.getSelectionModel().setBlocked(true);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.CUSTOM_SELECTION);
         model.fireSelectionChange();
     }
 
@@ -627,17 +479,20 @@ public class VizController implements VisualizationController, Controller<VizMod
         if (model == null) {
             return;
         }
-        if (model.isCustomSelection()) {
+        if (model.getSelectionModel().isCustomSelection()) {
             model.getSelectionModel().currentEngineSelectionModel()
                 .ifPresent(GraphSelection::clearSelection);
-
-            // TODO, it was enabled
-//            vizModel.setAutoSelectNeighbors(wasAutoSelectNeighbors);
-            if (model.getSelectionModel().wasRectangleSelection) {
-                setRectangleSelection();
-            } else if (model.getSelectionModel().wasDirectSelection) {
-                setDirectMouseSelection();
+            model.getSelectionModel().setCustomSelection(false);
+            if(model.getSelectionModel().isRectangleSelection()) {
+                setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
+            } else if (model.getSelectionModel().isSingleNodeSelection()) {
+                setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
+            } else if (model.getSelectionModel().isDirectMouseSelection()) {
+                setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+            } else {
+                setEngineSelectionMode(GraphSelection.GraphSelectionMode.NO_SELECTION);
             }
+            model.fireSelectionChange();
         }
     }
 
@@ -648,19 +503,15 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         if (!model.isCustomSelection()) {
-//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
-//            wasDirectSelection = isDirectMouseSelection();
-//            wasRectangleSelection = isRectangleSelection();
-//            vizModel.setAutoSelectNeighbors(false);
             setCustomSelection();
         }
 
         model.getSelectionModel().currentEngineSelectionModel()
             .ifPresent(selection -> {
-                if (nodes == null) {
+                if (nodes == null || nodes.length == 0) {
                     selection.clearSelectedNodes();
                 } else {
-                    selection.setSelectedNodes(Arrays.asList(nodes));
+                    selection.addSelectedNodes(Arrays.asList(nodes), null);
                 }
             });
     }
@@ -672,10 +523,6 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         if (!model.isCustomSelection()) {
-//            wasAutoSelectNeighbors = vizModel.isAutoSelectNeighbors();
-//            wasDirectSelection = isDirectMouseSelection();
-//            wasRectangleSelection = isRectangleSelection();
-//            vizModel.setAutoSelectNeighbors(false);
             setCustomSelection();
         }
 
@@ -684,7 +531,7 @@ public class VizController implements VisualizationController, Controller<VizMod
                 if (edges == null) {
                     selection.clearSelectedEdges();
                 } else {
-                    selection.setSelectedEdges(Arrays.asList(edges));
+                    selection.addSelectedEdges(Arrays.asList(edges));
                 }
             });
     }

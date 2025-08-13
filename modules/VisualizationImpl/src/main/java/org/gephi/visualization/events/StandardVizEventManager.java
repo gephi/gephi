@@ -56,7 +56,6 @@ import java.util.logging.Logger;
 import com.jogamp.newt.event.MouseEvent;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VisualizationEvent;
 import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.apiimpl.VizEvent;

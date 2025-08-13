@@ -19,11 +19,7 @@ public class SelectionModelImpl {
     private boolean rectangleSelection = false;
     private boolean selectionEnable = true;
     private boolean customSelection = false;
-    private boolean blocked = false;
-    // TODO: Check if needed
-    protected boolean wasAutoSelectNeighbors = false;
-    protected boolean wasRectangleSelection = false;
-    protected boolean wasDirectSelection = false;
+    private boolean singleNodeSelection = false;
 
     public SelectionModelImpl(VizModel visualisationModel) {
         this.visualisationModel = visualisationModel;
@@ -66,14 +62,6 @@ public class SelectionModelImpl {
         this.mouseSelectionZoomProportional = mouseSelectionZoomProportional;
     }
 
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    protected void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-
     protected void setSelectionEnable(boolean selectionEnable) {
         this.selectionEnable = selectionEnable;
     }
@@ -86,6 +74,10 @@ public class SelectionModelImpl {
         this.customSelection = customSelection;
     }
 
+    public void setSingleNodeSelection(boolean singleNodeSelection) {
+        this.singleNodeSelection = singleNodeSelection;
+    }
+
     public boolean isRectangleSelection() {
         return selectionEnable && rectangleSelection;
     }
@@ -95,7 +87,11 @@ public class SelectionModelImpl {
     }
 
     public boolean isCustomSelection() {
-        return customSelection;
+        return selectionEnable && customSelection;
+    }
+
+    public boolean isSingleNodeSelection() {
+        return singleNodeSelection;
     }
 
     public boolean isSelectionEnabled() {

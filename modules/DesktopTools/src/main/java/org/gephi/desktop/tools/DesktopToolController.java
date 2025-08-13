@@ -134,7 +134,7 @@ public class DesktopToolController implements ToolController {
                 break;
             case SELECTION:
             case SELECTION_AND_DRAGGING:
-                visualizationController.blockSelection(true);
+                visualizationController.setDirectMouseSelection(true);
                 break;
         }
         currentTool = tool;

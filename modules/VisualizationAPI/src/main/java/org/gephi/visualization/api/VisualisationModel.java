@@ -48,8 +48,6 @@ public interface VisualisationModel extends Model {
 
     boolean isMouseSelectionZoomProportional();
 
-    boolean isBlocked();
-
     boolean isRectangleSelection();
 
     boolean isDirectMouseSelection();
@@ -57,6 +55,8 @@ public interface VisualisationModel extends Model {
     boolean isCustomSelection();
 
     boolean isSelectionEnabled();
+
+    boolean isSingleNodeSelection();
 
     // Text
 
