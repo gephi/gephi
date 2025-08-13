@@ -155,11 +155,7 @@ public interface VisualizationController {
 
     void setNodeLabelSizeMode(LabelSizeMode mode);
 
-    public Column[] getEdgeTextColumns();
+    void setNodeLabelColumns(Column[] columns);
 
-    public Column[] getNodeTextColumns();
-
-    public Column[] getEdgeTextColumns(Workspace workspace);
-
-    public Column[] getNodeTextColumns(Workspace workspace);
+    void setEdgeLabelColumns(Column[] columns);
 }

@@ -20,6 +20,9 @@ import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.gephi.visualization.text.FixedSizeMode;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -44,11 +47,14 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         //Size Mode
         labelSizeModeButton = new JPopupButton();
         labelSizeModeButton.addItem(LabelSizeMode.FIXED,
-            ImageUtilities.loadImageIcon("VisualizationImpl/FixedSizeMode.svg", false), NbBundle.getMessage(LabelGroup.class, "FixedSizeMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/FixedSizeMode.svg", false),
+            NbBundle.getMessage(LabelGroup.class, "FixedSizeMode.name"));
         labelSizeModeButton.addItem(LabelSizeMode.SCALED,
-            ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.svg", false), NbBundle.getMessage(LabelGroup.class, "ScaledSizeMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.svg", false),
+            NbBundle.getMessage(LabelGroup.class, "ScaledSizeMode.name"));
         labelSizeModeButton.addItem(LabelSizeMode.PROPORTIONAL,
-            ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.svg", false), NbBundle.getMessage(LabelGroup.class, "ProportionalSizeMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.svg", false),
+            NbBundle.getMessage(LabelGroup.class, "ProportionalSizeMode.name"));
         labelSizeModeButton.setChangeListener(e -> {
             vizController.setNodeLabelSizeMode((LabelSizeMode) e.getSource());
         });
@@ -59,11 +65,14 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         //Color mode
         labelColorModeButton = new JPopupButton();
         labelColorModeButton.addItem(LabelColorMode.UNIQUE,
-            ImageUtilities.loadImageIcon("VisualizationImpl/UniqueColorMode.png", false), NbBundle.getMessage(LabelGroup.class, "UniqueColorMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/UniqueColorMode.png", false),
+            NbBundle.getMessage(LabelGroup.class, "UniqueColorMode.name"));
         labelColorModeButton.addItem(LabelColorMode.OBJECT,
-            ImageUtilities.loadImageIcon("VisualizationImpl/ObjectColorMode.png", false), NbBundle.getMessage(LabelGroup.class, "ObjectColorMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/ObjectColorMode.png", false),
+            NbBundle.getMessage(LabelGroup.class, "ObjectColorMode.name"));
         labelColorModeButton.addItem(LabelColorMode.TEXT,
-            ImageUtilities.loadImageIcon("VisualizationImpl/TextColorMode.png", false), NbBundle.getMessage(LabelGroup.class, "TextColorMode.name"));
+            ImageUtilities.loadImageIcon("VisualizationImpl/TextColorMode.png", false),
+            NbBundle.getMessage(LabelGroup.class, "TextColorMode.name"));
         labelColorModeButton.setChangeListener(e -> {
             vizController.setNodeLabelColorMode((LabelColorMode) e.getSource());
         });
@@ -113,19 +122,15 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.svg", false));
         attributesButton
             .setToolTipText(NbBundle.getMessage(LabelGroup.class, "VizToolbar.Labels.attributes"));
-        attributesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                    LabelAttributesPanel panel = new LabelAttributesPanel();
-//                    panel.setup(model);
-//                    DialogDescriptor dd = new DialogDescriptor(panel,
-//                        NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
-//                        NotifyDescriptor.OK_CANCEL_OPTION, null, null);
-//                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-//                        panel.unsetup();
-//                        return;
-//                    }
+        attributesButton.addActionListener(e -> {
+            VisualisationModel model = vizController.getModel();
+            LabelAttributesPanel panel = new LabelAttributesPanel(model);
+            panel.setup();
+            DialogDescriptor dd = new DialogDescriptor(panel,
+                NbBundle.getMessage(LabelGroup.class, "LabelAttributesPanel.title"), true,
+                NotifyDescriptor.OK_CANCEL_OPTION, null, null);
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                panel.unsetup();
             }
         });
     }
@@ -140,7 +145,7 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         fontSizeSlider.setValue((int) (vizModel.getNodeLabelSize() * 100));
         colorChooser.setColor(vizModel.getNodeLabelColor());
 
-        if(vizModel.isShowNodeLabels()) {
+        if (vizModel.isShowNodeLabels()) {
             // Toolbar
             for (JComponent component : getToolbarComponents()) {
                 component.setEnabled(true);
@@ -197,7 +202,7 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
 
     @Override
     public JComponent[] getToolbarComponents() {
-        return new JComponent[]{
+        return new JComponent[] {
             labelSizeModeButton,
             labelColorModeButton,
             fontButton,

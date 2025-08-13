@@ -46,6 +46,8 @@ import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -59,8 +61,12 @@ import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
@@ -158,22 +164,21 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
             e -> vizController.setHideNonSelectedLabels(hideNonSelectedCheckbox.isSelected()));
 
         // Attributes
-//        configureLabelsButton.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-//                LabelAttributesPanel panel = new LabelAttributesPanel();
-//                panel.setup(model);
-//                DialogDescriptor dd = new DialogDescriptor(panel,
-//                    NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
-//                    NotifyDescriptor.OK_CANCEL_OPTION, null, null);
-//                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-//                    panel.unsetup();
-//                    return;
-//                }
-//            }
-//        });
+        configureLabelsButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                VisualisationModel model = vizController.getModel();
+                LabelAttributesPanel panel = new LabelAttributesPanel(model);
+                panel.setup();
+                DialogDescriptor dd = new DialogDescriptor(panel,
+                    NbBundle.getMessage(LabelSettingsPanel.class, "LabelAttributesPanel.title"), true,
+                    NotifyDescriptor.OK_CANCEL_OPTION, null, null);
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    panel.unsetup();
+                }
+            }
+        });
 
         // Renderers
         sizeModeCombo.setRenderer(new DefaultListCellRenderer() {

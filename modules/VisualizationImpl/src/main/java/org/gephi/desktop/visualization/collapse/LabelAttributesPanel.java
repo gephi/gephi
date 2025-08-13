@@ -47,12 +47,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
+import org.gephi.project.api.Workspace;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
 
 /**
@@ -60,6 +64,8 @@ import org.openide.util.Lookup;
  */
 public class LabelAttributesPanel extends javax.swing.JPanel {
 
+    private final VisualizationController vizController;
+    private final VisualisationModel vizModel;
     //Settings
     private ButtonModel selectedModel;
     private boolean showProperties = true;
@@ -80,7 +86,10 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     /**
      * Creates new form LabelAttributesPanel
      */
-    public LabelAttributesPanel() {
+    public LabelAttributesPanel(VisualisationModel vizModel) {
+        vizController = Lookup.getDefault().lookup(VisualizationController.class);
+        this.vizModel = vizModel;
+
         initComponents();
         selectedModel = nodesToggleButton.getModel();
         elementButtonGroup.setSelected(selectedModel, true);
@@ -112,19 +121,19 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         });
     }
 
-    public void setup(/* TODO */) {
-//        TODO
+    public void setup() {
         refresh();
     }
 
     private void refresh() {
+        Workspace workspace = vizModel.getWorkspace();
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
         List<Column> availableColumns = new ArrayList<>();
         List<Column> selectedColumns = new ArrayList<>();
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
-            for (Column c : graphController.getGraphModel().getNodeTable()) {
+            for (Column c : graphController.getGraphModel(workspace).getNodeTable()) {
                 if (!c.isProperty()) {
                     availableColumns.add(c);
                 } else if (showProperties && c.isProperty() && !c.getId().equals("timeset")) {
@@ -132,10 +141,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
 
-            //TODO
-//            if (textModel.getNodeTextColumns() != null) {
-//                selectedColumns = Arrays.asList(textModel.getNodeTextColumns());
-//            }
+            selectedColumns = Arrays.asList(vizModel.getNodeLabelColumns());
+
             nodeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = nodeCheckBoxs;
         } else {
@@ -149,10 +156,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
 
-            //TODO
-//            if (textModel.getEdgeTextColumns() != null) {
-//                selectedColumns = Arrays.asList(textModel.getEdgeTextColumns());
-//            }
+            selectedColumns = Arrays.asList(vizModel.getEdgeLabelColumns());
+
             edgeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = edgeCheckBoxs;
         }
@@ -185,9 +190,11 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
         }
-        if (edgeColumnsList.size() > 0 || nodeColumnsList.size() > 0) {
-            //TODO
-//            textModel.setTextColumns(nodeColumnsList.toArray(new Column[0]), edgeColumnsList.toArray(new Column[0]));
+        if (!edgeColumnsList.isEmpty()) {
+            vizController.setEdgeLabelColumns(edgeColumnsList.toArray(new Column[0]));
+        }
+        if (!nodeColumnsList.isEmpty()) {
+            vizController.setNodeLabelColumns(nodeColumnsList.toArray(new Column[0]));
         }
     }
 

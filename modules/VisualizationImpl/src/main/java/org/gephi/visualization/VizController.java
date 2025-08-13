@@ -290,6 +290,18 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.setHideNonSelectedLabels(hideNonSelected);
     }
 
+    @Override
+    public void setNodeLabelColumns(Column[] columns) {
+        final VizModel model = getModel();
+        model.setNodeLabelColumns(columns);
+    }
+
+    @Override
+    public void setEdgeLabelColumns(Column[] columns) {
+        final VizModel model = getModel();
+        model.setEdgeLabelColumns(columns);
+    }
+
     //    public void refreshWorkspace() {
 //        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 //        final Workspace currentWorkspace = pc.getCurrentWorkspace();
@@ -420,44 +432,6 @@ public class VizController implements VisualizationController, Controller<VizMod
 //            }
 //        }
 //    }
-
-    @Override
-    public Column[] getEdgeTextColumns() {
-        if (vizModelReady()) {
-            //TODO
-            // return currentModel.textModel.getEdgeTextColumns();
-        }
-        return new Column[0];
-    }
-
-    @Override
-    public Column[] getEdgeTextColumns(Workspace workspace) {
-        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-        if (vizModel != null && vizModel.isReady()) {
-            //TODO
-            //return vizModel.textModel.getEdgeTextColumns();
-        }
-        return new Column[0];
-    }
-
-    @Override
-    public Column[] getNodeTextColumns() {
-        if (vizModelReady()) {
-            //TODO
-            //return currentModel.textModel.getNodeTextColumns();
-        }
-        return new Column[0];
-    }
-
-    @Override
-    public Column[] getNodeTextColumns(Workspace workspace) {
-        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-        if (vizModel != null && vizModel.isReady()) {
-            //TODO
-            //return vizModel.textModel.getNodeTextColumns();
-        }
-        return new Column[0];
-    }
 
     public StandardVizEventManager getVizEventManager() {
         return vizEventManager;

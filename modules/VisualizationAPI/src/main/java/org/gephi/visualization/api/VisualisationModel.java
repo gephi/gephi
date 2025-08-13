@@ -3,6 +3,7 @@ package org.gephi.visualization.api;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.spi.Model;
@@ -80,4 +81,8 @@ public interface VisualisationModel extends Model {
     float getEdgeLabelSize();
 
     boolean isHideNonSelectedLabels();
+
+    Column[] getEdgeLabelColumns();
+
+    Column[] getNodeLabelColumns();
 }

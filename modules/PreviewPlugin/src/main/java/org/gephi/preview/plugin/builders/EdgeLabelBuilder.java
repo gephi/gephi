@@ -57,6 +57,7 @@ import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -73,7 +74,8 @@ public class EdgeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Workspace workspace = WorkspaceHelper.getWorkspace(graph);
-        Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns(workspace) : null;
+        VisualisationModel vizModel = vizController.getModel(workspace);
+        Column[] edgeColumns = vizModel.getEdgeLabelColumns();
 
         List<Item> items = new ArrayList<>();
         EdgeIterable edgeIterable = graph.getEdges();

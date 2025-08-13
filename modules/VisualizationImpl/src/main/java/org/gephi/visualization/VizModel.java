@@ -57,6 +57,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.jogamp.newt.event.NEWTEvent;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -103,6 +104,8 @@ public class VizModel implements VisualisationModel {
     private LabelColorMode nodeLabelColorMode = LabelColorMode.OBJECT;
     private LabelSizeMode nodeLabelSizeMode = LabelSizeMode.FIXED;
     private boolean hideNonSelectedLabels = false;
+    private Column[] nodeLabelColumns = new Column[0];
+    private Column[] edgeLabelColumns = new Column[0];
     // TODO End
 
     // Selection
@@ -117,9 +120,9 @@ public class VizModel implements VisualisationModel {
         this.canvasManager = new VizEngineGraphCanvasManager(workspace, graphModel);
         this.selectionModel = new SelectionModelImpl(this);
 
-//        textModel.setTextColumns(new Column[] {gm.getNodeTable().getColumn("label")},
-//            new Column[] {gm.getEdgeTable().getColumn("label")});
-        //TODO
+        //TODO: Remove once this is moved to the viz-engine
+        this.nodeLabelColumns = new Column[] {graphModel.getNodeTable().getColumn("label")};
+        this.edgeLabelColumns = new Column[] {graphModel.getEdgeTable().getColumn("label")};
     }
 
     public void destroy(JComponent component) {
@@ -514,6 +517,26 @@ public class VizModel implements VisualisationModel {
         boolean oldValue = this.hideNonSelectedLabels;
         this.hideNonSelectedLabels = hideNonSelectedLabels;
         firePropertyChange("hideNonSelectedLabels", oldValue, hideNonSelectedLabels);
+    }
+
+    @Override
+    public Column[] getNodeLabelColumns() {
+        return nodeLabelColumns;
+    }
+
+    public void setNodeLabelColumns(Column[] nodeLabelColumns) {
+        this.nodeLabelColumns = nodeLabelColumns;
+        firePropertyChange("nodeLabelColumns", null, nodeLabelColumns);
+    }
+
+    @Override
+    public Column[] getEdgeLabelColumns() {
+        return edgeLabelColumns;
+    }
+
+    public void setEdgeLabelColumns(Column[] edgeLabelColumns) {
+        this.edgeLabelColumns = edgeLabelColumns;
+        firePropertyChange("edgeLabelColumns", null, edgeLabelColumns);
     }
 
     //EVENTS
