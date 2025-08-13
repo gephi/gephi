@@ -103,7 +103,7 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
 
         panButton =
             new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.svg", false));
-        panButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
+        panButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.pan.tooltip"));
         panButton.addActionListener(e -> {
             if (panButton.isSelected()) {
                 visualizationController.disableSelection();
