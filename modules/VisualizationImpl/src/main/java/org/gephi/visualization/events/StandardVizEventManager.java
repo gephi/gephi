@@ -74,7 +74,6 @@ public class StandardVizEventManager {
     private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
     private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
 
-    private static final int PRESSING_FREQUENCY = 5;
     // State
     private final Vector2i dragStartMouseScreenPosition = new Vector2i(0, 0);
     private final Vector2f dragStartMouseWorldPosition2d = new Vector2f(0, 0);
@@ -85,10 +84,15 @@ public class StandardVizEventManager {
     private final Vector2i mouseScreenPosition = new Vector2i(0, 0);
     private final Vector2f mouseWorldPosition = new Vector2f(0, 0);
 
+    // Pressing thread
+    private static final int PRESSING_FREQUENCY = 7;
+    private Thread pressingThread;
+    private volatile boolean shouldStopPressing = false;
+    private final Object pressingLock = new Object();
+
     //Architecture
     private final VisualizationEventTypeHandler[] handlers;
     private boolean dragging = false;
-    private boolean pressing = false;
 
     public StandardVizEventManager() {
         //Set handlers
@@ -108,13 +112,10 @@ public class StandardVizEventManager {
         handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.MOUSE_RELEASED, false));
         handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.NODE_LEFT_PRESS, false));
         handlersList.add(new VisualizationEventTypeHandler(VisualizationEvent.Type.NODE_LEFT_PRESSING, false));
-        Collections.sort(handlersList, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                VisualizationEvent.Type t1 = ((VisualizationEventTypeHandler) o1).type;
-                VisualizationEvent.Type t2 = ((VisualizationEventTypeHandler) o2).type;
-                return t1.compareTo(t2);
-            }
+        handlersList.sort((o1, o2) -> {
+            VisualizationEvent.Type t1 = o1.type;
+            VisualizationEvent.Type t2 = o2.type;
+            return t1.compareTo(t2);
         });
         handlers = handlersList.toArray(new VisualizationEventTypeHandler[0]);
     }
@@ -131,6 +132,9 @@ public class StandardVizEventManager {
 
         switch (mouseEvent.getEventType()) {
             case MouseEvent.EVENT_MOUSE_DRAGGED:
+                if (mouseEvent.getButton() != MOUSE_LEFT_BUTTON) {
+                    return false;
+                }
                 final boolean startDragConsumed;
                 if (!dragging) {
                     dragStartMouseScreenPosition.set(mouseScreenPosition);
@@ -156,15 +160,9 @@ public class StandardVizEventManager {
                 }
                 return false;
             case MouseEvent.EVENT_MOUSE_PRESSED:
-                final boolean wasPressing = pressing;
-                pressing = true;
                 switch (mouseEvent.getButton()) {
                     case MOUSE_LEFT_BUTTON:
-                        if (wasPressing) {
-                            return mouseLeftPressing(engine);
-                        } else {
-                            return mouseLeftPress(engine);
-                        }
+                        return mouseLeftPress(engine);
                     case MOUSE_RIGHT_BUTTON:
                         return mouseRightPress(engine);
                     case MOUSE_WHEEL_BUTTON:
@@ -175,14 +173,21 @@ public class StandardVizEventManager {
                 //NOOP
                 return false;
             case MouseEvent.EVENT_MOUSE_RELEASED:
-                pressing = false;
                 if (dragging) {
                     dragging = false;
                     stopDrag(engine);
                 }
                 mouseReleased(engine);
 
+                // Stop pressing thread if it was running
+                if(mouseEvent.getButton() == MOUSE_LEFT_BUTTON) {
+                    stopPressingThread();
+                }
+
                 return false;//Never consume release events
+            case MouseEvent.EVENT_MOUSE_EXITED:
+                // Stop the thread if exit mouse event is received
+                stopPressingThread();
             default:
                 //NOOP
                 return false;
@@ -190,23 +195,11 @@ public class StandardVizEventManager {
     }
 
     public boolean mouseLeftClick(VizEngine engine) {
-        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
-        // Todo fix
-        final boolean selectionEnabled = false;
-//        final boolean selectionEnabled = VizController.getInstance().getVizConfig().isSelectionEnable();
-        final Node[] clickedNodes;
+        final Node[] clickedNodes = selectionIndex.getSelectedNodes().toArray(new Node[0]);
 
-        if (selectionEnabled) {
-            clickedNodes = selectionIndex.getSelectedNodes().toArray(new Node[0]);
-        } else {
-            clickedNodes = index
-                    .getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y)
-                    .toArray();
-        }
-
-        //Node Left click:
+        //Node Left click
         final VisualizationEventTypeHandler nodeLeftClickHandler = handlers[VisualizationEvent.Type.NODE_LEFT_CLICK.ordinal()];
         if (nodeLeftClickHandler.hasListeners() && clickedNodes.length > 0) {
             if (nodeLeftClickHandler.dispatch(clickedNodes)) {
@@ -214,7 +207,7 @@ public class StandardVizEventManager {
             }
         }
 
-        //Mouse left click:
+        //Mouse left click
         final VisualizationEventTypeHandler mouseLeftClickHandler = handlers[VisualizationEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
         if (mouseLeftClickHandler.hasListeners() && clickedNodes.length == 0) {
             return mouseLeftClickHandler.dispatch(
@@ -232,32 +225,77 @@ public class StandardVizEventManager {
         };
     }
 
-    private boolean isMouseOverAnyNode(VizEngine engine) {
-        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
-        final NodeIterable iterable = index
-                .getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y);
-
-        for (Node ignored: iterable) {
-            iterable.doBreak();
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean mouseLeftPress(VizEngine engine) {
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
+
+        final VisualizationEventTypeHandler nodeLefPressingHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+        if (nodeLefPressingHandler.hasListeners()) {
+            //Check if some node are selected
+            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+            if (!selectedNodes.isEmpty()) {
+                startPressingThread(engine);
+                return nodeLefPressingHandler.dispatch(toArray(selectedNodes));
+            }
+        }
 
         final VisualizationEventTypeHandler nodeLefPressHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESS.ordinal()];
         if (nodeLefPressHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
-            if (!selectedNodes.isEmpty() && isMouseOverAnyNode(engine)) {
+            if (!selectedNodes.isEmpty()) {
                 return nodeLefPressHandler.dispatch(toArray(selectedNodes));
             }
         }
 
         return handlers[VisualizationEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
+    }
+
+    private void startPressingThread(final VizEngine engine) {
+        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
+        synchronized (pressingLock) {
+            // Stop any existing pressing thread
+            stopPressingThread();
+
+            shouldStopPressing = false;
+            pressingThread = new Thread(() -> {
+                final long intervalMs = 1000 / PRESSING_FREQUENCY;
+
+                while (!shouldStopPressing && !Thread.currentThread().isInterrupted()) {
+                    try {
+                        Thread.sleep(intervalMs);
+
+                        if (!shouldStopPressing) {
+                            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+                            if (!selectedNodes.isEmpty()) {
+                                final Node[] nodesArray = toArray(selectedNodes);
+                                handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()].dispatch(nodesArray);
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            });
+
+            pressingThread.setDaemon(true);
+            pressingThread.start();
+        }
+    }
+
+    private void stopPressingThread() {
+        synchronized (pressingLock) {
+            shouldStopPressing = true;
+            if (pressingThread != null && pressingThread.isAlive()) {
+                pressingThread.interrupt();
+                try {
+                    pressingThread.join(100); // Wait up to 100ms for thread to finish
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            pressingThread = null;
+        }
     }
 
     private Node[] toArray(Collection<Node> selectedNodes) {
@@ -282,21 +320,6 @@ public class StandardVizEventManager {
 
     public boolean mouseRightPress(VizEngine engine) {
         return handlers[VisualizationEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
-    }
-
-    public boolean mouseLeftPressing(VizEngine engine) {
-        final GraphSelection index = engine.getLookup().lookup(GraphSelection.class);
-
-        final VisualizationEventTypeHandler nodeLeftPressingHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
-        if (nodeLeftPressingHandler.hasListeners()) {
-            //Check if some node are selected
-            final Set<Node> selectedNodes = index.getSelectedNodes();
-            if (!selectedNodes.isEmpty() && isMouseOverAnyNode(engine)) {
-                return nodeLeftPressingHandler.dispatch(toArray(selectedNodes));
-            }
-        }
-
-        return handlers[VisualizationEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
     }
 
     public boolean startDrag(VizEngine engine) {
@@ -340,19 +363,7 @@ public class StandardVizEventManager {
         handlers[listener.getType().ordinal()].removeListener(listener);
     }
 
-    public void addListener(VisualizationEventListener[] listeners) {
-        for (int i = 0; i < listeners.length; i++) {
-            handlers[listeners[i].getType().ordinal()].addListener(listeners[i]);
-        }
-    }
-
-    public void removeListener(VisualizationEventListener[] listeners) {
-        for (int i = 0; i < listeners.length; i++) {
-            handlers[listeners[i].getType().ordinal()].removeListener(listeners[i]);
-        }
-    }
-
-    private class VisualizationEventTypeHandler {
+    private static class VisualizationEventTypeHandler {
 
         protected final VisualizationEvent.Type type;
         //Settings
