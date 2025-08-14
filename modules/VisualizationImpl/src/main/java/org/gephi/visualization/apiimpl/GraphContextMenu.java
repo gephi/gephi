@@ -55,8 +55,12 @@ import javax.swing.KeyStroke;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.status.GraphSelection;
 import org.openide.util.Lookup;
 
 /**
@@ -65,39 +69,33 @@ import org.openide.util.Lookup;
 public class GraphContextMenu {
 
     public GraphContextMenu() {
-//        config = VizController.getInstance().getVizConfig();
-//        engine = VizController.getInstance().getEngine();
-//        dataBridge = VizController.getInstance().getDataBridge();
+
     }
 
-    public JPopupMenu getMenu() {
-//        GraphContextMenuItem[] items = getGraphContextMenuItems();
-//        final List<NodeModel> selectedNodeModels = engine.getSelectedNodes();
-//        Node[] selectedNodes = new Node[selectedNodeModels.size()];
-//        int i = 0;
-//        for (NodeModel nm : selectedNodeModels) {
-//            selectedNodes[i++] = nm.getNode();
-//        }
-//        final Graph graph = dataBridge.getGraph();
+    public JPopupMenu getMenu(VizEngine engine) {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
+        Graph graph = graphModel.getGraphVisible();
+        Node[] selectedNodes = selection.getSelectedNodes().toArray(new Node[0]);
+
+        GraphContextMenuItem[] items = getGraphContextMenuItems();
         JPopupMenu contextMenu = new JPopupMenu();
 
-//        //Add items ordered:
-//        Integer lastItemType = null;
-//        for (GraphContextMenuItem item : items) {
-//            item.setup(graph, selectedNodes);
-//            if (lastItemType == null) {
-//                lastItemType = item.getType();
-//            }
-//            if (lastItemType != item.getType()) {
-//                contextMenu.addSeparator();
-//            }
-//            lastItemType = item.getType();
-//            if (item.isAvailable()) {
-//                contextMenu.add(createMenuItemFromGraphContextMenuItem(item, graph, selectedNodes));
-//            }
-//        }
-        //TODO
-
+        //Add items ordered:
+        Integer lastItemType = null;
+        for (GraphContextMenuItem item : items) {
+            item.setup(graph, selectedNodes);
+            if (lastItemType == null) {
+                lastItemType = item.getType();
+            }
+            if (lastItemType != item.getType()) {
+                contextMenu.addSeparator();
+            }
+            lastItemType = item.getType();
+            if (item.isAvailable()) {
+                contextMenu.add(createMenuItemFromGraphContextMenuItem(item, graph, selectedNodes));
+            }
+        }
         return contextMenu;
     }
 

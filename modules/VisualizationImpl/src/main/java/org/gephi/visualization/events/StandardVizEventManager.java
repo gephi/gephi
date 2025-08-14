@@ -42,6 +42,7 @@
 
 package org.gephi.visualization.events;
 
+import java.awt.Component;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,11 +55,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jogamp.newt.event.MouseEvent;
+import javax.swing.JComponent;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.VisualizationEvent;
 import org.gephi.visualization.api.VisualizationEventListener;
+import org.gephi.visualization.apiimpl.GraphContextMenu;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEvent;
+import org.gephi.visualization.component.VizEngineGraphCanvasManager;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
@@ -120,7 +126,7 @@ public class StandardVizEventManager {
         handlers = handlersList.toArray(new VisualizationEventTypeHandler[0]);
     }
 
-    public boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent) {
+    public boolean processMouseEvent(Component parentComponent, VizEngineGraphCanvasManager canvasManager, VizEngine engine, MouseEvent mouseEvent) {
         previousMouseScreenPosition.set(mouseScreenPosition);
         previousMouseWorldPosition2d.set(mouseWorldPosition);
 
@@ -154,7 +160,7 @@ public class StandardVizEventManager {
                     case MOUSE_LEFT_BUTTON:
                         return mouseLeftClick(engine);
                     case MOUSE_RIGHT_BUTTON:
-                        return mouseRightClick(engine);
+                        return mouseRightClick(parentComponent, canvasManager, engine);
                     case MOUSE_WHEEL_BUTTON:
                         return mouseMiddleClick(engine);
                 }
@@ -320,7 +326,13 @@ public class StandardVizEventManager {
         return handlers[VisualizationEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
     }
 
-    public boolean mouseRightClick(VizEngine engine) {
+    public boolean mouseRightClick(Component parentComponent, VizEngineGraphCanvasManager canvasManager, VizEngine engine) {
+        GraphContextMenu popupMenu = new GraphContextMenu();
+        float globalScale = canvasManager.getSurfaceScale().orElse(1.0f);
+        int x = (int) (mouseScreenPosition.x / globalScale);
+        int y = (int)(mouseScreenPosition.y / globalScale);
+        popupMenu.getMenu(engine).show(parentComponent, x, y);
+
         return handlers[VisualizationEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();
     }
 

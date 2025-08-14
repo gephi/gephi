@@ -67,7 +67,14 @@ public class VizEngineGraphCanvasManager {
         return Optional.ofNullable(engine);
     }
 
-    public synchronized void init(JComponent component) {
+    public Optional<Float> getSurfaceScale() {
+        if (glWindow != null) {
+            return Optional.of(glWindow.getCurrentSurfaceScale(new float[2])[0]);
+        }
+        return Optional.empty();
+    }
+
+    public synchronized void init(final JComponent component) {
         if (initialized) {
             throw new IllegalStateException("Already initialized");
         }
@@ -116,7 +123,7 @@ public class VizEngineGraphCanvasManager {
             @Override
             public boolean processEvent(NEWTEvent inputEvent) {
                 if (engine != null && inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
-                    return vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent);
+                    return vizController.getVizEventManager().processMouseEvent(glCanvas,VizEngineGraphCanvasManager.this, engine, (MouseEvent) inputEvent);
                 }
 
                 return false;
