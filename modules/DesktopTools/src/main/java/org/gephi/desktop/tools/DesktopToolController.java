@@ -201,6 +201,9 @@ public class DesktopToolController implements ToolController {
                     if (tool == currentTool) {
                         toolbar.clearSelection();
                         unselect();
+
+                        // Go back to selection
+                        visualizationController.setDirectMouseSelection(false);
                     } else {
                         try {
                             select(tool);

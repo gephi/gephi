@@ -195,9 +195,15 @@ public class StandardVizEventManager {
     }
 
     public boolean mouseLeftClick(VizEngine engine) {
-        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
+        final GraphIndex graphIndex = engine.getLookup().lookup(GraphIndex.class);
+        final GraphSelection graphSelection = engine.getLookup().lookup(GraphSelection.class);
 
-        final Node[] clickedNodes = selectionIndex.getSelectedNodes().toArray(new Node[0]);
+        Node[] clickedNodes = null;
+        if (!graphSelection.getMode().equals(GraphSelection.GraphSelectionMode.CUSTOM_SELECTION)) {
+            clickedNodes = graphSelection.getSelectedNodes().toArray(new Node[0]);
+        } else {
+            clickedNodes = graphIndex.getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y).toArray();
+        }
 
         //Node Left click
         final VisualizationEventTypeHandler nodeLeftClickHandler = handlers[VisualizationEvent.Type.NODE_LEFT_CLICK.ordinal()];
