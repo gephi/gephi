@@ -15,10 +15,6 @@
 
     <name>VisualizationImpl</name>
 
-    <properties>
-        <jogl.version>2.5.0</jogl.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -28,13 +24,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>viz-engine-jogl</artifactId>
         </dependency>
-
-        <!-- JOML -->
-        <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
@@ -113,75 +102,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-project</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
-        </dependency>
-        <!-- Gluegen -->
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-linux-amd64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-linux-aarch64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-macosx-universal</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-windows-amd64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <!-- JOGL -->
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-linux-amd64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-linux-aarch64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-macosx-universal</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-windows-amd64</classifier>
-            <version>${jogl.version}</version>
         </dependency>
 
         <!-- Test only -->
@@ -227,7 +152,6 @@
                         <publicPackage>org.gephi.visualization.apiimpl</publicPackage>
                         <publicPackage>org.gephi.visualization.events</publicPackage>
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
-                        <publicPackage>org.gephi.lib.gleem.linalg</publicPackage>
                     </publicPackages>
                     <nbmResources> 
                         <nbmResource> 

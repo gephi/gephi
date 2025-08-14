@@ -42,7 +42,6 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.visualization.api</publicPackage>
-                        <publicPackage>org.gephi.visualization.impl</publicPackage>
                         <publicPackage>org.gephi.visualization.spi</publicPackage>
                     </publicPackages>
                 </configuration>

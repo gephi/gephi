@@ -47,9 +47,6 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -81,18 +78,10 @@ public class VizController implements VisualizationController, Controller<VizMod
     protected final List<VisualizationPropertyChangeListener> listeners = new ArrayList<>();
     private final StandardVizEventManager vizEventManager;
     private final ScreenshotControllerImpl screenshotMaker;
-    private VizModel currentModel;
 
     public VizController() {
         vizEventManager = new StandardVizEventManager();
         screenshotMaker = new ScreenshotControllerImpl();
-//        limits = new GraphLimits();
-//        textManager = new TextManager();
-        currentModel = null;
-
-        //TODO
-//        textManager.initArchitecture();
-//        screenshotMaker.initArchitecture();
     }
 
     @Override
@@ -325,19 +314,6 @@ public class VizController implements VisualizationController, Controller<VizMod
 //        vizEventManager = null;
 //        textManager = null;
         //TODO
-    }
-
-    public Optional<VizModel> getVizModel() {
-        return Optional.ofNullable(currentModel)
-                .filter(VizModel::isReady);
-    }
-
-    public Optional<VizModel> getVizModelEvenIfNotReady() {
-        return Optional.ofNullable(currentModel);
-    }
-
-    public boolean vizModelReady() {
-        return currentModel != null && currentModel.isReady();
     }
 
     public StandardVizEventManager getVizEventManager() {
