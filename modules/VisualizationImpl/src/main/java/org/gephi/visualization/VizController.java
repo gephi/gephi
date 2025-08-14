@@ -406,6 +406,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setSelectionEnable(false);
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
+        model.getSelectionModel().setSingleNodeSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.NO_SELECTION);
         model.fireSelectionChange();
     }

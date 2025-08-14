@@ -221,11 +221,7 @@ public class DesktopToolController implements ToolController {
             @Override
             public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selection")) {
-                    if (model.isRectangleSelection() && currentTool != null) {
-                        toolbar.clearSelection();
-                        unselect();
-                    } else if (model.isSelectionEnabled() && currentTool != null
-                        && currentTool.getSelectionType() == ToolSelectionType.NONE) {
+                    if (currentTool != null && !model.isCustomSelection() && !model.isSingleNodeSelection()) {
                         toolbar.clearSelection();
                         unselect();
                     }
