@@ -390,12 +390,13 @@ public class DesktopToolController implements ToolController {
 
                 @Override
                 public VisualizationEvent.Type getType() {
-                    return VisualizationEvent.Type.MOUSE_RELEASED;
+                    return VisualizationEvent.Type.STOP_DRAG;
                 }
             };
             VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
             vizController.addListener(currentListeners[0]);
             vizController.addListener(currentListeners[1]);
+            vizController.addListener(currentListeners[2]);
         }
 
         @Override
@@ -403,6 +404,7 @@ public class DesktopToolController implements ToolController {
             VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
             vizController.removeListener(currentListeners[0]);
             vizController.removeListener(currentListeners[1]);
+            vizController.removeListener(currentListeners[2]);
             toolEventListener = null;
             currentListeners = null;
         }
