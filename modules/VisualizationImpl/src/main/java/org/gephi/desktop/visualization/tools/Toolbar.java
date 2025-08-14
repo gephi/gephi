@@ -40,64 +40,35 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.desktop.tools;
+package org.gephi.desktop.visualization.tools;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Action;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.UIUtils;
-import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.Lookups;
 
 /**
  * @author Mathieu Bastian
  */
-public class PropertiesBar extends JPanel {
+public class Toolbar extends JToolBar {
 
-//    private final SelectionBar selectionBar;
-    private JPanel propertiesBar;
+    private final ButtonGroup buttonGroup;
 
-    public PropertiesBar() {
-        super(new BorderLayout());
+    public Toolbar() {
+        initDesign();
+        buttonGroup = new ButtonGroup();
+    }
+
+    private void initDesign() {
+        setFloatable(false);
+        setOrientation(JToolBar.VERTICAL);
+        putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
+        setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         setOpaque(true);
-    }
-
-    public void select(JPanel propertiesBar) {
-        this.propertiesBar = propertiesBar;
-        if (propertiesBar != null) {
-            propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-            add(propertiesBar, BorderLayout.CENTER);
-            propertiesBar.setOpaque(true);
-            for (Component c : propertiesBar.getComponents()) {
-                if (c instanceof JPanel || c instanceof JToolBar) {
-                    ((JComponent) c).setOpaque(true);
-                }
-            }
-        }
-        revalidate();
-    }
-
-    public void unselect() {
-        if (propertiesBar != null) {
-            remove(propertiesBar);
-            revalidate();
-            repaint();
-            propertiesBar = null;
-        }
     }
 
     @Override
@@ -111,6 +82,21 @@ public class PropertiesBar extends JPanel {
                 }
             }
         });
+    }
 
+    public void clearSelection() {
+        buttonGroup.clearSelection();
+    }
+
+    @Override
+    public Component add(Component comp) {
+        if (comp instanceof JButton) {
+            UIUtils.fixButtonUI((JButton) comp);
+        }
+        if (comp instanceof AbstractButton) {
+            buttonGroup.add((AbstractButton) comp);
+        }
+
+        return super.add(comp);
     }
 }

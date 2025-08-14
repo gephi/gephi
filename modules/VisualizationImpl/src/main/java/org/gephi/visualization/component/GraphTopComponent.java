@@ -56,6 +56,8 @@ import org.gephi.desktop.visualization.collapse.LabelGroup;
 import org.gephi.desktop.visualization.collapse.NodeGroup;
 import org.gephi.desktop.visualization.collapse.VizExtendedBar;
 import org.gephi.desktop.visualization.collapse.VizToolbar;
+import org.gephi.desktop.visualization.tools.DesktopToolController;
+import org.gephi.desktop.visualization.tools.ToolsPropertiesBar;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -258,16 +260,14 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         westPanel.add(actionsToolbar, BorderLayout.SOUTH);
         add(propertiesBar, BorderLayout.NORTH);
 
-        final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
+        final DesktopToolController tc = Lookup.getDefault().lookup(DesktopToolController.class);
         if (tc != null) {
             toolbar = tc.getToolbar();
             if (toolbar != null) {
                 westPanel.add(toolbar, BorderLayout.CENTER);
             }
             JComponent toolsPropertiesBar = tc.getPropertiesBar();
-            if (toolsPropertiesBar != null) {
-                propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
-            }
+            propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
         } else {
             toolbar = new JPanel();
         }

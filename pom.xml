@@ -736,11 +736,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-tools</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-timeline</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1417,7 +1412,6 @@
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopStatistics</module>
-        <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>

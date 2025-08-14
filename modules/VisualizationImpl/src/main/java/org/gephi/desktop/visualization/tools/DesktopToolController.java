@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.desktop.tools;
+package org.gephi.desktop.visualization.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,11 +50,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.ToolController;
 import org.gephi.tools.spi.MouseClickEventListener;
@@ -63,7 +60,6 @@ import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.NodePressingEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
-import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.tools.spi.UnselectToolException;
 import org.gephi.visualization.api.VisualisationModel;
@@ -84,7 +80,7 @@ public class DesktopToolController implements ToolController {
     //Architecture
     private final Tool[] tools;
     private final VisualizationController visualizationController;
-    private PropertiesBar propertiesBar;
+    private ToolsPropertiesBar toolsPropertiesBar;
     //Current tool
     private Tool currentTool;
     private ToolEventHandler[] currentHandlers;
@@ -150,13 +146,12 @@ public class DesktopToolController implements ToolController {
             currentTool.unselect();
             currentHandlers = null;
             currentTool = null;
-            if (propertiesBar != null) {
-                propertiesBar.unselect();
+            if (toolsPropertiesBar != null) {
+                toolsPropertiesBar.unselect();
             }
         }
     }
 
-    @Override
     public JComponent getToolbar() {
 
         //Get tools ui
@@ -189,7 +184,7 @@ public class DesktopToolController implements ToolController {
             if (toolUI.getIcon() != null) {
                 btn = new JToggleButton(toolUI.getIcon());
             } else {
-                btn = new JToggleButton(ImageUtilities.loadImageIcon("DesktopTools/tool.png", false));
+                btn = new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/tool.png", false));
             }
             btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
@@ -207,7 +202,7 @@ public class DesktopToolController implements ToolController {
                     } else {
                         try {
                             select(tool);
-                            propertiesBar.select(toolUI.getPropertiesBar(tool));
+                            toolsPropertiesBar.select(toolUI.getPropertiesBar(tool));
                         } catch (UnselectToolException unselectToolException) {
                             toolbar.clearSelection();
                             unselect();
@@ -235,10 +230,9 @@ public class DesktopToolController implements ToolController {
         return toolbar;
     }
 
-    @Override
     public JComponent getPropertiesBar() {
-        propertiesBar = new PropertiesBar();
-        return propertiesBar;
+        toolsPropertiesBar = new ToolsPropertiesBar();
+        return toolsPropertiesBar;
     }
 
     //Event handlers classes

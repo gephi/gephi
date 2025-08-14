@@ -40,35 +40,50 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.desktop.tools;
+package org.gephi.desktop.visualization.tools;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import org.gephi.ui.utils.UIUtils;
 
 /**
  * @author Mathieu Bastian
  */
-public class Toolbar extends JToolBar {
+public class ToolsPropertiesBar extends JPanel {
 
-    private final ButtonGroup buttonGroup;
+    private JPanel propertiesBar;
 
-    public Toolbar() {
-        initDesign();
-        buttonGroup = new ButtonGroup();
+    public ToolsPropertiesBar() {
+        super(new BorderLayout());
+        setOpaque(true);
     }
 
-    private void initDesign() {
-        setFloatable(false);
-        setOrientation(JToolBar.VERTICAL);
-        putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
-        setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        setOpaque(true);
+    public void select(JPanel propertiesBar) {
+        this.propertiesBar = propertiesBar;
+        if (propertiesBar != null) {
+            propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+            add(propertiesBar, BorderLayout.CENTER);
+            propertiesBar.setOpaque(true);
+            for (Component c : propertiesBar.getComponents()) {
+                if (c instanceof JPanel || c instanceof JToolBar) {
+                    ((JComponent) c).setOpaque(true);
+                }
+            }
+        }
+        revalidate();
+    }
+
+    public void unselect() {
+        if (propertiesBar != null) {
+            remove(propertiesBar);
+            revalidate();
+            repaint();
+            propertiesBar = null;
+        }
     }
 
     @Override
@@ -82,21 +97,6 @@ public class Toolbar extends JToolBar {
                 }
             }
         });
-    }
 
-    public void clearSelection() {
-        buttonGroup.clearSelection();
-    }
-
-    @Override
-    public Component add(Component comp) {
-        if (comp instanceof JButton) {
-            UIUtils.fixButtonUI((JButton) comp);
-        }
-        if (comp instanceof AbstractButton) {
-            buttonGroup.add((AbstractButton) comp);
-        }
-
-        return super.add(comp);
     }
 }
