@@ -1,180 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg19713" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="16"
-   height="16"
-   viewBox="0 0 4.2333333 4.2333333"
-   version="1.1"
-   id="svg19713"
-   xml:space="preserve"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs19710"><style
-       id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style><style
-       id="style48643">
-      .cls-1 {
-        fill: none;
+      .st1 {
+        fill: #aaa;
       }
-    </style><style
-       id="style49369">.cls-1{fill:none;}</style><style
-       id="style68473">.cls-1{fill:none;}</style><style
-       id="style34301">.cls-1{fill:none;}</style><style
-       id="style40867">.cls-1{fill:none;}</style><style
-       id="style3486">.cls-1{fill:none;}</style><style
-       id="style16714">.cls-1{fill:none;}</style><style
-       id="style16734">.cls-1{fill:none;}</style><style
-       id="style598">.cls-1{fill:none;}</style><style
-       id="style938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style953">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style988">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style6804">.cls-1{fill:none;}</style><style
-       id="style8295">.cls-1{fill:none;}</style><style
-       id="style9297">.cls-1{fill:none;}</style><style
-       id="style10710">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style640">.cls-1{fill:none;}</style><style
-       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1166">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1186">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1201">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2604">.cls-1{fill:none;}</style><style
-       id="style3041">.cls-1{fill:none;}</style><style
-       id="style34659">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1772">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style4214">.cls-1{fill:none;}</style><style
-       id="style5886">.cls-1{fill:none;}</style><style
-       id="style5923">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style5938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8494">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8509">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10257">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10280">.cls-1{fill:none;}</style><style
-       id="style11171">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1997">.cls-1{fill:none;}</style><style
-       id="style2928">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2943">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3863">.cls-1{fill:none;}</style><style
-       id="style3880">.cls-1{fill:none;}</style><style
-       id="style1078">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="g29083"
-     transform="translate(-93.133357,-38.100004)"><g
-       id="g29081"
-       transform="matrix(0.50000003,0,0,0.50000003,78.31669,14.81667)"
-       style="stroke-width:2"><path
-         id="path29077"
-         style="color:#000000;fill:#afb1b3;fill-opacity:1;stroke-width:2;paint-order:stroke fill markers"
-         d="m 33.867699,47.095831 c -2.042616,0 -3.7052,1.662583 -3.7052,3.7052 0,2.042617 1.662584,3.703133 3.7052,3.703133 2.042617,0 3.7021,-1.660516 3.7021,-3.703133 0,-2.042617 -1.659483,-3.7052 -3.7021,-3.7052 z m 0,0.529167 c 1.756635,0 3.172933,1.419399 3.172933,3.176033 0,1.756635 -1.416298,3.173967 -3.172933,3.173967 -1.756634,0 -3.176033,-1.417332 -3.176033,-3.173967 0,-1.756634 1.419399,-3.176033 3.176033,-3.176033 z m -0.265617,1.058333 -1.322916,3.704167 h 0.529166 l 0.264584,-0.79375 h 1.5875 l 0.264583,0.79375 h 0.529166 l -1.322916,-3.704167 z m 0.264584,0.529167 0.615983,1.852083 h -1.231966 z" /><rect
-         style="fill:none;fill-opacity:1;stroke:none;stroke-width:1.05833;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.39322;paint-order:stroke fill markers"
-         id="rect29079"
-         width="8.4666662"
-         height="8.4666662"
-         x="29.633333"
-         y="46.566666" /></g></g><style
-     type="text/css"
-     id="style578">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style968">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style3690">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5365">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style596">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style660">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5861">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style25784">
-	.st0{fill:none;}
-</style></svg>
+    </style>
+  </defs>
+  <g id="g29081">
+    <path id="path29077" class="st1" d="M8.002,1c-3.86,0-7.002,3.142-7.002,7.002s3.142,6.998,7.002,6.998,6.996-3.138,6.996-6.998S11.862,1,8.002,1ZM8.002,2c3.32,0,5.996,2.682,5.996,6.002s-2.676,5.998-5.996,5.998-6.002-2.678-6.002-5.998,2.682-6.002,6.002-6.002ZM7.5,4l-2.5,7h1l.5-1.5h3l.5,1.5h1l-2.5-7h-1ZM8,5l1.164,3.5h-2.328l1.164-3.5Z"/>
+    <rect id="rect29079" class="st0" x="0" y="0" width="16" height="16"/>
+  </g>
+</svg>
