@@ -56,9 +56,12 @@ public class AppearanceModelTest {
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
         model.getNodeFunctions();
 
+        Assert.assertEquals(2, model.countNodeAttributeRanking());
+
         generator.getGraphModel().getNodeTable().removeColumn(GraphGenerator.INT_COLUMN);
-        System.gc();
-        System.runFinalization();
+        
+        // Trigger cleanup by calling getNodeFunctions() which calls cleanAttributeRankingsAndPartitions()
+        model.getNodeFunctions();
 
         Assert.assertEquals(1, model.countNodeAttributeRanking());
     }
