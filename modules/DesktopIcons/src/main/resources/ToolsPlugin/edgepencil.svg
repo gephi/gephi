@@ -1,180 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg19713" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="15.999999"
-   height="15.999999"
-   viewBox="0 0 4.2333343 4.233333"
-   version="1.1"
-   id="svg19713"
-   xml:space="preserve"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs19710"><style
-       id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style><style
-       id="style48643">
-      .cls-1 {
-        fill: none;
+      .st1 {
+        fill: #555;
       }
-    </style><style
-       id="style49369">.cls-1{fill:none;}</style><style
-       id="style68473">.cls-1{fill:none;}</style><style
-       id="style34301">.cls-1{fill:none;}</style><style
-       id="style40867">.cls-1{fill:none;}</style><style
-       id="style3486">.cls-1{fill:none;}</style><style
-       id="style16714">.cls-1{fill:none;}</style><style
-       id="style16734">.cls-1{fill:none;}</style><style
-       id="style598">.cls-1{fill:none;}</style><style
-       id="style938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style953">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style988">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style6804">.cls-1{fill:none;}</style><style
-       id="style8295">.cls-1{fill:none;}</style><style
-       id="style9297">.cls-1{fill:none;}</style><style
-       id="style10710">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style640">.cls-1{fill:none;}</style><style
-       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1166">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1186">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1201">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2604">.cls-1{fill:none;}</style><style
-       id="style3041">.cls-1{fill:none;}</style><style
-       id="style34659">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1772">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style4214">.cls-1{fill:none;}</style><style
-       id="style5886">.cls-1{fill:none;}</style><style
-       id="style5923">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style5938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8494">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8509">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10257">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10280">.cls-1{fill:none;}</style><style
-       id="style11171">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1997">.cls-1{fill:none;}</style><style
-       id="style2928">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2943">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3863">.cls-1{fill:none;}</style><style
-       id="style3880">.cls-1{fill:none;}</style><style
-       id="style1078">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer2"
-     style="display:inline"
-     transform="translate(-46.566687)"><g
-       id="g37025"
-       transform="translate(42.333354)"><path
-         id="path24202"
-         style="color:#000000;display:inline;fill:#6e6e6e;fill-opacity:1;stroke-width:1;paint-order:stroke fill markers"
-         d="m 5.2916659,0.52916648 c -0.290682,0 -0.529166,0.23874249 -0.529166,0.52942552 0,0.2906829 0.238484,0.5291664 0.529166,0.5291664 0.09759,0 0.189408,-0.02691 0.268201,-0.073639 l 1.393197,1.3924215 c -0.04689,0.078895 -0.07416,0.170681 -0.07416,0.268459 0,0.290683 0.238742,0.529425 0.529425,0.529425 0.290683,0 0.529167,-0.238742 0.529167,-0.529425 0,-0.2906825 -0.238484,-0.529425 -0.529167,-0.529425 -0.09765,0 -0.189374,0.02711 -0.268201,0.073897 l -1.392675,-1.392938 c 0.04673,-0.078792 0.07364,-0.1703534 0.07364,-0.2679419 0,-0.29068303 -0.238741,-0.52942552 -0.529425,-0.52942552 z m 1.852084,0 V 1.0583335 h -0.529167 v 0.2645829 h 0.529167 v 0.529167 h 0.264583 v -0.529167 h 0.529167 V 1.0583335 H 7.4083329 V 0.52916648 Z m -1.852084,0.26458349 c 0.147693,0 0.264584,0.11714999 0.264584,0.26484203 0,0.147692 -0.116891,0.2645829 -0.264584,0.2645829 -0.147691,0 -0.2645825,-0.1168909 -0.2645825,-0.2645829 0,-0.14769204 0.1168915,-0.26484203 0.2645825,-0.26484203 z m 2.116667,2.11666643 c 0.147692,0 0.264583,0.1168915 0.264583,0.2645835 0,0.1476925 -0.116891,0.2645835 -0.264583,0.2645835 -0.147692,0 -0.264583,-0.116891 -0.264583,-0.2645835 0,-0.147692 0.116891,-0.2645835 0.264583,-0.2645835 z" /><rect
-         style="fill:none;fill-opacity:1;paint-order:stroke fill markers"
-         id="rect36982"
-         width="15.999999"
-         height="15.999999"
-         x="4.2333331"
-         y="0" /></g></g><style
-     type="text/css"
-     id="style578">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style968">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style3690">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5365">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style596">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style660">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5861">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style25784">
-	.st0{fill:none;}
-</style></svg>
+    </style>
+  </defs>
+  <g id="g2971">
+    <g id="g2969">
+      <path id="path2965" class="st1" d="M4,2c-1.099,0-2,.902-2,2.001s.901,2,2,2c.369,0,.716-.102,1.014-.278l5.266,5.263c-.177.298-.28.645-.28,1.015,0,1.099.902,2.001,2.001,2.001s2-.902,2-2.001-.901-2.001-2-2.001c-.369,0-.716.102-1.014.279l-5.264-5.265c.177-.298.278-.644.278-1.013,0-1.099-.902-2.001-2.001-2.001ZM11,2v2h-2v1h2v2h1v-2h2v-1h-2V2h-1ZM4,3c.558,0,1,.443,1,1.001s-.442,1-1,1-1-.442-1-1,.442-1.001,1-1.001ZM12,11c.558,0,1,.442,1,1s-.442,1-1,1-1-.442-1-1,.442-1,1-1Z"/>
+      <rect id="rect2967" class="st0" x="0" y="0" width="16" height="16"/>
+    </g>
+  </g>
+</svg>
