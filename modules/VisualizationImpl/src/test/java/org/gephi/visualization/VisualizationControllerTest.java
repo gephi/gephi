@@ -20,13 +20,4 @@ public class VisualizationControllerTest {
         VizModel vizModel = vizController.getModel(generator.getWorkspace());
         Assert.assertSame(vizModel.getWorkspace(), generator.getWorkspace());
     }
-
-    @Test
-    public void testSelection() {
-        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
-
-        VizModel vizModel = vizController.getModel(generator.getWorkspace());
-
-        Assert.assertFalse(vizModel.isBlocked());
-    }
 }

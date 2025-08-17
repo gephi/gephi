@@ -163,6 +163,21 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator generateTinyDynamicTimestampGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e1 = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
+        n1.addTimestamp(1.0);
+        n2.addTimestamp(1.0);
+        e1.addTimestamp(1.0);
+        e1.setWeight(1.0, 1.0);
+
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e1);
+        return this;
+    }
+
     public GraphGenerator addRandomPositions() {
         Random random = new Random();
         double size = 100.0;

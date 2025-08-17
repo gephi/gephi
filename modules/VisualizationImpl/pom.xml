@@ -18,11 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>viz-engine-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>viz-engine-jogl</artifactId>
+            <artifactId>visualization-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -135,10 +135,6 @@
         
         <!-- Netbeans Platform version -->
         <netbeans.version>RELEASE220</netbeans.version>
-
-        <!-- VizEngine version -->
-        <gephi.viz-engine.version>1.0.0-SNAPSHOT</gephi.viz-engine.version>
-        <gephi.joml.version>1.10.5</gephi.joml.version>
         
         <!-- GraphStore version -->
         <graphstore.version>0.7.2</graphstore.version>
@@ -274,6 +270,8 @@
         <gephi.jsign.version>6.0</gephi.jsign.version>
 
         <gephi.checkstyle.version>10.17.0</gephi.checkstyle.version>
+
+        <gephi.jcp-maven-plugin.version>7.1.2</gephi.jcp-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
@@ -431,24 +429,6 @@
                 <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
-
-            <!-- Viz engine -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>viz-engine-core</artifactId>
-                <version>${gephi.viz-engine.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>viz-engine-jogl</artifactId>
-                <version>${gephi.viz-engine.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.joml</groupId>
-                <artifactId>joml</artifactId>
-                <version>${gephi.joml.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>graphstore</artifactId>
@@ -577,6 +557,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>visualization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>visualization-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -959,6 +944,11 @@
                     <groupId>net.jsign</groupId>
                     <artifactId>jsign-maven-plugin</artifactId>
                     <version>${gephi.jsign.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.igormaznitsa</groupId>
+                    <artifactId>jcp</artifactId>
+                    <version>${gephi.jcp-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1448,6 +1438,7 @@
         <module>modules/Utils</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
+        <module>modules/VisualizationEngine</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
