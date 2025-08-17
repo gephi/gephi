@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #555;
+      }
+    </style>
+  </defs>
+  <polygon class="st1" points="30 6 26 6 26 2 24 2 24 6 20 6 20 8 24 8 24 12 26 12 26 8 30 8 30 6"/>
+  <path class="st1" d="M24,28.586l-5.975-5.975c3.112-3.893,2.479-9.571-1.414-12.682-3.893-3.112-9.571-2.479-12.682,1.414-3.112,3.893-2.479,9.571,1.414,12.682,3.294,2.634,7.974,2.634,11.268,0l5.975,5.975,1.414-1.414ZM4,17c0-3.866,3.134-7,7-7s7,3.134,7,7-3.134,7-7,7c-3.864-.004-6.996-3.136-7-7Z"/>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="32" height="32"/>
+</svg>
