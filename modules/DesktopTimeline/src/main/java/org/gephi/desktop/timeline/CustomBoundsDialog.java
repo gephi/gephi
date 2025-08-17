@@ -219,7 +219,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         titleHeader.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
         titleHeader.setIcon(
-            ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.svg", false)); // NOI18N
         titleHeader.setTitle(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
 

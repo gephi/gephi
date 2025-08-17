@@ -108,7 +108,7 @@ public class DeleteEdgesWithNodes extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/cross.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/cross.svg", false);
     }
 
     public void setDeleteSource(boolean deleteSource) {

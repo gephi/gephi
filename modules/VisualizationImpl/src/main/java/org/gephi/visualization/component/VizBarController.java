@@ -297,7 +297,7 @@ public class VizBarController {
             showEdgeButton.setSelected(vizModel.isShowEdges());
             showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
             showEdgeButton.setIcon(
-                ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.png", false));
+                ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.svg", false));
             showEdgeButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -323,7 +323,7 @@ public class VizBarController {
             edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
             edgeHasNodeColorButton
                 .setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
-            edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.png", false));
+            edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.svg", false));
             edgeHasNodeColorButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

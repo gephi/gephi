@@ -115,7 +115,7 @@ public class TextColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/TextColorMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/TextColorMode.svg", false);
     }
 
     @Override

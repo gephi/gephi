@@ -115,7 +115,7 @@ public class MedianNumber implements AttributeColumnsMergeStrategy, GeneralColum
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/ui-slider-050.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/ui-slider-050.svg", false);
     }
 
     @Override

@@ -106,7 +106,7 @@ public class UniqueColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/UniqueColorMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/UniqueColorMode.svg", false);
     }
 
     @Override

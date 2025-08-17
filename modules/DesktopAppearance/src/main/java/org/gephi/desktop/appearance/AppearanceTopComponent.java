@@ -607,7 +607,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         partitionLocalScaleButton.setFocusable(false);
         controlToolbar.add(partitionLocalScaleButton);
 
-        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.png", false)); // NOI18N
+        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.svg", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N

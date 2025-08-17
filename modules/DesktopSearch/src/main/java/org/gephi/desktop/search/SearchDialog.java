@@ -428,7 +428,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         optionToolbar.setRollover(true);
 
-        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopSearch/filter.png", false)
+        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopSearch/filter.svg", false)
         );
         filterButton.setToolTipText(org.openide.util.NbBundle.getMessage(SearchDialog.class,
             "SearchDialog.filterButton.toolTipText")); // NOI18N
