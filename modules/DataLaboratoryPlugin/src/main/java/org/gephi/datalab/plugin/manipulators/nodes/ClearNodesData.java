@@ -124,7 +124,7 @@ public class ClearNodesData extends BasicNodesManipulator implements GeneralColu
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clear-data.svg", false);
     }
 
     @Override

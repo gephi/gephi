@@ -13,7 +13,7 @@
     </style>
   </defs>
   <path class="st1" d="M16,28h-8V4h8v6c.003,1.103.897,1.997,2,2h6v3h2v-5c.007-.266-.102-.522-.3-.7l-7-7c-.178-.198-.434-.307-.7-.3h-10c-1.103.003-1.997.897-2,2v24c.003,1.103.897,1.997,2,2h8v-2ZM18,4.4l5.6,5.6h-5.6v-5.6Z"/>
-  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="32" height="32"/>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="15.999999" height="15.999999"/>
   <circle class="st1" cx="15.627" cy="22" r="2"/>
   <circle class="st1" cx="14.419" cy="16" r="2"/>
   <circle class="st1" cx="28" cy="22" r="2"/>

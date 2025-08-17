@@ -60,7 +60,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("AppearancePluginUI/size.png", false);
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/size.svg", false);
         }
 
         @Override
@@ -81,7 +81,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("AppearancePluginUI/color.png", false);
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/color.svg", false);
         }
 
         @Override
@@ -102,7 +102,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelcolor.png", false);
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelcolor.svg", false);
         }
 
         @Override

@@ -12,7 +12,7 @@
       }
     </style>
   </defs>
-  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="32" height="32"/>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="15.999999" height="15.999999"/>
   <g>
     <polygon class="st1" points="12 2 12 4 16 4 20 4 20 2 16 2 12 2"/>
     <path class="st1" d="M2,4v4h2V4h4V2h-4c-1.104.001-1.999.896-2,2Z"/>

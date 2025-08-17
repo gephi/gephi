@@ -109,7 +109,7 @@ public class QueryChildren extends Children.Array {
 
         public HelpNode() {
             super(Children.LEAF);
-            setIconBaseWithExtension("DesktopFilters/drop.png");
+            setIconBaseWithExtension("DesktopFilters/drop.svg");
         }
 
         @Override

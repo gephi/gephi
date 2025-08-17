@@ -32,7 +32,7 @@ public final class SearchAction extends AbstractAction {
 
     SearchAction() {
         super(NbBundle.getMessage(SearchAction.class, "CTL_Search"),
-            ImageUtilities.loadImageIcon("DesktopSearch/search.png", false));
+            ImageUtilities.loadImageIcon("DesktopSearch/search.svg", false));
 
         uiModel = new SearchUIModel();
     }

@@ -114,7 +114,7 @@ public final class LanguageAction extends CallableSystemAction {
             if (lang.getCountry() != null) {
                 iconFile += "_" + lang.getCountry();
             }
-            iconFile += ".png";
+            iconFile += ".svg";
             Icon icon = ImageUtilities.loadImageIcon(iconFile, false);
             if (icon != null) {
                 menuItem.setIcon(icon);

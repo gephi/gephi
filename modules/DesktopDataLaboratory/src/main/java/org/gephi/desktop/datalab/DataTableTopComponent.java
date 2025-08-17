@@ -518,10 +518,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private void refreshAvailableColumnsButton(AvailableColumnsModel availableColumnsModel, Table table) {
         if (table.countColumns() > availableColumnsModel.getAvailableColumnsCount()) {
             availableColumnsButton.setIcon(
-                ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb--plus.png", true));
+                ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb--plus.svg", false));
         } else {
             availableColumnsButton
-                .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", true));
+                .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.svg", false));
         }
     }
 
@@ -708,7 +708,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         previousEdgeFilterColumns.clear();
         availableColumnsButton.setEnabled(false);
         availableColumnsButton
-            .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", true));
+            .setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.svg", false));
         labelFilter.setEnabled(false);
         bannerPanel.setVisible(false);
         hideTable();
@@ -1009,7 +1009,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     for (final Column column : availableColumns) {
 
                         button = new JCommandMenuButton(column.getTitle(), ImageWrapperResizableIcon
-                            .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/column.png", false),
+                            .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/column.svg", false),
                                 new Dimension(16, 16)));
                         button.addActionListener(new ActionListener() {
 
@@ -1186,7 +1186,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             JCommandButton pluginsButton = new JCommandButton(NbBundle
                 .getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"),
                 ImageWrapperResizableIcon
-                    .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/puzzle--arrow.png", true),
+                    .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/puzzle--arrow.svg", false),
                         new Dimension(16, 16)));
             pluginsButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
             pluginsButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
@@ -1402,7 +1402,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
         controlToolbar.add(columnComboBox);
 
-        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.png", false)); // NOI18N
+        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/light-bulb.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(availableColumnsButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.text")); // NOI18N
         availableColumnsButton.setToolTipText(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class,
