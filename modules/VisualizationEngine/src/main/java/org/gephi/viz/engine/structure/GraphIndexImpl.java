@@ -168,27 +168,7 @@ public class GraphIndexImpl implements GraphIndex {
     @Override
     public Rect2D getGraphBoundaries() {
         final Graph visibleGraph = getVisibleGraph();
-        if (visibleGraph.getNodeCount() > 0) {
-            float minX = Float.MAX_VALUE;
-            float maxX = Float.MIN_VALUE;
-            float minY = Float.MAX_VALUE;
-            float maxY = Float.MIN_VALUE;
-
-            for (Node node : visibleGraph.getNodes()) {
-                final float x = node.x();
-                final float y = node.y();
-                final float size = node.size();
-
-                minX = x - size <= minX ? x - size : minX;
-                minY = y - size <= minY ? y - size : minY;
-                maxX = x + size >= maxX ? x + size : maxX;
-                maxY = y + size >= maxY ? y + size : maxY;
-            }
-
-            return new Rect2D(minX, minY, maxX, maxY);
-        } else {
-            return new Rect2D(0, 0, 0, 0);
-        }
+        return visibleGraph.getSpatialIndex().getBoundaries();
     }
 
     private Rect2D getCircleRect2D(float x, float y, float radius) {
