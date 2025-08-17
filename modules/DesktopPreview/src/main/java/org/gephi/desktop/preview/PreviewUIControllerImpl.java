@@ -250,6 +250,16 @@ public class PreviewUIControllerImpl implements PreviewUIController {
     }
 
     @Override
+    public void removePreset(PreviewPreset preset) {
+        presetUtils.removePreset(preset);
+    }
+
+    @Override
+    public boolean hasPreset(String name) {
+        return presetUtils.hasPreset(name);
+    }
+
+    @Override
     public void savePreset(String name) {
         if (model != null) {
             PreviewModel previewModel = previewController.getModel();

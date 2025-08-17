@@ -137,7 +137,7 @@
         <netbeans.version>RELEASE220</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.7.1</graphstore.version>
+        <graphstore.version>0.7.3</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -969,6 +969,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
                     <skipTests>true</skipTests>
                     <trimStackTrace>false</trimStackTrace>                                                              
                 </configuration>

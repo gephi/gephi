@@ -121,6 +121,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
 
     @Override
     public void resetPropertiesValues() {
+        setSize(50.0);
     }
 
     public Double getSize() {

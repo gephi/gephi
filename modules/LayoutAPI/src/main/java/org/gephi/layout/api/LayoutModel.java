@@ -52,7 +52,12 @@ import org.gephi.project.api.Workspace;
  * user interface. There is one model per {@link Workspace}
  * <p>
  * <code>PropertyChangeListener</code> can be used to receive events about
- * a change in the model.
+ * a change in the model. The events are the following:
+ * <ul>
+ *     <li><code>SELECTED_LAYOUT</code> : when the selected layout changes</li>
+ *     <li><code>RUNNING</code> : when the running flag changes</li>
+ *     <li><code>DEFAULTS_APPLIED</code> : when the default properties are applied to the layout</li>
+ * </ul>
  *
  * @author Mathieu Bastian
  */
@@ -60,6 +65,7 @@ public interface LayoutModel {
 
     String SELECTED_LAYOUT = "selectedLayout";
     String RUNNING = "running";
+    String DEFAULTS_APPLIED = "defaultsApplied";
 
     /**
      * Returns the currently selected layout or <code>null</code> if no
