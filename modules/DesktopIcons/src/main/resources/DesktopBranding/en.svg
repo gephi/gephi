@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" version="1.1" viewBox="0 0 640 480">
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 42.666 32">
   <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
   <defs>
     <style>
@@ -24,18 +24,19 @@
       }
     </style>
     <clipPath id="clippath">
-      <rect class="st0" x="0" y="0" width="640.003" height="480"/>
+      <rect class="st0" width="42.666" height="31.999"/>
     </clipPath>
   </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="42.666" height="32"/>
   <g class="st4">
     <g id="flag">
       <g id="g578">
-        <rect id="rect124" class="st3" x="-160" y="0" width="960.019" height="480.009"/>
+        <rect id="rect124" class="st3" x="-10.666" width="64" height="32"/>
         <g id="g584">
-          <path id="path146" class="st2" d="M-160,0v53.667l852.689,426.344h107.33v-53.665L-52.67.002h-107.33V0ZM800.019,0v53.665L-52.67,480.009h-107.33v-53.665L692.689,0h107.33Z"/>
-          <path id="path136" class="st2" d="M240.008,0v480.009h160.003V0h-160.003ZM-160,160.003v160.003h960.019v-160.003H-160Z"/>
-          <path id="path141" class="st1" d="M-160,192.004v96.002h960.019v-96.002H-160ZM272.008,0v480.009h96.002V0h-96.002Z"/>
-          <path id="path150" class="st1" d="M-160,480.009l320.006-160.003h71.553L-88.447,480.009h-71.553ZM-160,0L160.006,160.003h-71.553L-160,35.778V0ZM408.459,160.003L728.465,0h71.553l-320.006,160.003h-71.553ZM800.019,480.009l-320.006-160.003h71.553l248.453,124.226v35.777Z"/>
+          <path id="path146" class="st2" d="M-10.666,0v3.578l56.845,28.422h7.155v-3.578L-3.511,0h-7.155ZM53.334,0v3.578L-3.511,32h-7.155v-3.578L46.178,0h7.155,0Z"/>
+          <path id="path136" class="st2" d="M16,0v32h10.667V0h-10.667,0ZM-10.666,10.667v10.667h64v-10.667H-10.666Z"/>
+          <path id="path141" class="st1" d="M-10.666,12.8v6.4h64v-6.4H-10.666ZM18.133,0v32h6.4V0h-6.4Z"/>
+          <path id="path150" class="st1" d="M-10.666,32l21.333-10.667h4.77L-5.896,32h-4.77ZM-10.666,0L10.667,10.667h-4.77L-10.666,2.385V0ZM27.23,10.667L48.563,0h4.77l-21.333,10.667h-4.77,0ZM53.334,32l-21.333-10.667h4.77l16.563,8.282v2.385Z"/>
         </g>
       </g>
     </g>
