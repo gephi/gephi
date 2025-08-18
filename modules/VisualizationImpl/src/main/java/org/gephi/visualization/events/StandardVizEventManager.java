@@ -126,14 +126,15 @@ public class StandardVizEventManager {
         handlers = handlersList.toArray(new VisualizationEventTypeHandler[0]);
     }
 
-    public boolean processMouseEvent(Component parentComponent, VizEngineGraphCanvasManager canvasManager, VizEngine engine, MouseEvent mouseEvent) {
+    public boolean processMouseEvent(Component parentComponent, VizEngineGraphCanvasManager canvasManager,
+                                     VizEngine engine, MouseEvent mouseEvent) {
         previousMouseScreenPosition.set(mouseScreenPosition);
         previousMouseWorldPosition2d.set(mouseWorldPosition);
 
         mouseScreenPosition.set(mouseEvent.getX(), mouseEvent.getY());
         engine.screenCoordinatesToWorldCoordinates(
-                mouseScreenPosition.x, mouseScreenPosition.y,
-                mouseWorldPosition
+            mouseScreenPosition.x, mouseScreenPosition.y,
+            mouseWorldPosition
         );
 
         switch (mouseEvent.getEventType()) {
@@ -186,7 +187,7 @@ public class StandardVizEventManager {
                 mouseReleased(engine);
 
                 // Stop pressing thread if it was running
-                if(mouseEvent.getButton() == MOUSE_LEFT_BUTTON) {
+                if (mouseEvent.getButton() == MOUSE_LEFT_BUTTON) {
                     stopPressingThread();
                 }
 
@@ -212,7 +213,8 @@ public class StandardVizEventManager {
         }
 
         //Node Left click
-        final VisualizationEventTypeHandler nodeLeftClickHandler = handlers[VisualizationEvent.Type.NODE_LEFT_CLICK.ordinal()];
+        final VisualizationEventTypeHandler nodeLeftClickHandler =
+            handlers[VisualizationEvent.Type.NODE_LEFT_CLICK.ordinal()];
         if (nodeLeftClickHandler.hasListeners() && clickedNodes.length > 0) {
             if (nodeLeftClickHandler.dispatch(clickedNodes)) {
                 return true;
@@ -220,10 +222,11 @@ public class StandardVizEventManager {
         }
 
         //Mouse left click
-        final VisualizationEventTypeHandler mouseLeftClickHandler = handlers[VisualizationEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
+        final VisualizationEventTypeHandler mouseLeftClickHandler =
+            handlers[VisualizationEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
         if (mouseLeftClickHandler.hasListeners() && clickedNodes.length == 0) {
             return mouseLeftClickHandler.dispatch(
-                    getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition)
+                getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition)
             );
         }
 
@@ -240,7 +243,8 @@ public class StandardVizEventManager {
     public boolean mouseLeftPress(VizEngine engine) {
         final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
 
-        final VisualizationEventTypeHandler nodeLefPressingHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+        final VisualizationEventTypeHandler nodeLefPressingHandler =
+            handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
         if (nodeLefPressingHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
@@ -250,7 +254,8 @@ public class StandardVizEventManager {
             }
         }
 
-        final VisualizationEventTypeHandler nodeLefPressHandler = handlers[VisualizationEvent.Type.NODE_LEFT_PRESS.ordinal()];
+        final VisualizationEventTypeHandler nodeLefPressHandler =
+            handlers[VisualizationEvent.Type.NODE_LEFT_PRESS.ordinal()];
         if (nodeLefPressHandler.hasListeners()) {
             //Check if some node are selected
             final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
@@ -326,11 +331,12 @@ public class StandardVizEventManager {
         return handlers[VisualizationEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
     }
 
-    public boolean mouseRightClick(Component parentComponent, VizEngineGraphCanvasManager canvasManager, VizEngine engine) {
+    public boolean mouseRightClick(Component parentComponent, VizEngineGraphCanvasManager canvasManager,
+                                   VizEngine engine) {
         GraphContextMenu popupMenu = new GraphContextMenu();
         float globalScale = canvasManager.getSurfaceScale().orElse(1.0f);
         int x = (int) (mouseScreenPosition.x / globalScale);
-        int y = (int)(mouseScreenPosition.y / globalScale);
+        int y = (int) (mouseScreenPosition.y / globalScale);
         popupMenu.getMenu(engine).show(parentComponent, x, y);
 
         return handlers[VisualizationEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();

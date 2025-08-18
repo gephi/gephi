@@ -13,7 +13,7 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
-public class ScreenshotTask implements LongTask, Runnable{
+public class ScreenshotTask implements LongTask, Runnable {
 
     private static final String DATE_FORMAT_NOW = "HHmmss";
 
@@ -60,7 +60,8 @@ public class ScreenshotTask implements LongTask, Runnable{
                             .getMessage(ScreenshotControllerImpl.class, "ScreenshotMaker.finishedMessage.message",
                                 file.getName());
                         JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg,
-                            NbBundle.getMessage(ScreenshotControllerImpl.class, "ScreenshotMaker.finishedMessage.title"),
+                            NbBundle.getMessage(ScreenshotControllerImpl.class,
+                                "ScreenshotMaker.finishedMessage.title"),
                             JOptionPane.INFORMATION_MESSAGE);
                     }
                 }

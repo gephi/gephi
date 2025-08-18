@@ -199,89 +199,106 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
 
         imagePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        labelHeight.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.labelHeight.text")); // NOI18N
+        labelHeight.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.labelHeight.text")); // NOI18N
 
-        labelWidth.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.labelWidth.text")); // NOI18N
+        labelWidth.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.labelWidth.text")); // NOI18N
 
-        widthTextField.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.widthTextField.text")); // NOI18N
+        widthTextField.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.widthTextField.text")); // NOI18N
 
-        labelAntiAliasing.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.labelAntiAliasing.text")); // NOI18N
+        labelAntiAliasing.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.labelAntiAliasing.text")); // NOI18N
 
-        antiAliasingCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0x", "2x", "4x", "8x", "16x" }));
+        antiAliasingCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"0x", "2x", "4x", "8x", "16x"}));
 
-        heightTextField.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.heightTextField.text")); // NOI18N
+        heightTextField.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.heightTextField.text")); // NOI18N
 
-        transparentBackgroundCheckbox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.transparentBackgroundCheckbox.text")); // NOI18N
+        transparentBackgroundCheckbox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.transparentBackgroundCheckbox.text")); // NOI18N
 
         javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(imagePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(imagePanelLayout.createSequentialGroup()
-                        .addComponent(labelAntiAliasing)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(transparentBackgroundCheckbox)
-                    .addGroup(imagePanelLayout.createSequentialGroup()
-                        .addComponent(labelWidth)
-                        .addGap(3, 3, 3)
-                        .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(labelHeight)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(imagePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(imagePanelLayout.createSequentialGroup()
+                            .addComponent(labelAntiAliasing)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(transparentBackgroundCheckbox)
+                        .addGroup(imagePanelLayout.createSequentialGroup()
+                            .addComponent(labelWidth)
+                            .addGap(3, 3, 3)
+                            .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 58,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(labelHeight)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 58,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(imagePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelWidth)
-                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelHeight)
-                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelAntiAliasing)
-                    .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(transparentBackgroundCheckbox)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGroup(imagePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelWidth)
+                        .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelHeight)
+                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                            javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelAntiAliasing)
+                        .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(transparentBackgroundCheckbox)
+                    .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        autoSaveCheckBox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.autoSaveCheckBox.text")); // NOI18N
+        autoSaveCheckBox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.autoSaveCheckBox.text")); // NOI18N
 
-        selectDirectoryButton.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.selectDirectoryButton.text")); // NOI18N
+        selectDirectoryButton.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class,
+            "ScreenshotSettingsPanel.selectDirectoryButton.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(autoSaveCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(selectDirectoryButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(autoSaveCheckBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(selectDirectoryButton)
+                            .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(autoSaveCheckBox)
-                    .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(autoSaveCheckBox)
+                        .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23,
+                            javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 }

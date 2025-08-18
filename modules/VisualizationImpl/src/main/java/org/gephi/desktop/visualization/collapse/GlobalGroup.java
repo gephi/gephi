@@ -17,7 +17,7 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class GlobalGroup implements  CollapseGroup, VisualizationPropertyChangeListener {
+public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeListener {
 
     private final JColorBlackWhiteSwitcher backgroundColorButton;
     private final JDropDownButton screenshotButton;
@@ -105,7 +105,7 @@ public class GlobalGroup implements  CollapseGroup, VisualizationPropertyChangeL
 
     @Override
     public JComponent[] getToolbarComponents() {
-        return new JComponent[]{backgroundColorButton, screenshotButton};
+        return new JComponent[] {backgroundColorButton, screenshotButton};
     }
 
     @Override

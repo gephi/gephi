@@ -48,7 +48,7 @@ import org.gephi.visualization.api.VisualizationEvent;
 /**
  * @author Mathieu Bastian
  */
-public class VizEvent extends EventObject implements VisualizationEvent  {
+public class VizEvent extends EventObject implements VisualizationEvent {
 
     private Type type;
     private Object data;
