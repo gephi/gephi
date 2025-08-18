@@ -82,8 +82,7 @@ public class RecentFiles extends AbstractAction implements DynamicMenuContent {
 
     @Override
     public JComponent[] getMenuPresenters() {
-        return new JComponent[0];
-//        return createMenu();
+        return createMenu();
     }
 
     @Override
