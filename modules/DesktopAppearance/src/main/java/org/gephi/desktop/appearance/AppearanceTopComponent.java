@@ -75,7 +75,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.appearance//Appearance//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "AppearanceTopComponent",
-    iconBase = "org/gephi/desktop/appearance/resources/small.png",
+    iconBase = "DesktopAppearance/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.appearance.AppearanceTopComponent")

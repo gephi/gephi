@@ -123,7 +123,7 @@ import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.datalab//DataTable//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "DataTableTopComponent",
-    iconBase = "DesktopDataLaboratory/small.png",
+    iconBase = "DesktopDataLaboratory/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"datalab"})
 @ActionID(category = "Window", id = "org.gephi.desktop.datalab.DataTableTopComponent")

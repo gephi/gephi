@@ -83,7 +83,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.preview//Preview//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "PreviewTopComponent",
-    iconBase = "org/gephi/desktop/preview/resources/preview.png",
+    iconBase = "DesktopPreview/preview.svg",
     persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewTopComponent")
