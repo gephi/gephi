@@ -13,9 +13,11 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PRO
 
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
@@ -42,7 +44,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     public static final int VERTEX_FLOATS = 2;
 
     private final int[] bufferName = new int[1];
-    private ManagedDirectBuffer rectangleVertexDataBuffer;
+    private ManagedDirectBuffer circleVertexDataBuffer;
     private GLBufferMutable vertexGLBuffer;
     private SelectionMouseVAO  vao;
     private boolean render = false;
@@ -53,7 +55,15 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final int[] intData = new int[1];
     private final byte[] booleanData = new byte[1];
 
+    private final NodeDiskVertexDataGenerator generator64;
+    private final int circleVertexCount64;
+    private final int firstVertex64;
+
     public SimpleMouseSelectionArrayDraw(VizEngine engine) {
+        generator64 = new NodeDiskVertexDataGenerator(64);
+        circleVertexCount64 = generator64.getVertexCount();
+        firstVertex64 = 0;
+
         this.engine = engine;
     }
 
@@ -82,8 +92,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             final float maxX =  mousePosition.x+100;
             final float maxY =  mousePosition.y+100;
 
-            final FloatBuffer floatBuffer = rectangleVertexDataBuffer.floatBuffer();
-
+            final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             final float[] rectangleVertexData = {
                 //Triangle 1:
                 minX,
@@ -100,8 +109,13 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
                 maxX,
                 minY
             };
+             float[] vertexData = Arrays.copyOf(generator64.getVertexData(),circleVertexCount64);
+            for(int vertexIndex=0;vertexIndex < circleVertexCount64;vertexIndex+=2){
+                vertexData[vertexIndex] =vertexData[vertexIndex]*100+ mousePosition.x ;
+                vertexData[vertexIndex+1] =vertexData[vertexIndex+1]*100+mousePosition.y;
 
-            floatBuffer.put(rectangleVertexData);
+            }
+            floatBuffer.put(vertexData);
             floatBuffer.position(0);
 
             vertexGLBuffer.bind(gl);
@@ -141,7 +155,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
                 gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             }
 
-            gl.glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT);
+            gl.glDrawArrays(GL_TRIANGLES, 0, circleVertexCount64);
 
             //Restore state:
             if (!blendEnabled) {
@@ -189,13 +203,12 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
-        rectangleVertexDataBuffer = new ManagedDirectBuffer(GL_FLOAT, Float.BYTES * VERTEX_COUNT * VERTEX_FLOATS);
+        circleVertexDataBuffer = new ManagedDirectBuffer(GL_FLOAT, Float.BYTES * circleVertexCount64 * VERTEX_FLOATS);
 
         vertexGLBuffer = new GLBufferMutable(bufferName[VERT_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
-        vertexGLBuffer.init(gl, Float.BYTES * VERTEX_COUNT * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+        vertexGLBuffer.init(gl, Float.BYTES * circleVertexCount64 * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
-
         vao = new SelectionMouseVAO(
             engine.getLookup().lookup(GLCapabilitiesSummary.class),
             engine.getLookup().lookup(OpenGLOptions.class)
