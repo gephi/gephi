@@ -20,27 +20,27 @@
       }
     </style>
     <clipPath id="clippath">
-      <rect class="st0" x="0" y="0" width="640" height="480"/>
+      <rect class="st0" y="0" width="640" height="480"/>
     </clipPath>
   </defs>
   <sodipodi:namedview id="namedview21" bordercolor="#666666" borderopacity="1" gridtolerance="10" guidetolerance="10" inkscape:current-layer="svg2" inkscape:cx="320" inkscape:cy="240" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-height="776" inkscape:window-maximized="1" inkscape:window-width="1215" inkscape:window-x="65" inkscape:window-y="24" inkscape:zoom="1.24375" objecttolerance="10" pagecolor="#ffffff" showgrid="false"/>
   <g class="st3">
     <g id="flag" inkscape:label="#g3000">
-      <rect id="rect6" class="st2" x="0" y="0" width="720" height="480"/>
+      <rect id="rect6" class="st2" y="0" width="720" height="480"/>
       <g id="use11">
         <polygon id="s" class="st1" points="77.679 178.249 120 48 162.321 178.249 51.524 97.751 188.476 97.751 77.679 178.249"/>
       </g>
       <g id="use13">
-        <polygon id="s1" data-name="s" class="st1" points="263.907 50.107 219.42 60.348 249.392 25.914 245.384 71.388 221.897 32.243 263.907 50.107"/>
+        <polygon id="s1" class="st1" points="263.907 50.107 219.42 60.348 249.392 25.914 245.384 71.388 221.897 32.243 263.907 50.107"/>
       </g>
       <g id="use15">
-        <polygon id="s2" data-name="s" class="st1" points="309.216 107.219 264.241 99.394 305.226 79.289 283.886 119.645 277.43 74.453 309.216 107.219"/>
+        <polygon id="s2" class="st1" points="309.216 107.219 264.241 99.394 305.226 79.289 283.886 119.645 277.43 74.453 309.216 107.219"/>
       </g>
       <g id="use17">
-        <polygon id="s3" data-name="s" class="st1" points="302.794 186.898 264.923 161.407 310.545 159.77 274.598 187.91 287.14 144.015 302.794 186.898"/>
+        <polygon id="s3" class="st1" points="302.794 186.898 264.923 161.407 310.545 159.77 274.598 187.91 287.14 144.015 302.794 186.898"/>
       </g>
       <g id="use19">
-        <polygon id="s4" data-name="s" class="st1" points="246.349 239.145 221.259 201.007 263.974 217.114 219.95 229.191 248.468 193.543 246.349 239.145"/>
+        <polygon id="s4" class="st1" points="246.349 239.145 221.259 201.007 263.974 217.114 219.95 229.191 248.468 193.543 246.349 239.145"/>
       </g>
     </g>
   </g>
