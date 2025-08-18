@@ -22,6 +22,11 @@ public class GraphSelectionImpl implements GraphSelection {
     }
 
     @Override
+    public void setMouseSelectionDiameter(float radius) {
+
+    }
+
+    @Override
     public boolean someNodesOrEdgesSelection() {
         return !nodes.isEmpty() || !edges.isEmpty();
     }
@@ -210,5 +215,16 @@ public class GraphSelectionImpl implements GraphSelection {
     @Override
     public Vector2f getRectangleCurrentPosition() {
         return this.rectangleSelectionCurrentPosition;
+    }
+
+    private Vector2f mousePosition;
+    @Override
+    public void updateMousePosition(Vector2f mousePosition) {
+        this.mousePosition = mousePosition;
+    }
+
+    @Override
+    public Vector2f getMousePosition() {
+        return mousePosition;
     }
 }
