@@ -58,6 +58,9 @@ public class GraphGenerator {
         GraphController controller = Lookup.getDefault().lookup(GraphController.class);
         if (model == null) {
             this.graphModel = GraphModel.Factory.newInstance(config == null ? controller.getDefaultConfigurationBuilder().build() : config);
+            if (this.workspace != null) {
+                this.workspace.add(this.graphModel);
+            }
         } else if (config != null && !model.getConfiguration().equals(config)) {
             throw new RuntimeException("GraphModel configuration differs between the passed configuration and the existing one");
         } else {

@@ -8,14 +8,34 @@ import org.gephi.preview.plugin.builders.EdgeLabelBuilder;
 import org.gephi.preview.plugin.builders.NodeLabelBuilder;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.plugin.items.NodeLabelItem;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectController;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.openide.util.Lookup;
 
 public class LabelBuilderTest {
 
+    private Project project;
+
+    @Before
+    public void setUp() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        project = pc.newProject();
+    }
+
+    @After
+    public void cleanUp() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.closeCurrentProject();
+        project = null;
+    }
+
     @Test
     public void testDefaultNullNodes() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().getGraph();
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
         Assert.assertEquals(0, items.length);
@@ -23,7 +43,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testDefaultNullEdges() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().getGraph();
 
         Item[] items = new EdgeLabelBuilder().getItems(graph);
         Assert.assertEquals(0, items.length);
@@ -31,7 +51,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testEmptyNodeLabel() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().getGraph();
+        Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().getGraph();
         graph.getNode(GraphGenerator.FIRST_NODE).setLabel("");
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
@@ -40,7 +60,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testNodeLabels() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().addNodeLabels().getGraph();
+        Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().addNodeLabels().getGraph();
 
         Item[] items = new NodeLabelBuilder().getItems(graph);
         Assert.assertEquals(graph.getNodeCount(), items.length);
@@ -50,7 +70,7 @@ public class LabelBuilderTest {
 
     @Test
     public void testEdgeLabels() {
-        Graph graph = GraphGenerator.build().generateTinyGraph().addEdgeLabels().getGraph();
+        Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().addEdgeLabels().getGraph();
 
         Item[] items = new EdgeLabelBuilder().getItems(graph);
         Assert.assertEquals(graph.getEdgeCount(), items.length);
