@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ 0.11.0, 0.10.2 ]
+    branches: [ 0.11.0, 0.10.2. 0.11.0-fix-release2]
 
 jobs:
   build-base:
@@ -64,7 +64,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Upload autoupdate output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: autoupdate-output
           path: modules/application/target/autoupdate_site
@@ -75,7 +75,7 @@ jobs:
         run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst -C ~/.m2/repository/org/gephi .
 
       - name: Upload modules output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: modules-output
           path: /tmp/modules.tar.zst
