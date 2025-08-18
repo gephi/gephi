@@ -1,5 +1,7 @@
 package org.gephi.io.importer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,8 +16,12 @@ import org.openide.util.Lookup;
 
 public class GraphImporter {
 
+    public static GraphModel importGraph(File file) {
+        Container container = importContainer(file);
+        return importContainer(container);
+    }
+
     public static GraphModel importGraph(Class resourceLocation, String filename) {
-        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
         Processor processor = Lookup.getDefault().lookup(Processor.class);
         if (processor == null) {
             throw new RuntimeException(
@@ -25,10 +31,24 @@ public class GraphImporter {
         pc.newProject();
 
         Container container = importContainer(resourceLocation, filename);
+        return importContainer(container);
+    }
+
+    private static GraphModel importContainer(Container container) {
+        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
         importController.process(container);
 
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         return graphController.getGraphModel();
+    }
+
+    public static Container importContainer(File file) {
+        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+        try {
+            return importController.importFile(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to import file: " + file.getAbsolutePath(), e);
+        }
     }
 
     public static Container importContainer(Class resourceLocation, String fileName) {
