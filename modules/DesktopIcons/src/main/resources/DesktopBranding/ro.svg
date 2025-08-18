@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="svg548" xmlns="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" version="1.1" viewBox="0 0 640 480">
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 42.666 32">
   <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
   <defs>
     <style>
       .st0 {
-        fill: #de2110;
+        fill: none;
       }
 
       .st1 {
-        fill: #ffde00;
+        fill: #de2110;
       }
 
       .st2 {
+        fill: #ffde00;
+      }
+
+      .st3 {
         fill: #00319c;
       }
     </style>
   </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="42.666" height="32"/>
+  <sodipodi:namedview id="namedview3756" bordercolor="#666666" borderopacity="1" gridtolerance="10" guidetolerance="10" objecttolerance="10" pagecolor="#ffffff" showgrid="false"/>
   <g id="flag">
     <g id="g555">
-      <rect id="rect551" class="st2" y="0" width="213.333" height="480"/>
-      <rect id="rect552" class="st1" x="213.333" y="0" width="213.333" height="480"/>
-      <rect id="rect553" class="st0" x="426.666" y="0" width="213.333" height="480"/>
+      <rect id="rect551" class="st3" x="0" width="14.222" height="32"/>
+      <rect id="rect552" class="st2" x="14.222" width="14.222" height="32"/>
+      <rect id="rect553" class="st1" x="28.444" width="14.222" height="32"/>
     </g>
   </g>
 </svg>
