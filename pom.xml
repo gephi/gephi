@@ -149,7 +149,7 @@
         <gephi.minor.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}</gephi.minor.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.release>11</gephi.javac.release>
+        <gephi.javac.release>17</gephi.javac.release>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
         <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
         <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
@@ -255,7 +255,7 @@
 
         <gephi.build-helper-maven-plugin.version>3.6.0</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>14.3</gephi.nbm-maven-plugin.version>
         
         <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
@@ -1275,7 +1275,7 @@
                             <detectOfflineLinks>true</detectOfflineLinks>   
                             <quiet>false</quiet>
                             <doclint>none</doclint>
-                            <source>11</source>
+                            <source>17</source>
                         </configuration>
                         <executions>
                             <execution> 
