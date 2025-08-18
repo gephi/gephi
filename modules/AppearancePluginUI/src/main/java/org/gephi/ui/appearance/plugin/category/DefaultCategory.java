@@ -123,7 +123,7 @@ public class DefaultCategory {
 
         @Override
         public Icon getIcon() {
-            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelsize.png", false);
+            return ImageUtilities.loadImageIcon("AppearancePluginUI/labelsize.svg", false);
         }
 
         @Override
