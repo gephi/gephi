@@ -1,10 +1,10 @@
 package org.gephi.viz.engine.jogl.pipeline.indirect.updaters;
 
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.pipeline.PipelineCategory;
+import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
+import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
 import org.gephi.viz.engine.structure.GraphIndexImpl;
 

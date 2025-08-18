@@ -1,8 +1,9 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
+import static org.gephi.viz.engine.util.gl.Buffers.bufferElementBytes;
+
 import com.jogamp.opengl.GL;
 import java.nio.Buffer;
-import static org.gephi.viz.engine.util.gl.Buffers.bufferElementBytes;
 
 /**
  *
@@ -115,7 +116,9 @@ public class GLBufferImmutable implements GLBuffer {
 
     private void ensureCapacity(GL gl, long neededBytes) {
         if (sizeBytes < neededBytes) {
-            throw new UnsupportedOperationException("This buffer is immutable and needed capacity (" + neededBytes + ") is not enough. Size = " + sizeBytes);
+            throw new UnsupportedOperationException(
+                "This buffer is immutable and needed capacity (" + neededBytes + ") is not enough. Size = " +
+                    sizeBytes);
         }
     }
 
@@ -155,7 +158,7 @@ public class GLBufferImmutable implements GLBuffer {
             throw new IllegalStateException("You should initialize the buffer first!");
         }
 
-        gl.glDeleteBuffers(1, new int[]{id}, 0);
+        gl.glDeleteBuffers(1, new int[] {id}, 0);
         sizeBytes = -1;
     }
 

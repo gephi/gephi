@@ -1,5 +1,7 @@
 package org.gephi.viz.engine.jogl;
 
+import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
+
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
@@ -7,14 +9,12 @@ import com.jogamp.newt.event.awt.AWTKeyAdapter;
 import com.jogamp.newt.event.awt.AWTMouseAdapter;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL;
-import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 import java.awt.Frame;
-import static java.awt.SystemColor.window;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.Profile;
@@ -25,7 +25,8 @@ import org.gephi.viz.engine.util.TimeUtils;
  *
  * @author Eduardo Ramos
  */
-public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, com.jogamp.newt.event.KeyListener, com.jogamp.newt.event.MouseListener {
+public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, com.jogamp.newt.event.KeyListener,
+    com.jogamp.newt.event.MouseListener {
 
     private final GLAutoDrawable drawable;
 
@@ -64,7 +65,8 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
         } else if (drawable instanceof GLCanvas) {
             setup((GLCanvas) drawable);
         } else {
-            System.out.println(drawable.getClass() + " event bridge not supported yet. Be sure to manually setup your events listener");
+            System.out.println(drawable.getClass() +
+                " event bridge not supported yet. Be sure to manually setup your events listener");
         }
 
         listenersSetup = true;

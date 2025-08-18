@@ -2,6 +2,7 @@ package org.gephi.viz.engine.jogl.util.gl;
 
 import static com.jogamp.opengl.GL2ES2.GL_DEBUG_SEVERITY_LOW;
 import static com.jogamp.opengl.GL2ES2.GL_DEBUG_SEVERITY_NOTIFICATION;
+
 import com.jogamp.opengl.GLDebugListener;
 import com.jogamp.opengl.GLDebugMessage;
 
@@ -43,7 +44,8 @@ public class GlDebugOutput implements GLDebugListener {
     @Override
     public void messageSent(GLDebugMessage event) {
 
-        if (event.getDbgSeverity() == GL_DEBUG_SEVERITY_LOW || event.getDbgSeverity() == GL_DEBUG_SEVERITY_NOTIFICATION) {
+        if (event.getDbgSeverity() == GL_DEBUG_SEVERITY_LOW ||
+            event.getDbgSeverity() == GL_DEBUG_SEVERITY_NOTIFICATION) {
             System.out.println("GlDebugOutput.messageSent(): " + event);
         } else {
             System.err.println("GlDebugOutput.messageSent(): " + event);
@@ -51,8 +53,8 @@ public class GlDebugOutput implements GLDebugListener {
         if (null != message && message.equals(event.getDbgMsg()) && id == event.getDbgId()) {
             received = true;
         } else if (0 <= source && source == event.getDbgSource()
-                && type == event.getDbgType()
-                && severity == event.getDbgSeverity()) {
+            && type == event.getDbgType()
+            && severity == event.getDbgSeverity()) {
             received = true;
         }
     }

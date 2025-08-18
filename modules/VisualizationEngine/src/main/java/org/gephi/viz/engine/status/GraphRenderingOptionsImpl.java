@@ -1,6 +1,6 @@
 package org.gephi.viz.engine.status;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Objects;
 
 public class GraphRenderingOptionsImpl implements GraphRenderingOptions {

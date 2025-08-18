@@ -1,17 +1,18 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays;
 
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
-
 import java.nio.FloatBuffer;
-
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndexImpl;
-import static org.gephi.viz.engine.util.gl.Constants.*;
 
 /**
  *
@@ -48,7 +49,8 @@ public class ArrayDrawNodeData extends AbstractNodeData {
                                    final VizEngine engine,
                                    final float[] mvpFloats,
                                    final boolean isRenderingOutsideCircle) {
-        final int instanceCount = setupShaderProgramForRenderingLayer(gl, layer, engine, mvpFloats, isRenderingOutsideCircle);
+        final int instanceCount =
+            setupShaderProgramForRenderingLayer(gl, layer, engine, mvpFloats, isRenderingOutsideCircle);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);

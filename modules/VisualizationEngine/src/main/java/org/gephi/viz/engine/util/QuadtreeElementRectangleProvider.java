@@ -2,8 +2,8 @@ package org.gephi.viz.engine.util;
 
 /**
  *
- * @author Eduardo Ramos
  * @param <T>
+ * @author Eduardo Ramos
  */
 public interface QuadtreeElementRectangleProvider<T> {
 

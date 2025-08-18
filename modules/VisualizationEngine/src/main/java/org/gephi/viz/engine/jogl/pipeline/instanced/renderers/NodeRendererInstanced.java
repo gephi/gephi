@@ -1,8 +1,8 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced.renderers;
 
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;

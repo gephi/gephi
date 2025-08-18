@@ -1,13 +1,12 @@
 package org.gephi.viz.engine.spi;
 
-import org.gephi.viz.engine.pipeline.RenderingLayer;
-
 import java.util.EnumSet;
+import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
  *
- * @author Eduardo Ramos
  * @param <R>
+ * @author Eduardo Ramos
  */
 public interface Renderer<R extends RenderingTarget> extends PipelinedExecutor<R> {
 

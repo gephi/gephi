@@ -4,13 +4,13 @@ public class ArrayUtils {
 
     /**
      * Inspired in https://stackoverflow.com/questions/32452025/fastest-way-to-create-new-array-with-length-n-and-fill-it-by-repeating-a-given-a
-     *
+     * <p>
      * You must ensure there is enough length in the array to copy.
      *
-     * @param arr Array object, unsafe to use something that is not an array!
-     * @param offset Offset in the array to start repeating
+     * @param arr           Array object, unsafe to use something that is not an array!
+     * @param offset        Offset in the array to start repeating
      * @param elementsCount Elements count from the offset position to repeat
-     * @param times Times the elements should be repeated after the offset (including existing data)
+     * @param times         Times the elements should be repeated after the offset (including existing data)
      * @return Next index
      */
     public static int repeat(Object arr, int offset, int elementsCount, int times) {

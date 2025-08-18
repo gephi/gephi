@@ -1,11 +1,18 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays.renderers;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.EnumSet;
+import static com.jogamp.opengl.GL.GL_BLEND;
+import static com.jogamp.opengl.GL.GL_BLEND_DST_ALPHA;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_ONE_MINUS_SRC_ALPHA;
+import static com.jogamp.opengl.GL.GL_SRC_ALPHA;
+import static com.jogamp.opengl.GL.GL_TRIANGLES;
+import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.util.GLBuffers;
+import java.nio.FloatBuffer;
+import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -21,15 +28,6 @@ import org.gephi.viz.engine.util.gl.Constants;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2f;
 
-import static com.jogamp.opengl.GL.GL_BLEND;
-import static com.jogamp.opengl.GL.GL_BLEND_DST_ALPHA;
-import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_ONE_MINUS_SRC_ALPHA;
-import static com.jogamp.opengl.GL.GL_SRC_ALPHA;
-import static com.jogamp.opengl.GL.GL_TRIANGLES;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
     private final VizEngine engine;
 
@@ -79,7 +77,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
         vertexGLBuffer = new GLBufferMutable(bufferName[VERT_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
-        vertexGLBuffer.init(gl, Float.BYTES * VERTEX_COUNT * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+        vertexGLBuffer.init(gl, Float.BYTES * VERTEX_COUNT * VERTEX_FLOATS,
+            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
 
         vao = new SelectionRectangleVAO(
@@ -161,7 +160,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
             shaderProgram.use(gl);
             engine.getModelViewProjectionMatrixFloats(mvpFloats);
 
-            gl.glUniformMatrix4fv(shaderProgram.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
+            gl.glUniformMatrix4fv(shaderProgram.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false,
+                mvpFloats, 0);
 
             vao.use(gl);
 
@@ -218,7 +218,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
         @Override
         protected int[] getUsedAttributeLocations() {
-            return new int[]{
+            return new int[] {
                 SHADER_VERT_LOCATION
             };
         }

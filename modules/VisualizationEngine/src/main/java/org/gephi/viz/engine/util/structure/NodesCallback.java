@@ -1,12 +1,11 @@
 package org.gephi.viz.engine.util.structure;
 
+import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
+
+import java.util.Arrays;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.structure.GraphIndex.ElementsCallback;
-
-import java.util.Arrays;
-
-import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
 
 /**
  *
@@ -32,7 +31,7 @@ public class NodesCallback implements ElementsCallback<Node> {
     public void end(Graph graph) {
         //NOOP
     }
-    
+
     public void reset() {
         nodesArray = new Node[0];
         nextIndex = 0;
@@ -40,8 +39,8 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     public Iterable<Node> getNodes() {
         return Arrays
-                .asList(nodesArray)
-                .subList(0, nextIndex);
+            .asList(nodesArray)
+            .subList(0, nextIndex);
     }
 
     public Node[] getNodesArray() {

@@ -1,13 +1,12 @@
 package org.gephi.viz.engine.jogl.util;
 
-import com.jogamp.common.nio.Buffers;
+import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
+
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
-import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
 
 /**
  *
@@ -41,7 +40,8 @@ public class ManagedDirectBuffer {
         if (elementsCapacity < elements) {
             int newElementsCapacity = getNextPowerOf2(elements);
 
-            System.out.println("Growing managed direct buffer from " + elementsCapacity + " to " + newElementsCapacity + " elements");
+            System.out.println(
+                "Growing managed direct buffer from " + elementsCapacity + " to " + newElementsCapacity + " elements");
             Buffer newBuffer = GLBuffers.newDirectGLBuffer(glType, newElementsCapacity);
 
             buffer.clear();

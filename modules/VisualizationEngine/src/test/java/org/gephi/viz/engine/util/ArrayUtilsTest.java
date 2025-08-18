@@ -56,7 +56,7 @@ public class ArrayUtilsTest {
         }
 
         int nextIndex = ArrayUtils.repeat(arr, offset, elems, times - 1);
-        
+
         Assert.assertArrayEquals(expected, arr, 0.01f);
         Assert.assertEquals(arr.length, nextIndex);
     }
