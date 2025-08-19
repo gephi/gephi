@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ 0.11.0, 0.10.2, central-migration ]
+    branches: [ 0.11.0, 0.10.2 ]
 
 jobs:
   build-base:
