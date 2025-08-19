@@ -526,15 +526,6 @@
 
             <build>
                 <plugins>
-                    <!-- Enable artifact deploy -->
-<!--                    <plugin>-->
-<!--                        <groupId>org.sonatype.plugins</groupId>-->
-<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                        <configuration>-->
-<!--                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>-->
-<!--                        </configuration>-->
-<!--                    </plugin>-->
-
                     <!-- Permits NbModuleSuite to be run in integration-test phase: -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

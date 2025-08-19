@@ -1212,21 +1212,6 @@
                             <ignorePublishedComponents>true</ignorePublishedComponents>
                         </configuration>
                     </plugin>
-				
-                    <!-- Nexus staging, https://oss.sonatype.org/ -->
-<!--                    <plugin>-->
-<!--                        <groupId>org.sonatype.plugins</groupId>-->
-<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                        <extensions>true</extensions>-->
-<!--                        <configuration>-->
-<!--                            <serverId>ossrh</serverId>-->
-<!--                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-<!--                            <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
-<!--                            &lt;!&ndash; The create-modules profile overrides this &ndash;&gt;-->
-<!--                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>-->
-<!--                            <skipStagingRepositoryClose>true</skipStagingRepositoryClose>-->
-<!--                        </configuration>-->
-<!--                    </plugin>-->
                 </plugins>
             </build>
         </profile>
@@ -1316,13 +1301,7 @@
             <build>
                 <plugins>
                     <!-- Enable artifact deploy -->
-<!--                    <plugin>-->
-<!--                        <groupId>org.sonatype.plugins</groupId>-->
-<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                        <configuration>-->
-<!--                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>-->
-<!--                        </configuration>-->
-<!--                    </plugin>-->
+                    <!-- Not needed anymore after the migration from the nexus to the central maven plugin, but will keep the goal for now -->
                 </plugins>
             </build>
         </profile>
