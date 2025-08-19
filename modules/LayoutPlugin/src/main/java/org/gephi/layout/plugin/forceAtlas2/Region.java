@@ -46,7 +46,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.gephi.graph.api.Node;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionRegion;
 
 /**
  * Barnes Hut optimization
@@ -100,28 +101,20 @@ public class Region {
 
     public synchronized void buildSubRegions() {
         if (nodes.size() > 1) {
-            ArrayList<Node> leftNodes = new ArrayList<>();
-            ArrayList<Node> rightNodes = new ArrayList<>();
-            for (Node n : nodes) {
-                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? (leftNodes) : (rightNodes);
-                nodesColumn.add(n);
-            }
 
             ArrayList<Node> topleftNodes = new ArrayList<>();
             ArrayList<Node> bottomleftNodes = new ArrayList<>();
-            for (Node n : leftNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes);
-                nodesLine.add(n);
-            }
 
             ArrayList<Node> bottomrightNodes = new ArrayList<>();
             ArrayList<Node> toprightNodes = new ArrayList<>();
-            for (Node n : rightNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes);
-                nodesLine.add(n);
+            for (Node n : nodes) {
+                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ?
+                    ((n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes)) :
+                    ((n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes));
+                nodesColumn.add(n);
             }
 
-            if (topleftNodes.size() > 0) {
+            if (!topleftNodes.isEmpty()) {
                 if (topleftNodes.size() < nodes.size()) {
                     Region subregion = new Region(topleftNodes);
                     subregions.add(subregion);
@@ -134,7 +127,7 @@ public class Region {
                     }
                 }
             }
-            if (bottomleftNodes.size() > 0) {
+            if (!bottomleftNodes.isEmpty()) {
                 if (bottomleftNodes.size() < nodes.size()) {
                     Region subregion = new Region(bottomleftNodes);
                     subregions.add(subregion);
@@ -147,7 +140,7 @@ public class Region {
                     }
                 }
             }
-            if (bottomrightNodes.size() > 0) {
+            if (!bottomrightNodes.isEmpty()) {
                 if (bottomrightNodes.size() < nodes.size()) {
                     Region subregion = new Region(bottomrightNodes);
                     subregions.add(subregion);
@@ -160,7 +153,7 @@ public class Region {
                     }
                 }
             }
-            if (toprightNodes.size() > 0) {
+            if (!toprightNodes.isEmpty()) {
                 if (toprightNodes.size() < nodes.size()) {
                     Region subregion = new Region(toprightNodes);
                     subregions.add(subregion);
@@ -180,18 +173,18 @@ public class Region {
         }
     }
 
-    public void applyForce(Node n, RepulsionForce Force, double theta) {
+    public void applyForce(Node n, IRepulsionNode repulsionNode, IRepulsionRegion repulsionRegion, double theta) {
         if (nodes.size() < 2) {
             Node regionNode = nodes.get(0);
-            Force.apply(n, regionNode);
+            repulsionNode.accept(n, regionNode);
         } else {
             double distance = Math.sqrt(
                 (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
             if (distance * theta > size) {
-                Force.apply(n, this);
+                repulsionRegion.accept(n, this);
             } else {
                 for (Region subregion : subregions) {
-                    subregion.applyForce(n, Force, theta);
+                    subregion.applyForce(n, repulsionNode, repulsionRegion, theta);
                 }
             }
         }
