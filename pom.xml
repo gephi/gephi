@@ -1208,7 +1208,7 @@
                         <configuration>
                             <publishingServerId>central</publishingServerId>
                             <autoPublish>false</autoPublish>
-                            <deploymentName>${version}</deploymentName>
+                            <deploymentName>${project.version}</deploymentName>
                             <ignorePublishedComponents>true</ignorePublishedComponents>
                         </configuration>
                     </plugin>
