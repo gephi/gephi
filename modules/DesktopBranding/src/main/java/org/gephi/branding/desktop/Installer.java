@@ -102,11 +102,6 @@ public class Installer extends ModuleInstall {
         //GTK Slider issue #529913
         UIManager.put("Slider.paintValue", Boolean.FALSE);
 
-        //JTabbedPane issue JDK-8257595
-        if (UIUtils.isAquaLookAndFeel()) {
-            UIManager.put("TabbedPane.foreground", Color.BLACK);
-        }
-
         //Handler
         if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {
             Logger.getLogger("").addHandler(new ReporterHandler());
