@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-swingx</artifactId>
-            <version>3.3</version>
+            <version>3.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
