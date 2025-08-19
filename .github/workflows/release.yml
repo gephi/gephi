@@ -7,9 +7,6 @@ on:
 jobs:
   build-base:
     runs-on: ubuntu-latest
-    outputs:
-      staging-repository-id: ${{ steps.create-nexus-staging.outputs.staging-repository-id }}
-      project-version: ${{ steps.project.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
@@ -18,7 +15,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: ossrh
+          server-id: central
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -29,42 +26,20 @@ jobs:
         with:
           maven-version: 3.8.7
 
-      - name: Extract Maven project version
-        id: project
-        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-
       - name: Get NBM Keystore
         run: |
           echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
           gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
 
-      - name: Create Nexus Staging Repository
-        if:  ${{ !endsWith(steps.project.outputs.version, '-SNAPSHOT') }}
-        id: create-nexus-staging
-        run: |
-          stagingRepositoryId=$(mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:1.6.12:rc-open -DstagingProfileId=$OSSRH_STAGING_PROFILE_ID -DnexusUrl=https://oss.sonatype.org/ -DserverId=ossrh -DopenedRepositoryMessageFormat='stagingRepositoryId=%s' | grep -o 'stagingRepositoryId=.*' | cut -f2 -d=)
-          echo "Created Nexus Staging Repository Id: $stagingRepositoryId"
-          
-          if [ "$(echo $stagingRepositoryId | grep -o "\-" | wc -l)" != "1" ]; then
-            echo "Nexus repository creation failed"
-            exit 1
-          fi
-          echo "staging_repository_id=$stagingRepositoryId" >> $GITHUB_ENV
-          echo "::set-output name=staging-repository-id::$stagingRepositoryId"
-        env:
-          OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
-          OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
-          OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
-
       - name: Build and publish modules
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -DstagingRepositoryId=${{ env.staging_repository_id }} site deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} site deploy -P deployment,sign-artifacts,create-modules,create-sources,create-javadoc,create-autoupdate
         env:
           OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Upload autoupdate output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: autoupdate-output
           path: modules/application/target/autoupdate_site
@@ -75,7 +50,7 @@ jobs:
         run: tar -I 'zstd -9 -T0' -cf /tmp/modules.tar.zst -C ~/.m2/repository/org/gephi .
 
       - name: Upload modules output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: modules-output
           path: /tmp/modules.tar.zst
@@ -114,7 +89,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          server-id: ossrh
+          server-id: central
           server-username: OSSRH_USER
           server-password: OSSRH_PASS
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -154,7 +129,7 @@ jobs:
         if: runner.os == 'Windows'
 
       - name: Retrieve modules output
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: modules-output
 
@@ -179,7 +154,7 @@ jobs:
 
       - name: Build and publish bundle
         shell: bash
-        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.windows.codesign.password=$CODESIGN_PASSWORD -Dgephi.bundle.arch=${{ matrix.arch }} -DstagingRepositoryId=${{ needs.build-base.outputs.staging-repository-id }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
+        run: mvn --batch-mode -Djava.awt.headless=true -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID -Dgephi.windows.codesign.password=$CODESIGN_PASSWORD -Dgephi.bundle.arch=${{ matrix.arch }} deploy -P deployment,sign-artifacts,${{ matrix.task }}
         working-directory: modules/application
         env:
           OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
@@ -211,7 +186,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Retrieve autoupdate output
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: autoupdate-output
           path: modules/application/target/autoupdate_site
