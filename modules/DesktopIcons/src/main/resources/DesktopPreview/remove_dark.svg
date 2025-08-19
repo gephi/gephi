@@ -8,12 +8,13 @@
       }
 
       .st1 {
-        fill: #555;
+        fill: #aaa;
       }
     </style>
   </defs>
-  <rect class="st1" x="24" y="4" width="2" height="24"/>
-  <path class="st1" d="M18,6v20h-4V6h4M18,4h-4c-1.105,0-2,.895-2,2v20c0,1.105.895,2,2,2h4c1.105,0,2-.895,2-2V6c0-1.105-.895-2-2-2Z"/>
-  <rect class="st1" x="6" y="4" width="2" height="24"/>
+  <rect class="st1" x="12" y="12" width="2" height="12"/>
+  <rect class="st1" x="18" y="12" width="2" height="12"/>
+  <path class="st1" d="M4,6v2h2v20c0,1.105.895,2,2,2h16c1.105,0,2-.895,2-2V8h2v-2H4ZM8,28V8h16v20H8Z"/>
+  <rect class="st1" x="12" y="2" width="8" height="2"/>
   <rect id="_Transparent_Rectangle_" class="st0" y="0" width="32" height="32"/>
 </svg>
