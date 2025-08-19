@@ -33,7 +33,7 @@ If you run into any trouble or have questions consult our [discussions](https://
 
 ### Development builds
 
-Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml). Current version is 0.11.0-SNAPSHOT
+Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.0-SNAPSHOT
 
 - [gephi-0.11.0-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=windows-x64&p=exe) (Windows)
 
@@ -137,3 +137,4 @@ to extend the choice of license to its licensees as provided above.
 However, if you add GPL Version 3 code and therefore, elected the GPL
 Version 3 license, then the option applies only if the new code is
 made subject to such option by the copyright holder.
+
