@@ -167,7 +167,7 @@ public final class WelcomeTopComponent extends JPanel {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         for (Project project : pc.getAllProjects()) {
             if (project.hasFile()) {
-                JLabel iconLabel = new JLabel(ImageUtilities.loadImageIcon("WelcomeScreen/gephifile20.png", false));
+                JLabel iconLabel = new JLabel(ImageUtilities.loadImageIcon("WelcomeScreen/gephifile20.svg", false));
                 projectsPanel.add(iconLabel, "span 1 2, aligny top");
 
                 JXHyperlink link = new JXHyperlink(openFileAction);
@@ -288,7 +288,7 @@ public final class WelcomeTopComponent extends JPanel {
         setLayout(new java.awt.BorderLayout());
 
         header.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
-        header.setIcon(ImageUtilities.loadImageIcon("WelcomeScreen/logo_transparent_small.png", false)
+        header.setIcon(ImageUtilities.loadImageIcon("WelcomeScreen/logo_transparent_small.svg", false)
         );
         header.setTitle(org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
         header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize()+4f));

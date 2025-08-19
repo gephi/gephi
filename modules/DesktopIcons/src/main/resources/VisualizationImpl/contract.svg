@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #555;
+      }
+    </style>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="15.999999" height="15.999999"/>
+  <polygon class="st1" points="17 25.586 17 16.414 28.707 4.707 27.293 3.293 16 14.586 4.707 3.293 3.293 4.707 15 16.414 15 25.586 9.207 19.793 7.793 21.207 16 29.414 24.207 21.207 22.793 19.793 17 25.586"/>
+</svg>

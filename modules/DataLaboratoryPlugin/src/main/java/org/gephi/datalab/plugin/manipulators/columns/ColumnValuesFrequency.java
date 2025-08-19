@@ -116,7 +116,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/frequency-list.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/frequency-list.svg", false);
     }
 
     public String getReportHTML(Table table, Column column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart,

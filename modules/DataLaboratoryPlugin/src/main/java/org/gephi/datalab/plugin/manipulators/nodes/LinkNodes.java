@@ -128,7 +128,7 @@ public class LinkNodes extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edge.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edge.svg", false);
     }
 
     public Node[] getNodes() {

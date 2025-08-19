@@ -85,7 +85,7 @@ public class FilterBuilderNode extends AbstractNode {
             }
         } catch (Exception e) {
         }
-        return ImageUtilities.loadImage("DesktopFilters/funnel.png", false);
+        return ImageUtilities.loadImage("DesktopFilters/funnel.svg", false);
     }
 
     @Override

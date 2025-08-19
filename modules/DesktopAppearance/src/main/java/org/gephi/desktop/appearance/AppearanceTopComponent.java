@@ -75,7 +75,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.appearance//Appearance//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "AppearanceTopComponent",
-    iconBase = "org/gephi/desktop/appearance/resources/small.png",
+    iconBase = "DesktopAppearance/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.appearance.AppearanceTopComponent")
@@ -607,7 +607,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         partitionLocalScaleButton.setFocusable(false);
         controlToolbar.add(partitionLocalScaleButton);
 
-        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.png", false)); // NOI18N
+        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.svg", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N

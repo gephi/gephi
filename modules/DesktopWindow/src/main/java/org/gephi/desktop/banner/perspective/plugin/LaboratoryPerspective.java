@@ -59,7 +59,7 @@ public class LaboratoryPerspective implements Perspective {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DesktopWindow/laboratory.png", false);
+            .loadImageIcon("DesktopWindow/laboratory.svg", false);
     }
 
     @Override

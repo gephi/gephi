@@ -71,7 +71,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.statistics//Statistics//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "StatisticsTopComponent",
-    iconBase = "org/gephi/desktop/statistics/resources/small.png",
+    iconBase = "DesktopStatistics/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.statistics.StatisticsTopComponent")

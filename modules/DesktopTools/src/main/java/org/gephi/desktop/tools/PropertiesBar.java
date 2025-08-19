@@ -115,10 +115,10 @@ public class PropertiesBar extends JPanel {
         if (!UIUtils.isAquaLookAndFeel()) {
             JButton fullScreenButton = new JButton();
             fullScreenButton
-                .setIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_std.png", false));
+                .setIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_std.svg", false));
             fullScreenButton.setRolloverEnabled(true);
             fullScreenButton
-                .setRolloverIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_glow.png", false));
+                .setRolloverIcon(ImageUtilities.loadImageIcon("DesktopTools/gephilogo_glow.svg", false));
             fullScreenButton
                 .setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
             fullScreenButton.addActionListener(new ActionListener() {
