@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ 0.11.0, 0.10.2 ]
+    branches: [ 0.11.0, 0.10.2, java-17 ]
 
 jobs:
   build-base:
@@ -12,7 +12,7 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
@@ -87,7 +87,7 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
           server-id: central
           server-username: OSSRH_USER
@@ -179,10 +179,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Retrieve autoupdate output

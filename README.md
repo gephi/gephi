@@ -53,7 +53,7 @@ Consult the [**Javadoc**](https://javadoc.io/doc/org.gephi/gephi/latest/index.ht
 
 ### Requirements
 
-- Java JDK 11 (or later)
+- Java JDK 17 (or later)
 
 - [Apache Maven](http://maven.apache.org/) version 3.6.3 or later
 
@@ -72,7 +72,7 @@ Consult the [**Javadoc**](https://javadoc.io/doc/org.gephi/gephi/latest/index.ht
 		cd modules/application
 		mvn nbm:cluster-app nbm:run-platform
 
-Note that while Gephi can be built using JDK 11 or later, it currently requires JDK 11 to run.
+Note that while Gephi can be built using JDK 17 or later, it currently requires JDK 17 to run.
 
 ### Create Plug-ins
 
