@@ -197,7 +197,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
         divisionsComboBox = new javax.swing.JComboBox();
 
         configureBoxPlotButton.setIcon(
-            ImageUtilities.loadImageIcon("DataLaboratoryPlugin/wooden-box.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DataLaboratoryPlugin/wooden-box.svg", false)); // NOI18N
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
@@ -207,7 +207,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        configureScatterPlotButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/chart-up.png", false)); // NOI18N
+        configureScatterPlotButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/chart-up.svg", false)); // NOI18N
         configureScatterPlotButton.setText(org.openide.util.NbBundle
             .getMessage(GeneralNumberListStatisticsReportUI.class,
                 "GeneralNumberListStatisticsReportUI.configureScatterPlotButton.text_1")); // NOI18N
@@ -218,7 +218,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        showReportButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/application-block.png", false)); // NOI18N
+        showReportButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/application-block.svg", false)); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
@@ -246,7 +246,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
             }
         });
 
-        configureHistogramButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/chart.png", false)); // NOI18N
+        configureHistogramButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/chart.svg", false)); // NOI18N
         configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class,
             "GeneralNumberListStatisticsReportUI.configureHistogramButton.text")); // NOI18N
         configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {

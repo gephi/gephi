@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 42.666 32" width="21.333333" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #ffe600;
+      }
+
+      .st2 {
+        fill: red;
+      }
+    </style>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="42.666" height="32"/>
+  <g id="flag">
+    <rect id="rect171" class="st1" y="21.333" width="42.667" height="10.667"/>
+    <rect id="rect256" y="0" width="42.667" height="10.667"/>
+    <rect id="rect255" class="st2" y="10.667" width="42.667" height="10.667"/>
+  </g>
+</svg>

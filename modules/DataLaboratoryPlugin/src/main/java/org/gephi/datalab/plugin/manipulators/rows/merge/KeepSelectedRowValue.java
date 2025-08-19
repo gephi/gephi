@@ -109,6 +109,6 @@ public class KeepSelectedRowValue implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-select.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-select.svg", false);
     }
 }

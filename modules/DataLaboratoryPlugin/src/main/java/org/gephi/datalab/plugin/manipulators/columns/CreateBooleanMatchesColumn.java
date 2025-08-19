@@ -106,6 +106,6 @@ public class CreateBooleanMatchesColumn extends GeneralCreateColumnFromRegex {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/binocular--arrow.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-create-boolean-column.svg", false);
     }
 }

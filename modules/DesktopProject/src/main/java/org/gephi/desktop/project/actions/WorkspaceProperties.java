@@ -59,7 +59,7 @@ public final class WorkspaceProperties extends AbstractAction {
 
     WorkspaceProperties() {
         super(NbBundle.getMessage(WorkspaceProperties.class, "CTL_WorkspaceProperties"),
-            ImageUtilities.loadImageIcon("DesktopProject/workspaceProperties.gif", false));
+            ImageUtilities.loadImageIcon("DesktopProject/workspaceProperties.svg", false));
     }
 
     @Override

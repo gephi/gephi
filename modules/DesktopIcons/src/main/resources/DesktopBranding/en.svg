@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 42.666 32" width="21.333333" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #c00;
+      }
+
+      .st2 {
+        fill: #fff;
+      }
+
+      .st3 {
+        fill: #006;
+      }
+
+      .st4 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="st0" width="42.666" height="31.999"/>
+    </clipPath>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="42.666" height="32"/>
+  <g class="st4">
+    <g id="flag">
+      <g id="g578">
+        <rect id="rect124" class="st3" x="-10.666" width="64" height="32"/>
+        <g id="g584">
+          <path id="path146" class="st2" d="M-10.666,0v3.578l56.845,28.422h7.155v-3.578L-3.511,0h-7.155ZM53.334,0v3.578L-3.511,32h-7.155v-3.578L46.178,0h7.155,0Z"/>
+          <path id="path136" class="st2" d="M16,0v32h10.667V0h-10.667,0ZM-10.666,10.667v10.667h64v-10.667H-10.666Z"/>
+          <path id="path141" class="st1" d="M-10.666,12.8v6.4h64v-6.4H-10.666ZM18.133,0v32h6.4V0h-6.4Z"/>
+          <path id="path150" class="st1" d="M-10.666,32l21.333-10.667h4.77L-5.896,32h-4.77ZM-10.666,0L10.667,10.667h-4.77L-10.666,2.385V0ZM27.23,10.667L48.563,0h4.77l-21.333,10.667h-4.77,0ZM53.334,32l-21.333-10.667h4.77l16.563,8.282v2.385Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

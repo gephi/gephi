@@ -59,7 +59,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.layout//Layout//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "LayoutTopComponent",
-    iconBase = "org/gephi/desktop/layout/resources/small.png",
+    iconBase = "DesktopLayout/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.layout.LayoutTopComponent")

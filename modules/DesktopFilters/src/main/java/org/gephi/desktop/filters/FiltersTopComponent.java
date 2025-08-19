@@ -59,7 +59,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.filters//Filters//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "FiltersTopComponent",
-    iconBase = "DesktopFilters/small.png",
+    iconBase = "DesktopFilters/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.filters.FiltersTopComponent")

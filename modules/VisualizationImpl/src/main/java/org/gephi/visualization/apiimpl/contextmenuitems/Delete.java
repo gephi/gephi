@@ -92,7 +92,7 @@ public class Delete extends BasicItem {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/delete.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/delete.svg", false);
     }
 
     @Override
