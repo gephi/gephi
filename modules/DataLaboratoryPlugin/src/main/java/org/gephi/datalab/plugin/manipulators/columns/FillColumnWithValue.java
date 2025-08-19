@@ -106,6 +106,6 @@ public class FillColumnWithValue implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-duplicate-column.svg", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-fill-column.svg", false);
     }
 }

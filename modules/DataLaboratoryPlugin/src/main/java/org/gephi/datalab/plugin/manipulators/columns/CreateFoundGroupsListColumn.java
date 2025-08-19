@@ -107,6 +107,6 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/binocular--arrow.svg", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-create-list-column-matching-groups.svg", false);
     }
 }
