@@ -20,7 +20,7 @@ public interface GraphSelection {
         CUSTOM_SELECTION
     }
     void setMouseSelectionDiameter(float radius);
-
+    float getMouseSelectionDiameter();
     boolean someNodesOrEdgesSelection();
 
     boolean isNodeSelected(Node node);
@@ -76,5 +76,6 @@ public interface GraphSelection {
     Vector2f getRectangleCurrentPosition();
 
     void updateMousePosition(Vector2f updatedPosition);
+
     Vector2f getMousePosition();
 }

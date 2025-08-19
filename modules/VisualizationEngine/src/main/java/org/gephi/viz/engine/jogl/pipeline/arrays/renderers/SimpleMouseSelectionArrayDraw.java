@@ -80,39 +80,22 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
         final GraphSelection graphSelection = engine.getLookup().lookup(GraphSelection.class);
 
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
+            render = false;
             return;
         }
 
         final Vector2f mousePosition = graphSelection.getMousePosition();
+        float mouseSelectionDiameter = graphSelection.getMouseSelectionDiameter();
+        if (mousePosition != null && mouseSelectionDiameter!=1) {
 
-        if (mousePosition != null) {
-
-            final float minX = mousePosition.x-100;// Math.min(initialPosition.x, currentPosition.x);
-            final float minY = mousePosition.y-100;
-            final float maxX =  mousePosition.x+100;
-            final float maxY =  mousePosition.y+100;
 
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
-            final float[] rectangleVertexData = {
-                //Triangle 1:
-                minX,
-                minY,
-                minX,
-                maxY,
-                maxX,
-                minY,
-                //Triangle 2:
-                minX,
-                maxY,
-                maxX,
-                maxY,
-                maxX,
-                minY
-            };
-             float[] vertexData = Arrays.copyOf(generator64.getVertexData(),circleVertexCount64);
-            for(int vertexIndex=0;vertexIndex < circleVertexCount64;vertexIndex+=2){
-                vertexData[vertexIndex] =vertexData[vertexIndex]*100+ mousePosition.x ;
-                vertexData[vertexIndex+1] =vertexData[vertexIndex+1]*100+mousePosition.y;
+            // Vertex = 2 Float (xy)
+             float[] vertexData = Arrays.copyOf(generator64.getVertexData(),circleVertexCount64* VERTEX_FLOATS);
+
+            for(int vertexIndex=0;vertexIndex < circleVertexCount64* VERTEX_FLOATS;vertexIndex+=2){
+                vertexData[vertexIndex] =vertexData[vertexIndex]*mouseSelectionDiameter+ mousePosition.x ;
+                vertexData[vertexIndex+1] =vertexData[vertexIndex+1]*mouseSelectionDiameter+mousePosition.y;
 
             }
             floatBuffer.put(vertexData);

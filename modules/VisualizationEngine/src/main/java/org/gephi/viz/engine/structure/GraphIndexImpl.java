@@ -172,7 +172,7 @@ public class GraphIndexImpl implements GraphIndex {
     }
 
     private Rect2D getCircleRect2D(float x, float y, float radius) {
-        return new Rect2D(x - radius, y - radius, x + radius, y - radius);
+        return new Rect2D(x - radius, y - radius, x + radius, y + radius);
     }
 
     private NodeIterable filterNodeIterable(NodeIterable nodesIterable, Predicate<Node> predicate) {

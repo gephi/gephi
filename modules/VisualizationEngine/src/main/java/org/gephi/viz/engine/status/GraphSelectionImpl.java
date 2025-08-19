@@ -16,6 +16,7 @@ public class GraphSelectionImpl implements GraphSelection {
     private final Set<Node> nodesWithNeighbours = new HashSet<>();
     private final Set<Edge> edges = new HashSet<>();
     private GraphSelection.GraphSelectionMode selectionMode;
+    private float simpleMouseSelectionDiameter = 100;
 
     public GraphSelectionImpl() {
         this.selectionMode = GraphSelectionMode.SIMPLE_MOUSE_SELECTION;
@@ -23,9 +24,12 @@ public class GraphSelectionImpl implements GraphSelection {
 
     @Override
     public void setMouseSelectionDiameter(float radius) {
-
+        this.simpleMouseSelectionDiameter =  radius >= 1  ? radius:1;
     }
-
+    @Override
+    public float getMouseSelectionDiameter() {
+        return this.simpleMouseSelectionDiameter;
+    }
     @Override
     public boolean someNodesOrEdgesSelection() {
         return !nodes.isEmpty() || !edges.isEmpty();
