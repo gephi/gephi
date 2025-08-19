@@ -7,8 +7,6 @@ on:
 jobs:
   build-base:
     runs-on: ubuntu-latest
-    outputs:
-      project-version: ${{ steps.project.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
@@ -27,10 +25,6 @@ jobs:
         uses: stCarolas/setup-maven@v.4.5
         with:
           maven-version: 3.8.7
-
-      - name: Extract Maven project version
-        id: project
-        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
       - name: Get NBM Keystore
         run: |
