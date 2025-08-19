@@ -197,7 +197,7 @@ jobs:
           git config --global user.name "GitHub Actions"
 
       - name: Update autoupdate content on gh-pages
-        run: mvn validate scm-publish:publish-scm -P push-sitef
+        run: mvn validate scm-publish:publish-scm -P push-site
         working-directory: modules/application
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
