@@ -29,7 +29,9 @@ import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.gl.Constants;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
     private final VizEngine engine;
@@ -86,9 +88,21 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         final Vector2f mousePosition = graphSelection.getMousePosition();
         float mouseSelectionDiameter = graphSelection.getMouseSelectionDiameter();
-        if (mousePosition != null && mouseSelectionDiameter!=1) {
 
+        if (mousePosition != null && mouseSelectionDiameter>1) {
+            if(!graphSelection.getMouseSelectionDiameterZoomProportional()) {
+                Matrix4f mvp = new Matrix4f();
+                mvp.set(mvpFloats);
 
+                Vector3f scale = new Vector3f();
+
+                mvp.getScale(scale);
+               // System.out.println(scale);
+                graphSelection.setSimpleMouseSelectionMVPScale(scale.x);
+                //mouseSelectionDiameter = (float) ((mouseSelectionDiameter/scale.x)*0.001);
+
+            }
+            mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             // Vertex = 2 Float (xy)
              float[] vertexData = Arrays.copyOf(generator64.getVertexData(),circleVertexCount64* VERTEX_FLOATS);

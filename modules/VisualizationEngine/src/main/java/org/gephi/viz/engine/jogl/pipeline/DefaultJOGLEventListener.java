@@ -47,11 +47,13 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             //TODO: move to independent selection input listener
             if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION || graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
                 final Vector2f worldCoords = engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
-                final float radius = graphSelection.getMouseSelectionDiameter();
+                float radius = graphSelection.getMouseSelectionEffectiveDiameter();
+
                 if(radius<=1) {
                     inputActionsProcessor.selectNodesUnderPosition(worldCoords);
                     return;
                 }
+
                 inputActionsProcessor.selectNodesWithinRadius(worldCoords.x, worldCoords.y, radius);
 
             }

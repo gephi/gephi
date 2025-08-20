@@ -21,6 +21,15 @@ public interface GraphSelection {
     }
     void setMouseSelectionDiameter(float radius);
     float getMouseSelectionDiameter();
+    float getMouseSelectionEffectiveDiameter();
+
+    void setSimpleMouseSelectionMVPScale(float scale);
+    float getSimpleMouseSelectionMVPScale();
+
+    void setMouseSelectionDiameterZoomProportional(boolean isZoomProportional);
+    boolean getMouseSelectionDiameterZoomProportional();
+
+
     boolean someNodesOrEdgesSelection();
 
     boolean isNodeSelected(Node node);

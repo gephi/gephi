@@ -16,7 +16,9 @@ public class GraphSelectionImpl implements GraphSelection {
     private final Set<Node> nodesWithNeighbours = new HashSet<>();
     private final Set<Edge> edges = new HashSet<>();
     private GraphSelection.GraphSelectionMode selectionMode;
-    private float simpleMouseSelectionDiameter = 100;
+    private float simpleMouseSelectionDiameter = 100f;
+    private float simpleMouseSelectionMVPScale = 1.0f;
+    private boolean mouseSelectionDiameterZoomProportional = false;
 
     public GraphSelectionImpl() {
         this.selectionMode = GraphSelectionMode.SIMPLE_MOUSE_SELECTION;
@@ -29,6 +31,24 @@ public class GraphSelectionImpl implements GraphSelection {
     @Override
     public float getMouseSelectionDiameter() {
         return this.simpleMouseSelectionDiameter;
+    }
+    public void setSimpleMouseSelectionMVPScale(float scale) {
+                this.simpleMouseSelectionMVPScale = scale;
+    }
+    public float getSimpleMouseSelectionMVPScale() {
+        return   this.simpleMouseSelectionMVPScale;
+    }
+    public void setMouseSelectionDiameterZoomProportional(boolean isZoomProportional){
+        this.mouseSelectionDiameterZoomProportional = isZoomProportional;
+    }
+    public float getMouseSelectionEffectiveDiameter(){
+        if(this.mouseSelectionDiameterZoomProportional) {
+                return this.simpleMouseSelectionDiameter;
+        }
+        return (float) ((this.simpleMouseSelectionDiameter/this.simpleMouseSelectionMVPScale)*0.001);
+    }
+    public boolean getMouseSelectionDiameterZoomProportional() {
+       return this.mouseSelectionDiameterZoomProportional;
     }
     @Override
     public boolean someNodesOrEdgesSelection() {
