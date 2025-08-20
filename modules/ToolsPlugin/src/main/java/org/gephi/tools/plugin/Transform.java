@@ -42,17 +42,16 @@
 
 package org.gephi.tools.plugin;
 
-import java.awt.Color;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.spi.NodePressingEventListener;
+import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
-import org.gephi.ui.tools.plugin.PainterPanel;
+import org.gephi.ui.tools.plugin.SizerPanel;
+import org.gephi.ui.tools.plugin.TransformPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,85 +60,55 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
-public class Painter implements Tool {
-
-    private ToolEventListener[] listeners;
-    private PainterPanel painterPanel;
-    //Settings
-    private float[] color = {1f, 0f, 0f};
-    private final float intensity = 0.3f;
-
+public class Transform implements Tool {
+    TransformPanel panel;
     @Override
     public void select() {
     }
 
     @Override
     public void unselect() {
-        listeners = null;
-        painterPanel = null;
     }
 
     @Override
     public ToolEventListener[] getListeners() {
-        listeners = new ToolEventListener[1];
-        listeners[0] = new NodePressingEventListener() {
-            @Override
-            public void pressingNodes(Node[] nodes) {
-                color = painterPanel.getColor().getColorComponents(color);
-                for (Node node : nodes) {
-                    float r = node.r();
-                    float g = node.g();
-                    float b = node.b();
-                    r = intensity * color[0] + (1 - intensity) * r;
-                    g = intensity * color[1] + (1 - intensity) * g;
-                    b = intensity * color[2] + (1 - intensity) * b;
-                    node.setR(r);
-                    node.setG(g);
-                    node.setB(b);
-                }
-            }
-
-            @Override
-            public void released() {
-            }
-        };
-        return listeners;
+        return new ToolEventListener[0];
     }
+
 
     @Override
     public ToolUI getUI() {
         return new ToolUI() {
             @Override
             public JPanel getPropertiesBar(Tool tool) {
-                painterPanel = new PainterPanel();
-                painterPanel.setColor(new Color(color[0], color[1], color[2]));
-                return painterPanel;
+                panel = new TransformPanel();
+                return panel;
             }
 
             @Override
             public String getName() {
-                return NbBundle.getMessage(Painter.class, "Painter.name");
+                return NbBundle.getMessage(Transform.class, "Transform.name");
             }
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/painter.svg", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/transform.svg", false);
             }
 
             @Override
             public String getDescription() {
-                return NbBundle.getMessage(Painter.class, "Painter.description");
+                return NbBundle.getMessage(Transform.class, "Transform.description");
             }
 
             @Override
             public int getPosition() {
-                return 100;
+                return 205;
             }
         };
     }
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.NONE;
     }
 }

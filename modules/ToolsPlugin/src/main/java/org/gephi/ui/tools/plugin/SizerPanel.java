@@ -50,7 +50,7 @@ import java.text.DecimalFormat;
 public class SizerPanel extends javax.swing.JPanel {
 
     private float avgSize;
-    private DecimalFormat formatter;
+    private final DecimalFormat formatter;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelSize;

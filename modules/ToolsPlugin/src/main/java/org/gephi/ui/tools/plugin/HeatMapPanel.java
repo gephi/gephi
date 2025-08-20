@@ -66,10 +66,10 @@ import org.gephi.utils.PaletteUtils.Palette;
  */
 public class HeatMapPanel extends javax.swing.JPanel {
 
-    private PaletteComboBox paletteComboBox;
-    private GradientSlider slider;
-    private JCheckBox dontPaintUnreachableCheckbox;
-    private JCheckBox invertPaletteCheckbox;
+    private final PaletteComboBox paletteComboBox;
+    private final GradientSlider slider;
+    private final JCheckBox dontPaintUnreachableCheckbox;
+    private final JCheckBox invertPaletteCheckbox;
     private boolean usePalette = false;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel gradientPanel;
@@ -160,7 +160,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
     }
 
     public Color[] getGradientColors() {
-        return (Color[]) slider.getColors();
+        return slider.getColors();
     }
 
     public float[] getGradientPositions() {
@@ -261,10 +261,10 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
     private static class PaletteIcon implements Icon {
 
-        private static int COLOR_WIDTH = 13;
-        private static int COLOR_HEIGHT = 13;
-        private static Color BORDER_COLOR = new Color(0x444444);
-        private Color[] colors;
+        private static final int COLOR_WIDTH = 13;
+        private static final int COLOR_HEIGHT = 13;
+        private static final Color BORDER_COLOR = new Color(0x444444);
+        private final Color[] colors;
 
         public PaletteIcon(Color[] colors) {
             this.colors = colors;
@@ -294,7 +294,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
     private class PaletteComboBox extends JComboBox {
 
-        private Palette[] palettes;
+        private final Palette[] palettes;
 
         public PaletteComboBox(Palette[] pallettes) {
             super(pallettes);

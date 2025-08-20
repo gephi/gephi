@@ -137,7 +137,7 @@ public class DiffusionMethods {
         return nodeTree.toArray(new Node[0]);
     }
 
-    public static enum DiffusionMethod {
+    public enum DiffusionMethod {
 
         NONE("DiffusionMethod.None"),
         NEIGHBORS("DiffusionMethod.Neighbors"),

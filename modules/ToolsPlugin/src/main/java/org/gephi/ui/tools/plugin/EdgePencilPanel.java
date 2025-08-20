@@ -201,10 +201,6 @@ public class EdgePencilPanel extends javax.swing.JPanel {
 
     private void typeComboBoxActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
-        if (typeComboBox.getSelectedIndex() == 0) {
-            isDirected = true;
-        } else {
-            isDirected = false;
-        }
+        isDirected = typeComboBox.getSelectedIndex() == 0;
     }//GEN-LAST:event_typeComboBoxActionPerformed
 }
