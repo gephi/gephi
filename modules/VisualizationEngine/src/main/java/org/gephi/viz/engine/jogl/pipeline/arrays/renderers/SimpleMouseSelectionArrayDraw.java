@@ -42,7 +42,6 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
     private static final int VERT_BUFFER = 0;
 
-    public static final int VERTEX_COUNT = 6; // 2 triangles
     public static final int VERTEX_FLOATS = 2;
 
     private final int[] bufferName = new int[1];
@@ -59,22 +58,14 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
     private final NodeDiskVertexDataGenerator generator64;
     private final int circleVertexCount64;
-    private final int firstVertex64;
 
     public SimpleMouseSelectionArrayDraw(VizEngine engine) {
         generator64 = new NodeDiskVertexDataGenerator(64);
         circleVertexCount64 = generator64.getVertexCount();
-        firstVertex64 = 0;
 
         this.engine = engine;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-    public float getRadius() {
-        return this.radius;
-    }
     @Override
     public void worldUpdated(JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
@@ -97,9 +88,9 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
                 Vector3f scale = new Vector3f();
 
                 mvp.getScale(scale);
-               // System.out.println(scale);
+
                 graphSelection.setSimpleMouseSelectionMVPScale(scale.x);
-                //mouseSelectionDiameter = (float) ((mouseSelectionDiameter/scale.x)*0.001);
+
 
             }
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
@@ -204,7 +195,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         vertexGLBuffer = new GLBufferMutable(bufferName[VERT_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
-        vertexGLBuffer.init(gl, Float.BYTES * circleVertexCount64 * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+        vertexGLBuffer.init(gl, (long) Float.BYTES * circleVertexCount64 * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
             engine.getLookup().lookup(GLCapabilitiesSummary.class),

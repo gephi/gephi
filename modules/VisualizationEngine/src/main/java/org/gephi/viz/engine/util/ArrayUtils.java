@@ -73,6 +73,6 @@ public class ArrayUtils {
             number = number >> 1;
             power++;
         }
-        return (1 << power);
+        return (1L << power);
     }
 }

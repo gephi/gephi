@@ -23,7 +23,7 @@ public class ArrayUtilsTest {
         arr[2] = 2.5f;
         arr[3] = 4;
 
-        float expected[] = new float[arr.length];
+        float[] expected = new float[arr.length];
         for (int i = 0; i < times; i++) {
             System.arraycopy(arr, 0, expected, i * elems, elems);
         }
@@ -50,7 +50,7 @@ public class ArrayUtilsTest {
         arr[6] = -3;
         arr[7] = 5;
 
-        float expected[] = new float[arr.length];
+        float[] expected = new float[arr.length];
         for (int i = 0; i < times - 1; i++) {
             System.arraycopy(arr, offset, expected, offset + i * elems, elems);
         }

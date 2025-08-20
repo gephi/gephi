@@ -40,7 +40,7 @@ public interface GraphIndex {
 
     EdgeIterable getEdgesInsideCircle(float x, float y, float radius);
 
-    public interface ElementsCallback<T> extends Consumer<T> {
+    interface ElementsCallback<T> extends Consumer<T> {
 
         /**
          * Called when going to start receiving elements

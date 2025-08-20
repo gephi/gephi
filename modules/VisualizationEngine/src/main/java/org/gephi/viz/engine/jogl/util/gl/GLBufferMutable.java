@@ -62,14 +62,14 @@ public class GLBufferMutable implements GLBuffer {
         this.usage = usage;
         final int elementBytes = bufferElementBytes(buffer);
 
-        sizeBytes = buffer.capacity() * elementBytes;
+        sizeBytes = (long) buffer.capacity() * elementBytes;
 
         gl.glBufferData(type, sizeBytes, buffer, usage);
     }
 
     @Override
     public void update(GL gl, Buffer buffer) {
-        update(gl, buffer, buffer.remaining() * bufferElementBytes(buffer));
+        update(gl, buffer, (long) buffer.remaining() * bufferElementBytes(buffer));
     }
 
     @Override
