@@ -65,8 +65,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public boolean processEvent(NEWTEvent event) {
         if (event instanceof KeyEvent) {
             return false;
-        } else if (event instanceof MouseEvent) {
-            final MouseEvent mouseEvent = (MouseEvent) event;
+        } else if (event instanceof MouseEvent mouseEvent) {
 
             switch (event.getEventType()) {
                 case MouseEvent.EVENT_MOUSE_CLICKED:
