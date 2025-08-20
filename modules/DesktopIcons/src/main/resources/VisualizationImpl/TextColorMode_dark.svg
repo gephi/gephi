@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #aaa;
+      }
+    </style>
+  </defs>
+  <rect class="st1" x="15" y="6" width="13" height="2"/>
+  <rect class="st1" x="15" y="24" width="13" height="2"/>
+  <rect class="st1" x="4" y="15" width="13" height="2"/>
+  <path class="st1" d="M7,11c-2.209,0-4-1.791-4-4s1.791-4,4-4,4,1.791,4,4-1.791,4-4,4ZM7,5c-1.105,0-2,.895-2,2s.895,2,2,2,2-.895,2-2-.895-2-2-2Z"/>
+  <path class="st1" d="M7,29c-2.209,0-4-1.791-4-4s1.791-4,4-4,4,1.791,4,4-1.791,4-4,4ZM7,23c-1.105,0-2,.895-2,2s.895,2,2,2,2-.895,2-2-.895-2-2-2Z"/>
+  <path class="st1" d="M25,20c-2.209,0-4-1.791-4-4s1.791-4,4-4,4,1.791,4,4-1.791,4-4,4ZM25,14c-1.105,0-2,.895-2,2s.895,2,2,2,2-.895,2-2-.895-2-2-2Z"/>
+  <g id="_Transparent_Rectangle_">
+    <rect class="st0" y="0" width="32" height="32"/>
+  </g>
+</svg>

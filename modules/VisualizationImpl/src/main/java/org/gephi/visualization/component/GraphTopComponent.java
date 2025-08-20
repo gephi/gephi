@@ -74,6 +74,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
+    iconBase = "VisualizationImpl/graph.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")

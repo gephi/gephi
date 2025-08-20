@@ -123,8 +123,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             }
         });
 
-        RUN_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/run.png", false);
-        STOP_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/stop.png", false);
+        RUN_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/run.svg", false);
+        STOP_ICON = ImageUtilities.loadImageIcon("DesktopStatistics/stop.svg", false);
     }
 
     private void initUI(StatisticsUI ui) {

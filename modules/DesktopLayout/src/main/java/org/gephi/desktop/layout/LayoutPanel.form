@@ -89,7 +89,7 @@
               <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="LayoutPanel.presetsButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
-            <Property name="iconTextGap" type="int" value="0"/>
+            <Property name="iconTextGap" type="int" value="4"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="resetButton">

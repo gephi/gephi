@@ -16,10 +16,10 @@
     <name>DBDrivers</name>
 
     <properties>
-        <gephi.sqlite.version>3.46.1.0</gephi.sqlite.version>
-        <gephi.mysql.version>9.0.0</gephi.mysql.version>
-        <gephi.postgresql.version>42.7.4</gephi.postgresql.version>
-        <gephi.sqlserver.version>12.8.1.jre11</gephi.sqlserver.version>
+        <gephi.sqlite.version>3.50.3.0</gephi.sqlite.version>
+        <gephi.mysql.version>9.4.0</gephi.mysql.version>
+        <gephi.postgresql.version>42.7.7</gephi.postgresql.version>
+        <gephi.sqlserver.version>13.2.0.jre11</gephi.sqlserver.version>
     </properties>
 
     <dependencies>

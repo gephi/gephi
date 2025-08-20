@@ -1,185 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg19713" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="15.999999"
-   height="15.999999"
-   viewBox="0 0 4.2333333 4.2333333"
-   version="1.1"
-   id="svg19713"
-   xml:space="preserve"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs19710"><style
-       id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style><style
-       id="style48643">
-      .cls-1 {
-        fill: none;
+      .st1 {
+        fill: #555;
       }
-    </style><style
-       id="style49369">.cls-1{fill:none;}</style><style
-       id="style68473">.cls-1{fill:none;}</style><style
-       id="style34301">.cls-1{fill:none;}</style><style
-       id="style40867">.cls-1{fill:none;}</style><style
-       id="style3486">.cls-1{fill:none;}</style><style
-       id="style16714">.cls-1{fill:none;}</style><style
-       id="style16734">.cls-1{fill:none;}</style><style
-       id="style598">.cls-1{fill:none;}</style><style
-       id="style938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style953">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style988">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style6804">.cls-1{fill:none;}</style><style
-       id="style8295">.cls-1{fill:none;}</style><style
-       id="style9297">.cls-1{fill:none;}</style><style
-       id="style10710">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style640">.cls-1{fill:none;}</style><style
-       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1166">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1186">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1201">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2604">.cls-1{fill:none;}</style><style
-       id="style3041">.cls-1{fill:none;}</style><style
-       id="style34659">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1772">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style4214">.cls-1{fill:none;}</style><style
-       id="style5886">.cls-1{fill:none;}</style><style
-       id="style5923">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style5938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8494">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8509">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10257">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10280">.cls-1{fill:none;}</style><style
-       id="style11171">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1997">.cls-1{fill:none;}</style><style
-       id="style2928">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2943">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3863">.cls-1{fill:none;}</style><style
-       id="style3880">.cls-1{fill:none;}</style><style
-       id="style1078">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer54"
-     style="display:inline"
-     transform="translate(-50.800003,122.76667)"><g
-       id="g11952"
-       transform="matrix(0.50000003,0,0,0.50000003,-21.166669,-150.28334)"
-       style="display:inline;stroke-width:2"><rect
-         id="rect6084"
-         data-name="&lt;Transparent Rectangle&gt;"
-         class="cls-1"
-         width="15.999999"
-         height="15.999999"
-         x="207.43333"
-         y="67.73333"
-         style="display:inline;fill:none;stroke-width:0.529166"
-         transform="translate(-63.499999,-12.7)" /><path
-         id="path6082"
-         style="display:inline;fill:#6e6e6e;fill-opacity:1;stroke-width:0.529166"
-         d="m 213.0981,68.262499 -0.3731,0.373104 0.94981,0.949813 -0.94981,0.949813 0.3731,0.373104 0.94981,-0.949813 0.94982,0.949813 0.3731,-0.373104 -0.94981,-0.949813 0.94981,-0.949813 -0.3731,-0.373104 -0.94982,0.949813 z m -4.60644,0.529167 a 0.52916666,0.52916666 0 0 0 -0.52916,0.529167 v 5.291666 a 0.52916666,0.52916666 0 0 0 0.52916,0.529167 h 6.35 a 0.52916666,0.52916666 0 0 0 0.52917,-0.529167 v -3.175 h -0.52917 v 3.175 h -6.35 v -4.233333 h 3.70417 v -0.529167 h -3.70417 v -0.529166 h 3.70417 v -0.529167 z"
-         transform="translate(-63.499999,-12.7)" /></g></g><style
-     type="text/css"
-     id="style578">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style968">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style3690">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5365">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style596">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style660">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5861">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style25784">
-	.st0{fill:none;}
-</style></svg>
+    </style>
+  </defs>
+  <g id="layer54">
+    <g id="g11952">
+      <rect id="rect6084" class="st0" x="0" y="0" width="30.236" height="30.236"/>
+      <path id="path6082" class="st1" d="M10.705,1l-.705.705,1.795,1.795-1.795,1.795.705.705,1.795-1.795,1.795,1.795.705-.705-1.795-1.795,1.795-1.795-.705-.705-1.795,1.795-1.795-1.795ZM2,2c-.552,0-1,.448-1,1v10c0,.552.448,1,1,1h12c.552,0,1-.448,1-1h0v-6h-1v6H2v-8h7v-1H2v-1h7v-1H2Z"/>
+    </g>
+  </g>
+</svg>

@@ -116,6 +116,6 @@ public class MinimumNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/minus-white.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/minus-white.svg", false);
     }
 }

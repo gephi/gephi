@@ -104,7 +104,7 @@ public class Edit implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/edit.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/edit.svg", false);
             }
 
             @Override
