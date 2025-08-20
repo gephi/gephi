@@ -1,6 +1,5 @@
 package org.gephi.viz.engine.jogl.util.gl.capabilities;
 
-import com.jogamp.opengl.GL;
 import static com.jogamp.opengl.GL.GL_EXTENSIONS;
 import static com.jogamp.opengl.GL.GL_RENDERER;
 import static com.jogamp.opengl.GL.GL_VENDOR;
@@ -10,6 +9,8 @@ import static com.jogamp.opengl.GL2ES3.GL_CONTEXT_FLAGS;
 import static com.jogamp.opengl.GL2ES3.GL_MAJOR_VERSION;
 import static com.jogamp.opengl.GL2ES3.GL_MINOR_VERSION;
 import static com.jogamp.opengl.GL2ES3.GL_NUM_EXTENSIONS;
+
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public final class GLCapabilitiesSummary {
 
     private boolean check(int majorVersionRequire, int minorVersionRequire) {
         return (version.MAJOR_VERSION * 100 + version.MINOR_VERSION * 10)
-                >= (majorVersionRequire * 100 + minorVersionRequire * 10);
+            >= (majorVersionRequire * 100 + minorVersionRequire * 10);
     }
 
     public GLVersionData getVersion() {
@@ -697,7 +698,7 @@ public final class GLCapabilitiesSummary {
     public boolean isIndirectDrawSupported() {
         return
             extensions.ARB_draw_indirect &&
-            extensions.ARB_multi_draw_indirect &&
-            extensions.ARB_buffer_storage;
+                extensions.ARB_multi_draw_indirect &&
+                extensions.ARB_buffer_storage;
     }
 }

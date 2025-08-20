@@ -22,6 +22,9 @@ public class GLVersionData {
 
     @Override
     public String toString() {
-        return "GLVersionData{" + "PROFILE=" + PROFILE + ", MAJOR_VERSION=" + MAJOR_VERSION + ", MINOR_VERSION=" + MINOR_VERSION + ", CONTEXT_FLAGS=" + CONTEXT_FLAGS + ", NUM_EXTENSIONS=" + NUM_EXTENSIONS + ", RENDERER=" + RENDERER + ", VENDOR=" + VENDOR + ", VERSION=" + VERSION + ", SHADING_LANGUAGE_VERSION=" + SHADING_LANGUAGE_VERSION + '}';
+        return "GLVersionData{" + "PROFILE=" + PROFILE + ", MAJOR_VERSION=" + MAJOR_VERSION + ", MINOR_VERSION=" +
+            MINOR_VERSION + ", CONTEXT_FLAGS=" + CONTEXT_FLAGS + ", NUM_EXTENSIONS=" + NUM_EXTENSIONS + ", RENDERER=" +
+            RENDERER + ", VENDOR=" + VENDOR + ", VERSION=" + VERSION + ", SHADING_LANGUAGE_VERSION=" +
+            SHADING_LANGUAGE_VERSION + '}';
     }
 }

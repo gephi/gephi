@@ -365,7 +365,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         edgeQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
             "EdgeListPanel.edgeQueryTextField.text")); // NOI18N
 
-        testConnection.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/test_connection.png", false));
+        testConnection.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/test_connection.svg", false));
         testConnection.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
@@ -381,7 +381,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         configNameLabel.setText(
             org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configNameLabel.text")); // NOI18N
 
-        removeConfigurationButton.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/remove_config.png", false));
+        removeConfigurationButton.setIcon(ImageUtilities.loadImageIcon("ImportPluginUI/remove_config.svg", false));
         removeConfigurationButton.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class,
             "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
         removeConfigurationButton.setMargin(new java.awt.Insets(0, 4, 0, 2));

@@ -1,12 +1,18 @@
 package org.gephi.viz.engine.structure;
 
-import org.gephi.graph.api.*;
+import java.util.function.Predicate;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.util.EdgeIterableFilteredWrapper;
 import org.gephi.viz.engine.util.NodeIterableFilteredWrapper;
 import org.joml.Intersectionf;
-
-import java.util.function.Predicate;
 
 /**
  * <p>
@@ -43,8 +49,10 @@ public class GraphIndexImpl implements GraphIndex {
         final Graph visibleGraph = getVisibleGraph();
         visibleGraph.readLock();
         if (visibleGraph.getEdgeCount() > 0) {
-            edgesMinWeight = graphModel.getEdgeIndex(graphModel.getVisibleView()).getMinValue(edgeWeightColumn).floatValue();
-            edgesMaxWeight = graphModel.getEdgeIndex(graphModel.getVisibleView()).getMaxValue(edgeWeightColumn).floatValue();
+            edgesMinWeight =
+                graphModel.getEdgeIndex(graphModel.getVisibleView()).getMinValue(edgeWeightColumn).floatValue();
+            edgesMaxWeight =
+                graphModel.getEdgeIndex(graphModel.getVisibleView()).getMaxValue(edgeWeightColumn).floatValue();
         } else {
             edgesMinWeight = edgesMaxWeight = 1;
         }
@@ -115,18 +123,20 @@ public class GraphIndexImpl implements GraphIndex {
 
     @Override
     public NodeIterable getNodesUnderPosition(float x, float y) {
-        return filterNodeIterable(getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(x, y, 0)), node -> {
-            final float size = node.size();
+        return filterNodeIterable(getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(x, y, 0)),
+            node -> {
+                final float size = node.size();
 
-            return Intersectionf.testPointCircle(x, y, node.x(), node.y(), size * size);
-        });
+                return Intersectionf.testPointCircle(x, y, node.x(), node.y(), size * size);
+            });
     }
 
     @Override
     public NodeIterable getNodesInsideCircle(float centerX, float centerY, float radius) {
-        return filterNodeIterable(getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(centerX, centerY, radius)), node -> {
-            return Intersectionf.testCircleCircle(centerX, centerY, radius, node.x(), node.y(), node.size());
-        });
+        return filterNodeIterable(
+            getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(centerX, centerY, radius)), node -> {
+                return Intersectionf.testCircleCircle(centerX, centerY, radius, node.x(), node.y(), node.size());
+            });
     }
 
     @Override
@@ -134,7 +144,8 @@ public class GraphIndexImpl implements GraphIndex {
         return filterNodeIterable(getVisibleGraph().getSpatialIndex().getNodesInArea(rect), node -> {
             final float size = node.size();
 
-            return Intersectionf.testAarCircle(rect.minX, rect.minY, rect.maxX, rect.maxY, node.x(), node.y(), size * size);
+            return Intersectionf.testAarCircle(rect.minX, rect.minY, rect.maxX, rect.maxY, node.x(), node.y(),
+                size * size);
         });
     }
 
@@ -145,24 +156,27 @@ public class GraphIndexImpl implements GraphIndex {
             final Node target = edge.getTarget();
 
             //TODO: take width into account!
-            return Intersectionf.testAarLine(rect.minX, rect.minY, rect.maxX, rect.maxY, source.x(), source.y(), target.x(), target.y());
+            return Intersectionf.testAarLine(rect.minX, rect.minY, rect.maxX, rect.maxY, source.x(), source.y(),
+                target.x(), target.y());
         });
     }
 
     @Override
     public EdgeIterable getEdgesInsideCircle(float centerX, float centerY, float radius) {
-        return filterEdgeIterable(getVisibleGraph().getSpatialIndex().getEdgesInArea(getCircleRect2D(centerX, centerY, radius)), edge -> {
-            final Node source = edge.getSource();
-            final Node target = edge.getTarget();
+        return filterEdgeIterable(
+            getVisibleGraph().getSpatialIndex().getEdgesInArea(getCircleRect2D(centerX, centerY, radius)), edge -> {
+                final Node source = edge.getSource();
+                final Node target = edge.getTarget();
 
-            float x0 = source.x();
-            float y0 = source.y();
-            float x1 = target.x();
-            float y1 = target.y();
+                float x0 = source.x();
+                float y0 = source.y();
+                float x1 = target.x();
+                float y1 = target.y();
 
-            //TODO: take width into account!
-            return Intersectionf.testLineCircle(y0 - y1, x1 - x0, (x0 - x1) * y0 + (y1 - y0) * x0, centerX, centerY, radius);
-        });
+                //TODO: take width into account!
+                return Intersectionf.testLineCircle(y0 - y1, x1 - x0, (x0 - x1) * y0 + (y1 - y0) * x0, centerX, centerY,
+                    radius);
+            });
     }
 
     @Override

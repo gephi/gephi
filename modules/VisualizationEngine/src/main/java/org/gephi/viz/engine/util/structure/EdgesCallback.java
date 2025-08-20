@@ -1,12 +1,11 @@
 package org.gephi.viz.engine.util.structure;
 
+import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
+
+import java.util.Arrays;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.viz.engine.structure.GraphIndex.ElementsCallback;
-
-import java.util.Arrays;
-
-import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
 
 /**
  *
@@ -40,8 +39,8 @@ public class EdgesCallback implements ElementsCallback<Edge> {
 
     public Iterable<Edge> getEdges() {
         return Arrays
-                .asList(edgesArray)
-                .subList(0, nextIndex);
+            .asList(edgesArray)
+            .subList(0, nextIndex);
     }
 
     public Edge[] getEdgesArray() {

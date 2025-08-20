@@ -163,7 +163,7 @@ public class VizModel implements VisualisationModel {
      */
     public boolean isReady() {
         if (canvasManager.getEngine().isPresent()) {
-           return true;
+            return true;
         }
 
         return loadEngine();
@@ -349,8 +349,8 @@ public class VizModel implements VisualisationModel {
     public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
         Color oldValue = renderingOptions.getEdgeInSelectionColor();
         Color color = new Color(
-                edgeInSelectionColor[0], edgeInSelectionColor[1],
-                edgeInSelectionColor[2], edgeInSelectionColor[3]);
+            edgeInSelectionColor[0], edgeInSelectionColor[1],
+            edgeInSelectionColor[2], edgeInSelectionColor[3]);
         renderingOptions.setEdgeInSelectionColor(color);
 
         firePropertyChange("edgeInSelectionColor", oldValue, edgeInSelectionColor);
@@ -364,8 +364,8 @@ public class VizModel implements VisualisationModel {
     public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
         Color oldValue = renderingOptions.getEdgeOutSelectionColor();
         Color color = new Color(
-                edgeOutSelectionColor[0], edgeOutSelectionColor[1],
-                edgeOutSelectionColor[2], edgeOutSelectionColor[3]);
+            edgeOutSelectionColor[0], edgeOutSelectionColor[1],
+            edgeOutSelectionColor[2], edgeOutSelectionColor[3]);
         renderingOptions.setEdgeOutSelectionColor(color);
 
         firePropertyChange("edgeOutSelectionColor", oldValue, edgeOutSelectionColor);
@@ -379,8 +379,8 @@ public class VizModel implements VisualisationModel {
     public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
         Color oldValue = renderingOptions.getEdgeBothSelectionColor();
         Color color = new Color(
-                edgeBothSelectionColor[0], edgeBothSelectionColor[1],
-                edgeBothSelectionColor[2], edgeBothSelectionColor[3]);
+            edgeBothSelectionColor[0], edgeBothSelectionColor[1],
+            edgeBothSelectionColor[2], edgeBothSelectionColor[3]);
         renderingOptions.setEdgeBothSelectionColor(color);
         firePropertyChange("edgeBothSelectionColor", oldValue, edgeBothSelectionColor);
     }
@@ -410,7 +410,7 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
-    public boolean isShowEdgeLabels(){
+    public boolean isShowEdgeLabels() {
         return showEdgeLabels;
     }
 
@@ -543,7 +543,8 @@ public class VizModel implements VisualisationModel {
 
     public void fireSelectionChange() {
         //Copy to avoid possible concurrent modification:
-        final VisualizationPropertyChangeListener[] listenersCopy = vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
+        final VisualizationPropertyChangeListener[] listenersCopy =
+            vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
 
         final PropertyChangeEvent evt = new PropertyChangeEvent(this, "selection", null, null);
         for (VisualizationPropertyChangeListener l : listenersCopy) {
@@ -564,7 +565,8 @@ public class VizModel implements VisualisationModel {
         }
 
         //Copy to avoid possible concurrent modification:
-        final VisualizationPropertyChangeListener[] listenersCopy = vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
+        final VisualizationPropertyChangeListener[] listenersCopy =
+            vizController.listeners.toArray(new VisualizationPropertyChangeListener[0]);
 
         final PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
         for (VisualizationPropertyChangeListener l : listenersCopy) {
@@ -669,7 +671,7 @@ public class VizModel implements VisualisationModel {
 
                     } else if ("edgeScale".equalsIgnoreCase(name)) {
                         setEdgeScale(Float.parseFloat(reader.getAttributeValue(null, "value")));
-                    } else if("screenshotMaker".equalsIgnoreCase(name)) {
+                    } else if ("screenshotMaker".equalsIgnoreCase(name)) {
                         // TODO FIx
 //                        ScreenshotControllerImpl screenshotMaker = VizController.getInstance().getScreenshotMaker();
 //                        if (screenshotMaker != null) {

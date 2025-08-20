@@ -1,11 +1,12 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
+import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
+import static org.gephi.viz.engine.util.gl.Buffers.bufferElementBytes;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3ES3;
 import java.nio.Buffer;
-import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
-import static org.gephi.viz.engine.util.gl.Buffers.bufferElementBytes;
 
 /**
  *
@@ -118,7 +119,7 @@ public class GLBufferMutable implements GLBuffer {
             throw new IllegalStateException("You should initialize the buffer first!");
         }
 
-        gl.glDeleteBuffers(1, new int[]{id}, 0);
+        gl.glDeleteBuffers(1, new int[] {id}, 0);
         sizeBytes = -1;
     }
 

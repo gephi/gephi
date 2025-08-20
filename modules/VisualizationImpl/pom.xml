@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>gephi-parent</artifactId>
@@ -123,14 +124,14 @@
 
     <build>
         <plugins>
-<!--            <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>false</skipTests>
-        </configuration>
-      </plugin>-->
-            
+            <!--            <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                      <skipTests>false</skipTests>
+                    </configuration>
+                  </plugin>-->
+
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -145,10 +146,10 @@
                         <publicPackage>org.gephi.visualization.events</publicPackage>
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
                     </publicPackages>
-                    <nbmResources> 
-                        <nbmResource> 
-                            <directory>src/main/libs</directory> 
-                            <targetPath>modules/lib</targetPath> 
+                    <nbmResources>
+                        <nbmResource>
+                            <directory>src/main/libs</directory>
+                            <targetPath>modules/lib</targetPath>
                         </nbmResource>
                     </nbmResources>
                 </configuration>

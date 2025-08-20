@@ -19,9 +19,9 @@ public class IndirectDraw {
         if (engine.getLookup().lookup(OpenGLOptions.class).isDisableIndirectDrawing()) {
             return false;
         }
-        
+
         return drawable.getGLProfile().isGL4()
-                && engine.getLookup().lookup(GLCapabilitiesSummary.class).isIndirectDrawSupported();
+            && engine.getLookup().lookup(GLCapabilitiesSummary.class).isIndirectDrawSupported();
     }
 
 }

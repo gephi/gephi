@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -63,7 +62,8 @@ public class InputActionsProcessor {
         final Set<Node> selectionNeighbours = new HashSet<>();
         final Set<Edge> selectionEdges = new HashSet<>();
 
-        final boolean selectNeighbours = renderingOptions.isAutoSelectNeighbours() && mode != GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION;
+        final boolean selectNeighbours = renderingOptions.isAutoSelectNeighbours() &&
+            mode != GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION;
         try {
             while (iterator.hasNext()) {
                 final Node node = iterator.next();

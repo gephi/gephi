@@ -31,7 +31,8 @@ public class GraphIndexTest {
 
     @Test
     public void testMinMaxDynamicEdgeWeight() {
-        Configuration configuration = Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP).edgeWeightType(TimestampDoubleMap.class).build();
+        Configuration configuration = Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP)
+            .edgeWeightType(TimestampDoubleMap.class).build();
         GraphGenerator generator = GraphGenerator.build(configuration).generateTinyDynamicTimestampGraph();
         GraphModel graph = generator.getGraphModel();
         Edge edge = graph.getGraph().getEdge(GraphGenerator.FIRST_EDGE);
@@ -46,7 +47,8 @@ public class GraphIndexTest {
 
     @Test
     public void testMinMaxEdgeWeightInView() {
-        Configuration configuration = Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP).edgeWeightType(TimestampDoubleMap.class).build();
+        Configuration configuration = Configuration.builder().timeRepresentation(TimeRepresentation.TIMESTAMP)
+            .edgeWeightType(TimestampDoubleMap.class).build();
         GraphGenerator generator = GraphGenerator.build(configuration).generateTinyDynamicTimestampGraph();
         GraphModel graphModel = generator.getGraphModel();
         GraphView view = graphModel.createView();

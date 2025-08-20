@@ -1,8 +1,18 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
-import com.jogamp.opengl.GL;
 import static com.jogamp.opengl.GL.GL_FLOAT;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
@@ -12,14 +22,13 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
+import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
+import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
-import static org.gephi.viz.engine.util.gl.Constants.*;
-import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
-import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.EdgesCallback;
@@ -252,15 +261,21 @@ public class AbstractEdgeData {
 
     protected int updateDirectedData(
         final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount, final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor, final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
+        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
+        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
         final float[] attribs, int index
     ) {
-        return updateDirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray, graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor, attribs, index, null);
+        return updateDirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
+            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
+            attribs, index, null);
     }
 
     protected int updateDirectedData(
         final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount, final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor, final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
+        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
+        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
         final float[] attribs, int index, final FloatBuffer directBuffer
     ) {
         checkBufferIndexing(directBuffer, attribs, index);
@@ -271,7 +286,8 @@ public class AbstractEdgeData {
             return index;
         }
 
-        saveSelectionState(this.someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor);
+        saveSelectionState(this.someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor,
+            edgeOutSelectionColor, edgeInSelectionColor);
 
         int newEdgesCountUnselected = 0;
         int newEdgesCountSelected = 0;
@@ -377,15 +393,21 @@ public class AbstractEdgeData {
 
     protected int updateUndirectedData(
         final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount, final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor, final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
+        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
+        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
         final float[] attribs, int index
     ) {
-        return updateUndirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray, graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor, attribs, index, null);
+        return updateUndirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
+            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
+            attribs, index, null);
     }
 
     protected int updateUndirectedData(
         final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount, final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor, final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
+        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
+        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
         final float[] attribs, int index, final FloatBuffer directBuffer
     ) {
         checkBufferIndexing(directBuffer, attribs, index);
@@ -396,7 +418,8 @@ public class AbstractEdgeData {
             return index;
         }
 
-        saveSelectionState(someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor);
+        saveSelectionState(someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor,
+            edgeOutSelectionColor, edgeInSelectionColor);
 
         int newEdgesCountUnselected = 0;
         int newEdgesCountSelected = 0;
@@ -503,11 +526,14 @@ public class AbstractEdgeData {
     private void checkBufferIndexing(final FloatBuffer directBuffer, final float[] attribs, final int index) {
         if (directBuffer != null) {
             if (attribs.length % ATTRIBS_STRIDE != 0) {
-                throw new IllegalArgumentException("When filling a directBuffer, attribs buffer length should be a multiple of ATTRIBS_STRIDE = " + ATTRIBS_STRIDE);
+                throw new IllegalArgumentException(
+                    "When filling a directBuffer, attribs buffer length should be a multiple of ATTRIBS_STRIDE = " +
+                        ATTRIBS_STRIDE);
             }
 
             if (index % ATTRIBS_STRIDE != 0) {
-                throw new IllegalArgumentException("When filling a directBuffer, index should be a multiple of ATTRIBS_STRIDE = " + ATTRIBS_STRIDE);
+                throw new IllegalArgumentException(
+                    "When filling a directBuffer, index should be a multiple of ATTRIBS_STRIDE = " + ATTRIBS_STRIDE);
             }
         }
     }
@@ -519,7 +545,9 @@ public class AbstractEdgeData {
     private float edgeOutSelectionColor;
     private float edgeInSelectionColor;
 
-    private void saveSelectionState(final boolean someSelection, final boolean edgeSelectionColor, final GraphSelection graphSelection, final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor) {
+    private void saveSelectionState(final boolean someSelection, final boolean edgeSelectionColor,
+                                    final GraphSelection graphSelection, final float edgeBothSelectionColor,
+                                    final float edgeOutSelectionColor, final float edgeInSelectionColor) {
         this.someSelection = someSelection;
         this.edgeSelectionColor = edgeSelectionColor;
         this.graphSelection = graphSelection;
@@ -555,7 +583,8 @@ public class AbstractEdgeData {
         buffer[index + 6] = Float.intBitsToFloat(target.getRGBA());
     }
 
-    protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge, final int index) {
+    protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
+                                                                    final int index) {
         fillUndirectedEdgeAttributesDataBase(buffer, edge, index);
 
         buffer[index + 7] = Float.intBitsToFloat(edge.getRGBA());//Color
@@ -565,7 +594,8 @@ public class AbstractEdgeData {
         buffer[index + 9] = edge.getTarget().size();
     }
 
-    protected void fillUndirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index, final boolean selected) {
+    protected void fillUndirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
+                                                                 final boolean selected) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
@@ -630,7 +660,8 @@ public class AbstractEdgeData {
         buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
     }
 
-    protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge, final int index) {
+    protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
+                                                                  final int index) {
         fillDirectedEdgeAttributesDataBase(buffer, edge, index);
 
         //Color:
@@ -641,7 +672,8 @@ public class AbstractEdgeData {
         buffer[index + 8] = edge.getTarget().size();
     }
 
-    protected void fillDirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index, final boolean selected) {
+    protected void fillDirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
+                                                               final boolean selected) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
@@ -787,7 +819,8 @@ public class AbstractEdgeData {
 
         private final GLBuffer attributesBuffer;
 
-        public UndirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, GLBuffer attributesBuffer) {
+        public UndirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+                                  GLBuffer attributesBuffer) {
             super(capabilities, openGLOptions);
             this.attributesBuffer = attributesBuffer;
         }
@@ -796,7 +829,8 @@ public class AbstractEdgeData {
         protected void configure(GL2ES2 gl) {
             vertexGLBufferUndirected.bind(gl);
             {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, EdgeLineModelUndirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
+                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, EdgeLineModelUndirected.VERTEX_FLOATS, GL_FLOAT, false,
+                    0, 0);
             }
             vertexGLBufferUndirected.unbind(gl);
 
@@ -804,35 +838,43 @@ public class AbstractEdgeData {
             {
                 int stride = ATTRIBS_STRIDE * Float.BYTES;
                 int offset = 0;
-                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, EdgeLineModelUndirected.POSITION_SOURCE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, EdgeLineModelUndirected.POSITION_SOURCE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelUndirected.POSITION_SOURCE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION, EdgeLineModelUndirected.POSITION_TARGET_LOCATION, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION,
+                    EdgeLineModelUndirected.POSITION_TARGET_LOCATION, GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelUndirected.POSITION_TARGET_LOCATION * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, EdgeLineModelUndirected.SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, EdgeLineModelUndirected.SIZE_FLOATS, GL_FLOAT, false,
+                    stride, offset);
                 offset += EdgeLineModelUndirected.SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION, EdgeLineModelUndirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION,
+                    EdgeLineModelUndirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelUndirected.SOURCE_COLOR_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_TARGET_COLOR_LOCATION, EdgeLineModelUndirected.TARGET_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_TARGET_COLOR_LOCATION,
+                    EdgeLineModelUndirected.TARGET_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelUndirected.TARGET_COLOR_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelUndirected.COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelUndirected.COLOR_FLOATS * Float.BYTES,
+                    GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelUndirected.COLOR_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, EdgeLineModelDirected.SOURCE_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, EdgeLineModelDirected.SOURCE_SIZE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelDirected.SOURCE_SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, EdgeLineModelDirected.TARGET_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, EdgeLineModelDirected.TARGET_SIZE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
             }
             attributesBuffer.unbind(gl);
         }
 
         @Override
         protected int[] getUsedAttributeLocations() {
-            return new int[]{
+            return new int[] {
                 SHADER_VERT_LOCATION,
                 SHADER_POSITION_LOCATION,
                 SHADER_POSITION_TARGET_LOCATION,
@@ -848,7 +890,7 @@ public class AbstractEdgeData {
         @Override
         protected int[] getInstancedAttributeLocations() {
             if (instanced) {
-                return new int[]{
+                return new int[] {
                     SHADER_POSITION_LOCATION,
                     SHADER_POSITION_TARGET_LOCATION,
                     SHADER_SIZE_LOCATION,
@@ -869,7 +911,8 @@ public class AbstractEdgeData {
 
         private final GLBuffer attributesBuffer;
 
-        public DirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, GLBuffer attributesBuffer) {
+        public DirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+                                GLBuffer attributesBuffer) {
             super(capabilities, openGLOptions);
             this.attributesBuffer = attributesBuffer;
         }
@@ -878,7 +921,8 @@ public class AbstractEdgeData {
         protected void configure(GL2ES2 gl) {
             vertexGLBufferDirected.bind(gl);
             {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, EdgeLineModelDirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
+                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, EdgeLineModelDirected.VERTEX_FLOATS, GL_FLOAT, false, 0,
+                    0);
             }
             vertexGLBufferDirected.unbind(gl);
 
@@ -886,32 +930,39 @@ public class AbstractEdgeData {
             {
                 int stride = ATTRIBS_STRIDE * Float.BYTES;
                 int offset = 0;
-                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, EdgeLineModelDirected.POSITION_SOURCE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, EdgeLineModelDirected.POSITION_SOURCE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelDirected.POSITION_SOURCE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION, EdgeLineModelDirected.POSITION_TARGET_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION, EdgeLineModelDirected.POSITION_TARGET_FLOATS,
+                    GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelDirected.POSITION_TARGET_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, EdgeLineModelDirected.SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, EdgeLineModelDirected.SIZE_FLOATS, GL_FLOAT, false,
+                    stride, offset);
                 offset += EdgeLineModelDirected.SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION, EdgeLineModelDirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION,
+                    EdgeLineModelDirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelDirected.SOURCE_COLOR_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelDirected.COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelDirected.COLOR_FLOATS * Float.BYTES,
+                    GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelDirected.COLOR_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, EdgeLineModelDirected.SOURCE_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, EdgeLineModelDirected.SOURCE_SIZE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
                 offset += EdgeLineModelDirected.SOURCE_SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, EdgeLineModelDirected.TARGET_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, EdgeLineModelDirected.TARGET_SIZE_FLOATS,
+                    GL_FLOAT, false, stride, offset);
             }
             attributesBuffer.unbind(gl);
         }
 
         @Override
         protected int[] getUsedAttributeLocations() {
-            return new int[]{
+            return new int[] {
                 SHADER_VERT_LOCATION,
                 SHADER_POSITION_LOCATION,
                 SHADER_POSITION_TARGET_LOCATION,
@@ -926,7 +977,7 @@ public class AbstractEdgeData {
         @Override
         protected int[] getInstancedAttributeLocations() {
             if (instanced) {
-                return new int[]{
+                return new int[] {
                     SHADER_POSITION_LOCATION,
                     SHADER_POSITION_TARGET_LOCATION,
                     SHADER_SIZE_LOCATION,

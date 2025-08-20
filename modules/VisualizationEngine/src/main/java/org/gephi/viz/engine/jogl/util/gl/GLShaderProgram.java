@@ -1,8 +1,9 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
-import com.jogamp.opengl.GL2ES2;
 import static com.jogamp.opengl.GL2ES2.GL_FRAGMENT_SHADER;
 import static com.jogamp.opengl.GL2ES2.GL_VERTEX_SHADER;
+
+import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.glsl.ShaderCode;
 import com.jogamp.opengl.util.glsl.ShaderProgram;
 import java.util.HashMap;
@@ -58,15 +59,15 @@ public class GLShaderProgram {
         ShaderProgram shaderProgram = new ShaderProgram();
 
         ShaderCode vertShaderCode = ShaderCode.create(
-                gl, GL_VERTEX_SHADER, this.getClass(), srcRoot, null,
-                vertBasename, "vert", null, true
+            gl, GL_VERTEX_SHADER, this.getClass(), srcRoot, null,
+            vertBasename, "vert", null, true
         );
 
         shaderProgram.add(vertShaderCode);
         if (fragBasename != null) {
             ShaderCode fragShaderCode = ShaderCode.create(
-                    gl, GL_FRAGMENT_SHADER, this.getClass(), srcRoot, null,
-                    fragBasename, "frag", null, true
+                gl, GL_FRAGMENT_SHADER, this.getClass(), srcRoot, null,
+                fragBasename, "frag", null, true
             );
 
             shaderProgram.add(fragShaderCode);
@@ -82,7 +83,7 @@ public class GLShaderProgram {
                 gl.glBindAttribLocation(id, attribLocations.get(name), name);
             }
         }
-        
+
         shaderProgram.link(gl, System.out);
 
         // Get variables locations

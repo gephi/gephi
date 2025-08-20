@@ -166,7 +166,8 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     private static float[] toColorArray(Color color) {
-        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
+        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+            color.getAlpha() / 255f};
     }
 
     @Override
@@ -339,7 +340,7 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public void centerOn(float x, float y, float width, float height) {
         getModel().getEngine().ifPresent(
-            engine -> engine.centerOn(new Vector2f(x,y), width, height)
+            engine -> engine.centerOn(new Vector2f(x, y), width, height)
         );
     }
 
@@ -431,7 +432,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
         model.getSelectionModel().setSingleNodeSelection(singleNodeSelection);
-        if(singleNodeSelection) {
+        if (singleNodeSelection) {
             setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
         } else {
             setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
@@ -461,7 +462,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             model.getSelectionModel().currentEngineSelectionModel()
                 .ifPresent(GraphSelection::clearSelection);
             model.getSelectionModel().setCustomSelection(false);
-            if(model.getSelectionModel().isRectangleSelection()) {
+            if (model.getSelectionModel().isRectangleSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
             } else if (model.getSelectionModel().isSingleNodeSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);

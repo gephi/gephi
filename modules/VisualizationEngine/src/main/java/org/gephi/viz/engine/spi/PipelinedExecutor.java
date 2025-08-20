@@ -2,8 +2,8 @@ package org.gephi.viz.engine.spi;
 
 /**
  *
- * @author Eduardo Ramos
  * @param <R>
+ * @author Eduardo Ramos
  */
 public interface PipelinedExecutor<R extends RenderingTarget> {
 

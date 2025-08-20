@@ -139,7 +139,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/merge.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/merge.svg", false);
     }
 
     public Column[] getColumns() {

@@ -1,13 +1,14 @@
 package org.gephi.viz.engine.jogl;
 
-import com.jogamp.newt.event.NEWTEvent;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
 import static com.jogamp.opengl.GLProfile.GL2;
 import static com.jogamp.opengl.GLProfile.GL3;
 import static com.jogamp.opengl.GLProfile.GL4;
 import static com.jogamp.opengl.GLProfile.GLES2;
 import static com.jogamp.opengl.GLProfile.GLES3;
+
+import com.jogamp.newt.event.NEWTEvent;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.DefaultJOGLEventListener;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
@@ -52,7 +53,8 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
      * </ul>
      *
      */
-    public static final String[] GL_PROFILE_LIST_MAX_PROGSHADER_CORE_OR_GL2 = new String[]{GL4, GL3, GLES3, GL2, GLES2};
+    public static final String[] GL_PROFILE_LIST_MAX_PROGSHADER_CORE_OR_GL2 =
+        new String[] {GL4, GL3, GLES3, GL2, GLES2};
 
     public static GLCapabilities createCapabilities() {
         GLProfile.getDefaultDevice();

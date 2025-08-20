@@ -57,7 +57,9 @@ public class OpenGLOptions {
 
     @Override
     public String toString() {
-        return "OpenGLOptions{" + "disableIndirectDrawing=" + disableIndirectDrawing + ", disableInstancedDrawing=" + disableInstancedDrawing + ", disableVertexArrayDrawing=" + disableVertexArrayDrawing + ", disableVAOS=" + disableVAOS + ", debug=" + debug + '}';
+        return "OpenGLOptions{" + "disableIndirectDrawing=" + disableIndirectDrawing + ", disableInstancedDrawing=" +
+            disableInstancedDrawing + ", disableVertexArrayDrawing=" + disableVertexArrayDrawing + ", disableVAOS=" +
+            disableVAOS + ", debug=" + debug + '}';
     }
 
 }

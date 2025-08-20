@@ -1,34 +1,36 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import com.jogamp.opengl.GL;
 import static com.jogamp.opengl.GL.GL_FLOAT;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_INT;
+import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_TYPE_ARRAY;
+import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW;
+import static org.gephi.viz.engine.util.gl.Constants.NODER_BORDER_DARKEN_FACTOR;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INTS_COUNT;
+
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.NodeDiskModel;
 import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
+import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
+import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndexImpl;
-
-import static com.jogamp.opengl.GL.GL_UNSIGNED_INT;
-import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_TYPE_ARRAY;
-import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW;
-import static org.gephi.viz.engine.util.gl.Constants.*;
-import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INTS_COUNT;
-
-import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
-import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
@@ -119,7 +121,8 @@ public abstract class AbstractNodeData {
 
         if (indirectCommands) {
             commandsBufferBatch = new int[INDIRECT_DRAW_COMMAND_INTS_COUNT * BATCH_NODES_SIZE];
-            commandsBuffer = new ManagedDirectBuffer(GL_UNSIGNED_INT, INDIRECT_DRAW_COMMAND_INTS_COUNT * BATCH_NODES_SIZE);
+            commandsBuffer =
+                new ManagedDirectBuffer(GL_UNSIGNED_INT, INDIRECT_DRAW_COMMAND_INTS_COUNT * BATCH_NODES_SIZE);
         }
     }
 
@@ -171,7 +174,8 @@ public abstract class AbstractNodeData {
 
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
-            final float colorLightenFactor = engine.getLookup().lookup(GraphRenderingOptions.class).getLightenNonSelectedFactor();
+            final float colorLightenFactor =
+                engine.getLookup().lookup(GraphRenderingOptions.class).getLightenNonSelectedFactor();
             final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
             diskModel.useProgramWithSelectionUnselected(
                 gl,
@@ -219,7 +223,8 @@ public abstract class AbstractNodeData {
         //Selection:
         final boolean someSelection = selection.someNodesOrEdgesSelection();
         final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-        final boolean hideNonSelected = someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
+        final boolean hideNonSelected =
+            someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
 
         final int totalNodes = spatialIndex.getNodeCount();
 
@@ -310,7 +315,8 @@ public abstract class AbstractNodeData {
                     }
                 }
 
-                instanceId = 0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
+                instanceId =
+                    0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
                 //Then selected ones (up):
                 for (int j = 0; j < visibleNodesCount; j++) {
                     final Node node = visibleNodesArray[j];
@@ -500,7 +506,8 @@ public abstract class AbstractNodeData {
         private final GLBuffer vertexBuffer;
         private final GLBuffer attributesBuffer;
 
-        public NodesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer, final GLBuffer attributesBuffer) {
+        public NodesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer,
+                        final GLBuffer attributesBuffer) {
             super(capabilities, openGLOptions);
             this.vertexBuffer = vertexBuffer;
             this.attributesBuffer = attributesBuffer;
@@ -520,13 +527,16 @@ public abstract class AbstractNodeData {
                     final int stride = ATTRIBS_STRIDE * Float.BYTES;
                     int offset = 0;
 
-                    gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, NodeDiskModel.POSITION_FLOATS, GL_FLOAT, false, stride, offset);
+                    gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, NodeDiskModel.POSITION_FLOATS, GL_FLOAT, false,
+                        stride, offset);
                     offset += NodeDiskModel.POSITION_FLOATS * Float.BYTES;
 
-                    gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, NodeDiskModel.COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
+                    gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, NodeDiskModel.COLOR_FLOATS * Float.BYTES,
+                        GL_UNSIGNED_BYTE, false, stride, offset);
                     offset += NodeDiskModel.COLOR_FLOATS * Float.BYTES;
 
-                    gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, NodeDiskModel.SIZE_FLOATS, GL_FLOAT, false, stride, offset);
+                    gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, NodeDiskModel.SIZE_FLOATS, GL_FLOAT, false, stride,
+                        offset);
                 }
                 attributesBuffer.unbind(gl);
             }
@@ -535,14 +545,14 @@ public abstract class AbstractNodeData {
         @Override
         protected int[] getUsedAttributeLocations() {
             if (instancedRendering) {
-                return new int[]{
+                return new int[] {
                     SHADER_VERT_LOCATION,
                     SHADER_POSITION_LOCATION,
                     SHADER_COLOR_LOCATION,
                     SHADER_SIZE_LOCATION
                 };
             } else {
-                return new int[]{
+                return new int[] {
                     SHADER_VERT_LOCATION
                 };
             }
@@ -551,7 +561,7 @@ public abstract class AbstractNodeData {
         @Override
         protected int[] getInstancedAttributeLocations() {
             if (instancedRendering) {
-                return new int[]{
+                return new int[] {
                     SHADER_POSITION_LOCATION,
                     SHADER_COLOR_LOCATION,
                     SHADER_SIZE_LOCATION

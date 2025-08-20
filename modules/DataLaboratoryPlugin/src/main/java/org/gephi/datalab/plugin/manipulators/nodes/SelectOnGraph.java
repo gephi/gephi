@@ -108,6 +108,6 @@ public class SelectOnGraph extends BasicNodesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DataLaboratoryPlugin/magnifier--arrow.png", false);
+            .loadImageIcon("DataLaboratoryPlugin/magnifier--arrow.svg", false);
     }
 }

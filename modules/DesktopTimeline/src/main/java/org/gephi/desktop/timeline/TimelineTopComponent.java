@@ -236,7 +236,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                 //Custom bounds
                 Icon customBoundsIcon =
-                    ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.png", false);
+                    ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.svg", false);
                 JMenuItem customBoundsItem = new JMenuItem(
                     NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
                     customBoundsIcon);

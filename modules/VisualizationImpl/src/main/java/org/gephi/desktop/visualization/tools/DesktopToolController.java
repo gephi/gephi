@@ -120,7 +120,7 @@ public class DesktopToolController implements ToolController {
 
             } else {
                 throw new RuntimeException(
-                        "The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
+                    "The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
@@ -184,7 +184,7 @@ public class DesktopToolController implements ToolController {
             if (toolUI.getIcon() != null) {
                 btn = new JToggleButton(toolUI.getIcon());
             } else {
-                btn = new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/tool.png", false));
+                btn = new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/tool.svg", false));
             }
             btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
@@ -361,10 +361,10 @@ public class DesktopToolController implements ToolController {
                 public boolean handleEvent(VisualizationEvent event) {
                     float[] mouseDrag = (float[]) event.getData();
                     return toolEventListener.drag(
-                            // Screen coordinates displacement:
-                            mouseDrag[0], mouseDrag[1],
-                            // World coordinates displacement:
-                            mouseDrag[2], mouseDrag[3]);
+                        // Screen coordinates displacement:
+                        mouseDrag[0], mouseDrag[1],
+                        // World coordinates displacement:
+                        mouseDrag[2], mouseDrag[3]);
                 }
 
                 @Override
@@ -419,8 +419,8 @@ public class DesktopToolController implements ToolController {
                 @Override
                 public boolean handleEvent(VisualizationEvent event) {
                     float[] data = (float[]) event.getData();
-                    int[] viewport = new int[]{(int) data[0], (int) data[1]};
-                    float[] worldPosition = new float[]{data[2], data[3]};
+                    int[] viewport = new int[] {(int) data[0], (int) data[1]};
+                    float[] worldPosition = new float[] {data[2], data[3]};
 
                     return toolEventListener.mouseClick(viewport, worldPosition);
                 }

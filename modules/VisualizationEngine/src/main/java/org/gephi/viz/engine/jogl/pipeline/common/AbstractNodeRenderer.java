@@ -1,7 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
 import java.util.EnumSet;
-
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.pipeline.RenderingLayer;

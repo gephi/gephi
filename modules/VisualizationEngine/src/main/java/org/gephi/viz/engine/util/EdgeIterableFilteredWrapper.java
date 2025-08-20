@@ -1,10 +1,14 @@
 package org.gephi.viz.engine.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-
-import java.util.*;
-import java.util.function.Predicate;
 
 /**
  *

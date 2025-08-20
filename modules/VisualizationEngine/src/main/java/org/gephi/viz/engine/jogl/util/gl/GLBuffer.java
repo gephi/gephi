@@ -18,9 +18,9 @@ public interface GLBuffer {
     void update(GL gl, Buffer buffer, long sizeBytes);
 
     void update(GL gl, Buffer buffer, long offsetBytes, long sizeBytes);
-    
+
     void updateWithOrphaning(GL gl, Buffer buffer);
-    
+
     void updateWithOrphaning(GL gl, Buffer buffer, long sizeBytes);
 
     void bind(GL gl);

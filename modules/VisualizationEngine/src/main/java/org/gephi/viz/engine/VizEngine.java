@@ -1,21 +1,38 @@
 package org.gephi.viz.engine;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.spi.*;
+import org.gephi.viz.engine.spi.InputListener;
+import org.gephi.viz.engine.spi.PipelinedExecutor;
+import org.gephi.viz.engine.spi.Renderer;
+import org.gephi.viz.engine.spi.RenderingTarget;
+import org.gephi.viz.engine.spi.WorldUpdater;
+import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.TimeUtils;
-import org.joml.*;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
+import org.joml.Vector3f;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-
-import java.awt.*;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.*;
-import java.lang.Math;
 
 /**
  * @param <R> Rendering target
@@ -68,7 +85,7 @@ public class VizEngine<R extends RenderingTarget, I> {
     private final GraphModel graphModel;
 
     //Settings:
-    private final float[] backgroundColor = new float[]{1, 1, 1, 1};
+    private final float[] backgroundColor = new float[] {1, 1, 1, 1};
     private int maxWorldUpdatesPerSecond = DEFAULT_MAX_WORLD_UPDATES_PER_SECOND;
 
     //Lookup for communication between components:
@@ -111,7 +128,8 @@ public class VizEngine<R extends RenderingTarget, I> {
         return renderingTarget;
     }
 
-    private <T extends PipelinedExecutor> void setupPipelineOfElements(Set<T> allAvailable, List<T> dest, String elementType) {
+    private <T extends PipelinedExecutor> void setupPipelineOfElements(Set<T> allAvailable, List<T> dest,
+                                                                       String elementType) {
         final List<T> elements = new ArrayList<>();
 
         final Set<String> categories = new HashSet<>();
@@ -125,14 +143,16 @@ public class VizEngine<R extends RenderingTarget, I> {
             T bestElement = null;
             for (T r : allAvailable) {
                 if (r.isAvailable(renderingTarget) && category.equals(r.getCategory())
-                        && (bestElement == null || bestElement.getPreferenceInCategory() < r.getPreferenceInCategory())) {
+                    && (bestElement == null || bestElement.getPreferenceInCategory() < r.getPreferenceInCategory())) {
                     bestElement = r;
                 }
             }
 
             if (bestElement != null) {
                 elements.add(bestElement);
-                System.out.println("Using best available " + elementType + " '" + bestElement.getName() + "' for category " + category);
+                System.out.println(
+                    "Using best available " + elementType + " '" + bestElement.getName() + "' for category " +
+                        category);
             } else {
                 System.out.println("No available " + elementType + " for category " + category);
             }
@@ -490,7 +510,8 @@ public class VizEngine<R extends RenderingTarget, I> {
                 }
             } else {
                 //Notify renderers if next concurrent asynchronous world data update is done:
-                final boolean worldUpdateDone = allUpdatersCompletableFuture != null && allUpdatersCompletableFuture.isDone();
+                final boolean worldUpdateDone =
+                    allUpdatersCompletableFuture != null && allUpdatersCompletableFuture.isDone();
                 if (worldUpdateDone) {
                     allUpdatersCompletableFuture = null;
 

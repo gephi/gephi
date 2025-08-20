@@ -479,7 +479,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         presetsButton.setText(
             org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
         presetsButton.setFocusable(false);
-        presetsButton.setIconTextGap(0);
+        presetsButton.setIconTextGap(4);
         layoutToolbar.add(presetsButton);
 
         resetButton

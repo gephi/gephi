@@ -38,7 +38,7 @@ public class VizEngineGraphCanvasManager {
     private static final boolean DISABLE_VAOS = false;
 
     private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE
-            = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
+        = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
 
     private static final boolean DEBUG = false;
 
@@ -123,7 +123,8 @@ public class VizEngineGraphCanvasManager {
             @Override
             public boolean processEvent(NEWTEvent inputEvent) {
                 if (engine != null && inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
-                    return vizController.getVizEventManager().processMouseEvent(glCanvas,VizEngineGraphCanvasManager.this, engine, (MouseEvent) inputEvent);
+                    return vizController.getVizEventManager()
+                        .processMouseEvent(glCanvas, VizEngineGraphCanvasManager.this, engine, (MouseEvent) inputEvent);
                 }
 
                 return false;

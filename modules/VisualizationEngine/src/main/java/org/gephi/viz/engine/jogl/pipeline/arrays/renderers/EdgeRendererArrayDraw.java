@@ -1,16 +1,11 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays.renderers;
 
-import com.jogamp.opengl.GL2ES2;
-import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeRenderer;
-import org.gephi.viz.engine.pipeline.PipelineCategory;
-import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
-import org.gephi.viz.engine.spi.Renderer;
-import org.gephi.viz.engine.util.gl.Constants;
+import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeRenderer;
+import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
  *

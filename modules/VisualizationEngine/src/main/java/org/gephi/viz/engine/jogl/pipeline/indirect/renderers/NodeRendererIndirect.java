@@ -1,16 +1,11 @@
 package org.gephi.viz.engine.jogl.pipeline.indirect.renderers;
 
-import com.jogamp.opengl.GL4;
-import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
-import org.gephi.viz.engine.pipeline.PipelineCategory;
-import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
-import org.gephi.viz.engine.spi.Renderer;
-import org.gephi.viz.engine.util.gl.Constants;
+import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
  *

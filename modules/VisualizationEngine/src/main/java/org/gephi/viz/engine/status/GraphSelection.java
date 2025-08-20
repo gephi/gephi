@@ -1,11 +1,10 @@
 package org.gephi.viz.engine.status;
 
+import java.util.Collection;
+import java.util.Set;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.joml.Vector2f;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * @author Eduardo Ramos

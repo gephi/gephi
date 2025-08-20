@@ -103,7 +103,6 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
     // End of variables declaration//GEN-END:variables
 
 
-
     /**
      * Creates new form LabelSettingsPanel
      */
@@ -223,7 +222,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
     }
 
     public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
-        if(evt.getPropertyName().equals("showNodeLabels")) {
+        if (evt.getPropertyName().equals("showNodeLabels")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("showEdgeLabels")) {
             refreshSharedConfig(model);
@@ -305,7 +304,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
         labelSizeMode.setEnabled(enable);
         configureLabelsButton.setEnabled(enable);
 
-        boolean edgeValue =showEdgeLabelsCheckbox.isSelected();
+        boolean edgeValue = showEdgeLabelsCheckbox.isSelected();
         edgeFontButton.setEnabled(enable && edgeValue);
         edgeColorButton.setEnabled(enable && edgeValue);
         edgeSizeSlider.setEnabled(enable && edgeValue);

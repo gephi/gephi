@@ -107,7 +107,7 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-duplicate-column.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-copy-data-to-other-column.svg", false);
     }
 
     public Column getTargetColumn() {

@@ -167,7 +167,8 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
 
     protected Color defaultDarkBackgroundColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_DARK_BACKGROUND_COLOR)));
+        NbPreferences.forModule(VizConfig.class)
+            .get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_DARK_BACKGROUND_COLOR)));
     protected float[] defaultCameraTarget = {0f, 0f, 0f};
     protected float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected boolean defaultShowNodeLabels =
@@ -189,7 +190,8 @@ public class VizConfig {
     protected Color defaultNodeLabelColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
     protected Color defaultDarkNodeLabelColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_DARK_NODE_LABEL_COLOR)));
+        NbPreferences.forModule(VizConfig.class)
+            .get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_DARK_NODE_LABEL_COLOR)));
     protected Color defaultEdgeLabelColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
     protected Font defaultNodeLabelFont = Font.decode(
@@ -214,9 +216,11 @@ public class VizConfig {
     protected float getDefaultEdgeSizeFactor =
         NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SIZE_FACTOR, DEFAULT_EDGE_SIZE_FACTOR);
     protected LabelSizeMode defaultNodeLabelSizeMode =
-        LabelSizeMode.valueOf(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_SIZE_MODE, DEFAULT_NODE_LABEL_SIZE_MODE));
+        LabelSizeMode.valueOf(
+            NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_SIZE_MODE, DEFAULT_NODE_LABEL_SIZE_MODE));
     protected LabelColorMode defaultNodeLabelColorMode =
-        LabelColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR_MODE, DEFAULT_NODE_LABEL_COLOR_MODE));
+        LabelColorMode.valueOf(
+            NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR_MODE, DEFAULT_NODE_LABEL_COLOR_MODE));
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean blending = NbPreferences.forModule(VizConfig.class).getBoolean(BLENDING, DEFAULT_BLENDING);
@@ -386,12 +390,15 @@ public class VizConfig {
     public float getDefaultNodeSizeFactor() {
         return getDefaultNodeSizeFactor;
     }
+
     public float getDefaultEdgeSizeFactor() {
         return getDefaultEdgeSizeFactor;
     }
+
     public LabelSizeMode getDefaultNodeLabelSizeMode() {
         return defaultNodeLabelSizeMode;
     }
+
     public LabelColorMode getDefaultNodeLabelColorMode() {
         return defaultNodeLabelColorMode;
     }

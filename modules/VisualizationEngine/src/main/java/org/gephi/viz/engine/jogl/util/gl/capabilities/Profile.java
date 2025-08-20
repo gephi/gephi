@@ -5,7 +5,7 @@ package org.gephi.viz.engine.jogl.util.gl.capabilities;
  * @author gbarbieri
  */
 public enum Profile {
-    CORE, 
+    CORE,
     COMPATIBILITY,
     ES
 }

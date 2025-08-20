@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 42.666 32" width="21.333333" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #ffde00;
+      }
+
+      .st2 {
+        fill: #de2910;
+      }
+
+      .st3 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="st0" y="0" width="42.667" height="32"/>
+    </clipPath>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="42.666" height="32"/>
+  <g class="st3">
+    <g id="flag">
+      <rect id="rect6" class="st2" y="0" width="48" height="32"/>
+      <g id="use11">
+        <polygon id="s" class="st1" points="5.179 11.883 8 3.2 10.821 11.883 3.435 6.517 12.565 6.517 5.179 11.883"/>
+      </g>
+      <g id="use13">
+        <polygon id="s1" class="st1" points="17.594 3.34 14.628 4.023 16.626 1.728 16.359 4.759 14.793 2.15 17.594 3.34"/>
+      </g>
+      <g id="use15">
+        <polygon id="s2" class="st1" points="20.614 7.148 17.616 6.626 20.348 5.286 18.926 7.976 18.495 4.964 20.614 7.148"/>
+      </g>
+      <g id="use17">
+        <polygon id="s3" class="st1" points="20.186 12.46 17.662 10.76 20.703 10.651 18.307 12.527 19.143 9.601 20.186 12.46"/>
+      </g>
+      <g id="use19">
+        <polygon id="s4" class="st1" points="16.423 15.943 14.751 13.4 17.598 14.474 14.663 15.279 16.565 12.903 16.423 15.943"/>
+      </g>
+    </g>
+  </g>
+</svg>
