@@ -14,6 +14,8 @@ public interface VisualisationModel extends Model {
 
     float getZoom();
 
+    int getFps();
+
     boolean isAutoSelectNeighbors();
 
     Color getBackgroundColor();

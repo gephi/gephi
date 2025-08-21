@@ -234,6 +234,12 @@ public class VizModel implements VisualisationModel {
             .orElse(1.0f); // Default zoom if engine is not ready
     }
 
+    @Override
+    public int getFps() {
+        return getEngine().map(VizEngine::getFps)
+            .orElse(0);
+    }
+
     public void setZoom(float zoom) {
         // TODO : set zoom in the engine
     }
