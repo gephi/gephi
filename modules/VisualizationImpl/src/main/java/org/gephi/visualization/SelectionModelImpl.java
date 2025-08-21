@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
 
 public class SelectionModelImpl {
@@ -21,17 +23,15 @@ public class SelectionModelImpl {
     private boolean customSelection = false;
     private boolean singleNodeSelection = false;
 
-    public SelectionModelImpl(VizModel visualisationModel) {
+    public SelectionModelImpl(VizModel visualisationModel, VizConfig config) {
         this.visualisationModel = visualisationModel;
 
         // Settings
-        this.mouseSelectionDiameter = 1;
+        this.mouseSelectionDiameter = config.getMouseSelectionDiameter();
     }
 
     protected Optional<GraphSelection> currentEngineSelectionModel() {
-        return visualisationModel.getEngine().map(engine -> {
-            return engine.getGraphSelection();
-        });
+        return visualisationModel.getEngine().map(VizEngine::getGraphSelection);
     }
 
     public List<Node> getSelectedNodes() {

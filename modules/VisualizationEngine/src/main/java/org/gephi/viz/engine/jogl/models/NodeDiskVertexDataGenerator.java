@@ -35,7 +35,7 @@ public class NodeDiskVertexDataGenerator {
         //Circle:
         for (int i = 1, j = 0; i <= triangleAmount; i++, j += triangleFloats) {
             //Center
-            data[j + 0] = 0;//X
+            data[j] = 0;//X
             data[j + 1] = 0;//Y
 
             //Triangle start:

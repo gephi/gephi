@@ -93,28 +93,28 @@ public class InstancedEdgeData extends AbstractEdgeData {
         attributesGLBufferDirected =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferDirected.bind(gl);
-        attributesGLBufferDirected.init(gl, ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferDirected.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferDirected.unbind(gl);
 
         attributesGLBufferDirectedSecondary =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferDirectedSecondary.bind(gl);
-        attributesGLBufferDirectedSecondary.init(gl, ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferDirectedSecondary.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferDirectedSecondary.unbind(gl);
 
         attributesGLBufferUndirected =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferUndirected.bind(gl);
-        attributesGLBufferUndirected.init(gl, ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferUndirected.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferUndirected.unbind(gl);
 
         attributesGLBufferUndirectedSecondary =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferUndirectedSecondary.bind(gl);
-        attributesGLBufferUndirectedSecondary.init(gl, ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferUndirectedSecondary.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferUndirectedSecondary.unbind(gl);
     }

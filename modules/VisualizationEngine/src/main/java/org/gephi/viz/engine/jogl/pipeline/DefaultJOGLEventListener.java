@@ -45,11 +45,20 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public void frameEnd() {
         if (lastMovedPosition != null) {
             //TODO: move to independent selection input listener
-            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
-                graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
-                final Vector2f worldCoords =
-                    engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
+            final Vector2f worldCoords =
+                engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
+
+            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
                 inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
+                float diameter = graphSelection.getMouseSelectionEffectiveDiameter();
+
+                if (diameter <= 1) {
+                    // Diameter is disabled
+                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
+                } else {
+                    inputActionsProcessor.selectNodesWithinRadius(worldCoords.x, worldCoords.y, diameter);
+                }
             }
         }
     }
@@ -58,8 +67,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public boolean processEvent(NEWTEvent event) {
         if (event instanceof KeyEvent) {
             return false;
-        } else if (event instanceof MouseEvent) {
-            final MouseEvent mouseEvent = (MouseEvent) event;
+        } else if (event instanceof MouseEvent mouseEvent) {
 
             switch (event.getEventType()) {
                 case MouseEvent.EVENT_MOUSE_CLICKED:
@@ -156,7 +164,10 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     public boolean mouseMoved(MouseEvent e) {
         lastMovedPosition = e;
-
+        if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
+            graphSelection.getMouseSelectionDiameter() > 1f) {
+            graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+        }
         return true;
     }
 
@@ -204,7 +215,6 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public boolean mouseWheelMoved(MouseEvent e) {
         float[] rotation = e.getRotation();
         float verticalRotation = rotation[1] * e.getRotationScale();
-
         inputActionsProcessor.processZoomEvent(verticalRotation, e.getX(), e.getY());
 
         return true;

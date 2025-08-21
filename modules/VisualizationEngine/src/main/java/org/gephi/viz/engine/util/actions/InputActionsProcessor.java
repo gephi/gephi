@@ -27,6 +27,10 @@ public class InputActionsProcessor {
         this.engine = engine;
     }
 
+    public void selectNodesWithinRadius(float x,float y,float radius) {
+        final NodeIterable iterable = engine.getGraphIndex().getNodesInsideCircle(x,y,radius);
+        selectNodes(iterable);
+    }
     public void selectNodesAndEdgesOnRectangle(final Rect2D rectangle) {
         final NodeIterable iterable = engine.getGraphIndex().getNodesInsideRectangle(rectangle);
 

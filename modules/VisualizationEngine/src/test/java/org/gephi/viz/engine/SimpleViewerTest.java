@@ -173,7 +173,7 @@ public class SimpleViewerTest {
         }
 
         private void toggleSelectionMode() {
-            final GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
+            final GraphSelection selection = engine.getGraphSelection();
             final GraphSelection.GraphSelectionMode mode = selection.getMode();
 
             if (mode != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {

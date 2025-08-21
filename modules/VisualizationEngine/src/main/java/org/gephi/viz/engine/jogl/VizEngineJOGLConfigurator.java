@@ -16,6 +16,7 @@ import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawNodeData;
 import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.EdgeRendererArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.NodeRendererArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.RectangleSelectionArrayDraw;
+import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.SimpleMouseSelectionArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.updaters.EdgesUpdaterArrayDrawRendering;
 import org.gephi.viz.engine.jogl.pipeline.arrays.updaters.NodesUpdaterArrayDrawRendering;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
@@ -123,6 +124,7 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
         //Rectangle selection:
         engine.addRenderer(new RectangleSelectionArrayDraw(engine));
+        engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
     }
 
     private void setupInputListeners(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {

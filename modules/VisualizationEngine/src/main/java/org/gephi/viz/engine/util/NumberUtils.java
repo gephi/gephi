@@ -9,7 +9,7 @@ public class NumberUtils {
     public static final float EPS = 1e-5f;
 
     public static boolean equalsEpsilon(float a, float b, float epsilon) {
-        return a == b ? true : Math.abs(a - b) < epsilon;
+        return a == b || Math.abs(a - b) < epsilon;
     }
 
 }
