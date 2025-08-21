@@ -28,12 +28,14 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         super(false, false);
     }
 
-    public void update(VizEngine engine, GraphIndexImpl spatialIndex) {
+    @Override
+    public void update(VizEngine engine) {
         updateData(
             engine.getZoom(),
-            spatialIndex,
-            engine.getLookup().lookup(GraphRenderingOptions.class),
-            engine.getLookup().lookup(GraphSelection.class)
+            engine.getViewBoundaries(),
+            engine.getGraphIndex(),
+            engine.getRenderingOptions(),
+            engine.getGraphSelection()
         );
     }
 

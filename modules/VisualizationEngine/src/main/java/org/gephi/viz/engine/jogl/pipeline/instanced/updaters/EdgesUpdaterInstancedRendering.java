@@ -16,12 +16,10 @@ public class EdgesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final InstancedEdgeData edgeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public EdgesUpdaterInstancedRendering(VizEngine engine, InstancedEdgeData edgeData, GraphIndexImpl spatialIndex) {
+    public EdgesUpdaterInstancedRendering(VizEngine engine, InstancedEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,9 +34,7 @@ public class EdgesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        //final long start = TimeUtils.getTimeMillis();
-        edgeData.update(engine, spatialIndex);
-        //System.out.println("Edges update ms: " + (TimeUtils.getTimeMillis() - start));
+        edgeData.update(engine);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public DefaultJOGLEventListener(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         this.engine = engine;
         this.inputActionsProcessor = new InputActionsProcessor(engine);
-        this.graphSelection = engine.getLookup().lookup(GraphSelection.class);
+        this.graphSelection = engine.getGraphSelection();
     }
 
     private MouseEvent lastMovedPosition = null;
@@ -52,7 +52,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                 float radius = graphSelection.getMouseSelectionEffectiveDiameter();
 
                 if(radius<=1) {
-                    inputActionsProcessor.selectNodesUnderPosition(worldCoords);
+                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
                     return;
                 }
 
@@ -193,7 +193,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                         Math.max(initialPosition.x, currentPosition.x),
                         Math.max(initialPosition.y, currentPosition.y)
                     );
-                    inputActionsProcessor.selectNodesOnRectangle(rectangle);
+                    inputActionsProcessor.selectNodesAndEdgesOnRectangle(rectangle);
                 }
                 return true;
             } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&

@@ -16,12 +16,10 @@ public class NodesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final ArrayDrawNodeData nodeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public NodesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawNodeData nodeData, GraphIndexImpl spatialIndex) {
+    public NodesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawNodeData nodeData) {
         this.engine = engine;
         this.nodeData = nodeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class NodesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        nodeData.update(engine, spatialIndex);
+        nodeData.update(engine);
     }
 
     @Override

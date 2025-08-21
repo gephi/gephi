@@ -101,7 +101,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
         animator.add(drawable);
         animator.setRunAsFastAsPossible(false);
         animator.setExclusiveContext(false);
-        //animator.setUpdateFPSFrames(300, System.out);
+//        animator.setUpdateFPSFrames(300, System.out);
 
         animator.start();
     }

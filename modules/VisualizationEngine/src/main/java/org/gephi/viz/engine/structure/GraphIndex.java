@@ -26,13 +26,9 @@ public interface GraphIndex {
 
     Rect2D getGraphBoundaries();
 
-    NodeIterable getVisibleNodes();
+    void getVisibleNodes(ElementsCallback<Node> callback, Rect2D viewBoundaries);
 
-    void getVisibleNodes(ElementsCallback<Node> callback);
-
-    EdgeIterable getVisibleEdges();
-
-    void getVisibleEdges(ElementsCallback<Edge> callback);
+    void getVisibleEdges(ElementsCallback<Edge> callback, Rect2D viewBoundaries);
 
     NodeIterable getNodesUnderPosition(float x, float y);
 

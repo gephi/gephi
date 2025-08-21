@@ -13,6 +13,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
+import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.joml.Vector2f;
 
 /**
@@ -27,35 +28,31 @@ public class InputActionsProcessor {
     }
 
     public void selectNodesWithinRadius(float x,float y,float radius) {
-        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
-        final NodeIterable iterable = index.getNodesInsideCircle(x,y,radius);
+        final NodeIterable iterable = engine.getGraphIndex().getNodesInsideCircle(x,y,radius);
         selectNodes(iterable);
     }
-    public void selectNodesOnRectangle(final Rect2D rectangle) {
-        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
-        final NodeIterable iterable = index.getNodesInsideRectangle(rectangle);
+    public void selectNodesAndEdgesOnRectangle(final Rect2D rectangle) {
+        final NodeIterable iterable = engine.getGraphIndex().getNodesInsideRectangle(rectangle);
 
         selectNodes(iterable);
     }
 
-    public void selectNodesUnderPosition(Vector2f worldCoords) {
-        final GraphIndex index = engine.getLookup().lookup(GraphIndex.class);
-        final NodeIterable iterable = index.getNodesUnderPosition(worldCoords.x, worldCoords.y);
+    public void selectNodesAndEdgesUnderPosition(Vector2f worldCoords) {
+        final NodeIterable iterable = engine.getGraphIndex().getNodesUnderPosition(worldCoords.x, worldCoords.y);
 
         selectNodes(iterable);
     }
 
     public void clearSelection() {
-        final GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
-        selection.clearSelectedNodes();
-        selection.clearSelectedEdges();
+        engine.getGraphSelection().clearSelectedNodes();
+        engine.getGraphSelection().clearSelectedEdges();
     }
 
-    public void selectNodes(final NodeIterable nodesIterable) {
-        final GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
-        GraphSelection.GraphSelectionMode mode = selection.getMode();
-        final GraphRenderingOptions renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+    private void selectNodes(final NodeIterable nodesIterable) {
+        GraphSelection.GraphSelectionMode mode = engine.getGraphSelection().getMode();
+        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
         final Graph graph = engine.getGraphModel().getGraphVisible();
+        final GraphSelection selection = engine.getGraphSelection();
 
         final Iterator<Node> iterator = nodesIterable.iterator();
         final Set<Node> selectionNodes = new HashSet<>();

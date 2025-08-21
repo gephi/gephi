@@ -151,7 +151,7 @@ public class VizModel implements VisualisationModel {
         if (engine == null) {
             return false; // Engine still not ready in the workspace
         }
-        this.renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+        this.renderingOptions = engine.getRenderingOptions();
 
         defaultValues();
 
@@ -232,6 +232,12 @@ public class VizModel implements VisualisationModel {
     public float getZoom() {
         return getEngine().map(VizEngine::getZoom)
             .orElse(1.0f); // Default zoom if engine is not ready
+    }
+
+    @Override
+    public int getFps() {
+        return getEngine().map(VizEngine::getFps)
+            .orElse(0);
     }
 
     public void setZoom(float zoom) {

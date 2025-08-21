@@ -21,4 +21,6 @@ public interface RenderingTarget {
     default void frameEnd() {
         //NOOP
     }
+
+    int getFps();
 }
