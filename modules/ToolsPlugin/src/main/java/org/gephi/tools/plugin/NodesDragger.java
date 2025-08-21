@@ -130,7 +130,7 @@ public class NodesDragger implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/hand.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/hand.svg", false);
             }
 
             @Override
