@@ -76,55 +76,52 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
     @Override
     public void configure(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
-        final GraphIndexImpl graphIndex = new GraphIndexImpl(engine);
-        final GraphSelection graphSelection = new GraphSelectionImpl();
         final GraphRenderingOptionsImpl renderingOptions = new GraphRenderingOptionsImpl();
         final OpenGLOptions openGLOptions = new OpenGLOptions();
 
-        engine.addToLookup(graphIndex);
-        engine.addToLookup(graphSelection);
         engine.addToLookup(renderingOptions);
         engine.addToLookup(openGLOptions);
 
-        setupIndirectRendering(engine, graphIndex);
-        setupInstancedRendering(engine, graphIndex);
-        setupVertexArrayRendering(engine, graphIndex);
+        setupIndirectRendering(engine);
+        setupInstancedRendering(engine);
+        setupVertexArrayRendering(engine);
 
         setupInputListeners(engine);
     }
 
-    private void setupIndirectRendering(VizEngine engine, GraphIndexImpl graphIndex) {
+    private void setupIndirectRendering(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Only nodes supported, edges don't have a LOD to benefit from
         final IndirectNodeData nodeData = new IndirectNodeData();
 
         engine.addRenderer(new NodeRendererIndirect(engine, nodeData));
-        engine.addWorldUpdater(new NodesUpdaterIndirectRendering(engine, nodeData, graphIndex));
+        engine.addWorldUpdater(new NodesUpdaterIndirectRendering(engine, nodeData));
     }
 
-    private void setupInstancedRendering(VizEngine engine, GraphIndexImpl graphIndex) {
+    private void setupInstancedRendering(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes:
         final InstancedNodeData nodeData = new InstancedNodeData();
         engine.addRenderer(new NodeRendererInstanced(engine, nodeData));
-        engine.addWorldUpdater(new NodesUpdaterInstancedRendering(engine, nodeData, graphIndex));
+        engine.addWorldUpdater(new NodesUpdaterInstancedRendering(engine, nodeData));
 
         //Edges:
         final InstancedEdgeData indirectEdgeData = new InstancedEdgeData();
 
         engine.addRenderer(new EdgeRendererInstanced(engine, indirectEdgeData));
-        engine.addWorldUpdater(new EdgesUpdaterInstancedRendering(engine, indirectEdgeData, graphIndex));
+        engine.addWorldUpdater(new EdgesUpdaterInstancedRendering(engine, indirectEdgeData));
     }
 
-    private void setupVertexArrayRendering(VizEngine engine, GraphIndexImpl graphIndex) {
+    private void setupVertexArrayRendering(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes:
         final ArrayDrawNodeData nodeData = new ArrayDrawNodeData();
         engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
-        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData, graphIndex));
+        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
 
         //Edges:
         final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData();
         engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
-        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData, graphIndex));
+        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
 
+        //Rectangle selection:
         engine.addRenderer(new RectangleSelectionArrayDraw(engine));
     }
 

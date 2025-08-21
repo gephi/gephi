@@ -74,7 +74,7 @@ public class GraphContextMenu {
 
     public JPopupMenu getMenu(VizEngine engine) {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
+        GraphSelection selection = engine.getGraphSelection();
         Graph graph = graphModel.getGraphVisible();
         Node[] selectedNodes = selection.getSelectedNodes().toArray(new Node[0]);
 

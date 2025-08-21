@@ -18,6 +18,7 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     @Override
     public void start(Graph graph) {
+        graph.readLock();
         nodesArray = ensureNodesArraySize(nodesArray, graph.getNodeCount());
         nextIndex = 0;
     }
@@ -29,7 +30,7 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     @Override
     public void end(Graph graph) {
-        //NOOP
+        graph.readUnlock();
     }
 
     public void reset() {
@@ -49,6 +50,10 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     public int getCount() {
         return nextIndex;
+    }
+
+    public int getTotalCount() {
+        return nodesArray.length;
     }
 
     protected Node[] ensureNodesArraySize(Node[] array, int size) {

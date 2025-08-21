@@ -27,12 +27,14 @@ public class InstancedNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER = 1;
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
 
-    public void update(VizEngine engine, GraphIndexImpl spatialIndex) {
+    @Override
+    public void update(VizEngine engine) {
         updateData(
             engine.getZoom(),
-            spatialIndex,
-            engine.getLookup().lookup(GraphRenderingOptions.class),
-            engine.getLookup().lookup(GraphSelection.class)
+            engine.getViewBoundaries(),
+            engine.getGraphIndex(),
+            engine.getRenderingOptions(),
+            engine.getGraphSelection()
         );
     }
 

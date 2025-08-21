@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
@@ -14,6 +15,7 @@ import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
@@ -35,11 +37,13 @@ public class InstancedEdgeData extends AbstractEdgeData {
         super(true, true);
     }
 
-    public void update(VizEngine engine, GraphIndexImpl graphIndex) {
+    @Override
+    public void update(VizEngine engine) {
         updateData(
-            graphIndex,
-            engine.getLookup().lookup(GraphRenderingOptions.class),
-            engine.getLookup().lookup(GraphSelection.class)
+            engine.getViewBoundaries(),
+            engine.getGraphIndex(),
+            engine.getRenderingOptions(),
+            engine.getGraphSelection()
         );
     }
 
@@ -118,6 +122,9 @@ public class InstancedEdgeData extends AbstractEdgeData {
     public void updateBuffers(GL gl) {
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 
+        System.out.println("SELECTED: "+undirectedInstanceCounter.selectedCount);
+        System.out.println("UNSELECTED:"+undirectedInstanceCounter.unselectedCount);
+
         buf.limit(undirectedInstanceCounter.unselectedCount * ATTRIBS_STRIDE);
         buf.position(0);
 
@@ -153,15 +160,13 @@ public class InstancedEdgeData extends AbstractEdgeData {
         directedInstanceCounter.promoteCountToDraw();
     }
 
-    private void updateData(final GraphIndexImpl graphIndex, final GraphRenderingOptions renderingOptions,
+    private void updateData(final Rect2D viewBoundaries, final GraphIndex graphIndex, final GraphRenderingOptions renderingOptions,
                             final GraphSelection graphSelection) {
         if (!renderingOptions.isShowEdges()) {
             undirectedInstanceCounter.clearCount();
             directedInstanceCounter.clearCount();
             return;
         }
-
-        graphIndex.indexEdges();
 
         //Selection:
         final boolean someSelection = graphSelection.someNodesOrEdgesSelection();
@@ -174,18 +179,17 @@ public class InstancedEdgeData extends AbstractEdgeData {
         final float edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());
         final float edgeOutSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeOutSelectionColor().getRGB());
 
-        final int totalEdges = graphIndex.getEdgeCount();
+        // Refresh visible edges
+        final Graph graph = graphIndex.getVisibleGraph();
+        graphIndex.getVisibleEdges(edgesCallback, viewBoundaries);
+        final int totalEdges = edgesCallback.getTotalCount();
 
         attributesBuffer.ensureCapacity(totalEdges * ATTRIBS_STRIDE);
 
         final FloatBuffer attribsDirectBuffer = attributesBuffer.floatBuffer();
 
-        graphIndex.getVisibleEdges(edgesCallback);
-
         final Edge[] visibleEdgesArray = edgesCallback.getEdgesArray();
         final int visibleEdgesCount = edgesCallback.getCount();
-
-        final Graph graph = graphIndex.getVisibleGraph();
 
         updateUndirectedData(
             graph,

@@ -151,7 +151,7 @@ public class VizModel implements VisualisationModel {
         if (engine == null) {
             return false; // Engine still not ready in the workspace
         }
-        this.renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+        this.renderingOptions = engine.getRenderingOptions();
 
         defaultValues();
 

@@ -16,12 +16,10 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final ArrayDrawEdgeData edgeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public EdgesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawEdgeData edgeData, GraphIndexImpl spatialIndex) {
+    public EdgesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        edgeData.update(engine, spatialIndex);
+        edgeData.update(engine);
     }
 
     @Override

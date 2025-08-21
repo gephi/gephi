@@ -30,7 +30,7 @@ public class SelectionModelImpl {
 
     protected Optional<GraphSelection> currentEngineSelectionModel() {
         return visualisationModel.getEngine().map(engine -> {
-            return engine.getLookup().lookup(GraphSelection.class);
+            return engine.getGraphSelection();
         });
     }
 
