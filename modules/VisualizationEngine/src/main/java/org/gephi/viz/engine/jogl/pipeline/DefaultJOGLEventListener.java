@@ -45,18 +45,20 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public void frameEnd() {
         if (lastMovedPosition != null) {
             //TODO: move to independent selection input listener
-            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
-                graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
-                final Vector2f worldCoords =
-                    engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
-                float radius = graphSelection.getMouseSelectionEffectiveDiameter();
+            final Vector2f worldCoords =
+                engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
 
-                if(radius<=1) {
+            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
+                inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
+                float diameter = graphSelection.getMouseSelectionEffectiveDiameter();
+
+                if (diameter <= 1) {
+                    // Diameter is disabled
                     inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
-                    return;
+                } else {
+                    inputActionsProcessor.selectNodesWithinRadius(worldCoords.x, worldCoords.y, diameter);
                 }
-
-                inputActionsProcessor.selectNodesWithinRadius(worldCoords.x, worldCoords.y, radius);
             }
         }
     }
@@ -162,8 +164,9 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     public boolean mouseMoved(MouseEvent e) {
         lastMovedPosition = e;
-         if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
-             graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+        if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
+            graphSelection.getMouseSelectionDiameter() > 1f) {
+            graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
         }
         return true;
     }

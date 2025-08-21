@@ -395,6 +395,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setMouseSelectionDiameter(diameter);
+        setEngineSelectionDiameter(diameter);
         model.fireSelectionChange();
     }
 
@@ -405,6 +406,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             return;
         }
         model.getSelectionModel().setMouseSelectionZoomProportional(proportional);
+        setEngineMouseSelectionZoomProportional(proportional);
         model.fireSelectionChange();
     }
 
@@ -522,6 +524,26 @@ public class VizController implements VisualizationController, Controller<VizMod
         }
         model.getSelectionModel().currentEngineSelectionModel().ifPresent(graphSelection -> {
             graphSelection.setMode(mode);
+        });
+    }
+
+    private void setEngineSelectionDiameter(float diameter) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().currentEngineSelectionModel().ifPresent(graphSelection -> {
+            graphSelection.setMouseSelectionDiameter(diameter);
+        });
+    }
+
+    private void setEngineMouseSelectionZoomProportional(boolean proportional) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().currentEngineSelectionModel().ifPresent(graphSelection -> {
+            graphSelection.setMouseSelectionDiameterZoomProportional(proportional);
         });
     }
 }

@@ -118,7 +118,7 @@ public class VizModel implements VisualisationModel {
         this.config = new VizConfig();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         this.canvasManager = new VizEngineGraphCanvasManager(workspace, graphModel);
-        this.selectionModel = new SelectionModelImpl(this);
+        this.selectionModel = new SelectionModelImpl(this, config);
 
         //TODO: Remove once this is moved to the viz-engine
         this.nodeLabelColumns = new Column[] {graphModel.getNodeTable().getColumn("label")};
@@ -140,6 +140,10 @@ public class VizModel implements VisualisationModel {
     @Override
     public Workspace getWorkspace() {
         return workspace;
+    }
+
+    public VizConfig getConfig() {
+        return config;
     }
 
     public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
