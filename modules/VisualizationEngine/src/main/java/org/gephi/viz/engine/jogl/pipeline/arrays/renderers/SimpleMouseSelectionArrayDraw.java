@@ -70,7 +70,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     public void worldUpdated(JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
-        final GraphSelection graphSelection = engine.getLookup().lookup(GraphSelection.class);
+        final GraphSelection graphSelection = engine.getGraphSelection();
 
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
             render = false;
