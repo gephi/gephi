@@ -48,9 +48,6 @@ public class SimpleViewerTest {
 
         private static final boolean DEBUG = false;
 
-        private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE =
-            WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
-
         private VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
         private JFrame frame;
         private GLWindow glWindow;
@@ -84,7 +81,6 @@ public class SimpleViewerTest {
                     new VizEngineJOGLConfigurator()
                 )
             );
-            engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
 
             final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
             glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
