@@ -122,9 +122,6 @@ public class InstancedEdgeData extends AbstractEdgeData {
     public void updateBuffers(GL gl) {
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 
-        System.out.println("SELECTED: "+undirectedInstanceCounter.selectedCount);
-        System.out.println("UNSELECTED:"+undirectedInstanceCounter.unselectedCount);
-
         buf.limit(undirectedInstanceCounter.unselectedCount * ATTRIBS_STRIDE);
         buf.position(0);
 

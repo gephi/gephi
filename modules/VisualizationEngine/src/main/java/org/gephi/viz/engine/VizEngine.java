@@ -567,7 +567,7 @@ public class VizEngine<R extends RenderingTarget, I> {
                     updatersPipeline.forEach(updater -> futures.add(completableFutureOfUpdater(updater)));
 
                     // Wait until all world updates are done
-                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
                     graphModel.getGraph().readUnlock();
                 }
