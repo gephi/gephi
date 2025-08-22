@@ -9,4 +9,5 @@ public class PipelineCategory {
     public static final String EDGE = "Edge";
     public static final String RECTANGLE_SELECTION = "Rectangle selection";
     public static final String MOUSE_SELECTION = "Mouse selection";
+    public static final String NODE_LABEL = "Node label";
 }

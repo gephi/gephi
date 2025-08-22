@@ -42,6 +42,7 @@ public class Constants {
     public static final String UNIFORM_NAME_COLOR_MULTIPLIER = "colorMultiplier";
 
     //Rendering order:
+    public static final int RENDERING_ORDER_LABELS = 200;
     public static final int RENDERING_ORDER_NODES = 100;
     public static final int RENDERING_ORDER_EDGES = 50;
 
