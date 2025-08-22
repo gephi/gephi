@@ -1,17 +1,7 @@
 package org.gephi.viz.engine.structure;
 
-import org.gephi.graph.GraphGenerator;
-import org.gephi.graph.api.Configuration;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.Subgraph;
-import org.gephi.graph.api.TimeRepresentation;
-import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.spi.RenderingTarget;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class GraphIndexTest {
 

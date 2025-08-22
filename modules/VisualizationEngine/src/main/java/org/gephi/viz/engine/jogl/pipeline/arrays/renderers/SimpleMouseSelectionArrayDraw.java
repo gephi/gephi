@@ -47,7 +47,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final int[] bufferName = new int[1];
     private ManagedDirectBuffer circleVertexDataBuffer;
     private GLBufferMutable vertexGLBuffer;
-    private SelectionMouseVAO  vao;
+    private SelectionMouseVAO vao;
     private boolean render = false;
 
     private static final String SHADERS_ROOT = Constants.SHADERS_ROOT + "simpleMouseSelection";
@@ -80,8 +80,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
         final Vector2f mousePosition = graphSelection.getMousePosition();
         float mouseSelectionDiameter = graphSelection.getMouseSelectionDiameter();
 
-        if (mousePosition != null && mouseSelectionDiameter>1) {
-            if(!graphSelection.getMouseSelectionDiameterZoomProportional()) {
+        if (mousePosition != null && mouseSelectionDiameter > 1) {
+            if (!graphSelection.getMouseSelectionDiameterZoomProportional()) {
                 Matrix4f mvp = new Matrix4f();
                 mvp.set(mvpFloats);
 
@@ -96,11 +96,11 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             // Vertex = 2 Float (xy)
-             float[] vertexData = Arrays.copyOf(generator64.getVertexData(),circleVertexCount64* VERTEX_FLOATS);
+            float[] vertexData = Arrays.copyOf(generator64.getVertexData(), circleVertexCount64 * VERTEX_FLOATS);
 
-            for(int vertexIndex=0;vertexIndex < circleVertexCount64* VERTEX_FLOATS;vertexIndex+=2){
-                vertexData[vertexIndex] =vertexData[vertexIndex]*mouseSelectionDiameter+ mousePosition.x ;
-                vertexData[vertexIndex+1] =vertexData[vertexIndex+1]*mouseSelectionDiameter+mousePosition.y;
+            for (int vertexIndex = 0; vertexIndex < circleVertexCount64 * VERTEX_FLOATS; vertexIndex += 2) {
+                vertexData[vertexIndex] = vertexData[vertexIndex] * mouseSelectionDiameter + mousePosition.x;
+                vertexData[vertexIndex + 1] = vertexData[vertexIndex + 1] * mouseSelectionDiameter + mousePosition.y;
 
             }
             floatBuffer.put(vertexData);
@@ -124,7 +124,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             shaderProgram.use(gl);
             engine.getModelViewProjectionMatrixFloats(mvpFloats);
 
-            gl.glUniformMatrix4fv(shaderProgram.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
+            gl.glUniformMatrix4fv(shaderProgram.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false,
+                mvpFloats, 0);
 
             vao.use(gl);
 
@@ -195,7 +196,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         vertexGLBuffer = new GLBufferMutable(bufferName[VERT_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
-        vertexGLBuffer.init(gl, (long) Float.BYTES * circleVertexCount64 * VERTEX_FLOATS, GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+        vertexGLBuffer.init(gl, (long) Float.BYTES * circleVertexCount64 * VERTEX_FLOATS,
+            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
             engine.getLookup().lookup(GLCapabilitiesSummary.class),
@@ -225,7 +227,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         @Override
         protected int[] getUsedAttributeLocations() {
-            return new int[]{
+            return new int[] {
                 SHADER_VERT_LOCATION
             };
         }

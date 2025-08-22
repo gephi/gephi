@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -84,7 +83,8 @@ public class VizEngine<R extends RenderingTarget, I> {
     private final List<WorldUpdater<R>> updatersPipeline = new ArrayList<>();
     private ExecutorService updaterManagerThread;
     private ExecutorService updatersThreadPool;
-    private final WorldUpdaterExecutionMode worldUpdatersExecutionMode = WorldUpdaterExecutionMode.CONCURRENT_SYNCHRONOUS;
+    private final WorldUpdaterExecutionMode worldUpdatersExecutionMode =
+        WorldUpdaterExecutionMode.CONCURRENT_SYNCHRONOUS;
 
     //Input listeners:
     private final List<I> eventsQueue = Collections.synchronizedList(new ArrayList<>());
@@ -144,8 +144,8 @@ public class VizEngine<R extends RenderingTarget, I> {
         }
 
         isSetUp = true;
-
-        System.out.println("World updaters execution mode: " + worldUpdatersExecutionMode);
+        Logger.getLogger(VizEngine.class.getName())
+            .log(Level.INFO, "World updaters execution mode: {0}", worldUpdatersExecutionMode);
     }
 
     public R getRenderingTarget() {
@@ -174,11 +174,12 @@ public class VizEngine<R extends RenderingTarget, I> {
 
             if (bestElement != null) {
                 elements.add(bestElement);
-                System.out.println(
-                    "Using best available " + elementType + " '" + bestElement.getName() + "' for category " +
-                        category);
+                Logger.getLogger(VizEngine.class.getName()).log(Level.INFO,
+                    "Using best available {0} ''{1}'' for category {2}",
+                    new Object[] {elementType, bestElement.getName(), category});
             } else {
-                System.out.println("No available " + elementType + " for category " + category);
+                Logger.getLogger(VizEngine.class.getName()).log(Level.WARNING,
+                    "No available {0} for category {1}", new Object[] {elementType, category});
             }
         });
 
@@ -593,7 +594,9 @@ public class VizEngine<R extends RenderingTarget, I> {
         return graphModel;
     }
 
-    public GraphIndex getGraphIndex() { return graphIndex; }
+    public GraphIndex getGraphIndex() {
+        return graphIndex;
+    }
 
     public GraphSelection getGraphSelection() {
         return graphSelection;

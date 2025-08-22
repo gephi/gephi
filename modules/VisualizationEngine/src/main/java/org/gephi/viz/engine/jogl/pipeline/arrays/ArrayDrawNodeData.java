@@ -10,9 +10,6 @@ import java.nio.FloatBuffer;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *

@@ -6,7 +6,6 @@ import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *

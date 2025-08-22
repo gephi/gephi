@@ -9,6 +9,8 @@ import static com.jogamp.opengl.GLProfile.GLES3;
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.DefaultJOGLEventListener;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
@@ -30,9 +32,6 @@ import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.EdgesUpdaterInstanc
 import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.NodesUpdaterInstancedRendering;
 import org.gephi.viz.engine.spi.VizEngineConfigurator;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.status.GraphSelectionImpl;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
 /**
@@ -62,8 +61,8 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
         GLProfile glProfile = GLProfile.get(GL_PROFILE_LIST_MAX_PROGSHADER_CORE_OR_GL2, true);
         GLCapabilities caps = new GLCapabilities(glProfile);
 
-        System.out.println(GLProfile.glAvailabilityToString());
-        System.out.println("GL Profile: " + glProfile);
+        Logger.getLogger(VizEngine.class.getName()).log(Level.CONFIG, GLProfile.glAvailabilityToString());
+        Logger.getLogger(VizEngine.class.getName()).log(Level.INFO, "Chosen GL Profile: {0}", glProfile);
 
         caps.setAlphaBits(8);
         caps.setDoubleBuffered(true);

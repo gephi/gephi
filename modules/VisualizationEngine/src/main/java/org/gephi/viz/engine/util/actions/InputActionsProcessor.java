@@ -12,8 +12,6 @@ import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndex;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.joml.Vector2f;
 
 /**
@@ -27,10 +25,11 @@ public class InputActionsProcessor {
         this.engine = engine;
     }
 
-    public void selectNodesWithinRadius(float x,float y,float radius) {
-        final NodeIterable iterable = engine.getGraphIndex().getNodesInsideCircle(x,y,radius);
+    public void selectNodesWithinRadius(float x, float y, float radius) {
+        final NodeIterable iterable = engine.getGraphIndex().getNodesInsideCircle(x, y, radius);
         selectNodes(iterable);
     }
+
     public void selectNodesAndEdgesOnRectangle(final Rect2D rectangle) {
         final NodeIterable iterable = engine.getGraphIndex().getNodesInsideRectangle(rectangle);
 

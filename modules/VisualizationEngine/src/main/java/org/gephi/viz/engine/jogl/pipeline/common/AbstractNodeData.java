@@ -32,7 +32,6 @@ import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 

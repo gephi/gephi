@@ -18,14 +18,19 @@ public interface GraphSelection {
         NO_SELECTION,
         CUSTOM_SELECTION
     }
+
     void setMouseSelectionDiameter(float radius);
+
     float getMouseSelectionDiameter();
+
     float getMouseSelectionEffectiveDiameter();
 
     void setSimpleMouseSelectionMVPScale(float scale);
+
     float getSimpleMouseSelectionMVPScale();
 
     void setMouseSelectionDiameterZoomProportional(boolean isZoomProportional);
+
     boolean getMouseSelectionDiameterZoomProportional();
 
 

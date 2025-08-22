@@ -20,7 +20,6 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.gephi.viz.engine.util.ArrayUtils;
 
 /**

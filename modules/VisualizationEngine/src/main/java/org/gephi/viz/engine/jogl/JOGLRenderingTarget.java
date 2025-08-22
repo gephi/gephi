@@ -34,15 +34,21 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     private Animator animator;
     private VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
-    //For displaying FPS in window title
+    //For displaying FPS in window title (optional)
     private String windowTitleFormat = null;
     private Frame frame;
+
+    // States
+    private boolean listenersSetup = false;
+    private final float[] backgroundColor = new float[4];
+
+    // FPS States
+    private int fps = 0;
+    private long lastFpsTime = 0;
 
     public JOGLRenderingTarget(GLAutoDrawable drawable) {
         this.drawable = drawable;
     }
-
-    private boolean listenersSetup = false;
 
     @Override
     public void setup(VizEngine engine) {
@@ -65,8 +71,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
         } else if (drawable instanceof GLCanvas) {
             setup((GLCanvas) drawable);
         } else {
-            System.out.println(drawable.getClass() +
-                " event bridge not supported yet. Be sure to manually setup your events listener");
+            throw new RuntimeException("Drawable of type " + drawable.getClass() + " not supported");
         }
 
         listenersSetup = true;
@@ -92,7 +97,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     @Override
-    public void start() {
+    public synchronized void start() {
         if (animator != null) {
             throw new IllegalStateException("Call stop first!");
         }
@@ -107,7 +112,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         if (animator == null) {
             throw new IllegalStateException("Call start first!");
         }
@@ -116,7 +121,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     @Override
-    public void init(GLAutoDrawable drawable) {
+    public synchronized void init(GLAutoDrawable drawable) {
         final GL gl = drawable.getGL();
 
         final GLCapabilitiesSummary capabilities = new GLCapabilitiesSummary(gl, Profile.CORE);
@@ -135,11 +140,10 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     @Override
-    public void dispose(GLAutoDrawable drawable) {
+    public synchronized void dispose(GLAutoDrawable drawable) {
         //NOOP
     }
 
-    private final float[] backgroundColor = new float[4];
 
     @Override
     public void display(GLAutoDrawable drawable) {
@@ -154,7 +158,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+    public synchronized void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         engine.reshape(width, height);
     }
 
@@ -223,9 +227,6 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     public Frame getFrame() {
         return frame;
     }
-
-    private int fps = 0;
-    private long lastFpsTime = 0;
 
     private void updateFPS() {
         if (TimeUtils.getTimeMillis() - lastFpsTime > 1000) {

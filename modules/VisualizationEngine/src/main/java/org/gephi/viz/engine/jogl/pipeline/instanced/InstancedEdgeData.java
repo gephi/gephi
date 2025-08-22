@@ -16,7 +16,6 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -157,7 +156,8 @@ public class InstancedEdgeData extends AbstractEdgeData {
         directedInstanceCounter.promoteCountToDraw();
     }
 
-    private void updateData(final Rect2D viewBoundaries, final GraphIndex graphIndex, final GraphRenderingOptions renderingOptions,
+    private void updateData(final Rect2D viewBoundaries, final GraphIndex graphIndex,
+                            final GraphRenderingOptions renderingOptions,
                             final GraphSelection graphSelection) {
         if (!renderingOptions.isShowEdges()) {
             undirectedInstanceCounter.clearCount();

@@ -9,7 +9,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Rect2D;
-import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.util.EdgeIterableFilteredWrapper;
 import org.gephi.viz.engine.util.NodeIterableFilteredWrapper;
 import org.joml.Intersectionf;
