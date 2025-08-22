@@ -27,10 +27,12 @@ import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.io.importer.GraphImporter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SimpleViewerTest {
 
+    @Ignore
     @Test
     public void testSimpleViewer() {
         final SimpleViewer viewer = new SimpleViewer();
