@@ -45,7 +45,6 @@ package org.gephi.datalab.plugin.manipulators.edges;
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;

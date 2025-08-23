@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
+import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -59,25 +60,39 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        VizModel model = workspace.getLookup().lookup(VizModel.class);
-        if (model != null) {
-            try {
-                model.writeXML(writer);
-            } catch (XMLStreamException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+//        VizModel model = workspace.getLookup().lookup(VizModel.class);
+//        if (model != null) {
+//            try {
+//                model.writeXML(writer);
+//            } catch (XMLStreamException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
+        //TODO
+    }
+
+    private void writeScreenshotModelImpl(XMLStreamWriter writer, ScreenshotModelImpl screenshotModel) {
+        // TODO fix
+//        writer.writeAttribute("width", String.valueOf(screenshotModel.getWidth()));
+//        writer.writeAttribute("height", String.valueOf(screenshotModel.getHeight()));
+//        writer.writeAttribute("antialiasing", String.valueOf(screenshotModel.getAntiAliasing()));
+//        writer.writeAttribute("transparent", String.valueOf(screenshotModel.isTransparentBackground()));
+//        writer.writeAttribute("autosave", String.valueOf(screenshotModel.isAutoSave()));
+//        if (screenshotModel.getDefaultDirectory() != null) {
+//            writer.writeAttribute("path", screenshotModel.getDefaultDirectory());
+//        }
     }
 
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
         if (vizModel == null) {
-            vizModel = new VizModel(workspace);
+            vizModel = new VizModel(Lookup.getDefault().lookup(VizController.class), workspace);
             workspace.add(vizModel);
         }
-        Lookup.getDefault().lookup(VizController.class)
-            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
+        // TODo fix
+//        Lookup.getDefault().lookup(VizController.class)
+//            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
         try {
             vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {

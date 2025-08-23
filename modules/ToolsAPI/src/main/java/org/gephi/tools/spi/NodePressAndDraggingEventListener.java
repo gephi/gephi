@@ -45,7 +45,7 @@ package org.gephi.tools.spi;
 import org.gephi.graph.api.Node;
 
 /**
- * Tool mouse press and dragging listener. Listen to a single node press on the
+ * Tool mouse press and dragging listener. Listen to a single mouse press on the
  * visualization window and trigger selected nodes, then triggers continuously
  * the recorded drag displacement.
  * <p>
@@ -54,6 +54,8 @@ import org.gephi.graph.api.Node;
  * <p>
  * A tool which declares this listener is notified at a certain rate, up to
  * multiple times per second, the selected nodes.
+ * <p>
+ * Return <code>false</code> from @link {@link #drag(float, float, float, float)} to update the mouse selection while dragging.
  *
  * @author Mathieu Bastian
  * @see Tool
@@ -65,16 +67,20 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
      * window.
      *
      * @param nodes the clicked nodes
+     * @return Event consumed
      */
-    public void pressNodes(Node[] nodes);
+    public boolean pressNodes(Node[] nodes);
 
     /**
      * Notify mouse is dragging
      *
-     * @param displacementX distance x
-     * @param displacementY distance y
+     * @param displacementXScreen distance x in screen coordinates
+     * @param displacementYScreen distance y in screen coordinates
+     * @param displacementXWorld distance x in world coordinates
+     * @param displacementYWorld distance y in worked coordinates
+     * @return Event consumed
      */
-    public void drag(float displacementX, float displacementY);
+    public boolean drag(float displacementXScreen, float displacementYScreen, float displacementXWorld, float displacementYWorld);
 
     /**
      * Notify mouse has been released.

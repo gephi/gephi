@@ -43,11 +43,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.visualization.apiimpl;
 
 import java.util.EventObject;
+import org.gephi.visualization.api.VisualizationEvent;
 
 /**
  * @author Mathieu Bastian
  */
-public class VizEvent extends EventObject {
+public class VizEvent extends EventObject implements VisualizationEvent {
 
     private Type type;
     private Object data;
@@ -63,34 +64,17 @@ public class VizEvent extends EventObject {
         this.data = data;
     }
 
+    @Override
     public Type getType() {
         return type;
     }
 
+    @Override
     public Object getData() {
         return data;
     }
 
     public void setData(Object data) {
         this.data = data;
-    }
-
-    public enum Type {
-
-        START_DRAG,
-        DRAG,
-        STOP_DRAG,
-        MOUSE_MOVE,
-        MOUSE_LEFT_PRESS,
-        MOUSE_MIDDLE_PRESS,
-        MOUSE_RIGHT_PRESS,
-        MOUSE_LEFT_CLICK,
-        MOUSE_MIDDLE_CLICK,
-        MOUSE_RIGHT_CLICK,
-        NODE_LEFT_CLICK,
-        MOUSE_LEFT_PRESSING,
-        MOUSE_RELEASED,
-        NODE_LEFT_PRESS,
-        NODE_LEFT_PRESSING,
     }
 }

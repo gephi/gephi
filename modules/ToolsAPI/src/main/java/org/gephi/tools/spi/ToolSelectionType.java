@@ -46,13 +46,21 @@ package org.gephi.tools.spi;
  * Enum setting for {@link Tool} implementations.
  * <ul><li>
  * <b>NONE:</b> Selection features are disabled when the tool is used.</li>
- * <li><b>SELECTION:</b> Selection is enabled when the tool is used.</li>
- * <li><b>SELECTION_AND_DRAGGING:</b> Selection and dragging is enabled when the tool is used.</li>
+ * <li><b>SELECTION:</b> Multi-node selection is enabled when the tool is used.</li>
+ * <li><b>SELECTION_AND_DRAGGING:</b> Deprecated, behaves the same as SELECTION</li>
+ * <li><b>SINGLE_NODE_SELECTION:</b> Single-node selection is enabled when the tool us used.</li>
  * </ul>
  *
  * @author Mathieu Bastian
  */
 public enum ToolSelectionType {
 
-    NONE, SELECTION, SELECTION_AND_DRAGGING
+    NONE,
+    SELECTION,
+    /**
+     * @deprecated Behaves the same as {@link #SELECTION}. Use {@link #SELECTION} instead.
+     */
+    @Deprecated
+    SELECTION_AND_DRAGGING,
+    SINGLE_NODE_SELECTION
 }

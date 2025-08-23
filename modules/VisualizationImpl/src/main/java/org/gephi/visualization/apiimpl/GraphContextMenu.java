@@ -48,7 +48,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -56,12 +55,12 @@ import javax.swing.KeyStroke;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.model.node.NodeModel;
-import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.status.GraphSelection;
 import org.openide.util.Lookup;
 
 /**
@@ -69,25 +68,17 @@ import org.openide.util.Lookup;
  */
 public class GraphContextMenu {
 
-    private final VizConfig config;
-    private final AbstractEngine engine;
-    private final DataBridge dataBridge;
-
     public GraphContextMenu() {
-        config = VizController.getInstance().getVizConfig();
-        engine = VizController.getInstance().getEngine();
-        dataBridge = VizController.getInstance().getDataBridge();
+
     }
 
-    public JPopupMenu getMenu() {
+    public JPopupMenu getMenu(VizEngine engine) {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphSelection selection = engine.getGraphSelection();
+        Graph graph = graphModel.getGraphVisible();
+        Node[] selectedNodes = selection.getSelectedNodes().toArray(new Node[0]);
+
         GraphContextMenuItem[] items = getGraphContextMenuItems();
-        final List<NodeModel> selectedNodeModels = engine.getSelectedNodes();
-        Node[] selectedNodes = new Node[selectedNodeModels.size()];
-        int i = 0;
-        for (NodeModel nm : selectedNodeModels) {
-            selectedNodes[i++] = nm.getNode();
-        }
-        final Graph graph = dataBridge.getGraph();
         JPopupMenu contextMenu = new JPopupMenu();
 
         //Add items ordered:
@@ -105,7 +96,6 @@ public class GraphContextMenu {
                 contextMenu.add(createMenuItemFromGraphContextMenuItem(item, graph, selectedNodes));
             }
         }
-
         return contextMenu;
     }
 

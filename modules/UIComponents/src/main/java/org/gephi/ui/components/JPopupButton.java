@@ -62,7 +62,6 @@ public class JPopupButton extends JButton {
     private ChangeListener listener;
 
     public JPopupButton() {
-
         items = new ArrayList<>();
         addActionListener(new ActionListener() {
 
@@ -77,7 +76,7 @@ public class JPopupButton extends JButton {
     public JPopupMenu createPopup() {
         JPopupMenu menu = new JPopupMenu();
         for (final JPopupButtonItem item : items) {
-            JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.object.toString(), item.icon, item == selectedItem);
+            JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.toString(), item.icon, item == selectedItem);
             r.addActionListener(new ActionListener() {
 
                 @Override
@@ -94,7 +93,11 @@ public class JPopupButton extends JButton {
     }
 
     public void addItem(Object object, Icon icon) {
-        items.add(new JPopupButtonItem(object, icon));
+        items.add(new JPopupButtonItem(object, icon, null));
+    }
+
+    public void addItem(Object object, Icon icon, String displayString) {
+        items.add(new JPopupButtonItem(object, icon, displayString));
     }
 
     public Object getSelectedItem() {
@@ -125,10 +128,21 @@ public class JPopupButton extends JButton {
 
         private final Object object;
         private final Icon icon;
+        private final String displayString;
 
-        public JPopupButtonItem(Object object, Icon icon) {
+        public JPopupButtonItem(Object object, Icon icon, String displayString) {
             this.object = object;
             this.icon = icon;
+            this.displayString = displayString;
+        }
+
+        @Override
+        public String toString() {
+            if (displayString != null) {
+                return displayString;
+            } else {
+                return object.toString();
+            }
         }
     }
 }

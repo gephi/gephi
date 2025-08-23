@@ -61,10 +61,10 @@ public interface NodePressingEventListener extends ToolEventListener {
      *
      * @param nodes the pressed nodes array
      */
-    public void pressingNodes(Node[] nodes);
+    public boolean pressingNodes(Node[] nodes);
 
     /**
      * Notify mouse has been released.
      */
-    public void released();
+    public boolean released();
 }

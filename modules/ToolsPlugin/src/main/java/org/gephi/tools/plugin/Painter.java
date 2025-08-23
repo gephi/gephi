@@ -84,7 +84,11 @@ public class Painter implements Tool {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodePressingEventListener() {
             @Override
-            public void pressingNodes(Node[] nodes) {
+            public boolean pressingNodes(Node[] nodes) {
+                if (nodes == null || nodes.length == 0) {
+                    return false;
+                }
+
                 color = painterPanel.getColor().getColorComponents(color);
                 for (Node node : nodes) {
                     float r = node.r();
@@ -97,10 +101,13 @@ public class Painter implements Tool {
                     node.setG(g);
                     node.setB(b);
                 }
+
+                return true;
             }
 
             @Override
-            public void released() {
+            public boolean released() {
+                return false;
             }
         };
         return listeners;

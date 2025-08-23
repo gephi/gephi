@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3" xmlns:viz="http://www.gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd">
+  <meta lastmodifieddate="2017-12-05">
+    <creator>Gephi 0.9</creator>
+    <description></description>
+  </meta>
+  <graph mode="static">
+    <nodes>
+      <node id="0" label="A">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-434.42255" y="13.518311"></viz:position>
+      </node>
+      <node id="1" label="B">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-55.611237" y="180.69946"></viz:position>
+      </node>
+      <node id="2" label="C">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-52.367767" y="-69.02203"></viz:position>
+      </node>
+      <node id="3" label="D">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-303.56366" y="347.21838"></viz:position>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="0" target="1" type="undirected"></edge>
+      <edge id="1" source="1" target="3" type="undirected"></edge>
+      <edge id="2" source="0" target="2" type="directed"></edge>
+      <edge id="3" source="0" target="3" type="directed"></edge>
+    </edges>
+  </graph>
+</gexf>

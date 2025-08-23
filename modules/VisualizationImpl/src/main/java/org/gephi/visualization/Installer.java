@@ -42,7 +42,6 @@
 
 package org.gephi.visualization;
 
-import com.jogamp.opengl.GLProfile;
 import org.openide.modules.ModuleInstall;
 
 public class Installer extends ModuleInstall {
@@ -56,6 +55,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void close() {
         // Destroy JOGL
-        VizController.getInstance().destroy();
+        // Todo Fix
+//        VizController.getInstance().destroy();
     }
 }

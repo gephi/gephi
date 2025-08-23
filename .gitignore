@@ -32,8 +32,6 @@ keystore.ks
 /modules/DesktopSpigot/target/
 /modules/DesktopStatistics/target/
 /modules/DesktopTimeline/target/
-/modules/DesktopTools/target/
-/modules/DHNSGraph/target/
 /modules/DirectoryChooser/target/
 /modules/DynamicAPI/target/
 /modules/DynamicImpl/target/
