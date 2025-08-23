@@ -90,7 +90,7 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel implements Vi
                     configureLink.setVisible(!vizModel.isSingleNodeSelection());
                     statusLabel.setText(
                         NbBundle.getMessage(SelectionPropertiesToolbar.class,
-                            "SelectionBar.statusLabel.nodeodeSelection"));
+                            "SelectionBar.statusLabel.nodeSelection"));
                 } else if (vizModel.isRectangleSelection()) {
                     configureLink.setVisible(false);
                     statusLabel.setText(

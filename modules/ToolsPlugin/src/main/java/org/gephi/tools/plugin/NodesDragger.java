@@ -106,7 +106,7 @@ public class NodesDragger implements Tool {
                         n.setY(initialY[i] + displacementYWorld);
                     }
 
-                    return true;
+                    return false;
                 }
 
                 return false;
