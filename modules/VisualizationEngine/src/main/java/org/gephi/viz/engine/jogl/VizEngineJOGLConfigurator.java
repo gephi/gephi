@@ -30,6 +30,7 @@ import org.gephi.viz.engine.jogl.pipeline.instanced.renderers.EdgeRendererInstan
 import org.gephi.viz.engine.jogl.pipeline.instanced.renderers.NodeRendererInstanced;
 import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.EdgesUpdaterInstancedRendering;
 import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.NodesUpdaterInstancedRendering;
+import org.gephi.viz.engine.jogl.pipeline.text.NodeLabelRenderer;
 import org.gephi.viz.engine.spi.VizEngineConfigurator;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
@@ -82,8 +83,8 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
         engine.addToLookup(renderingOptions);
         engine.addToLookup(openGLOptions);
 
-        setupIndirectRendering(engine);
-        setupInstancedRendering(engine);
+//        setupIndirectRendering(engine);
+//        setupInstancedRendering(engine);
         setupVertexArrayRendering(engine);
 
         setupInputListeners(engine);
@@ -112,18 +113,21 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
     private void setupVertexArrayRendering(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes:
-        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData();
-        engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
-        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
+//        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData();
+//        engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
+//        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
+//
+//        //Edges:
+//        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData();
+//        engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
+//        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
+//
+//        //Rectangle selection:
+//        engine.addRenderer(new RectangleSelectionArrayDraw(engine));
+//        engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
 
-        //Edges:
-        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData();
-        engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
-        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
-
-        //Rectangle selection:
-        engine.addRenderer(new RectangleSelectionArrayDraw(engine));
-        engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
+        // Node Label
+        engine.addRenderer(new NodeLabelRenderer());
     }
 
     private void setupInputListeners(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
