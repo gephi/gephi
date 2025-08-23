@@ -615,8 +615,13 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
+    public boolean isNodeSelection() {
+        return selectionModel.isNodeSelection();
+    }
+
+    @Override
     public boolean isSingleNodeSelection() {
-        return selectionModel.isSingleNodeSelection();
+        return selectionModel.isNodeSelection() && selectionModel.isSingleNodeSelection();
     }
 
     @Override

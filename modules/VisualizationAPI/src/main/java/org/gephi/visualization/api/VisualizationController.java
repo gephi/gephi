@@ -113,9 +113,11 @@ public interface VisualizationController {
 
     void setRectangleSelection();
 
-    void setDirectMouseSelection(boolean singleNodeSelection);
+    void setDirectMouseSelection();
 
     void setCustomSelection();
+
+    void setNodeSelection(boolean singleNode);
 
     void setMouseSelectionDiameter(int diameter);
 

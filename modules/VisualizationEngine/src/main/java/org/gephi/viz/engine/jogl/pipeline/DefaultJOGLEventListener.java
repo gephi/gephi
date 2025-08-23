@@ -50,7 +50,8 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
             if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
                 inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
+            graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
                 float diameter = graphSelection.getMouseSelectionEffectiveDiameter();
 
                 if (diameter <= 1) {
@@ -116,6 +117,8 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             //TODO: move to independent selection input listener
             return true;
         } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION && leftClick) {
+            return true;
+        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION && leftClick) {
             return true;
         } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
             inputActionsProcessor.clearSelection();

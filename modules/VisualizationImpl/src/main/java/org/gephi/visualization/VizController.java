@@ -384,6 +384,7 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
         model.getSelectionModel().setSingleNodeSelection(false);
+        model.getSelectionModel().setNodeSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.NO_SELECTION);
         model.fireSelectionChange();
     }
@@ -420,12 +421,13 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setRectangleSelection(true);
         model.getSelectionModel().setCustomSelection(false);
         model.getSelectionModel().setSingleNodeSelection(false);
+        model.getSelectionModel().setNodeSelection(false);
         setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
         model.fireSelectionChange();
     }
 
     @Override
-    public synchronized void setDirectMouseSelection(boolean singleNodeSelection) {
+    public synchronized void setDirectMouseSelection() {
         VizModel model = getModel();
         if (model == null) {
             return;
@@ -433,11 +435,27 @@ public class VizController implements VisualizationController, Controller<VizMod
         model.getSelectionModel().setSelectionEnable(true);
         model.getSelectionModel().setRectangleSelection(false);
         model.getSelectionModel().setCustomSelection(false);
-        model.getSelectionModel().setSingleNodeSelection(singleNodeSelection);
-        if (singleNodeSelection) {
+        model.getSelectionModel().setNodeSelection(false);
+        model.getSelectionModel().setSingleNodeSelection(false);
+        setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+        model.fireSelectionChange();
+    }
+
+    @Override
+    public void setNodeSelection(boolean singleNode) {
+        VizModel model = getModel();
+        if (model == null) {
+            return;
+        }
+        model.getSelectionModel().setSelectionEnable(true);
+        model.getSelectionModel().setRectangleSelection(false);
+        model.getSelectionModel().setCustomSelection(false);
+        model.getSelectionModel().setNodeSelection(true);
+        model.getSelectionModel().setSingleNodeSelection(singleNode);
+        if (singleNode) {
             setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
         } else {
-            setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
+            setEngineSelectionMode(GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION);
         }
         model.fireSelectionChange();
     }
@@ -466,8 +484,12 @@ public class VizController implements VisualizationController, Controller<VizMod
             model.getSelectionModel().setCustomSelection(false);
             if (model.getSelectionModel().isRectangleSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
-            } else if (model.getSelectionModel().isSingleNodeSelection()) {
-                setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
+            } else if(model.getSelectionModel().isNodeSelection()) {
+                if (model.getSelectionModel().isSingleNodeSelection()) {
+                    setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
+                } else {
+                    setEngineSelectionMode(GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION);
+                }
             } else if (model.getSelectionModel().isDirectMouseSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION);
             } else {

@@ -163,6 +163,6 @@ public class Sizer implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION_AND_DRAGGING;
+        return ToolSelectionType.SELECTION;
     }
 }

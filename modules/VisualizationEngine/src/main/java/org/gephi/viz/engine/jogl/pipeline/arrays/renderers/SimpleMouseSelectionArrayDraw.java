@@ -72,7 +72,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         final GraphSelection graphSelection = engine.getGraphSelection();
 
-        if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION) {
+        if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
+        graphSelection.getMode() != GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
             render = false;
             return;
         }
