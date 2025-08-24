@@ -61,11 +61,15 @@ import org.openide.util.NbBundle;
 public abstract class AbstractScaleLayout extends AbstractLayout implements Layout {
 
     private double scale;
+    private boolean xAxis;
+    private boolean yAxis;
     private Graph graph;
 
     public AbstractScaleLayout(LayoutBuilder layoutBuilder, double scale) {
         super(layoutBuilder);
         this.scale = scale;
+        this.xAxis = true;
+        this.yAxis = true;
     }
 
     @Override
@@ -91,8 +95,12 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
                     double dx = (n.x() - xMean) * getScale();
                     double dy = (n.y() - yMean) * getScale();
 
-                    n.setX((float) (xMean + dx));
-                    n.setY((float) (yMean + dy));
+                    if (this.xAxis) {
+                        n.setX((float) (xMean + dx));
+                    }
+                    if (this.yAxis) {
+                        n.setY((float) (yMean + dy));
+                    }
                 }
             }
             setConverged(true);
@@ -116,6 +124,20 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
                 "ScaleLayout.scaleFactor.name",
                 NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
                 "getScale", "setScale"));
+            properties.add(LayoutProperty.createProperty(
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "ScaleLayout.xAxis.name"),
+                null,
+                "ScaleLayout.xAxis.name",
+                NbBundle.getMessage(getClass(), "ScaleLayout.xAxis.desc"),
+                "getXAxis", "setXAxis"));
+            properties.add(LayoutProperty.createProperty(
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "ScaleLayout.yAxis.name"),
+                null,
+                "ScaleLayout.yAxis.name",
+                NbBundle.getMessage(getClass(), "ScaleLayout.yAxis.desc"),
+                "getYAxis", "setYAxis"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -134,5 +156,21 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
      */
     public void setScale(Double scale) {
         this.scale = scale;
+    }
+
+    public Boolean getXAxis() {
+        return this.xAxis;
+    }
+
+    public void setXAxis(Boolean xAxis) {
+        this.xAxis = xAxis;
+    }
+
+    public Boolean getYAxis() {
+        return this.yAxis;
+    }
+
+    public void setYAxis(Boolean yAxis) {
+        this.yAxis = yAxis;
     }
 }
