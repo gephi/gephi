@@ -6,9 +6,7 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
@@ -546,6 +544,11 @@ public abstract class AbstractEdgeData {
     private float edgeBothSelectionColor;
     private float edgeOutSelectionColor;
     private float edgeInSelectionColor;
+    private GraphRenderingOptions.EdgeColorMode edgeColorMode;
+
+    protected void setEdgeColorMode(GraphRenderingOptions.EdgeColorMode mode) {
+        this.edgeColorMode = mode;
+    }
 
     private void saveSelectionState(final boolean someSelection, final boolean edgeSelectionColor,
                                     final GraphSelection graphSelection, final float edgeBothSelectionColor,
@@ -577,23 +580,17 @@ public abstract class AbstractEdgeData {
 
         //Size:
         buffer[index + 4] = (float) edge.getWeight();
-
-        //Source color:
-        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
-
-        //Target color:
-        buffer[index + 6] = Float.intBitsToFloat(target.getRGBA());
     }
 
     protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
                                                                     final int index) {
         fillUndirectedEdgeAttributesDataBase(buffer, edge, index);
 
-        buffer[index + 7] = Float.intBitsToFloat(edge.getRGBA());//Color
+        buffer[index + 5] = computeElementColor(edge);//Color
 
         //Source and target size:
-        buffer[index + 8] = edge.getSource().size();
-        buffer[index + 9] = edge.getTarget().size();
+        buffer[index + 6] = edge.getSource().size();
+        buffer[index + 7] = edge.getTarget().size();
     }
 
     protected void fillUndirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
@@ -610,32 +607,35 @@ public abstract class AbstractEdgeData {
                 boolean targetSelected = graphSelection.isNodeSelected(target);
 
                 if (sourceSelected && targetSelected) {
-                    buffer[index + 7] = edgeBothSelectionColor;//Color
+                    buffer[index + 5] = edgeBothSelectionColor;//Color
                 } else if (sourceSelected) {
-                    buffer[index + 7] = edgeOutSelectionColor;//Color
+                    buffer[index + 5] = edgeOutSelectionColor;//Color
                 } else if (targetSelected) {
-                    buffer[index + 7] = edgeInSelectionColor;//Color
+                    buffer[index + 5] = edgeInSelectionColor;//Color
                 } else {
-                    buffer[index + 7] = Float.intBitsToFloat(edge.getRGBA());//Color
+                    buffer[index + 5] = computeElementColor(edge);//Color
                 }
             } else {
-                if (someSelection && edge.alpha() <= 0) {
+                // When a node is selected, color the edge with the opposite node color
+                if (someSelection) {
                     if (graphSelection.isNodeSelected(source)) {
-                        buffer[index + 7] = Float.intBitsToFloat(target.getRGBA());//Color
+                        buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
+                    } else if (graphSelection.isNodeSelected(target)) {
+                        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
                     } else {
-                        buffer[index + 7] = Float.intBitsToFloat(source.getRGBA());//Color
+                        buffer[index + 5] = computeElementColor(edge);//Color
                     }
                 } else {
-                    buffer[index + 7] = Float.intBitsToFloat(edge.getRGBA());//Color
+                    buffer[index + 5] = computeElementColor(edge);//Color
                 }
             }
         } else {
-            buffer[index + 7] = Float.intBitsToFloat(edge.getRGBA());//Color
+            buffer[index + 5] = computeElementColor(edge);//Color
         }
 
         //Source and target size:
-        buffer[index + 8] = edge.getSource().size();
-        buffer[index + 9] = edge.getTarget().size();
+        buffer[index + 6] = edge.getSource().size();
+        buffer[index + 7] = edge.getTarget().size();
     }
 
     protected void fillDirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index) {
@@ -657,9 +657,6 @@ public abstract class AbstractEdgeData {
 
         //Size:
         buffer[index + 4] = (float) edge.getWeight();
-
-        //Source color:
-        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
     }
 
     protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
@@ -667,11 +664,11 @@ public abstract class AbstractEdgeData {
         fillDirectedEdgeAttributesDataBase(buffer, edge, index);
 
         //Color:
-        buffer[index + 6] = Float.intBitsToFloat(edge.getRGBA());//Color
+        buffer[index + 5] = computeElementColor(edge);//Color
 
         //Source and target size:
-        buffer[index + 7] = edge.getSource().size();
-        buffer[index + 8] = edge.getTarget().size();
+        buffer[index + 6] = edge.getSource().size();
+        buffer[index + 7] = edge.getTarget().size();
     }
 
     protected void fillDirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
@@ -688,32 +685,65 @@ public abstract class AbstractEdgeData {
                 boolean targetSelected = graphSelection.isNodeSelected(target);
 
                 if (sourceSelected && targetSelected) {
-                    buffer[index + 6] = edgeBothSelectionColor;//Color
+                    buffer[index + 5] = edgeBothSelectionColor;//Color
                 } else if (sourceSelected) {
-                    buffer[index + 6] = edgeOutSelectionColor;//Color
+                    buffer[index + 5] = edgeOutSelectionColor;//Color
                 } else if (targetSelected) {
-                    buffer[index + 6] = edgeInSelectionColor;//Color
+                    buffer[index + 5] = edgeInSelectionColor;//Color
                 } else {
-                    buffer[index + 6] = Float.intBitsToFloat(edge.getRGBA());//Color
+                    buffer[index + 5] = computeElementColor(edge);//Color
                 }
             } else {
-                if (someSelection && edge.alpha() <= 0) {
+                // When a node is selected, color the edge with the opposite node color
+                if (someSelection) {
                     if (graphSelection.isNodeSelected(source)) {
-                        buffer[index + 6] = Float.intBitsToFloat(target.getRGBA());//Color
+                        buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
+                    } else if (graphSelection.isNodeSelected(target)) {
+                        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
                     } else {
-                        buffer[index + 6] = Float.intBitsToFloat(source.getRGBA());//Color
+                        buffer[index + 5] = computeElementColor(edge);//Color
                     }
                 } else {
-                    buffer[index + 6] = Float.intBitsToFloat(edge.getRGBA());//Color
+                    buffer[index + 5] = computeElementColor(edge);//Color
                 }
             }
         } else {
-            buffer[index + 6] = Float.intBitsToFloat(edge.getRGBA());//Color
+            buffer[index + 5] = computeElementColor(edge);//Color
         }
 
         //Source and target size:
-        buffer[index + 7] = source.size();
-        buffer[index + 8] = target.size();
+        buffer[index + 6] = source.size();
+        buffer[index + 7] = target.size();
+    }
+
+    private float computeElementColor(final Edge edge) {
+        final int colorInt;
+        switch (edgeColorMode) {
+            case SOURCE: {
+                colorInt = edge.getSource().getRGBA();
+                break;
+            }
+            case TARGET: {
+                colorInt = edge.getTarget().getRGBA();
+                break;
+            }
+            case MIXED: {
+                final int s = edge.getSource().getRGBA();
+                final int t = edge.getTarget().getRGBA();
+                final int b0 = ((s) & 0xFF) + ((t) & 0xFF);
+                final int b1 = ((s >>> 8) & 0xFF) + ((t >>> 8) & 0xFF);
+                final int b2 = ((s >>> 16) & 0xFF) + ((t >>> 16) & 0xFF);
+                final int b3 = ((s >>> 24) & 0xFF) + ((t >>> 24) & 0xFF);
+                colorInt = ((b3 >>> 1) << 24) | ((b2 >>> 1) << 16) | ((b1 >>> 1) << 8) | (b0 >>> 1);
+                break;
+            }
+            case SELF:
+            default: {
+                colorInt = edge.getRGBA();
+                break;
+            }
+        }
+        return Float.intBitsToFloat(colorInt);
     }
 
     private UndirectedEdgesVAO undirectedEdgesVAO;
@@ -852,14 +882,6 @@ public abstract class AbstractEdgeData {
                     stride, offset);
                 offset += EdgeLineModelUndirected.SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION,
-                    EdgeLineModelUndirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
-                offset += EdgeLineModelUndirected.SOURCE_COLOR_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_TARGET_COLOR_LOCATION,
-                    EdgeLineModelUndirected.TARGET_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
-                offset += EdgeLineModelUndirected.TARGET_COLOR_FLOATS * Float.BYTES;
-
                 gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelUndirected.COLOR_FLOATS * Float.BYTES,
                     GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelUndirected.COLOR_FLOATS * Float.BYTES;
@@ -881,8 +903,6 @@ public abstract class AbstractEdgeData {
                 SHADER_POSITION_LOCATION,
                 SHADER_POSITION_TARGET_LOCATION,
                 SHADER_SIZE_LOCATION,
-                SHADER_SOURCE_COLOR_LOCATION,
-                SHADER_TARGET_COLOR_LOCATION,
                 SHADER_COLOR_LOCATION,
                 SHADER_SOURCE_SIZE_LOCATION,
                 SHADER_TARGET_SIZE_LOCATION
@@ -896,8 +916,6 @@ public abstract class AbstractEdgeData {
                     SHADER_POSITION_LOCATION,
                     SHADER_POSITION_TARGET_LOCATION,
                     SHADER_SIZE_LOCATION,
-                    SHADER_SOURCE_COLOR_LOCATION,
-                    SHADER_TARGET_COLOR_LOCATION,
                     SHADER_COLOR_LOCATION,
                     SHADER_SOURCE_SIZE_LOCATION,
                     SHADER_TARGET_SIZE_LOCATION
@@ -944,10 +962,6 @@ public abstract class AbstractEdgeData {
                     stride, offset);
                 offset += EdgeLineModelDirected.SIZE_FLOATS * Float.BYTES;
 
-                gl.glVertexAttribPointer(SHADER_SOURCE_COLOR_LOCATION,
-                    EdgeLineModelDirected.SOURCE_COLOR_FLOATS * Float.BYTES, GL_UNSIGNED_BYTE, false, stride, offset);
-                offset += EdgeLineModelDirected.SOURCE_COLOR_FLOATS * Float.BYTES;
-
                 gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, EdgeLineModelDirected.COLOR_FLOATS * Float.BYTES,
                     GL_UNSIGNED_BYTE, false, stride, offset);
                 offset += EdgeLineModelDirected.COLOR_FLOATS * Float.BYTES;
@@ -969,7 +983,6 @@ public abstract class AbstractEdgeData {
                 SHADER_POSITION_LOCATION,
                 SHADER_POSITION_TARGET_LOCATION,
                 SHADER_SIZE_LOCATION,
-                SHADER_SOURCE_COLOR_LOCATION,
                 SHADER_COLOR_LOCATION,
                 SHADER_SOURCE_SIZE_LOCATION,
                 SHADER_TARGET_SIZE_LOCATION
@@ -983,7 +996,6 @@ public abstract class AbstractEdgeData {
                     SHADER_POSITION_LOCATION,
                     SHADER_POSITION_TARGET_LOCATION,
                     SHADER_SIZE_LOCATION,
-                    SHADER_SOURCE_COLOR_LOCATION,
                     SHADER_COLOR_LOCATION,
                     SHADER_SOURCE_SIZE_LOCATION,
                     SHADER_TARGET_SIZE_LOCATION

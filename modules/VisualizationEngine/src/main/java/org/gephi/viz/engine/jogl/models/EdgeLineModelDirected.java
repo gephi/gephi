@@ -5,7 +5,6 @@ import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION_TARGET;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SIZE;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SOURCE_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SOURCE_SIZE;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_TARGET_SIZE;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
@@ -15,7 +14,6 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
@@ -43,7 +41,6 @@ public class EdgeLineModelDirected {
     public static final int VERTEX_FLOATS = 3;
     public static final int POSITION_SOURCE_FLOATS = 2;
     public static final int POSITION_TARGET_FLOATS = 2;
-    public static final int SOURCE_COLOR_FLOATS = 1;
     public static final int COLOR_FLOATS = 1;
     public static final int SOURCE_SIZE_FLOATS = 1;
     public static final int TARGET_SIZE_FLOATS = 1;
@@ -52,7 +49,6 @@ public class EdgeLineModelDirected {
     public static final int TOTAL_ATTRIBUTES_FLOATS
         = POSITION_SOURCE_FLOATS
         + POSITION_TARGET_FLOATS
-        + SOURCE_COLOR_FLOATS
         + COLOR_FLOATS
         + SOURCE_SIZE_FLOATS
         + TARGET_SIZE_FLOATS
@@ -94,7 +90,6 @@ public class EdgeLineModelDirected {
             .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
             .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
             .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_SOURCE_COLOR, SHADER_SOURCE_COLOR_LOCATION)
             .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
             .addAttribLocation(ATTRIB_NAME_SOURCE_SIZE, SHADER_SOURCE_SIZE_LOCATION)
             .addAttribLocation(ATTRIB_NAME_TARGET_SIZE, SHADER_TARGET_SIZE_LOCATION)
@@ -113,7 +108,6 @@ public class EdgeLineModelDirected {
                 .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_SOURCE_COLOR, SHADER_SOURCE_COLOR_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_SOURCE_SIZE, SHADER_SOURCE_SIZE_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_TARGET_SIZE, SHADER_TARGET_SIZE_LOCATION)
@@ -133,7 +127,6 @@ public class EdgeLineModelDirected {
                 .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_SOURCE_COLOR, SHADER_SOURCE_COLOR_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_SOURCE_SIZE, SHADER_SOURCE_SIZE_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_TARGET_SIZE, SHADER_TARGET_SIZE_LOCATION)

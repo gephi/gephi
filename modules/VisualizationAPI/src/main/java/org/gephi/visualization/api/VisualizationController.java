@@ -69,11 +69,11 @@ public interface VisualizationController {
 
     void setBackgroundColor(Color color);
 
+    void setNodeScale(float nodeScale);
+
     void setShowEdges(boolean showEdges);
 
-    void setEdgeHasUniColor(boolean edgeHasUniColor);
-
-    void setEdgeUniColor(Color edgeUniColor);
+    void setEdgeColorMode(EdgeColorMode mode);
 
     void setEdgeSelectionColor(boolean edgeSelectionColor);
 

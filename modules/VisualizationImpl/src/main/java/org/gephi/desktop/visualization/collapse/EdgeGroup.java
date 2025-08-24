@@ -22,7 +22,6 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     private final EdgeSettingsPanel edgeSettingsPanel = new EdgeSettingsPanel();
     //Toolbar
     private final JToggleButton showEdgeButton;
-    private final JToggleButton edgeHasNodeColorButton;
     private final JToggleButton showLabelsButton;
     private final JSlider edgeScaleSlider;
 
@@ -43,16 +42,16 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         });
 
         //Edge color mode
-        edgeHasNodeColorButton = new JToggleButton();
-        edgeHasNodeColorButton
-            .setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.edgeNodeColor"));
-        edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.png", false));
-        edgeHasNodeColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vizController.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
-            }
-        });
+//        edgeHasNodeColorButton = new JToggleButton();
+//        edgeHasNodeColorButton
+//            .setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.edgeNodeColor"));
+//        edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.png", false));
+//        edgeHasNodeColorButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                vizController.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
+//            }
+//        });
 
         //Show labels buttons
         showLabelsButton = new JToggleButton();
@@ -88,7 +87,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
             component.setEnabled(true);
         }
         showEdgeButton.setSelected(vizModel.isShowEdges());
-        edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
+//        edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
         showLabelsButton.setSelected(vizModel.isShowEdgeLabels());
         edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
 
@@ -116,10 +115,6 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
             if (showEdgeButton.isSelected() != model.isShowEdges()) {
                 showEdgeButton.setSelected(model.isShowEdges());
             }
-        } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
-            if (edgeHasNodeColorButton.isSelected() == model.isEdgeHasUniColor()) {
-                edgeHasNodeColorButton.setSelected(!model.isEdgeHasUniColor());
-            }
         } else if (evt.getPropertyName().equals("showEdgeLabels")) {
             if (showLabelsButton.isSelected() != model.isShowEdgeLabels()) {
                 showLabelsButton.setSelected(model.isShowEdgeLabels());
@@ -140,7 +135,6 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     public JComponent[] getToolbarComponents() {
         return new JComponent[] {
             showEdgeButton,
-            edgeHasNodeColorButton,
             showLabelsButton,
             edgeScaleSlider
         };

@@ -17,6 +17,10 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private Color edgeBothSelectionColor = DEFAULT_EDGE_BOTH_SELECTION_COLOR;
     private Color edgeInSelectionColor = DEFAULT_EDGE_IN_SELECTION_COLOR;
     private Color edgeOutSelectionColor = DEFAULT_EDGE_OUT_SELECTION_COLOR;
+    private EdgeColorMode edgeColorMode = DEFAULT_EDGE_COLOR_MODE;
+
+    //Nodes
+    private float nodeScale = DEFAULT_NODE_SCALE;
 
     //Selection:
     private boolean autoSelectNeighbours = DEFAULT_AUTO_SELECT_NEIGHBOURS;
@@ -36,6 +40,24 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
         }
 
         this.edgeScale = edgeScale;
+    }
+
+    @Override
+    public float getNodeScale() {
+        return nodeScale;
+    }
+
+    @Override
+    public void setNodeScale(float nodeScale) {
+        if (Float.isNaN(nodeScale) || Float.isInfinite(nodeScale)) {
+            nodeScale = DEFAULT_NODE_SCALE;
+        }
+
+        if (nodeScale <= 0f) {
+            throw new IllegalArgumentException("nodeScale should be > 0");
+        }
+
+        this.nodeScale = nodeScale;
     }
 
     @Override
@@ -167,6 +189,16 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     public void setEdgeInSelectionColor(Color color) {
         Objects.requireNonNull(color, "color");
         this.edgeInSelectionColor = color;
+    }
+
+    @Override
+    public EdgeColorMode getEdgeColorMode() {
+        return edgeColorMode;
+    }
+
+    @Override
+    public void setEdgeColorMode(EdgeColorMode mode) {
+        this.edgeColorMode = Objects.requireNonNull(mode, "mode");
     }
 
 }
