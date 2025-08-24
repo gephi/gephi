@@ -57,13 +57,13 @@ public class ParameterNode extends AbstractNode {
         super(Children.LEAF);
         String valStr = value == null ? "null" : value.toString();
         setName(key + ": " + valStr);
-        setIconBaseWithExtension("DesktopFilters/parameter.png");
+        setIconBaseWithExtension("DesktopFilters/parameter.svg");
     }
 
     public ParameterNode(Query function) {
         super(new ParameterChildren(function));
         setName(NbBundle.getMessage(ParameterNode.class, "ParametersNode.name"));
-        setIconBaseWithExtension("DesktopFilters/parameters.png");
+        setIconBaseWithExtension("DesktopFilters/parameters.svg");
     }
 
     @Override

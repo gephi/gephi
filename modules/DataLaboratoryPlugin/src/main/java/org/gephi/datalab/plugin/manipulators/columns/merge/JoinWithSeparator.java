@@ -115,7 +115,7 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/join.svg", false);
     }
 
     public String getNewColumnTitle() {

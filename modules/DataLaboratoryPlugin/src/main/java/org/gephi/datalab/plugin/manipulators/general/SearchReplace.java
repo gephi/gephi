@@ -120,7 +120,7 @@ public class SearchReplace implements GeneralActionsManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DataLaboratoryPlugin/binocular--pencil.png", false);
+            .loadImageIcon("DataLaboratoryPlugin/binocular--pencil.svg", false);
     }
 
     private Table getCurrentTable() {

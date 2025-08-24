@@ -1,192 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg19713" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="15.999999"
-   height="15.999999"
-   viewBox="0 0 4.2333333 4.2333333"
-   version="1.1"
-   id="svg19713"
-   xml:space="preserve"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs19710"><style
-       id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style><style
-       id="style48643">
-      .cls-1 {
-        fill: none;
+      .st1 {
+        fill: #555;
       }
-    </style><style
-       id="style49369">.cls-1{fill:none;}</style><style
-       id="style68473">.cls-1{fill:none;}</style><style
-       id="style34301">.cls-1{fill:none;}</style><style
-       id="style40867">.cls-1{fill:none;}</style><style
-       id="style3486">.cls-1{fill:none;}</style><style
-       id="style16714">.cls-1{fill:none;}</style><style
-       id="style16734">.cls-1{fill:none;}</style><style
-       id="style598">.cls-1{fill:none;}</style><style
-       id="style938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style953">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style988">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style6804">.cls-1{fill:none;}</style><style
-       id="style8295">.cls-1{fill:none;}</style><style
-       id="style9297">.cls-1{fill:none;}</style><style
-       id="style10710">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style640">.cls-1{fill:none;}</style><style
-       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1166">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1186">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1201">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2604">.cls-1{fill:none;}</style><style
-       id="style3041">.cls-1{fill:none;}</style><style
-       id="style34659">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1772">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style4214">.cls-1{fill:none;}</style><style
-       id="style5886">.cls-1{fill:none;}</style><style
-       id="style5923">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style5938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8494">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8509">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10257">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10280">.cls-1{fill:none;}</style><style
-       id="style11171">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1997">.cls-1{fill:none;}</style><style
-       id="style2928">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2943">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3863">.cls-1{fill:none;}</style><style
-       id="style3880">.cls-1{fill:none;}</style><style
-       id="style1078">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer78"
-     style="display:inline"
-     transform="translate(-55.033333,80.433333)"><g
-       id="g1097"
-       transform="matrix(0.13229167,0,0,0.13229167,55.033333,-80.433333)"
-       style="stroke-width:2"><path
-         d="M 16,23 A 1.5,1.5 0 1 0 17.5,24.5 1.5,1.5 0 0 0 16,23 Z"
-         id="path1082"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><rect
-         x="15"
-         y="12"
-         width="15.999999"
-         height="15.999999"
-         id="rect1084"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><path
-         d="M 29,30 H 3 A 1,1 0 0 1 2.1128,28.5386 l 13,-25 a 1,1 0 0 1 1.7744,0 l 13,25 A 1,1 0 0 1 29,30 Z M 4.6507,28 H 27.3493 L 27.3513,27.9967 16.002,6.1714 H 15.998 L 4.6487,27.9967 Z"
-         id="path1086"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:2" /><rect
-         id="_Transparent_Rectangle_-963"
-         data-name="&lt;Transparent Rectangle&gt;"
-         class="cls-1"
-         width="15.999999"
-         height="15.999999"
-         x="0"
-         y="0"
-         style="stroke-width:2" /></g></g><style
-     type="text/css"
-     id="style578">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style968">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style3690">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5365">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style596">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style660">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5861">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style25784">
-	.st0{fill:none;}
-</style></svg>
+    </style>
+  </defs>
+  <g id="g25041">
+    <g id="g25039">
+      <path id="path25031" class="st1" d="M8,11.5c-.414,0-.75.336-.75.75s.336.75.75.75.75-.336.75-.75-.336-.75-.75-.75Z"/>
+      <rect id="rect25033" class="st1" x="7.5" y="6" width="1" height="4.5"/>
+      <path id="path25035" class="st1" d="M14.5,15H1.5c-.276,0-.5-.224-.5-.5,0-.08.019-.159.056-.231L7.556,1.769c.127-.245.429-.34.674-.213.091.047.165.122.213.213l6.5,12.5c.127.245.032.547-.213.674-.071.037-.15.056-.231.056ZM2.325,14h11.349v-.002S8.001,3.086,8.001,3.086h-.002L2.324,13.998v.002Z"/>
+      <rect id="rect25037" class="st0" y="0" width="16" height="16"/>
+    </g>
+  </g>
+</svg>

@@ -105,7 +105,7 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/ObjectColorMode.png", false);
+        return ImageUtilities.loadImageIcon("VisualizationImpl/ObjectColorMode.svg", false);
     }
 
     @Override

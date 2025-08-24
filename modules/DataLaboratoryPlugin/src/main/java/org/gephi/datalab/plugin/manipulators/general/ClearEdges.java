@@ -127,7 +127,7 @@ public class ClearEdges implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/eraser--minus.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/eraser--minus.svg", false);
     }
 
     public boolean isDeleteDirected() {

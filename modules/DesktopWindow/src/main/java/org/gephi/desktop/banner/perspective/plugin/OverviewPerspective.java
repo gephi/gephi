@@ -59,7 +59,7 @@ public class OverviewPerspective implements Perspective {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DesktopWindow/overview.png", false);
+            .loadImageIcon("DesktopWindow/overview.svg", false);
     }
 
     @Override
