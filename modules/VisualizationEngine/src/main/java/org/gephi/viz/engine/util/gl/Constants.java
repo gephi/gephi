@@ -27,6 +27,7 @@ public class Constants {
     public static final int SHADER_SOURCE_SIZE_LOCATION = 6;
     public static final int SHADER_TARGET_SIZE_LOCATION = 7;
     public static final int SHADER_POSITION_TARGET_LOCATION = 8;
+    public static final int SHADER_POSITION_GLOBAL_TIME = 9;
 
     public static final String UNIFORM_NAME_MODEL_VIEW_PROJECTION = "mvp";
     public static final String UNIFORM_NAME_EDGE_SCALE = "edgeScale";
@@ -40,6 +41,8 @@ public class Constants {
     public static final String UNIFORM_NAME_SIZE_MULTIPLIER = "sizeMultiplier";
     public static final String UNIFORM_NAME_COLOR_LIGHTEN_FACTOR = "colorLightenFactor";
     public static final String UNIFORM_NAME_COLOR_MULTIPLIER = "colorMultiplier";
+
+    public static final String UNIFORM_NAME_GLOBAL_TIME = "globalTime";
 
     //Rendering order:
     public static final int RENDERING_ORDER_NODES = 100;

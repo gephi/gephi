@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays;
 
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_GLOBAL_TIME;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
 
@@ -108,6 +109,8 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             gl.glVertexAttrib4f(SHADER_COLOR_LOCATION, b, g, r, a);
 
             gl.glVertexAttrib1f(SHADER_SIZE_LOCATION, size);
+            System.out.println("lol");
+            gl.glVertexAttrib1f(SHADER_POSITION_GLOBAL_TIME,(float) System.currentTimeMillis());
 
             //Draw the instance:
             diskModel.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);

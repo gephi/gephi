@@ -3,6 +3,7 @@
 #ifdef GL_ES
 precision lowp float;
 #endif
+uniform float globalTime;
 
 varying vec4 fragColor;
 
