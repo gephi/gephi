@@ -18,6 +18,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private Color edgeInSelectionColor = DEFAULT_EDGE_IN_SELECTION_COLOR;
     private Color edgeOutSelectionColor = DEFAULT_EDGE_OUT_SELECTION_COLOR;
     private EdgeColorMode edgeColorMode = DEFAULT_EDGE_COLOR_MODE;
+    private boolean edgeWeightEnabled = DEFAULT_EDGE_WEIGHT_ENABLED;
 
     //Nodes
     private float nodeScale = DEFAULT_NODE_SCALE;
@@ -199,6 +200,16 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     @Override
     public void setEdgeColorMode(EdgeColorMode mode) {
         this.edgeColorMode = Objects.requireNonNull(mode, "mode");
+    }
+
+    @Override
+    public boolean isEdgeWeightEnabled() {
+        return edgeWeightEnabled;
+    }
+
+    @Override
+    public void setEdgeWeightEnabled(boolean enabled) {
+        this.edgeWeightEnabled = enabled;
     }
 
 }

@@ -236,6 +236,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
         final boolean edgeSelectionColor = renderingOptions.isEdgeSelectionColor();
         setEdgeColorMode(renderingOptions.getEdgeColorMode());
+        setEdgeWeightEnabled(renderingOptions.isEdgeWeightEnabled());
         final float edgeBothSelectionColor =
             Float.intBitsToFloat(renderingOptions.getEdgeBothSelectionColor().getRGB());
         final float edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());

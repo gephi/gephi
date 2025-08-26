@@ -31,6 +31,7 @@ public interface GraphRenderingOptions {
     Color DEFAULT_EDGE_OUT_SELECTION_COLOR = new Color(196, 66, 79, 255);
     Color DEFAULT_EDGE_BOTH_SELECTION_COLOR = new Color(248, 215, 83, 255);
     EdgeColorMode DEFAULT_EDGE_COLOR_MODE = EdgeColorMode.SELF;
+    boolean DEFAULT_EDGE_WEIGHT_ENABLED = true;
 
     //Selection:
     boolean DEFAULT_HIDE_NON_SELECTED = false;
@@ -97,4 +98,8 @@ public interface GraphRenderingOptions {
     EdgeColorMode getEdgeColorMode();
 
     void setEdgeColorMode(EdgeColorMode mode);
+
+    boolean isEdgeWeightEnabled();
+
+    void setEdgeWeightEnabled(boolean enabled);
 }

@@ -107,8 +107,9 @@ public abstract class AbstractEdgeData {
 
         final GraphIndex graphIndex = engine.getGraphIndex();
 
-        final float minWeight = graphIndex.getEdgesMinWeight();
-        final float maxWeight = graphIndex.getEdgesMaxWeight();
+        final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
+        final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
+        final float maxWeight = weightEnabled ? graphIndex.getEdgesMaxWeight() : 1f;
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
@@ -192,8 +193,9 @@ public abstract class AbstractEdgeData {
 
         final GraphIndex graphIndex = engine.getGraphIndex();
 
-        final float minWeight = graphIndex.getEdgesMinWeight();
-        final float maxWeight = graphIndex.getEdgesMaxWeight();
+        final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
+        final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
+        final float maxWeight = weightEnabled ? graphIndex.getEdgesMaxWeight() : 1f;
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
@@ -545,9 +547,14 @@ public abstract class AbstractEdgeData {
     private float edgeOutSelectionColor;
     private float edgeInSelectionColor;
     private GraphRenderingOptions.EdgeColorMode edgeColorMode;
+    private boolean edgeWeightEnabled = true;
 
     protected void setEdgeColorMode(GraphRenderingOptions.EdgeColorMode mode) {
         this.edgeColorMode = mode;
+    }
+
+    protected void setEdgeWeightEnabled(boolean enabled) {
+        this.edgeWeightEnabled = enabled;
     }
 
     private void saveSelectionState(final boolean someSelection, final boolean edgeSelectionColor,
@@ -578,8 +585,8 @@ public abstract class AbstractEdgeData {
         buffer[index + 2] = targetX;
         buffer[index + 3] = targetY;
 
-        //Size:
-        buffer[index + 4] = (float) edge.getWeight();
+        //Size (weight or constant):
+        buffer[index + 4] = edgeWeightEnabled ? (float) edge.getWeight() : 1f;
     }
 
     protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
@@ -655,8 +662,8 @@ public abstract class AbstractEdgeData {
         buffer[index + 2] = targetX;
         buffer[index + 3] = targetY;
 
-        //Size:
-        buffer[index + 4] = (float) edge.getWeight();
+        //Size (weight or constant):
+        buffer[index + 4] = edgeWeightEnabled ? (float) edge.getWeight() : 1f;
     }
 
     protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
