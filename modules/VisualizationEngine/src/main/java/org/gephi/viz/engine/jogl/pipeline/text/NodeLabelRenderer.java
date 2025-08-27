@@ -11,6 +11,7 @@ import com.jogamp.graph.geom.plane.AffineTransform;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.math.Vec4f;
+import com.jogamp.opengl.math.geom.AABBox;
 import com.jogamp.opengl.util.PMVMatrix;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
@@ -136,8 +137,13 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
 
             final float scale = node.size() * labelScaleFactor;
 
-            // FIXME: center the text in the node by measuring the text width
-            textTransform.setToTranslation(node.x(), node.y());
+            // Center the text in the node by measuring the text width:
+            final AABBox box = measureLabel(font, text, scale);
+
+            textTransform.setToTranslation(
+                    node.x() - 0.5f * box.getWidth(),
+                    node.y() - 0.25f * box.getHeight()
+            );
             textTransform.scale(scale, scale, tmpTextScaleTransform);
 
             // add shapes for this string into the single region (no extra grow)
@@ -157,6 +163,18 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
 
         regionRenderer.enable(gl, false);
         gl.glDisableVertexAttribArray(0);
+    }
+
+    private static final Font.GlyphVisitor NOOP_VISITOR = new Font.GlyphVisitor() {
+        @Override
+        public void visit(char symbol, Font.Glyph glyph, AffineTransform t) {
+            // NOOP
+        }
+    };
+
+    private AABBox measureLabel(Font font, String text, float scale) {
+        tmpTextScaleTransform.setToScale(scale, scale);
+        return font.processString(NOOP_VISITOR, tmpTextScaleTransform, text, tmp1, tmp2);
     }
 
     @Override
