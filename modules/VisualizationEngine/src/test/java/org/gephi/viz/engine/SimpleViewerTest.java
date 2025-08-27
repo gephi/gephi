@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class SimpleViewerTest {
 
-    //@Ignore
+    @Ignore
     @Test
     public void testSimpleViewer() {
         final SimpleViewer viewer = new SimpleViewer();

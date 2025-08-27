@@ -6,6 +6,8 @@ import java.nio.IntBuffer;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
+import static com.jogamp.opengl.GL2ES3.GL_VERTEX_ARRAY_BINDING;
+
 /**
  * VAO abstraction that checks for actual support of VAOs and emulates it if not supported.
  *
@@ -18,6 +20,7 @@ public abstract class GLVertexArrayObject {
     private int[] attributeLocations;
     private int[] instancedAttributeLocations;
     private int arrayId = -1;
+    private int[] previousArrayId = new int[1];
 
     public GLVertexArrayObject(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
         vaoSupported = capabilities.isVAOSupported(openGLOptions);
@@ -43,6 +46,12 @@ public abstract class GLVertexArrayObject {
 
             GLFunctions.glGenVertexArrays(gl, 1, vertexArrayName);
             arrayId = vertexArrayName.get(0);
+
+            // Note: important to store the previous value of active VAO.
+            // The OpenGL pipeline always has an active default VAO,
+            // and we should restore the status to that one when doing the call to unbind
+            // If we fail to restore it, other renderers such as JOGL text will fail and draw nothing
+            gl.glGetIntegerv(GL_VERTEX_ARRAY_BINDING, previousArrayId, 0);
 
             bind(gl);
             configureAll(gl);
@@ -80,7 +89,7 @@ public abstract class GLVertexArrayObject {
     }
 
     private void unbind(GL2ES2 gl) {
-        GLFunctions.glUnbindVertexArray(gl);
+        GLFunctions.glUnbindVertexArray(gl, previousArrayId[0]);
     }
 
     private void configureEnabledAttributes(GL2ES2 gl) {

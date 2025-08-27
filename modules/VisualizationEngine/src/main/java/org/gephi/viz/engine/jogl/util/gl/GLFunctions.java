@@ -22,11 +22,11 @@ public class GLFunctions {
         }
     }
 
-    public static void glUnbindVertexArray(GL2ES2 gl) {
+    public static void glUnbindVertexArray(GL2ES2 gl, int defaultVAO) {
         if (gl.isGL2GL3()) {
-            gl.getGL2GL3().glBindVertexArray(0);
+            gl.getGL2GL3().glBindVertexArray(defaultVAO);
         } else {
-            gl.getGLES2().glBindVertexArrayOES(0);
+            gl.getGLES2().glBindVertexArrayOES(defaultVAO);
         }
     }
 

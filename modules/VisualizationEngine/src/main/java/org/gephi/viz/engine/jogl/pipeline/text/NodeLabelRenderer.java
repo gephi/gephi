@@ -5,15 +5,13 @@ import com.jogamp.graph.curve.opengl.GLRegion;
 import com.jogamp.graph.curve.opengl.RegionRenderer;
 import com.jogamp.graph.curve.opengl.RenderState;
 import com.jogamp.graph.curve.opengl.TextRegionUtil;
+import com.jogamp.graph.font.Font;
 import com.jogamp.graph.font.FontFactory;
 import com.jogamp.graph.geom.plane.AffineTransform;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.math.Vec4f;
 import com.jogamp.opengl.util.PMVMatrix;
-import java.io.File;
-import java.io.IOException;
-import java.util.EnumSet;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
@@ -23,8 +21,11 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.Constants;
-import com.jogamp.graph.font.Font;
 import org.gephi.viz.engine.util.structure.NodesCallback;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.EnumSet;
 
 @SuppressWarnings("rawtypes")
 public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
@@ -47,7 +48,7 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
     private final AffineTransform tmp2 = new AffineTransform();
 
     private final AffineTransform textTransform = new AffineTransform();
-    private final AffineTransform textScaleTransform = new AffineTransform();
+    private final AffineTransform tmpTextScaleTransform = new AffineTransform();
 
     public NodeLabelRenderer(VizEngine engine) {
         this.engine = engine;
@@ -74,11 +75,9 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         // since the visualization engine uses render order for z-ordering
         regionRenderer.clearHintMask(RenderState.BITHINT_GLOBAL_DEPTH_TEST_ENABLED);
 
-        // Create a reusable region for all labels. If you need per-label colors,
-        // use (Region.VBAA_RENDERING_BIT | Region.COLORCHANNEL_RENDERING_BIT).
-
+        // Create a reusable region for all labels:
         labelsRegion = GLRegion.create(gl.getGLProfile(),
-                Region.VBAA_RENDERING_BIT, /* colorTexSeq */ null);
+                Region.VBAA_RENDERING_BIT | Region.COLORCHANNEL_RENDERING_BIT, null);
 
         regionRenderer.enable(gl, false);
     }
@@ -95,6 +94,7 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
     public void render(JOGLRenderingTarget target, RenderingLayer layer) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
+        regionRenderer.enable(gl, true);
         regionRenderer.reshapeNotify(0, 0, engine.getWidth(), engine.getHeight());
         final PMVMatrix p = regionRenderer.getMatrix();
 
@@ -109,46 +109,50 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         p.glLoadMatrixf(engine.getViewMatrix().get(new float[16]), 0);
 
         gl.glEnableVertexAttribArray(0);
-        regionRenderer.enable(gl, true);
 
         // --------- BATCH BUILD THE REGION -----------
         labelsRegion.clear(gl);
 
         // 1) Pre-count total vertices/indices to avoid multiple grows
-        int[] totalCounts = new int[2];
-        for (Node node : nodesCallback.getNodes()) {
-            final String text = node.getLabel();
+        final int[] totalCounts = new int[2];
+        final Node[] nodes = nodesCallback.getNodesArray();
+        final int nodesCount = nodesCallback.getCount();
+
+        for (int i = 0; i < nodesCount; i++) {
+            final String text = nodes[i].getLabel();
             if (text == null || text.isEmpty()) continue;
             TextRegionUtil.countStringRegion(font, text, totalCounts);
         }
         labelsRegion.setBufferCapacity(totalCounts[0], totalCounts[1]); // one allocation
 
-        // 2) Append each label with its own transform
-        final float textScale = 10f;
-        textScaleTransform.setToScale(textScale, textScale);
+        final Vec4f textColor = new Vec4f(0, 0, 0, 1); // TODO: label color by node
+        final float labelScaleFactor = 0.8f; // TODO: will be part of graphRenderingOptions...
 
-        for (Node node : nodesCallback.getNodes()) {
+        // 2) Append each label with its own transform
+        for (int i = 0; i < nodesCount; i++) {
+            final Node node = nodes[i];
             final String text = node.getLabel();
             if (text == null || text.isEmpty()) continue;
 
-            // transform: translate to (x,y) and scale once
+            final float scale = node.size() * labelScaleFactor;
+
+            // FIXME: center the text in the node by measuring the text width
             textTransform.setToTranslation(node.x(), node.y());
-            textTransform.concatenate(textScaleTransform);
+            textTransform.scale(scale, scale, tmpTextScaleTransform);
 
             // add shapes for this string into the single region (no extra grow)
             TextRegionUtil.addStringToRegion(
                     false,               // preGrowRegion (we already did a single setBufferCapacity)
-                    labelsRegion,        // sink
+                    labelsRegion,
                     font,
                     textTransform,
                     text,
-                    new Vec4f(0, 1f, 1, 1),                // null -> uses RegionRenderer static color
+                    textColor,
                     tmp1, tmp2
             );
         }
 
         // 3) Render all labels with a single draw
-        // If the region has no color channel, RegionRenderer's static color is used.
         labelsRegion.draw(gl, regionRenderer, sampleCount);
 
         regionRenderer.enable(gl, false);

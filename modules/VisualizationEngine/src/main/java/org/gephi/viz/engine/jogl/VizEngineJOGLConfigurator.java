@@ -7,8 +7,11 @@ import static com.jogamp.opengl.GLProfile.GLES2;
 import static com.jogamp.opengl.GLProfile.GLES3;
 
 import com.jogamp.newt.event.NEWTEvent;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.viz.engine.VizEngine;
@@ -83,8 +86,8 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
         engine.addToLookup(renderingOptions);
         engine.addToLookup(openGLOptions);
 
-//        setupIndirectRendering(engine);
-//        setupInstancedRendering(engine);
+        setupIndirectRendering(engine);
+        setupInstancedRendering(engine);
         setupVertexArrayRendering(engine);
 
         setupInputListeners(engine);
@@ -113,15 +116,14 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
     private void setupVertexArrayRendering(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes:
-//        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData();
-//        engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
-//        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
-//
-//        //Edges:
-//        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData();
-//        engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
-//        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
-//
+        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData();
+        engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
+        engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
+
+        //Edges:
+        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData();
+        engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
+        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
 
         //Selection:
         engine.addRenderer(new RectangleSelectionArrayDraw(engine));
