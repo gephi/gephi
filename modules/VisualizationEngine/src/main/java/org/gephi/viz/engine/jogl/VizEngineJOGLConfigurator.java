@@ -124,10 +124,10 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 //
 //        //Rectangle selection:
 //        engine.addRenderer(new RectangleSelectionArrayDraw(engine));
-//        engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
+        engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
 
         // Node Label
-        engine.addRenderer(new NodeLabelRenderer());
+        engine.addRenderer(new NodeLabelRenderer(engine));
     }
 
     private void setupInputListeners(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
