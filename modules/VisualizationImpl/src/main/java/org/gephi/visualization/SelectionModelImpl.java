@@ -22,6 +22,7 @@ public class SelectionModelImpl {
     private boolean selectionEnable = true;
     private boolean customSelection = false;
     private boolean singleNodeSelection = false;
+    private boolean nodeSelection = false;
 
     public SelectionModelImpl(VizModel visualisationModel, VizConfig config) {
         this.visualisationModel = visualisationModel;
@@ -78,6 +79,10 @@ public class SelectionModelImpl {
         this.singleNodeSelection = singleNodeSelection;
     }
 
+    public void setNodeSelection(boolean nodeSelection) {
+        this.nodeSelection = nodeSelection;
+    }
+
     public boolean isRectangleSelection() {
         return selectionEnable && rectangleSelection;
     }
@@ -96,5 +101,9 @@ public class SelectionModelImpl {
 
     public boolean isSelectionEnabled() {
         return selectionEnable;
+    }
+
+    public boolean isNodeSelection() {
+        return nodeSelection;
     }
 }

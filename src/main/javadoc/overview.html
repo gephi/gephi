@@ -18,7 +18,7 @@
         <h3>0.11.0</h3>
         <h4>ProjectAPI</h4>
         <ul>
-            <li>Addition of additional <code>newWorkspace()</code> and <code>openNewWorkspace()</code> methods in <code>ProjectController</code> with the option to pass objects that will be added to the <code>Workspace</code>'s lookup at creation time.</li>
+            <li>Addition of <code>newWorkspace()</code> and <code>openNewWorkspace()</code> methods in <code>ProjectController</code> with the option to pass objects that will be added to the <code>Workspace</code>'s lookup at creation time.</li>
         </ul>
         <h4>Graph API</h4>
         <ul>
@@ -28,6 +28,10 @@
             <li><code>Instant</code> is now supported as an element type. This allows to store dates and times, but unfortunately it wasn't possible to make the Serialization backward compatible. In other words, if an Instant column is used , it won't be possible to be loaded in previous versions.</li>
             <li>Addition of <code>Graph.getNodeByStoreId()</code> and <code>Graph.getEdgeByStoreId()</code> methods to retrieve elements based only on their store id.</li>
             <li>Add new <code>SpatialIndex</code> that holds a quadtree-based spatial index of elements. It can be retrieved from <code>Graph</code>. The spatial index allows to retrieve nodes and edges based on a <code>Rect2D</code>.</li>
+        </ul>
+        <h4>Tools API</h4>
+        <ul>
+            <li>Added <code>SINGLE_NODE_SELECTION</code> as a new enum in <code>ToolSelectionType</code>. By default, selection is multi-node but single-node is also now possible via this option.</li>
         </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>

@@ -58,6 +58,8 @@ public interface VisualisationModel extends Model {
 
     boolean isSelectionEnabled();
 
+    boolean isNodeSelection();
+
     boolean isSingleNodeSelection();
 
     // Text

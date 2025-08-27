@@ -19,7 +19,7 @@
     <!-- Properties -->
     <properties>
         <jogl.version>2.5.0</jogl.version>
-        <joml.version>1.10.5</joml.version>
+        <joml.version>1.10.8</joml.version>
     </properties>
 
     <!-- Dependencies -->

@@ -54,6 +54,8 @@ import org.gephi.graph.api.Node;
  * <p>
  * A tool which declares this listener is notified at a certain rate, up to
  * multiple times per second, the selected nodes.
+ * <p>
+ * Return <code>false</code> from @link {@link #drag(float, float, float, float)} to update the mouse selection while dragging.
  *
  * @author Mathieu Bastian
  * @see Tool
@@ -73,9 +75,9 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
      * Notify mouse is dragging
      *
      * @param displacementXScreen distance x in screen coordinates
-     * @param displacementYScreen distance y in screen cordinates
+     * @param displacementYScreen distance y in screen coordinates
      * @param displacementXWorld distance x in world coordinates
-     * @param displacementYWorld distance y in workd cordinates
+     * @param displacementYWorld distance y in worked coordinates
      * @return Event consumed
      */
     public boolean drag(float displacementXScreen, float displacementYScreen, float displacementXWorld, float displacementYWorld);

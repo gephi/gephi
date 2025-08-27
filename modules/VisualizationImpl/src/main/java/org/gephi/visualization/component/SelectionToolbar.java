@@ -88,7 +88,7 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
         mouseButton =
             new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
-        mouseButton.addActionListener(e -> visualizationController.setDirectMouseSelection(false));
+        mouseButton.addActionListener(e -> visualizationController.setDirectMouseSelection());
         mouseButton.setFocusPainted(false);
         add(mouseButton);
 
@@ -102,7 +102,7 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
         add(rectangleButton);
 
         panButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.svg", false));
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/pan.svg", false));
         panButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.pan.tooltip"));
         panButton.addActionListener(e -> {
             if (panButton.isSelected()) {
@@ -142,7 +142,7 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
 
             @Override
             public void run() {
-                if (vizModel.isCustomSelection() || vizModel.isSingleNodeSelection()) {
+                if (vizModel.isCustomSelection() || vizModel.isNodeSelection()) {
                     buttonGroup.clearSelection();
                 } else if (!vizModel.isSelectionEnabled()) {
                     if (!buttonGroup.isSelected(panButton.getModel())) {

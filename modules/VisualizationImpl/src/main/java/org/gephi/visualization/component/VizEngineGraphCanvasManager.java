@@ -191,6 +191,10 @@ public class VizEngineGraphCanvasManager {
         initialized = false;
     }
 
+    public synchronized boolean isInitialized() {
+        return initialized;
+    }
+
     public synchronized void reinit(JComponent component) {
         destroy(component);
         init(component);

@@ -86,11 +86,11 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel implements Vi
                     statusLabel.setText(
                         NbBundle.getMessage(SelectionPropertiesToolbar.class,
                             "SelectionBar.statusLabel.customSelection"));
-                } else if (vizModel.isSingleNodeSelection()) {
-                    configureLink.setVisible(false);
+                } else if (vizModel.isNodeSelection()) {
+                    configureLink.setVisible(!vizModel.isSingleNodeSelection());
                     statusLabel.setText(
                         NbBundle.getMessage(SelectionPropertiesToolbar.class,
-                            "SelectionBar.statusLabel.singleNodeSelection"));
+                            "SelectionBar.statusLabel.nodeSelection"));
                 } else if (vizModel.isRectangleSelection()) {
                     configureLink.setVisible(false);
                     statusLabel.setText(
