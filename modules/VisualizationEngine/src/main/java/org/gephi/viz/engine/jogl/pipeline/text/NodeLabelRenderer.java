@@ -91,6 +91,11 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         graphIndex.getVisibleNodes(nodesCallback, viewBoundaries);
     }
 
+    private final float[] projectionMatrix = new float[16];
+    private final float[] viewMatrix = new float[16];
+    private final int[] regionCounts = new int[2];
+    private final Vec4f textColor = new Vec4f(0, 0, 0, 1); // TODO: label color by node
+
     @Override
     public void render(JOGLRenderingTarget target, RenderingLayer layer) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
@@ -102,12 +107,12 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         // Projection
         p.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
         p.glLoadIdentity();
-        p.glLoadMatrixf(engine.getProjectionMatrix().get(new float[16]), 0);
+        p.glLoadMatrixf(engine.getProjectionMatrix().get(projectionMatrix), 0);
 
         // View
         p.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
         p.glLoadIdentity();
-        p.glLoadMatrixf(engine.getViewMatrix().get(new float[16]), 0);
+        p.glLoadMatrixf(engine.getViewMatrix().get(viewMatrix), 0);
 
         gl.glEnableVertexAttribArray(0);
 
@@ -115,18 +120,18 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         labelsRegion.clear(gl);
 
         // 1) Pre-count total vertices/indices to avoid multiple grows
-        final int[] totalCounts = new int[2];
         final Node[] nodes = nodesCallback.getNodesArray();
         final int nodesCount = nodesCallback.getCount();
 
+        regionCounts[0] = 0;
+        regionCounts[1] = 0;
         for (int i = 0; i < nodesCount; i++) {
             final String text = nodes[i].getLabel();
             if (text == null || text.isEmpty()) continue;
-            TextRegionUtil.countStringRegion(font, text, totalCounts);
+            TextRegionUtil.countStringRegion(font, text, regionCounts);
         }
-        labelsRegion.setBufferCapacity(totalCounts[0], totalCounts[1]); // one allocation
+        labelsRegion.setBufferCapacity(regionCounts[0], regionCounts[1]); // one allocation
 
-        final Vec4f textColor = new Vec4f(0, 0, 0, 1); // TODO: label color by node
         final float labelScaleFactor = 0.8f; // TODO: will be part of graphRenderingOptions...
 
         // 2) Append each label with its own transform
