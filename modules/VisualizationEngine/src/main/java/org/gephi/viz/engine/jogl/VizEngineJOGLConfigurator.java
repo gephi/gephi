@@ -122,8 +122,9 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 //        engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
 //        engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
 //
-//        //Rectangle selection:
-//        engine.addRenderer(new RectangleSelectionArrayDraw(engine));
+
+        //Selection:
+        engine.addRenderer(new RectangleSelectionArrayDraw(engine));
         engine.addRenderer(new SimpleMouseSelectionArrayDraw(engine));
 
         // Node Label
