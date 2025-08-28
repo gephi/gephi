@@ -76,12 +76,19 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
             final float sizeFactor = node.size() * 0.01f;
 
             final Rectangle2D bounds = textRenderer.getBounds(text);
+            final float widthPx  = (float) bounds.getWidth();
+            final float ascentPx = (float) (-bounds.getY());
+            final float heightPx = (float) bounds.getHeight();
+            final float descentPx = heightPx - ascentPx;
+
+            final float drawX = node.x() - (widthPx * sizeFactor) * 0.5f;
+            final float drawY = node.y() - ((ascentPx - descentPx) * sizeFactor) * 0.5f;
 
             textRenderer.setColor(0, 0, 0, 1);
             textRenderer.draw3D(
                     text,
-                    node.x() - (((float) bounds.getWidth() * sizeFactor) / 2f),
-                    node.y() - (((float) bounds.getHeight() * sizeFactor) / 4f),
+                    drawX,
+                    drawY,
                     0f,
                     sizeFactor
             );
