@@ -33,6 +33,12 @@
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.humbleui</groupId>
+            <artifactId>skija-linux-x64</artifactId>
+            <version>0.116.4</version>
+        </dependency>
+
         <!-- JOML -->
         <dependency>
             <groupId>org.joml</groupId>
