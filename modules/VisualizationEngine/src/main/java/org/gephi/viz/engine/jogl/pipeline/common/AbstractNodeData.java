@@ -18,6 +18,7 @@ import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.NodeDiskModel;
 import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
@@ -30,7 +31,7 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
+import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
@@ -161,7 +162,7 @@ public abstract class AbstractNodeData {
                                                       final VizEngine engine,
                                                       final float[] mvpFloats,
                                                       final boolean isRenderingOutsideCircle) {
-        final boolean someSelection = engine.getLookup().lookup(GraphSelection.class).someNodesOrEdgesSelection();
+        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
         final boolean renderingUnselectedNodes = layer.isBack();
         if (!someSelection && renderingUnselectedNodes) {
             return 0;
@@ -175,7 +176,7 @@ public abstract class AbstractNodeData {
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
             final float colorLightenFactor =
-                engine.getLookup().lookup(GraphRenderingOptions.class).getLightenNonSelectedFactor();
+                engine.getRenderingOptions().getLightenNonSelectedFactor();
             final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
             diskModel.useProgramWithSelectionUnselected(
                 gl,
@@ -209,8 +210,11 @@ public abstract class AbstractNodeData {
         return instanceCount;
     }
 
+    public abstract void update(VizEngine engine);
+
     protected void updateData(final float zoom,
-                              final GraphIndexImpl spatialIndex,
+                              final Rect2D viewBoundaries,
+                              final GraphIndex graphIndex,
                               final GraphRenderingOptions renderingOptions,
                               final GraphSelection selection) {
         if (!renderingOptions.isShowNodes()) {
@@ -218,7 +222,6 @@ public abstract class AbstractNodeData {
             return;
         }
 
-        spatialIndex.indexNodes();
 
         //Selection:
         final boolean someSelection = selection.someNodesOrEdgesSelection();
@@ -226,7 +229,9 @@ public abstract class AbstractNodeData {
         final boolean hideNonSelected =
             someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
 
-        final int totalNodes = spatialIndex.getNodeCount();
+        // Get visible nodes
+        graphIndex.getVisibleNodes(nodesCallback, viewBoundaries);
+        final int totalNodes = nodesCallback.getTotalCount();
 
         attributesBuffer.ensureCapacity(totalNodes * ATTRIBS_STRIDE);
         if (indirectCommands) {
@@ -235,8 +240,6 @@ public abstract class AbstractNodeData {
 
         final FloatBuffer attribs = attributesBuffer.floatBuffer();
         final IntBuffer commands = indirectCommands ? commandsBuffer.intBuffer() : null;
-
-        spatialIndex.getVisibleNodes(nodesCallback);
 
         final Node[] visibleNodesArray = nodesCallback.getNodesArray();
         final int visibleNodesCount = nodesCallback.getCount();

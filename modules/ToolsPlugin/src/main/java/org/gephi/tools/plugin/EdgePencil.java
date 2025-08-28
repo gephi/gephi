@@ -212,6 +212,6 @@ public class EdgePencil implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SINGLE_NODE_SELECTION;
     }
 }

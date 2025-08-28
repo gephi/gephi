@@ -53,12 +53,16 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 import org.gephi.desktop.visualization.selection.SelectionPropertiesToolbar;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -70,12 +74,16 @@ import org.openide.util.lookup.Lookups;
 public class PropertiesBar extends JPanel {
 
     private final SelectionPropertiesToolbar selectionBar;
+    private final JLabel fpsLabel;
+    private volatile boolean fpsThreadRunning = false;
+    private Thread fpsThread;
 
     public PropertiesBar() {
         super(new BorderLayout());
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setOpaque(true);
-        leftPanel.add(getFullScreenIcon(), BorderLayout.WEST);
+        fpsLabel = new JLabel();
+        leftPanel.add(getFpsPanel(), BorderLayout.WEST);
         leftPanel.add(selectionBar = new SelectionPropertiesToolbar(), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.WEST);
         setOpaque(true);
@@ -83,40 +91,79 @@ public class PropertiesBar extends JPanel {
 
     public void setup(VisualisationModel vizModel) {
         selectionBar.setup(vizModel);
+        startFpsThread();
     }
 
     public void unsetup() {
         selectionBar.unsetup();
+        stopFpsThread();
+        SwingUtilities.invokeLater(() -> fpsLabel.setText(""));
     }
 
     public void addToolsPropertiesBar(JComponent component) {
         add(component, BorderLayout.CENTER);
     }
 
-    private JComponent getFullScreenIcon() {
+    private JComponent getFpsPanel() {
         int logoWidth = 27;
         int logoHeight = 28;
-        //fullscreen icon size
         if (UIUtils.isAquaLookAndFeel()) {
             logoWidth = 34;
         }
-        JPanel c = new JPanel(new BorderLayout());
-        c.setPreferredSize(new Dimension(logoWidth, logoHeight));
 
+        JPanel c = new JPanel(new BorderLayout());
+        fpsLabel.setText("");
+        fpsLabel.setFont(new java.awt.Font("Lucida Grande", 0, 8));
+        fpsLabel.setBorder(new EmptyBorder(2, 2, 2, 2));
+        c.add(fpsLabel, BorderLayout.CENTER);
+        c.setPreferredSize(new Dimension(logoWidth, logoHeight));
         return c;
+    }
+
+    private void startFpsThread() {
+        if (fpsThreadRunning) return;
+        fpsThreadRunning = true;
+        fpsThread = new Thread(() -> {
+            final VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
+            while (fpsThreadRunning) {
+                VisualisationModel model = controller.getModel();
+                String text = "";
+                if (model != null) {
+                    text = String.valueOf(model.getFps());
+                }
+                final String fpsText = text;
+                SwingUtilities.invokeLater(() -> {
+                    if (fpsLabel != null) {
+                        fpsLabel.setText(fpsText);
+                    }
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }, "Refresh FPS Label");
+        fpsThread.setDaemon(true);
+        fpsThread.start();
+    }
+
+    private void stopFpsThread() {
+        fpsThreadRunning = false;
+        if (fpsThread != null) {
+            fpsThread.interrupt();
+            fpsThread = null;
+        }
     }
 
     @Override
     public void setEnabled(final boolean enabled) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                for (Component c : getComponents()) {
-                    c.setEnabled(enabled);
-                }
-                selectionBar.setEnabled(enabled);
+        SwingUtilities.invokeLater(() -> {
+            for (Component c : getComponents()) {
+                c.setEnabled(enabled);
             }
+            selectionBar.setEnabled(enabled);
         });
     }
 }

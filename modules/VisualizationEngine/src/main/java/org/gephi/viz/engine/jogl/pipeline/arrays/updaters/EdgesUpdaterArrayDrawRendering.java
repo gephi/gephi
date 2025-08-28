@@ -6,7 +6,6 @@ import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -16,12 +15,10 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final ArrayDrawEdgeData edgeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public EdgesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawEdgeData edgeData, GraphIndexImpl spatialIndex) {
+    public EdgesUpdaterArrayDrawRendering(VizEngine engine, ArrayDrawEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,7 +33,7 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        edgeData.update(engine, spatialIndex);
+        edgeData.update(engine);
     }
 
     @Override

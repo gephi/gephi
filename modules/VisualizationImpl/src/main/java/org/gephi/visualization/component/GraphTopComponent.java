@@ -45,6 +45,9 @@ package org.gephi.visualization.component;
 import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -57,16 +60,16 @@ import org.gephi.desktop.visualization.collapse.NodeGroup;
 import org.gephi.desktop.visualization.collapse.VizExtendedBar;
 import org.gephi.desktop.visualization.collapse.VizToolbar;
 import org.gephi.desktop.visualization.tools.DesktopToolController;
-import org.gephi.desktop.visualization.tools.ToolsPropertiesBar;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.tools.api.ToolController;
+ 
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.modules.OnStop;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -86,19 +89,27 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private final VizController controller;
     private final SelectionToolbar selectionToolbar;
     private final ActionsToolbar actionsToolbar;
-    private JComponent toolbar;
+    private final JComponent toolbar;
     private final PropertiesBar propertiesBar;
     private final CollapseGroup[] groups;
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify
     private CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
+
+    private final ScheduledExecutorService vizExecutor;
 
     public GraphTopComponent() {
         controller = Lookup.getDefault().lookup(VizController.class);
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
         initComponents();
         initKeyEventContextMenuActionMappings();
+
+        vizExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "GraphTopComponent-VizExecutor");
+            t.setDaemon(true);
+            return t;
+        });
 
         // Create groups
         groups = createCollapseGroups();
@@ -107,6 +118,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         selectionToolbar = new SelectionToolbar();
         actionsToolbar = new ActionsToolbar();
         propertiesBar = new PropertiesBar();
+
+        // Create the toolbar
+        final DesktopToolController tc = Lookup.getDefault().lookup(DesktopToolController.class);
+        toolbar = tc.getToolbar();
+        JComponent toolsPropertiesBar = tc.getPropertiesBar();
+        propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
 
         listenToWorkspaceEvents();
 
@@ -145,19 +162,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void select(Workspace workspace) {
-                if (toolbar != null) {
-                    toolbar.setEnabled(true);
-                }
-                if (propertiesBar != null) {
-                    propertiesBar.setEnabled(true);
-                }
-                if (actionsToolbar != null) {
-                    actionsToolbar.setEnabled(true);
-                }
-                if (selectionToolbar != null) {
-                    selectionToolbar.setEnabled(true);
-                }
-
                 activateWorkspaceVizEngine(workspace);
             }
 
@@ -173,78 +177,62 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void disable() {
-                if (toolbar != null) {
+                SwingUtilities.invokeLater(() -> {
                     toolbar.setEnabled(false);
-                }
-                if (propertiesBar != null) {
                     propertiesBar.setEnabled(false);
-                }
-                if (actionsToolbar != null) {
                     actionsToolbar.setEnabled(false);
-                }
-                if (selectionToolbar != null) {
                     selectionToolbar.setEnabled(false);
-                }
+                });
             }
         });
 
         final boolean hasWorkspace = projectController.getCurrentWorkspace() != null;
-        if (toolbar != null) {
-            toolbar.setEnabled(hasWorkspace);
-        }
-        if (propertiesBar != null) {
-            propertiesBar.setEnabled(hasWorkspace);
-        }
-        if (actionsToolbar != null) {
-            actionsToolbar.setEnabled(hasWorkspace);
-        }
-        if (selectionToolbar != null) {
-            selectionToolbar.setEnabled(hasWorkspace);
-        }
-
         if (hasWorkspace) {
             activateWorkspaceVizEngine(projectController.getCurrentWorkspace());
         }
     }
 
     private void deactivateWorkspaceVizEngine(final Workspace workspace) {
+        vizExecutor.schedule(() -> doDeactivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+    }
+
+    private void doDeactivateWorkspaceVizEngine(final Workspace workspace) {
         if (workspace == null) {
             return;
         }
         VizModel vizModel = controller.getModel(workspace);
-
-        // Unsetup collapse groups
-        for (CollapseGroup group : groups) {
-            group.unsetup(vizModel);
-        }
-
-        // Selection Bar
-        selectionToolbar.unsetup(vizModel);
-
-        // Properties Bar
-        propertiesBar.unsetup();
-
-        // Destroy
+        SwingUtilities.invokeLater(() -> {
+            for (CollapseGroup group : groups) {
+                group.unsetup(vizModel);
+            }
+            selectionToolbar.unsetup(vizModel);
+            propertiesBar.unsetup();
+        });
         vizModel.destroy(this);
     }
 
     private void activateWorkspaceVizEngine(final Workspace workspace) {
+        vizExecutor.schedule(() -> doActivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+    }
+
+    private void doActivateWorkspaceVizEngine(final Workspace workspace) {
         if (workspace == null) {
             return;
         }
         VizModel vizModel = controller.getModel(workspace);
         vizModel.init(this);
+        SwingUtilities.invokeLater(() -> {
+            toolbar.setEnabled(true);
+            propertiesBar.setEnabled(true);
+            actionsToolbar.setEnabled(true);
+            selectionToolbar.setEnabled(true);
 
-        // Setup collapse groups
-        for (CollapseGroup group : groups) {
-            group.setup(vizModel);
-        }
-
-        // Selection Bar
-        selectionToolbar.setup(vizModel);
-
-        // Properties Bar
-        propertiesBar.setup(vizModel);
+            for (CollapseGroup group : groups) {
+                group.setup(vizModel);
+            }
+            selectionToolbar.setup(vizModel);
+            propertiesBar.setup(vizModel);
+        });
     }
 
     private void initKeyEventContextMenuActionMappings() {
@@ -252,26 +240,11 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void initToolPanels() {
-        if (toolbar != null) {
-            return;
-        }
         JPanel westPanel = new JPanel(new BorderLayout(0, 0));
-
+        westPanel.add(toolbar, BorderLayout.CENTER);
         westPanel.add(selectionToolbar, BorderLayout.NORTH);
         westPanel.add(actionsToolbar, BorderLayout.SOUTH);
         add(propertiesBar, BorderLayout.NORTH);
-
-        final DesktopToolController tc = Lookup.getDefault().lookup(DesktopToolController.class);
-        if (tc != null) {
-            toolbar = tc.getToolbar();
-            if (toolbar != null) {
-                westPanel.add(toolbar, BorderLayout.CENTER);
-            }
-            JComponent toolsPropertiesBar = tc.getPropertiesBar();
-            propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
-        } else {
-            toolbar = new JPanel();
-        }
 
         add(westPanel, BorderLayout.WEST);
 
@@ -357,6 +330,13 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             Lookup.getDefault().lookup(ProjectController.class)
                 .getCurrentWorkspace()
         );
+
+        // Note: we cannot shutdown the vizExecutor here because the TopComponent
+        // can be later reused/reactivated by the netbeans platform because persistenceType = PERSISTENCE_ALWAYS
+    }
+
+    public void shutdown() {
+        vizExecutor.shutdown();
     }
 
     @Override

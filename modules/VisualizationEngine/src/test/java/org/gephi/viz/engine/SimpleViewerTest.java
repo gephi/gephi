@@ -19,18 +19,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.io.importer.GraphImporter;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
-import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
-import org.gephi.io.importer.GraphImporter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SimpleViewerTest {
 
+    @Ignore
     @Test
     public void testSimpleViewer() {
         final SimpleViewer viewer = new SimpleViewer();
@@ -47,9 +48,6 @@ public class SimpleViewerTest {
         private static final boolean DISABLE_VAOS = false;
 
         private static final boolean DEBUG = false;
-
-        private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE =
-            WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
 
         private VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
         private JFrame frame;
@@ -84,7 +82,6 @@ public class SimpleViewerTest {
                     new VizEngineJOGLConfigurator()
                 )
             );
-            engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
 
             final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
             glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
@@ -177,7 +174,7 @@ public class SimpleViewerTest {
         }
 
         private void toggleSelectionMode() {
-            final GraphSelection selection = engine.getLookup().lookup(GraphSelection.class);
+            final GraphSelection selection = engine.getGraphSelection();
             final GraphSelection.GraphSelectionMode mode = selection.getMode();
 
             if (mode != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {

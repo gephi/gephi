@@ -6,7 +6,6 @@ import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedEdgeData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -16,12 +15,10 @@ public class EdgesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final InstancedEdgeData edgeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public EdgesUpdaterInstancedRendering(VizEngine engine, InstancedEdgeData edgeData, GraphIndexImpl spatialIndex) {
+    public EdgesUpdaterInstancedRendering(VizEngine engine, InstancedEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,9 +33,7 @@ public class EdgesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        //final long start = TimeUtils.getTimeMillis();
-        edgeData.update(engine, spatialIndex);
-        //System.out.println("Edges update ms: " + (TimeUtils.getTimeMillis() - start));
+        edgeData.update(engine);
     }
 
     @Override

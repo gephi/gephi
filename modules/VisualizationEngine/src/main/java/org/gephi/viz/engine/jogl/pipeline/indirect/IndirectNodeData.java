@@ -11,9 +11,6 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -32,12 +29,14 @@ public class IndirectNodeData extends AbstractNodeData {
         super(true, true);
     }
 
-    public void update(VizEngine engine, GraphIndexImpl spatialIndex) {
+    @Override
+    public void update(VizEngine engine) {
         updateData(
             engine.getZoom(),
-            spatialIndex,
-            engine.getLookup().lookup(GraphRenderingOptions.class),
-            engine.getLookup().lookup(GraphSelection.class)
+            engine.getViewBoundaries(),
+            engine.getGraphIndex(),
+            engine.getRenderingOptions(),
+            engine.getGraphSelection()
         );
     }
 

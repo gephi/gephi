@@ -14,10 +14,26 @@ public interface GraphSelection {
     enum GraphSelectionMode {
         SIMPLE_MOUSE_SELECTION,
         SINGLE_NODE_SELECTION,
+        MULTI_NODE_SELECTION,
         RECTANGLE_SELECTION,
         NO_SELECTION,
         CUSTOM_SELECTION
     }
+
+    void setMouseSelectionDiameter(float radius);
+
+    float getMouseSelectionDiameter();
+
+    float getMouseSelectionEffectiveDiameter();
+
+    void setSimpleMouseSelectionMVPScale(float scale);
+
+    float getSimpleMouseSelectionMVPScale();
+
+    void setMouseSelectionDiameterZoomProportional(boolean isZoomProportional);
+
+    boolean getMouseSelectionDiameterZoomProportional();
+
 
     boolean someNodesOrEdgesSelection();
 
@@ -72,4 +88,8 @@ public interface GraphSelection {
     Vector2f getRectangleInitialPosition();
 
     Vector2f getRectangleCurrentPosition();
+
+    void updateMousePosition(Vector2f updatedPosition);
+
+    Vector2f getMousePosition();
 }

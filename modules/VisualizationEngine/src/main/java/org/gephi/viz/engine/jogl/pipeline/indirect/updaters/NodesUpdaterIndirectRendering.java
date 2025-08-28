@@ -6,7 +6,6 @@ import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -16,12 +15,10 @@ public class NodesUpdaterIndirectRendering implements WorldUpdater<JOGLRendering
 
     private final VizEngine engine;
     private final IndirectNodeData nodeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public NodesUpdaterIndirectRendering(VizEngine engine, IndirectNodeData nodeData, GraphIndexImpl spatialIndex) {
+    public NodesUpdaterIndirectRendering(VizEngine engine, IndirectNodeData nodeData) {
         this.engine = engine;
         this.nodeData = nodeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,7 +33,7 @@ public class NodesUpdaterIndirectRendering implements WorldUpdater<JOGLRendering
 
     @Override
     public void updateWorld() {
-        nodeData.update(engine, spatialIndex);
+        nodeData.update(engine);
     }
 
     @Override

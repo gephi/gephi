@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.status.GraphSelection;
 
 public class SelectionModelImpl {
@@ -20,18 +22,17 @@ public class SelectionModelImpl {
     private boolean selectionEnable = true;
     private boolean customSelection = false;
     private boolean singleNodeSelection = false;
+    private boolean nodeSelection = false;
 
-    public SelectionModelImpl(VizModel visualisationModel) {
+    public SelectionModelImpl(VizModel visualisationModel, VizConfig config) {
         this.visualisationModel = visualisationModel;
 
         // Settings
-        this.mouseSelectionDiameter = 1;
+        this.mouseSelectionDiameter = config.getMouseSelectionDiameter();
     }
 
     protected Optional<GraphSelection> currentEngineSelectionModel() {
-        return visualisationModel.getEngine().map(engine -> {
-            return engine.getLookup().lookup(GraphSelection.class);
-        });
+        return visualisationModel.getEngine().map(VizEngine::getGraphSelection);
     }
 
     public List<Node> getSelectedNodes() {
@@ -78,6 +79,10 @@ public class SelectionModelImpl {
         this.singleNodeSelection = singleNodeSelection;
     }
 
+    public void setNodeSelection(boolean nodeSelection) {
+        this.nodeSelection = nodeSelection;
+    }
+
     public boolean isRectangleSelection() {
         return selectionEnable && rectangleSelection;
     }
@@ -96,5 +101,9 @@ public class SelectionModelImpl {
 
     public boolean isSelectionEnabled() {
         return selectionEnable;
+    }
+
+    public boolean isNodeSelection() {
+        return nodeSelection;
     }
 }

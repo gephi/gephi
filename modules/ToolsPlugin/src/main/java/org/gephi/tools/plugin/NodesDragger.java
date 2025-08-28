@@ -106,7 +106,7 @@ public class NodesDragger implements Tool {
                         n.setY(initialY[i] + displacementYWorld);
                     }
 
-                    return true;
+                    return false;
                 }
 
                 return false;
@@ -130,7 +130,7 @@ public class NodesDragger implements Tool {
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/hand.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/drag.svg", false);
             }
 
             @Override
@@ -148,6 +148,6 @@ public class NodesDragger implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION_AND_DRAGGING;
+        return ToolSelectionType.SELECTION;
     }
 }

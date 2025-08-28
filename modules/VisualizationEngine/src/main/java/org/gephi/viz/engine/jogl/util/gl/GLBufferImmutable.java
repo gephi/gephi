@@ -69,14 +69,14 @@ public class GLBufferImmutable implements GLBuffer {
         this.flags = flags;
         final int elementBytes = bufferElementBytes(buffer);
 
-        sizeBytes = buffer.capacity() * elementBytes;
+        sizeBytes = (long) buffer.capacity() * elementBytes;
 
         gl.getGL4().glBufferStorage(type, sizeBytes, buffer, flags);
     }
 
     @Override
     public void update(GL gl, Buffer buffer) {
-        update(gl, buffer, buffer.remaining() * bufferElementBytes(buffer));
+        update(gl, buffer, (long) buffer.remaining() * bufferElementBytes(buffer));
     }
 
     @Override

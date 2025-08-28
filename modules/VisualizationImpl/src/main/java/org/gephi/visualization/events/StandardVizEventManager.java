@@ -202,8 +202,8 @@ public class StandardVizEventManager {
     }
 
     public boolean mouseLeftClick(VizEngine engine) {
-        final GraphIndex graphIndex = engine.getLookup().lookup(GraphIndex.class);
-        final GraphSelection graphSelection = engine.getLookup().lookup(GraphSelection.class);
+        final GraphIndex graphIndex = engine.getGraphIndex();
+        final GraphSelection graphSelection = engine.getGraphSelection();
 
         Node[] clickedNodes = null;
         if (!graphSelection.getMode().equals(GraphSelection.GraphSelectionMode.CUSTOM_SELECTION)) {
@@ -241,7 +241,7 @@ public class StandardVizEventManager {
     }
 
     public boolean mouseLeftPress(VizEngine engine) {
-        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
+        final GraphSelection selectionIndex = engine.getGraphSelection();
 
         final VisualizationEventTypeHandler nodeLefPressingHandler =
             handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
@@ -268,7 +268,7 @@ public class StandardVizEventManager {
     }
 
     private void startPressingThread(final VizEngine engine) {
-        final GraphSelection selectionIndex = engine.getLookup().lookup(GraphSelection.class);
+        final GraphSelection selectionIndex = engine.getGraphSelection();
         synchronized (pressingLock) {
             // Stop any existing pressing thread
             stopPressingThread();

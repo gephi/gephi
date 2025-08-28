@@ -17,7 +17,7 @@ public class VizEngineFactory {
 
         //Configure
         if (configurators != null) {
-            for (VizEngineConfigurator configurator : configurators) {
+            for (VizEngineConfigurator<R, I> configurator : configurators) {
                 if (configurator != null) {
                     configurator.configure(engine);
                 }

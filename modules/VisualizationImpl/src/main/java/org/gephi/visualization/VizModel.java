@@ -73,6 +73,7 @@ import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.joml.Vector2fc;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -113,12 +114,15 @@ public class VizModel implements VisualisationModel {
 
 
     public VizModel(VizController controller, Workspace workspace) {
+        // Ensure we have some non-null rendering options until the viz-engine is actually initialized:
+        this.renderingOptions = new GraphRenderingOptionsImpl();
+
         this.vizController = controller;
         this.workspace = workspace;
         this.config = new VizConfig();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         this.canvasManager = new VizEngineGraphCanvasManager(workspace, graphModel);
-        this.selectionModel = new SelectionModelImpl(this);
+        this.selectionModel = new SelectionModelImpl(this, config);
 
         //TODO: Remove once this is moved to the viz-engine
         this.nodeLabelColumns = new Column[] {graphModel.getNodeTable().getColumn("label")};
@@ -142,6 +146,10 @@ public class VizModel implements VisualisationModel {
         return workspace;
     }
 
+    public VizConfig getConfig() {
+        return config;
+    }
+
     public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
         return canvasManager.getEngine();
     }
@@ -151,7 +159,7 @@ public class VizModel implements VisualisationModel {
         if (engine == null) {
             return false; // Engine still not ready in the workspace
         }
-        this.renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+        this.renderingOptions = engine.getRenderingOptions();
 
         defaultValues();
 
@@ -169,23 +177,12 @@ public class VizModel implements VisualisationModel {
         return loadEngine();
     }
 
-    private boolean initialized = false;
-
-    public synchronized boolean init(JComponent component) {
-        if (initialized) {
-            return true;
+    public synchronized void init(JComponent component) {
+        if (canvasManager.isInitialized()) {
+            return;
         }
 
-        // Todo no idea if this should be here, and when to do reinit instead
         canvasManager.init(component);
-
-        if (!loadEngine()) {
-            return false;
-        }
-
-        initialized = true;
-
-        return initialized;
     }
 
     private void defaultValues() {
@@ -232,6 +229,12 @@ public class VizModel implements VisualisationModel {
     public float getZoom() {
         return getEngine().map(VizEngine::getZoom)
             .orElse(1.0f); // Default zoom if engine is not ready
+    }
+
+    @Override
+    public int getFps() {
+        return getEngine().map(VizEngine::getFps)
+            .orElse(0);
     }
 
     public void setZoom(float zoom) {
@@ -605,8 +608,13 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
+    public boolean isNodeSelection() {
+        return selectionModel.isNodeSelection();
+    }
+
+    @Override
     public boolean isSingleNodeSelection() {
-        return selectionModel.isSingleNodeSelection();
+        return selectionModel.isNodeSelection() && selectionModel.isSingleNodeSelection();
     }
 
     @Override

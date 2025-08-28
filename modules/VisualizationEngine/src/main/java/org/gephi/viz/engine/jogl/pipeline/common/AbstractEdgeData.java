@@ -37,7 +37,7 @@ import org.gephi.viz.engine.util.structure.EdgesCallback;
  *
  * @author Eduardo Ramos
  */
-public class AbstractEdgeData {
+public abstract class AbstractEdgeData {
 
     protected final EdgeLineModelUndirected lineModelUndirected = new EdgeLineModelUndirected();
     protected final EdgeLineModelDirected lineModelDirected = new EdgeLineModelDirected();
@@ -94,7 +94,7 @@ public class AbstractEdgeData {
                                                                 final RenderingLayer layer,
                                                                 final VizEngine engine,
                                                                 final float[] mvpFloats) {
-        final boolean someSelection = engine.getLookup().lookup(GraphSelection.class).someNodesOrEdgesSelection();
+        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
@@ -102,12 +102,12 @@ public class AbstractEdgeData {
 
         final float[] backgroundColorFloats = engine.getBackgroundColor();
 
-        final GraphRenderingOptions renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
-        final GraphIndex graphIndex = engine.getLookup().lookup(GraphIndex.class);
+        final GraphIndex graphIndex = engine.getGraphIndex();
 
         final float minWeight = graphIndex.getEdgesMinWeight();
         final float maxWeight = graphIndex.getEdgesMaxWeight();
@@ -179,7 +179,7 @@ public class AbstractEdgeData {
                                                               final RenderingLayer layer,
                                                               final VizEngine engine,
                                                               final float[] mvpFloats) {
-        final boolean someSelection = engine.getLookup().lookup(GraphSelection.class).someNodesOrEdgesSelection();
+        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
@@ -187,12 +187,12 @@ public class AbstractEdgeData {
 
         final float[] backgroundColorFloats = engine.getBackgroundColor();
 
-        final GraphRenderingOptions renderingOptions = engine.getLookup().lookup(GraphRenderingOptions.class);
+        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
-        final GraphIndex graphIndex = engine.getLookup().lookup(GraphIndex.class);
+        final GraphIndex graphIndex = engine.getGraphIndex();
 
         final float minWeight = graphIndex.getEdgesMinWeight();
         final float maxWeight = graphIndex.getEdgesMaxWeight();
@@ -258,6 +258,8 @@ public class AbstractEdgeData {
 
         return instanceCount;
     }
+
+    public abstract void update(VizEngine engine);
 
     protected int updateDirectedData(
         final Graph graph,

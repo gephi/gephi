@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
@@ -18,7 +19,7 @@ import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
+import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.ArrayUtils;
 
 /**
@@ -38,11 +39,13 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         super(false, false);
     }
 
-    public void update(VizEngine engine, GraphIndexImpl graphIndex) {
+    @Override
+    public void update(VizEngine engine) {
         updateData(
-            graphIndex,
-            engine.getLookup().lookup(GraphRenderingOptions.class),
-            engine.getLookup().lookup(GraphSelection.class)
+            engine.getViewBoundaries(),
+            engine.getGraphIndex(),
+            engine.getRenderingOptions(),
+            engine.getGraphSelection()
         );
     }
 
@@ -197,14 +200,14 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         attributesGLBufferDirected =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferDirected.bind(gl);
-        attributesGLBufferDirected.init(gl, VERTEX_COUNT_MAX * ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferDirected.init(gl, (long) VERTEX_COUNT_MAX * ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferDirected.unbind(gl);
 
         attributesGLBufferUndirected =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferUndirected.bind(gl);
-        attributesGLBufferUndirected.init(gl, VERTEX_COUNT_MAX * ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
+        attributesGLBufferUndirected.init(gl, (long) VERTEX_COUNT_MAX * ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferUndirected.unbind(gl);
 
@@ -216,15 +219,15 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         directedInstanceCounter.promoteCountToDraw();
     }
 
-    private void updateData(final GraphIndexImpl graphIndex, final GraphRenderingOptions renderingOptions,
+    private void updateData(final Rect2D viewBoundaries,
+                            final GraphIndex graphIndex,
+                            final GraphRenderingOptions renderingOptions,
                             final GraphSelection graphSelection) {
         if (!renderingOptions.isShowEdges()) {
             undirectedInstanceCounter.clearCount();
             directedInstanceCounter.clearCount();
             return;
         }
-
-        graphIndex.indexEdges();
 
         //Selection:
         final boolean someSelection = graphSelection.someNodesOrEdgesSelection();
@@ -237,18 +240,17 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         final float edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());
         final float edgeOutSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeOutSelectionColor().getRGB());
 
-        final int totalEdges = graphIndex.getEdgeCount();
+        // Refresh visible edges
+        final Graph graph = graphIndex.getVisibleGraph();
+        graphIndex.getVisibleEdges(edgesCallback, viewBoundaries);
+        final int totalEdges = edgesCallback.getTotalCount();
 
         final float[] attribs
             = attributesBuffer
             = ArrayUtils.ensureCapacityNoCopy(attributesBuffer, totalEdges * ATTRIBS_STRIDE);
 
-        graphIndex.getVisibleEdges(edgesCallback);
-
         final Edge[] visibleEdgesArray = edgesCallback.getEdgesArray();
         final int visibleEdgesCount = edgesCallback.getCount();
-
-        final Graph graph = graphIndex.getVisibleGraph();
 
         int attribsIndex = 0;
         attribsIndex = updateUndirectedData(

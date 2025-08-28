@@ -37,9 +37,6 @@ public class VizEngineGraphCanvasManager {
     private static final boolean DISABLE_INSTANCED_RENDERING = false;
     private static final boolean DISABLE_VAOS = false;
 
-    private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE
-        = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
-
     private static final boolean DEBUG = false;
 
     private final Workspace workspace;
@@ -117,8 +114,6 @@ public class VizEngineGraphCanvasManager {
         glOptions.setDisableVAOS(DISABLE_VAOS);
         glOptions.setDebug(DEBUG);
 
-        engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
-
         engine.addInputListener(new InputListener<>() {
             @Override
             public boolean processEvent(NEWTEvent inputEvent) {
@@ -194,6 +189,10 @@ public class VizEngineGraphCanvasManager {
         }
 
         initialized = false;
+    }
+
+    public synchronized boolean isInitialized() {
+        return initialized;
     }
 
     public synchronized void reinit(JComponent component) {

@@ -6,7 +6,6 @@ import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.spi.WorldUpdater;
-import org.gephi.viz.engine.structure.GraphIndexImpl;
 
 /**
  *
@@ -16,12 +15,10 @@ public class NodesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     private final VizEngine engine;
     private final InstancedNodeData nodeData;
-    private final GraphIndexImpl spatialIndex;
 
-    public NodesUpdaterInstancedRendering(VizEngine engine, InstancedNodeData nodeData, GraphIndexImpl spatialIndex) {
+    public NodesUpdaterInstancedRendering(VizEngine engine, InstancedNodeData nodeData) {
         this.engine = engine;
         this.nodeData = nodeData;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override
@@ -36,7 +33,7 @@ public class NodesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld() {
-        nodeData.update(engine, spatialIndex);
+        nodeData.update(engine);
     }
 
     @Override

@@ -128,9 +128,12 @@ public class DesktopToolController implements ToolController {
             case NONE:
                 visualizationController.disableSelection();
                 break;
+            case SINGLE_NODE_SELECTION:
+                visualizationController.setNodeSelection(true);
+                break;
             case SELECTION:
             case SELECTION_AND_DRAGGING:
-                visualizationController.setDirectMouseSelection(true);
+                visualizationController.setNodeSelection(false);
                 break;
         }
         currentTool = tool;
@@ -198,7 +201,7 @@ public class DesktopToolController implements ToolController {
                         unselect();
 
                         // Go back to selection
-                        visualizationController.setDirectMouseSelection(false);
+                        visualizationController.setDirectMouseSelection();
                     } else {
                         try {
                             select(tool);
@@ -219,7 +222,7 @@ public class DesktopToolController implements ToolController {
             @Override
             public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selection")) {
-                    if (currentTool != null && !model.isCustomSelection() && !model.isSingleNodeSelection()) {
+                    if (currentTool != null && !model.isCustomSelection() && !model.isNodeSelection()) {
                         toolbar.clearSelection();
                         unselect();
                     }

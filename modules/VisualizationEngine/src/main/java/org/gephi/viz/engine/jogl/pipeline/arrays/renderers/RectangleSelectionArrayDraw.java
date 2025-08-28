@@ -10,6 +10,7 @@ import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
@@ -29,7 +30,7 @@ import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2f;
 
 public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     final float[] mvpFloats = new float[16];
 
@@ -43,7 +44,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private GLBufferMutable vertexGLBuffer;
     private SelectionRectangleVAO vao;
 
-    public RectangleSelectionArrayDraw(VizEngine engine) {
+    public RectangleSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         this.engine = engine;
     }
 
@@ -98,7 +99,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     public void worldUpdated(JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
-        final GraphSelection graphSelection = engine.getLookup().lookup(GraphSelection.class);
+        final GraphSelection graphSelection = engine.getGraphSelection();
 
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
             return;

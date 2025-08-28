@@ -18,6 +18,7 @@ public class EdgesCallback implements ElementsCallback<Edge> {
 
     @Override
     public void start(Graph graph) {
+        graph.readLock();
         edgesArray = ensureEdgesArraySize(edgesArray, graph.getEdgeCount());
         nextIndex = 0;
     }
@@ -29,7 +30,7 @@ public class EdgesCallback implements ElementsCallback<Edge> {
 
     @Override
     public void end(Graph graph) {
-        //NOOP
+        graph.readUnlock();
     }
 
     public void reset() {
@@ -49,6 +50,10 @@ public class EdgesCallback implements ElementsCallback<Edge> {
 
     public int getCount() {
         return nextIndex;
+    }
+
+    public int getTotalCount() {
+        return edgesArray.length;
     }
 
     protected Edge[] ensureEdgesArraySize(Edge[] array, int size) {

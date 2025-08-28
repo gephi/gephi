@@ -26,13 +26,9 @@ public interface GraphIndex {
 
     Rect2D getGraphBoundaries();
 
-    NodeIterable getVisibleNodes();
+    void getVisibleNodes(ElementsCallback<Node> callback, Rect2D viewBoundaries);
 
-    void getVisibleNodes(ElementsCallback<Node> callback);
-
-    EdgeIterable getVisibleEdges();
-
-    void getVisibleEdges(ElementsCallback<Edge> callback);
+    void getVisibleEdges(ElementsCallback<Edge> callback, Rect2D viewBoundaries);
 
     NodeIterable getNodesUnderPosition(float x, float y);
 
@@ -44,7 +40,7 @@ public interface GraphIndex {
 
     EdgeIterable getEdgesInsideCircle(float x, float y, float radius);
 
-    public interface ElementsCallback<T> extends Consumer<T> {
+    interface ElementsCallback<T> extends Consumer<T> {
 
         /**
          * Called when going to start receiving elements
