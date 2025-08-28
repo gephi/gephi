@@ -1,55 +1,37 @@
 package org.gephi.viz.engine.jogl.pipeline.text;
 
-import com.jogamp.graph.curve.Region;
-import com.jogamp.graph.curve.opengl.GLRegion;
-import com.jogamp.graph.curve.opengl.RegionRenderer;
-import com.jogamp.graph.curve.opengl.RenderState;
-import com.jogamp.graph.curve.opengl.TextRegionUtil;
-import com.jogamp.graph.font.Font;
-import com.jogamp.graph.font.FontFactory;
-import com.jogamp.graph.geom.plane.AffineTransform;
-import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
-import com.jogamp.opengl.math.Vec4f;
-import com.jogamp.opengl.math.geom.AABBox;
-import com.jogamp.opengl.util.PMVMatrix;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.Constants;
+import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
+import org.joml.Vector2f;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.EnumSet;
 
 @SuppressWarnings("rawtypes")
 public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
-    public static final EnumSet<RenderingLayer> LAYERS = EnumSet.of(
-        RenderingLayer.FRONT1
-    );
-
-    TextRegionUtil textRegionUtil;
-    RegionRenderer regionRenderer;
-    Font font;
-
-    private final int[] sampleCount = new int[] { 4 };
+    public static final EnumSet<RenderingLayer> LAYERS = EnumSet.of(RenderingLayer.FRONT1);
 
     private final VizEngine engine;
     private final NodesCallback nodesCallback = new NodesCallback();
-    private GLRegion labelsRegion;
 
-    // Temporary variables:
-    private final AffineTransform tmp1 = new AffineTransform();
-    private final AffineTransform tmp2 = new AffineTransform();
+    // Java2D text
+    private TextRenderer textRenderer;
+    private Font awtFont;
 
-    private final AffineTransform textTransform = new AffineTransform();
-    private final AffineTransform tmpTextScaleTransform = new AffineTransform();
+    // Scratch
+    private final float[] mvp = new float[16];
 
     public NodeLabelRenderer(VizEngine engine) {
         this.engine = engine;
@@ -57,129 +39,53 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
 
     @Override
     public void init(JOGLRenderingTarget target) {
-        try {
-            font = FontFactory.get(new File("../VisualizationEngine/fonts/Ubuntu-R.ttf"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        awtFont = new Font("Arial", Font.PLAIN, 80);
 
-        regionRenderer = RegionRenderer.create(RegionRenderer.defaultBlendEnable, RegionRenderer.defaultBlendDisable);
-        regionRenderer.setColorStatic(1f, 0f, 0f, 1.0f);
-        textRegionUtil = new TextRegionUtil(Region.VBAA_RENDERING_BIT);
+        // Antialiased + fractional metrics = nicer text
+        textRenderer = new TextRenderer(awtFont, /*antialiased*/ true, /*fractionalMetrics*/ true);
 
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+        final GLCapabilitiesSummary capabilities = engine.getLookup().lookup(GLCapabilitiesSummary.class);
+        final OpenGLOptions openGLOptions = engine.getLookup().lookup(OpenGLOptions.class);
 
-        regionRenderer.init(target.getDrawable().getGL().getGL2ES2());
-        regionRenderer.setWeight(1.0f);
-        
-        // Disable global depth test to prevent depth buffer pollution
-        // since the visualization engine uses render order for z-ordering
-        regionRenderer.clearHintMask(RenderState.BITHINT_GLOBAL_DEPTH_TEST_ENABLED);
-
-        // Create a reusable region for all labels:
-        labelsRegion = GLRegion.create(gl.getGLProfile(),
-                Region.VBAA_RENDERING_BIT | Region.COLORCHANNEL_RENDERING_BIT, null);
-
-        regionRenderer.enable(gl, false);
+        textRenderer.setUseVertexArrays(capabilities.isVAOSupported(openGLOptions));
+        textRenderer.setSmoothing(true);
     }
 
     @Override
     public void worldUpdated(JOGLRenderingTarget target) {
-        GraphIndex graphIndex = engine.getGraphIndex();
-        Rect2D viewBoundaries = engine.getViewBoundaries();
-
+        final GraphIndex graphIndex = engine.getGraphIndex();
+        final Rect2D viewBoundaries = engine.getViewBoundaries();
         graphIndex.getVisibleNodes(nodesCallback, viewBoundaries);
     }
 
-    private final float[] projectionMatrix = new float[16];
-    private final float[] viewMatrix = new float[16];
-    private final int[] regionCounts = new int[2];
-    private final Vec4f textColor = new Vec4f(0, 0, 0, 1); // TODO: label color by node
-
     @Override
     public void render(JOGLRenderingTarget target, RenderingLayer layer) {
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+        engine.getModelViewProjectionMatrixFloats(mvp);
 
-        regionRenderer.enable(gl, true);
-        regionRenderer.reshapeNotify(0, 0, engine.getWidth(), engine.getHeight());
-        final PMVMatrix p = regionRenderer.getMatrix();
+        textRenderer.begin3DRendering();
+        textRenderer.setTransform(mvp);
 
-        // Projection
-        p.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        p.glLoadIdentity();
-        p.glLoadMatrixf(engine.getProjectionMatrix().get(projectionMatrix), 0);
-
-        // View
-        p.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        p.glLoadIdentity();
-        p.glLoadMatrixf(engine.getViewMatrix().get(viewMatrix), 0);
-
-        gl.glEnableVertexAttribArray(0);
-
-        // --------- BATCH BUILD THE REGION -----------
-        labelsRegion.clear(gl);
-
-        // 1) Pre-count total vertices/indices to avoid multiple grows
         final Node[] nodes = nodesCallback.getNodesArray();
-        final int nodesCount = nodesCallback.getCount();
+        final int count = nodesCallback.getCount();
 
-        regionCounts[0] = 0;
-        regionCounts[1] = 0;
-        for (int i = 0; i < nodesCount; i++) {
-            final String text = nodes[i].getLabel();
-            if (text == null || text.isEmpty()) continue;
-            TextRegionUtil.countStringRegion(font, text, regionCounts);
-        }
-        labelsRegion.setBufferCapacity(regionCounts[0], regionCounts[1]); // one allocation
-
-        final float labelScaleFactor = 0.8f; // TODO: will be part of graphRenderingOptions...
-
-        // 2) Append each label with its own transform
-        for (int i = 0; i < nodesCount; i++) {
+        for (int i = 0; i < count; i++) {
             final Node node = nodes[i];
             final String text = node.getLabel();
             if (text == null || text.isEmpty()) continue;
 
-            final float scale = node.size() * labelScaleFactor;
+            final float sizeFactor = node.size() * 0.01f;
 
-            // Center the text in the node by measuring the text width:
-            final AABBox box = measureLabel(font, text, scale);
-
-            textTransform.setToTranslation(
-                    node.x() - 0.5f * box.getWidth(),
-                    node.y() - 0.25f * box.getHeight()
-            );
-            textTransform.scale(scale, scale, tmpTextScaleTransform);
-
-            // add shapes for this string into the single region (no extra grow)
-            TextRegionUtil.addStringToRegion(
-                    false,               // preGrowRegion (we already did a single setBufferCapacity)
-                    labelsRegion,
-                    font,
-                    textTransform,
+            textRenderer.setColor(0, 0, 0, 1);
+            textRenderer.draw3D(
                     text,
-                    textColor,
-                    tmp1, tmp2
+                    node.x(),
+                    node.y(),
+                    0f,
+                    sizeFactor
             );
         }
 
-        // 3) Render all labels with a single draw
-        labelsRegion.draw(gl, regionRenderer, sampleCount);
-
-        regionRenderer.enable(gl, false);
-        gl.glDisableVertexAttribArray(0);
-    }
-
-    private static final Font.GlyphVisitor NOOP_VISITOR = new Font.GlyphVisitor() {
-        @Override
-        public void visit(char symbol, Font.Glyph glyph, AffineTransform t) {
-            // NOOP
-        }
-    };
-
-    private AABBox measureLabel(Font font, String text, float scale) {
-        tmpTextScaleTransform.setToScale(scale, scale);
-        return font.processString(NOOP_VISITOR, tmpTextScaleTransform, text, tmp1, tmp2);
+        textRenderer.end3DRendering();
     }
 
     @Override
