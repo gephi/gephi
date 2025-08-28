@@ -903,7 +903,7 @@ public final class TextRenderer {
                                       /*@Nonnull*/ final Object data) {
 
             Check.notNull(type, "Event type cannot be null");
-            Check.notNull(data, "Data cannot be null");
+            //Check.notNull(data, "Data cannot be null");
 
             switch (type) {
             case REALLOCATE:
