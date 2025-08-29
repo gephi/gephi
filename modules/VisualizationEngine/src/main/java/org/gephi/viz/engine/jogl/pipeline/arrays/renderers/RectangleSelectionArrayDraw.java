@@ -166,7 +166,6 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
             vao.use(gl);
 
-
             gl.glGetBooleanv(GL_BLEND, booleanData, 0);
             gl.glGetIntegerv(GL_BLEND_DST_ALPHA, intData, 0);
 
