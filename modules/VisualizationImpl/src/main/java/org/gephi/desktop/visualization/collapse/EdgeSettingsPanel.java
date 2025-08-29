@@ -121,6 +121,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         selectionColorCheckbox.addItemListener(
             e -> {
                 vizController.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
+                setEnable(true);
             });
         edgeInSelectionColorChooser.addActionListener(
             ae -> vizController.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor()));
