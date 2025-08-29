@@ -54,9 +54,11 @@ import javax.swing.*;
 import org.gephi.desktop.visualization.collapse.CollapseGroup;
 import org.gephi.desktop.visualization.collapse.CollapsePanel;
 import org.gephi.desktop.visualization.collapse.EdgeGroup;
+import org.gephi.desktop.visualization.collapse.EdgeLabelGroup;
 import org.gephi.desktop.visualization.collapse.GlobalGroup;
 import org.gephi.desktop.visualization.collapse.LabelGroup;
 import org.gephi.desktop.visualization.collapse.NodeGroup;
+import org.gephi.desktop.visualization.collapse.NodeLabelGroup;
 import org.gephi.desktop.visualization.collapse.VizExtendedBar;
 import org.gephi.desktop.visualization.collapse.VizToolbar;
 import org.gephi.desktop.visualization.tools.DesktopToolController;
@@ -137,11 +139,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private CollapseGroup[] createCollapseGroups() {
-        CollapseGroup[] groups = new CollapseGroup[4];
+        CollapseGroup[] groups = new CollapseGroup[5];
         groups[0] = new GlobalGroup();
         groups[1] = new NodeGroup();
         groups[2] = new EdgeGroup();
-        groups[3] = new LabelGroup();
+        groups[3] = new NodeLabelGroup();
+        groups[4] = new EdgeLabelGroup();
 
         // Disable all groups
         for (CollapseGroup group : groups) {

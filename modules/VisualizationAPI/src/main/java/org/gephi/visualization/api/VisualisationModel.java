@@ -42,6 +42,8 @@ public interface VisualisationModel extends Model {
 
     float getEdgeScale();
 
+    boolean isUseEdgeWeight();
+
     // Selection
 
     List<Node> getSelectedNodes();

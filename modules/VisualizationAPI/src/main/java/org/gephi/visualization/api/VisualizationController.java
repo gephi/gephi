@@ -85,6 +85,8 @@ public interface VisualizationController {
 
     void setEdgeScale(float edgeScale);
 
+    void setUseEdgeWeight(boolean useEdgeWeight);
+
     void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
 
     void setHideNonSelectedEdges(boolean hideNonSelectedEdges);

@@ -404,8 +404,10 @@ public class VizModel implements VisualisationModel {
 
     public void setNodeScale(float nodeScale) {
         float oldValue = renderingOptions.getNodeScale();
-        renderingOptions.setNodeScale(nodeScale);
-        firePropertyChange("nodeScale", oldValue, nodeScale);
+        if (oldValue != nodeScale) {
+            renderingOptions.setNodeScale(nodeScale);
+            firePropertyChange("nodeScale", oldValue, nodeScale);
+        }
     }
 
     @Override
@@ -415,8 +417,21 @@ public class VizModel implements VisualisationModel {
 
     public void setEdgeScale(float edgeScale) {
         float oldValue = renderingOptions.getEdgeScale();
-        renderingOptions.setEdgeScale(edgeScale);
-        firePropertyChange("edgeScale", oldValue, edgeScale);
+        if (oldValue != edgeScale) {
+            renderingOptions.setEdgeScale(edgeScale);
+            firePropertyChange("edgeScale", oldValue, edgeScale);
+        }
+    }
+
+    @Override
+    public boolean isUseEdgeWeight() {
+        return renderingOptions.isEdgeWeightEnabled();
+    }
+
+    public void setUseEdgeWeight(boolean useEdgeWeight) {
+        boolean oldValue = renderingOptions.isEdgeWeightEnabled();
+        renderingOptions.setEdgeWeightEnabled(useEdgeWeight);
+        firePropertyChange("useEdgeWeight", oldValue, useEdgeWeight);
     }
 
     // TEXT
