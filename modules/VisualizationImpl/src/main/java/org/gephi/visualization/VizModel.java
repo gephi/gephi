@@ -70,6 +70,7 @@ import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.joml.Vector2fc;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -110,6 +111,9 @@ public class VizModel implements VisualisationModel {
 
 
     public VizModel(VizController controller, Workspace workspace) {
+        // Ensure we have some non-null rendering options until the viz-engine is actually initialized:
+        this.renderingOptions = new GraphRenderingOptionsImpl();
+
         this.vizController = controller;
         this.workspace = workspace;
         this.config = new VizConfig();
@@ -170,23 +174,12 @@ public class VizModel implements VisualisationModel {
         return loadEngine();
     }
 
-    private boolean initialized = false;
-
-    public synchronized boolean init(JComponent component) {
-        if (initialized) {
-            return true;
+    public synchronized void init(JComponent component) {
+        if (canvasManager.isInitialized()) {
+            return;
         }
 
-        // Todo no idea if this should be here, and when to do reinit instead
         canvasManager.init(component);
-
-        if (!loadEngine()) {
-            return false;
-        }
-
-        initialized = true;
-
-        return initialized;
     }
 
     private void defaultValues() {

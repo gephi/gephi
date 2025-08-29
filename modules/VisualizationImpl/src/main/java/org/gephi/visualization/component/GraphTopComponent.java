@@ -69,6 +69,7 @@ import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.modules.OnStop;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -91,11 +92,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private final JComponent toolbar;
     private final PropertiesBar propertiesBar;
     private final CollapseGroup[] groups;
-    private final ScheduledExecutorService vizExecutor;
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify
     private CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
+
+    private final ScheduledExecutorService vizExecutor;
 
     public GraphTopComponent() {
         controller = Lookup.getDefault().lookup(VizController.class);
@@ -328,7 +330,13 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             Lookup.getDefault().lookup(ProjectController.class)
                 .getCurrentWorkspace()
         );
-        vizExecutor.shutdownNow();
+
+        // Note: we cannot shutdown the vizExecutor here because the TopComponent
+        // can be later reused/reactivated by the netbeans platform because persistenceType = PERSISTENCE_ALWAYS
+    }
+
+    public void shutdown() {
+        vizExecutor.shutdown();
     }
 
     @Override
