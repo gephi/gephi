@@ -103,6 +103,7 @@ public abstract class AbstractEdgeData {
         final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
+        final float nodeScale = renderingOptions.getNodeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
         final GraphIndex graphIndex = engine.getGraphIndex();
@@ -122,7 +123,8 @@ public abstract class AbstractEdgeData {
                 minWeight,
                 maxWeight,
                 backgroundColorFloats,
-                lightenNonSelectedFactor
+                lightenNonSelectedFactor,
+                nodeScale
             );
 
             if (usesSecondaryBuffer) {
@@ -137,7 +139,8 @@ public abstract class AbstractEdgeData {
                 mvpFloats,
                 edgeScale,
                 minWeight,
-                maxWeight
+                maxWeight,
+                nodeScale
             );
 
             if (someSelection) {
@@ -147,7 +150,8 @@ public abstract class AbstractEdgeData {
                         mvpFloats,
                         edgeScale,
                         minWeight,
-                        maxWeight
+                        maxWeight,
+                        nodeScale
                     );
                 } else {
                     lineModelUndirected.useProgramWithSelectionSelected(
@@ -155,7 +159,8 @@ public abstract class AbstractEdgeData {
                         mvpFloats,
                         edgeScale,
                         minWeight,
-                        maxWeight
+                        maxWeight,
+                        nodeScale
                     );
                 }
             } else {
@@ -164,7 +169,8 @@ public abstract class AbstractEdgeData {
                     mvpFloats,
                     edgeScale,
                     minWeight,
-                    maxWeight
+                    maxWeight,
+                    nodeScale
                 );
             }
 
@@ -189,6 +195,7 @@ public abstract class AbstractEdgeData {
         final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
+        final float nodeScale = renderingOptions.getNodeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
         final GraphIndex graphIndex = engine.getGraphIndex();
@@ -207,7 +214,8 @@ public abstract class AbstractEdgeData {
                 minWeight,
                 maxWeight,
                 backgroundColorFloats,
-                lightenNonSelectedFactor
+                lightenNonSelectedFactor,
+                nodeScale
             );
 
             if (usesSecondaryBuffer) {
@@ -222,7 +230,8 @@ public abstract class AbstractEdgeData {
                 mvpFloats,
                 edgeScale,
                 minWeight,
-                maxWeight
+                maxWeight,
+                nodeScale
             );
 
             if (someSelection) {
@@ -232,7 +241,8 @@ public abstract class AbstractEdgeData {
                         mvpFloats,
                         edgeScale,
                         minWeight,
-                        maxWeight
+                        maxWeight,
+                        nodeScale
                     );
                 } else {
                     lineModelDirected.useProgramWithSelectionSelected(
@@ -240,7 +250,8 @@ public abstract class AbstractEdgeData {
                         mvpFloats,
                         edgeScale,
                         minWeight,
-                        maxWeight
+                        maxWeight,
+                        nodeScale
                     );
                 }
             } else {
@@ -249,7 +260,8 @@ public abstract class AbstractEdgeData {
                     mvpFloats,
                     edgeScale,
                     minWeight,
-                    maxWeight
+                    maxWeight,
+                    nodeScale
                 );
             }
 

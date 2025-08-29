@@ -18,6 +18,7 @@ uniform float minWeight;
 uniform float weightDifferenceDivisor;
 uniform float edgeScaleMin;
 uniform float edgeScaleMax;
+uniform float nodeScale;
 
 attribute vec2 vert;
 attribute vec2 position;
@@ -37,8 +38,8 @@ void main() {
 
     vec2 sideVector = vec2(-directionNormalized.y, directionNormalized.x) * thickness * 0.5;
 
-    vec2 lineStart = directionNormalized * sourceSize;
-    vec2 lineLength = (direction - lineStart) - directionNormalized * targetSize;
+    vec2 lineStart = directionNormalized * (sourceSize * nodeScale);
+    vec2 lineLength = (direction - lineStart) - directionNormalized * (targetSize * nodeScale);
 
     vec2 edgeVert = lineStart + lineLength * vert.x + sideVector * vert.y;
 
