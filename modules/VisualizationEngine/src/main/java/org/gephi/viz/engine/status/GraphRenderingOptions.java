@@ -34,7 +34,7 @@ public interface GraphRenderingOptions {
     boolean DEFAULT_EDGE_WEIGHT_ENABLED = true;
 
     //Selection:
-    boolean DEFAULT_HIDE_NON_SELECTED = false;
+    boolean DEFAULT_HIDE_NON_SELECTED_EDGES = false;
     boolean DEFAULT_LIGHTEN_NON_SELECTED = true;
     boolean DEFAULT_AUTO_SELECT_NEIGHBOURS = true;
     float DEFAULT_LIGHTEN_NON_SELECTED_FACTOR = 0.9f;
@@ -63,9 +63,9 @@ public interface GraphRenderingOptions {
 
     void setShowEdgeLabels(boolean showEdgeLabels);
 
-    boolean isHideNonSelected();
+    boolean isHideNonSelectedEdges();
 
-    void setHideNonSelected(boolean hideNonSelected);
+    void setHideNonSelectedEdges(boolean hideNonSelected);
 
     boolean isLightenNonSelected();
 

@@ -25,7 +25,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     //Selection:
     private boolean autoSelectNeighbours = DEFAULT_AUTO_SELECT_NEIGHBOURS;
-    private boolean hideNonSelected = DEFAULT_HIDE_NON_SELECTED;
+    private boolean hideNonSelectedEdges = DEFAULT_HIDE_NON_SELECTED_EDGES;
     private boolean lightenNonSelected = DEFAULT_LIGHTEN_NON_SELECTED;
     private float lightenNonSelectedFactor = DEFAULT_LIGHTEN_NON_SELECTED_FACTOR;
 
@@ -106,13 +106,13 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     }
 
     @Override
-    public boolean isHideNonSelected() {
-        return hideNonSelected;
+    public boolean isHideNonSelectedEdges() {
+        return hideNonSelectedEdges;
     }
 
     @Override
-    public void setHideNonSelected(boolean hideNonSelected) {
-        this.hideNonSelected = hideNonSelected;
+    public void setHideNonSelectedEdges(boolean hideNonSelected) {
+        this.hideNonSelectedEdges = hideNonSelected;
     }
 
     @Override

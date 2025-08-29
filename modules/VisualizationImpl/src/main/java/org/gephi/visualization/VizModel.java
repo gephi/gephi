@@ -307,13 +307,15 @@ public class VizModel implements VisualisationModel {
 
     @Override
     public boolean isHideNonSelectedEdges() {
-        return renderingOptions.isHideNonSelected();
+        return renderingOptions.isHideNonSelectedEdges();
     }
 
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
-        boolean oldValue = renderingOptions.isHideNonSelected();
-        renderingOptions.setHideNonSelected(hideNonSelectedEdges);
-        firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
+        boolean oldValue = renderingOptions.isHideNonSelectedEdges();
+        if (oldValue != hideNonSelectedEdges) {
+            renderingOptions.setHideNonSelectedEdges(hideNonSelectedEdges);
+            firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
+        }
     }
 
     @Override

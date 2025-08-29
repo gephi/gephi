@@ -226,9 +226,6 @@ public abstract class AbstractNodeData {
 
         //Selection:
         final boolean someSelection = selection.someNodesOrEdgesSelection();
-        final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-        final boolean hideNonSelected =
-            someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
 
         // Get visible nodes
         graphIndex.getVisibleNodes(nodesCallback, viewBoundaries);
@@ -260,97 +257,66 @@ public abstract class AbstractNodeData {
         int commandIndex = 0;
         int instanceId = 0;
         if (someSelection) {
-            if (hideNonSelected) {
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
+            //First non-selected (bottom):
+            for (int j = 0; j < visibleNodesCount; j++) {
+                final Node node = visibleNodesArray[j];
 
-                    final boolean selected = selection.isNodeOrNeighbourSelected(node);
-                    if (!selected) {
-                        continue;
-                    }
-
-                    newNodesCountSelected++;
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
-
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
-
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
-
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
-                    }
-                }
-            } else {
-                //First non-selected (bottom):
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
-
-                    final boolean selected = selection.isNodeOrNeighbourSelected(node);
-                    if (selected) {
-                        continue;
-                    }
-
-                    newNodesCountUnselected++;
-
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
-
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
-
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
-
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
-                    }
+                final boolean selected = selection.isNodeOrNeighbourSelected(node);
+                if (selected) {
+                    continue;
                 }
 
-                instanceId =
-                    0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
-                //Then selected ones (up):
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
+                newNodesCountUnselected++;
 
-                    final boolean selected = selection.isNodeOrNeighbourSelected(node);
-                    if (!selected) {
-                        continue;
+                fillNodeAttributesData(node, attributesIndex);
+                attributesIndex += ATTRIBS_STRIDE;
+
+                if (attributesIndex == attributesBufferBatch.length) {
+                    attribs.put(attributesBufferBatch);
+                    attributesIndex = 0;
+                }
+
+                if (indirectCommands) {
+                    fillNodeCommandData(node, zoom, commandIndex, instanceId);
+                    instanceId++;
+                    commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+
+                    if (commandIndex == commandsBufferBatch.length) {
+                        commands.put(commandsBufferBatch);
+                        commandIndex = 0;
                     }
+                }
+            }
 
-                    newNodesCountSelected++;
+            instanceId =
+                0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
+            //Then selected ones (up):
+            for (int j = 0; j < visibleNodesCount; j++) {
+                final Node node = visibleNodesArray[j];
 
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
+                final boolean selected = selection.isNodeOrNeighbourSelected(node);
+                if (!selected) {
+                    continue;
+                }
 
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
+                newNodesCountSelected++;
 
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+                fillNodeAttributesData(node, attributesIndex);
+                attributesIndex += ATTRIBS_STRIDE;
 
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
+                if (attributesIndex == attributesBufferBatch.length) {
+                    attribs.put(attributesBufferBatch);
+                    attributesIndex = 0;
+                }
+
+                if (indirectCommands) {
+                    fillNodeCommandData(node, zoom, commandIndex, instanceId);
+                    instanceId++;
+                    commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+
+                    if (commandIndex == commandsBufferBatch.length) {
+                        commands.put(commandsBufferBatch);
+                        commandIndex = 0;
                     }
                 }
             }
