@@ -13,6 +13,7 @@ import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
+import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.Constants;
 import org.gephi.viz.engine.util.structure.NodesCallback;
@@ -104,6 +105,9 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
 
     @Override
     public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+        final GraphSelection selection = engine.getGraphSelection();
+        final boolean someSelection = selection.someNodesOrEdgesSelection();
+
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         engine.getProjectionMatrix().get(proj);
@@ -158,6 +162,10 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
         for (int i = 0; i < count; i++) {
             final Node n = nodes[i];
             if (n == null) continue;
+
+            if (someSelection && !selection.isNodeSelected(n)) {
+                continue;
+            }
 
             final String text = n.getLabel();
             if (text == null || text.isEmpty()) continue;
