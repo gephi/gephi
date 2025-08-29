@@ -71,7 +71,7 @@ public class VizEngineGraphCanvasManager {
         return Optional.empty();
     }
 
-    public synchronized void init(final JComponent component) {
+    public synchronized VizEngine<JOGLRenderingTarget, NEWTEvent> init(final JComponent component) {
         if (initialized) {
             throw new IllegalStateException("Already initialized");
         }
@@ -159,6 +159,8 @@ public class VizEngineGraphCanvasManager {
         engine.start();
 
         component.revalidate();
+
+        return engine;
     }
 
     public synchronized void destroy(JComponent component) {

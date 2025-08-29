@@ -166,30 +166,16 @@ public class VizModel implements VisualisationModel {
         return true;
     }
 
-    /**
-     * Getters and setters should only be called if the model is ready (has a backing viz-engine setup).
-     */
-    public boolean isReady() {
-        if (canvasManager.getEngine().isPresent()) {
-            return true;
-        }
-
-        return loadEngine();
-    }
-
     public synchronized void init(JComponent component) {
         if (canvasManager.isInitialized()) {
             return;
         }
 
-        canvasManager.init(component);
+        this.renderingOptions = canvasManager.init(component).getRenderingOptions();
+        defaultValues();
     }
 
     private void defaultValues() {
-        if (!isReady()) {
-            return;
-        }
-
         //textModel = new TextModelImpl();
         //TODO
         if (UIUtils.isDarkLookAndFeel()) {
