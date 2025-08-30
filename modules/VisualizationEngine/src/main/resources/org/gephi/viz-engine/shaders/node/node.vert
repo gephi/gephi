@@ -5,7 +5,7 @@
 //#outname "node_with_selection_unselected.vert"
 //#endif
 //#endif
-#version 100
+#version 330
 
 uniform mat4 mvp;
 uniform float sizeMultiplier;
@@ -42,18 +42,19 @@ void main() {
     //#if selected
     color.rgb = color.rgb * colorMultiplier;
     //#else
-    color.rgb = color.rgb * colorMultiplier;
     float colorLightenFactorEffective = colorLightenFactor;
     if(selectionMode==2) {
-        colorLightenFactorEffective*= 1.0-exp(-5.*animationTime);
+        colorLightenFactorEffective*= .5-exp(-5.*animationTime);
+        color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactorEffective);
     }
     else if(selectionMode==1) {
-        colorLightenFactorEffective= 1.0-exp(-5.*fract(animationTime));
+
+        color.rgb = color.rgb*abs(sin(animationTime));
     }
     else if(selectionMode==0) {
-        colorLightenFactorEffective = mix(1.0,0.0,exp(-3.*animationTime));
+        color.rgb = color.rgb;
     }
-    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactorEffective);
+
 
     //#endif
     //#else
