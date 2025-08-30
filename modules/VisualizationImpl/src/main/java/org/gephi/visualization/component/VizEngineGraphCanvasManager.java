@@ -90,15 +90,6 @@ public class VizEngineGraphCanvasManager {
             )
         );
 
-//        workspace.add(engine);
-
-        // Previous state for this workspace? keep it:
-//        if (engineTranslate != null) {
-//            engine.setTranslate(engineTranslate);
-//            engine.setZoom(engineZoom);
-//            engine.setBackgroundColor(engineBackgroundColor);
-//        }
-
         final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
         glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
         glOptions.setDisableInstancedDrawing(DISABLE_INSTANCED_RENDERING);
@@ -196,10 +187,5 @@ public class VizEngineGraphCanvasManager {
 
     public synchronized boolean isInitialized() {
         return initialized;
-    }
-
-    public synchronized void reinit(JComponent component) {
-        destroy(component);
-        init(component);
     }
 }
