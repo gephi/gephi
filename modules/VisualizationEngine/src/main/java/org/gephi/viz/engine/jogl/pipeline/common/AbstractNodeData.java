@@ -17,6 +17,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.time.Instant;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
@@ -41,6 +42,9 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  */
 public abstract class AbstractNodeData {
 
+    private long time=0;
+    private float selectionTime=0;
+    private boolean renderingSelected=false;
     protected static final float BORDER_SIZE = 0.16f;
     protected static final float INSIDE_CIRCLE_SIZE = 1 - BORDER_SIZE;
 
@@ -90,6 +94,7 @@ public abstract class AbstractNodeData {
     private int[] commandsBufferBatch;
 
     public AbstractNodeData(final boolean instancedRendering, final boolean indirectCommands) {
+        this.time = System.currentTimeMillis();
         this.instancedRendering = instancedRendering;
         this.indirectCommands = indirectCommands;
 
@@ -162,16 +167,22 @@ public abstract class AbstractNodeData {
                                                       final VizEngine engine,
                                                       final float[] mvpFloats,
                                                       final boolean isRenderingOutsideCircle) {
+        final float globalTime = (System.currentTimeMillis()-this.time)/1000.f;
         final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
         final boolean renderingUnselectedNodes = layer.isBack();
         if (!someSelection && renderingUnselectedNodes) {
             return 0;
+        }
+        if(renderingSelected != someSelection) {
+            renderingSelected= someSelection;
+            selectionTime = globalTime;
         }
 
         final float[] backgroundColorFloats = engine.getBackgroundColor();
 
         final int instanceCount;
         final float sizeMultiplier = isRenderingOutsideCircle ? 1f : INSIDE_CIRCLE_SIZE;
+
 
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
@@ -184,7 +195,9 @@ public abstract class AbstractNodeData {
                 sizeMultiplier,
                 backgroundColorFloats,
                 colorLightenFactor,
-                colorMultiplier
+                colorMultiplier,
+                globalTime,
+                selectionTime
             );
 
             setupSecondaryVertexArrayAttributes(gl, engine);
@@ -197,11 +210,13 @@ public abstract class AbstractNodeData {
                     gl,
                     mvpFloats,
                     sizeMultiplier,
-                    colorMultiplier
+                    colorMultiplier,
+                    globalTime,
+                    selectionTime
                 );
             } else {
                 final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
-                diskModel.useProgram(gl, mvpFloats, sizeMultiplier, colorMultiplier);
+                diskModel.useProgram(gl, mvpFloats, sizeMultiplier, colorMultiplier,globalTime,selectionTime);
             }
 
             setupVertexArrayAttributes(gl, engine);
