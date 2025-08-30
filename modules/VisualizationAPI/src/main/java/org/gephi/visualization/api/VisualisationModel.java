@@ -20,15 +20,17 @@ public interface VisualisationModel extends Model {
 
     Color getBackgroundColor();
 
+    boolean isLightenNonSelectedAuto();
+
+    float getNodeScale();
+
+    // Edges
+
     boolean isShowEdges();
 
-    boolean isEdgeHasUniColor();
-
-    float[] getEdgeUniColor();
+    EdgeColorMode getEdgeColorMode();
 
     boolean isHideNonSelectedEdges();
-
-    boolean isLightenNonSelectedAuto();
 
     boolean isEdgeSelectionColor();
 
@@ -39,6 +41,8 @@ public interface VisualisationModel extends Model {
     float[] getEdgeBothSelectionColor();
 
     float getEdgeScale();
+
+    boolean isUseEdgeWeight();
 
     // Selection
 
