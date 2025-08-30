@@ -43,8 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.visualization.component;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;

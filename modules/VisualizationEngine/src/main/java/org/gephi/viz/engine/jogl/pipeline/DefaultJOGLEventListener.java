@@ -51,7 +51,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
                 inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
             } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
-            graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
+                graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
                 float diameter = graphSelection.getMouseSelectionEffectiveDiameter();
 
                 if (diameter <= 1) {
@@ -182,7 +182,8 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                 double zoomQuantity = (lastY - e.getY()) / 7f;//Divide by some number so zoom is not too fast
                 inputActionsProcessor.processZoomEvent(zoomQuantity, engine.getWidth() / 2, engine.getHeight() / 2);
                 return true;
-            } else if(graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION && graphSelection.getMouseSelectionDiameter() > 1f) {
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
+                graphSelection.getMouseSelectionDiameter() > 1f) {
                 graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
             } else if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
                 (mouseLeftButtonPressed || mouseRightButtonPressed)) {

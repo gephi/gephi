@@ -3,10 +3,14 @@ package org.gephi.viz.engine.jogl.pipeline.instanced;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES3;
 import java.nio.FloatBuffer;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
 
 /**
  *
@@ -25,13 +29,13 @@ public class InstancedNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
 
     @Override
-    public void update(VizEngine engine) {
-        updateData(
-            engine.getZoom(),
-            engine.getViewBoundaries(),
-            engine.getGraphIndex(),
-            engine.getRenderingOptions(),
-            engine.getGraphSelection()
+    public void update(GraphIndex graphIndex, GraphSelection graphSelection, GraphRenderingOptions renderingOptions,
+                       Rect2D viewBoundaries) {
+        updateData(renderingOptions.getZoom(),
+            viewBoundaries,
+            graphIndex,
+            renderingOptions,
+            graphSelection
         );
     }
 

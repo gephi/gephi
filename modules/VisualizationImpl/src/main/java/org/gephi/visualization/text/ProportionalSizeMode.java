@@ -42,10 +42,6 @@
 
 package org.gephi.visualization.text;
 
-import javax.swing.ImageIcon;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
-
 /**
  * @author Mathieu Bastian
  */

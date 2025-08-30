@@ -42,27 +42,20 @@
 
 package org.gephi.visualization.events;
 
+import com.jogamp.newt.event.MouseEvent;
 import java.awt.Component;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.jogamp.newt.event.MouseEvent;
-import javax.swing.JComponent;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterable;
-import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.VisualizationEvent;
 import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.apiimpl.GraphContextMenu;
-import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.component.VizEngineGraphCanvasManager;
 import org.gephi.viz.engine.VizEngine;

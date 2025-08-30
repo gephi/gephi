@@ -1,5 +1,7 @@
 package org.gephi.viz.engine.spi;
 
+import org.gephi.viz.engine.VizEngineModel;
+
 /**
  *
  * @param <R>
@@ -7,5 +9,5 @@ package org.gephi.viz.engine.spi;
  */
 public interface WorldUpdater<R extends RenderingTarget> extends PipelinedExecutor<R> {
 
-    void updateWorld();
+    void updateWorld(VizEngineModel model);
 }

@@ -11,9 +11,17 @@ import org.gephi.viz.engine.spi.VizEngineConfigurator;
  */
 public class VizEngineFactory {
 
+    public static <R extends RenderingTarget, I> VizEngine<R, I> newEngine(R renderingTarget,
+                                                                           List<? extends VizEngineConfigurator<R, I>> configurators) {
+        return newEngine(renderingTarget, null, configurators);
+    }
+
     public static <R extends RenderingTarget, I> VizEngine<R, I> newEngine(R renderingTarget, GraphModel graphModel,
                                                                            List<? extends VizEngineConfigurator<R, I>> configurators) {
-        final VizEngine<R, I> engine = new VizEngine<>(graphModel, renderingTarget);
+        final VizEngine<R, I> engine = new VizEngine<>(renderingTarget);
+        if (graphModel != null) {
+            engine.setGraphModel(graphModel, null);
+        }
 
         //Configure
         if (configurators != null) {

@@ -124,13 +124,15 @@ public class NodeSettingsPanel extends javax.swing.JPanel implements Visualizati
 
         showNodesCheckbox.setFont(new java.awt.Font("Tahoma", Font.BOLD, 11)); // NOI18N
         showNodesCheckbox.setSelected(true);
-        showNodesCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.showNodesCheckbox.text")); // NOI18N
+        showNodesCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class,
+            "NodeSettingsPanel.showNodesCheckbox.text")); // NOI18N
         showNodesCheckbox.setEnabled(false);
 
         scalePanel.setOpaque(false);
         scalePanel.setLayout(new java.awt.GridBagLayout());
 
-        labelScale.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.labelScale.text")); // NOI18N
+        labelScale.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class,
+            "NodeSettingsPanel.labelScale.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -150,23 +152,24 @@ public class NodeSettingsPanel extends javax.swing.JPanel implements Visualizati
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(scalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(showNodesCheckbox))
-                .addContainerGap(520, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(21, 21, 21)
+                            .addComponent(scalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 205,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(showNodesCheckbox))
+                    .addContainerGap(520, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(showNodesCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
-                .addGap(7, 7, 7))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(showNodesCheckbox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+                    .addGap(7, 7, 7))
         );
     }// </editor-fold>//GEN-END:initComponents
 }

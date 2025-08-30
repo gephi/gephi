@@ -1,12 +1,5 @@
 package org.gephi.visualization.component;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Logger;
-import javax.swing.JComponent;
-
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
@@ -16,18 +9,21 @@ import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import java.awt.BorderLayout;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import javax.swing.JComponent;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineFactory;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
 import org.gephi.viz.engine.spi.InputListener;
-import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
-import org.joml.Vector2fc;
-import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
 
@@ -39,9 +35,7 @@ public class VizEngineGraphCanvasManager {
 
     private static final boolean DEBUG = false;
 
-    private final Workspace workspace;
     private final VizController vizController;
-    private final GraphModel graphModel;
 
     private boolean initialized = false;
 
@@ -54,10 +48,8 @@ public class VizEngineGraphCanvasManager {
     // Engine state saved for when it's restarted:
 
 
-    public VizEngineGraphCanvasManager(Workspace workspace, GraphModel graphModel) {
-        this.vizController = Lookup.getDefault().lookup(VizController.class);
-        this.workspace = Objects.requireNonNull(workspace, "workspace");
-        this.graphModel = Objects.requireNonNull(graphModel, "graphModel");
+    public VizEngineGraphCanvasManager(VizController vizController) {
+        this.vizController = Objects.requireNonNull(vizController);
     }
 
     public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
@@ -93,7 +85,6 @@ public class VizEngineGraphCanvasManager {
 
         this.engine = VizEngineFactory.newEngine(
             renderingTarget,
-            graphModel,
             Collections.singletonList(
                 new VizEngineJOGLConfigurator()
             )
@@ -161,6 +152,16 @@ public class VizEngineGraphCanvasManager {
         component.revalidate();
 
         return engine;
+    }
+
+    public synchronized VizModel loadWorkspace(Workspace workspace) {
+        if (!initialized) {
+            throw new IllegalStateException("Not initialized");
+        }
+        VizModel model = vizController.getModel(workspace);
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        engine.setGraphModel(graphModel, model.toGraphRenderingOptions());
+        return model;
     }
 
     public synchronized void destroy(JComponent component) {

@@ -45,10 +45,8 @@ package org.gephi.visualization.options;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 import javax.swing.text.NumberFormatter;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.openide.util.NbPreferences;
 

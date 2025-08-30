@@ -40,13 +40,9 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
     }
 
     @Override
-    public void update(VizEngine engine) {
-        updateData(
-            engine.getViewBoundaries(),
-            engine.getGraphIndex(),
-            engine.getRenderingOptions(),
-            engine.getGraphSelection()
-        );
+    public void update(GraphIndex graphIndex, GraphSelection selection, GraphRenderingOptions renderingOptions,
+                       Rect2D viewBoundaries) {
+        updateData(viewBoundaries, graphIndex, renderingOptions, selection);
     }
 
     public void drawArrays(GL2ES2 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {

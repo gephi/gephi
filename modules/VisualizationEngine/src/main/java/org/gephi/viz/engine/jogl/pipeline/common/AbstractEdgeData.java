@@ -16,6 +16,7 @@ import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
@@ -271,7 +272,8 @@ public abstract class AbstractEdgeData {
         return instanceCount;
     }
 
-    public abstract void update(VizEngine engine);
+    public abstract void update(GraphIndex graphIndex, GraphSelection selection, GraphRenderingOptions renderingOptions,
+                                Rect2D viewBoundaries);
 
     protected int updateDirectedData(
         final Graph graph,
