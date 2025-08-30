@@ -42,15 +42,20 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.components;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.GrayFilter;
+import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.openide.util.ImageUtilities;
 
 /**
  * @author Mathieu Bastian
@@ -73,10 +78,24 @@ public class JPopupButton extends JButton {
         });
     }
 
+    @Override
+    public void setIcon(Icon defaultIcon) {
+        IconWithArrow iconWithArrow = new IconWithArrow(defaultIcon, false);
+        super.setIcon(iconWithArrow);
+
+        // Ensure a proper disabled icon is available (grays out both base icon and arrow)
+        Icon disabled = UIManager.getLookAndFeel().getDisabledIcon(this, iconWithArrow);
+        if (disabled == null) {
+            disabled = new ImageIcon(GrayFilter.createDisabledImage(ImageUtilities.icon2Image(iconWithArrow)));
+        }
+        super.setDisabledIcon(disabled);
+        super.setDisabledSelectedIcon(disabled);
+    }
+
     public JPopupMenu createPopup() {
         JPopupMenu menu = new JPopupMenu();
         for (final JPopupButtonItem item : items) {
-            JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.toString(), item.icon, item == selectedItem);
+            final JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.toString(), item.icon, item == selectedItem);
             r.addActionListener(new ActionListener() {
 
                 @Override
@@ -85,6 +104,36 @@ public class JPopupButton extends JButton {
                         selectedItem = item;
                         fireChangeEvent();
                     }
+                }
+            });
+
+            // Use background highlight for hover/armed state to match platform look
+            r.setOpaque(true);
+            final Color defaultBackground = UIManager.getColor("MenuItem.background") != null
+                    ? UIManager.getColor("MenuItem.background") : r.getBackground();
+            final Color selectionBackground = UIManager.getColor("MenuItem.selectionBackground") != null
+                    ? UIManager.getColor("MenuItem.selectionBackground") : defaultBackground;
+
+            // Persist highlight for the currently selected item
+            if (item == selectedItem) {
+                r.setBackground(selectionBackground);
+            }
+
+            // Foreground color should reflect selection/hover state
+            final Color defaultForeground = UIManager.getColor("MenuItem.foreground") != null
+                    ? UIManager.getColor("MenuItem.foreground") : r.getForeground();
+            final Color selectionForeground = UIManager.getColor("MenuItem.selectionForeground") != null
+                    ? UIManager.getColor("MenuItem.selectionForeground") : defaultForeground;
+            r.setForeground(item == selectedItem ? selectionForeground : defaultForeground);
+            r.setSelected(item == selectedItem);
+
+            r.getModel().addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    boolean armed = r.getModel().isArmed();
+                    boolean active = armed || item == selectedItem;
+                    r.setBackground(active ? selectionBackground : defaultBackground);
+                    r.setForeground(active ? selectionForeground : defaultForeground);
                 }
             });
             menu.add(r);
@@ -111,7 +160,7 @@ public class JPopupButton extends JButton {
                 return;
             }
         }
-        throw new IllegalArgumentException("This elemen doesn't exist.");
+        throw new IllegalArgumentException("This element doesn't exist.");
     }
 
     public void setChangeListener(ChangeListener changeListener) {
@@ -124,7 +173,7 @@ public class JPopupButton extends JButton {
         }
     }
 
-    private class JPopupButtonItem {
+    private static class JPopupButtonItem {
 
         private final Object object;
         private final Icon icon;

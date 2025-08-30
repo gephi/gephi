@@ -69,11 +69,11 @@ public interface VisualizationController {
 
     void setBackgroundColor(Color color);
 
+    void setNodeScale(float nodeScale);
+
     void setShowEdges(boolean showEdges);
 
-    void setEdgeHasUniColor(boolean edgeHasUniColor);
-
-    void setEdgeUniColor(Color edgeUniColor);
+    void setEdgeColorMode(EdgeColorMode mode);
 
     void setEdgeSelectionColor(boolean edgeSelectionColor);
 
@@ -84,6 +84,8 @@ public interface VisualizationController {
     void setEdgeBothSelectionColor(Color edgeBothSelectionColor);
 
     void setEdgeScale(float edgeScale);
+
+    void setUseEdgeWeight(boolean useEdgeWeight);
 
     void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
 

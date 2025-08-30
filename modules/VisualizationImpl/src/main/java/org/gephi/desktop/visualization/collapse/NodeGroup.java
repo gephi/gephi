@@ -1,60 +1,63 @@
 package org.gephi.desktop.visualization.collapse;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JComponent;
-import javax.swing.JToggleButton;
+import javax.swing.JSlider;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeListener {
 
-    private final JToggleButton showLabelsButton;
     private final VisualizationController vizController;
+    private final NodeSettingsPanel nodeSettingsPanel = new NodeSettingsPanel();
+    private final JSlider nodeScaleSlider;
 
     public NodeGroup() {
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
-        //Show labels buttons
-        showLabelsButton = new JToggleButton();
-
-        showLabelsButton.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.showLabels"));
-        showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showNodeLabels.svg", false));
-        showLabelsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vizController.setShowNodeLabels(showLabelsButton.isSelected());
-            }
+        //NodeScale slider
+        nodeScaleSlider = new JSlider(0, 100, 0);
+        nodeScaleSlider.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.nodeScale"));
+        nodeScaleSlider.addChangeListener(e -> {
+            float value = nodeScaleSlider.getValue() / 10f + 0.1f;
+            vizController.setNodeScale(value);
         });
+        nodeScaleSlider.setPreferredSize(new Dimension(100, 20));
+        nodeScaleSlider.setMaximumSize(new Dimension(100, 20));
     }
 
     @Override
     public void setup(VisualisationModel vizModel) {
-        showLabelsButton.setEnabled(true);
-        showLabelsButton.setSelected(vizModel.isShowNodeLabels());
+        nodeSettingsPanel.setup(vizModel);
+
+        nodeScaleSlider.setEnabled(true);
+        nodeScaleSlider.setValue((int) ((vizModel.getNodeScale() - 0.1f) * 10));
 
         vizController.addPropertyChangeListener(this);
     }
 
     @Override
     public void unsetup(VisualisationModel vizModel) {
+        nodeSettingsPanel.unsetup(vizModel);
         vizController.removePropertyChangeListener(this);
     }
 
     @Override
     public void disable() {
-        showLabelsButton.setEnabled(false);
+        nodeSettingsPanel.setup(null);
+        nodeScaleSlider.setEnabled(false);
     }
 
     @Override
     public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
-        if ("showNodeLabels".equals(evt.getPropertyName())) {
-            showLabelsButton.setSelected((Boolean) evt.getNewValue());
+        if ("nodeScale".equals(evt.getPropertyName())) {
+            if (model.getNodeScale() != (nodeScaleSlider.getValue() / 10f + 0.1f)) {
+                nodeScaleSlider.setValue((int) ((model.getNodeScale() - 0.1f) * 10));
+            }
         }
     }
 
@@ -65,12 +68,12 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
     @Override
     public JComponent[] getToolbarComponents() {
-        return new JComponent[] {showLabelsButton};
+        return new JComponent[] {nodeScaleSlider};
     }
 
     @Override
     public JComponent getExtendedComponent() {
-        return null;
+        return nodeSettingsPanel;
     }
 
     @Override
@@ -80,6 +83,6 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
     @Override
     public boolean hasExtended() {
-        return false;
+        return true;
     }
 }

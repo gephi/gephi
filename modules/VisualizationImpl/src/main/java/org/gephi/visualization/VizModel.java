@@ -45,13 +45,9 @@ package org.gephi.visualization;
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -64,6 +60,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
@@ -166,30 +163,16 @@ public class VizModel implements VisualisationModel {
         return true;
     }
 
-    /**
-     * Getters and setters should only be called if the model is ready (has a backing viz-engine setup).
-     */
-    public boolean isReady() {
-        if (canvasManager.getEngine().isPresent()) {
-            return true;
-        }
-
-        return loadEngine();
-    }
-
     public synchronized void init(JComponent component) {
         if (canvasManager.isInitialized()) {
             return;
         }
 
-        canvasManager.init(component);
+        this.renderingOptions = canvasManager.init(component).getRenderingOptions();
+        defaultValues();
     }
 
     private void defaultValues() {
-        if (!isReady()) {
-            return;
-        }
-
         //textModel = new TextModelImpl();
         //TODO
         if (UIUtils.isDarkLookAndFeel()) {
@@ -202,14 +185,14 @@ public class VizModel implements VisualisationModel {
         setLightenNonSelectedAuto(config.isDefaultLightenNonSelectedAuto());
         setAutoSelectNeighbors(config.isDefaultAutoSelectNeighbor());
         setHideNonSelectedEdges(config.isDefaultHideNonSelectedEdges());
-        setEdgeHasUniColor(config.isDefaultEdgeHasUniColor());
-        setEdgeUniColor(config.getDefaultEdgeUniColor().getRGBComponents(null));
         setAdjustByText(config.isDefaultAdjustByText());
         setEdgeSelectionColor(config.isDefaultEdgeSelectionColor());
         setEdgeInSelectionColor(config.getDefaultEdgeInSelectedColor().getRGBComponents(null));
         setEdgeOutSelectionColor(config.getDefaultEdgeOutSelectedColor().getRGBComponents(null));
         setEdgeBothSelectionColor(config.getDefaultEdgeBothSelectedColor().getRGBComponents(null));
         setEdgeScale(config.getDefaultEdgeScale());
+        setNodeScale(config.getDefaultNodeScale());
+        setEdgeColorMode(config.getDefaultEdgeColorMode());
 
         // Text
         setShowNodeLabels(config.isDefaultShowNodeLabels());
@@ -289,36 +272,50 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
-    public boolean isEdgeHasUniColor() {
-        //TODO: Needs to be added to the engine?
-        return false;
+    public EdgeColorMode getEdgeColorMode() {
+        return switch (renderingOptions.getEdgeColorMode()) {
+            case SELF -> EdgeColorMode.SELF;
+            case SOURCE -> EdgeColorMode.SOURCE;
+            case TARGET -> EdgeColorMode.TARGET;
+            case MIXED -> EdgeColorMode.MIXED;
+            default ->
+                throw new IllegalArgumentException("Unknown EdgeColorMode: " + renderingOptions.getEdgeColorMode());
+        };
     }
 
-    public void setEdgeHasUniColor(boolean edgeHasUniColor) {
-        //TODO: Needs to be added to the engine?
-//        firePropertyChange("edgeHasUniColor", null, edgeHasUniColor);
-    }
-
-    @Override
-    public float[] getEdgeUniColor() {
-        //TODO: Needs to be added to the engine?
-        return new float[] {0f, 0f, 0f, 1f}; // Default black color
-    }
-
-    public void setEdgeUniColor(float[] edgeUniColor) {
-        //TODO: Needs to be added to the engine?
-//        firePropertyChange("edgeUniColor", null, edgeUniColor);
+    // Setter
+    public void setEdgeColorMode(EdgeColorMode edgeColorMode) {
+        EdgeColorMode oldValue = getEdgeColorMode();
+        switch(edgeColorMode) {
+            case SELF:
+                renderingOptions.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.SELF);
+                break;
+            case SOURCE:
+                renderingOptions.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.SOURCE);
+                break;
+            case TARGET:
+                renderingOptions.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.TARGET);
+                break;
+            case MIXED:
+                renderingOptions.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.MIXED);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown EdgeColorMode: " + edgeColorMode);
+        }
+        firePropertyChange("edgeColorMode", oldValue, edgeColorMode);
     }
 
     @Override
     public boolean isHideNonSelectedEdges() {
-        return renderingOptions.isHideNonSelected();
+        return renderingOptions.isHideNonSelectedEdges();
     }
 
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
-        boolean oldValue = renderingOptions.isHideNonSelected();
-        renderingOptions.setHideNonSelected(hideNonSelectedEdges);
-        firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
+        boolean oldValue = renderingOptions.isHideNonSelectedEdges();
+        if (oldValue != hideNonSelectedEdges) {
+            renderingOptions.setHideNonSelectedEdges(hideNonSelectedEdges);
+            firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
+        }
     }
 
     @Override
@@ -389,14 +386,40 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
+    public float getNodeScale() {
+        return renderingOptions.getNodeScale();
+    }
+
+    public void setNodeScale(float nodeScale) {
+        float oldValue = renderingOptions.getNodeScale();
+        if (oldValue != nodeScale) {
+            renderingOptions.setNodeScale(nodeScale);
+            firePropertyChange("nodeScale", oldValue, nodeScale);
+        }
+    }
+
+    @Override
     public float getEdgeScale() {
         return renderingOptions.getEdgeScale();
     }
 
     public void setEdgeScale(float edgeScale) {
         float oldValue = renderingOptions.getEdgeScale();
-        renderingOptions.setEdgeScale(edgeScale);
-        firePropertyChange("edgeScale", oldValue, edgeScale);
+        if (oldValue != edgeScale) {
+            renderingOptions.setEdgeScale(edgeScale);
+            firePropertyChange("edgeScale", oldValue, edgeScale);
+        }
+    }
+
+    @Override
+    public boolean isUseEdgeWeight() {
+        return renderingOptions.isEdgeWeightEnabled();
+    }
+
+    public void setUseEdgeWeight(boolean useEdgeWeight) {
+        boolean oldValue = renderingOptions.isEdgeWeightEnabled();
+        renderingOptions.setEdgeWeightEnabled(useEdgeWeight);
+        firePropertyChange("useEdgeWeight", oldValue, useEdgeWeight);
     }
 
     // TEXT
@@ -655,8 +678,6 @@ public class VizModel implements VisualisationModel {
                         setAutoSelectNeighbors(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
                         setHideNonSelectedEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
-                    } else if ("edgehasunicolor".equalsIgnoreCase(name)) {
-                        setEdgeHasUniColor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("adjustbytext".equalsIgnoreCase(name)) {
                         setAdjustByText(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgeSelectionColor".equalsIgnoreCase(name)) {
@@ -664,9 +685,6 @@ public class VizModel implements VisualisationModel {
 
                     } else if ("backgroundcolor".equalsIgnoreCase(name)) {
                         setBackgroundColor(ColorUtils.decode(reader.getAttributeValue(null, "value")));
-                    } else if ("edgeunicolor".equalsIgnoreCase(name)) {
-                        setEdgeUniColor(
-                            ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
                     } else if ("edgeInSelectionColor".equalsIgnoreCase(name)) {
                         setEdgeInSelectionColor(
                             ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
@@ -739,10 +757,6 @@ public class VizModel implements VisualisationModel {
         writer.writeAttribute("value", String.valueOf(isHideNonSelectedEdges()));
         writer.writeEndElement();
 
-        writer.writeStartElement("edgehasunicolor");
-        writer.writeAttribute("value", String.valueOf(isEdgeHasUniColor()));
-        writer.writeEndElement();
-
         writer.writeStartElement("adjustbytext");
         writer.writeAttribute("value", String.valueOf(isAdjustByText()));
         writer.writeEndElement();
@@ -754,10 +768,6 @@ public class VizModel implements VisualisationModel {
         //Colors
         writer.writeStartElement("backgroundcolor");
         writer.writeAttribute("value", ColorUtils.encode(getBackgroundColor()));
-        writer.writeEndElement();
-
-        writer.writeStartElement("edgeunicolor");
-        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(getEdgeUniColor())));
         writer.writeEndElement();
 
         writer.writeStartElement("edgeInSelectionColor");

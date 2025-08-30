@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Font;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.ui.utils.FontUtils;
+import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.openide.util.NbPreferences;
@@ -63,9 +64,8 @@ public class VizConfig {
     public static final String HIGHLIGHT = "VizConfig.defaultLightenNonSelectedAuto";
     public static final String NEIGHBOUR_SELECT = "VizConfig.defaultAutoSelectNeighbor";
     public static final String HIDE_NONSELECTED_EDGES = "VizConfig.defaultHideNonSelectedEdges";
+    public static final String EDGE_COLOR_MODE = "VizConfig.defaultEdgeColorMode";
     public static final String SELECTEDNODE_UNIQUE_COLOR = "VizConfig.defaultHideNonSelectedEdges";
-    public static final String EDGE_HAS_UNIQUE_COLOR = "VizConfig.defaultEdgeHasUniColor";
-    public static final String EDGE_UNIQUE_COLOR = "VizConfig.defaultEdgeUniColor";
     public static final String NODE_LABEL_COLOR = "VizConfig.defaultNodeLabelColor";
     public static final String EDGE_LABEL_COLOR = "VizConfig.defaultEdgeLabelColor";
     public static final String NODE_LABEL_FONT = "VizConfig.defaultNodeLabelFont";
@@ -76,6 +76,7 @@ public class VizConfig {
     public static final String SELECTEDEDGE_OUT_COLOR = "VizConfig.defaultEdgeOutSelectedColor";
     public static final String SELECTEDEDGE_BOTH_COLOR = "VizConfig.defaultEdgeBothSelectedColor";
     public static final String EDGE_SCALE = "VizConfig.defaultEdgeScale";
+    public static final String NODE_SCALE = "VizConfig.defaultNodeScale";
     //Const Prefs
     public static final String ANTIALIASING = "VizConfig.antialiasing";
     public static final String BLENDING = "VizConfig.blending";
@@ -115,10 +116,9 @@ public class VizConfig {
     public static final boolean DEFAULT_SHOW_EDGES = true;
     public static final boolean DEFAULT_HIGHLIGHT = true;
     public static final boolean DEFAULT_NEIGHBOUR_SELECT = true;
+    public static final EdgeColorMode DEFAULT_EDGE_COLOR_MODE = EdgeColorMode.SOURCE;
     public static final boolean DEFAULT_HIDE_NONSELECTED_EDGES = false;
     public static final boolean DEFAULT_SELECTEDNODE_UNIQUE_COLOR = false;
-    public static final boolean DEFAULT_EDGE_HAS_UNIQUE_COLOR = false;
-    public static final Color DEFAULT_EDGE_UNIQUE_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public static final Color DEFAULT_NODE_LABEL_COLOR = new Color(0f, 0f, 0f, 1f);
     public static final Color DEFAULT_EDGE_LABEL_COLOR = new Color(0.5f, 0.5f, 0.5f, 1f);
     public static final Color DEFAULT_DARK_NODE_LABEL_COLOR = new Color(1f, 1f, 1f, 1f);
@@ -157,6 +157,7 @@ public class VizConfig {
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final float DEFAULT_EDGE_SCALE = 2f;
+    public static final float DEFAULT_NODE_SCALE = 1f;
     public static final float DEFAULT_NODE_SIZE_FACTOR = 0.5f;
     public static final float DEFAULT_EDGE_SIZE_FACTOR = 0.5f;
     public static final String DEFAULT_NODE_LABEL_SIZE_MODE = LabelSizeMode.SCALED.name();
@@ -177,16 +178,13 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_LABELS, DEFAULT_EDGE_LABELS);
     protected boolean defaultShowEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_EDGES, DEFAULT_SHOW_EDGES);
-    protected boolean defaultLightenNonSelectedAuto =
+    protected EdgeColorMode defaultEdgeColorMode =
+        EdgeColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(EDGE_COLOR_MODE, DEFAULT_EDGE_COLOR_MODE.name()));    protected boolean defaultLightenNonSelectedAuto =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIGHLIGHT, DEFAULT_HIGHLIGHT);
     protected boolean defaultAutoSelectNeighbor =
         NbPreferences.forModule(VizConfig.class).getBoolean(NEIGHBOUR_SELECT, DEFAULT_NEIGHBOUR_SELECT);
     protected boolean defaultHideNonSelectedEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
-    protected boolean defaultEdgeHasUniColor =
-        NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_HAS_UNIQUE_COLOR, DEFAULT_EDGE_HAS_UNIQUE_COLOR);
-    protected Color defaultEdgeUniColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
     protected Color defaultNodeLabelColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
     protected Color defaultDarkNodeLabelColor = ColorUtils.decode(
@@ -211,6 +209,8 @@ public class VizConfig {
         .get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
     protected float defaultEdgeScale =
         NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
+    protected float defaultNodeScale =
+        NbPreferences.forModule(VizConfig.class).getFloat(NODE_SCALE, DEFAULT_NODE_SCALE);
     protected float getDefaultNodeSizeFactor =
         NbPreferences.forModule(VizConfig.class).getFloat(NODE_SIZE_FACTOR, DEFAULT_NODE_SIZE_FACTOR);
     protected float getDefaultEdgeSizeFactor =
@@ -319,20 +319,12 @@ public class VizConfig {
         return defaultCameraTarget;
     }
 
-    public boolean isDefaultEdgeHasUniColor() {
-        return defaultEdgeHasUniColor;
-    }
-
     public Color getDefaultEdgeLabelColor() {
         return defaultEdgeLabelColor;
     }
 
     public Font getDefaultEdgeLabelFont() {
         return defaultEdgeLabelFont;
-    }
-
-    public Color getDefaultEdgeUniColor() {
-        return defaultEdgeUniColor;
     }
 
     public boolean isDefaultHideNonSelectedEdges() {
@@ -542,5 +534,13 @@ public class VizConfig {
 
     public float getDefaultEdgeScale() {
         return defaultEdgeScale;
+    }
+
+    public float getDefaultNodeScale() {
+        return defaultNodeScale;
+    }
+
+    public EdgeColorMode getDefaultEdgeColorMode() {
+        return defaultEdgeColorMode;
     }
 }

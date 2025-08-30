@@ -62,6 +62,11 @@ public class GraphSelectionImpl implements GraphSelection {
 
     @Override
     public boolean isNodeSelected(Node node) {
+        return nodes.contains(node);
+    }
+
+    @Override
+    public boolean isNodeOrNeighbourSelected(Node node) {
         return nodesWithNeighbours.contains(node);
     }
 

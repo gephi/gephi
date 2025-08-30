@@ -52,6 +52,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
+import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.ScreenshotController;
@@ -148,21 +149,15 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
+    public void setNodeScale(float nodeScale) {
+        final VizModel model = getModel();
+        model.setNodeScale(nodeScale);
+    }
+
+    @Override
     public void setShowEdges(boolean showEdges) {
         final VizModel model = getModel();
         model.setShowEdges(showEdges);
-    }
-
-    @Override
-    public void setEdgeHasUniColor(boolean edgeHasUniColor) {
-        final VizModel model = getModel();
-        model.setEdgeHasUniColor(edgeHasUniColor);
-    }
-
-    @Override
-    public void setEdgeUniColor(Color edgeUniColor) {
-        final VizModel model = getModel();
-        model.setEdgeUniColor(VizController.toColorArray(edgeUniColor));
     }
 
     private static float[] toColorArray(Color color) {
@@ -180,6 +175,12 @@ public class VizController implements VisualizationController, Controller<VizMod
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
         final VizModel model = getModel();
         model.setLightenNonSelectedAuto(lightenNonSelectedAuto);
+    }
+
+    @Override
+    public void setEdgeColorMode(EdgeColorMode mode) {
+        final VizModel model = getModel();
+        model.setEdgeColorMode(mode);
     }
 
     @Override
@@ -210,6 +211,12 @@ public class VizController implements VisualizationController, Controller<VizMod
     public void setEdgeScale(float edgeScale) {
         final VizModel model = getModel();
         model.setEdgeScale(edgeScale);
+    }
+
+    @Override
+    public void setUseEdgeWeight(boolean useEdgeWeight) {
+        final VizModel model = getModel();
+        model.setUseEdgeWeight(useEdgeWeight);
     }
 
     // TEXT
