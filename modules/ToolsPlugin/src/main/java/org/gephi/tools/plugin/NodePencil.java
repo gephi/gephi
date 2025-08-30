@@ -95,7 +95,7 @@ public class NodePencil implements Tool {
         listeners = new ToolEventListener[1];
         listeners[0] = new MouseClickEventListener() {
             @Override
-            public void mouseClick(int[] positionViewport, float[] position3d) {
+            public boolean mouseClick(int[] positionViewport, float[] position3d) {
                 color = nodePencilPanel.getColor();
                 size = nodePencilPanel.getNodeSize();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
@@ -107,6 +107,8 @@ public class NodePencil implements Tool {
                 node.setSize(size);
                 node.setColor(color);
                 graph.addNode(node);
+
+                return true;
             }
         };
         return listeners;

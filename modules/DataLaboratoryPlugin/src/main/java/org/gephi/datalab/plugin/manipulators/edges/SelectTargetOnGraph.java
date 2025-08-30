@@ -46,8 +46,9 @@ import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -66,7 +67,8 @@ public class SelectTargetOnGraph extends BasicEdgesManipulator {
     @Override
     public void execute() {
         Node source = clickedEdge.getTarget();
-        VizController.getInstance().getSelectionManager().centerOnNode(source);
+        VisualizationController vc = Lookup.getDefault().lookup(VisualizationController.class);
+        vc.centerOnNode(source);
     }
 
     @Override

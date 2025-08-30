@@ -42,48 +42,42 @@
 
 package org.gephi.visualization.text;
 
-import javax.swing.ImageIcon;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.GraphDrawable;
-import org.gephi.visualization.model.node.NodeModel;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
-
 /**
  * @author Mathieu Bastian
  */
-public class FixedSizeMode implements SizeMode {
-
-    //private static float FACTOR_3D = 800f;
-    private GraphDrawable drawable;
-
-    @Override
-    public void init() {
-        drawable = VizController.getInstance().getDrawable();
-    }
-
-    @Override
-    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
-        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
-    }
-
-    @Override
-    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor / drawable.getViewportWidth() * drawable.getCameraLocation()[2];
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(FixedSizeMode.class, "FixedSizeMode.name");
-    }
-
-    @Override
-    public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/FixedSizeMode.svg", false);
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
+public class FixedSizeMode {
+//    implements SizeMode {
+//
+//    //private static float FACTOR_3D = 800f;
+//    private GraphDrawable drawable;
+//
+//    @Override
+//    public void init() {
+//        drawable = VizController.getInstance().getDrawable();
+//    }
+//
+//    @Override
+//    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
+//        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
+//    }
+//
+//    @Override
+//    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
+//        return sizeFactor / drawable.getViewportWidth() * drawable.getCameraLocation()[2];
+//    }
+//
+//    @Override
+//    public String getName() {
+//        return NbBundle.getMessage(FixedSizeMode.class, "FixedSizeMode.name");
+//    }
+//
+//    @Override
+//    public ImageIcon getIcon() {
+//        return ImageUtilities.loadImageIcon("VisualizationImpl/FixedSizeMode.svg", false);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return getName();
+//    }
 }

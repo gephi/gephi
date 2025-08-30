@@ -82,4 +82,8 @@ public interface GraphController {
         return Configuration.builder().timeRepresentation(TimeRepresentation.INTERVAL)
             .enableSpatialIndex(true);
     }
+
+    default GraphModel newGraphModel() {
+        return GraphModel.Factory.newInstance(getDefaultConfigurationBuilder().build());
+    }
 }

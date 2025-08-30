@@ -55,6 +55,7 @@ import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.project.api.Workspace;
+import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -71,7 +72,8 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Workspace workspace = WorkspaceHelper.getWorkspace(graph);
-        Column[] nodeColumns = workspace != null && vizController != null ? vizController.getNodeTextColumns(workspace) : null;
+        VisualisationModel vizModel = vizController.getModel(workspace);
+        Column[] nodeColumns = vizModel.getNodeLabelColumns();
 
         List<Item> items = new ArrayList<>();
         NodeIterable nodeIterable = graph.getNodes();

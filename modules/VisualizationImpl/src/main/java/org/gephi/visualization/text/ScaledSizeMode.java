@@ -42,44 +42,43 @@
 
 package org.gephi.visualization.text;
 
-import javax.swing.ImageIcon;
-import org.gephi.visualization.model.node.NodeModel;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class ScaledSizeMode implements SizeMode {
+public class ScaledSizeMode {
 
-    private static float FACTOR_2D = 2000f;
-
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
-        return FACTOR_2D * sizeFactor / model.getCameraDistance();
-    }
-
-    @Override
-    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(ScaledSizeMode.class, "ScaledSizeMode.name");
-    }
-
-    @Override
-    public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.svg", false);
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
+//    implements
+//} SizeMode {
+//
+//    private static float FACTOR_2D = 2000f;
+//
+//    @Override
+//    public void init() {
+//    }
+//
+//    @Override
+//    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
+//        return FACTOR_2D * sizeFactor / model.getCameraDistance();
+//    }
+//
+//    @Override
+//    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
+//        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
+//    }
+//
+//    @Override
+//    public String getName() {
+//        return NbBundle.getMessage(ScaledSizeMode.class, "ScaledSizeMode.name");
+//    }
+//
+//    @Override
+//    public ImageIcon getIcon() {
+//        return ImageUtilities.loadImageIcon("VisualizationImpl/ScaledSizeMode.svg", false);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return getName();
+//    }
 }

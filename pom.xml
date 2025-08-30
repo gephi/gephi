@@ -266,6 +266,8 @@
         <gephi.jsign.version>6.0</gephi.jsign.version>
 
         <gephi.checkstyle.version>10.17.0</gephi.checkstyle.version>
+
+        <gephi.jcp-maven-plugin.version>7.1.2</gephi.jcp-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
@@ -547,6 +549,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>visualization-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>tools-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -698,11 +705,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>appearance-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-tools</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -930,6 +932,11 @@
                     <groupId>net.jsign</groupId>
                     <artifactId>jsign-maven-plugin</artifactId>
                     <version>${gephi.jsign.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.igormaznitsa</groupId>
+                    <artifactId>jcp</artifactId>
+                    <version>${gephi.jcp-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1375,7 +1382,6 @@
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopStatistics</module>
-        <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
@@ -1412,6 +1418,7 @@
         <module>modules/Utils</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
+        <module>modules/VisualizationEngine</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>

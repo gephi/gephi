@@ -276,7 +276,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void deactivateAll() {
-        dataTablesObservers.destroy();
+        if (dataTablesObservers != null) {
+            dataTablesObservers.destroy();
+        }
 
         graphModel = null;
         dataTablesModel = null;
