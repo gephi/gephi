@@ -699,26 +699,19 @@ public class VizEngine<R extends RenderingTarget, I> {
         return dest.set(worldCoordinates.x, worldCoordinates.y);
     }
 
-    public Vector2f worldCoordinatesToScreenCoordinates(float x, float y) {
-        return worldCoordinatesToScreenCoordinates(x, y, new Vector2f());
-    }
+    public Vector2f worldCoordinatesToScreenCoordinates(float x, float y, Vector3f tempNDC, Vector2f dest) {
+        // 1) world -> NDC
+        final Vector3f ndc = new Vector3f();
+        modelViewProjectionMatrix.transformProject(x, y, 0f, ndc); // ndc in [-1, 1]
 
-    public Vector2f worldCoordinatesToScreenCoordinates(float x, float y, Vector2f dest) {
-        final Vector3f screenCoordinates = new Vector3f();
-        modelViewProjectionMatrix.transformProject(x, y, 0, screenCoordinates);
+        // 2) NDC -> pixels (origin at top-left)
+        final float halfW = width  / 2f;
+        final float halfH = height / 2f;
 
-        return dest.set(screenCoordinates.x, screenCoordinates.y);
-    }
+        final float sx = halfW + ndc.x * halfW;   // map [-1,1] -> [0,width]
+        final float sy = halfH + ndc.y * halfH;   // map [-1,1] -> [0,]
 
-    public Vector2f worldCoordinatesToScreenCoordinates(Vector2fc worldCoordinates) {
-        return worldCoordinatesToScreenCoordinates(worldCoordinates, new Vector2f());
-    }
-
-    public Vector2f worldCoordinatesToScreenCoordinates(Vector2fc worldCoordinates, Vector2f dest) {
-        final Vector3f screenCoordinates = new Vector3f();
-        modelViewProjectionMatrix.transformProject(worldCoordinates.x(), worldCoordinates.y(), 0, screenCoordinates);
-
-        return dest.set(screenCoordinates.x, screenCoordinates.y);
+        return dest.set(sx, sy);
     }
 
     private void processInputEvents() {
