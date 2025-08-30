@@ -42,6 +42,9 @@ public class Constants {
     public static final String UNIFORM_NAME_COLOR_MULTIPLIER = "colorMultiplier";
     public static final String UNIFORM_NAME_NODE_SCALE = "nodeScale";
 
+    public static final String UNIFORM_NAME_GLOBAL_TIME = "globalTime";
+    public static final String UNIFORM_NAME_SELECTION_TIME = "selectionTime";
+    public static final String UNIFORM_NAME_SELECTION_MODE = "SelectionMode";
     //Rendering order:
     public static final int RENDERING_ORDER_NODES = 100;
     public static final int RENDERING_ORDER_EDGES = 50;

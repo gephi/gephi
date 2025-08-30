@@ -16,6 +16,9 @@ uniform vec4 backgroundColor;
 uniform float colorLightenFactor;
 //#endif
 //#endif
+uniform float globalTime;
+uniform float selectedTime;
+uniform int selectedMode;
 
 attribute vec2 vert;
 attribute vec2 position;
@@ -39,7 +42,7 @@ void main() {
     color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor);
     //#endif
     //#else
-    color.rgb = color.rgb * colorMultiplier;
+    color.rgb = color.rgb * colorMultiplier * abs(sin(globalTime*4.0));
     //#endif
 
     fragColor = color;
