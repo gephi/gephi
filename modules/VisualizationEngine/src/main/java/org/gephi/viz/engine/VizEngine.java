@@ -78,10 +78,10 @@ public class VizEngine<R extends RenderingTarget, I> {
     //World updaters:
     private final Set<WorldUpdater<R>> allUpdaters = new LinkedHashSet<>();
     private final List<WorldUpdater<R>> updatersPipeline = new ArrayList<>();
-    private final ExecutorService updaterManagerThread;
-    private final ExecutorService updatersThreadPool;
+    private ExecutorService updaterManagerThread;
+    private ExecutorService updatersThreadPool;
     private final WorldUpdaterExecutionMode worldUpdatersExecutionMode =
-        WorldUpdaterExecutionMode.CONCURRENT_SYNCHRONOUS;
+        WorldUpdaterExecutionMode.SINGLE_THREAD;
 
     //Input listeners:
     private final List<I> eventsQueue = Collections.synchronizedList(new ArrayList<>());
@@ -104,24 +104,6 @@ public class VizEngine<R extends RenderingTarget, I> {
         this.lookup = new AbstractLookup(instanceContent);
         this.renderingTarget = Objects.requireNonNull(renderingTarget, "renderingTarget mandatory");
         loadModelViewProjection();
-
-        // Setup world updater threads
-        if (worldUpdatersExecutionMode.isConcurrent()) {
-            final int numThreads = Math.max(Math.min(updatersPipeline.size(), 4), 1);
-            updaterManagerThread = Executors.newSingleThreadExecutor(
-                runnable -> new Thread(runnable, "World Updater Manager Thread"));
-            updatersThreadPool = Executors.newFixedThreadPool(numThreads, new ThreadFactory() {
-                private int id = 1;
-
-                @Override
-                public Thread newThread(Runnable runnable) {
-                    return new Thread(runnable, "World Updater " + id++);
-                }
-            });
-        } else {
-            updaterManagerThread = null;
-            updatersThreadPool = null;
-        }
     }
 
     private void setup() {
@@ -404,6 +386,24 @@ public class VizEngine<R extends RenderingTarget, I> {
             renderer.init(renderingTarget);
         });
 
+        // Setup world updater threads
+        if (worldUpdatersExecutionMode.isConcurrent()) {
+            final int numThreads = Math.max(Math.min(updatersPipeline.size(), 4), 1);
+            updaterManagerThread = Executors.newSingleThreadExecutor(
+                runnable -> new Thread(runnable, "World Updater Manager Thread"));
+            updatersThreadPool = Executors.newFixedThreadPool(numThreads, new ThreadFactory() {
+                private int id = 1;
+
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    return new Thread(runnable, "World Updater " + id++);
+                }
+            });
+        } else {
+            updaterManagerThread = null;
+            updatersThreadPool = null;
+        }
+
         loadModelViewProjection();
     }
 
@@ -562,21 +562,20 @@ public class VizEngine<R extends RenderingTarget, I> {
             }
 
             final VizEngineModel localEngineModel = this.engineModel;
-            allUpdatersCompletableFuture = updaterManagerThread.submit(new Runnable() {
-                @Override
-                public void run() {
-                    localEngineModel.getGraphModel().getGraph().readLock();
+            allUpdatersCompletableFuture = updaterManagerThread.submit(() -> {
+                System.out.println("Read open: "+localEngineModel.getGraphModel().getGraph().getLock().getReadHoldCount()+" "+localEngineModel);
+                localEngineModel.getGraphModel().getGraph().readLock();
 
-                    // Create a world update future for each updated
-                    final List<CompletableFuture<WorldUpdater<R>>> futures = new ArrayList<>();
-                    updatersPipeline.forEach(
-                        updater -> futures.add(completableFutureOfUpdater(updater, localEngineModel)));
+                // Create a world update future for each updated
+                final List<CompletableFuture<WorldUpdater<R>>> futures = new ArrayList<>();
+                updatersPipeline.forEach(
+                    updater -> futures.add(completableFutureOfUpdater(updater, localEngineModel)));
 
-                    // Wait until all world updates are done
-                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+                // Wait until all world updates are done
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
-                    localEngineModel.getGraphModel().getGraph().readUnlock();
-                }
+                localEngineModel.getGraphModel().getGraph().readUnlock();
+                System.out.println("Read close: "+localEngineModel.getGraphModel().getGraph().getLock().getReadHoldCount());
             });
 
             lastWorldUpdateMillis = TimeUtils.getTimeMillis();

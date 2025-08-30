@@ -175,7 +175,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void close(Workspace workspace) {
-                deactivateWorkspaceVizEngine(workspace);
             }
 
             @Override
