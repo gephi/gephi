@@ -104,7 +104,6 @@ public class VizEngine<R extends RenderingTarget, I> {
     private final GraphRenderingOptionsImpl renderingOptions;
 
     //Settings:
-    private final float[] backgroundColor = new float[] {1, 1, 1, 1};
     private int maxWorldUpdatesPerSecond = DEFAULT_MAX_WORLD_UPDATES_PER_SECOND;
 
     //Lookup for communication between components:
@@ -639,10 +638,11 @@ public class VizEngine<R extends RenderingTarget, I> {
     }
 
     public void getBackgroundColor(float[] backgroundColorFloats) {
-        System.arraycopy(this.backgroundColor, 0, backgroundColorFloats, 0, 4);
+        System.arraycopy(this.renderingOptions.getBackgroundColor(), 0, backgroundColorFloats, 0, 4);
     }
 
     public float[] getBackgroundColor() {
+        float[] backgroundColor = this.renderingOptions.getBackgroundColor();
         return Arrays.copyOf(backgroundColor, backgroundColor.length);
     }
 
@@ -653,12 +653,12 @@ public class VizEngine<R extends RenderingTarget, I> {
         setBackgroundColor(backgroundColorComponents);
     }
 
-    public void setBackgroundColor(float[] color) {
-        if (color.length != 4) {
+    public void setBackgroundColor(float[] backgroundColor) {
+        if (backgroundColor.length != 4) {
             throw new IllegalArgumentException("Expected 4 float RGBA color");
         }
 
-        System.arraycopy(color, 0, backgroundColor, 0, 4);
+        this.renderingOptions.setBackgroundColor(Arrays.copyOf(backgroundColor, backgroundColor.length));
     }
 
     public int getMaxWorldUpdatesPerSecond() {

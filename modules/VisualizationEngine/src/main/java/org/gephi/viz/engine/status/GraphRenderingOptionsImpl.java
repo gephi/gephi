@@ -11,6 +11,9 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private boolean showNodeLabels = DEFAULT_SHOW_NODE_LABELS;
     private boolean showEdgeLabels = DEFAULT_SHOW_EDGE_LABELS;
 
+    //Global
+    private float[] backgroundColor = DEFAULT_BACKGROUND_COLOR;
+
     //Edges
     private float edgeScale = DEFAULT_EDGE_SCALE;
     private boolean edgeSelectionColor = DEFAULT_ENABLE_EDGE_SELECTION_COLOR;
@@ -28,6 +31,16 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private boolean hideNonSelectedEdges = DEFAULT_HIDE_NON_SELECTED_EDGES;
     private boolean lightenNonSelected = DEFAULT_LIGHTEN_NON_SELECTED;
     private float lightenNonSelectedFactor = DEFAULT_LIGHTEN_NON_SELECTED_FACTOR;
+
+    @Override
+    public float[] getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    @Override
+    public void setBackgroundColor(float[] backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
 
     @Override
     public float getEdgeScale() {
