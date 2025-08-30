@@ -211,7 +211,8 @@ public abstract class AbstractNodeData {
         return instanceCount;
     }
 
-    public abstract void update(VizEngine engine);
+    public abstract void update(GraphIndex graphIndex, GraphSelection graphSelection,
+                                GraphRenderingOptions renderingOptions, Rect2D viewBoundaries);
 
     protected void updateData(final float zoom,
                               final Rect2D viewBoundaries,

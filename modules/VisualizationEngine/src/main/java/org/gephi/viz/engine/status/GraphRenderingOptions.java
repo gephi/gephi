@@ -23,6 +23,7 @@ public interface GraphRenderingOptions {
 
     //Global
     float[] DEFAULT_BACKGROUND_COLOR = new float[] {1, 1, 1, 1};
+    float DEFAULT_ZOOM = 0.3f;
 
     //Nodes:
     float DEFAULT_NODE_SCALE = 1f;
@@ -45,6 +46,8 @@ public interface GraphRenderingOptions {
     float[] getBackgroundColor();
 
     void setBackgroundColor(float[] backgroundColor);
+
+    float getZoom();
 
     float getEdgeScale();
 

@@ -59,6 +59,7 @@ import org.gephi.visualization.api.ScreenshotController;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
+import org.gephi.visualization.component.VizEngineGraphCanvasManager;
 import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.visualization.screenshot.ScreenshotControllerImpl;
 import org.gephi.viz.engine.VizEngine;
@@ -77,12 +78,14 @@ public class VizController implements VisualizationController, Controller<VizMod
 
     //Architecture
     protected final List<VisualizationPropertyChangeListener> listeners = new ArrayList<>();
+    private final VizEngineGraphCanvasManager canvasManager;
     private final StandardVizEventManager vizEventManager;
     private final ScreenshotControllerImpl screenshotMaker;
 
     public VizController() {
         vizEventManager = new StandardVizEventManager();
         screenshotMaker = new ScreenshotControllerImpl();
+        canvasManager = new VizEngineGraphCanvasManager(this);
     }
 
     @Override
@@ -108,6 +111,10 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public ScreenshotController getScreenshotController() {
         return null;
+    }
+
+    public VizEngineGraphCanvasManager getCanvasManager() {
+        return canvasManager;
     }
 
     @Override
@@ -479,7 +486,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             model.getSelectionModel().setCustomSelection(false);
             if (model.getSelectionModel().isRectangleSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
-            } else if(model.getSelectionModel().isNodeSelection()) {
+            } else if (model.getSelectionModel().isNodeSelection()) {
                 if (model.getSelectionModel().isSingleNodeSelection()) {
                     setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
                 } else {

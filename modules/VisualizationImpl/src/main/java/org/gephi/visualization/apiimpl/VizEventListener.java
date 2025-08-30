@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.apiimpl;
 
-import java.util.EventListener;
 import org.gephi.visualization.api.VisualizationEventListener;
 
 /**

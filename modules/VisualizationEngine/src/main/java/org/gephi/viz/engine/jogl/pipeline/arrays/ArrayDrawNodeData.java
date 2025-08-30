@@ -7,9 +7,13 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
 
 /**
  *
@@ -26,13 +30,13 @@ public class ArrayDrawNodeData extends AbstractNodeData {
     }
 
     @Override
-    public void update(VizEngine engine) {
-        updateData(
-            engine.getZoom(),
-            engine.getViewBoundaries(),
-            engine.getGraphIndex(),
-            engine.getRenderingOptions(),
-            engine.getGraphSelection()
+    public void update(GraphIndex graphIndex, GraphSelection graphSelection, GraphRenderingOptions renderingOptions,
+                       Rect2D viewBoundaries) {
+        updateData(renderingOptions.getZoom(),
+            viewBoundaries,
+            graphIndex,
+            renderingOptions,
+            graphSelection
         );
     }
 

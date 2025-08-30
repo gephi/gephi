@@ -44,10 +44,10 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
         //Edge Color mode
         edgeColorModeButton = new JPopupButton();
-        for(EdgeColorMode mode : EdgeColorMode.values()) {
+        for (EdgeColorMode mode : EdgeColorMode.values()) {
             edgeColorModeButton.addItem(mode,
                 ImageUtilities.loadImageIcon("VisualizationImpl/EdgeColorMode_" + mode.name() + ".svg", false),
-                NbBundle.getMessage(EdgeGroup.class, "EdgeColorMode."+mode.name().toLowerCase()+".name"));
+                NbBundle.getMessage(EdgeGroup.class, "EdgeColorMode." + mode.name().toLowerCase() + ".name"));
         }
         edgeColorModeButton.setChangeListener(e -> {
             vizController.setEdgeColorMode((EdgeColorMode) e.getSource());

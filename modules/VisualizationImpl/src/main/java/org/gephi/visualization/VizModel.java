@@ -42,17 +42,15 @@
 
 package org.gephi.visualization;
 
+import com.jogamp.newt.event.NEWTEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.JComponent;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -60,20 +58,19 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
-import org.gephi.visualization.component.VizEngineGraphCanvasManager;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.screenshot.ScreenshotModelImpl;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.joml.Vector2fc;
-import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.apiimpl.VizConfig;
 import org.openide.util.Lookup;
 
 /**
@@ -84,12 +81,8 @@ public class VizModel implements VisualisationModel {
     private final VizController vizController;
     private final Workspace workspace;
     private final GraphModel graphModel;
-    private final VizEngineGraphCanvasManager canvasManager;
 
     protected final VizConfig config;
-
-    //Listener
-    private GraphRenderingOptions renderingOptions;
 
     //Global
     private float zoom;
@@ -132,17 +125,15 @@ public class VizModel implements VisualisationModel {
     // Selection
     private final SelectionModelImpl selectionModel;
 
-
     public VizModel(VizController controller, Workspace workspace) {
-        // Ensure we have some non-null rendering options until the viz-engine is actually initialized:
-        this.renderingOptions = new GraphRenderingOptionsImpl();
-
         this.vizController = controller;
         this.workspace = workspace;
         this.config = new VizConfig();
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.canvasManager = new VizEngineGraphCanvasManager(workspace, graphModel);
         this.selectionModel = new SelectionModelImpl(this, config);
+
+        // Initialize default values
+        defaultValues();
     }
 
     private void defaultValues() {
@@ -189,8 +180,25 @@ public class VizModel implements VisualisationModel {
         setEdgeLabelColumns(new Column[] {this.graphModel.getEdgeTable().getColumn("label")});
     }
 
-    public void destroy(JComponent component) {
-        canvasManager.destroy(component);
+    public GraphRenderingOptions toGraphRenderingOptions() {
+        GraphRenderingOptionsImpl options = new GraphRenderingOptionsImpl();
+        options.setAutoSelectNeighbours(isAutoSelectNeighbors());
+        options.setBackgroundColor(getBackgroundColor());
+        options.setEdgeBothSelectionColor(getEdgeBothSelectionColor());
+        options.setEdgeInSelectionColor(getEdgeInSelectionColor());
+        options.setEdgeOutSelectionColor(getEdgeOutSelectionColor());
+        options.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.valueOf(getEdgeColorMode().name()));
+        options.setEdgeScale(getEdgeScale());
+        options.setEdgeSelectionColor(isEdgeSelectionColor());
+        options.setEdgeWeightEnabled(isUseEdgeWeight());
+        options.setHideNonSelectedEdges(isHideNonSelectedEdges());
+        options.setLightenNonSelected(isLightenNonSelectedAuto());
+        options.setLightenNonSelectedFactor(getLightenNonSelectedFactor());
+        options.setNodeScale(getNodeScale());
+        options.setShowEdges(isShowEdges());
+        options.setShowEdgeLabels(isShowEdgeLabels());
+        options.setShowNodeLabels(isShowNodeLabels());
+        return options;
     }
 
     public SelectionModelImpl getSelectionModel() {
@@ -207,34 +215,33 @@ public class VizModel implements VisualisationModel {
     }
 
     public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
-        return canvasManager.getEngine();
+        return vizController.getCanvasManager().getEngine();
     }
 
     private Optional<GraphRenderingOptions> getRenderingOptions() {
-        return canvasManager.getEngine().map(VizEngine::getRenderingOptions);
+        return vizController.getCanvasManager().getEngine().map(VizEngine::getRenderingOptions);
     }
 
-    private boolean loadEngine() {
-        VizEngine<JOGLRenderingTarget, NEWTEvent> engine = canvasManager.getEngine().orElse(null);
-        if (engine == null) {
-            return false; // Engine still not ready in the workspace
-        }
-        this.renderingOptions = engine.getRenderingOptions();
-
-        defaultValues();
-
-        return true;
-    }
-
-    public synchronized void init(JComponent component) {
-        if (canvasManager.isInitialized()) {
-            return;
-        }
-
-        this.renderingOptions = canvasManager.init(component).getRenderingOptions();
-        defaultValues();
-    }
-
+//    private boolean loadEngine() {
+//        VizEngine<JOGLRenderingTarget, NEWTEvent> engine = canvasManager.getEngine().orElse(null);
+//        if (engine == null) {
+//            return false; // Engine still not ready in the workspace
+//        }
+//        this.renderingOptions = engine.getRenderingOptions();
+//
+//        defaultValues();
+//
+//        return true;
+//    }
+//
+//    public synchronized void init(JComponent component) {
+//        if (canvasManager.isInitialized()) {
+//            return;
+//        }
+//
+//        this.renderingOptions = canvasManager.init(component).getRenderingOptions();
+//        defaultValues();
+//    }
 
 
     @Override
@@ -310,7 +317,7 @@ public class VizModel implements VisualisationModel {
         if (oldValue != edgeColorMode) {
             this.edgeColorMode = edgeColorMode;
             getRenderingOptions().ifPresent(options -> {
-                switch(edgeColorMode) {
+                switch (edgeColorMode) {
                     case SELF:
                         options.setEdgeColorMode(GraphRenderingOptions.EdgeColorMode.SELF);
                         break;
@@ -358,6 +365,10 @@ public class VizModel implements VisualisationModel {
             firePropertyChange("lightenNonSelectedAuto", oldValue, lightenNonSelectedAuto);
         }
         firePropertyChange("lightenNonSelectedAuto", oldValue, lightenNonSelectedAuto);
+    }
+
+    public float getLightenNonSelectedFactor() {
+        return lightenNonSelectedFactor;
     }
 
     public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
@@ -533,7 +544,7 @@ public class VizModel implements VisualisationModel {
 
     public void setNodeLabelFont(Font nodeLabelFont) {
         Font oldValue = this.nodeLabelFont;
-        if (oldValue != nodeLabelFont) {    
+        if (oldValue != nodeLabelFont) {
             this.nodeLabelFont = nodeLabelFont;
             firePropertyChange("nodeLabelFont", oldValue, nodeLabelFont);
         }

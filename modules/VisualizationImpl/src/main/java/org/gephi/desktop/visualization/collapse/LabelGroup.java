@@ -4,13 +4,11 @@ import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
@@ -34,7 +32,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
     private final JPopupButton labelColorModeButton;
     private final JButton fontButton;
     private final JSlider fontSizeSlider;
-    private final ColorChooser colorChooser;
     private final JButton attributesButton;
 
 
@@ -100,19 +97,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         fontSizeSlider.setPreferredSize(new Dimension(100, 20));
         fontSizeSlider.setMaximumSize(new Dimension(100, 20));
 
-        //Color
-        colorChooser = new ColorChooser();
-        colorChooser.setToolTipText(NbBundle.getMessage(LabelGroup.class, "VizToolbar.Labels.defaultColor"));
-        colorChooser.setPreferredSize(new Dimension(16, 16));
-        colorChooser.setMaximumSize(new Dimension(16, 16));
-        colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    vizController.setNodeLabelColor(colorChooser.getColor());
-                }
-            }
-        });
 
         //Attributes
         attributesButton = new JButton();
@@ -140,7 +124,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         labelColorModeButton.setSelectedItem(vizModel.getNodeLabelColorMode());
         fontButton.setText(vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
         fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100));
-        colorChooser.setColor(vizModel.getNodeLabelColor());
 
         if (vizModel.isShowNodeLabels()) {
             // Toolbar
@@ -177,10 +160,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
             if (((int) (vizModel.getNodeLabelScale() * 100f)) != fontSizeSlider.getValue()) {
                 fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100f));
             }
-        } else if (evt.getPropertyName().equals("nodeLabelColor")) {
-            if (!vizModel.getNodeLabelColor().equals(colorChooser.getColor())) {
-                colorChooser.setColor(vizModel.getNodeLabelColor());
-            }
         }
     }
 
@@ -204,7 +183,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
             labelColorModeButton,
             fontButton,
             fontSizeSlider,
-            colorChooser,
             attributesButton
         };
     }

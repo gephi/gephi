@@ -155,7 +155,8 @@ public class VizConfig {
     protected boolean defaultShowEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_EDGES, DEFAULT_SHOW_EDGES);
     protected EdgeColorMode defaultEdgeColorMode =
-        EdgeColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(EDGE_COLOR_MODE, DEFAULT_EDGE_COLOR_MODE.name()));
+        EdgeColorMode.valueOf(
+            NbPreferences.forModule(VizConfig.class).get(EDGE_COLOR_MODE, DEFAULT_EDGE_COLOR_MODE.name()));
     protected boolean defaultLightenNonSelectedAuto =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIGHLIGHT, DEFAULT_HIGHLIGHT);
     protected float defaultLightenNonSelectedFactor =
@@ -169,7 +170,8 @@ public class VizConfig {
     protected Font defaultEdgeLabelFont = Font.decode(
         NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_FONT, FontUtils.encode(DEFAULT_EDGE_LABEL_FONT)));
     protected boolean defaultHideNonSelectedNodeLabels =
-        NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_NODE_LABELS, DEFAULT_HIDE_NONSELECTED_NODE_LABELS);
+        NbPreferences.forModule(VizConfig.class)
+            .getBoolean(HIDE_NONSELECTED_NODE_LABELS, DEFAULT_HIDE_NONSELECTED_NODE_LABELS);
     protected boolean defaultEdgeSelectionColor =
         NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDEDGE_HAS_COLOR, DEFAULT_SELECTEDEDGE_HAS_COLOR);
     protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)

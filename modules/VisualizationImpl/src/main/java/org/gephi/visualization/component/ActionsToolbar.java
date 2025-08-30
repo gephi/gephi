@@ -57,7 +57,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
