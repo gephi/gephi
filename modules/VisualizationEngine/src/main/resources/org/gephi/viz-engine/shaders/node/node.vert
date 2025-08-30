@@ -44,17 +44,12 @@ void main() {
     //#else
     float colorLightenFactorEffective = colorLightenFactor;
     if(selectionMode==2) {
-        colorLightenFactorEffective*= .5-exp(-5.*animationTime);
-        color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactorEffective);
-    }
-    else if(selectionMode==1) {
+        colorLightenFactorEffective*= 1.-exp(-4.*animationTime);
 
-        color.rgb = color.rgb*abs(sin(animationTime));
+    } else {
+        color.rgb=vec3(1.,0.,.0);
     }
-    else if(selectionMode==0) {
-        color.rgb = color.rgb;
-    }
-
+    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactorEffective);
 
     //#endif
     //#else
