@@ -119,7 +119,7 @@ public class VizModel implements VisualisationModel {
     //Edge Labels
     private boolean showEdgeLabels;
     private Font edgeLabelFont;
-    private float edgeLabelSize;
+    private float edgeLabelScale;
     private Column[] edgeLabelColumns = new Column[0];
 
     // Selection
@@ -139,45 +139,45 @@ public class VizModel implements VisualisationModel {
     private void defaultValues() {
         //Global
         if (UIUtils.isDarkLookAndFeel()) {
-            setBackgroundColor(config.getDefaultDarkBackgroundColor());
+            this.backgroundColor = config.getDefaultDarkBackgroundColor();
         } else {
-            setBackgroundColor(config.getDefaultBackgroundColor());
+            this.backgroundColor = config.getDefaultBackgroundColor();
         }
-        setZoom(config.getDefaultZoom());
+        this.zoom = config.getDefaultZoom();
 
         //Edges
-        setShowEdges(config.isDefaultShowEdges());
-        setEdgeScale(config.getDefaultEdgeScale());
-        setEdgeSelectionColor(config.isDefaultEdgeSelectionColor());
-        setEdgeInSelectionColor(config.getDefaultEdgeInSelectedColor());
-        setEdgeOutSelectionColor(config.getDefaultEdgeOutSelectedColor());
-        setEdgeBothSelectionColor(config.getDefaultEdgeBothSelectedColor());
-        setEdgeColorMode(config.getDefaultEdgeColorMode());
-        setUseEdgeWeight(config.isDefaultUseEdgeWeight());
+        this.showEdges = config.isDefaultShowEdges();
+        this.edgeScale = config.getDefaultEdgeScale();
+        this.edgeSelectionColor = config.isDefaultEdgeSelectionColor();
+        this.edgeInSelectionColor = config.getDefaultEdgeInSelectedColor();
+        this.edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor();
+        this.edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor();
+        this.edgeColorMode = config.getDefaultEdgeColorMode();
+        this.edgeWeightEnabled = config.isDefaultUseEdgeWeight();
 
         //Nodes
-        setNodeScale(config.getDefaultNodeScale());
+        this.nodeScale = config.getDefaultNodeScale();
 
         //Selection
-        setAutoSelectNeighbors(config.isDefaultAutoSelectNeighbor());
-        setHideNonSelectedEdges(config.isDefaultHideNonSelectedEdges());
-        setLightenNonSelectedAuto(config.isDefaultLightenNonSelectedAuto());
-        setLightenNonSelectedFactor(config.getDefaultLightenNonSelectedFactor());
+        this.autoSelectNeighbours = config.isDefaultAutoSelectNeighbor();
+        this.hideNonSelectedEdges = config.isDefaultHideNonSelectedEdges();
+        this.lightenNonSelected = config.isDefaultLightenNonSelectedAuto();
+        this.lightenNonSelectedFactor = config.getDefaultLightenNonSelectedFactor();
 
         //Node Labels
-        setShowNodeLabels(config.isDefaultShowNodeLabels());
-        setNodeLabelColorMode(config.getDefaultNodeLabelColorMode());
-        setNodeLabelSizeMode(config.getDefaultNodeLabelSizeMode());
-        setNodeLabelFont(config.getDefaultNodeLabelFont());
-        setNodeLabelScale(config.getDefaultNodeLabelScale());
-        setHideNonSelectedLabels(config.isDefaultHideNonSelectedNodeLabels());
-        setNodeLabelColumns(new Column[] {this.graphModel.getNodeTable().getColumn("label")});
+        this.showNodeLabels = config.isDefaultShowNodeLabels();
+        this.nodeLabelColorMode = config.getDefaultNodeLabelColorMode();
+        this.nodeLabelSizeMode = config.getDefaultNodeLabelSizeMode();
+        this.nodeLabelFont = config.getDefaultNodeLabelFont();
+        this.nodeLabelScale = config.getDefaultNodeLabelScale();
+        this.hideNonSelectedLabels = config.isDefaultHideNonSelectedNodeLabels();
+        this.nodeLabelColumns = new Column[] {this.graphModel.getNodeTable().getColumn("label")};
 
         //Edge Labels
-        setShowEdgeLabels(config.isDefaultShowEdgeLabels());
-        setEdgeLabelFont(config.getDefaultEdgeLabelFont());
-        setEdgeLabelScale(config.getDefaultEdgeLabelScale());
-        setEdgeLabelColumns(new Column[] {this.graphModel.getEdgeTable().getColumn("label")});
+        this.showEdgeLabels = config.isDefaultShowEdgeLabels();
+        this.edgeLabelFont = config.getDefaultEdgeLabelFont();
+        this.edgeLabelScale = config.getDefaultEdgeLabelScale();
+        this.edgeLabelColumns = new Column[] {this.graphModel.getEdgeTable().getColumn("label")};
     }
 
     public GraphRenderingOptions toGraphRenderingOptions() {
@@ -578,13 +578,13 @@ public class VizModel implements VisualisationModel {
 
     @Override
     public float getEdgeLabelScale() {
-        return edgeLabelSize;
+        return edgeLabelScale;
     }
 
     public void setEdgeLabelScale(float edgeLabelScale) {
-        float oldValue = this.edgeLabelSize;
+        float oldValue = this.edgeLabelScale;
         if (oldValue != edgeLabelScale) {
-            this.edgeLabelSize = edgeLabelScale;
+            this.edgeLabelScale = edgeLabelScale;
             firePropertyChange("edgeLabelScale", oldValue, edgeLabelScale);
         }
     }
