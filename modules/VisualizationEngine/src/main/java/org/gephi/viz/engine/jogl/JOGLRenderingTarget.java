@@ -147,7 +147,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
 
     @Override
     public void display(GLAutoDrawable drawable) {
-        final GL gl = drawable.getGL().getGL();
+        final GL gl = drawable.getGL();
 
         engine.getBackgroundColor(backgroundColor);
         gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
