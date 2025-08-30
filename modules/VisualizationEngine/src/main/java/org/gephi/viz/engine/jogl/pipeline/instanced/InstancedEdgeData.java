@@ -168,9 +168,18 @@ public class InstancedEdgeData extends AbstractEdgeData {
         //Selection:
         final boolean someSelection = graphSelection.someNodesOrEdgesSelection();
         final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-        final boolean hideNonSelected =
-            someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
+        final boolean hideNonSelectedFlag = renderingOptions.isHideNonSelectedEdges();
+        // If hide-non-selected is enabled but there is no active selection, hide all edges
+        if (!someSelection && hideNonSelectedFlag) {
+            undirectedInstanceCounter.clearCount();
+            directedInstanceCounter.clearCount();
+            return;
+        }
+        // When there is a selection, hide unselected edges if the flag is on
+        final boolean hideNonSelected = someSelection && (hideNonSelectedFlag || lightenNonSelectedFactor >= 1);
         final boolean edgeSelectionColor = renderingOptions.isEdgeSelectionColor();
+        setEdgeColorMode(renderingOptions.getEdgeColorMode());
+        setEdgeWeightEnabled(renderingOptions.isEdgeWeightEnabled());
         final float edgeBothSelectionColor =
             Float.intBitsToFloat(renderingOptions.getEdgeBothSelectionColor().getRGB());
         final float edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());

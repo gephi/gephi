@@ -39,6 +39,8 @@ public interface GraphSelection {
 
     boolean isNodeSelected(Node node);
 
+    boolean isNodeOrNeighbourSelected(Node node);
+
     Set<Node> getSelectedNodes();
 
     Set<Node> getSelectedNodesWithNeighbours();

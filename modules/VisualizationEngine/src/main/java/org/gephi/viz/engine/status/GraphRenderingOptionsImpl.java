@@ -17,10 +17,15 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private Color edgeBothSelectionColor = DEFAULT_EDGE_BOTH_SELECTION_COLOR;
     private Color edgeInSelectionColor = DEFAULT_EDGE_IN_SELECTION_COLOR;
     private Color edgeOutSelectionColor = DEFAULT_EDGE_OUT_SELECTION_COLOR;
+    private EdgeColorMode edgeColorMode = DEFAULT_EDGE_COLOR_MODE;
+    private boolean edgeWeightEnabled = DEFAULT_EDGE_WEIGHT_ENABLED;
+
+    //Nodes
+    private float nodeScale = DEFAULT_NODE_SCALE;
 
     //Selection:
     private boolean autoSelectNeighbours = DEFAULT_AUTO_SELECT_NEIGHBOURS;
-    private boolean hideNonSelected = DEFAULT_HIDE_NON_SELECTED;
+    private boolean hideNonSelectedEdges = DEFAULT_HIDE_NON_SELECTED_EDGES;
     private boolean lightenNonSelected = DEFAULT_LIGHTEN_NON_SELECTED;
     private float lightenNonSelectedFactor = DEFAULT_LIGHTEN_NON_SELECTED_FACTOR;
 
@@ -31,11 +36,33 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     @Override
     public void setEdgeScale(float edgeScale) {
+        if (Float.isNaN(edgeScale) || Float.isInfinite(edgeScale)) {
+            nodeScale = DEFAULT_NODE_SCALE;
+        }
+
         if (edgeScale <= 0) {
             throw new IllegalArgumentException("edgeScale should be > 0");
         }
 
         this.edgeScale = edgeScale;
+    }
+
+    @Override
+    public float getNodeScale() {
+        return nodeScale;
+    }
+
+    @Override
+    public void setNodeScale(float nodeScale) {
+        if (Float.isNaN(nodeScale) || Float.isInfinite(nodeScale)) {
+            nodeScale = DEFAULT_NODE_SCALE;
+        }
+
+        if (nodeScale <= 0f) {
+            throw new IllegalArgumentException("nodeScale should be > 0");
+        }
+
+        this.nodeScale = nodeScale;
     }
 
     @Override
@@ -79,13 +106,13 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     }
 
     @Override
-    public boolean isHideNonSelected() {
-        return hideNonSelected;
+    public boolean isHideNonSelectedEdges() {
+        return hideNonSelectedEdges;
     }
 
     @Override
-    public void setHideNonSelected(boolean hideNonSelected) {
-        this.hideNonSelected = hideNonSelected;
+    public void setHideNonSelectedEdges(boolean hideNonSelected) {
+        this.hideNonSelectedEdges = hideNonSelected;
     }
 
     @Override
@@ -167,6 +194,26 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     public void setEdgeInSelectionColor(Color color) {
         Objects.requireNonNull(color, "color");
         this.edgeInSelectionColor = color;
+    }
+
+    @Override
+    public EdgeColorMode getEdgeColorMode() {
+        return edgeColorMode;
+    }
+
+    @Override
+    public void setEdgeColorMode(EdgeColorMode mode) {
+        this.edgeColorMode = Objects.requireNonNull(mode, "mode");
+    }
+
+    @Override
+    public boolean isEdgeWeightEnabled() {
+        return edgeWeightEnabled;
+    }
+
+    @Override
+    public void setEdgeWeightEnabled(boolean enabled) {
+        this.edgeWeightEnabled = enabled;
     }
 
 }

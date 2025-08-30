@@ -9,6 +9,8 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.ui.components.JPopupButton;
+import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
@@ -22,19 +24,17 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     private final EdgeSettingsPanel edgeSettingsPanel = new EdgeSettingsPanel();
     //Toolbar
     private final JToggleButton showEdgeButton;
-    private final JToggleButton edgeHasNodeColorButton;
-    private final JToggleButton showLabelsButton;
     private final JSlider edgeScaleSlider;
+    private final JPopupButton edgeColorModeButton;
 
     public EdgeGroup() {
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
-        //Toolbar
+        //Show edges
         showEdgeButton = new JToggleButton();
-
         showEdgeButton.setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.showEdges"));
         showEdgeButton.setIcon(
-            ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.png", false));
+            ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.svg", false));
         showEdgeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -42,28 +42,19 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
             }
         });
 
-        //Edge color mode
-        edgeHasNodeColorButton = new JToggleButton();
-        edgeHasNodeColorButton
-            .setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.edgeNodeColor"));
-        edgeHasNodeColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeNodeColor.png", false));
-        edgeHasNodeColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vizController.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
-            }
+        //Edge Color mode
+        edgeColorModeButton = new JPopupButton();
+        for(EdgeColorMode mode : EdgeColorMode.values()) {
+            edgeColorModeButton.addItem(mode,
+                ImageUtilities.loadImageIcon("VisualizationImpl/EdgeColorMode_" + mode.name() + ".svg", false),
+                NbBundle.getMessage(EdgeGroup.class, "EdgeColorMode."+mode.name().toLowerCase()+".name"));
+        }
+        edgeColorModeButton.setChangeListener(e -> {
+            vizController.setEdgeColorMode((EdgeColorMode) e.getSource());
         });
-
-        //Show labels buttons
-        showLabelsButton = new JToggleButton();
-        showLabelsButton.setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.showLabels"));
-        showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showEdgeLabels.svg", false));
-        showLabelsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vizController.setShowEdgeLabels(showLabelsButton.isSelected());
-            }
-        });
+        edgeColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeColorMode.svg", false));
+        edgeColorModeButton
+            .setToolTipText(NbBundle.getMessage(LabelGroup.class, "VizToolbar.Edges.colorMode"));
 
         //EdgeScale slider
         edgeScaleSlider = new JSlider(0, 100, 0);
@@ -83,13 +74,13 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     public void setup(VisualisationModel vizModel) {
         edgeSettingsPanel.setup(vizModel);
 
-        // Toolbar
-        for (JComponent component : getToolbarComponents()) {
-            component.setEnabled(true);
-        }
+        edgeColorModeButton.setEnabled(true);
+        edgeColorModeButton.setSelectedItem(vizModel.getEdgeColorMode());
+
+        showEdgeButton.setEnabled(true);
         showEdgeButton.setSelected(vizModel.isShowEdges());
-        edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
-        showLabelsButton.setSelected(vizModel.isShowEdgeLabels());
+
+        edgeScaleSlider.setEnabled(true);
         edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
 
         // Listeners
@@ -116,17 +107,13 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
             if (showEdgeButton.isSelected() != model.isShowEdges()) {
                 showEdgeButton.setSelected(model.isShowEdges());
             }
-        } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
-            if (edgeHasNodeColorButton.isSelected() == model.isEdgeHasUniColor()) {
-                edgeHasNodeColorButton.setSelected(!model.isEdgeHasUniColor());
-            }
-        } else if (evt.getPropertyName().equals("showEdgeLabels")) {
-            if (showLabelsButton.isSelected() != model.isShowEdgeLabels()) {
-                showLabelsButton.setSelected(model.isShowEdgeLabels());
-            }
         } else if (evt.getPropertyName().equals("edgeScale")) {
             if (model.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
                 edgeScaleSlider.setValue((int) ((model.getEdgeScale() - 0.1f) * 10));
+            }
+        } else if (evt.getPropertyName().equals("edgeColorMode")) {
+            if (edgeColorModeButton.getSelectedItem() != model.getEdgeColorMode()) {
+                edgeColorModeButton.setSelectedItem(model.getEdgeColorMode());
             }
         }
     }
@@ -140,9 +127,8 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     public JComponent[] getToolbarComponents() {
         return new JComponent[] {
             showEdgeButton,
-            edgeHasNodeColorButton,
-            showLabelsButton,
-            edgeScaleSlider
+            edgeScaleSlider,
+            edgeColorModeButton
         };
     }
 

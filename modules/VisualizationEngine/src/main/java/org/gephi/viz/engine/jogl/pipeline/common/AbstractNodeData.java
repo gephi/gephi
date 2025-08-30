@@ -81,6 +81,7 @@ public abstract class AbstractNodeData {
     protected final InstanceCounter instanceCounter = new InstanceCounter();
     protected float maxNodeSize = 0;
     protected float maxNodeSizeToDraw = 0;
+    protected float currentNodeScale = 1f;
 
     // Buffers for vertex attributes:
     protected static final int BATCH_NODES_SIZE = 32768;
@@ -225,9 +226,6 @@ public abstract class AbstractNodeData {
 
         //Selection:
         final boolean someSelection = selection.someNodesOrEdgesSelection();
-        final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-        final boolean hideNonSelected =
-            someSelection && (renderingOptions.isHideNonSelected() || lightenNonSelectedFactor >= 1);
 
         // Get visible nodes
         graphIndex.getVisibleNodes(nodesCallback, viewBoundaries);
@@ -248,8 +246,10 @@ public abstract class AbstractNodeData {
         int newNodesCountSelected = 0;
 
         float newMaxNodeSize = 0;
+        final float nodeScale = renderingOptions.getNodeScale();
+        currentNodeScale = nodeScale;
         for (int j = 0; j < visibleNodesCount; j++) {
-            final float size = visibleNodesArray[j].size();
+            final float size = visibleNodesArray[j].size() * nodeScale;
             newMaxNodeSize = Math.max(size, newMaxNodeSize);
         }
 
@@ -257,97 +257,66 @@ public abstract class AbstractNodeData {
         int commandIndex = 0;
         int instanceId = 0;
         if (someSelection) {
-            if (hideNonSelected) {
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
+            //First non-selected (bottom):
+            for (int j = 0; j < visibleNodesCount; j++) {
+                final Node node = visibleNodesArray[j];
 
-                    final boolean selected = selection.isNodeSelected(node);
-                    if (!selected) {
-                        continue;
-                    }
-
-                    newNodesCountSelected++;
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
-
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
-
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
-
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
-                    }
-                }
-            } else {
-                //First non-selected (bottom):
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
-
-                    final boolean selected = selection.isNodeSelected(node);
-                    if (selected) {
-                        continue;
-                    }
-
-                    newNodesCountUnselected++;
-
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
-
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
-
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
-
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
-                    }
+                final boolean selected = selection.isNodeOrNeighbourSelected(node);
+                if (selected) {
+                    continue;
                 }
 
-                instanceId =
-                    0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
-                //Then selected ones (up):
-                for (int j = 0; j < visibleNodesCount; j++) {
-                    final Node node = visibleNodesArray[j];
+                newNodesCountUnselected++;
 
-                    final boolean selected = selection.isNodeSelected(node);
-                    if (!selected) {
-                        continue;
+                fillNodeAttributesData(node, attributesIndex);
+                attributesIndex += ATTRIBS_STRIDE;
+
+                if (attributesIndex == attributesBufferBatch.length) {
+                    attribs.put(attributesBufferBatch);
+                    attributesIndex = 0;
+                }
+
+                if (indirectCommands) {
+                    fillNodeCommandData(node, zoom, commandIndex, instanceId);
+                    instanceId++;
+                    commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+
+                    if (commandIndex == commandsBufferBatch.length) {
+                        commands.put(commandsBufferBatch);
+                        commandIndex = 0;
                     }
+                }
+            }
 
-                    newNodesCountSelected++;
+            instanceId =
+                0;//Reset instance id, since we draw elements in 2 separate attribute buffers (main/selected and secondary/unselected)
+            //Then selected ones (up):
+            for (int j = 0; j < visibleNodesCount; j++) {
+                final Node node = visibleNodesArray[j];
 
-                    fillNodeAttributesData(node, attributesIndex);
-                    attributesIndex += ATTRIBS_STRIDE;
+                final boolean selected = selection.isNodeOrNeighbourSelected(node);
+                if (!selected) {
+                    continue;
+                }
 
-                    if (attributesIndex == attributesBufferBatch.length) {
-                        attribs.put(attributesBufferBatch);
-                        attributesIndex = 0;
-                    }
+                newNodesCountSelected++;
 
-                    if (indirectCommands) {
-                        fillNodeCommandData(node, zoom, commandIndex, instanceId);
-                        instanceId++;
-                        commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+                fillNodeAttributesData(node, attributesIndex);
+                attributesIndex += ATTRIBS_STRIDE;
 
-                        if (commandIndex == commandsBufferBatch.length) {
-                            commands.put(commandsBufferBatch);
-                            commandIndex = 0;
-                        }
+                if (attributesIndex == attributesBufferBatch.length) {
+                    attribs.put(attributesBufferBatch);
+                    attributesIndex = 0;
+                }
+
+                if (indirectCommands) {
+                    fillNodeCommandData(node, zoom, commandIndex, instanceId);
+                    instanceId++;
+                    commandIndex += INDIRECT_DRAW_COMMAND_INTS_COUNT;
+
+                    if (commandIndex == commandsBufferBatch.length) {
+                        commands.put(commandsBufferBatch);
+                        commandIndex = 0;
                     }
                 }
             }
@@ -396,7 +365,7 @@ public abstract class AbstractNodeData {
     protected void fillNodeAttributesData(final Node node, final int index) {
         final float x = node.x();
         final float y = node.y();
-        final float size = node.size();
+        final float size = node.size() * currentNodeScale;
         final int rgba = node.getRGBA();
 
         //Position:
@@ -413,7 +382,7 @@ public abstract class AbstractNodeData {
     protected void fillNodeCommandData(final Node node, final float zoom, final int index, final int instanceId) {
         //Indirect Draw:
         //Choose LOD:
-        final float observedSize = node.size() * zoom;
+        final float observedSize = node.size() * currentNodeScale * zoom;
 
         final int circleVertexCount;
         final int firstVertex;

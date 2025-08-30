@@ -40,6 +40,7 @@ public class Constants {
     public static final String UNIFORM_NAME_SIZE_MULTIPLIER = "sizeMultiplier";
     public static final String UNIFORM_NAME_COLOR_LIGHTEN_FACTOR = "colorLightenFactor";
     public static final String UNIFORM_NAME_COLOR_MULTIPLIER = "colorMultiplier";
+    public static final String UNIFORM_NAME_NODE_SCALE = "nodeScale";
 
     //Rendering order:
     public static final int RENDERING_ORDER_LABELS = 200;
