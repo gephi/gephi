@@ -388,6 +388,7 @@ public class VizEngine<R extends RenderingTarget, I> {
     public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions) {
         this.engineModel = new VizEngineModel(graphModel,
             renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl());
+        loadModelViewProjection();
     }
 
     public synchronized void initPipeline() {
