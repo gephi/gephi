@@ -125,7 +125,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
         ((JColorButton) nodeColorButton)
             .addPropertyChangeListener(JColorButton.EVENT_COLOR,
                 evt -> vizController.setNodeLabelColor(((JColorButton) nodeColorButton).getColor()));
-        nodeSizeSlider.addChangeListener(e -> vizController.setNodeLabelSize(nodeSizeSlider.getValue() / 100f));
+        nodeSizeSlider.addChangeListener(e -> vizController.setNodeLabelScale(nodeSizeSlider.getValue() / 100f));
 
         //EdgePanel
         showEdgeLabelsCheckbox.addItemListener(e -> {
@@ -146,7 +146,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                vizController.setEdgeLabelSize(edgeSizeSlider.getValue() / 100f);
+                vizController.setEdgeLabelScale(edgeSizeSlider.getValue() / 100f);
             }
         });
 
@@ -268,8 +268,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
         if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
             showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
         }
-        if (nodeSizeSlider.getValue() / 100f != model.getNodeLabelSize()) {
-            nodeSizeSlider.setValue((int) (model.getNodeLabelSize() * 100f));
+        if (nodeSizeSlider.getValue() / 100f != model.getNodeLabelScale()) {
+            nodeSizeSlider.setValue((int) (model.getNodeLabelScale() * 100f));
         }
 
         // Edge
@@ -278,8 +278,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel implements Visualizat
         if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
             showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
         }
-        if (edgeSizeSlider.getValue() / 100f != model.getEdgeLabelSize()) {
-            edgeSizeSlider.setValue((int) (model.getEdgeLabelSize() * 100f));
+        if (edgeSizeSlider.getValue() / 100f != model.getEdgeLabelScale()) {
+            edgeSizeSlider.setValue((int) (model.getEdgeLabelScale() * 100f));
         }
 
         // General

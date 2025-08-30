@@ -185,9 +185,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         if (selectionColorCheckbox.isSelected() != vizModel.isEdgeSelectionColor()) {
             selectionColorCheckbox.setSelected(vizModel.isEdgeSelectionColor());
         }
-        Color in = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeInSelectionColor(), 1f);
-        Color out = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeOutSelectionColor(), 1f);
-        Color both = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeBothSelectionColor(), 1f);
+        Color in = vizModel.getEdgeInSelectionColor();
+        Color out = vizModel.getEdgeOutSelectionColor();
+        Color both = vizModel.getEdgeBothSelectionColor();
         if (!edgeInSelectionColorChooser.getColor().equals(in)) {
             edgeInSelectionColorChooser.setColor(in);
         }

@@ -192,19 +192,19 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public void setEdgeInSelectionColor(Color edgeInSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeInSelectionColor(VizController.toColorArray(edgeInSelectionColor));
+        model.setEdgeInSelectionColor(edgeInSelectionColor);
     }
 
     @Override
     public void setEdgeOutSelectionColor(Color edgeOutSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeOutSelectionColor(VizController.toColorArray(edgeOutSelectionColor));
+        model.setEdgeOutSelectionColor(edgeOutSelectionColor);
     }
 
     @Override
     public void setEdgeBothSelectionColor(Color edgeBothSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeBothSelectionColor(VizController.toColorArray(edgeBothSelectionColor));
+        model.setEdgeBothSelectionColor(edgeBothSelectionColor);
     }
 
     @Override
@@ -246,27 +246,15 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
-    public void setNodeLabelColor(Color color) {
+    public void setNodeLabelScale(float scale) {
         final VizModel model = getModel();
-        model.setNodeLabelColor(color);
+        model.setNodeLabelScale(scale);
     }
 
     @Override
-    public void setEdgeLabelColor(Color color) {
+    public void setEdgeLabelScale(float scale) {
         final VizModel model = getModel();
-        model.setEdgeLabelColor(color);
-    }
-
-    @Override
-    public void setNodeLabelSize(float size) {
-        final VizModel model = getModel();
-        model.setNodeLabelSize(size);
-    }
-
-    @Override
-    public void setEdgeLabelSize(float size) {
-        final VizModel model = getModel();
-        model.setEdgeLabelSize(size);
+        model.setEdgeLabelScale(scale);
     }
 
     @Override

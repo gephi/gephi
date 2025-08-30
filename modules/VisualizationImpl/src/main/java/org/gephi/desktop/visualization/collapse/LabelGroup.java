@@ -3,8 +3,6 @@ package org.gephi.desktop.visualization.collapse;
 import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
@@ -19,7 +17,6 @@ import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
-import org.gephi.visualization.text.FixedSizeMode;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -97,7 +94,7 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         fontSizeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                vizController.setNodeLabelSize(fontSizeSlider.getValue() / 100f);
+                vizController.setNodeLabelScale(fontSizeSlider.getValue() / 100f);
             }
         });
         fontSizeSlider.setPreferredSize(new Dimension(100, 20));
@@ -142,7 +139,7 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         labelSizeModeButton.setSelectedItem(vizModel.getNodeLabelSizeMode());
         labelColorModeButton.setSelectedItem(vizModel.getNodeLabelColorMode());
         fontButton.setText(vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
-        fontSizeSlider.setValue((int) (vizModel.getNodeLabelSize() * 100));
+        fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100));
         colorChooser.setColor(vizModel.getNodeLabelColor());
 
         if (vizModel.isShowNodeLabels()) {
@@ -177,8 +174,8 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
             Font font = vizModel.getNodeLabelFont();
             fontButton.setText(font.getFontName() + ", " + font.getSize());
         } else if (evt.getPropertyName().equals("nodeLabelSize")) {
-            if (((int) (vizModel.getNodeLabelSize() * 100f)) != fontSizeSlider.getValue()) {
-                fontSizeSlider.setValue((int) (vizModel.getNodeLabelSize() * 100f));
+            if (((int) (vizModel.getNodeLabelScale() * 100f)) != fontSizeSlider.getValue()) {
+                fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100f));
             }
         } else if (evt.getPropertyName().equals("nodeLabelColor")) {
             if (!vizModel.getNodeLabelColor().equals(colorChooser.getColor())) {

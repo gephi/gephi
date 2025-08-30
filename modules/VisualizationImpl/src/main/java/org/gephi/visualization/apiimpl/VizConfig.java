@@ -62,28 +62,27 @@ public class VizConfig {
     public static final String EDGE_LABELS = "VizConfig.defaultShowEdgeLabels";
     public static final String SHOW_EDGES = "VizConfig.defaultShowEdges";
     public static final String HIGHLIGHT = "VizConfig.defaultLightenNonSelectedAuto";
+    public static final String HIGHLIGHT_FACTOR = "VizConfig.defaultLightenNonSelectedFactor";
     public static final String NEIGHBOUR_SELECT = "VizConfig.defaultAutoSelectNeighbor";
     public static final String HIDE_NONSELECTED_EDGES = "VizConfig.defaultHideNonSelectedEdges";
     public static final String EDGE_COLOR_MODE = "VizConfig.defaultEdgeColorMode";
-    public static final String SELECTEDNODE_UNIQUE_COLOR = "VizConfig.defaultHideNonSelectedEdges";
-    public static final String NODE_LABEL_COLOR = "VizConfig.defaultNodeLabelColor";
-    public static final String EDGE_LABEL_COLOR = "VizConfig.defaultEdgeLabelColor";
     public static final String NODE_LABEL_FONT = "VizConfig.defaultNodeLabelFont";
     public static final String EDGE_LABEL_FONT = "VizConfig.defaultEdgeLabelFont";
-    public static final String LABEL_SELECTION_ONLY = "VizConfig.defaultShowLabelOnSelectedOnly";
     public static final String SELECTEDEDGE_HAS_COLOR = "VizConfig.defaultEdgeSelectionColor";
     public static final String SELECTEDEDGE_IN_COLOR = "VizConfig.defaultEdgeInSelectedColor";
     public static final String SELECTEDEDGE_OUT_COLOR = "VizConfig.defaultEdgeOutSelectedColor";
     public static final String SELECTEDEDGE_BOTH_COLOR = "VizConfig.defaultEdgeBothSelectedColor";
     public static final String EDGE_SCALE = "VizConfig.defaultEdgeScale";
     public static final String NODE_SCALE = "VizConfig.defaultNodeScale";
+    public static final String EDGE_WEIGHTED = "VizConfig.defaultUseEdgeWeight";
+    public static final String NODE_LABEL_SIZE_MODE = "VizConfig.defaultNodeLabelSizeMode";
+    public static final String NODE_LABEL_COLOR_MODE = "VizConfig.defaultNodeLabelColorMode";
+    public static final String NODE_LABEL_SCALE = "VizConfig.defaultNodeLabelScale";
+    public static final String EDGE_LABEL_SCALE = "VizConfig.defaultEdgeLabelScale";
+    public static final String ZOOM = "VizConfig.defaultZoom";
+    public static final String HIDE_NONSELECTED_NODE_LABELS = "VizConfig.hideNonSelectedNodeLabels";
     //Const Prefs
     public static final String ANTIALIASING = "VizConfig.antialiasing";
-    public static final String BLENDING = "VizConfig.blending";
-    public static final String WIREFRAME = "VizConfig.wireFrame";
-    public static final String GLJPANEL = "VizConfig.useGLJPanel";
-    public static final String SELECTION = "VizConfig.selectionEnable";
-    public static final String RECTANGLE_SELECTION = "VizConfig.rectangleSelection";
     public static final String RECTANGLE_SELECTION_COLOR = "VizConfig.rectangleSelectionColor";
     public static final String CAMERA_CONTROL = "VizConfig.cameraControlEnable";
     public static final String SHOW_FPS = "VizConfig.showFPS";
@@ -91,23 +90,12 @@ public class VizConfig {
     public static final String REDUCE_FPS_MOUSE_OUT_VALUE = "VizConfig.reduceFpsWhenMouseOutValue";
     public static final String PAUSE_LOOP_MOUSE_OUT = "VizConfig.pauseLoopWhenMouseOut";
     public static final String HIGHTLIGHT_ANIMATION = "VizConfig.lightenNonSelectedAnimation";
-    public static final String NODE_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedColor";
-    public static final String NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedNeigborColor";
-    public static final String CLEAN_DELETED_MODELS = "VizConfig.cleanDeletedModels";
     public static final String LABEL_MIPMAP = "VizConfig.labelMipMap";
     public static final String LABEL_ANTIALIASED = "VizConfig.labelAntialiased";
     public static final String LABEL_FRACTIONAL_METRICS = "VizConfig.labelFractionalMetrics";
-    public static final String VIZBAR = "VizConfig.showVizVar";
     public static final String CONTEXT_MENU = "VizConfig.contextMenu";
-    public static final String TOOLBAR = "VizConfig.toolbar";
-    public static final String PROPERTIESBAR = "VizConfig.propertiesbar";
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
-    public static final String DISABLE_LOD = "VizConfig.disableLOD";
-    public static final String EDGE_SIZE_FACTOR = "VizConfig.edgeSizeFactor";
-    public static final String NODE_SIZE_FACTOR = "VizConfig.nodeSizeFactor";
-    public static final String NODE_LABEL_SIZE_MODE = "VizConfig.nodeLabelSizeMode";
-    public static final String NODE_LABEL_COLOR_MODE = "VizConfig.nodeLabelColorMode";
     //Default values
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
     public static final Color DEFAULT_DARK_BACKGROUND_COLOR = Color.BLACK;
@@ -115,26 +103,19 @@ public class VizConfig {
     public static final boolean DEFAULT_EDGE_LABELS = false;
     public static final boolean DEFAULT_SHOW_EDGES = true;
     public static final boolean DEFAULT_HIGHLIGHT = true;
+    public static final float DEFAULT_HIGHLIGHT_FACTOR = 0.5f;
     public static final boolean DEFAULT_NEIGHBOUR_SELECT = true;
     public static final EdgeColorMode DEFAULT_EDGE_COLOR_MODE = EdgeColorMode.SOURCE;
     public static final boolean DEFAULT_HIDE_NONSELECTED_EDGES = false;
-    public static final boolean DEFAULT_SELECTEDNODE_UNIQUE_COLOR = false;
-    public static final Color DEFAULT_NODE_LABEL_COLOR = new Color(0f, 0f, 0f, 1f);
-    public static final Color DEFAULT_EDGE_LABEL_COLOR = new Color(0.5f, 0.5f, 0.5f, 1f);
-    public static final Color DEFAULT_DARK_NODE_LABEL_COLOR = new Color(1f, 1f, 1f, 1f);
     public static final Font DEFAULT_NODE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
     public static final Font DEFAULT_EDGE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
-    public static final boolean DEFAULT_LABEL_SELECTION_ONLY = false;
+    public static final float DEFAULT_ZOOM = 0.3f;
+    public static final boolean DEFAULT_HIDE_NONSELECTED_NODE_LABELS = false;
     public static final boolean DEFAULT_SELECTEDEDGE_HAS_COLOR = false;
     public static final Color DEFAULT_SELECTEDEDGE_IN_COLOR = new Color(32, 95, 154, 255);
     public static final Color DEFAULT_SELECTEDEDGE_OUT_COLOR = new Color(196, 66, 79, 255);
     public static final Color DEFAULT_SELECTEDEDGE_BOTH_COLOR = new Color(248, 215, 83, 255);
     public static final int DEFAULT_ANTIALIASING = 4;
-    public static final boolean DEFAULT_BLENDING = true;
-    public static final boolean DEFAULT_WIREFRAME = false;
-    public static final boolean DEFAULT_GLJPANEL = false;//Deprecated
-    public static final boolean DEFAULT_SELECTION = true;
-    public static final boolean DEFAULT_RECTANGLE_SELECTION = false;
     public static final Color DEFAULT_RECTANGLE_SELECTION_COLOR = new Color(0.16f, 0.48f, 0.81f, 0.2f);
     public static final boolean DEFAULT_CAMERA_CONTROL = true;
     public static final boolean DEFAULT_SHOW_FPS = false;
@@ -143,25 +124,20 @@ public class VizConfig {
     public static final int DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE = 20;
     public static final Color DEFAULT_HIGHTLIGHT_COLOR = new Color(0.95f, 0.95f, 0.95f, 1f);
     public static final boolean DEFAULT_HIGHTLIGHT_ANIMATION = true;
-    public static final Color DEFAULT_NODE_SELECTED_UNIQUE_COLOR = new Color(0.8f, 0.2f, 0.2f);
-    public static final Color DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = new Color(0.2f, 1f, 0.3f);
-    public static final boolean DEFAULT_CLEAN_DELETED_MODELS = true;
+
     public static final boolean DEFAULT_LABEL_MIPMAP = true;
     public static final boolean DEFAULT_LABEL_ANTIALIASED = true;
     public static final boolean DEFAULT_LABEL_FRACTIONAL_METRICS = true;
-    public static final boolean DEFAULT_VIZBAR = true;
     public static final boolean DEFAULT_CONTEXT_MENU = true;
-    public static final boolean DEFAULT_TOOLBAR = true;
-    public static final boolean DEFAULT_PROPERTIESBAR = true;
     public static final int DEFAULT_MOUSE_SELECTION_DIAMETER = 1;
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
-    public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final float DEFAULT_EDGE_SCALE = 2f;
     public static final float DEFAULT_NODE_SCALE = 1f;
-    public static final float DEFAULT_NODE_SIZE_FACTOR = 0.5f;
-    public static final float DEFAULT_EDGE_SIZE_FACTOR = 0.5f;
+    public static final float DEFAULT_NODE_LABEL_SCALE = 0.5f;
+    public static final float DEFAULT_EDGE_LABEL_SCALE = 0.5f;
     public static final String DEFAULT_NODE_LABEL_SIZE_MODE = LabelSizeMode.SCALED.name();
     public static final String DEFAULT_NODE_LABEL_COLOR_MODE = LabelColorMode.TEXT.name();
+    public static final boolean DEFAULT_EDGE_WEIGHTED = true;
 
     //Default config - loaded in the VizModel
     protected Color defaultBackgroundColor = ColorUtils.decode(
@@ -179,26 +155,21 @@ public class VizConfig {
     protected boolean defaultShowEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_EDGES, DEFAULT_SHOW_EDGES);
     protected EdgeColorMode defaultEdgeColorMode =
-        EdgeColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(EDGE_COLOR_MODE, DEFAULT_EDGE_COLOR_MODE.name()));    protected boolean defaultLightenNonSelectedAuto =
+        EdgeColorMode.valueOf(NbPreferences.forModule(VizConfig.class).get(EDGE_COLOR_MODE, DEFAULT_EDGE_COLOR_MODE.name()));
+    protected boolean defaultLightenNonSelectedAuto =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIGHLIGHT, DEFAULT_HIGHLIGHT);
+    protected float defaultLightenNonSelectedFactor =
+        NbPreferences.forModule(VizConfig.class).getFloat(HIGHLIGHT_FACTOR, DEFAULT_HIGHLIGHT_FACTOR);
     protected boolean defaultAutoSelectNeighbor =
         NbPreferences.forModule(VizConfig.class).getBoolean(NEIGHBOUR_SELECT, DEFAULT_NEIGHBOUR_SELECT);
     protected boolean defaultHideNonSelectedEdges =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
-    protected Color defaultNodeLabelColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
-    protected Color defaultDarkNodeLabelColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class)
-            .get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_DARK_NODE_LABEL_COLOR)));
-    protected Color defaultEdgeLabelColor = ColorUtils.decode(
-        NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
     protected Font defaultNodeLabelFont = Font.decode(
         NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_FONT, FontUtils.encode(DEFAULT_NODE_LABEL_FONT)));
     protected Font defaultEdgeLabelFont = Font.decode(
         NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_FONT, FontUtils.encode(DEFAULT_EDGE_LABEL_FONT)));
-    protected boolean defaultAdjustByText = false;    //Overriden in Engine
-    protected boolean defaultShowLabelOnSelectedOnly =
-        NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_SELECTION_ONLY, DEFAULT_LABEL_SELECTION_ONLY);
+    protected boolean defaultHideNonSelectedNodeLabels =
+        NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_NODE_LABELS, DEFAULT_HIDE_NONSELECTED_NODE_LABELS);
     protected boolean defaultEdgeSelectionColor =
         NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDEDGE_HAS_COLOR, DEFAULT_SELECTEDEDGE_HAS_COLOR);
     protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
@@ -211,25 +182,21 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
     protected float defaultNodeScale =
         NbPreferences.forModule(VizConfig.class).getFloat(NODE_SCALE, DEFAULT_NODE_SCALE);
-    protected float getDefaultNodeSizeFactor =
-        NbPreferences.forModule(VizConfig.class).getFloat(NODE_SIZE_FACTOR, DEFAULT_NODE_SIZE_FACTOR);
-    protected float getDefaultEdgeSizeFactor =
-        NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SIZE_FACTOR, DEFAULT_EDGE_SIZE_FACTOR);
     protected LabelSizeMode defaultNodeLabelSizeMode =
         LabelSizeMode.valueOf(
             NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_SIZE_MODE, DEFAULT_NODE_LABEL_SIZE_MODE));
     protected LabelColorMode defaultNodeLabelColorMode =
         LabelColorMode.valueOf(
             NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR_MODE, DEFAULT_NODE_LABEL_COLOR_MODE));
+    protected boolean defaultUseEdgeWeight =
+        NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_WEIGHTED, DEFAULT_EDGE_WEIGHTED);
+    protected float defaultNodeLabelScale =
+        NbPreferences.forModule(VizConfig.class).getFloat(NODE_LABEL_SCALE, DEFAULT_NODE_LABEL_SCALE);
+    protected float defaultEdgeLabelScale =
+        NbPreferences.forModule(VizConfig.class).getFloat(EDGE_LABEL_SCALE, DEFAULT_EDGE_LABEL_SCALE);
+    protected float defaultZoom = NbPreferences.forModule(VizConfig.class).getFloat(ZOOM, DEFAULT_ZOOM);
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
-    protected boolean blending = NbPreferences.forModule(VizConfig.class).getBoolean(BLENDING, DEFAULT_BLENDING);
-    protected boolean wireFrame = NbPreferences.forModule(VizConfig.class).getBoolean(WIREFRAME, DEFAULT_WIREFRAME);
-    protected boolean useGLJPanel = NbPreferences.forModule(VizConfig.class).getBoolean(GLJPANEL, DEFAULT_GLJPANEL);
-    protected boolean selectionEnable =
-        NbPreferences.forModule(VizConfig.class).getBoolean(SELECTION, DEFAULT_SELECTION);
-    protected boolean rectangleSelection =
-        NbPreferences.forModule(VizConfig.class).getBoolean(RECTANGLE_SELECTION, DEFAULT_RECTANGLE_SELECTION);
     protected Color rectangleSelectionColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
         .get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
     protected boolean customSelection = false;      //Overriden in Engine
@@ -242,61 +209,31 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
     protected boolean pauseLoopWhenMouseOut =
         NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
-    protected boolean showArrows = true;        //Overriden in Engine
-    protected boolean lightenNonSelected = false;        //Overriden in Engine
     protected boolean lightenNonSelectedAnimation =
         NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
-    protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
-    protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-            .get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR)))
-        .getRGBColorComponents(null);
-    protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-            .get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR)))
-        .getRGBColorComponents(null);
-    protected boolean cleanDeletedModels =
-        NbPreferences.forModule(VizConfig.class).getBoolean(CLEAN_DELETED_MODELS, DEFAULT_CLEAN_DELETED_MODELS);
     protected boolean labelMipMap =
         NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_MIPMAP, DEFAULT_LABEL_MIPMAP);
     protected boolean labelAntialiased =
         NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_ANTIALIASED, DEFAULT_LABEL_ANTIALIASED);
     protected boolean labelFractionalMetrics =
         NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_FRACTIONAL_METRICS, DEFAULT_LABEL_FRACTIONAL_METRICS);
-    protected boolean showVizVar = NbPreferences.forModule(VizConfig.class).getBoolean(VIZBAR, DEFAULT_VIZBAR);
     protected boolean contextMenu =
         NbPreferences.forModule(VizConfig.class).getBoolean(CONTEXT_MENU, DEFAULT_CONTEXT_MENU);
-    protected boolean toolbar = NbPreferences.forModule(VizConfig.class).getBoolean(TOOLBAR, DEFAULT_TOOLBAR);
-    protected boolean propertiesbar =
-        NbPreferences.forModule(VizConfig.class).getBoolean(PROPERTIESBAR, DEFAULT_PROPERTIESBAR);
     protected int mouseSelectionDiameter =
         NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class)
         .getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
-    protected boolean disableLOD =
-        NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
-    protected boolean enableAutoSelect = true;      //Overriden in Engine - Temporary used by tools like ShortestPath
 
     public int getAntialiasing() {
         return antialiasing;
-    }
-
-    public boolean isBlending() {
-        return blending;
-    }
-
-    public boolean isCameraControlEnable() {
-        return cameraControlEnable;
-    }
-
-    public boolean isCleanDeletedModels() {
-        return cleanDeletedModels;
     }
 
     public boolean isContextMenu() {
         return contextMenu;
     }
 
-    public boolean isDefaultAdjustByText() {
-        return defaultAdjustByText;
+    public float getDefaultZoom() {
+        return defaultZoom;
     }
 
     public boolean isDefaultAutoSelectNeighbor() {
@@ -319,10 +256,6 @@ public class VizConfig {
         return defaultCameraTarget;
     }
 
-    public Color getDefaultEdgeLabelColor() {
-        return defaultEdgeLabelColor;
-    }
-
     public Font getDefaultEdgeLabelFont() {
         return defaultEdgeLabelFont;
     }
@@ -335,12 +268,8 @@ public class VizConfig {
         return defaultLightenNonSelectedAuto;
     }
 
-    public Color getDefaultNodeLabelColor() {
-        return defaultNodeLabelColor;
-    }
-
-    public Color getDefaultDarkNodeLabelColor() {
-        return defaultDarkNodeLabelColor;
+    public float getDefaultLightenNonSelectedFactor() {
+        return defaultLightenNonSelectedFactor;
     }
 
     public Font getDefaultNodeLabelFont() {
@@ -351,8 +280,8 @@ public class VizConfig {
         return defaultShowEdgeLabels;
     }
 
-    public boolean isDefaultShowLabelOnSelectedOnly() {
-        return defaultShowLabelOnSelectedOnly;
+    public boolean isDefaultHideNonSelectedNodeLabels() {
+        return defaultHideNonSelectedNodeLabels;
     }
 
     public boolean isDefaultShowNodeLabels() {
@@ -379,20 +308,24 @@ public class VizConfig {
         return defaultEdgeOutSelectedColor;
     }
 
-    public float getDefaultNodeSizeFactor() {
-        return getDefaultNodeSizeFactor;
-    }
-
-    public float getDefaultEdgeSizeFactor() {
-        return getDefaultEdgeSizeFactor;
-    }
-
     public LabelSizeMode getDefaultNodeLabelSizeMode() {
         return defaultNodeLabelSizeMode;
     }
 
     public LabelColorMode getDefaultNodeLabelColorMode() {
         return defaultNodeLabelColorMode;
+    }
+
+    public boolean isDefaultUseEdgeWeight() {
+        return defaultUseEdgeWeight;
+    }
+
+    public float getDefaultNodeLabelScale() {
+        return defaultNodeLabelScale;
+    }
+
+    public float getDefaultEdgeLabelScale() {
+        return defaultEdgeLabelScale;
     }
 
     public boolean isLabelAntialiased() {
@@ -407,81 +340,16 @@ public class VizConfig {
         return labelMipMap;
     }
 
-    public boolean isLightenNonSelected() {
-        return lightenNonSelected;
-    }
-
-    public void setLightenNonSelected(boolean lightenNonSelected) {
-        this.lightenNonSelected = lightenNonSelected;
-    }
-
     public boolean isLightenNonSelectedAnimation() {
         return lightenNonSelectedAnimation;
-    }
-
-    public float getLightenNonSelectedFactor() {
-        return lightenNonSelectedFactor;
-    }
-
-    //Setters
-    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
-        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
-    }
-
-    public boolean isRectangleSelection() {
-        return rectangleSelection;
-    }
-
-    public void setRectangleSelection(boolean rectangleSelection) {
-        this.rectangleSelection = rectangleSelection;
     }
 
     public Color getRectangleSelectionColor() {
         return rectangleSelectionColor;
     }
 
-    public boolean isSelectionEnable() {
-        return selectionEnable;
-    }
-
-    public void setSelectionEnable(boolean selectionEnable) {
-        this.selectionEnable = selectionEnable;
-    }
-
-    public boolean isShowArrows() {
-        return showArrows;
-    }
-
     public boolean isShowFPS() {
         return showFPS;
-    }
-
-    public boolean isShowVizVar() {
-        return showVizVar;
-    }
-
-    public float[] getUniColorSelectedColor() {
-        return uniColorSelectedColor;
-    }
-
-    public float[] getUniColorSelectedNeigborColor() {
-        return uniColorSelectedNeigborColor;
-    }
-
-    public boolean isUseGLJPanel() {
-        return useGLJPanel;
-    }
-
-    public boolean isWireFrame() {
-        return wireFrame;
-    }
-
-    public boolean isToolbar() {
-        return toolbar;
-    }
-
-    public boolean isPropertiesbar() {
-        return propertiesbar;
     }
 
     public int getMouseSelectionDiameter() {
@@ -506,22 +374,6 @@ public class VizConfig {
 
     public int getReduceFpsWhenMouseOutValue() {
         return reduceFpsWhenMouseOutValue;
-    }
-
-    public boolean isDisableLOD() {
-        return disableLOD;
-    }
-
-    public void setDisableLOD(boolean disableLOD) {
-        this.disableLOD = disableLOD;
-    }
-
-    public boolean isEnableAutoSelect() {
-        return enableAutoSelect;
-    }
-
-    public void setEnableAutoSelect(boolean enableAutoSelect) {
-        this.enableAutoSelect = enableAutoSelect;
     }
 
     public boolean isPauseLoopWhenMouseOut() {

@@ -34,11 +34,11 @@ public interface VisualisationModel extends Model {
 
     boolean isEdgeSelectionColor();
 
-    float[] getEdgeInSelectionColor();
+    Color getEdgeInSelectionColor();
 
-    float[] getEdgeOutSelectionColor();
+    Color getEdgeOutSelectionColor();
 
-    float[] getEdgeBothSelectionColor();
+    Color getEdgeBothSelectionColor();
 
     float getEdgeScale();
 
@@ -72,10 +72,6 @@ public interface VisualisationModel extends Model {
 
     boolean isShowEdgeLabels();
 
-    Color getNodeLabelColor();
-
-    Color getEdgeLabelColor();
-
     LabelColorMode getNodeLabelColorMode();
 
     LabelSizeMode getNodeLabelSizeMode();
@@ -84,9 +80,9 @@ public interface VisualisationModel extends Model {
 
     Font getEdgeLabelFont();
 
-    float getNodeLabelSize();
+    float getNodeLabelScale();
 
-    float getEdgeLabelSize();
+    float getEdgeLabelScale();
 
     boolean isHideNonSelectedLabels();
 
