@@ -37,7 +37,9 @@ import org.gephi.viz.engine.util.structure.EdgesCallback;
  * @author Eduardo Ramos
  */
 public abstract class AbstractEdgeData {
-
+    private long startedTime = 0L;
+    private boolean selectionToggle = false;
+    private  float selectionTime =0;
     protected final EdgeLineModelUndirected lineModelUndirected = new EdgeLineModelUndirected();
     protected final EdgeLineModelDirected lineModelDirected = new EdgeLineModelDirected();
 
@@ -74,6 +76,7 @@ public abstract class AbstractEdgeData {
     protected static final int BATCH_EDGES_SIZE = 32768;
 
     public AbstractEdgeData(boolean instanced, boolean usesSecondaryBuffer) {
+        this.startedTime = System.currentTimeMillis();
         this.instanced = instanced;
         this.usesSecondaryBuffer = usesSecondaryBuffer;
     }
@@ -93,7 +96,14 @@ public abstract class AbstractEdgeData {
                                                                 final RenderingLayer layer,
                                                                 final VizEngine engine,
                                                                 final float[] mvpFloats) {
+
         final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
+        final float globalTime = (System.currentTimeMillis() - this.startedTime)/1000.0f;
+
+        if(selectionToggle != someSelection) {
+            this.selectionToggle=someSelection;
+            this.selectionTime = globalTime;
+        }
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
@@ -125,7 +135,8 @@ public abstract class AbstractEdgeData {
                 maxWeight,
                 backgroundColorFloats,
                 lightenNonSelectedFactor,
-                nodeScale
+                nodeScale,
+                globalTime,selectionTime
             );
 
             if (usesSecondaryBuffer) {
@@ -141,7 +152,10 @@ public abstract class AbstractEdgeData {
                 edgeScale,
                 minWeight,
                 maxWeight,
-                nodeScale
+                nodeScale,
+                globalTime,selectionTime,
+                backgroundColorFloats,
+                lightenNonSelectedFactor
             );
 
             if (someSelection) {
@@ -152,7 +166,10 @@ public abstract class AbstractEdgeData {
                         edgeScale,
                         minWeight,
                         maxWeight,
-                        nodeScale
+                        nodeScale,
+                        globalTime,selectionTime,
+                        backgroundColorFloats,
+                        lightenNonSelectedFactor
                     );
                 } else {
                     lineModelUndirected.useProgramWithSelectionSelected(
@@ -161,7 +178,8 @@ public abstract class AbstractEdgeData {
                         edgeScale,
                         minWeight,
                         maxWeight,
-                        nodeScale
+                        nodeScale,
+                        globalTime,selectionTime
                     );
                 }
             } else {
@@ -171,7 +189,10 @@ public abstract class AbstractEdgeData {
                     edgeScale,
                     minWeight,
                     maxWeight,
-                    nodeScale
+                    nodeScale,
+                    globalTime,  selectionTime,
+                    backgroundColorFloats,
+                    lightenNonSelectedFactor
                 );
             }
 
