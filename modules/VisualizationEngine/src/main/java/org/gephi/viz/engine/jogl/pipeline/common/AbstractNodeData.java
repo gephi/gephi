@@ -42,6 +42,8 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
 public abstract class AbstractNodeData {
 
     private long startedTime = 0L;
+    private boolean selectionToggle = false;
+    private  float selectedTime=0;
     protected static final float BORDER_SIZE = 0.16f;
     protected static final float INSIDE_CIRCLE_SIZE = 1 - BORDER_SIZE;
 
@@ -169,7 +171,11 @@ public abstract class AbstractNodeData {
         final boolean renderingUnselectedNodes = layer.isBack();
 
         final float globalTime = (System.currentTimeMillis() - this.startedTime)/1000.0f;
-        final float selectedTime = globalTime;
+
+        if(selectionToggle != someSelection) {
+            this.selectionToggle=someSelection;
+            this.selectedTime = globalTime;
+        }
         if (!someSelection && renderingUnselectedNodes) {
             return 0;
         }
@@ -178,11 +184,11 @@ public abstract class AbstractNodeData {
 
         final int instanceCount;
         final float sizeMultiplier = isRenderingOutsideCircle ? 1f : INSIDE_CIRCLE_SIZE;
-
+        final float colorLightenFactor =
+            engine.getRenderingOptions().getLightenNonSelectedFactor();
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
-            final float colorLightenFactor =
-                engine.getRenderingOptions().getLightenNonSelectedFactor();
+
             final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
             diskModel.useProgramWithSelectionUnselected(
                 gl,
@@ -192,7 +198,7 @@ public abstract class AbstractNodeData {
                 colorLightenFactor,
                 colorMultiplier,
                 globalTime,
-                selectedTime
+                this.selectedTime
             );
 
             setupSecondaryVertexArrayAttributes(gl, engine);
@@ -207,13 +213,14 @@ public abstract class AbstractNodeData {
                     sizeMultiplier,
                     colorMultiplier,
                     globalTime,
-                    selectedTime
+                    this.selectedTime
                 );
             } else {
                 final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
                 diskModel.useProgram(gl, mvpFloats, sizeMultiplier, colorMultiplier,
                     globalTime,
-                    selectedTime);
+                    this.selectedTime,
+                    colorLightenFactor,backgroundColorFloats);
             }
 
             setupVertexArrayAttributes(gl, engine);
