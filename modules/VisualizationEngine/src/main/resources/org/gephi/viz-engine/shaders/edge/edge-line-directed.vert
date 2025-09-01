@@ -1,3 +1,5 @@
+//#include "../common.glsl"
+
 //#if with_selection
 //#if selected
 //#outname "edge-line-directed_with_selection_selected.vert"
@@ -5,7 +7,7 @@
 //#outname "edge-line-directed_with_selection_unselected.vert"
 //#endif
 //#endif
-#version 330
+
 #define ARROW_HEIGHT 1.1
 
 uniform mat4 mvp;
@@ -53,7 +55,7 @@ void main() {
     gl_Position = mvp * vec4(edgeVert + position, 0.0, 1.0);
 
     float animationTime = globalTime-selectionTime;
-    float animationCurve = 1.-exp(-5.*animationTime);
+    float animationCurve = _animationSlope(animationTime);
     //bgra -> rgba because Java color is argb big-endian
     vec4 color = elementColor.bgra / 255.0;
 
