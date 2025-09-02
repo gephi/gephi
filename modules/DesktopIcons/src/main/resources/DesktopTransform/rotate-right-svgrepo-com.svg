@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   fill="#000000"
+   width="32"
+   height="35.999973"
+   viewBox="0 0 76.8 86.399936"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="rotate-right-svgrepo-com.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.10625"
+     inkscape:cx="310.96045"
+     inkscape:cy="400"
+     inkscape:window-width="1920"
+     inkscape:window-height="1129"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="m 19.2,9.4399576 h 5.22085 L 18.37497,3.3941223 21.76909,0 33.60908,11.839986 21.90027,23.548797 18.50615,20.154719 24.4209,14.239969 H 19.2 c -7.95289,0 -14.39999,6.4471 -14.39999,14.399989 H 0 C 0,18.036076 8.59612,9.4399576 19.2,9.4399576 Z m 0,28.9599974 c 0,-5.301896 4.29804,-9.599977 9.59998,-9.599977 h 38.40018 c 5.30189,0 9.59984,4.298081 9.59984,9.599977 V 76.80009 c 0,5.301896 -4.29795,9.599843 -9.59984,9.599843 H 28.79998 C 23.49804,86.399933 19.2,82.101986 19.2,76.80009 Z m 9.59998,-4.799966 h 38.40018 c 2.65095,0 4.79969,2.149018 4.79969,4.799966 V 76.80009 c 0,2.650948 -2.14874,4.799696 -4.79969,4.799696 H 28.79998 c -2.65095,0 -4.80001,-2.148748 -4.80001,-4.799696 V 38.399955 c 0,-2.650948 2.14906,-4.799966 4.80001,-4.799966 z"
+     id="path1"
+     style="stroke-width:0.045" />
+</svg>

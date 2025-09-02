@@ -682,6 +682,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-transformation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-import</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1371,6 +1376,7 @@
         <module>modules/DesktopFilters</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
+        <module>modules/DesktopTransformation</module>
         <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProject</module>

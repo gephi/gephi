@@ -376,6 +376,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-transformation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-import</artifactId>
         </dependency>
         <dependency>
