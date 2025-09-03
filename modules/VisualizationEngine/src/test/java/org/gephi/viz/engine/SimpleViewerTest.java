@@ -83,7 +83,7 @@ public class SimpleViewerTest {
                 )
             );
 
-            final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
+            final OpenGLOptions glOptions = engine.getOpenGLOptions();
             glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
             glOptions.setDisableInstancedDrawing(DISABLE_INSTANCED_RENDERING);
             glOptions.setDisableVAOS(DISABLE_VAOS);

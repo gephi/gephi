@@ -1,5 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
@@ -8,6 +9,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
@@ -46,12 +48,14 @@ public class InstancedEdgeData extends AbstractEdgeData {
         );
     }
 
-    public void drawInstanced(GL3ES3 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {
+    public void drawInstanced(GL3ES3 gl, RenderingLayer layer, VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                              float[] mvpFloats) {
         drawUndirected(gl, engine, layer, mvpFloats);
         drawDirected(gl, engine, layer, mvpFloats);
     }
 
-    private void drawUndirected(GL3ES3 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
+    private void drawUndirected(GL3ES3 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine, RenderingLayer layer,
+                                float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, engine, mvpFloats);
 
         lineModelUndirected.drawInstanced(gl, instanceCount);
@@ -59,7 +63,8 @@ public class InstancedEdgeData extends AbstractEdgeData {
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
-    private void drawDirected(GL3ES3 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
+    private void drawDirected(GL3ES3 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine, RenderingLayer layer,
+                              float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, engine, mvpFloats);
 
         lineModelDirected.drawInstanced(gl, instanceCount);

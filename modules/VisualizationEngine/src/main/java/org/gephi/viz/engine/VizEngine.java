@@ -31,14 +31,12 @@ import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.TimeUtils;
+import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  * @param <R> Rendering target
@@ -71,6 +69,9 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     private final Vector2f translate = new Vector2f();
 
+    // OpenGL options
+    private final OpenGLOptions openGLOptions;
+
     //Renderers:
     private final Set<Renderer<R>> allRenderers = new LinkedHashSet<>();
     private final List<Renderer<R>> renderersPipeline = new ArrayList<>();
@@ -94,14 +95,9 @@ public class VizEngine<R extends RenderingTarget, I> {
     //Settings:
     private int maxWorldUpdatesPerSecond = DEFAULT_MAX_WORLD_UPDATES_PER_SECOND;
 
-    //Lookup for communication between components:
-    private final InstanceContent instanceContent;
-    private final AbstractLookup lookup;
-
     public VizEngine(R renderingTarget) {
         this.engineModel = VizEngineModel.createEmptyModel();
-        this.instanceContent = new InstanceContent();
-        this.lookup = new AbstractLookup(instanceContent);
+        this.openGLOptions = new OpenGLOptions();
         this.renderingTarget = Objects.requireNonNull(renderingTarget, "renderingTarget mandatory");
         loadModelViewProjection();
     }
@@ -120,6 +116,10 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     public R getRenderingTarget() {
         return renderingTarget;
+    }
+
+    public OpenGLOptions getOpenGLOptions() {
+        return openGLOptions;
     }
 
     private <T extends PipelinedExecutor> void setupPipelineOfElements(Set<T> allAvailable, List<T> dest,
@@ -563,7 +563,6 @@ public class VizEngine<R extends RenderingTarget, I> {
 
             final VizEngineModel localEngineModel = this.engineModel;
             allUpdatersCompletableFuture = updaterManagerThread.submit(() -> {
-                System.out.println("Read open: "+localEngineModel.getGraphModel().getGraph().getLock().getReadHoldCount()+" "+localEngineModel);
                 localEngineModel.getGraphModel().getGraph().readLock();
 
                 // Create a world update future for each updated
@@ -575,23 +574,10 @@ public class VizEngine<R extends RenderingTarget, I> {
                 CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
                 localEngineModel.getGraphModel().getGraph().readUnlock();
-                System.out.println("Read close: "+localEngineModel.getGraphModel().getGraph().getLock().getReadHoldCount());
             });
 
             lastWorldUpdateMillis = TimeUtils.getTimeMillis();
         }
-    }
-
-    public Lookup getLookup() {
-        return lookup;
-    }
-
-    public void addToLookup(Object instance) {
-        instanceContent.add(instance);
-    }
-
-    public void removeFromLookup(Object instance) {
-        instanceContent.remove(instance);
     }
 
     public GraphModel getGraphModel() {
@@ -705,7 +691,7 @@ public class VizEngine<R extends RenderingTarget, I> {
         modelViewProjectionMatrix.transformProject(x, y, 0f, ndc); // ndc in [-1, 1]
 
         // 2) NDC -> pixels (origin at top-left)
-        final float halfW = width  / 2f;
+        final float halfW = width / 2f;
         final float halfH = height / 2f;
 
         final float sx = halfW + ndc.x * halfW;   // map [-1,1] -> [0,width]

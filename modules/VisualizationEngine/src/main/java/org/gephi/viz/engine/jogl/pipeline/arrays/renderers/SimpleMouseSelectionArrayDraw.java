@@ -11,6 +11,7 @@ import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     float radius;
 
@@ -59,7 +60,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final NodeDiskVertexDataGenerator generator64;
     private final int circleVertexCount64;
 
-    public SimpleMouseSelectionArrayDraw(VizEngine engine) {
+    public SimpleMouseSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         generator64 = new NodeDiskVertexDataGenerator(64);
         circleVertexCount64 = generator64.getVertexCount();
 
@@ -201,8 +202,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
-            engine.getLookup().lookup(GLCapabilitiesSummary.class),
-            engine.getLookup().lookup(OpenGLOptions.class)
+            target.getGlCapabilitiesSummary(),
+            engine.getOpenGLOptions()
         );
     }
 

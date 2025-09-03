@@ -1,5 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced.renderers;
 
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.InstancedDraw;
@@ -14,10 +15,10 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  */
 public class EdgeRendererInstanced extends AbstractEdgeRenderer {
 
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final InstancedEdgeData edgeData;
 
-    public EdgeRendererInstanced(VizEngine engine, InstancedEdgeData edgeData) {
+    public EdgeRendererInstanced(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, InstancedEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
     }

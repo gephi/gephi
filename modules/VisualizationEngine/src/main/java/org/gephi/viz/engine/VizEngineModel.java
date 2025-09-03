@@ -1,12 +1,10 @@
 package org.gephi.viz.engine;
 
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.gephi.viz.engine.status.GraphSelectionImpl;
 import org.gephi.viz.engine.structure.GraphIndexImpl;
-import org.openide.util.Lookup;
 
 public class VizEngineModel {
 
@@ -46,8 +44,7 @@ public class VizEngineModel {
     }
 
     public static VizEngineModel createEmptyModel() {
-        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel emptyModel = controller.newGraphModel();
+        GraphModel emptyModel = GraphModel.Factory.newInstance();
         return new VizEngineModel(emptyModel, new GraphRenderingOptionsImpl());
     }
 }

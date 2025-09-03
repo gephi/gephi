@@ -83,8 +83,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
         vertexGLBuffer.unbind(gl);
 
         vao = new SelectionRectangleVAO(
-            engine.getLookup().lookup(GLCapabilitiesSummary.class),
-            engine.getLookup().lookup(OpenGLOptions.class)
+            engine.getRenderingTarget().getGlCapabilitiesSummary(),
+            engine.getOpenGLOptions()
         );
     }
 

@@ -1,9 +1,9 @@
 package org.gephi.viz.engine.jogl.availability;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 
 /**
  *
@@ -15,14 +15,12 @@ public class InstancedDraw {
         return 50;
     }
 
-    public static boolean isAvailable(VizEngine engine, GLAutoDrawable drawable) {
-        if (engine.getLookup().lookup(OpenGLOptions.class).isDisableIndirectDrawing()) {
+    public static boolean isAvailable(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, GLAutoDrawable drawable) {
+        if (engine.getOpenGLOptions().isDisableIndirectDrawing()) {
             return false;
         }
 
-        final GLCapabilitiesSummary caps = engine.getLookup().lookup(GLCapabilitiesSummary.class);
-
         return drawable.getGLProfile().isGL2ES3()
-            && caps.isInstancingSupported();
+            && engine.getRenderingTarget().getGlCapabilitiesSummary().isInstancingSupported();
     }
 }
