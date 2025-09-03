@@ -572,6 +572,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>transformation-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>io-generator-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -603,6 +608,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>layout-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>transformation-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1291,7 +1301,7 @@
                                     <nohelp>true</nohelp>
                                     <detectLinks>false</detectLinks>
                                     <detectOfflineLinks>true</detectOfflineLinks>
-                                    <sourcepath>modules/LongTaskAPI/src/main/java;modules/DataLaboratoryAPI/src/main/java;modules/FiltersAPI/src/main/java;modules/GraphAPI/src/main/java;modules/ExportAPI/src/main/java;modules/GeneratorAPI/src/main/java;modules/ImportAPI/src/main/java;modules/LayoutAPI/src/main/java;modules/PerspectiveAPI/src/main/java;modules/PreviewAPI/src/main/java;modules/ProjectAPI/src/main/java;modules/AppearanceAPI/src/main/java;modules/StatisticsAPI/src/main/java;modules/TimelineAPI/src/main/java;modules/ToolsAPI/src/main/java;modules/VisualizationAPI/src/main/java;${project.build.directory}/graphstore-sources</sourcepath>
+                                    <sourcepath>modules/LongTaskAPI/src/main/java;modules/DataLaboratoryAPI/src/main/java;modules/FiltersAPI/src/main/java;modules/GraphAPI/src/main/java;modules/ExportAPI/src/main/java;modules/GeneratorAPI/src/main/java;modules/ImportAPI/src/main/java;modules/LayoutAPI/src/main/java;modules/TransformationAPI/src/main/java;modules/PerspectiveAPI/src/main/java;modules/PreviewAPI/src/main/java;modules/ProjectAPI/src/main/java;modules/AppearanceAPI/src/main/java;modules/StatisticsAPI/src/main/java;modules/TimelineAPI/src/main/java;modules/ToolsAPI/src/main/java;modules/VisualizationAPI/src/main/java;${project.build.directory}/graphstore-sources</sourcepath>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1411,6 +1421,8 @@
         <module>modules/StatisticsPlugin</module>
         <module>modules/StatisticsPluginUI</module>
         <module>modules/TimelineAPI</module>
+        <module>modules/TransformationAPI</module>
+        <module>modules/TransformationPlugin</module>
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>

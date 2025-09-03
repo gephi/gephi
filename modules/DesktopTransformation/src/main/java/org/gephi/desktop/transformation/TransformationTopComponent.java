@@ -43,9 +43,14 @@
 package org.gephi.desktop.transformation;
 
 import javax.swing.ImageIcon;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.transformation.spi.Transformation;
+import org.gephi.transformation.spi.TransformationBuilder;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -75,10 +80,12 @@ public final class TransformationTopComponent extends TopComponent {
     private final ImageIcon icon_scale_expand = ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
     private final ImageIcon icon_scale_reduce = ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
 
+    private  Transformation transformation;
     public TransformationTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TransformationTopComponent.class, "CTL_TransformationTopComponent"));
-
+        TransformationBuilder transformationBuilder = Lookup.getDefault().lookup(TransformationBuilder.class);
+        this.transformation = transformationBuilder.buildTransformation();
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         if (UIUtils.isAquaLookAndFeel()) {
@@ -156,9 +163,19 @@ public final class TransformationTopComponent extends TopComponent {
         panel_mirror.add(jLabel1);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_mirror_y, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_mirror_y.text")); // NOI18N
+        button_mirror_y.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_mirror_yActionPerformed(evt);
+            }
+        });
         jPanel5.add(button_mirror_y);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_mirror_x, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_mirror_x.text")); // NOI18N
+        button_mirror_x.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_mirror_xActionPerformed(evt);
+            }
+        });
         jPanel5.add(button_mirror_x);
 
         panel_mirror.add(jPanel5);
@@ -167,9 +184,19 @@ public final class TransformationTopComponent extends TopComponent {
         panel_rotate.add(jLabel2);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_left.text")); // NOI18N
+        button_rotate_left.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_rotate_leftActionPerformed(evt);
+            }
+        });
         jPanel6.add(button_rotate_left);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_right.text")); // NOI18N
+        button_rotate_right.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_rotate_rightActionPerformed(evt);
+            }
+        });
         jPanel6.add(button_rotate_right);
 
         panel_rotate.add(jPanel6);
@@ -178,9 +205,19 @@ public final class TransformationTopComponent extends TopComponent {
         panel_scale.add(jLabel3);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_expand, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_expand.text")); // NOI18N
+        button_expand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_expandActionPerformed(evt);
+            }
+        });
         panel_scale.add(button_expand);
 
         org.openide.awt.Mnemonics.setLocalizedText(button_reduce, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_reduce.text")); // NOI18N
+        button_reduce.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_reduceActionPerformed(evt);
+            }
+        });
         panel_scale.add(button_reduce);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -204,6 +241,60 @@ public final class TransformationTopComponent extends TopComponent {
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void button_mirror_yActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_yActionPerformed
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.mirror_y(graph);        // TODO add your handling code here:
+    }//GEN-LAST:event_button_mirror_yActionPerformed
+
+    private void button_mirror_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_xActionPerformed
+         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.mirror_x(graph); 
+    }//GEN-LAST:event_button_mirror_xActionPerformed
+
+    private void button_rotate_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
+          GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.rotate_left(graph);
+    }//GEN-LAST:event_button_rotate_leftActionPerformed
+
+    private void button_rotate_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
+       GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.rotate_right(graph);
+    }//GEN-LAST:event_button_rotate_rightActionPerformed
+
+    private void button_expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_expandActionPerformed
+         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.extend(graph);
+    }//GEN-LAST:event_button_expandActionPerformed
+
+    private void button_reduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reduceActionPerformed
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        GraphModel graphModel = graphController.getGraphModel();
+        Graph graph = graphModel.getGraphVisible();
+
+        transformation.reduce(graph);
+    }//GEN-LAST:event_button_reduceActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_expand;

@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+    <head>
+        <title>org.gephi.layout.spi</title>
+    </head>
+    <body>
+        <p>
+            Interfaces for creating new layout algorithms.
+        </p>
+        <h3>Create a new Layout</h3>
+        <ol>
+            <li>
+                Create a new module and set <code>LayoutAPI</code> and
+                <code>GraphAPI</code> as dependencies.
+            </li>
+            <li>
+                Create a new builder class by implementing <code>LayoutBuilder</code>
+            </li>
+            <li>
+                Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                be found by the system. Set <code>LayoutBuilder</code> as the
+                annotation parameter.
+            </li>
+            <li>
+                Create a new class that implements <code>Layout</code>. Set
+                instantiation code in <code>LayoutBuilder.buildLayout()</code>.
+            </li>
+        </ol>
+    </body>
+</html>

@@ -288,6 +288,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>transformation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
@@ -313,6 +317,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>transformation-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
