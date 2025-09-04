@@ -40,14 +40,15 @@ class TransformationPlugin implements Transformation {
     }
 
     private void rotation(Graph graph,float angle) {
+        // Current rotation isn't centered on barycenter
         graph.readLock();
         try {
-            double sin = Math.sin(-angle * Math.PI / 180);
-            double cos = Math.cos(-angle * Math.PI / 180);
+            final double sin = Math.sin(-angle * Math.PI / 180);
+            final double cos = Math.cos(-angle * Math.PI / 180);
             double px = 0f;
             double py = 0f;
 
-            for (Node n : graph.getNodes()) {
+            Arrays.stream(graph.getNodes().toArray()).parallel().forEach(n -> {
                 if (!n.isFixed()) {
                     double dx = n.x() - px;
                     double dy = n.y() - py;
@@ -55,7 +56,7 @@ class TransformationPlugin implements Transformation {
                     n.setX((float) (px + dx * cos - dy * sin));
                     n.setY((float) (py + dy * cos + dx * sin));
                 }
-            }
+            });
         } finally {
             graph.readUnlockAll();
         }

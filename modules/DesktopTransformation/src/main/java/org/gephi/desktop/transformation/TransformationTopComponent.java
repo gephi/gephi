@@ -43,14 +43,10 @@
 package org.gephi.desktop.transformation;
 
 import javax.swing.ImageIcon;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.transformation.spi.Transformation;
-import org.gephi.transformation.spi.TransformationBuilder;
+import org.gephi.transformation.api.TransformationController;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -80,12 +76,12 @@ public final class TransformationTopComponent extends TopComponent {
     private final ImageIcon icon_scale_expand = ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
     private final ImageIcon icon_scale_reduce = ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
 
-    private  Transformation transformation;
+    private TransformationController transformationController;
     public TransformationTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TransformationTopComponent.class, "CTL_TransformationTopComponent"));
-        TransformationBuilder transformationBuilder = Lookup.getDefault().lookup(TransformationBuilder.class);
-        this.transformation = transformationBuilder.buildTransformation();
+
+        this.transformationController = Lookup.getDefault().lookup(TransformationController.class);
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         if (UIUtils.isAquaLookAndFeel()) {
@@ -243,57 +239,37 @@ public final class TransformationTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_mirror_yActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_yActionPerformed
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
 
-        transformation.mirror_y(graph);        // TODO add your handling code here:
+        transformationController.mirror_y();        // TODO add your handling code here:
     }//GEN-LAST:event_button_mirror_yActionPerformed
 
     private void button_mirror_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_xActionPerformed
-         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
-
-        transformation.mirror_x(graph); 
+        transformationController.mirror_x();
     }//GEN-LAST:event_button_mirror_xActionPerformed
 
     private void button_rotate_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
-          GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
 
-        transformation.rotate_left(graph);
+        transformationController.rotate_left();
     }//GEN-LAST:event_button_rotate_leftActionPerformed
 
     private void button_rotate_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
-       GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
 
-        transformation.rotate_right(graph);
+        transformationController.rotate_right();
     }//GEN-LAST:event_button_rotate_rightActionPerformed
 
     private void button_expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_expandActionPerformed
-         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
 
-        transformation.extend(graph);
+        transformationController.extend();
     }//GEN-LAST:event_button_expandActionPerformed
 
     private void button_reduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reduceActionPerformed
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraphVisible();
-
-        transformation.reduce(graph);
+        transformationController.reduce();
     }//GEN-LAST:event_button_reduceActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
