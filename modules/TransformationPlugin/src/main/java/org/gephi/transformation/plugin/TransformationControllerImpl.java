@@ -3,23 +3,22 @@ package org.gephi.transformation.plugin;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-
 import org.gephi.transformation.api.TransformationController;
 import org.gephi.transformation.spi.Transformation;
 import org.gephi.transformation.spi.TransformationBuilder;
 import org.openide.util.Lookup;
-
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 
-@ServiceProviders({
-    @ServiceProvider(service = TransformationController.class)})
+
+@ServiceProvider(service = TransformationController.class)
 public class TransformationControllerImpl implements TransformationController {
-    private Transformation transformation;
+    private final Transformation transformation;
+
     public TransformationControllerImpl() {
         TransformationBuilder transformationBuilder = Lookup.getDefault().lookup(TransformationBuilder.class);
         this.transformation = transformationBuilder.buildTransformation();
     }
+
     private Graph get_graph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
