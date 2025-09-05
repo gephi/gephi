@@ -41,6 +41,7 @@
                         <publicPackage>org.gephi.graph.spi</publicPackage>
                         <publicPackage>org.gephi.graph.api</publicPackage>
                         <publicPackage>org.gephi.graph.api.types</publicPackage>
+                        <publicPackage>org.gephi.graph.impl</publicPackage>
                         <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
                     </publicPackages>
                 </configuration>

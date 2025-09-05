@@ -26,7 +26,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>graphstore</artifactId>
+            <artifactId>graph-api</artifactId>
         </dependency>
 
         <!-- JOML -->
