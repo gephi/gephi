@@ -10,6 +10,7 @@ public interface TransformationController {
     void rotate_left_1deg();
 
     void rotate_right_1deg();
+
     void rotate_left_45deg();
 
     void rotate_right_45deg();
