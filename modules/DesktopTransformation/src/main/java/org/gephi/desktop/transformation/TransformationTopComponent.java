@@ -71,9 +71,12 @@ public final class TransformationTopComponent extends TopComponent {
     private final ImageIcon icon_mirror_y = ImageUtilities.loadImageIcon("DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
     private final ImageIcon icon_mirror_x = ImageUtilities.loadImageIcon("DesktopTransform/measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg", false);
 
-    private final ImageIcon icon_rotate_right = ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com.svg", false);
-    private final ImageIcon icon_rotate_left = ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com.svg", false);
+    private final ImageIcon icon_rotate_right_1deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_1deg.svg", false);
+    private final ImageIcon icon_rotate_left_1deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_1deg.svg", false);
 
+    private final ImageIcon icon_rotate_right_45deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_45deg.svg", false);
+    private final ImageIcon icon_rotate_left_45deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_45deg.svg", false);
+    
     private final ImageIcon icon_scale_expand = ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
     private final ImageIcon icon_scale_reduce = ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
 
@@ -146,8 +149,11 @@ public final class TransformationTopComponent extends TopComponent {
         panel_rotate = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        button_rotate_left = new javax.swing.JButton(this.icon_rotate_left);
-        button_rotate_right = new javax.swing.JButton(this.icon_rotate_right);
+        button_rotate_left = new javax.swing.JButton(this.icon_rotate_left_1deg);
+        button_rotate_right = new javax.swing.JButton(this.icon_rotate_right_1deg);
+        panel_rotate1 = new javax.swing.JPanel();
+        button_rotate_left_45deg = new javax.swing.JButton(this.icon_rotate_left_45deg);
+        button_rotate_right_45deg = new javax.swing.JButton(this.icon_rotate_right_45deg);
         panel_scale = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         button_expand = new javax.swing.JButton(this.icon_scale_expand);
@@ -156,6 +162,7 @@ public final class TransformationTopComponent extends TopComponent {
         setLayout(new java.awt.BorderLayout());
 
         panel_mirror.setName(""); // NOI18N
+        panel_mirror.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel1.text")); // NOI18N
         panel_mirror.add(jLabel1);
@@ -178,6 +185,8 @@ public final class TransformationTopComponent extends TopComponent {
 
         panel_mirror.add(jPanel5);
 
+        panel_rotate.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel2.text")); // NOI18N
         panel_rotate.add(jLabel2);
 
@@ -198,6 +207,26 @@ public final class TransformationTopComponent extends TopComponent {
         jPanel6.add(button_rotate_right);
 
         panel_rotate.add(jPanel6);
+
+        panel_rotate1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left_45deg, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_left_45deg.text")); // NOI18N
+        button_rotate_left_45deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_rotate_left_45degActionPerformed(evt);
+            }
+        });
+        panel_rotate1.add(button_rotate_left_45deg);
+
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right_45deg, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_right_45deg.text")); // NOI18N
+        button_rotate_right_45deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_rotate_right_45degActionPerformed(evt);
+            }
+        });
+        panel_rotate1.add(button_rotate_right_45deg);
+
+        panel_scale.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel3.text")); // NOI18N
         panel_scale.add(jLabel3);
@@ -221,20 +250,29 @@ public final class TransformationTopComponent extends TopComponent {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panel_rotate1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(panel_rotate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -254,13 +292,13 @@ public final class TransformationTopComponent extends TopComponent {
     private void button_rotate_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
 
 
-        transformationController.rotate_left();
+        transformationController.rotate_left_1deg();
     }//GEN-LAST:event_button_rotate_leftActionPerformed
 
     private void button_rotate_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
 
 
-        transformationController.rotate_right();
+        transformationController.rotate_right_1deg();
     }//GEN-LAST:event_button_rotate_rightActionPerformed
 
     private void button_expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_expandActionPerformed
@@ -274,13 +312,23 @@ public final class TransformationTopComponent extends TopComponent {
         transformationController.reduce();
     }//GEN-LAST:event_button_reduceActionPerformed
 
+    private void button_rotate_left_45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_left_45degActionPerformed
+        transformationController.rotate_left_45deg();
+    }//GEN-LAST:event_button_rotate_left_45degActionPerformed
+
+    private void button_rotate_right_45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_right_45degActionPerformed
+        transformationController.rotate_right_45deg();
+    }//GEN-LAST:event_button_rotate_right_45degActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_expand;
     private javax.swing.JButton button_mirror_x;
     private javax.swing.JButton button_mirror_y;
     private javax.swing.JButton button_reduce;
     private javax.swing.JButton button_rotate_left;
+    private javax.swing.JButton button_rotate_left_45deg;
     private javax.swing.JButton button_rotate_right;
+    private javax.swing.JButton button_rotate_right_45deg;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -289,8 +337,8 @@ public final class TransformationTopComponent extends TopComponent {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel panel_mirror;
     private javax.swing.JPanel panel_rotate;
+    private javax.swing.JPanel panel_rotate1;
     private javax.swing.JPanel panel_scale;
-
     // End of variables declaration//GEN-END:variables
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

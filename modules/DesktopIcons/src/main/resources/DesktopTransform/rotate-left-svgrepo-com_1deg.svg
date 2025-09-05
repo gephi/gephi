@@ -8,7 +8,7 @@
    viewBox="0 0 76.8 86.399835"
    version="1.1"
    id="svg1"
-   sodipodi:docname="rotate-left-svgrepo-com.svg"
+   sodipodi:docname="rotate-left-svgrepo-com_1deg.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,9 +25,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.10625"
-     inkscape:cx="399.54802"
-     inkscape:cy="400"
+     inkscape:zoom="25.03158"
+     inkscape:cx="7.1909164"
+     inkscape:cy="25.34798"
      inkscape:window-width="1920"
      inkscape:window-height="1129"
      inkscape:window-x="-8"
@@ -40,4 +40,9 @@
      d="m 56.31514,20.154696 -5.915238,-5.915284 h 7.199986 c 7.952834,0 14.399971,6.447093 14.399971,14.399972 H 76.8 C 76.8,18.03556 68.203667,9.4394516 57.599888,9.4394516 H 50.401252 L 56.44654,3.3941184 53.052196,0 41.212405,11.839972 52.921247,23.548769 Z m 1.284748,18.245214 c 0,-5.30189 -4.297942,-9.599966 -9.599832,-9.599966 H 9.5999663 C 4.2980766,28.799944 0,33.09802 0,38.39991 V 76.8 c 0,5.30189 4.2980766,9.599831 9.5999663,9.599831 H 48.000056 c 5.30189,0 9.599832,-4.297941 9.599832,-9.599831 z M 48.000056,33.599949 H 9.5999663 c -2.6509449,0 -4.7999607,2.149016 -4.7999607,4.799961 V 76.8 c 0,2.650945 2.1490158,4.799691 4.7999607,4.799691 H 48.000056 c 2.650945,0 4.799691,-2.148746 4.799691,-4.799691 V 38.39991 c 0,-2.650945 -2.148746,-4.799961 -4.799691,-4.799961 z"
      id="path1"
      style="stroke-width:0.0449999" />
+  <path
+     d="m 17.609048,47.416011 -1.298313,1.298313 h -5.556779 v -4.673926 h 3.635276 l 3.219816,-3.219817 v -3.635276 h 4.673927 v 41.442152 h -4.673927 z m 21.967456,-2.336963 -3.219816,-3.219816 h -1.506043 l -3.219817,3.219816 v 1.506043 l 3.219817,3.219816 h 1.506043 l 3.219816,-3.219816 z m -1.298313,-7.893743 5.97224,5.97224 v 5.349049 l -5.97224,5.97224 h -5.34905 l -5.97224,-5.97224 v -5.349049 l 5.97224,-5.97224 z"
+     id="text1"
+     style="font-size:53.1789px;line-height:1;font-family:Eightgon;-inkscape-font-specification:Eightgon;letter-spacing:0px;stroke-width:7.97686;stroke-linejoin:bevel;paint-order:stroke markers fill"
+     aria-label="1°" />
 </svg>

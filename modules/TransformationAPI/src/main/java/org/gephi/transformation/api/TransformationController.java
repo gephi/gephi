@@ -7,9 +7,12 @@ public interface TransformationController {
 
     void mirror_y();
 
-    void rotate_left();
+    void rotate_left_1deg();
 
-    void rotate_right();
+    void rotate_right_1deg();
+    void rotate_left_45deg();
+
+    void rotate_right_45deg();
 
     void extend();
 

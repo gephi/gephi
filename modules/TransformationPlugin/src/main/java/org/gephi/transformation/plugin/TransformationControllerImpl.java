@@ -17,8 +17,10 @@ public class TransformationControllerImpl implements TransformationController {
 
     private final MirrorXAxis xAxis;
     private final MirrorYAxis yAxis;
-    private final Rotation rotation_right;
-    private final Rotation rotation_left;
+    private final Rotation rotation_right_1deg;
+    private final Rotation rotation_left_1deg;
+    private final Rotation rotation_right_45deg;
+    private final Rotation rotation_left_45deg;
     private final Scale extend;
     private final Scale reduce;
 
@@ -27,8 +29,10 @@ public class TransformationControllerImpl implements TransformationController {
 
         this.xAxis = new MirrorXAxis();
         this.yAxis = new MirrorYAxis();
-        this.rotation_right = new Rotation(1.f);
-        this.rotation_left = new Rotation(-1.f);
+        this.rotation_right_1deg = new Rotation(1.f);
+        this.rotation_left_1deg = new Rotation(-1.f);
+        this.rotation_right_45deg = new Rotation(45.f);
+        this.rotation_left_45deg = new Rotation(-45.f);
         this.extend = new Scale(1.1f);
         this.reduce = new Scale(.9f);
 
@@ -53,13 +57,23 @@ public class TransformationControllerImpl implements TransformationController {
     }
 
     @Override
-    public void rotate_left() {
-        rotation_left.apply(get_graph());
+    public void rotate_left_1deg() {
+        rotation_left_1deg.apply(get_graph());
     }
 
     @Override
-    public void rotate_right() {
-        rotation_right.apply(get_graph());
+    public void rotate_right_1deg() {
+        rotation_right_1deg.apply(get_graph());
+    }
+
+    @Override
+    public void rotate_left_45deg() {
+        rotation_left_45deg.apply(get_graph());
+    }
+
+    @Override
+    public void rotate_right_45deg() {
+        rotation_right_45deg.apply(get_graph());
     }
 
     @Override
