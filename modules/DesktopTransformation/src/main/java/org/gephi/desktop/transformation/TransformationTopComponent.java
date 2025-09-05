@@ -42,7 +42,6 @@
 
 package org.gephi.desktop.transformation;
 
-import javax.swing.ImageIcon;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -56,15 +55,17 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import javax.swing.*;
+
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.transformation//Transformation//EN",
-    autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "TransformationTopComponent",
-    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.transformation.TransformationTopComponent")
 @ActionReference(path = "Menu/Window", position = 700)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_TransformationTopComponent",
-    preferredID = "TransformationTopComponent")
+        preferredID = "TransformationTopComponent")
 public final class TransformationTopComponent extends TopComponent {
 
     private final ImageIcon icon_mirror_y = ImageUtilities.loadImageIcon("DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
@@ -76,7 +77,8 @@ public final class TransformationTopComponent extends TopComponent {
     private final ImageIcon icon_scale_expand = ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
     private final ImageIcon icon_scale_reduce = ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
 
-    private TransformationController transformationController;
+    private final TransformationController transformationController;
+
     public TransformationTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TransformationTopComponent.class, "CTL_TransformationTopComponent"));
@@ -85,7 +87,7 @@ public final class TransformationTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         if (UIUtils.isAquaLookAndFeel()) {
-            
+
         }
 
 
@@ -219,20 +221,20 @@ public final class TransformationTopComponent extends TopComponent {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -288,6 +290,7 @@ public final class TransformationTopComponent extends TopComponent {
     private javax.swing.JPanel panel_mirror;
     private javax.swing.JPanel panel_rotate;
     private javax.swing.JPanel panel_scale;
+
     // End of variables declaration//GEN-END:variables
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
