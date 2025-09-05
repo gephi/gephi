@@ -4,19 +4,34 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.transformation.api.TransformationController;
-import org.gephi.transformation.spi.Transformation;
-import org.gephi.transformation.spi.TransformationBuilder;
+import org.gephi.transformation.plugin.operations.MirrorXAxis;
+import org.gephi.transformation.plugin.operations.MirrorYAxis;
+import org.gephi.transformation.plugin.operations.Rotation;
+import org.gephi.transformation.plugin.operations.Scale;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 
 @ServiceProvider(service = TransformationController.class)
 public class TransformationControllerImpl implements TransformationController {
-    private final Transformation transformation;
+
+    private final MirrorXAxis xAxis;
+    private final MirrorYAxis yAxis;
+    private final Rotation rotation_right;
+    private final Rotation rotation_left;
+    private final Scale extend;
+    private final Scale reduce;
+
 
     public TransformationControllerImpl() {
-        TransformationBuilder transformationBuilder = Lookup.getDefault().lookup(TransformationBuilder.class);
-        this.transformation = transformationBuilder.buildTransformation();
+
+        this.xAxis = new MirrorXAxis();
+        this.yAxis = new MirrorYAxis();
+        this.rotation_right = new Rotation(1.f);
+        this.rotation_left = new Rotation(-1.f);
+        this.extend = new Scale(1.1f);
+        this.reduce = new Scale(.9f);
+
     }
 
     private Graph get_graph() {
@@ -29,31 +44,31 @@ public class TransformationControllerImpl implements TransformationController {
 
     @Override
     public void mirror_x() {
-        transformation.mirror_x(get_graph());
+        xAxis.apply(get_graph());
     }
 
     @Override
     public void mirror_y() {
-        transformation.mirror_y(get_graph());
+       yAxis.apply(get_graph());
     }
 
     @Override
     public void rotate_left() {
-        transformation.rotate_left(get_graph());
+        rotation_left.apply(get_graph());
     }
 
     @Override
     public void rotate_right() {
-        transformation.rotate_right(get_graph());
+        rotation_right.apply(get_graph());
     }
 
     @Override
     public void extend() {
-        transformation.extend(get_graph());
+        extend.apply(get_graph());
     }
 
     @Override
     public void reduce() {
-        transformation.reduce(get_graph());
+        reduce.apply(get_graph());
     }
 }
