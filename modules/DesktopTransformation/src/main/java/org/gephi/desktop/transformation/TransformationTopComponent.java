@@ -42,6 +42,7 @@
 
 package org.gephi.desktop.transformation;
 
+import javax.swing.ImageIcon;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -55,30 +56,36 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
-import javax.swing.*;
-
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.transformation//Transformation//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "TransformationTopComponent",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.transformation.TransformationTopComponent")
 @ActionReference(path = "Menu/Window", position = 700)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_TransformationTopComponent",
-        preferredID = "TransformationTopComponent")
+    preferredID = "TransformationTopComponent")
 public final class TransformationTopComponent extends TopComponent {
 
-    private final ImageIcon icon_mirror_y = ImageUtilities.loadImageIcon("DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
-    private final ImageIcon icon_mirror_x = ImageUtilities.loadImageIcon("DesktopTransform/measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg", false);
+    private final ImageIcon icon_mirror_y = ImageUtilities.loadImageIcon(
+        "DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
+    private final ImageIcon icon_mirror_x = ImageUtilities.loadImageIcon(
+        "DesktopTransform/measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg", false);
 
-    private final ImageIcon icon_rotate_right_1deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_1deg.svg", false);
-    private final ImageIcon icon_rotate_left_1deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_1deg.svg", false);
+    private final ImageIcon icon_rotate_right_1deg =
+        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_1deg.svg", false);
+    private final ImageIcon icon_rotate_left_1deg =
+        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_1deg.svg", false);
 
-    private final ImageIcon icon_rotate_right_45deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_45deg.svg", false);
-    private final ImageIcon icon_rotate_left_45deg = ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_45deg.svg", false);
-    
-    private final ImageIcon icon_scale_expand = ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
-    private final ImageIcon icon_scale_reduce = ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
+    private final ImageIcon icon_rotate_right_45deg =
+        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_45deg.svg", false);
+    private final ImageIcon icon_rotate_left_45deg =
+        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_45deg.svg", false);
+
+    private final ImageIcon icon_scale_expand =
+        ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
+    private final ImageIcon icon_scale_reduce =
+        ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
 
     private final TransformationController transformationController;
 
@@ -149,10 +156,9 @@ public final class TransformationTopComponent extends TopComponent {
         panel_rotate = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
+        button_rotate_left_45deg = new javax.swing.JButton(this.icon_rotate_left_45deg);
         button_rotate_left = new javax.swing.JButton(this.icon_rotate_left_1deg);
         button_rotate_right = new javax.swing.JButton(this.icon_rotate_right_1deg);
-        panel_rotate1 = new javax.swing.JPanel();
-        button_rotate_left_45deg = new javax.swing.JButton(this.icon_rotate_left_45deg);
         button_rotate_right_45deg = new javax.swing.JButton(this.icon_rotate_right_45deg);
         panel_scale = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -164,10 +170,14 @@ public final class TransformationTopComponent extends TopComponent {
         panel_mirror.setName(""); // NOI18N
         panel_mirror.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.jLabel1.text")); // NOI18N
         panel_mirror.add(jLabel1);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_mirror_y, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_mirror_y.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_mirror_y,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_mirror_y.text")); // NOI18N
         button_mirror_y.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_mirror_yActionPerformed(evt);
@@ -175,7 +185,9 @@ public final class TransformationTopComponent extends TopComponent {
         });
         jPanel5.add(button_mirror_y);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_mirror_x, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_mirror_x.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_mirror_x,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_mirror_x.text")); // NOI18N
         button_mirror_x.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_mirror_xActionPerformed(evt);
@@ -187,10 +199,24 @@ public final class TransformationTopComponent extends TopComponent {
 
         panel_rotate.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel2.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.jLabel2.text")); // NOI18N
         panel_rotate.add(jLabel2);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_left.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left_45deg,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_rotate_left_45deg.text")); // NOI18N
+        button_rotate_left_45deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_rotate_left_45degActionPerformed(evt);
+            }
+        });
+        jPanel6.add(button_rotate_left_45deg);
+
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_rotate_left.text")); // NOI18N
         button_rotate_left.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_rotate_leftActionPerformed(evt);
@@ -198,7 +224,9 @@ public final class TransformationTopComponent extends TopComponent {
         });
         jPanel6.add(button_rotate_left);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_right.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_rotate_right.text")); // NOI18N
         button_rotate_right.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_rotate_rightActionPerformed(evt);
@@ -206,32 +234,28 @@ public final class TransformationTopComponent extends TopComponent {
         });
         jPanel6.add(button_rotate_right);
 
-        panel_rotate.add(jPanel6);
-
-        panel_rotate1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_left_45deg, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_left_45deg.text")); // NOI18N
-        button_rotate_left_45deg.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_rotate_left_45degActionPerformed(evt);
-            }
-        });
-        panel_rotate1.add(button_rotate_left_45deg);
-
-        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right_45deg, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_rotate_right_45deg.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_rotate_right_45deg,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_rotate_right_45deg.text")); // NOI18N
         button_rotate_right_45deg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_rotate_right_45degActionPerformed(evt);
             }
         });
-        panel_rotate1.add(button_rotate_right_45deg);
+        jPanel6.add(button_rotate_right_45deg);
+
+        panel_rotate.add(jPanel6);
 
         panel_scale.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.jLabel3.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.jLabel3.text")); // NOI18N
         panel_scale.add(jLabel3);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_expand, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_expand.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_expand,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_expand.text")); // NOI18N
         button_expand.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_expandActionPerformed(evt);
@@ -239,7 +263,9 @@ public final class TransformationTopComponent extends TopComponent {
         });
         panel_scale.add(button_expand);
 
-        org.openide.awt.Mnemonics.setLocalizedText(button_reduce, org.openide.util.NbBundle.getMessage(TransformationTopComponent.class, "TransformationTopComponent.button_reduce.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(button_reduce,
+            org.openide.util.NbBundle.getMessage(TransformationTopComponent.class,
+                "TransformationTopComponent.button_reduce.text")); // NOI18N
         button_reduce.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_reduceActionPerformed(evt);
@@ -251,72 +277,80 @@ public final class TransformationTopComponent extends TopComponent {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panel_rotate1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 287,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 287,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 287,
+                            javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(panel_rotate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(panel_mirror, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(panel_rotate, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(23, 23, 23)
+                    .addComponent(panel_scale, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_mirror_yActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_yActionPerformed
+    private void button_mirror_yActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_yActionPerformed
 
 
         transformationController.mirror_y();        // TODO add your handling code here:
     }//GEN-LAST:event_button_mirror_yActionPerformed
 
-    private void button_mirror_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_xActionPerformed
+    private void button_mirror_xActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_xActionPerformed
 
         transformationController.mirror_x();
     }//GEN-LAST:event_button_mirror_xActionPerformed
 
-    private void button_rotate_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
+    private void button_rotate_leftActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
 
 
         transformationController.rotate_left_1deg();
     }//GEN-LAST:event_button_rotate_leftActionPerformed
 
-    private void button_rotate_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
+    private void button_rotate_rightActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
 
 
         transformationController.rotate_right_1deg();
     }//GEN-LAST:event_button_rotate_rightActionPerformed
 
-    private void button_expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_expandActionPerformed
+    private void button_expandActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_expandActionPerformed
 
 
         transformationController.extend();
     }//GEN-LAST:event_button_expandActionPerformed
 
-    private void button_reduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reduceActionPerformed
+    private void button_reduceActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reduceActionPerformed
 
         transformationController.reduce();
     }//GEN-LAST:event_button_reduceActionPerformed
 
-    private void button_rotate_left_45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_left_45degActionPerformed
+    private void button_rotate_left_45degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_left_45degActionPerformed
         transformationController.rotate_left_45deg();
     }//GEN-LAST:event_button_rotate_left_45degActionPerformed
 
-    private void button_rotate_right_45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_right_45degActionPerformed
+    private void button_rotate_right_45degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_right_45degActionPerformed
         transformationController.rotate_right_45deg();
     }//GEN-LAST:event_button_rotate_right_45degActionPerformed
 
@@ -337,8 +371,8 @@ public final class TransformationTopComponent extends TopComponent {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel panel_mirror;
     private javax.swing.JPanel panel_rotate;
-    private javax.swing.JPanel panel_rotate1;
     private javax.swing.JPanel panel_scale;
+
     // End of variables declaration//GEN-END:variables
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
