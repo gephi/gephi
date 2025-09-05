@@ -17,7 +17,7 @@ abstract public class Mirror implements TransformationOperation {
     public void transformation(Graph graph) {
         float barycenter = 0.f;
         for (Node n : graph.getNodes()) {
-            barycenter = nodeGetFunction.apply(n);
+            barycenter += nodeGetFunction.apply(n);
         }
         barycenter /= graph.getNodeCount();
         for (Node node : graph.getNodes()) {
