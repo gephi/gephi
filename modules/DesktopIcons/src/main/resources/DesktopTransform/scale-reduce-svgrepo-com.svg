@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   version="1.0"
+   id="Layer_1"
+   width="32"
+   height="32"
+   viewBox="0 0 2.56 2.56"
+   enable-background="new 0 0 64 64"
+   xml:space="preserve"
+   sodipodi:docname="scale-reduce-svgrepo-com.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs6" /><sodipodi:namedview
+   id="namedview6"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="1.10625"
+   inkscape:cx="399.54802"
+   inkscape:cy="400"
+   inkscape:window-width="1920"
+   inkscape:window-height="1129"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   points="1,30 1,1 63,1 63,63 34,63 "
+   id="polyline1"
+   transform="scale(0.04)" />
+<g
+   id="g6"
+   transform="scale(0.04)">
+	<g
+   id="g5">
+		<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   points="31,35 31,33 29,33   "
+   id="polyline2" />
+		
+			<line
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   stroke-dasharray="4, 2"
+   x1="27"
+   y1="33"
+   x2="4"
+   y2="33"
+   id="line2" />
+		<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   points="3,33 1,33 1,35   "
+   id="polyline3" />
+		
+			<line
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   stroke-dasharray="4, 2"
+   x1="1"
+   y1="37"
+   x2="1"
+   y2="60"
+   id="line3" />
+		<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   points="1,61 1,63 3,63   "
+   id="polyline4" />
+		
+			<line
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   stroke-dasharray="4, 2"
+   x1="5"
+   y1="63"
+   x2="28"
+   y2="63"
+   id="line4" />
+		<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   points="29,63 31,63 31,61   "
+   id="polyline5" />
+		
+			<line
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-miterlimit="10"
+   stroke-dasharray="4, 2"
+   x1="31"
+   y1="59"
+   x2="31"
+   y2="36"
+   id="line5" />
+	</g>
+</g>
+<polyline
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-linejoin="bevel"
+   stroke-miterlimit="10"
+   points="41,12 41,23   52,23 "
+   id="polyline6"
+   transform="scale(0.04)" />
+<line
+   fill="none"
+   stroke="#000000"
+   stroke-width="0.08"
+   stroke-miterlimit="10"
+   x1="1.64"
+   y1="0.92000002"
+   x2="2.28"
+   y2="0.28"
+   id="line6" />
+</svg>
