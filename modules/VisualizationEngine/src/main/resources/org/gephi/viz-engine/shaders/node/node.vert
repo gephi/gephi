@@ -1,25 +1,12 @@
 //#include "../common.glsl"
 
-//#if with_selection
-//#if selected
-//#outname "node_with_selection_selected.vert"
-//#else
-//#outname "node_with_selection_unselected.vert"
-//#endif
-//#endif
-
 
 uniform mat4 mvp;
 uniform float sizeMultiplier;
 uniform float colorMultiplier;
 uniform vec4 backgroundColor;
 uniform float colorLightenFactor;
-//#if with_selection
-    //#if !selected
 
-
-    //#endif
-//#endif
 uniform float globalTime;
 uniform float selectionTime;
 
@@ -39,18 +26,8 @@ void main() {
     //bgra -> rgba because Java color is argb big-endian
     vec4 color = elementColor.bgra / 255.0;
 
-    //#if with_selection
-        //#if selected
-    color.rgb = color.rgb * colorMultiplier ;
-
-        //#else
     color.rgb = color.rgb * colorMultiplier;
-    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor*animationCurve*1.1);
-        //#endif
-    //#else
-    color.rgb = color.rgb * colorMultiplier;
-    color.rgb = mix(color.rgb, backgroundColor.rgb,colorLightenFactor*(1.-animationCurve));
-    //#endif
+    color.rgb = mix(color.rgb, backgroundColor.rgb,colorLightenFactor*(1.-animationCurve));//#endif
 
     fragColor = color;
 }
