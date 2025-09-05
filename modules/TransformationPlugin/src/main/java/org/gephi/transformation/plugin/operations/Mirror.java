@@ -20,11 +20,10 @@ abstract public class Mirror implements TransformationOperation {
         }
         barycenter /= graph.getNodeCount();
         for (Node node : graph.getNodes()) {
-            if (node.isFixed()) {
-                return;
+            if (!node.isFixed()) {
+                float delta = ((nodeGetFunction.apply(node) - barycenter) * -1.0f);
+                nodeSetFunction.accept(node, barycenter + delta);
             }
-            float delta = ((nodeGetFunction.apply(node) - barycenter) * -1.0f);
-            nodeSetFunction.accept(node, barycenter + delta);
         }
     }
 }

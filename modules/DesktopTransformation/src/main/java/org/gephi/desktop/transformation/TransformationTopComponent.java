@@ -308,27 +308,27 @@ public final class TransformationTopComponent extends TopComponent {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_yActionPerformed
 
 
-        transformationController.mirror_y();        // TODO add your handling code here:
+        transformationController.mirrorY();        // TODO add your handling code here:
     }//GEN-LAST:event_button_mirror_yActionPerformed
 
     private void button_mirror_xActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_mirror_xActionPerformed
 
-        transformationController.mirror_x();
+        transformationController.mirrorX();
     }//GEN-LAST:event_button_mirror_xActionPerformed
 
     private void button_rotate_leftActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_leftActionPerformed
 
 
-        transformationController.rotate_left_1deg();
+        transformationController.rotateLeft1Deg();
     }//GEN-LAST:event_button_rotate_leftActionPerformed
 
     private void button_rotate_rightActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_rightActionPerformed
 
 
-        transformationController.rotate_right_1deg();
+        transformationController.rotateRight1Deg();
     }//GEN-LAST:event_button_rotate_rightActionPerformed
 
     private void button_expandActionPerformed(
@@ -346,12 +346,12 @@ public final class TransformationTopComponent extends TopComponent {
 
     private void button_rotate_left_45degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_left_45degActionPerformed
-        transformationController.rotate_left_45deg();
+        transformationController.rotateLeft45Deg();
     }//GEN-LAST:event_button_rotate_left_45degActionPerformed
 
     private void button_rotate_right_45degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_rotate_right_45degActionPerformed
-        transformationController.rotate_right_45deg();
+        transformationController.rotateRight45Deg();
     }//GEN-LAST:event_button_rotate_right_45degActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

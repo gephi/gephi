@@ -38,7 +38,7 @@ public class TransformationControllerImpl implements TransformationController {
 
     }
 
-    private Graph get_graph() {
+    private Graph getGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
         GraphModel graphModel = graphController.getGraphModel();
@@ -47,42 +47,42 @@ public class TransformationControllerImpl implements TransformationController {
     }
 
     @Override
-    public void mirror_x() {
-        xAxis.apply(get_graph());
+    public void mirrorX() {
+        xAxis.apply(getGraph());
     }
 
     @Override
-    public void mirror_y() {
-        yAxis.apply(get_graph());
+    public void mirrorY() {
+        yAxis.apply(getGraph());
     }
 
     @Override
-    public void rotate_left_1deg() {
-        rotation_left_1deg.apply(get_graph());
+    public void rotateLeft1Deg() {
+        rotation_left_1deg.apply(getGraph());
     }
 
     @Override
-    public void rotate_right_1deg() {
-        rotation_right_1deg.apply(get_graph());
+    public void rotateRight1Deg() {
+        rotation_right_1deg.apply(getGraph());
     }
 
     @Override
-    public void rotate_left_45deg() {
-        rotation_left_45deg.apply(get_graph());
+    public void rotateLeft45Deg() {
+        rotation_left_45deg.apply(getGraph());
     }
 
     @Override
-    public void rotate_right_45deg() {
-        rotation_right_45deg.apply(get_graph());
+    public void rotateRight45Deg() {
+        rotation_right_45deg.apply(getGraph());
     }
 
     @Override
     public void extend() {
-        extend.apply(get_graph());
+        extend.apply(getGraph());
     }
 
     @Override
     public void reduce() {
-        reduce.apply(get_graph());
+        reduce.apply(getGraph());
     }
 }

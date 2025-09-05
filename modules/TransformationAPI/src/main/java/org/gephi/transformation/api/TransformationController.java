@@ -3,17 +3,17 @@ package org.gephi.transformation.api;
 
 public interface TransformationController {
 
-    void mirror_x();
+    void mirrorX();
 
-    void mirror_y();
+    void mirrorY();
 
-    void rotate_left_1deg();
+    void rotateLeft1Deg();
 
-    void rotate_right_1deg();
+    void rotateRight1Deg();
 
-    void rotate_left_45deg();
+    void rotateLeft45Deg();
 
-    void rotate_right_45deg();
+    void rotateRight45Deg();
 
     void extend();
 

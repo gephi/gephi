@@ -10,7 +10,6 @@ public interface TransformationOperation {
         try {
             this.transformation(graph);
         } catch (Exception e) {
-            graph.writeUnlock();
             throw new RuntimeException(e);
         } finally {
             graph.writeUnlock();
