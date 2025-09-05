@@ -9,9 +9,10 @@ import org.openide.util.lookup.ServiceProvider;
 public class Scale implements TransformationOperation {
     public float factor;
 
-    public Scale(){
-        this.factor =1.f;
+    public Scale() {
+        this.factor = 1.f;
     }
+
     public Scale(float factor) {
         this.factor = factor;
     }

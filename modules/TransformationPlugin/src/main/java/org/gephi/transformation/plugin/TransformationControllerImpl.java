@@ -49,7 +49,7 @@ public class TransformationControllerImpl implements TransformationController {
 
     @Override
     public void mirror_y() {
-       yAxis.apply(get_graph());
+        yAxis.apply(get_graph());
     }
 
     @Override

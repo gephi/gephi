@@ -16,12 +16,15 @@ public class Rotation implements TransformationOperation {
     public void setAngle(float angle) {
         this.angle = angle;
     }
+
     public Rotation() {
-        this.angle= 0.f;
+        this.angle = 0.f;
     }
+
     public Rotation(float angle) {
         this.angle = angle;
     }
+
     @Override
     public void transformation(Graph graph) {
         final float sin = (float) Math.sin(-angle * Math.PI / 180);
