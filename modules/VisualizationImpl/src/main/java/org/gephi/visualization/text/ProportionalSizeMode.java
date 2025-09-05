@@ -42,44 +42,42 @@
 
 package org.gephi.visualization.text;
 
-import javax.swing.ImageIcon;
-import org.gephi.visualization.model.node.NodeModel;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
-
 /**
  * @author Mathieu Bastian
  */
-public class ProportionalSizeMode implements SizeMode {
+public class ProportionalSizeMode {
 
-    private static float FACTOR = 200f;
-
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
-        return FACTOR * model.getNode().size() * sizeFactor / model.getCameraDistance();
-    }
-
-    @Override
-    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor * model.getNode().size() / 10f;        //Between 0.1 and 2
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(ProportionalSizeMode.class, "ProportionalSizeMode.name");
-    }
-
-    @Override
-    public ImageIcon getIcon() {
-        return ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.svg", false);
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
+//    implements
+//} SizeMode {
+//
+//    private static float FACTOR = 200f;
+//
+//    @Override
+//    public void init() {
+//    }
+//
+//    @Override
+//    public float getSizeFactor2d(float sizeFactor, NodeModel model) {
+//        return FACTOR * model.getNode().size() * sizeFactor / model.getCameraDistance();
+//    }
+//
+//    @Override
+//    public float getSizeFactor3d(float sizeFactor, NodeModel model) {
+//        return sizeFactor * model.getNode().size() / 10f;        //Between 0.1 and 2
+//    }
+//
+//    @Override
+//    public String getName() {
+//        return NbBundle.getMessage(ProportionalSizeMode.class, "ProportionalSizeMode.name");
+//    }
+//
+//    @Override
+//    public ImageIcon getIcon() {
+//        return ImageUtilities.loadImageIcon("VisualizationImpl/ProportionalSizeMode.svg", false);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return getName();
+//    }
 }

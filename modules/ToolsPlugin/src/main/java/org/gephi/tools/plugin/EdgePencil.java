@@ -139,7 +139,7 @@ public class EdgePencil implements Tool {
         listeners = new ToolEventListener[2];
         listeners[0] = new NodeClickEventListener() {
             @Override
-            public void clickNodes(Node[] nodes) {
+            public boolean clickNodes(Node[] nodes) {
                 Node n = nodes[0];
 
                 if (sourceNode == null) {
@@ -155,16 +155,22 @@ public class EdgePencil implements Tool {
                     sourceNode = null;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                 }
+
+                return true;
             }
         };
         listeners[1] = new MouseClickEventListener() {
             @Override
-            public void mouseClick(int[] positionViewport, float[] position3d) {
+            public boolean mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                     sourceNode = null;
+
+                    return true;
                 }
+
+                return false;
             }
         };
         return listeners;
@@ -206,6 +212,6 @@ public class EdgePencil implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SINGLE_NODE_SELECTION;
     }
 }

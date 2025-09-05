@@ -43,130 +43,120 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.visualization.component;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.selection.SelectionManager;
+import org.gephi.visualization.api.VisualisationModel;
+import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class SelectionToolbar extends JToolBar {
+public class SelectionToolbar extends JToolBar implements VisualizationPropertyChangeListener {
 
+    private final JToggleButton mouseButton;
+    private final JToggleButton rectangleButton;
+    private final JToggleButton panButton;
     private final ButtonGroup buttonGroup;
+    private final VisualizationController visualizationController;
 
     public SelectionToolbar() {
-        initDesign();
-        buttonGroup = new ButtonGroup();
-        initContent();
-    }
+        this.visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
 
-    private void initContent() {
-
-        //Mouse
-        final JToggleButton mouseButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
-        mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
-        mouseButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (mouseButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setDirectMouseSelection();
-                }
-            }
-        });
-        mouseButton.setFocusPainted(false);
-        add(mouseButton);
-
-        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.svg", false);
-
-        //Rectangle
-        final JToggleButton rectangleButton = new JToggleButton(icon);
-        rectangleButton
-            .setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
-        rectangleButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (rectangleButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setRectangleSelection();
-                }
-            }
-        });
-        rectangleButton.setFocusPainted(false);
-        add(rectangleButton);
-
-        //Drag
-        final JToggleButton dragButton =
-            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/hand.svg", false));
-        dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
-        dragButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dragButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setDraggingMouseSelection();
-                }
-            }
-        });
-        dragButton.setFocusPainted(false);
-        add(dragButton);
-        addSeparator();
-
-        buttonGroup
-            .setSelected(rectangleButton.getModel(), VizController.getInstance().getVizConfig().isRectangleSelection());
-        buttonGroup
-            .setSelected(mouseButton.getModel(), !VizController.getInstance().getVizConfig().isRectangleSelection());
-        buttonGroup.setSelected(dragButton.getModel(), VizController.getInstance().getVizConfig().isDraggingEnable());
-
-        //Init events
-        VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
-                if (selectionManager.isBlocked()) {
-                    buttonGroup.clearSelection();
-                } else if (!selectionManager.isSelectionEnabled()) {
-                    buttonGroup.clearSelection();
-                } else if (selectionManager.isDirectMouseSelection()) {
-                    if (!buttonGroup.isSelected(mouseButton.getModel())) {
-                        buttonGroup.setSelected(mouseButton.getModel(), true);
-                    }
-                } else if (selectionManager.isRectangleSelection()) {
-                    if (!buttonGroup.isSelected(rectangleButton.getModel())) {
-                        buttonGroup.setSelected(rectangleButton.getModel(), true);
-                    }
-                } else if (selectionManager.isDraggingEnabled()) {
-                    if (!buttonGroup.isSelected(dragButton.getModel())) {
-                        buttonGroup.setSelected(dragButton.getModel(), true);
-                    }
-                }
-            }
-        });
-    }
-
-    private void initDesign() {
+        // Design
         setFloatable(false);
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setOpaque(true);
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+
+        // Buttons
+        buttonGroup = new ButtonGroup();
+        mouseButton =
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
+        mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
+        mouseButton.addActionListener(e -> visualizationController.setDirectMouseSelection());
+        mouseButton.setFocusPainted(false);
+        add(mouseButton);
+
+        Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.svg", false);
+
+        rectangleButton = new JToggleButton(icon);
+        rectangleButton
+            .setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
+        rectangleButton.addActionListener(e -> visualizationController.setRectangleSelection());
+        rectangleButton.setFocusPainted(false);
+        add(rectangleButton);
+
+        panButton =
+            new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/pan.svg", false));
+        panButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.pan.tooltip"));
+        panButton.addActionListener(e -> {
+            if (panButton.isSelected()) {
+                visualizationController.disableSelection();
+            }
+        });
+        panButton.setFocusPainted(false);
+        add(panButton);
+        addSeparator();
+
+        // Disable
+        for (Component c : getComponents()) {
+            c.setEnabled(false);
+        }
+    }
+
+    public void setup(VisualisationModel vizModel) {
+        setEnabled(true);
+        visualizationController.addPropertyChangeListener(this);
+        refresh(vizModel);
+    }
+
+    public void unsetup(VisualisationModel vizModel) {
+        setEnabled(false);
+        visualizationController.removePropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(VisualisationModel model, PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("selection")) {
+            refresh(model);
+        }
+    }
+
+    private void refresh(VisualisationModel vizModel) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (vizModel.isCustomSelection() || vizModel.isNodeSelection()) {
+                    buttonGroup.clearSelection();
+                } else if (!vizModel.isSelectionEnabled()) {
+                    if (!buttonGroup.isSelected(panButton.getModel())) {
+                        buttonGroup.setSelected(panButton.getModel(), true);
+                    }
+                } else if (vizModel.isDirectMouseSelection()) {
+                    if (!buttonGroup.isSelected(mouseButton.getModel())) {
+                        buttonGroup.setSelected(mouseButton.getModel(), true);
+                    }
+                } else if (vizModel.isRectangleSelection()) {
+                    if (!buttonGroup.isSelected(rectangleButton.getModel())) {
+                        buttonGroup.setSelected(rectangleButton.getModel(), true);
+                    }
+                }
+            }
+        });
     }
 
     @Override

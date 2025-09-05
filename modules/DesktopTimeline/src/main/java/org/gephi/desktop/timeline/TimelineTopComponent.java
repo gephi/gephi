@@ -74,6 +74,13 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * Top component corresponding to the Timeline component
  *
@@ -400,7 +407,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             @Override
             public void run() {
                 if (visible != TimelineTopComponent.this.isVisible()) {
-
                     TimelineTopComponent.this.setVisible(visible);
                     // Not needed anymore
                     // VizController.getInstance().getDrawable().reinitWindow();

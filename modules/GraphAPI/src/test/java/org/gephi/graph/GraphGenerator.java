@@ -58,6 +58,9 @@ public class GraphGenerator {
         GraphController controller = Lookup.getDefault().lookup(GraphController.class);
         if (model == null) {
             this.graphModel = GraphModel.Factory.newInstance(config == null ? controller.getDefaultConfigurationBuilder().build() : config);
+            if (this.workspace != null) {
+                this.workspace.add(this.graphModel);
+            }
         } else if (config != null && !model.getConfiguration().equals(config)) {
             throw new RuntimeException("GraphModel configuration differs between the passed configuration and the existing one");
         } else {
@@ -160,6 +163,21 @@ public class GraphGenerator {
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e1);
         graphModel.getDirectedGraph().addEdge(e2);
+        return this;
+    }
+
+    public GraphGenerator generateTinyDynamicTimestampGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e1 = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
+        n1.addTimestamp(1.0);
+        n2.addTimestamp(1.0);
+        e1.addTimestamp(1.0);
+        e1.setWeight(1.0, 1.0);
+
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e1);
         return this;
     }
 

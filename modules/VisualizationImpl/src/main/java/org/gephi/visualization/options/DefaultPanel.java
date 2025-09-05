@@ -62,20 +62,15 @@ final class DefaultPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox autoSelectNeighborCheckbox;
     private net.java.dev.colorchooser.ColorChooser backgroundColor;
     private javax.swing.JButton edgeFontButton;
-    private net.java.dev.colorchooser.ColorChooser edgeLabelColorButton;
     private javax.swing.JCheckBox highlightCheckbox;
     private javax.swing.JLabel labelBackground;
     private javax.swing.JLabel labelBackgroundColor;
     private javax.swing.JPanel labelBackgroundPanel;
-    private javax.swing.JLabel labelColor;
     private javax.swing.JLabel labelDefaultSettings;
     private javax.swing.JLabel labelEdgeFont;
-    private javax.swing.JLabel labelEdgeLabelColor;
     private javax.swing.JLabel labelFont;
     private javax.swing.JLabel labelNodeFont;
-    private javax.swing.JLabel labelNodeLabelColor;
     private javax.swing.JButton nodeFontButton;
-    private net.java.dev.colorchooser.ColorChooser nodeLabelColorButton;
     private javax.swing.JButton resetButton;
     private org.jdesktop.swingx.JXTitledSeparator titleDesign;
     private org.jdesktop.swingx.JXTitledSeparator titleLabel;
@@ -121,11 +116,6 @@ final class DefaultPanel extends javax.swing.JPanel {
         labelDefaultSettings = new javax.swing.JLabel();
         autoSelectNeighborCheckbox = new javax.swing.JCheckBox();
         highlightCheckbox = new javax.swing.JCheckBox();
-        labelColor = new javax.swing.JLabel();
-        nodeLabelColorButton = new net.java.dev.colorchooser.ColorChooser();
-        labelNodeLabelColor = new javax.swing.JLabel();
-        labelEdgeLabelColor = new javax.swing.JLabel();
-        edgeLabelColorButton = new net.java.dev.colorchooser.ColorChooser();
         labelFont = new javax.swing.JLabel();
         nodeFontButton = new javax.swing.JButton();
         labelNodeFont = new javax.swing.JLabel();
@@ -143,51 +133,18 @@ final class DefaultPanel extends javax.swing.JPanel {
         titleLabel.setTitle(
             org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleLabel.title")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelDefaultSettings, org.openide.util.NbBundle
-            .getMessage(DefaultPanel.class, "DefaultPanel.labelDefaultSettings.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelDefaultSettings,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelDefaultSettings.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(autoSelectNeighborCheckbox, org.openide.util.NbBundle
-            .getMessage(DefaultPanel.class, "DefaultPanel.autoSelectNeighborCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(autoSelectNeighborCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.autoSelectNeighborCheckbox.text")); // NOI18N
         autoSelectNeighborCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
         org.openide.awt.Mnemonics.setLocalizedText(highlightCheckbox,
             org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.highlightCheckbox.text")); // NOI18N
         highlightCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
-
-        org.openide.awt.Mnemonics.setLocalizedText(labelColor,
-            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelColor.text")); // NOI18N
-
-        nodeLabelColorButton.setPreferredSize(new java.awt.Dimension(12, 12));
-
-        javax.swing.GroupLayout nodeLabelColorButtonLayout = new javax.swing.GroupLayout(nodeLabelColorButton);
-        nodeLabelColorButton.setLayout(nodeLabelColorButtonLayout);
-        nodeLabelColorButtonLayout.setHorizontalGroup(
-            nodeLabelColorButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 10, Short.MAX_VALUE)
-        );
-        nodeLabelColorButtonLayout.setVerticalGroup(
-            nodeLabelColorButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 10, Short.MAX_VALUE)
-        );
-
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelColor, org.openide.util.NbBundle
-            .getMessage(DefaultPanel.class, "DefaultPanel.labelNodeLabelColor.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelColor, org.openide.util.NbBundle
-            .getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeLabelColor.text")); // NOI18N
-
-        edgeLabelColorButton.setPreferredSize(new java.awt.Dimension(12, 12));
-
-        javax.swing.GroupLayout edgeLabelColorButtonLayout = new javax.swing.GroupLayout(edgeLabelColorButton);
-        edgeLabelColorButton.setLayout(edgeLabelColorButtonLayout);
-        edgeLabelColorButtonLayout.setHorizontalGroup(
-            edgeLabelColorButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 10, Short.MAX_VALUE)
-        );
-        edgeLabelColorButtonLayout.setVerticalGroup(
-            edgeLabelColorButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 10, Short.MAX_VALUE)
-        );
 
         org.openide.awt.Mnemonics.setLocalizedText(labelFont,
             org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelFont.text")); // NOI18N
@@ -225,8 +182,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         labelBackgroundPanel.add(backgroundColor);
 
         labelBackgroundColor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        org.openide.awt.Mnemonics.setLocalizedText(labelBackgroundColor, org.openide.util.NbBundle
-            .getMessage(DefaultPanel.class, "DefaultPanel.labelBackgroundColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelBackgroundColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelBackgroundColor.text")); // NOI18N
         labelBackgroundColor.setMaximumSize(new java.awt.Dimension(141, 15));
         labelBackgroundColor.setMinimumSize(new java.awt.Dimension(141, 15));
         labelBackgroundColor.setPreferredSize(new java.awt.Dimension(141, 14));
@@ -235,7 +193,6 @@ final class DefaultPanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(resetButton,
             org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }
@@ -248,21 +205,38 @@ final class DefaultPanel extends javax.swing.JPanel {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(titleDesign, javax.swing.GroupLayout.Alignment.TRAILING,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                        .addComponent(resetButton)
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(10, 10, 10)
+                            .addGap(6, 6, 6)
+                            .addComponent(labelFont, javax.swing.GroupLayout.PREFERRED_SIZE, 34,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(65, 65, 65)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(labelBackground)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(labelBackgroundPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGap(9, 9, 9))
                                 .addGroup(layout.createSequentialGroup()
+                                    .addComponent(nodeFontButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(labelNodeFont))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(edgeFontButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(labelEdgeFont)))
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(titleDesign, javax.swing.GroupLayout.Alignment.TRAILING,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                                .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                                .addComponent(resetButton)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                            layout.createSequentialGroup()
+                                                .addComponent(labelBackground)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(labelBackgroundPanel,
+                                                    javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(9, 9, 9))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(labelDefaultSettings)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -271,45 +245,9 @@ final class DefaultPanel extends javax.swing.JPanel {
                                                     .addComponent(autoSelectNeighborCheckbox)
                                                     .addComponent(highlightCheckbox,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE, 162,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(labelFont, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(labelColor, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                            .addGap(65, 65, 65)
-                                            .addGroup(
-                                                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(nodeFontButton)
-                                                        .addPreferredGap(
-                                                            javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(labelNodeFont))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(edgeLabelColorButton,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                            javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(
-                                                            javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(labelEdgeLabelColor))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(nodeLabelColorButton,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                            javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(
-                                                            javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(labelNodeLabelColor))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(edgeFontButton)
-                                                        .addPreferredGap(
-                                                            javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(labelEdgeFont)))))
-                                    .addGap(2, 2, 2)))))
-                    .addContainerGap())
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(6, 6, 6)))))
+                            .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -333,21 +271,9 @@ final class DefaultPanel extends javax.swing.JPanel {
                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(labelFont)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(labelColor)
-                            .addGap(34, 34, 34)
-                            .addComponent(labelFont))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(nodeLabelColorButton, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(labelNodeLabelColor))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(edgeLabelColorButton, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(labelEdgeLabelColor))
-                            .addGap(14, 14, 14)
+                            .addGap(3, 3, 3)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(nodeFontButton)
                                 .addComponent(labelNodeFont))
@@ -355,7 +281,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(edgeFontButton)
                                 .addComponent(labelEdgeFont))))
-                    .addGap(18, 18, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                     .addComponent(resetButton)
                     .addContainerGap())
         );
@@ -367,8 +293,6 @@ final class DefaultPanel extends javax.swing.JPanel {
         NbPreferences.forModule(VizConfig.class).remove(VizConfig.HIGHLIGHT);
         NbPreferences.forModule(VizConfig.class).remove(VizConfig.NEIGHBOUR_SELECT);
         NbPreferences.forModule(VizConfig.class).remove(VizConfig.BACKGROUND_COLOR);
-        NbPreferences.forModule(VizConfig.class).remove(VizConfig.NODE_LABEL_COLOR);
-        NbPreferences.forModule(VizConfig.class).remove(VizConfig.EDGE_LABEL_COLOR);
         NbPreferences.forModule(VizConfig.class).remove(VizConfig.NODE_LABEL_FONT);
         NbPreferences.forModule(VizConfig.class).remove(VizConfig.EDGE_LABEL_FONT);
         load();
@@ -384,10 +308,6 @@ final class DefaultPanel extends javax.swing.JPanel {
             .get(VizConfig.BACKGROUND_COLOR, ColorUtils.encode(VizConfig.DEFAULT_BACKGROUND_COLOR))));
 
         //Label settings
-        nodeLabelColorButton.setColor(ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-            .get(VizConfig.NODE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_NODE_LABEL_COLOR))));
-        edgeLabelColorButton.setColor(ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-            .get(VizConfig.EDGE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_EDGE_LABEL_COLOR))));
         nodeFont = Font.decode(NbPreferences.forModule(VizConfig.class)
             .get(VizConfig.NODE_LABEL_FONT, FontUtils.encode(VizConfig.DEFAULT_NODE_LABEL_FONT)));
         nodeFontButton.setText(nodeFont.getFontName() + ", " + nodeFont.getSize());
@@ -405,10 +325,6 @@ final class DefaultPanel extends javax.swing.JPanel {
             .put(VizConfig.BACKGROUND_COLOR, ColorUtils.encode(backgroundColor.getColor()));
 
         //Label settings
-        NbPreferences.forModule(VizConfig.class)
-            .put(VizConfig.NODE_LABEL_COLOR, ColorUtils.encode(nodeLabelColorButton.getColor()));
-        NbPreferences.forModule(VizConfig.class)
-            .put(VizConfig.EDGE_LABEL_COLOR, ColorUtils.encode(edgeLabelColorButton.getColor()));
         NbPreferences.forModule(VizConfig.class).put(VizConfig.NODE_LABEL_FONT, FontUtils.encode(nodeFont));
         NbPreferences.forModule(VizConfig.class).put(VizConfig.EDGE_LABEL_FONT, FontUtils.encode(edgeFont));
     }

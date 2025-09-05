@@ -81,12 +81,14 @@ public class Edit implements Tool {
         return new ToolEventListener[] {new NodeClickEventListener() {
 
             @Override
-            public void clickNodes(Node[] nodes) {
-                if (nodes.length > 0) {
+            public boolean clickNodes(Node[] nodes) {
+                if (nodes != null && nodes.length > 0) {
                     edc.editNode(nodes[0]);
                 } else {
                     edc.disableEdit();
                 }
+
+                return true;
             }
         }};
     }

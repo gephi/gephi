@@ -45,12 +45,9 @@ package org.gephi.visualization.options;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 import javax.swing.text.NumberFormatter;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.openide.util.NbPreferences;
 
 final class OpenGLPanel extends javax.swing.JPanel {
@@ -236,29 +233,21 @@ final class OpenGLPanel extends javax.swing.JPanel {
             .setSelectedIndex(antiAliasing == 0 ? 0 : Math.round((float) (Math.log(antiAliasing) / Math.log(2))));
         fpsCheckbox.setSelected(
             NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.SHOW_FPS, VizConfig.DEFAULT_SHOW_FPS));
-        octreeWidthTextField.setText(String.valueOf(
-            NbPreferences.forModule(VizConfig.class).getInt(VizConfig.OCTREE_WIDTH, VizConfig.DEFAULT_OCTREE_WIDTH)));
 
         //OpenGLInfo
-        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
-        if (gc != null) {
-            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL2 " + gc.getVersionStr());
-        }
+//        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
+//        if (gc != null) {
+//            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL2 " + gc.getVersionStr());
+//        }
+        //TODO
     }
 
     void store() {
         NbPreferences.forModule(VizConfig.class).putInt(VizConfig.ANTIALIASING, antiAliasing);
         NbPreferences.forModule(VizConfig.class).putBoolean(VizConfig.SHOW_FPS, fpsCheckbox.isSelected());
-        try {
-            int width = NumberFormat.getInstance(Locale.ENGLISH).parse(octreeWidthTextField.getText()).intValue();
-            NbPreferences.forModule(VizConfig.class)
-                .putInt(VizConfig.OCTREE_WIDTH, width);
-            VizController.getInstance().getVizConfig().setOctreeWidth(width);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-        VizController.getInstance().getEngine().reinit();
+//        VizController.getInstance().getEngine().reinit();
+        //TODO
     }
 
     boolean valid() {

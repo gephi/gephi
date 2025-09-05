@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>gephi-parent</artifactId>
@@ -15,11 +16,11 @@
 
     <name>VisualizationImpl</name>
 
-    <properties>
-        <jogl.version>2.4.0</jogl.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>visualization-engine</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
@@ -31,10 +32,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -89,12 +86,12 @@
             <artifactId>org-openide-dialogs</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>project-api</artifactId>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-annotations-common</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-project</artifactId>
+            <artifactId>project-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -104,78 +101,37 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
         </dependency>
-        <!-- Gluegen -->
+
+        <!-- Test only -->
         <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-linux-amd64</classifier>
-            <version>${jogl.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graph-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
         <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-linux-aarch64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-macosx-universal</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <classifier>natives-windows-amd64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <!-- JOGL -->
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-linux-amd64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-linux-aarch64</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-macosx-universal</classifier>
-            <version>${jogl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <classifier>natives-windows-amd64</classifier>
-            <version>${jogl.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-<!--            <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>false</skipTests>
-        </configuration>
-      </plugin>-->
-            
+            <!--            <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                      <skipTests>false</skipTests>
+                    </configuration>
+                  </plugin>-->
+
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -189,13 +145,12 @@
                         <publicPackage>org.gephi.visualization.apiimpl</publicPackage>
                         <publicPackage>org.gephi.visualization.events</publicPackage>
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
-                        <publicPackage>org.gephi.lib.gleem.linalg</publicPackage>
                     </publicPackages>
-                    <nbmResources> 
-                        <nbmResource> 
-                            <directory>src/main/libs</directory> 
-                            <targetPath>modules/lib</targetPath> 
-                        </nbmResource> 
+                    <nbmResources>
+                        <nbmResource>
+                            <directory>src/main/libs</directory>
+                            <targetPath>modules/lib</targetPath>
+                        </nbmResource>
                     </nbmResources>
                 </configuration>
             </plugin>

@@ -42,14 +42,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.apiimpl;
 
-import java.util.EventListener;
+import org.gephi.visualization.api.VisualizationEventListener;
 
 /**
  * @author Mathieu Bastian
  */
-public interface VizEventListener extends EventListener {
+public interface VizEventListener extends VisualizationEventListener {
 
-    public void handleEvent(VizEvent event);
-
-    public VizEvent.Type getType();
 }

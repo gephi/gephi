@@ -57,7 +57,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -67,41 +67,50 @@ import org.openide.util.NbBundle;
  */
 public class ActionsToolbar extends JToolBar {
 
+    private final VisualizationController visualizationController;
     //Settings
     private Color color = new Color(0.6f, 0.6f, 0.6f);
     private float size = 10.0f;
 
     public ActionsToolbar() {
+        this.visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
         initDesign();
         initContent();
+
+        // Disable
+        for (Component c : getComponents()) {
+            c.setEnabled(false);
+        }
+
     }
 
     private void initContent() {
 
         //Center on graph
         final JButton centerOnGraphButton = new JButton();
-        centerOnGraphButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "ActionsToolbar.centerOnGraph"));
+        centerOnGraphButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnGraph"));
         centerOnGraphButton.setIcon(
             ImageUtilities.loadImageIcon("VisualizationImpl/centerOnGraph.svg", false));
         centerOnGraphButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                VizController.getInstance().getGraphIO().centerOnGraph();
+                visualizationController.centerOnGraph();
             }
         });
         add(centerOnGraphButton);
 
         //Center on zero
-        /*final JButton centerOnZeroButton = new JButton();
-         centerOnZeroButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "ActionsToolbar.centerOnZero"));
-         centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.svg", false));
-         centerOnZeroButton.addActionListener(new ActionListener() {
+        final JButton centerOnZeroButton = new JButton();
+        centerOnZeroButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnZero"));
+        centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.svg", false));
+        centerOnZeroButton.addActionListener(new ActionListener() {
 
-         public void actionPerformed(ActionEvent e) {
-         VizController.getInstance().getGraphIO().centerOnZero();
-         }
-         });
-         add(centerOnZeroButton);*/
+            public void actionPerformed(ActionEvent e) {
+                visualizationController.centerOnZero();
+            }
+        });
+        add(centerOnZeroButton);
+
         //Reset colors
         final JColorButton resetColorButton = new JColorButton(color, true, false);
         resetColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetColors"));
