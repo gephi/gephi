@@ -22,9 +22,11 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_LIGHTEN_
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_MULTIPLIER;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MAX;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MIN;
+import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_GLOBAL_TIME;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MIN_WEIGHT;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_NODE_SCALE;
+import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
 import com.jogamp.opengl.GL2ES2;
@@ -88,6 +90,8 @@ public class EdgeLineModelDirected {
             .addUniformName(UNIFORM_NAME_MIN_WEIGHT)
             .addUniformName(UNIFORM_NAME_NODE_SCALE)
             .addUniformName(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR)
+            .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+            .addUniformName(UNIFORM_NAME_SELECTION_TIME)
             .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
             .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
             .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
@@ -107,6 +111,8 @@ public class EdgeLineModelDirected {
                 .addUniformName(UNIFORM_NAME_MIN_WEIGHT)
                 .addUniformName(UNIFORM_NAME_NODE_SCALE)
                 .addUniformName(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR)
+                .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+                .addUniformName(UNIFORM_NAME_SELECTION_TIME)
                 .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
@@ -127,6 +133,8 @@ public class EdgeLineModelDirected {
                 .addUniformName(UNIFORM_NAME_MIN_WEIGHT)
                 .addUniformName(UNIFORM_NAME_NODE_SCALE)
                 .addUniformName(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR)
+                .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+                .addUniformName(UNIFORM_NAME_SELECTION_TIME)
                 .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
                 .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)

@@ -1,3 +1,5 @@
+//#include "../common.glsl"
+
 //#if with_selection
 //#if selected
 //#outname "edge-line-undirected_with_selection_selected.vert"
@@ -5,20 +7,24 @@
 //#outname "edge-line-undirected_with_selection_unselected.vert"
 //#endif
 //#endif
-#version 100
+
 
 uniform mat4 mvp;
 //#if with_selection
 //#if !selected
+
+//#endif
+//#endif
 uniform vec4 backgroundColor;
 uniform float colorLightenFactor;
-//#endif
-//#endif
 uniform float minWeight;
 uniform float weightDifferenceDivisor;
 uniform float edgeScaleMin;
 uniform float edgeScaleMax;
 uniform float nodeScale;
+
+uniform float globalTime;
+uniform float selectionTime;
 
 attribute vec2 vert;
 attribute vec2 position;
@@ -45,13 +51,17 @@ void main() {
 
     gl_Position = mvp * vec4(edgeVert + position, 0.0, 1.0);
 
+    float animationTime = globalTime-selectionTime;
+    float animationCurve = _animationSlope(animationTime);
     //bgra -> rgba because Java color is argb big-endian
     vec4 color = elementColor.bgra / 255.0;
 
     //#if with_selection
-    //#if !selected
-    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor);
-    //#endif
+        //#if !selected
+    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor*animationCurve);
+        //#endif
+    //#else
+    color.rgb = mix(color.rgb, backgroundColor.rgb,colorLightenFactor*(1.-animationCurve));
     //#endif
 
     fragColor = color;
