@@ -1,8 +1,14 @@
 package org.gephi.transformation.api;
 
 
+import org.gephi.graph.api.Graph;
+import org.gephi.transformation.spi.TransformationOperation;
+
+import java.util.Optional;
+
 public interface TransformationController {
 
+    void apply(TransformationOperation operation, Graph graph);
     void mirrorX();
 
     void mirrorY();

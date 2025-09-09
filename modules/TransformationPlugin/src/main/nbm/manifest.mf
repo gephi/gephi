@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Essential-Module: true
-OpenIDE-Module-Localizing-Bundle: org/gephi/layout/plugin/Bundle.properties
-OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
-OpenIDE-Module-Display-Category: Plugin
-OpenIDE-Module-Name: Layout Plugin

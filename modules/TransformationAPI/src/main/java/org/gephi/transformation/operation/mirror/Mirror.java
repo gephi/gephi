@@ -1,4 +1,4 @@
-package org.gephi.transformation.plugin.operations;
+package org.gephi.transformation.operation.mirror;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;

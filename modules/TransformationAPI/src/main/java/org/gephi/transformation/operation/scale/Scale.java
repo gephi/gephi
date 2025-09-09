@@ -1,4 +1,4 @@
-package org.gephi.transformation.plugin.operations;
+package org.gephi.transformation.operation.scale;
 
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
