@@ -39,9 +39,7 @@ public class Scale implements TransformationOperation {
             if (!n.isFixed()) {
                 float dx = (n.x() - xMean) * factor;
                 float dy = (n.y() - yMean) * factor;
-
-                n.setX(xMean + dx);
-                n.setY(yMean + dy);
+                n.setPosition(xMean + dx,yMean + dy);
             }
         }
     }

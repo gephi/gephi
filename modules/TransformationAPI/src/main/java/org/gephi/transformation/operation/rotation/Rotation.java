@@ -43,9 +43,7 @@ public class Rotation implements TransformationOperation {
             if (!n.isFixed()) {
                 float dx = n.x() - xMean;
                 float dy = n.y() - yMean;
-
-                n.setX(xMean + dx * cos - dy * sin);
-                n.setY(yMean + dy * cos + dx * sin);
+                n.setPosition(xMean + dx * cos - dy * sin,yMean + dy * cos + dx * sin);
             }
         }
     }

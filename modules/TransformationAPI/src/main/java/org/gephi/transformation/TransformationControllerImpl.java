@@ -61,13 +61,17 @@ public class TransformationControllerImpl implements TransformationController {
     @Override
     public void apply(TransformationOperation operation, Graph graph) {
 
-        graph.writeLock();
+        graph.readLock();
         try {
+            if(graph.getNodeCount()<=0) {
+                // Most of transformations doesn't make sense on an empty graph.
+                return;
+            }
             operation.transformation(graph);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            graph.writeUnlock();
+            graph.readUnlock();
         }
 
     }
