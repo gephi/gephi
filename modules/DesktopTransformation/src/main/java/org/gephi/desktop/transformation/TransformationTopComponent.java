@@ -62,7 +62,7 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.transformation.TransformationTopComponent")
-@ActionReference(path = "Menu/Window", position = 700)
+@ActionReference(path = "Menu/Window", position = 750)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_TransformationTopComponent",
     preferredID = "TransformationTopComponent")
 public final class TransformationTopComponent extends TopComponent {
