@@ -32,25 +32,14 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-nodes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
-        </dependency>
+
+
 
         <!-- Test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-utils</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

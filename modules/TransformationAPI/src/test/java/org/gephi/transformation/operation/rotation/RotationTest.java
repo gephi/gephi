@@ -15,7 +15,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class RotationTest extends TestCase {
     private static final float EPSILON = 0.00001f;
 
-
     Graph getGraphCentered() {
 
         GraphModel graphModel = GraphModel.Factory.newInstance();
