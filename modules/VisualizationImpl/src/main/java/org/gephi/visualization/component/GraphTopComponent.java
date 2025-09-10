@@ -46,9 +46,9 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -97,7 +97,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
 
-    private final ScheduledExecutorService vizExecutor;
+    private final ExecutorService vizExecutor;
 
     public GraphTopComponent() {
         controller = Lookup.getDefault().lookup(VizController.class);
@@ -106,7 +106,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initKeyEventContextMenuActionMappings();
 
         // Start executor for viz engine tasks
-        vizExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+        vizExecutor = Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "GraphTopComponent-VizExecutor");
             t.setDaemon(true);
             return t;
@@ -195,7 +195,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void initEngine() {
-        vizExecutor.schedule(this::doInitEngine, 0, TimeUnit.MILLISECONDS);
+        vizExecutor.submit(this::doInitEngine);
     }
 
     private void doInitEngine() {
@@ -206,14 +206,19 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void deactivateWorkspaceVizEngine(final Workspace workspace) {
-        vizExecutor.schedule(() -> doDeactivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+        CompletableFuture.runAsync(() -> doDeactivateWorkspaceVizEngine(workspace), vizExecutor)
+            .whenComplete((v, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            });
     }
 
     private void doDeactivateWorkspaceVizEngine(final Workspace workspace) {
         if (workspace == null) {
             return;
         }
-        VizModel vizModel = controller.getModel(workspace);
+        VizModel vizModel = controller.getCanvasManager().unloadWorkspace(workspace);
         SwingUtilities.invokeLater(() -> {
             for (CollapseGroup group : groups) {
                 group.unsetup(vizModel);
@@ -224,7 +229,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void activateWorkspaceVizEngine(final Workspace workspace) {
-        vizExecutor.schedule(() -> doActivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+        CompletableFuture.runAsync(() -> doActivateWorkspaceVizEngine(workspace), vizExecutor)
+            .whenComplete((v, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            });
     }
 
     private void doActivateWorkspaceVizEngine(final Workspace workspace) {

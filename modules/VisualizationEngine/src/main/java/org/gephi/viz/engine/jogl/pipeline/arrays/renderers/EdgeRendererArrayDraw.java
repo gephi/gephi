@@ -1,6 +1,8 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays.renderers;
 
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
@@ -13,10 +15,10 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  */
 public class EdgeRendererArrayDraw extends AbstractEdgeRenderer {
 
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final ArrayDrawEdgeData edgeData;
 
-    public EdgeRendererArrayDraw(VizEngine engine, ArrayDrawEdgeData edgeData) {
+    public EdgeRendererArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, ArrayDrawEdgeData edgeData) {
         this.engine = engine;
         this.edgeData = edgeData;
     }
@@ -27,17 +29,17 @@ public class EdgeRendererArrayDraw extends AbstractEdgeRenderer {
     }
 
     @Override
-    public void worldUpdated(JOGLRenderingTarget target) {
+    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         edgeData.updateBuffers();
     }
 
     private final float[] mvpFloats = new float[16];
 
     @Override
-    public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
         engine.getModelViewProjectionMatrixFloats(mvpFloats);
 
-        edgeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, engine, mvpFloats);
+        edgeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, engine, model, mvpFloats);
     }
 
     @Override

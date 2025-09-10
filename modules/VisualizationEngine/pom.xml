@@ -28,10 +28,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-        </dependency>
 
         <!-- JOML -->
         <dependency>
@@ -126,6 +122,7 @@
         <dependency>
             <groupId>org.gephi</groupId>
             <artifactId>io-importer-plugin</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.gephi</groupId>

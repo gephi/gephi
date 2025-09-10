@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.status;
 
 import java.awt.Color;
+import org.joml.Vector2fc;
 
 /**
  *
@@ -24,6 +25,8 @@ public interface GraphRenderingOptions {
     //Global
     float[] DEFAULT_BACKGROUND_COLOR = new float[] {1, 1, 1, 1};
     float DEFAULT_ZOOM = 0.3f;
+    float DEFAULT_PAN_X = 0f;
+    float DEFAULT_PAN_Y = 0f;
 
     //Nodes:
     float DEFAULT_NODE_SCALE = 1f;
@@ -48,6 +51,12 @@ public interface GraphRenderingOptions {
     void setBackgroundColor(float[] backgroundColor);
 
     float getZoom();
+
+    void setZoom(float zoom);
+
+    Vector2fc getPan();
+
+    void setPan(Vector2fc pan);
 
     float getEdgeScale();
 

@@ -49,6 +49,8 @@ import org.gephi.ui.utils.FontUtils;
 import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 import org.openide.util.NbPreferences;
 
 /**
@@ -236,6 +238,10 @@ public class VizConfig {
 
     public float getDefaultZoom() {
         return defaultZoom;
+    }
+
+    public Vector2fc getDefaultPan() {
+        return new Vector2f(0.0f, 0.0f);
     }
 
     public boolean isDefaultAutoSelectNeighbor() {

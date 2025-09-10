@@ -10,6 +10,7 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
@@ -18,6 +19,8 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -94,10 +97,11 @@ public abstract class AbstractEdgeData {
 
     protected int setupShaderProgramForRenderingLayerUndirected(final GL2ES2 gl,
                                                                 final RenderingLayer layer,
-                                                                final VizEngine engine,
+                                                                final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                                                                final VizEngineModel model,
                                                                 final float[] mvpFloats) {
-
-        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
+        
+        final boolean someSelection = model.getGraphSelection().someNodesOrEdgesSelection();
         final float globalTime = (System.currentTimeMillis() - this.startedTime)/1000.0f;
 
         if(selectionToggle != someSelection) {
@@ -109,15 +113,15 @@ public abstract class AbstractEdgeData {
             return 0;
         }
 
-        final float[] backgroundColorFloats = engine.getBackgroundColor();
+        final float[] backgroundColorFloats = model.getRenderingOptions().getBackgroundColor();
 
-        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
+        final GraphRenderingOptions renderingOptions = model.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
         final float nodeScale = renderingOptions.getNodeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
-        final GraphIndex graphIndex = engine.getGraphIndex();
+        final GraphIndex graphIndex = model.getGraphIndex();
 
         final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
         final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
@@ -204,23 +208,24 @@ public abstract class AbstractEdgeData {
 
     protected int setupShaderProgramForRenderingLayerDirected(final GL2ES2 gl,
                                                               final RenderingLayer layer,
-                                                              final VizEngine engine,
+                                                              final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                                                              final VizEngineModel model,
                                                               final float[] mvpFloats) {
-        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
+        final boolean someSelection = model.getGraphSelection().someNodesOrEdgesSelection();
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
         }
 
-        final float[] backgroundColorFloats = engine.getBackgroundColor();
+        final float[] backgroundColorFloats = model.getRenderingOptions().getBackgroundColor();
 
-        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
+        final GraphRenderingOptions renderingOptions = model.getRenderingOptions();
 
         final float edgeScale = renderingOptions.getEdgeScale();
         final float nodeScale = renderingOptions.getNodeScale();
         float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
 
-        final GraphIndex graphIndex = engine.getGraphIndex();
+        final GraphIndex graphIndex = model.getGraphIndex();
 
         final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
         final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
@@ -793,11 +798,11 @@ public abstract class AbstractEdgeData {
     private DirectedEdgesVAO directedEdgesVAO;
     private DirectedEdgesVAO directedEdgesVAOSecondary;
 
-    public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, VizEngine engine) {
+    public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                engine.getRenderingTarget().getGlCapabilitiesSummary(),
+                engine.getOpenGLOptions(),
                 attributesGLBufferUndirected
             );
         }
@@ -805,11 +810,12 @@ public abstract class AbstractEdgeData {
         undirectedEdgesVAO.use(gl);
     }
 
-    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl, VizEngine engine) {
+    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+                                                              VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                engine.getRenderingTarget().getGlCapabilitiesSummary(),
+                engine.getOpenGLOptions(),
                 attributesGLBufferUndirectedSecondary
             );
         }
@@ -827,11 +833,11 @@ public abstract class AbstractEdgeData {
         }
     }
 
-    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, VizEngine engine) {
+    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                engine.getRenderingTarget().getGlCapabilitiesSummary(),
+                engine.getOpenGLOptions(),
                 attributesGLBufferDirected
             );
         }
@@ -839,11 +845,12 @@ public abstract class AbstractEdgeData {
         directedEdgesVAO.use(gl);
     }
 
-    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl, VizEngine engine) {
+    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+                                                            VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                engine.getRenderingTarget().getGlCapabilitiesSummary(),
+                engine.getOpenGLOptions(),
                 attributesGLBufferDirectedSecondary
             );
         }

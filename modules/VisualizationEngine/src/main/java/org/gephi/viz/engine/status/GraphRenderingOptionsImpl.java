@@ -2,6 +2,8 @@ package org.gephi.viz.engine.status;
 
 import java.awt.Color;
 import java.util.Objects;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
@@ -14,6 +16,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     //Global
     private float[] backgroundColor = DEFAULT_BACKGROUND_COLOR;
     private float zoom = DEFAULT_ZOOM;
+    private final Vector2f pan = new Vector2f(DEFAULT_PAN_X, DEFAULT_PAN_Y);
 
     //Edges
     private float edgeScale = DEFAULT_EDGE_SCALE;
@@ -49,6 +52,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
         float[] otherBg = other.getBackgroundColor();
         this.backgroundColor = otherBg.clone();
         this.zoom = other.getZoom();
+        this.pan.set(other.getPan());
 
         // Edges
         this.edgeScale = other.getEdgeScale();
@@ -92,8 +96,19 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
         return zoom;
     }
 
+    @Override
     public void setZoom(float zoom) {
         this.zoom = zoom;
+    }
+
+    @Override
+    public Vector2fc getPan() {
+        return pan;
+    }
+
+    @Override
+    public void setPan(Vector2fc value) {
+        pan.set(value);
     }
 
     @Override

@@ -49,12 +49,18 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import org.gephi.appearance.spi.TransformerCategory;
+import org.gephi.desktop.appearance.AppearanceUIController;
+import org.gephi.ui.appearance.plugin.UniqueElementColorTransformerUI;
+import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * @author Mathieu Bastian
@@ -77,6 +83,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
     private javax.swing.JSlider scaleSlider;
     private javax.swing.JCheckBox selectionColorCheckbox;
     private javax.swing.JPanel selectionColorPanel;
+    private org.jdesktop.swingx.JXHyperlink selfColorLink;
     private javax.swing.JCheckBox showEdgesCheckbox;
     private javax.swing.JCheckBox useEdgeWeightCheckbox;
     // End of variables declaration//GEN-END:variables
@@ -92,7 +99,14 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         final DefaultComboBoxModel<EdgeColorMode> colorModeModel = new DefaultComboBoxModel<>(EdgeColorMode.values());
         edgeColorCombo.setModel(colorModeModel);
         edgeColorCombo.addActionListener(
-            e -> vizController.setEdgeColorMode((EdgeColorMode) edgeColorCombo.getSelectedItem()));
+            e -> {
+                EdgeColorMode selected = (EdgeColorMode) edgeColorCombo.getSelectedItem();
+                if (selected == null) {
+                    return;
+                }
+                vizController.setEdgeColorMode(selected);
+                selfColorLink.setVisible(selected.equals(EdgeColorMode.SELF));
+            });
         edgeColorCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -109,6 +123,19 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
                 }
                 return this;
             }
+        });
+        selfColorLink.addActionListener(e -> {
+            TopComponent topComponent = WindowManager.getDefault().findTopComponent("AppearanceTopComponent");
+            topComponent.open();
+            topComponent.requestActive();
+
+            AppearanceUIController appearanceUIController = Lookup.getDefault().lookup(AppearanceUIController.class);
+            TransformerCategory category = DefaultCategory.COLOR;
+            appearanceUIController.setSelectedElementClass("edges");
+            appearanceUIController.setSelectedCategory(category);
+            UniqueElementColorTransformerUI transformerUI =
+                Lookup.getDefault().lookup(UniqueElementColorTransformerUI.class);
+            appearanceUIController.setSelectedTransformerUI(transformerUI);
         });
 
         showEdgesCheckbox.addItemListener(e -> {
@@ -211,6 +238,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         scaleSlider.setEnabled(enable && showEdgesCheckbox.isSelected());
         labelScale.setEnabled(enable && showEdgesCheckbox.isSelected());
         selectionColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
+        selfColorLink.setEnabled(enable && showEdgesCheckbox.isSelected());
         edgeInSelectionColorChooser
             .setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
         edgeBothSelectionColorChooser
@@ -247,9 +275,10 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         scalePanel = new javax.swing.JPanel();
         labelScale = new javax.swing.JLabel();
         scaleSlider = new javax.swing.JSlider();
-        edgeColorCombo = new javax.swing.JComboBox<>();
         useEdgeWeightCheckbox = new javax.swing.JCheckBox();
+        edgeColorCombo = new javax.swing.JComboBox<>();
         hideNonSelectedCheckbox = new javax.swing.JCheckBox();
+        selfColorLink = new org.jdesktop.swingx.JXHyperlink();
 
         showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         showEdgesCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class,
@@ -389,12 +418,13 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 2, 0);
         scalePanel.add(labelScale, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
@@ -403,37 +433,48 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
 
         useEdgeWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class,
             "EdgeSettingsPanel.useEdgeWeightCheckbox.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        scalePanel.add(useEdgeWeightCheckbox, gridBagConstraints);
 
         hideNonSelectedCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class,
             "EdgeSettingsPanel.hideNonSelectedCheckbox.text")); // NOI18N
+
+        selfColorLink.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class,
+            "EdgeSettingsPanel.selfColorLink.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(19, 19, 19)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(edgeColor)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(edgeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(useEdgeWeightCheckbox))
-                            .addGap(42, 42, 42)
-                            .addComponent(scalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130,
+                            .addGap(21, 21, 21)
+                            .addComponent(scalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 190,
                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(edgeColor)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(edgeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                             .addComponent(selectionColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 176,
                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(hideNonSelectedCheckbox))
                         .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(showEdgesCheckbox)))
-                    .addContainerGap(115, Short.MAX_VALUE))
+                            .addComponent(showEdgesCheckbox)
+                            .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,21 +483,25 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
                         .addGroup(layout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(showEdgesCheckbox)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(edgeColor)
-                                .addComponent(edgeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(useEdgeWeightCheckbox))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(edgeColor)
+                                        .addComponent(edgeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addGap(32, 32, 32)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(hideNonSelectedCheckbox)
                                     .addGap(0, 0, Short.MAX_VALUE))
-                                .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
                                 .addComponent(selectionColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61,
                                     Short.MAX_VALUE))))
                     .addContainerGap())

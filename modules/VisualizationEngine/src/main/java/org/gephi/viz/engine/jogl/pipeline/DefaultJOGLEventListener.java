@@ -20,21 +20,21 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final InputActionsProcessor inputActionsProcessor;
 
-    private final GraphSelection graphSelection;
-
     private static final short MOUSE_LEFT_BUTTON = MouseEvent.BUTTON1;
     private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
     private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
     private boolean mouseRightButtonPressed = false;
     private boolean mouseLeftButtonPressed = false;
+    private MouseEvent lastMovedPosition = null;
 
     public DefaultJOGLEventListener(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         this.engine = engine;
         this.inputActionsProcessor = new InputActionsProcessor(engine);
-        this.graphSelection = engine.getGraphSelection();
     }
 
-    private MouseEvent lastMovedPosition = null;
+    private GraphSelection getGraphSelection() {
+        return engine.getGraphSelection();
+    }
 
     @Override
     public void frameStart() {
@@ -48,6 +48,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             final Vector2f worldCoords =
                 engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
 
+            final GraphSelection graphSelection = getGraphSelection();
             if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
                 inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
             } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
@@ -69,7 +70,6 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
         if (event instanceof KeyEvent) {
             return false;
         } else if (event instanceof MouseEvent mouseEvent) {
-
             switch (event.getEventType()) {
                 case MouseEvent.EVENT_MOUSE_CLICKED:
                     return this.mouseClicked(mouseEvent);
@@ -113,16 +113,21 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             //Zoom out:
             inputActionsProcessor.processZoomEvent(-10, x, y);
             return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION && leftClick) {
-            //TODO: move to independent selection input listener
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION && leftClick) {
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION && leftClick) {
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
-            inputActionsProcessor.clearSelection();
-            return true;
+        } else {
+            final GraphSelection graphSelection = getGraphSelection();
+            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION && leftClick) {
+                //TODO: move to independent selection input listener
+                return true;
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION &&
+                leftClick) {
+                return true;
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
+                leftClick) {
+                return true;
+            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+                inputActionsProcessor.clearSelection();
+                return true;
+            }
         }
 
         return false;
@@ -132,6 +137,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
         if (e.getButton() == MOUSE_LEFT_BUTTON) {
             mouseLeftButtonPressed = true;
 
+            final GraphSelection graphSelection = getGraphSelection();
             if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
                 inputActionsProcessor.clearSelection();
                 graphSelection.startRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
@@ -158,6 +164,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             mouseRightButtonPressed = false;
         }
 
+        final GraphSelection graphSelection = getGraphSelection();
         if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
             graphSelection.stopRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
         }
@@ -167,6 +174,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     public boolean mouseMoved(MouseEvent e) {
         lastMovedPosition = e;
+        final GraphSelection graphSelection = getGraphSelection();
         if ((graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
             graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) &&
             graphSelection.getMouseSelectionDiameter() > 1f) {
@@ -182,34 +190,38 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                 double zoomQuantity = (lastY - e.getY()) / 7f;//Divide by some number so zoom is not too fast
                 inputActionsProcessor.processZoomEvent(zoomQuantity, engine.getWidth() / 2, engine.getHeight() / 2);
                 return true;
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
-                graphSelection.getMouseSelectionDiameter() > 1f) {
-                graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
-            } else if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                (mouseLeftButtonPressed || mouseRightButtonPressed)) {
-                inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
-                return true;
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                mouseLeftButtonPressed) {
-                graphSelection.updateRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+            } else {
+                final GraphSelection graphSelection = getGraphSelection();
+                if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
+                    graphSelection.getMouseSelectionDiameter() > 1f) {
+                    graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+                } else if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                    (mouseLeftButtonPressed || mouseRightButtonPressed)) {
+                    inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
+                    return true;
+                } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                    mouseLeftButtonPressed) {
+                    graphSelection.updateRectangleSelection(
+                        engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
 
-                final Vector2f initialPosition = graphSelection.getRectangleInitialPosition();
-                final Vector2f currentPosition = graphSelection.getRectangleCurrentPosition();
+                    final Vector2f initialPosition = graphSelection.getRectangleInitialPosition();
+                    final Vector2f currentPosition = graphSelection.getRectangleCurrentPosition();
 
-                if (initialPosition != null && currentPosition != null) {
-                    final Rect2D rectangle = new Rect2D(
-                        Math.min(initialPosition.x, currentPosition.x),
-                        Math.min(initialPosition.y, currentPosition.y),
-                        Math.max(initialPosition.x, currentPosition.x),
-                        Math.max(initialPosition.y, currentPosition.y)
-                    );
-                    inputActionsProcessor.selectNodesAndEdgesOnRectangle(rectangle);
+                    if (initialPosition != null && currentPosition != null) {
+                        final Rect2D rectangle = new Rect2D(
+                            Math.min(initialPosition.x, currentPosition.x),
+                            Math.min(initialPosition.y, currentPosition.y),
+                            Math.max(initialPosition.x, currentPosition.x),
+                            Math.max(initialPosition.y, currentPosition.y)
+                        );
+                        inputActionsProcessor.selectNodesAndEdgesOnRectangle(rectangle);
+                    }
+                    return true;
+                } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                    mouseRightButtonPressed) {
+                    inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
+                    return true;
                 }
-                return true;
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                mouseRightButtonPressed) {
-                inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
-                return true;
             }
         } finally {
             lastX = e.getX();

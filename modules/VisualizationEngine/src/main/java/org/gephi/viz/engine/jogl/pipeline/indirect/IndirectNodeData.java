@@ -3,12 +3,15 @@ package org.gephi.viz.engine.jogl.pipeline.indirect;
 import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_BYTES;
 import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INTS_COUNT;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
@@ -44,20 +47,22 @@ public class IndirectNodeData extends AbstractNodeData {
         );
     }
 
-    public void drawIndirect(GL4 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {
+    public void drawIndirect(GL4 gl, RenderingLayer layer, VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                             VizEngineModel model, float[] mvpFloats) {
         //First we draw outside circle (for border) and then inside circle:
         //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawIndirectInternal(gl, layer, engine, mvpFloats, true);
-        drawIndirectInternal(gl, layer, engine, mvpFloats, false);
+        drawIndirectInternal(gl, layer, engine, model, mvpFloats, true);
+        drawIndirectInternal(gl, layer, engine, model, mvpFloats, false);
     }
 
     private void drawIndirectInternal(final GL4 gl,
                                       final RenderingLayer layer,
-                                      final VizEngine engine,
+                                      final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                                      final VizEngineModel model,
                                       final float[] mvpFloats,
                                       final boolean isRenderingOutsideCircle) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, engine, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, engine, model, mvpFloats, isRenderingOutsideCircle);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);

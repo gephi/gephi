@@ -90,7 +90,7 @@ public class VizEngineGraphCanvasManager {
             )
         );
 
-        final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
+        final OpenGLOptions glOptions = engine.getOpenGLOptions();
         glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
         glOptions.setDisableInstancedDrawing(DISABLE_INSTANCED_RENDERING);
         glOptions.setDisableVAOS(DISABLE_VAOS);
@@ -152,6 +152,15 @@ public class VizEngineGraphCanvasManager {
         VizModel model = vizController.getModel(workspace);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
         engine.setGraphModel(graphModel, model.toGraphRenderingOptions());
+        return model;
+    }
+
+    public synchronized VizModel unloadWorkspace(Workspace workspace) {
+        if (!initialized) {
+            throw new IllegalStateException("Not initialized");
+        }
+        VizModel model = vizController.getModel(workspace);
+        model.unsetup();
         return model;
     }
 

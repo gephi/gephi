@@ -70,6 +70,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
+import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.openide.util.Lookup;
 
@@ -86,6 +87,7 @@ public class VizModel implements VisualisationModel {
 
     //Global
     private float zoom;
+    private Vector2fc pan;
     private Color backgroundColor;
 
     //Edges
@@ -144,6 +146,7 @@ public class VizModel implements VisualisationModel {
             this.backgroundColor = config.getDefaultBackgroundColor();
         }
         this.zoom = config.getDefaultZoom();
+        this.pan = config.getDefaultPan();
 
         //Edges
         this.showEdges = config.isDefaultShowEdges();
@@ -182,6 +185,8 @@ public class VizModel implements VisualisationModel {
 
     public GraphRenderingOptions toGraphRenderingOptions() {
         GraphRenderingOptionsImpl options = new GraphRenderingOptionsImpl();
+        options.setZoom(getZoom());
+        options.setPan(getPan());
         options.setAutoSelectNeighbours(isAutoSelectNeighbors());
         options.setBackgroundColor(getBackgroundColor());
         options.setEdgeBothSelectionColor(getEdgeBothSelectionColor());
@@ -199,6 +204,14 @@ public class VizModel implements VisualisationModel {
         options.setShowEdgeLabels(isShowEdgeLabels());
         options.setShowNodeLabels(isShowNodeLabels());
         return options;
+    }
+
+    public void unsetup() {
+        getEngine().ifPresent(d -> {
+            GraphRenderingOptions options = d.getRenderingOptions();
+            this.zoom = options.getZoom();
+            this.pan = new Vector2f(options.getPan());
+        });
     }
 
     public SelectionModelImpl getSelectionModel() {
@@ -258,6 +271,10 @@ public class VizModel implements VisualisationModel {
         }
     }
 
+    public Vector2fc getPan() {
+        return pan;
+    }
+
     @Override
     public int getFps() {
         return getEngine().map(VizEngine::getFps)
@@ -281,6 +298,11 @@ public class VizModel implements VisualisationModel {
     @Override
     public Color getBackgroundColor() {
         return backgroundColor;
+    }
+
+    private void setBackgroundColor(float[] bgColor) {
+        Color color = new Color(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
+        setBackgroundColor(color);
     }
 
     public void setBackgroundColor(Color backgroundColor) {

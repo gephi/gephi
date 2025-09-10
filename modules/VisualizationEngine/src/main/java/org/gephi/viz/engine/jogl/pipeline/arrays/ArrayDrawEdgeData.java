@@ -3,6 +3,7 @@ package org.gephi.viz.engine.jogl.pipeline.arrays;
 import static com.jogamp.opengl.GL.GL_FLOAT;
 import static org.gephi.viz.engine.pipeline.RenderingLayer.BACK1;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
@@ -11,6 +12,8 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
@@ -45,13 +48,15 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         updateData(viewBoundaries, graphIndex, renderingOptions, selection);
     }
 
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {
-        drawUndirected(gl, engine, layer, mvpFloats);
-        drawDirected(gl, engine, layer, mvpFloats);
+    public void drawArrays(GL2ES2 gl, RenderingLayer layer, VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                           VizEngineModel model, float[] mvpFloats) {
+        drawUndirected(gl, engine, model, layer, mvpFloats);
+        drawDirected(gl, engine, model, layer, mvpFloats);
     }
 
-    private void drawUndirected(GL2ES2 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
-        final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, engine, mvpFloats);
+    private void drawUndirected(GL2ES2 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine, VizEngineModel model,
+                                RenderingLayer layer, float[] mvpFloats) {
+        final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, engine, model, mvpFloats);
 
         final boolean renderingUnselectedEdges = layer == BACK1;
         final int instancesOffset = renderingUnselectedEdges ? 0 : undirectedInstanceCounter.unselectedCountToDraw;
@@ -94,8 +99,9 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
-    private void drawDirected(GL2ES2 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
-        final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, engine, mvpFloats);
+    private void drawDirected(GL2ES2 gl, VizEngine<JOGLRenderingTarget, NEWTEvent> engine, VizEngineModel model,
+                              RenderingLayer layer, float[] mvpFloats) {
+        final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, engine, model, mvpFloats);
 
         final boolean renderingUnselectedEdges = layer == BACK1;
         final int instancesOffset;

@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.spi;
 
 import java.util.EnumSet;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
@@ -10,9 +11,9 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  */
 public interface Renderer<R extends RenderingTarget> extends PipelinedExecutor<R> {
 
-    void worldUpdated(R target);
+    void worldUpdated(VizEngineModel model, R target);
 
-    void render(R target, RenderingLayer layer);
+    void render(VizEngineModel model, R target, RenderingLayer layer);
 
     EnumSet<RenderingLayer> getLayers();
 }

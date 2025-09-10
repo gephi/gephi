@@ -1,6 +1,8 @@
 package org.gephi.viz.engine.jogl.pipeline.indirect.renderers;
 
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
@@ -13,10 +15,10 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  */
 public class NodeRendererIndirect extends AbstractNodeRenderer {
 
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final IndirectNodeData nodeData;
 
-    public NodeRendererIndirect(VizEngine engine, IndirectNodeData nodeData) {
+    public NodeRendererIndirect(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, IndirectNodeData nodeData) {
         this.engine = engine;
         this.nodeData = nodeData;
     }
@@ -27,16 +29,16 @@ public class NodeRendererIndirect extends AbstractNodeRenderer {
     }
 
     @Override
-    public void worldUpdated(JOGLRenderingTarget target) {
+    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         nodeData.updateBuffers(target.getDrawable().getGL().getGL4());
     }
 
     private final float[] mvpFloats = new float[16];
 
     @Override
-    public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
         engine.getModelViewProjectionMatrixFloats(mvpFloats);
-        nodeData.drawIndirect(target.getDrawable().getGL().getGL4(), layer, engine, mvpFloats);
+        nodeData.drawIndirect(target.getDrawable().getGL().getGL4(), layer, engine, model, mvpFloats);
     }
 
     @Override
