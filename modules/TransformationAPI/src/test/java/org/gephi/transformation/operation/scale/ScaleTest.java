@@ -27,6 +27,7 @@ public class ScaleTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     Graph getGraphNotCentered() {
 
         GraphModel graphModel = GraphModel.Factory.newInstance();
@@ -41,18 +42,19 @@ public class ScaleTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     @Test
     public void scaleExtendCenteredTest() {
         Graph graph = getGraphCentered();
         Scale scale = new Scale(2);
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(scale,graph);
+        transformationController.apply(scale, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(node1.x(),-2.0f);
+        assertEquals(node1.x(), -2.0f);
 
         Node node2 = graph.getNode("1");
-        assertEquals(node2.x(),2.0f);
+        assertEquals(node2.x(), 2.0f);
 
     }
 
@@ -62,27 +64,28 @@ public class ScaleTest extends TestCase {
         Graph graph = getGraphNotCentered();
         Scale scale = new Scale(2);
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(scale,graph);
+        transformationController.apply(scale, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(node1.x(),3.0f);
+        assertEquals(node1.x(), 3.0f);
 
         Node node2 = graph.getNode("1");
-        assertEquals(node2.x(),-1.0f);
+        assertEquals(node2.x(), -1.0f);
 
     }
+
     @Test
     public void scaleReduceCenteredTest() {
         Graph graph = getGraphCentered();
         Scale scale = new Scale(0.5f);
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(scale,graph);
+        transformationController.apply(scale, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(node1.x(),-0.5f);
+        assertEquals(node1.x(), -0.5f);
 
         Node node2 = graph.getNode("1");
-        assertEquals(node2.x(),0.5f);
+        assertEquals(node2.x(), 0.5f);
 
     }
 
@@ -92,13 +95,13 @@ public class ScaleTest extends TestCase {
         Graph graph = getGraphNotCentered();
         Scale scale = new Scale(0.5f);
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(scale,graph);
+        transformationController.apply(scale, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(node1.x(),1.5f);
+        assertEquals(node1.x(), 1.5f);
 
         Node node2 = graph.getNode("1");
-        assertEquals(node2.x(),.5f);
+        assertEquals(node2.x(), .5f);
 
     }
 }

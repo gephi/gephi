@@ -16,7 +16,6 @@ public class RotationTest extends TestCase {
     private static final float EPSILON = 0.00001f;
 
 
-
     Graph getGraphCentered() {
 
         GraphModel graphModel = GraphModel.Factory.newInstance();
@@ -31,6 +30,7 @@ public class RotationTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     Graph getGraphNotCentered() {
 
         GraphModel graphModel = GraphModel.Factory.newInstance();
@@ -45,6 +45,7 @@ public class RotationTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     @Test
     public void testRotateCenterGraph() {
         Graph graph = getGraphCentered();
@@ -52,17 +53,18 @@ public class RotationTest extends TestCase {
         rotation.setAngle(90);
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(rotation,graph);
+        transformationController.apply(rotation, graph);
 
         Node node1 = graph.getNode("0");
 
-        assertEquals(0f, node1.x(),EPSILON);
-        assertEquals(1.0f, node1.y(),EPSILON);
+        assertEquals(0f, node1.x(), EPSILON);
+        assertEquals(1.0f, node1.y(), EPSILON);
         Node node2 = graph.getNode("1");
-        assertEquals(0f,node2.x(),EPSILON);
-        assertEquals(-1.0f,node2.y(),EPSILON);
+        assertEquals(0f, node2.x(), EPSILON);
+        assertEquals(-1.0f, node2.y(), EPSILON);
 
     }
+
     @Test
     public void testRotateNotCenterGraph() {
         Graph graph = getGraphNotCentered();
@@ -70,15 +72,15 @@ public class RotationTest extends TestCase {
         rotation.setAngle(90);
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(rotation,graph);
+        transformationController.apply(rotation, graph);
 
         Node node1 = graph.getNode("0");
 
-        assertEquals(1.0f, node1.x(),EPSILON);
-        assertEquals(-1.0f, node1.y(),EPSILON);
+        assertEquals(1.0f, node1.x(), EPSILON);
+        assertEquals(-1.0f, node1.y(), EPSILON);
         Node node2 = graph.getNode("1");
-        assertEquals(1f,node2.x(),EPSILON);
-        assertEquals(1.0f,node2.y(),EPSILON);
+        assertEquals(1f, node2.x(), EPSILON);
+        assertEquals(1.0f, node2.y(), EPSILON);
 
     }
 }

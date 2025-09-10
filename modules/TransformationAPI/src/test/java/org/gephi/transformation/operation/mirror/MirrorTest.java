@@ -7,7 +7,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.transformation.TransformationControllerImpl;
 import org.gephi.transformation.api.TransformationController;
-import org.gephi.transformation.operation.scale.Scale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -28,6 +27,7 @@ public class MirrorTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     Graph getGraphNotCentered() {
 
         GraphModel graphModel = GraphModel.Factory.newInstance();
@@ -42,70 +42,74 @@ public class MirrorTest extends TestCase {
         undirectedGraph.addNode(node2);
         return undirectedGraph;
     }
+
     @Test
     public void testMirrorYCenteredGraph() {
         Graph graph = getGraphCentered();
         MirrorYAxis mirrorYAxis = new MirrorYAxis();
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(mirrorYAxis,graph);
+        transformationController.apply(mirrorYAxis, graph);
 
         Node node1 = graph.getNode("0");
         assertEquals(1.0f, node1.x());
         assertEquals(-1.0f, node1.y());
         Node node2 = graph.getNode("1");
-        assertEquals(-1.0f,node2.x());
-        assertEquals(1.0f,node2.y());
+        assertEquals(-1.0f, node2.x());
+        assertEquals(1.0f, node2.y());
 
     }
+
     @Test
     public void testMirrorXCenteredGraph() {
         Graph graph = getGraphCentered();
         MirrorXAxis mirrorXAxis = new MirrorXAxis();
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(mirrorXAxis,graph);
+        transformationController.apply(mirrorXAxis, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(-1.0f,node1.x());
-        assertEquals(1.0f,node1.y());
+        assertEquals(-1.0f, node1.x());
+        assertEquals(1.0f, node1.y());
 
         Node node2 = graph.getNode("1");
-        assertEquals(1.0f,node2.x());
-        assertEquals(-1.0f,node2.y());
+        assertEquals(1.0f, node2.x());
+        assertEquals(-1.0f, node2.y());
 
     }
+
     @Test
     public void testMirrorYNotCenteredGraph() {
         Graph graph = getGraphNotCentered();
         MirrorYAxis mirrorYAxis = new MirrorYAxis();
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(mirrorYAxis,graph);
+        transformationController.apply(mirrorYAxis, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(0.0f,node1.x());
-        assertEquals(2.0f,node1.y());
+        assertEquals(0.0f, node1.x());
+        assertEquals(2.0f, node1.y());
         Node node2 = graph.getNode("1");
-        assertEquals(2.0f,node2.x());
-        assertEquals(0.0f,node2.y());
+        assertEquals(2.0f, node2.x());
+        assertEquals(0.0f, node2.y());
 
     }
+
     @Test
     public void testMirrorXNotCenteredGraph() {
         Graph graph = getGraphNotCentered();
         MirrorXAxis mirrorXAxis = new MirrorXAxis();
 
         TransformationController transformationController = new TransformationControllerImpl();
-        transformationController.apply(mirrorXAxis,graph);
+        transformationController.apply(mirrorXAxis, graph);
 
         Node node1 = graph.getNode("0");
-        assertEquals(2.0f,node1.x());
-        assertEquals(0.0f,node1.y());
+        assertEquals(2.0f, node1.x());
+        assertEquals(0.0f, node1.y());
 
         Node node2 = graph.getNode("1");
-        assertEquals(0.0f,node2.x());
-        assertEquals(2.0f,node2.y());
+        assertEquals(0.0f, node2.x());
+        assertEquals(2.0f, node2.y());
 
     }
 }
