@@ -7,7 +7,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = TransformationOperation.class)
 public class MirrorXAxis extends Mirror {
     public MirrorXAxis() {
-        this.nodeGetFunction = Node::y;
-        this.nodeSetFunction = Node::setY;
+        super(Node::y,Node::setY);
     }
 }

@@ -8,9 +8,13 @@ import org.gephi.transformation.spi.TransformationOperation;
 
 
 abstract public class Mirror implements TransformationOperation {
-    protected Function<Node, Float> nodeGetFunction;
-    protected BiConsumer<Node, Float> nodeSetFunction;
+    final protected Function<Node, Float> nodeGetFunction;
+    final protected BiConsumer<Node, Float> nodeSetFunction;
 
+    public Mirror(Function<Node, Float> nodeGetFunction, BiConsumer<Node, Float> nodeSetFunction) {
+        this.nodeGetFunction = nodeGetFunction;
+        this.nodeSetFunction = nodeSetFunction;
+    }
 
     @Override
     public void transformation(Graph graph) {
