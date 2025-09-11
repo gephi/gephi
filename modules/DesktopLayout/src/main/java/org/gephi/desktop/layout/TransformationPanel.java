@@ -45,12 +45,16 @@ package org.gephi.desktop.layout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
+
+import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 
 public class TransformationPanel extends javax.swing.JPanel implements PropertyChangeListener {
-
+    private final TransformationUI transformationUI;
     public TransformationPanel(){
         initComponents();
+        transformationUI=Lookup.getDefault().lookup(TransformationUI.class);
     }
 
   private final ImageIcon iconMirrorY = ImageUtilities.loadImageIcon(
@@ -108,9 +112,19 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         buttonReduce = new javax.swing.JButton(this.iconScaleReduce);
 
         buttonMirrorY.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonMirrorY.text")); // NOI18N
+        buttonMirrorY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonMirrorYActionPerformed(evt);
+            }
+        });
         add(buttonMirrorY);
 
         buttonMirrorX.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonMirrorX.text")); // NOI18N
+        buttonMirrorX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonMirrorXActionPerformed(evt);
+            }
+        });
         add(buttonMirrorX);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -119,15 +133,35 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         add(jSeparator1);
 
         buttonRotateLeft45deg.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateLeft45deg.text")); // NOI18N
+        buttonRotateLeft45deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRotateLeft45degActionPerformed(evt);
+            }
+        });
         add(buttonRotateLeft45deg);
 
         buttonRotateLeft1deg.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateLeft1deg.text")); // NOI18N
+        buttonRotateLeft1deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRotateLeft1degActionPerformed(evt);
+            }
+        });
         add(buttonRotateLeft1deg);
 
         buttonRotateRight1deg.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateRight1deg.text")); // NOI18N
+        buttonRotateRight1deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRotateRight1degActionPerformed(evt);
+            }
+        });
         add(buttonRotateRight1deg);
 
         buttonRotateRight45deg.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateRight45deg.text")); // NOI18N
+        buttonRotateRight45deg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRotateRight45degActionPerformed(evt);
+            }
+        });
         add(buttonRotateRight45deg);
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -136,11 +170,53 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         add(jSeparator2);
 
         buttonExpand.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonExpand.text")); // NOI18N
+        buttonExpand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonExpandActionPerformed(evt);
+            }
+        });
         add(buttonExpand);
 
         buttonReduce.setText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonReduce.text")); // NOI18N
+        buttonReduce.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonReduceActionPerformed(evt);
+            }
+        });
         add(buttonReduce);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonMirrorYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorYActionPerformed
+        transformationUI.mirrorYAxis(); 
+    }//GEN-LAST:event_buttonMirrorYActionPerformed
+
+    private void buttonMirrorXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorXActionPerformed
+        transformationUI.mirrorXAxis(); 
+    }//GEN-LAST:event_buttonMirrorXActionPerformed
+
+    private void buttonRotateLeft45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft45degActionPerformed
+        transformationUI.rotateLeft45Deg();   
+    }//GEN-LAST:event_buttonRotateLeft45degActionPerformed
+
+    private void buttonRotateLeft1degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft1degActionPerformed
+         transformationUI.rotateLeft1Deg();   
+    }//GEN-LAST:event_buttonRotateLeft1degActionPerformed
+
+    private void buttonRotateRight1degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight1degActionPerformed
+          transformationUI.rotateRight1Deg();  
+    }//GEN-LAST:event_buttonRotateRight1degActionPerformed
+
+    private void buttonRotateRight45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight45degActionPerformed
+           transformationUI.rotateRight45Deg();  
+    }//GEN-LAST:event_buttonRotateRight45degActionPerformed
+
+    private void buttonExpandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExpandActionPerformed
+      transformationUI.expand();
+    }//GEN-LAST:event_buttonExpandActionPerformed
+
+    private void buttonReduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonReduceActionPerformed
+     transformationUI.reduce();
+    }//GEN-LAST:event_buttonReduceActionPerformed
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

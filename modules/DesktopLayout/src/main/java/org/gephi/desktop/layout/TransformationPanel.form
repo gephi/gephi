@@ -22,6 +22,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonMirrorY.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMirrorYActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconMirrorY)"/>
       </AuxValues>
@@ -32,6 +35,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonMirrorX.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMirrorXActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconMirrorX)"/>
       </AuxValues>
@@ -53,6 +59,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonRotateLeft45deg.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRotateLeft45degActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconRotateLeft45deg)"/>
       </AuxValues>
@@ -63,6 +72,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonRotateLeft1deg.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRotateLeft1degActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconRotateLeft1deg)"/>
       </AuxValues>
@@ -73,6 +85,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonRotateRight1deg.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRotateRight1degActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconRotateRight1deg)"/>
       </AuxValues>
@@ -83,6 +98,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonRotateRight45deg.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRotateRight45degActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconRotateRight45deg)"/>
       </AuxValues>
@@ -104,6 +122,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonExpand.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonExpandActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconScaleExpand)"/>
       </AuxValues>
@@ -114,6 +135,9 @@
           <ResourceString bundle="org/gephi/desktop/layout/Bundle.properties" key="TransformationPanel.buttonReduce.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonReduceActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(this.iconScaleReduce)"/>
       </AuxValues>
