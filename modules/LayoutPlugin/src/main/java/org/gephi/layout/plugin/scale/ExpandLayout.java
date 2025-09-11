@@ -46,12 +46,12 @@ import org.gephi.layout.spi.LayoutBuilder;
 
 public class ExpandLayout extends AbstractScaleLayout {
 
-    public ExpandLayout(LayoutBuilder layoutBuilder, double scale) {
+    public ExpandLayout(LayoutBuilder layoutBuilder, float scale) {
         super(layoutBuilder, scale);
     }
 
     @Override
     public void resetPropertiesValues() {
-        setScale(1.2);
+        setScale(1.2f);
     }
 }

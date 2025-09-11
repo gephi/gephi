@@ -46,12 +46,12 @@ import org.gephi.layout.spi.LayoutBuilder;
 
 public class ContractLayout extends AbstractScaleLayout {
 
-    public ContractLayout(LayoutBuilder layoutBuilder, double scale) {
+    public ContractLayout(LayoutBuilder layoutBuilder, float scale) {
         super(layoutBuilder, scale);
     }
 
     @Override
     public void resetPropertiesValues() {
-        setScale(0.8);
+        setScale(0.8f);
     }
 }

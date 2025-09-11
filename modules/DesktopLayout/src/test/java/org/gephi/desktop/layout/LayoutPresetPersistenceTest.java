@@ -45,7 +45,7 @@ public class LayoutPresetPersistenceTest {
     @Test
     public void testLoad() {
         ContractLayout layout = BUILDER.buildLayout();
-        layout.setScale(42.0);
+        layout.setScale(42.0f);
         persistence.savePreset("42", layout);
 
         layout.resetPropertiesValues();
