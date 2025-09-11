@@ -54,24 +54,24 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
     }
 
   private final ImageIcon iconMirrorY = ImageUtilities.loadImageIcon(
-        "DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
+          "DesktopLayout/transformations/mirror_yaxis.svg", false);
     private final ImageIcon iconMirrorX = ImageUtilities.loadImageIcon(
-        "DesktopTransform/measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg", false);
+            "DesktopLayout/transformations/mirror_xaxis.svg", false);
 
     private final ImageIcon iconRotateRight1deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_1deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_right_1deg.svg", false);
     private final ImageIcon iconRotateLeft1deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_1deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_left_1deg.svg", false);
 
     private final ImageIcon iconRotateRight45deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_45deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_right_45deg.svg", false);
     private final ImageIcon iconRotateLeft45deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_45deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_left_45deg.svg", false);
 
     private final ImageIcon iconScaleExpand =
-        ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/scale_expand.svg", false);
     private final ImageIcon iconScaleReduce =
-        ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/scale_reduce.svg", false);
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonExpand;

@@ -47,7 +47,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.transformation.api.TransformationController;
-import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -68,24 +67,24 @@ import org.openide.windows.TopComponent;
 public final class TransformationTopComponent extends TopComponent {
 
     private final ImageIcon icon_mirror_y = ImageUtilities.loadImageIcon(
-        "DesktopTransform/drawing-geometry-symmetry-direction-interaction-move-svgrepo-com.svg", false);
+            "DesktopLayout/transformations/mirror_yaxis.svg", false);
     private final ImageIcon icon_mirror_x = ImageUtilities.loadImageIcon(
-        "DesktopTransform/measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg", false);
+            "DesktopLayout/transformations/mirror_xaxis.svg", false);
 
     private final ImageIcon icon_rotate_right_1deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_1deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_right_1deg.svg", false);
     private final ImageIcon icon_rotate_left_1deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_1deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_left_1deg.svg", false);
 
     private final ImageIcon icon_rotate_right_45deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-right-svgrepo-com_45deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_right_45deg.svg", false);
     private final ImageIcon icon_rotate_left_45deg =
-        ImageUtilities.loadImageIcon("DesktopTransform/rotate-left-svgrepo-com_45deg.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_left_45deg.svg", false);
 
     private final ImageIcon icon_scale_expand =
-        ImageUtilities.loadImageIcon("DesktopTransform/scale-expand-svgrepo-com.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/scale_expand.svg", false);
     private final ImageIcon icon_scale_reduce =
-        ImageUtilities.loadImageIcon("DesktopTransform/scale-reduce-svgrepo-com.svg", false);
+        ImageUtilities.loadImageIcon("DesktopLayout/transformations/scale_reduce.svg", false);
 
     private final TransformationController transformationController;
 
