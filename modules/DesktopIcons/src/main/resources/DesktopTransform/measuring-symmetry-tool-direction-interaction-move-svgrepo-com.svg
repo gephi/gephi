@@ -1,44 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="31.999998"
-   height="31.999783"
-   viewBox="0 0 0.79999995 0.79999456"
-   version="1.1"
-   id="svg1"
-   sodipodi:docname="measuring-symmetry-tool-direction-interaction-move-svgrepo-com.svg"
-   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.10625"
-     inkscape:cx="399.54802"
-     inkscape:cy="360.22599"
-     inkscape:window-width="1920"
-     inkscape:window-height="1129"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
-  <g
-     id="layer1"
-     transform="matrix(0.04210526,0,0,0.04210526,0,-0.04209158)">
-    <path
-       d="M 2.4804688,1 A 0.50005,0.50005 0 0 0 2,1.5 v 7 A 0.50005,0.50005 0 0 0 2.5,9 h 14 A 0.50005,0.50005 0 0 0 17,8.484375 0.50005,0.50005 0 0 0 16.722656,8.0527344 l -13.9999998,-7 A 0.50005,0.50005 0 0 0 2.4804688,1 Z M 3,2.3085938 14.382812,8 H 3 Z M 0,10 v 1 h 2 v -1 z m 5,0 v 1 h 3 v -1 z m 6,0 v 1 h 3 v -1 z m 6,0 v 1 h 2 V 10 Z M 2.5,12 A 0.50005,0.50005 0 0 0 2,12.5 v 7 a 0.50005,0.50005 0 0 0 0.7226562,0.447266 l 13.9999998,-7 A 0.50005,0.50005 0 0 0 17,12.503906 0.50005,0.50005 0 0 0 16.5,12 Z M 3,13 H 14.382812 L 3,18.691406 Z"
-       style="fill:#222222;fill-opacity:1;stroke:none;stroke-width:0px"
-       id="path1" />
-  </g>
+      .st1 {
+        fill: #555;
+      }
+    </style>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="16" height="16" transform="translate(16 0) rotate(90)"/>
+  <path class="st1" d="M14.48,6.725c.099-.467-.15-.938-.591-1.12l-.009-.003L3.884,1.601c-.51-.212-1.095.029-1.307.539-.051.122-.077.253-.077.386v4c0,.552.448,1,1,1h10c.477.003.888-.333.98-.801ZM3.5,6.526V2.526l.009.004,9.991,3.996H3.5ZM3.884,14.449l9.996-4,.009-.003c.508-.217.743-.805.526-1.312-.157-.366-.516-.605-.915-.606H3.5c-.552,0-1,.448-1,1v4c0,.552.447,1,1,1,.132,0,.263-.026.385-.077h0s0-.001,0-.001ZM3.5,9.526h10l-9.99,3.996-.009.003v-4h0Z"/>
 </svg>

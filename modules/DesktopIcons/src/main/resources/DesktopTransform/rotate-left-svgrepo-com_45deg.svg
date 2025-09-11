@@ -1,48 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   fill="#000000"
-   width="32"
-   height="35.999931"
-   viewBox="0 0 76.8 86.399835"
-   version="1.1"
-   id="svg1"
-   sodipodi:docname="rotate-left-svgrepo-com_45deg.svg"
-   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="17.383075"
-     inkscape:cx="17.890966"
-     inkscape:cy="21.083727"
-     inkscape:window-width="1920"
-     inkscape:window-height="1129"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
-  <path
-     fill-rule="evenodd"
-     clip-rule="evenodd"
-     d="m 56.31514,20.154696 -5.915238,-5.915284 h 7.199986 c 7.952834,0 14.399971,6.447093 14.399971,14.399972 H 76.8 C 76.8,18.03556 68.203667,9.4394516 57.599888,9.4394516 H 50.401252 L 56.44654,3.3941184 53.052196,0 41.212405,11.839972 52.921247,23.548769 Z m 1.284748,18.245214 c 0,-5.30189 -4.297942,-9.599966 -9.599832,-9.599966 H 9.5999663 C 4.2980766,28.799944 0,33.09802 0,38.39991 V 76.8 c 0,5.30189 4.2980766,9.599831 9.5999663,9.599831 H 48.000056 c 5.30189,0 9.599832,-4.297941 9.599832,-9.599831 z M 48.000056,33.599949 H 9.5999663 c -2.6509449,0 -4.7999607,2.149016 -4.7999607,4.799961 V 76.8 c 0,2.650945 2.1490158,4.799691 4.7999607,4.799691 H 48.000056 c 2.650945,0 4.799691,-2.148746 4.799691,-4.799691 V 38.39991 c 0,-2.650945 -2.148746,-4.799961 -4.799691,-4.799961 z"
-     id="path1"
-     style="stroke-width:0.0449999" />
-  <path
-     d="M 20.215777,73.683388 H 17.234773 V 66.99269 l -2.05358,-2.05358 H 9.3185523 L 5.5094919,61.13005 V 47.251821 h 2.9810038 v 12.652705 l 2.0535803,2.05358 h 5.862641 l 0.828056,0.828057 V 47.251821 h 2.981004 z m 8.015587,-2.981004 h 4.637117 l 2.053581,-2.05358 v -4.637117 l -2.053581,-2.053581 h -5.86264 L 23.19678,58.149046 V 47.251821 h 14.706285 v 2.981004 H 26.177784 v 6.690697 l 2.05358,2.053581 h 5.862641 l 3.80906,3.80906 v 7.088164 l -3.80906,3.809061 H 27.005841 L 23.19678,69.874327 v -3.544082 h 2.981004 v 2.318559 z m 20.701415,-18.415979 -2.053581,-2.05358 h -0.960545 l -2.053581,2.05358 v 0.960546 l 2.053581,2.05358 h 0.960545 l 2.053581,-2.05358 z m -0.828057,-5.034584 3.80906,3.809061 v 3.411593 l -3.80906,3.80906 h -3.411593 l -3.809061,-3.80906 v -3.411593 l 3.809061,-3.809061 z"
-     id="text1"
-     style="font-size:33.9172px;line-height:1;font-family:Eightgon;-inkscape-font-specification:Eightgon;letter-spacing:0px;stroke-width:5.0876;stroke-linejoin:bevel;paint-order:stroke markers fill"
-     aria-label="45°" />
+      .st1 {
+        fill: #555;
+      }
+    </style>
+  </defs>
+  <rect id="_Transparent_Rectangle_" class="st0" x="0" y="0" width="16" height="16" transform="translate(16 16) rotate(-180)"/>
+  <path class="st1" d="M1,3.499c0-.276.224-.5.5-.5s.5.224.5.5v1.863s1.766-1.613,1.766-1.613c1.105-1.1,2.594-1.728,4.153-1.749,3.314-.046,6.037,2.604,6.082,5.917.046,3.314-2.604,6.037-5.917,6.082h-.082c-1.532.003-3.006-.583-4.118-1.637-.201-.19-.21-.506-.02-.707s.506-.21.707-.02c1.967,1.856,5.053,1.811,6.965-.101,1.953-1.952,1.953-5.118,0-7.071s-5.118-1.953-7.071,0l-.016.015-1.662,1.523h1.712c.276,0,.5.224.5.5,0,.276-.224.5-.5.5H1.5c-.276,0-.5-.224-.5-.5v-3s0,0,0,0Z"/>
 </svg>
