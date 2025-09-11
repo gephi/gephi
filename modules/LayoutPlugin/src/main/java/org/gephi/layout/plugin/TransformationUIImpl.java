@@ -15,7 +15,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = TransformationUI.class)
-public class TransformationUIImpl extends LayoutControllerImpl implements TransformationUI {
+public class TransformationUIImpl implements TransformationUI {
 
     private final MirrorLayout mirrorLayout ;
     private final RotateLayout rotateLayout;
