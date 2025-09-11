@@ -69,6 +69,7 @@ import org.openide.windows.TopComponent;
 public final class LayoutTopComponent extends TopComponent {
 
     private final LayoutPanel layoutPanel;
+    private final TransformationPanel transformationPanel;
     private LayoutModel model;
 
     public LayoutTopComponent() {
@@ -78,9 +79,11 @@ public final class LayoutTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         layoutPanel = new LayoutPanel();
+        transformationPanel = new TransformationPanel();
         if (UIUtils.isAquaLookAndFeel()) {
             layoutPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
+        add(transformationPanel,BorderLayout.PAGE_START);
         add(layoutPanel, BorderLayout.CENTER);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
