@@ -9,7 +9,7 @@ import org.gephi.layout.plugin.rotate.Rotate;
 import org.gephi.layout.plugin.rotate.RotateLayout;
 import org.gephi.layout.plugin.scale.AbstractScaleLayout;
 import org.gephi.layout.plugin.scale.Expand;
-import org.gephi.layout.TransformationUI;
+import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 

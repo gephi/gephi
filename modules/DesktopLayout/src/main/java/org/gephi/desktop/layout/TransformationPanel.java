@@ -46,7 +46,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
 
-import org.gephi.layout.TransformationUI;
+import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
