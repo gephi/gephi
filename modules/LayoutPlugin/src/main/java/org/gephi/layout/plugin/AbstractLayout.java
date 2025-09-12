@@ -48,6 +48,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.Transformation;
 
 /**
  * Base class for layout algorithms.

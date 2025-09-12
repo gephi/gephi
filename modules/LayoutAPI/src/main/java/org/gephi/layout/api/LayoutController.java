@@ -43,7 +43,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.api;
 
 import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.Transformation;
 import org.gephi.project.api.Workspace;
+
+import javax.xml.crypto.dsig.Transform;
 
 /**
  * A LayoutController is the one responsible for controlling the states of
@@ -79,6 +82,11 @@ public interface LayoutController {
      * Executes the current Layout.
      */
     void executeLayout();
+
+    /**
+     * Executes a transformation.
+     */
+    void executeTransformation(Transformation transformation);
 
     /**
      * Executes the current layout for <code>numIterations</code> iterations.

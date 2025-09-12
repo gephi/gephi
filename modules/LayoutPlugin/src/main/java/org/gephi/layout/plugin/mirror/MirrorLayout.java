@@ -6,6 +6,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.gephi.layout.spi.Transformation;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class MirrorLayout extends AbstractLayout implements Layout {
+public class MirrorLayout extends AbstractLayout implements Transformation {
     private record MirrorTransformation(Function<Node, Float> nodeGetFunction, BiConsumer<Node, Float> nodeSetFunction,
                                         String name){}
 

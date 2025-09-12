@@ -1,4 +1,4 @@
-package org.gephi.layout.spi;
+package org.gephi.layout;
 
 public interface TransformationUI {
     void mirrorXAxis();
