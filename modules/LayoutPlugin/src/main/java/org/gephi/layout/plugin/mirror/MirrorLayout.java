@@ -1,23 +1,22 @@
 package org.gephi.layout.plugin.mirror;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.layout.spi.Transformation;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 public class MirrorLayout extends AbstractLayout implements Transformation {
     private record MirrorTransformation(Function<Node, Float> nodeGetFunction, BiConsumer<Node, Float> nodeSetFunction,
-                                        String name){}
+                                        String name) {
+    }
 
 
     private Graph graph;
@@ -33,6 +32,7 @@ public class MirrorLayout extends AbstractLayout implements Transformation {
         this.yAxis = yAxis;
 
     }
+
     @Override
     public void initAlgo() {
         setConverged(false);
@@ -43,12 +43,12 @@ public class MirrorLayout extends AbstractLayout implements Transformation {
         graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
-            float xMean = 0.f, yMean=0.f;
+            float xMean = 0.f, yMean = 0.f;
             for (Node n : graph.getNodes()) {
-                if(yAxis) {
+                if (yAxis) {
                     xMean += yAxisTransformation.nodeGetFunction.apply(n);
                 }
-                if(xAxis) {
+                if (xAxis) {
                     yMean += xAxisTransformation.nodeGetFunction.apply(n);
                 }
             }
@@ -56,11 +56,11 @@ public class MirrorLayout extends AbstractLayout implements Transformation {
             yMean /= graph.getNodeCount();
             for (Node node : graph.getNodes()) {
                 if (!node.isFixed()) {
-                    if(yAxis) {
+                    if (yAxis) {
                         float delta = ((yAxisTransformation.nodeGetFunction.apply(node) - xMean) * -1.0f);
                         yAxisTransformation.nodeSetFunction.accept(node, xMean + delta);
                     }
-                    if(xAxis) {
+                    if (xAxis) {
                         float delta = ((xAxisTransformation.nodeGetFunction.apply(node) - yMean) * -1.0f);
                         xAxisTransformation.nodeSetFunction.accept(node, yMean + delta);
                     }
@@ -82,19 +82,19 @@ public class MirrorLayout extends AbstractLayout implements Transformation {
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class,
-                    NbBundle.getMessage(getClass(), "mirror.xaxis.name"),
-                    null,
-                    "mirror.xaxis.name",
-                    NbBundle.getMessage(getClass(), "mirror.xaxis.desc"),
-                    "isxAxis", "setxAxis"));
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "mirror.xaxis.name"),
+                null,
+                "mirror.xaxis.name",
+                NbBundle.getMessage(getClass(), "mirror.xaxis.desc"),
+                "isxAxis", "setxAxis"));
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class,
-                    NbBundle.getMessage(getClass(), "mirror.yaxis.name"),
-                    null,
-                    "mirror.yaxis.name",
-                    NbBundle.getMessage(getClass(), "mirror.yaxis.desc"),
-                    "isyAxis", "setyAxis"));
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "mirror.yaxis.name"),
+                null,
+                "mirror.yaxis.name",
+                NbBundle.getMessage(getClass(), "mirror.yaxis.desc"),
+                "isyAxis", "setyAxis"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

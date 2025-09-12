@@ -46,8 +46,6 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.Transformation;
 import org.gephi.project.api.Workspace;
 
-import javax.xml.crypto.dsig.Transform;
-
 /**
  * A LayoutController is the one responsible for controlling the states of
  * the {@link LayoutModel}. It always controls the current workspace model.

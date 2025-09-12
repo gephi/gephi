@@ -1,22 +1,22 @@
 package org.gephi.layout.plugin.mirror;
 
 
+import javax.swing.Icon;
+import javax.swing.JPanel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
-import javax.swing.*;
-
 @ServiceProvider(service = LayoutBuilder.class)
 public class Mirror implements LayoutBuilder {
 
-    private final MirrorLayoutUI ui = new  MirrorLayoutUI();
+    private final MirrorLayoutUI ui = new MirrorLayoutUI();
 
     @Override
     public MirrorLayout buildLayout() {
-        return new MirrorLayout(this, false,true);
+        return new MirrorLayout(this, false, true);
     }
 
     @Override

@@ -341,13 +341,12 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof LayoutPropertyKey)) {
+            if (!(obj instanceof LayoutPropertyKey s)) {
                 return false;
             }
             if (obj == this) {
                 return true;
             }
-            LayoutPropertyKey s = (LayoutPropertyKey) obj;
             return s.layoutClassName.equals(layoutClassName) && s.name.equals(name);
         }
 

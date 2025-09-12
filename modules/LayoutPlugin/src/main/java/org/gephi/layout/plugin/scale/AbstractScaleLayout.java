@@ -47,7 +47,6 @@ import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.layout.spi.Transformation;
@@ -92,7 +91,7 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Tran
                     float dx = (n.x() - xMean) * getScale();
                     float dy = (n.y() - yMean) * getScale();
 
-                    n.setPosition(xMean + dx,yMean + dy);
+                    n.setPosition(xMean + dx, yMean + dy);
                 }
             }
             setConverged(true);

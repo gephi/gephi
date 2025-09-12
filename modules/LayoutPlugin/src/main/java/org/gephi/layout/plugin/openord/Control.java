@@ -295,7 +295,9 @@ public class Control {
                     "Layout completed in %d seconds with %d iterations",
                     totalTime, totIterations));
             }
-        } else return STAGE != 6;
+        } else {
+            return STAGE != 6;
+        }
 
         return true;
     }

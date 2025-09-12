@@ -47,7 +47,6 @@ import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.layout.spi.Transformation;
@@ -79,8 +78,8 @@ public class RotateLayout extends AbstractLayout implements Transformation {
         graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
-            float sin = (float)Math.sin(-getAngle() * Math.PI / 180f);
-            float cos = (float)Math.cos(-getAngle() * Math.PI / 180f);
+            float sin = (float) Math.sin(-getAngle() * Math.PI / 180f);
+            float cos = (float) Math.cos(-getAngle() * Math.PI / 180f);
             float px = 0f;
             float py = 0f;
 
@@ -88,7 +87,7 @@ public class RotateLayout extends AbstractLayout implements Transformation {
                 if (!n.isFixed()) {
                     float dx = n.x() - px;
                     float dy = n.y() - py;
-                    n.setPosition(px + dx * cos - dy * sin,py + dy * cos + dx * sin);
+                    n.setPosition(px + dx * cos - dy * sin, py + dy * cos + dx * sin);
                 }
             }
             setConverged(true);

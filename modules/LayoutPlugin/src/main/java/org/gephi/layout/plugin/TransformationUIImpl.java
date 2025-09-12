@@ -16,11 +16,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = TransformationUI.class)
 public class TransformationUIImpl implements TransformationUI {
 
-    private final MirrorLayout mirrorLayout ;
+    private final MirrorLayout mirrorLayout;
     private final RotateLayout rotateLayout;
     private final AbstractScaleLayout scaleLayout;
 
     private final LayoutController layoutController;
+
     public TransformationUIImpl() {
 
         mirrorLayout = Lookup.getDefault().lookup(Mirror.class).buildLayout();
@@ -30,12 +31,14 @@ public class TransformationUIImpl implements TransformationUI {
         layoutController = Lookup.getDefault().lookup(LayoutController.class);
 
     }
-    private GraphModel getGraph(){
+
+    private GraphModel getGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
         return graphController.getGraphModel();
 
     }
+
     // Current implementation is not ok. Should use a controller to run the layout but
     // right now there is only one instance of the LayoutController that will modify also the
     // Layout part if we use it.

@@ -132,10 +132,12 @@ public class ForceAtlas2 implements Layout {
 
     private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
         double w = edge.getWeight();
-        if (isDynamicWeight)
+        if (isDynamicWeight) {
             w = edge.getWeight(interval);
-        if (isInvertedEdgeWeightsMode())
-            return w == 0 ? 0 : 1/w;
+        }
+        if (isInvertedEdgeWeightsMode()) {
+            return w == 0 ? 0 : 1 / w;
+        }
         return w;
     }
 
@@ -230,7 +232,8 @@ public class ForceAtlas2 implements Layout {
                     }
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
-                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
+                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
+                                (edgeWeightMax - edgeWeightMin);
                             Attraction.apply(e.getSource(), e.getTarget(), w);
                         }
                     } else {
@@ -255,7 +258,8 @@ public class ForceAtlas2 implements Layout {
                     }
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
-                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
+                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
+                                (edgeWeightMax - edgeWeightMin);
                             Attraction.apply(e.getSource(), e.getTarget(),
                                 Math.pow(w, getEdgeWeightInfluence()));
                         }

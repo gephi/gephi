@@ -45,22 +45,22 @@ package org.gephi.desktop.layout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
-
 import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 public class TransformationPanel extends javax.swing.JPanel implements PropertyChangeListener {
     private final TransformationUI transformationUI;
-    public TransformationPanel(){
+
+    public TransformationPanel() {
         initComponents();
-        transformationUI=Lookup.getDefault().lookup(TransformationUI.class);
+        transformationUI = Lookup.getDefault().lookup(TransformationUI.class);
     }
 
-  private final ImageIcon iconMirrorY = ImageUtilities.loadImageIcon(
-          "DesktopLayout/transformations/mirror_yaxis.svg", false);
+    private final ImageIcon iconMirrorY = ImageUtilities.loadImageIcon(
+        "DesktopLayout/transformations/mirror_yaxis.svg", false);
     private final ImageIcon iconMirrorX = ImageUtilities.loadImageIcon(
-            "DesktopLayout/transformations/mirror_xaxis.svg", false);
+        "DesktopLayout/transformations/mirror_xaxis.svg", false);
 
     private final ImageIcon iconRotateRight1deg =
         ImageUtilities.loadImageIcon("DesktopLayout/transformations/rotate_right_1deg.svg", false);
@@ -90,7 +90,7 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
     private javax.swing.JSeparator jSeparator2;
     // End of variables declaration//GEN-END:variables
 
-   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -111,7 +111,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         buttonExpand = new javax.swing.JButton(this.iconScaleExpand);
         buttonReduce = new javax.swing.JButton(this.iconScaleReduce);
 
-        buttonMirrorY.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonMirrorY.toolTipText")); // NOI18N
+        buttonMirrorY.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonMirrorY.toolTipText")); // NOI18N
         buttonMirrorY.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonMirrorYActionPerformed(evt);
@@ -119,7 +120,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         });
         add(buttonMirrorY);
 
-        buttonMirrorX.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonMirrorX.toolTipText")); // NOI18N
+        buttonMirrorX.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonMirrorX.toolTipText")); // NOI18N
         buttonMirrorX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonMirrorXActionPerformed(evt);
@@ -132,7 +134,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         jSeparator1.setPreferredSize(new java.awt.Dimension(8, 16));
         add(jSeparator1);
 
-        buttonRotateLeft45deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateLeft45deg.toolTipText")); // NOI18N
+        buttonRotateLeft45deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonRotateLeft45deg.toolTipText")); // NOI18N
         buttonRotateLeft45deg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRotateLeft45degActionPerformed(evt);
@@ -140,7 +143,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         });
         add(buttonRotateLeft45deg);
 
-        buttonRotateLeft1deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateLeft1deg.toolTipText")); // NOI18N
+        buttonRotateLeft1deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonRotateLeft1deg.toolTipText")); // NOI18N
         buttonRotateLeft1deg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRotateLeft1degActionPerformed(evt);
@@ -148,7 +152,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         });
         add(buttonRotateLeft1deg);
 
-        buttonRotateRight1deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateRight1deg.toolTipText")); // NOI18N
+        buttonRotateRight1deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonRotateRight1deg.toolTipText")); // NOI18N
         buttonRotateRight1deg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRotateRight1degActionPerformed(evt);
@@ -156,7 +161,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         });
         add(buttonRotateRight1deg);
 
-        buttonRotateRight45deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonRotateRight45deg.toolTipText")); // NOI18N
+        buttonRotateRight45deg.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonRotateRight45deg.toolTipText")); // NOI18N
         buttonRotateRight45deg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRotateRight45degActionPerformed(evt);
@@ -169,7 +175,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         jSeparator2.setPreferredSize(new java.awt.Dimension(8, 16));
         add(jSeparator2);
 
-        buttonExpand.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonExpand.toolTipText")); // NOI18N
+        buttonExpand.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonExpand.toolTipText")); // NOI18N
         buttonExpand.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonExpandActionPerformed(evt);
@@ -177,7 +184,8 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         });
         add(buttonExpand);
 
-        buttonReduce.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class, "TransformationPanel.buttonReduce.toolTipText")); // NOI18N
+        buttonReduce.setToolTipText(org.openide.util.NbBundle.getMessage(TransformationPanel.class,
+            "TransformationPanel.buttonReduce.toolTipText")); // NOI18N
         buttonReduce.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonReduceActionPerformed(evt);
@@ -186,41 +194,50 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
         add(buttonReduce);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonMirrorYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorYActionPerformed
-        transformationUI.mirrorYAxis(); 
+    private void buttonMirrorYActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorYActionPerformed
+        transformationUI.mirrorYAxis();
     }//GEN-LAST:event_buttonMirrorYActionPerformed
 
-    private void buttonMirrorXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorXActionPerformed
-        transformationUI.mirrorXAxis(); 
+    private void buttonMirrorXActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorXActionPerformed
+        transformationUI.mirrorXAxis();
     }//GEN-LAST:event_buttonMirrorXActionPerformed
 
-    private void buttonRotateLeft45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft45degActionPerformed
-        transformationUI.rotateLeft45Deg();   
+    private void buttonRotateLeft45degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft45degActionPerformed
+        transformationUI.rotateLeft45Deg();
     }//GEN-LAST:event_buttonRotateLeft45degActionPerformed
 
-    private void buttonRotateLeft1degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft1degActionPerformed
-         transformationUI.rotateLeft1Deg();   
+    private void buttonRotateLeft1degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft1degActionPerformed
+        transformationUI.rotateLeft1Deg();
     }//GEN-LAST:event_buttonRotateLeft1degActionPerformed
 
-    private void buttonRotateRight1degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight1degActionPerformed
-          transformationUI.rotateRight1Deg();  
+    private void buttonRotateRight1degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight1degActionPerformed
+        transformationUI.rotateRight1Deg();
     }//GEN-LAST:event_buttonRotateRight1degActionPerformed
 
-    private void buttonRotateRight45degActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight45degActionPerformed
-           transformationUI.rotateRight45Deg();  
+    private void buttonRotateRight45degActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight45degActionPerformed
+        transformationUI.rotateRight45Deg();
     }//GEN-LAST:event_buttonRotateRight45degActionPerformed
 
-    private void buttonExpandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExpandActionPerformed
-      transformationUI.expand();
+    private void buttonExpandActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExpandActionPerformed
+        transformationUI.expand();
     }//GEN-LAST:event_buttonExpandActionPerformed
 
-    private void buttonReduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonReduceActionPerformed
-     transformationUI.reduce();
+    private void buttonReduceActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonReduceActionPerformed
+        transformationUI.reduce();
     }//GEN-LAST:event_buttonReduceActionPerformed
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException(
+            "Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
