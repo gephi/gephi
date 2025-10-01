@@ -9,11 +9,10 @@ import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
-import org.gephi.layout.spi.Transformation;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
-public class MirrorLayout extends AbstractLayout implements Transformation {
+public class MirrorLayout extends AbstractLayout {
     private record MirrorTransformation(Function<Node, Float> nodeGetFunction, BiConsumer<Node, Float> nodeSetFunction,
                                         String name) {
     }

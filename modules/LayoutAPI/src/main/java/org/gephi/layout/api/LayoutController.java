@@ -43,7 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.api;
 
 import org.gephi.layout.spi.Layout;
-import org.gephi.layout.spi.Transformation;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -83,8 +82,9 @@ public interface LayoutController {
 
     /**
      * Executes a transformation.
+     * TODO: Add optional workspace input
      */
-    void executeTransformation(Transformation transformation);
+    void executeLayout(Layout transformation);
 
     /**
      * Executes the current layout for <code>numIterations</code> iterations.

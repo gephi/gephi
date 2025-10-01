@@ -1,4 +1,4 @@
-package org.gephi.layout.plugin;
+package org.gephi.desktop.layout;
 
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -9,12 +9,10 @@ import org.gephi.layout.plugin.rotate.Rotate;
 import org.gephi.layout.plugin.rotate.RotateLayout;
 import org.gephi.layout.plugin.scale.AbstractScaleLayout;
 import org.gephi.layout.plugin.scale.Expand;
-import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = TransformationUI.class)
-public class TransformationUIImpl implements TransformationUI {
+
+public class TransformationUIController {
 
     private final MirrorLayout mirrorLayout;
     private final RotateLayout rotateLayout;
@@ -22,7 +20,7 @@ public class TransformationUIImpl implements TransformationUI {
 
     private final LayoutController layoutController;
 
-    public TransformationUIImpl() {
+    public TransformationUIController() {
 
         mirrorLayout = Lookup.getDefault().lookup(Mirror.class).buildLayout();
         rotateLayout = Lookup.getDefault().lookup(Rotate.class).buildLayout();
@@ -43,56 +41,56 @@ public class TransformationUIImpl implements TransformationUI {
     // right now there is only one instance of the LayoutController that will modify also the
     // Layout part if we use it.
     // Need to find a way to create a new instance of the Layout controller
-    @Override
+
     public void mirrorXAxis() {
 
         mirrorLayout.setyAxis(false);
         mirrorLayout.setxAxis(true);
-        layoutController.executeTransformation(mirrorLayout);
+        layoutController.executeLayout(mirrorLayout);
     }
 
-    @Override
+
     public void mirrorYAxis() {
 
         mirrorLayout.setyAxis(true);
         mirrorLayout.setxAxis(false);
-        layoutController.executeTransformation(mirrorLayout);
+        layoutController.executeLayout(mirrorLayout);
     }
 
-    @Override
+
     public void rotateRight1Deg() {
 
         rotateLayout.setAngle(1.f);
-        layoutController.executeTransformation(rotateLayout);
+        layoutController.executeLayout(rotateLayout);
     }
 
-    @Override
+
     public void rotateRight45Deg() {
         rotateLayout.setAngle(45.f);
-        layoutController.executeTransformation(rotateLayout);
+        layoutController.executeLayout(rotateLayout);
     }
 
-    @Override
+
     public void rotateLeft1Deg() {
         rotateLayout.setAngle(-1.f);
-        layoutController.executeTransformation(rotateLayout);
+        layoutController.executeLayout(rotateLayout);
     }
 
-    @Override
+
     public void rotateLeft45Deg() {
         rotateLayout.setAngle(-45.f);
-        layoutController.executeTransformation(rotateLayout);
+        layoutController.executeLayout(rotateLayout);
     }
 
-    @Override
+
     public void expand() {
         scaleLayout.setScale(1.1f);
-        layoutController.executeTransformation(scaleLayout);
+        layoutController.executeLayout(scaleLayout);
     }
 
-    @Override
+
     public void reduce() {
         scaleLayout.setScale(0.9f);
-        layoutController.executeTransformation(scaleLayout);
+        layoutController.executeLayout(scaleLayout);
     }
 }

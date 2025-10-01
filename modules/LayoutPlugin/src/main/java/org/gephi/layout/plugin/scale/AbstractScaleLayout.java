@@ -49,7 +49,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
-import org.gephi.layout.spi.Transformation;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
@@ -58,7 +57,7 @@ import org.openide.util.NbBundle;
  *
  * @author Helder Suzuki
  */
-public abstract class AbstractScaleLayout extends AbstractLayout implements Transformation {
+public abstract class AbstractScaleLayout extends AbstractLayout {
 
     private float scale;
     private Graph graph;

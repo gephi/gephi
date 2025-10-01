@@ -46,7 +46,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.spi.Layout;
-import org.gephi.layout.spi.Transformation;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -145,11 +144,11 @@ public class LayoutControllerImpl implements LayoutController, Controller<Layout
     }
 
     @Override
-    public void executeTransformation(Transformation transformation) {
+    public void executeLayout(Layout layout) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel();
-        transformation.setGraphModel(graphModel);
-        layoutRun = new LayoutRun(transformation);
+        layout.setGraphModel(graphModel);
+        layoutRun = new LayoutRun(layout);
         layoutRun.run();
     }
 

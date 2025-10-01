@@ -42,19 +42,16 @@
 
 package org.gephi.desktop.layout;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
-import org.gephi.layout.spi.TransformationUI;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 
-public class TransformationPanel extends javax.swing.JPanel implements PropertyChangeListener {
-    private final TransformationUI transformationUI;
+
+public class TransformationPanel extends javax.swing.JPanel {
+    private final TransformationUIController transformationUIController;
 
     public TransformationPanel() {
         initComponents();
-        transformationUI = Lookup.getDefault().lookup(TransformationUI.class);
+        transformationUIController = new TransformationUIController();
     }
 
     private final ImageIcon iconMirrorY = ImageUtilities.loadImageIcon(
@@ -196,48 +193,42 @@ public class TransformationPanel extends javax.swing.JPanel implements PropertyC
 
     private void buttonMirrorYActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorYActionPerformed
-        transformationUI.mirrorYAxis();
+        transformationUIController.mirrorYAxis();
     }//GEN-LAST:event_buttonMirrorYActionPerformed
 
     private void buttonMirrorXActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMirrorXActionPerformed
-        transformationUI.mirrorXAxis();
+        transformationUIController.mirrorXAxis();
     }//GEN-LAST:event_buttonMirrorXActionPerformed
 
     private void buttonRotateLeft45degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft45degActionPerformed
-        transformationUI.rotateLeft45Deg();
+        transformationUIController.rotateLeft45Deg();
     }//GEN-LAST:event_buttonRotateLeft45degActionPerformed
 
     private void buttonRotateLeft1degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateLeft1degActionPerformed
-        transformationUI.rotateLeft1Deg();
+        transformationUIController.rotateLeft1Deg();
     }//GEN-LAST:event_buttonRotateLeft1degActionPerformed
 
     private void buttonRotateRight1degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight1degActionPerformed
-        transformationUI.rotateRight1Deg();
+        transformationUIController.rotateRight1Deg();
     }//GEN-LAST:event_buttonRotateRight1degActionPerformed
 
     private void buttonRotateRight45degActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRotateRight45degActionPerformed
-        transformationUI.rotateRight45Deg();
+        transformationUIController.rotateRight45Deg();
     }//GEN-LAST:event_buttonRotateRight45degActionPerformed
 
     private void buttonExpandActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExpandActionPerformed
-        transformationUI.expand();
+        transformationUIController.expand();
     }//GEN-LAST:event_buttonExpandActionPerformed
 
     private void buttonReduceActionPerformed(
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonReduceActionPerformed
-        transformationUI.reduce();
+        transformationUIController.reduce();
     }//GEN-LAST:event_buttonReduceActionPerformed
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        throw new UnsupportedOperationException(
-            "Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }
