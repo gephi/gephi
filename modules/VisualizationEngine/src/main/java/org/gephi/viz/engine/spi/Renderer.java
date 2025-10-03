@@ -9,11 +9,11 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  * @param <R>
  * @author Eduardo Ramos
  */
-public interface Renderer<R extends RenderingTarget> extends PipelinedExecutor<R> {
+public interface Renderer<R extends RenderingTarget, D extends WorldData> extends PipelinedExecutor<R> {
 
-    void worldUpdated(VizEngineModel model, R target);
+    D worldUpdated(VizEngineModel model, R target);
 
-    void render(VizEngineModel model, R target, RenderingLayer layer);
+    void render(D data, R target, RenderingLayer layer);
 
     EnumSet<RenderingLayer> getLayers();
 }

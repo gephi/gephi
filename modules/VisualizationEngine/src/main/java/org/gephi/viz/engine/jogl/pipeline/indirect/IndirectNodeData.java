@@ -3,21 +3,14 @@ package org.gephi.viz.engine.jogl.pipeline.indirect;
 import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_BYTES;
 import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INTS_COUNT;
 
-import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.gephi.graph.api.Rect2D;
-import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.VizEngineModel;
-import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndex;
 
 /**
  *
@@ -36,33 +29,20 @@ public class IndirectNodeData extends AbstractNodeData {
         super(true, true);
     }
 
-    @Override
-    public void update(GraphIndex graphIndex, GraphSelection graphSelection, GraphRenderingOptions renderingOptions,
-                       Rect2D viewBoundaries) {
-        updateData(renderingOptions.getZoom(),
-            viewBoundaries,
-            graphIndex,
-            renderingOptions,
-            graphSelection
-        );
-    }
-
-    public void drawIndirect(GL4 gl, RenderingLayer layer, VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
-                             VizEngineModel model, float[] mvpFloats) {
+    public void drawIndirect(GL4 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
         //First we draw outside circle (for border) and then inside circle:
         //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawIndirectInternal(gl, layer, engine, model, mvpFloats, true);
-        drawIndirectInternal(gl, layer, engine, model, mvpFloats, false);
+        drawIndirectInternal(gl, layer, data, mvpFloats, true);
+        drawIndirectInternal(gl, layer, data, mvpFloats, false);
     }
 
     private void drawIndirectInternal(final GL4 gl,
                                       final RenderingLayer layer,
-                                      final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
-                                      final VizEngineModel model,
+                                      final NodeWorldData data,
                                       final float[] mvpFloats,
                                       final boolean isRenderingOutsideCircle) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, engine, model, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats, isRenderingOutsideCircle);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);
@@ -139,6 +119,5 @@ public class IndirectNodeData extends AbstractNodeData {
         commandsGLBuffer.unbind(gl);
 
         instanceCounter.promoteCountToDraw();
-        maxNodeSizeToDraw = maxNodeSize;
     }
 }

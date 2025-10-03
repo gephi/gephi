@@ -7,6 +7,7 @@ import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeRenderer;
+import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
@@ -29,17 +30,18 @@ public class EdgeRendererArrayDraw extends AbstractEdgeRenderer {
     }
 
     @Override
-    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         edgeData.updateBuffers();
+        return edgeData.createWorldData(model, engine);
     }
 
     private final float[] mvpFloats = new float[16];
 
     @Override
-    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(EdgeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         engine.getModelViewProjectionMatrixFloats(mvpFloats);
 
-        edgeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, engine, model, mvpFloats);
+        edgeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, data, mvpFloats);
     }
 
     @Override

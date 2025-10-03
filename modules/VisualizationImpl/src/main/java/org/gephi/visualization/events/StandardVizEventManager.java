@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Node;
@@ -240,7 +239,7 @@ public class StandardVizEventManager {
             handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()];
         if (nodeLefPressingHandler.hasListeners()) {
             //Check if some node are selected
-            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+            final Collection<Node> selectedNodes = selectionIndex.getSelectedNodes();
             if (!selectedNodes.isEmpty()) {
                 startPressingThread(engine);
                 return nodeLefPressingHandler.dispatch(toArray(selectedNodes));
@@ -251,7 +250,7 @@ public class StandardVizEventManager {
             handlers[VisualizationEvent.Type.NODE_LEFT_PRESS.ordinal()];
         if (nodeLefPressHandler.hasListeners()) {
             //Check if some node are selected
-            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+            final Collection<Node> selectedNodes = selectionIndex.getSelectedNodes();
             if (!selectedNodes.isEmpty()) {
                 return nodeLefPressHandler.dispatch(toArray(selectedNodes));
             }
@@ -275,7 +274,7 @@ public class StandardVizEventManager {
                         Thread.sleep(intervalMs);
 
                         if (!shouldStopPressing) {
-                            final Set<Node> selectedNodes = selectionIndex.getSelectedNodes();
+                            final Collection<Node> selectedNodes = selectionIndex.getSelectedNodes();
                             if (!selectedNodes.isEmpty()) {
                                 final Node[] nodesArray = toArray(selectedNodes);
                                 handlers[VisualizationEvent.Type.NODE_LEFT_PRESSING.ordinal()].dispatch(nodesArray);

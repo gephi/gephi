@@ -46,13 +46,12 @@ import com.jogamp.newt.event.NEWTEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -726,13 +725,8 @@ public class VizModel implements VisualisationModel {
     }
 
     @Override
-    public List<Node> getSelectedNodes() {
+    public Collection<Node> getSelectedNodes() {
         return selectionModel.getSelectedNodes();
-    }
-
-    @Override
-    public List<Edge> getSelectedEdges() {
-        return selectionModel.getSelectedEdges();
     }
 
     //XML

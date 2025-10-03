@@ -34,21 +34,6 @@ public class GraphIndexImpl implements GraphIndex {
         return graphModel.getGraphVisible();
     }
 
-
-//    public void indexEdges() {
-//        final Graph visibleGraph = getVisibleGraph();
-//        visibleGraph.readLock();
-//        if (visibleGraph.getEdgeCount() > 0) {
-//            edgesMinWeight =
-//                graphModel.getEdgeIndex(graphModel.getVisibleView()).getMinValue(edgeWeightColumn).floatValue();
-//            edgesMaxWeight =
-//                graphModel.getEdgeIndex(graphModel.getVisibleView()).getMaxValue(edgeWeightColumn).floatValue();
-//        } else {
-//            edgesMinWeight = edgesMaxWeight = 1;
-//        }
-//        visibleGraph.readUnlock();
-//    }
-
     @Override
     public int getNodeCount() {
         return getVisibleGraph().getNodeCount();
@@ -57,18 +42,6 @@ public class GraphIndexImpl implements GraphIndex {
     @Override
     public int getEdgeCount() {
         return getVisibleGraph().getEdgeCount();
-    }
-
-    @Override
-    public float getEdgesMinWeight() {
-        Number minValue = graphModel.getEdgeIndex(getVisibleGraph().getView()).getMinValue(edgeWeightColumn);
-        return minValue != null ? minValue.floatValue() : 1f;
-    }
-
-    @Override
-    public float getEdgesMaxWeight() {
-        Number maxValue = graphModel.getEdgeIndex(getVisibleGraph().getView()).getMaxValue(edgeWeightColumn);
-        return maxValue != null ? maxValue.floatValue() : 1f;
     }
 
     @Override

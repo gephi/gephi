@@ -1,19 +1,12 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced;
 
-import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES3;
 import java.nio.FloatBuffer;
-import org.gephi.graph.api.Rect2D;
-import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.VizEngineModel;
-import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndex;
 
 /**
  *
@@ -31,33 +24,20 @@ public class InstancedNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER = 1;
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
 
-    @Override
-    public void update(GraphIndex graphIndex, GraphSelection graphSelection, GraphRenderingOptions renderingOptions,
-                       Rect2D viewBoundaries) {
-        updateData(renderingOptions.getZoom(),
-            viewBoundaries,
-            graphIndex,
-            renderingOptions,
-            graphSelection
-        );
-    }
-
-    public void drawInstanced(GL2ES3 gl, RenderingLayer layer, VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
-                              VizEngineModel model, float[] mvpFloats) {
+    public void drawInstanced(GL2ES3 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
         //First we draw outside circle (for border) and then inside circle:
         //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawInstancedInternal(gl, layer, engine, model, mvpFloats, true);
-        drawInstancedInternal(gl, layer, engine, model, mvpFloats, false);
+        drawInstancedInternal(gl, layer, data, mvpFloats, true);
+        drawInstancedInternal(gl, layer, data, mvpFloats, false);
     }
 
     private void drawInstancedInternal(final GL2ES3 gl,
                                        final RenderingLayer layer,
-                                       final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
-                                       final VizEngineModel model,
+                                       final NodeWorldData data,
                                        final float[] mvpFloats,
                                        final boolean isRenderingOutsideCircle) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, engine, model, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats, isRenderingOutsideCircle);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);
@@ -65,7 +45,7 @@ public class InstancedNodeData extends AbstractNodeData {
             return;
         }
 
-        final float maxObservedSize = maxNodeSizeToDraw * engine.getZoom();
+        final float maxObservedSize = data.getMaxNodeSize() * data.getZoom();
         final int circleVertexCount;
         final int firstVertex;
         if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
@@ -131,7 +111,6 @@ public class InstancedNodeData extends AbstractNodeData {
         attributesGLBuffer.unbind(gl);
 
         instanceCounter.promoteCountToDraw();
-        maxNodeSizeToDraw = maxNodeSize;
     }
 }
 

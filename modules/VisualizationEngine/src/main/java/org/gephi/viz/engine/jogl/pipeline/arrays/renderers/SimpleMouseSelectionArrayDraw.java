@@ -20,6 +20,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
@@ -35,7 +36,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
+public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget, VoidWorldData> {
     private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     final float[] mvpFloats = new float[16];
@@ -67,7 +68,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     }
 
     @Override
-    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         final GraphSelection graphSelection = model.getGraphSelection();
@@ -75,7 +76,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
             graphSelection.getMode() != GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
             render = false;
-            return;
+            return VoidWorldData.INSTANCE;
         }
 
         final Vector2f mousePosition = graphSelection.getMousePosition();
@@ -113,10 +114,11 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
         } else {
             render = false;
         }
+        return VoidWorldData.INSTANCE;
     }
 
     @Override
-    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         if (render) {

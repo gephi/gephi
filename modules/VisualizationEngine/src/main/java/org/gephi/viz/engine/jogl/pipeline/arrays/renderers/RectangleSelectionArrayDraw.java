@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
@@ -30,7 +31,7 @@ import org.gephi.viz.engine.util.gl.Constants;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2f;
 
-public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
+public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget, VoidWorldData> {
     private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     final float[] mvpFloats = new float[16];
@@ -97,13 +98,13 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private boolean render = false;
 
     @Override
-    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         final GraphSelection graphSelection = model.getGraphSelection();
 
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
-            return;
+            return VoidWorldData.INSTANCE;
         }
 
         final Vector2f initialPosition = graphSelection.getRectangleInitialPosition();
@@ -146,6 +147,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
         } else {
             render = false;
         }
+        return VoidWorldData.INSTANCE;
     }
 
     private static final String SHADERS_ROOT = Constants.SHADERS_ROOT + "rectangleSelection";
@@ -155,7 +157,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private final byte[] booleanData = new byte[1];
 
     @Override
-    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         if (render) {

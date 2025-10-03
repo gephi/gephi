@@ -45,7 +45,6 @@ package org.gephi.visualization;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -516,7 +515,7 @@ public class VizController implements VisualizationController, Controller<VizMod
                 if (nodes == null || nodes.length == 0) {
                     selection.clearSelectedNodes();
                 } else {
-                    selection.addSelectedNodes(Arrays.asList(nodes), null);
+                    selection.setSelectedNodes(nodes);
                 }
             });
     }
@@ -536,7 +535,7 @@ public class VizController implements VisualizationController, Controller<VizMod
                 if (edges == null) {
                     selection.clearSelectedEdges();
                 } else {
-                    selection.addSelectedEdges(Arrays.asList(edges));
+                    selection.setSelectedEdges(edges);
                 }
             });
     }

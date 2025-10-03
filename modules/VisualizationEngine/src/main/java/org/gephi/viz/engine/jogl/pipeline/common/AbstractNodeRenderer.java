@@ -7,7 +7,7 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.util.gl.Constants;
 
-public abstract class AbstractNodeRenderer implements Renderer<JOGLRenderingTarget> {
+public abstract class AbstractNodeRenderer implements Renderer<JOGLRenderingTarget, NodeWorldData> {
     public static final EnumSet<RenderingLayer> LAYERS = EnumSet.of(
         RenderingLayer.BACK2,
         RenderingLayer.MIDDLE2

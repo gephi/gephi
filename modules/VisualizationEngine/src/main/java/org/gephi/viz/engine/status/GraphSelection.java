@@ -1,9 +1,10 @@
 package org.gephi.viz.engine.status;
 
 import java.util.Collection;
-import java.util.Set;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.joml.Vector2f;
 
 /**
@@ -41,37 +42,17 @@ public interface GraphSelection {
 
     boolean isNodeOrNeighbourSelected(Node node);
 
-    Set<Node> getSelectedNodes();
+    Collection<Node> getSelectedNodes();
 
-    Set<Node> getSelectedNodesWithNeighbours();
+    void setSelectedNodes(Graph graph, NodeIterable nodesIterable, boolean autoSelectNeighbours, boolean selectEdges);
 
-    void setSelectedNodes(Collection<Node> nodes, Collection<Node> neighbours);
-
-    void addSelectedNodes(Collection<Node> nodes, Collection<Node> neighbours);
-
-    void setSelectedNode(Node node, Collection<Node> neighbours);
-
-    void addSelectedNode(Node node, Collection<Node> neighbours);
+    void setSelectedNodes(Node[] nodes);
 
     void clearSelectedNodes();
 
     boolean isEdgeSelected(Edge edge);
 
-    int getSelectedEdgesCount();
-
-    Set<Edge> getSelectedEdges();
-
-    void setSelectedEdges(Collection<Edge> edges);
-
-    void addSelectedEdges(Collection<Edge> edges);
-
-    void removeSelectedEdges(Collection<Edge> edges);
-
-    void setSelectedEdge(Edge edge);
-
-    void addSelectedEdge(Edge edge);
-
-    void removeSelectedEdge(Edge edge);
+    void setSelectedEdges(Edge[] edges);
 
     void clearSelectedEdges();
 

@@ -1,18 +1,25 @@
 package org.gephi.viz.engine.status;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.List;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.joml.Vector2f;
 
 public class GraphSelectionImpl implements GraphSelection {
 
-    private final Set<Node> nodes = new HashSet<>();
-    private final Set<Node> nodesWithNeighbours = new HashSet<>();
-    private final Set<Edge> edges = new HashSet<>();
+    private final BitSet nodes = new BitSet();
+    private final BitSet nodesWithNeighbours = new BitSet();
+    private final BitSet edges = new BitSet();
+    private final List<Node> nodesList = new ArrayList<>();
+
     private GraphSelection.GraphSelectionMode selectionMode;
     private float simpleMouseSelectionDiameter = 1f;
     private float simpleMouseSelectionMVPScale = 1.0f;
@@ -20,6 +27,7 @@ public class GraphSelectionImpl implements GraphSelection {
 
     public GraphSelectionImpl() {
         this.selectionMode = GraphSelectionMode.SIMPLE_MOUSE_SELECTION;
+        nodes.clear();
     }
 
     @Override
@@ -62,70 +70,63 @@ public class GraphSelectionImpl implements GraphSelection {
 
     @Override
     public boolean isNodeSelected(Node node) {
-        return nodes.contains(node);
+        return nodes.get(node.getStoreId());
     }
 
     @Override
     public boolean isNodeOrNeighbourSelected(Node node) {
-        return nodesWithNeighbours.contains(node);
+        return nodesWithNeighbours.get(node.getStoreId());
     }
 
     @Override
-    public Set<Node> getSelectedNodes() {
-        return Collections.unmodifiableSet(nodes);
+    public Collection<Node> getSelectedNodes() {
+        return Collections.unmodifiableList(nodesList);
     }
 
     @Override
-    public Set<Node> getSelectedNodesWithNeighbours() {
-        return Collections.unmodifiableSet(nodesWithNeighbours);
+    public void setSelectedNodes(Graph graph, NodeIterable nodesIterable, boolean autoSelectNeighbours,
+                                 boolean selectEdges) {
+        final Iterator<Node> nodeIterator = nodesIterable.iterator();
+
+        // Resets
+        nodes.clear();
+        nodesWithNeighbours.clear();
+        edges.clear();
+        nodesList.clear();
+
+        final boolean selectNeighbours = autoSelectNeighbours &&
+            getMode() != GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION;
+        while (nodeIterator.hasNext()) {
+            final Node node = nodeIterator.next();
+
+            nodes.set(node.getStoreId());
+            nodesList.add(node);
+            nodesWithNeighbours.set(node.getStoreId());
+            if (!selectEdges && !selectNeighbours) {
+                continue;
+            }
+            EdgeIterable edgeIterable = graph.getEdges(node);
+
+            for (Edge edge : edgeIterable) {
+                edges.set(edge.getStoreId());
+                if (selectNeighbours) {
+                    Node oppositeNode = graph.getOpposite(node, edge);
+                    if (oppositeNode != null && oppositeNode != node) {
+                        nodesWithNeighbours.set(oppositeNode.getStoreId());
+                    }
+                }
+            }
+        }
     }
 
     @Override
-    public void setSelectedNodes(Collection<Node> nodes, Collection<Node> neighbours) {
+    public void setSelectedNodes(Node[] nodes) {
         this.nodes.clear();
         this.nodesWithNeighbours.clear();
         if (nodes != null) {
-            this.nodes.addAll(nodes);
-            this.nodesWithNeighbours.addAll(nodes);
-            if (neighbours != null) {
-                this.nodesWithNeighbours.addAll(neighbours);
-            }
-        }
-    }
-
-    @Override
-    public void addSelectedNodes(Collection<Node> nodes, Collection<Node> neighbours) {
-        if (nodes != null) {
-            this.nodes.addAll(nodes);
-            this.nodesWithNeighbours.addAll(nodes);
-            if (neighbours != null) {
-                this.nodesWithNeighbours.addAll(neighbours);
-            }
-        }
-    }
-
-    @Override
-    public void setSelectedNode(Node node, Collection<Node> neighbours) {
-        if (node == null) {
-            this.clearSelectedNodes();
-        } else {
-            this.nodes.clear();
-            this.nodes.add(node);
-            this.nodesWithNeighbours.clear();
-            this.nodesWithNeighbours.add(node);
-            if (neighbours != null) {
-                this.nodesWithNeighbours.addAll(neighbours);
-            }
-        }
-    }
-
-    @Override
-    public void addSelectedNode(Node node, Collection<Node> neighbours) {
-        if (node != null) {
-            this.nodes.add(node);
-            this.nodesWithNeighbours.add(node);
-            if (neighbours != null) {
-                this.nodesWithNeighbours.addAll(neighbours);
+            for (Node node : nodes) {
+                this.nodes.set(node.getStoreId());
+                this.nodesWithNeighbours.set(node.getStoreId());
             }
         }
     }
@@ -138,62 +139,16 @@ public class GraphSelectionImpl implements GraphSelection {
 
     @Override
     public boolean isEdgeSelected(Edge edge) {
-        return edges.contains(edge);
+        return edges.get(edge.getStoreId());
     }
 
     @Override
-    public int getSelectedEdgesCount() {
-        return edges.size();
-    }
-
-    @Override
-    public Set<Edge> getSelectedEdges() {
-        return Collections.unmodifiableSet(edges);
-    }
-
-    @Override
-    public void setSelectedEdges(Collection<Edge> edges) {
+    public void setSelectedEdges(Edge[] edges) {
         this.edges.clear();
         if (edges != null) {
-            this.edges.addAll(edges);
-        }
-    }
-
-    @Override
-    public void addSelectedEdges(Collection<Edge> edges) {
-        if (edges != null) {
-            this.edges.addAll(edges);
-        }
-    }
-
-    @Override
-    public void removeSelectedEdges(Collection<Edge> edges) {
-        if (edges != null) {
-            this.edges.removeAll(edges);
-        }
-    }
-
-    @Override
-    public void setSelectedEdge(Edge edge) {
-        if (edge == null) {
-            this.clearSelectedEdges();
-        } else {
-            this.edges.clear();
-            this.edges.add(edge);
-        }
-    }
-
-    @Override
-    public void addSelectedEdge(Edge edge) {
-        if (edge != null) {
-            this.edges.add(edge);
-        }
-    }
-
-    @Override
-    public void removeSelectedEdge(Edge edge) {
-        if (edge != null) {
-            this.edges.remove(edge);
+            for (Edge edge : edges) {
+                this.edges.set(edge.getStoreId());
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.IndirectDraw;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 
@@ -29,16 +30,17 @@ public class NodeRendererIndirect extends AbstractNodeRenderer {
     }
 
     @Override
-    public void worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public NodeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         nodeData.updateBuffers(target.getDrawable().getGL().getGL4());
+        return nodeData.createWorldData(model, engine);
     }
 
     private final float[] mvpFloats = new float[16];
 
     @Override
-    public void render(VizEngineModel model, JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         engine.getModelViewProjectionMatrixFloats(mvpFloats);
-        nodeData.drawIndirect(target.getDrawable().getGL().getGL4(), layer, engine, model, mvpFloats);
+        nodeData.drawIndirect(target.getDrawable().getGL().getGL4(), layer, data, mvpFloats);
     }
 
     @Override
