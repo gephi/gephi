@@ -1,6 +1,7 @@
 package org.gephi.desktop.search.filter;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -84,12 +85,12 @@ public class SearchFilterBuilder implements FilterBuilder {
             SearchController searchController = Lookup.getDefault().lookup(SearchController.class);
             Subgraph subgraph = graph.getModel().getGraph(graph.getView());
             if (type.equalsIgnoreCase(SearchCategoryImpl.NODES().getId())) {
-                List<Node> nodes = searchController.search(request, Node.class).stream()
-                    .map(SearchResult::getResult).collect(Collectors.toList());
+                Set<Node> nodes = searchController.search(request, Node.class).stream()
+                    .map(SearchResult::getResult).collect(Collectors.toSet());
                 subgraph.retainNodes(nodes);
             } else if (type.equalsIgnoreCase(SearchCategoryImpl.EDGES().getId())) {
-                List<Edge> edges = searchController.search(request, Edge.class).stream()
-                    .map(SearchResult::getResult).collect(Collectors.toList());
+                Set<Edge> edges = searchController.search(request, Edge.class).stream()
+                    .map(SearchResult::getResult).collect(Collectors.toSet());
                 subgraph.retainEdges(edges);
             }
             return subgraph;
