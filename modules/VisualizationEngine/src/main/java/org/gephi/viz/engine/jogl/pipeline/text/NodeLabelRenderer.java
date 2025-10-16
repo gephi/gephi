@@ -9,7 +9,10 @@ import io.github.humbleui.skija.paragraph.*;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
+import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
@@ -35,7 +38,7 @@ import static com.jogamp.opengl.GL.GL_SRC_ALPHA;
  * - Cache keys bucket by height & color & rasterScale; atlas allocates lazily.
  */
 @SuppressWarnings("rawtypes")
-public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
+public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, VoidWorldData> {
     public static final EnumSet<RenderingLayer> LAYERS = EnumSet.of(RenderingLayer.FRONT1);
 
     private final VizEngine engine;
@@ -94,17 +97,19 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget> {
     }
 
     @Override
-    public void worldUpdated(JOGLRenderingTarget target) {
+    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         final GraphIndex gi = engine.getGraphIndex();
         final Rect2D viewBoundaries = engine.getViewBoundaries();
         gi.getVisibleNodes(nodesCallback, viewBoundaries);
+
+        return VoidWorldData.INSTANCE;
     }
 
     private final int[] intData = new int[1];
     private final byte[] booleanData = new byte[1];
 
     @Override
-    public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         final GraphSelection selection = engine.getGraphSelection();
         final boolean someSelection = selection.someNodesOrEdgesSelection();
 
