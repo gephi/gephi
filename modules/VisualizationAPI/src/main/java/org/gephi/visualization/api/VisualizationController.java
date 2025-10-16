@@ -44,13 +44,10 @@ package org.gephi.visualization.api;
 
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import java.util.List;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.spi.Controller;
 
 /**
  * @author Mathieu Bastian
@@ -139,15 +136,11 @@ public interface VisualizationController {
 
     void setNodeLabelFont(Font font);
 
-    void setNodeLabelColor(Color color);
-
-    void setNodeLabelSize(float size);
+    void setNodeLabelScale(float scale);
 
     void setEdgeLabelFont(Font font);
 
-    void setEdgeLabelColor(Color color);
-
-    void setEdgeLabelSize(float size);
+    void setEdgeLabelScale(float scale);
 
     void setHideNonSelectedLabels(boolean hideNonSelected);
 

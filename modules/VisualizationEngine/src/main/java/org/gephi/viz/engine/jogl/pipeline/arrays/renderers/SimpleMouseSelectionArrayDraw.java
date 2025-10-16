@@ -11,13 +11,16 @@ import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
@@ -33,10 +36,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget> {
-    private final VizEngine engine;
-
-    float radius;
+public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarget, VoidWorldData> {
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     final float[] mvpFloats = new float[16];
 
@@ -59,7 +60,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final NodeDiskVertexDataGenerator generator64;
     private final int circleVertexCount64;
 
-    public SimpleMouseSelectionArrayDraw(VizEngine engine) {
+    public SimpleMouseSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         generator64 = new NodeDiskVertexDataGenerator(64);
         circleVertexCount64 = generator64.getVertexCount();
 
@@ -67,15 +68,15 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     }
 
     @Override
-    public void worldUpdated(JOGLRenderingTarget target) {
+    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
-        final GraphSelection graphSelection = engine.getGraphSelection();
+        final GraphSelection graphSelection = model.getGraphSelection();
 
         if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
-        graphSelection.getMode() != GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
+            graphSelection.getMode() != GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
             render = false;
-            return;
+            return VoidWorldData.INSTANCE;
         }
 
         final Vector2f mousePosition = graphSelection.getMousePosition();
@@ -91,8 +92,6 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
                 mvp.getScale(scale);
 
                 graphSelection.setSimpleMouseSelectionMVPScale(scale.x);
-
-
             }
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
@@ -115,10 +114,11 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
         } else {
             render = false;
         }
+        return VoidWorldData.INSTANCE;
     }
 
     @Override
-    public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
 
         if (render) {
@@ -201,8 +201,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
-            engine.getLookup().lookup(GLCapabilitiesSummary.class),
-            engine.getLookup().lookup(OpenGLOptions.class)
+            target.getGlCapabilitiesSummary(),
+            engine.getOpenGLOptions()
         );
     }
 

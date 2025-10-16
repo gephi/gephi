@@ -42,21 +42,21 @@
 
 package org.gephi.visualization.component;
 
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.BorderLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.*;
-
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.desktop.visualization.collapse.CollapseGroup;
 import org.gephi.desktop.visualization.collapse.CollapsePanel;
 import org.gephi.desktop.visualization.collapse.EdgeGroup;
 import org.gephi.desktop.visualization.collapse.EdgeLabelGroup;
 import org.gephi.desktop.visualization.collapse.GlobalGroup;
-import org.gephi.desktop.visualization.collapse.LabelGroup;
 import org.gephi.desktop.visualization.collapse.NodeGroup;
 import org.gephi.desktop.visualization.collapse.NodeLabelGroup;
 import org.gephi.desktop.visualization.collapse.VizExtendedBar;
@@ -65,13 +65,11 @@ import org.gephi.desktop.visualization.tools.DesktopToolController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
- 
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.modules.OnStop;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -99,7 +97,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
 
-    private final ScheduledExecutorService vizExecutor;
+    private final ExecutorService vizExecutor;
 
     public GraphTopComponent() {
         controller = Lookup.getDefault().lookup(VizController.class);
@@ -107,14 +105,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initComponents();
         initKeyEventContextMenuActionMappings();
 
-        vizExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+        // Start executor for viz engine tasks
+        vizExecutor = Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "GraphTopComponent-VizExecutor");
             t.setDaemon(true);
             return t;
         });
-
-        // Create groups
-        groups = createCollapseGroups();
 
         // Create toolbars
         selectionToolbar = new SelectionToolbar();
@@ -127,8 +123,8 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         JComponent toolsPropertiesBar = tc.getPropertiesBar();
         propertiesBar.addToolsPropertiesBar(toolsPropertiesBar);
 
-        listenToWorkspaceEvents();
-
+        // Create collapse panels
+        groups = createCollapseGroups();
         SwingUtilities.invokeLater(() -> {
             // Create the collapse panel
             collapsePanel.init(new VizToolbar(groups), new VizExtendedBar(groups), false);
@@ -136,6 +132,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             // Create the toolbar
             initToolPanels();
         });
+
+        // Init the engine
+        initEngine();
+
+        // Start listening to workspace changes
+        listenToWorkspaceEvents();
     }
 
     private CollapseGroup[] createCollapseGroups() {
@@ -154,8 +156,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void listenToWorkspaceEvents() {
-        remove(waitingLabel);
-
         //Workspace events
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.addWorkspaceListener(new WorkspaceListener() {
@@ -175,7 +175,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void close(Workspace workspace) {
-                deactivateWorkspaceVizEngine(workspace);
             }
 
             @Override
@@ -195,15 +194,31 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         }
     }
 
+    private void initEngine() {
+        vizExecutor.submit(this::doInitEngine);
+    }
+
+    private void doInitEngine() {
+        SwingUtilities.invokeLater(() -> {
+            remove(waitingLabel);
+        });
+        controller.getCanvasManager().init(this);
+    }
+
     private void deactivateWorkspaceVizEngine(final Workspace workspace) {
-        vizExecutor.schedule(() -> doDeactivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+        CompletableFuture.runAsync(() -> doDeactivateWorkspaceVizEngine(workspace), vizExecutor)
+            .whenComplete((v, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            });
     }
 
     private void doDeactivateWorkspaceVizEngine(final Workspace workspace) {
         if (workspace == null) {
             return;
         }
-        VizModel vizModel = controller.getModel(workspace);
+        VizModel vizModel = controller.getCanvasManager().unloadWorkspace(workspace);
         SwingUtilities.invokeLater(() -> {
             for (CollapseGroup group : groups) {
                 group.unsetup(vizModel);
@@ -211,19 +226,22 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             selectionToolbar.unsetup(vizModel);
             propertiesBar.unsetup();
         });
-        vizModel.destroy(this);
     }
 
     private void activateWorkspaceVizEngine(final Workspace workspace) {
-        vizExecutor.schedule(() -> doActivateWorkspaceVizEngine(workspace), 0, TimeUnit.MILLISECONDS);
+        CompletableFuture.runAsync(() -> doActivateWorkspaceVizEngine(workspace), vizExecutor)
+            .whenComplete((v, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            });
     }
 
     private void doActivateWorkspaceVizEngine(final Workspace workspace) {
         if (workspace == null) {
             return;
         }
-        VizModel vizModel = controller.getModel(workspace);
-        vizModel.init(this);
+        VizModel vizModel = controller.getCanvasManager().loadWorkspace(workspace);
         SwingUtilities.invokeLater(() -> {
             toolbar.setEnabled(true);
             propertiesBar.setEnabled(true);

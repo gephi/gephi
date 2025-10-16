@@ -1,10 +1,8 @@
 package org.gephi.visualization;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.viz.engine.VizEngine;
@@ -35,15 +33,9 @@ public class SelectionModelImpl {
         return visualisationModel.getEngine().map(VizEngine::getGraphSelection);
     }
 
-    public List<Node> getSelectedNodes() {
+    public Collection<Node> getSelectedNodes() {
         return currentEngineSelectionModel()
-            .map(selection -> (List<Node>) new ArrayList<>(selection.getSelectedNodes()))
-            .orElse(Collections.emptyList());
-    }
-
-    public List<Edge> getSelectedEdges() {
-        return currentEngineSelectionModel()
-            .map(selection -> (List<Edge>) new ArrayList<>(selection.getSelectedEdges()))
+            .map(GraphSelection::getSelectedNodes)
             .orElse(Collections.emptyList());
     }
 

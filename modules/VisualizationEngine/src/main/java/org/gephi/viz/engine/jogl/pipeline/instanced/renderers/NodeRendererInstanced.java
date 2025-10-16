@@ -1,9 +1,12 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced.renderers;
 
+import com.jogamp.newt.event.NEWTEvent;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 
@@ -13,10 +16,10 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
  */
 public class NodeRendererInstanced extends AbstractNodeRenderer {
 
-    private final VizEngine engine;
+    private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final InstancedNodeData nodeData;
 
-    public NodeRendererInstanced(VizEngine engine, InstancedNodeData nodeData) {
+    public NodeRendererInstanced(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, InstancedNodeData nodeData) {
         this.engine = engine;
         this.nodeData = nodeData;
     }
@@ -27,16 +30,17 @@ public class NodeRendererInstanced extends AbstractNodeRenderer {
     }
 
     @Override
-    public void worldUpdated(JOGLRenderingTarget target) {
+    public NodeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
         nodeData.updateBuffers(target.getDrawable().getGL());
+        return nodeData.createWorldData(model, engine);
     }
 
     private final float[] mvpFloats = new float[16];
 
     @Override
-    public void render(JOGLRenderingTarget target, RenderingLayer layer) {
+    public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         engine.getModelViewProjectionMatrixFloats(mvpFloats);
-        nodeData.drawInstanced(target.getDrawable().getGL().getGL2ES3(), layer, engine, mvpFloats);
+        nodeData.drawInstanced(target.getDrawable().getGL().getGL2ES3(), layer, data, mvpFloats);
     }
 
     @Override

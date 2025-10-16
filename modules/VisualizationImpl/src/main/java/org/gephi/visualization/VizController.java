@@ -45,7 +45,6 @@ package org.gephi.visualization;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -59,6 +58,7 @@ import org.gephi.visualization.api.ScreenshotController;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationEventListener;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
+import org.gephi.visualization.component.VizEngineGraphCanvasManager;
 import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.visualization.screenshot.ScreenshotControllerImpl;
 import org.gephi.viz.engine.VizEngine;
@@ -77,12 +77,14 @@ public class VizController implements VisualizationController, Controller<VizMod
 
     //Architecture
     protected final List<VisualizationPropertyChangeListener> listeners = new ArrayList<>();
+    private final VizEngineGraphCanvasManager canvasManager;
     private final StandardVizEventManager vizEventManager;
     private final ScreenshotControllerImpl screenshotMaker;
 
     public VizController() {
         vizEventManager = new StandardVizEventManager();
         screenshotMaker = new ScreenshotControllerImpl();
+        canvasManager = new VizEngineGraphCanvasManager(this);
     }
 
     @Override
@@ -108,6 +110,10 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public ScreenshotController getScreenshotController() {
         return null;
+    }
+
+    public VizEngineGraphCanvasManager getCanvasManager() {
+        return canvasManager;
     }
 
     @Override
@@ -192,19 +198,19 @@ public class VizController implements VisualizationController, Controller<VizMod
     @Override
     public void setEdgeInSelectionColor(Color edgeInSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeInSelectionColor(VizController.toColorArray(edgeInSelectionColor));
+        model.setEdgeInSelectionColor(edgeInSelectionColor);
     }
 
     @Override
     public void setEdgeOutSelectionColor(Color edgeOutSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeOutSelectionColor(VizController.toColorArray(edgeOutSelectionColor));
+        model.setEdgeOutSelectionColor(edgeOutSelectionColor);
     }
 
     @Override
     public void setEdgeBothSelectionColor(Color edgeBothSelectionColor) {
         final VizModel model = getModel();
-        model.setEdgeBothSelectionColor(VizController.toColorArray(edgeBothSelectionColor));
+        model.setEdgeBothSelectionColor(edgeBothSelectionColor);
     }
 
     @Override
@@ -246,27 +252,15 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
-    public void setNodeLabelColor(Color color) {
+    public void setNodeLabelScale(float scale) {
         final VizModel model = getModel();
-        model.setNodeLabelColor(color);
+        model.setNodeLabelScale(scale);
     }
 
     @Override
-    public void setEdgeLabelColor(Color color) {
+    public void setEdgeLabelScale(float scale) {
         final VizModel model = getModel();
-        model.setEdgeLabelColor(color);
-    }
-
-    @Override
-    public void setNodeLabelSize(float size) {
-        final VizModel model = getModel();
-        model.setNodeLabelSize(size);
-    }
-
-    @Override
-    public void setEdgeLabelSize(float size) {
-        final VizModel model = getModel();
-        model.setEdgeLabelSize(size);
+        model.setEdgeLabelScale(scale);
     }
 
     @Override
@@ -491,7 +485,7 @@ public class VizController implements VisualizationController, Controller<VizMod
             model.getSelectionModel().setCustomSelection(false);
             if (model.getSelectionModel().isRectangleSelection()) {
                 setEngineSelectionMode(GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION);
-            } else if(model.getSelectionModel().isNodeSelection()) {
+            } else if (model.getSelectionModel().isNodeSelection()) {
                 if (model.getSelectionModel().isSingleNodeSelection()) {
                     setEngineSelectionMode(GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION);
                 } else {
@@ -521,7 +515,7 @@ public class VizController implements VisualizationController, Controller<VizMod
                 if (nodes == null || nodes.length == 0) {
                     selection.clearSelectedNodes();
                 } else {
-                    selection.addSelectedNodes(Arrays.asList(nodes), null);
+                    selection.setSelectedNodes(nodes);
                 }
             });
     }
@@ -541,7 +535,7 @@ public class VizController implements VisualizationController, Controller<VizMod
                 if (edges == null) {
                     selection.clearSelectedEdges();
                 } else {
-                    selection.addSelectedEdges(Arrays.asList(edges));
+                    selection.setSelectedEdges(edges);
                 }
             });
     }

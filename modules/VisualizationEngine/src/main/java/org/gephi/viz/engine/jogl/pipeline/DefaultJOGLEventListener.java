@@ -3,8 +3,11 @@ package org.gephi.viz.engine.jogl.pipeline;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.status.GraphSelection;
@@ -20,56 +23,103 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
     private final InputActionsProcessor inputActionsProcessor;
 
-    private final GraphSelection graphSelection;
-
     private static final short MOUSE_LEFT_BUTTON = MouseEvent.BUTTON1;
     private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
     private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
     private boolean mouseRightButtonPressed = false;
     private boolean mouseLeftButtonPressed = false;
+    private MouseEvent lastMovedPosition = null;
+    private VizEngineModel model;
 
     public DefaultJOGLEventListener(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         this.engine = engine;
         this.inputActionsProcessor = new InputActionsProcessor(engine);
-        this.graphSelection = engine.getGraphSelection();
     }
 
-    private MouseEvent lastMovedPosition = null;
-
     @Override
-    public void frameStart() {
+    public void frameStart(VizEngineModel model) {
         lastMovedPosition = null;
+        this.model = model;
     }
 
     @Override
-    public void frameEnd() {
+    public void frameEnd(VizEngineModel model) {
         if (lastMovedPosition != null) {
             //TODO: move to independent selection input listener
             final Vector2f worldCoords =
                 engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
 
-            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
-                inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
-            graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
-                float diameter = graphSelection.getMouseSelectionEffectiveDiameter();
+            if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
+                inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+            } else if (
+                model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
+                    model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
+                float diameter = model.getGraphSelection().getMouseSelectionEffectiveDiameter();
 
                 if (diameter <= 1) {
                     // Diameter is disabled
-                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(worldCoords);
+                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
                 } else {
-                    inputActionsProcessor.selectNodesWithinRadius(worldCoords.x, worldCoords.y, diameter);
+                    inputActionsProcessor.selectNodesWithinRadius(model, worldCoords.x, worldCoords.y, diameter);
                 }
             }
         }
+        this.model = null;
     }
 
     @Override
-    public boolean processEvent(NEWTEvent event) {
+    public List<NEWTEvent> processEvents(List<NEWTEvent> events) {
+        // Compress consecutive MOUSE_MOVED events - keep only the last one
+        List<NEWTEvent> compressed = compressMouseMoveEvents(events);
+        
+        // Process compressed events and return unconsumed ones
+        List<NEWTEvent> remaining = new ArrayList<>();
+        for (NEWTEvent event : compressed) {
+            boolean consumed = processEvent(event);
+            if (!consumed) {
+                remaining.add(event);
+            }
+        }
+        return remaining;
+    }
+
+    private List<NEWTEvent> compressMouseMoveEvents(List<NEWTEvent> events) {
+        if (events.isEmpty()) {
+            return events;
+        }
+
+        List<NEWTEvent> compressed = new ArrayList<>();
+        NEWTEvent lastMouseMove = null;
+
+        for (NEWTEvent event : events) {
+            if (event instanceof MouseEvent &&
+                event.getEventType() == MouseEvent.EVENT_MOUSE_MOVED) {
+                // This is a MOUSE_MOVED event, hold onto it
+                lastMouseMove = event;
+            } else {
+                // Not a MOUSE_MOVED event
+                // First, add any pending lastMouseMove
+                if (lastMouseMove != null) {
+                    compressed.add(lastMouseMove);
+                    lastMouseMove = null;
+                }
+                // Then add this event
+                compressed.add(event);
+            }
+        }
+
+        // Don't forget the last MOUSE_MOVED event if there was one
+        if (lastMouseMove != null) {
+            compressed.add(lastMouseMove);
+        }
+
+        return compressed;
+    }
+
+    private boolean processEvent(NEWTEvent event) {
         if (event instanceof KeyEvent) {
             return false;
         } else if (event instanceof MouseEvent mouseEvent) {
-
             switch (event.getEventType()) {
                 case MouseEvent.EVENT_MOUSE_CLICKED:
                     return this.mouseClicked(mouseEvent);
@@ -113,16 +163,21 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             //Zoom out:
             inputActionsProcessor.processZoomEvent(-10, x, y);
             return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION && leftClick) {
-            //TODO: move to independent selection input listener
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION && leftClick) {
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION && leftClick) {
-            return true;
-        } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
-            inputActionsProcessor.clearSelection();
-            return true;
+        } else {
+            if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION &&
+                leftClick) {
+                //TODO: move to independent selection input listener
+                return true;
+            } else if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION &&
+                leftClick) {
+                return true;
+            } else if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
+                leftClick) {
+                return true;
+            } else if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+                inputActionsProcessor.clearSelection(model);
+                return true;
+            }
         }
 
         return false;
@@ -132,9 +187,10 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
         if (e.getButton() == MOUSE_LEFT_BUTTON) {
             mouseLeftButtonPressed = true;
 
-            if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
-                inputActionsProcessor.clearSelection();
-                graphSelection.startRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+            if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+                inputActionsProcessor.clearSelection(model);
+                model.getGraphSelection()
+                    .startRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
                 return true;
             }
         }
@@ -158,8 +214,9 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             mouseRightButtonPressed = false;
         }
 
-        if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
-            graphSelection.stopRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+        if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+            model.getGraphSelection()
+                .stopRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
         }
 
         return false;
@@ -167,10 +224,11 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     public boolean mouseMoved(MouseEvent e) {
         lastMovedPosition = e;
-        if ((graphSelection.getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
-            graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) &&
-            graphSelection.getMouseSelectionDiameter() > 1f) {
-            graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+        if ((model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
+            model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) &&
+            model.getGraphSelection().getMouseSelectionDiameter() > 1f) {
+            model.getGraphSelection()
+                .updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
         }
         return true;
     }
@@ -182,33 +240,41 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                 double zoomQuantity = (lastY - e.getY()) / 7f;//Divide by some number so zoom is not too fast
                 inputActionsProcessor.processZoomEvent(zoomQuantity, engine.getWidth() / 2, engine.getHeight() / 2);
                 return true;
-            } else if(graphSelection.getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION && graphSelection.getMouseSelectionDiameter() > 1f) {
-                graphSelection.updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
-            } else if (graphSelection.getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                (mouseLeftButtonPressed || mouseRightButtonPressed)) {
-                inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
-                return true;
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                mouseLeftButtonPressed) {
-                graphSelection.updateRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+            } else {
+                if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION &&
+                    model.getGraphSelection().getMouseSelectionDiameter() > 1f) {
+                    model.getGraphSelection()
+                        .updateMousePosition(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
+                } else if (
+                    model.getGraphSelection().getMode() != GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                        (mouseLeftButtonPressed || mouseRightButtonPressed)) {
+                    inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
+                    return true;
+                } else if (
+                    model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                        mouseLeftButtonPressed) {
+                    model.getGraphSelection().updateRectangleSelection(
+                        engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
 
-                final Vector2f initialPosition = graphSelection.getRectangleInitialPosition();
-                final Vector2f currentPosition = graphSelection.getRectangleCurrentPosition();
+                    final Vector2f initialPosition = model.getGraphSelection().getRectangleInitialPosition();
+                    final Vector2f currentPosition = model.getGraphSelection().getRectangleCurrentPosition();
 
-                if (initialPosition != null && currentPosition != null) {
-                    final Rect2D rectangle = new Rect2D(
-                        Math.min(initialPosition.x, currentPosition.x),
-                        Math.min(initialPosition.y, currentPosition.y),
-                        Math.max(initialPosition.x, currentPosition.x),
-                        Math.max(initialPosition.y, currentPosition.y)
-                    );
-                    inputActionsProcessor.selectNodesAndEdgesOnRectangle(rectangle);
+                    if (initialPosition != null && currentPosition != null) {
+                        final Rect2D rectangle = new Rect2D(
+                            Math.min(initialPosition.x, currentPosition.x),
+                            Math.min(initialPosition.y, currentPosition.y),
+                            Math.max(initialPosition.x, currentPosition.x),
+                            Math.max(initialPosition.y, currentPosition.y)
+                        );
+                        inputActionsProcessor.selectNodesAndEdgesOnRectangle(model, rectangle);
+                    }
+                    return true;
+                } else if (
+                    model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
+                        mouseRightButtonPressed) {
+                    inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
+                    return true;
                 }
-                return true;
-            } else if (graphSelection.getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION &&
-                mouseRightButtonPressed) {
-                inputActionsProcessor.processCameraMoveEvent(e.getX() - lastX, e.getY() - lastY);
-                return true;
             }
         } finally {
             lastX = e.getX();

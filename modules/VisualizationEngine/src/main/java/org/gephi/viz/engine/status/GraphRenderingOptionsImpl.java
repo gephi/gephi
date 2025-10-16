@@ -2,6 +2,8 @@ package org.gephi.viz.engine.status;
 
 import java.awt.Color;
 import java.util.Objects;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
@@ -10,6 +12,11 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private boolean showEdges = DEFAULT_SHOW_EDGES;
     private boolean showNodeLabels = DEFAULT_SHOW_NODE_LABELS;
     private boolean showEdgeLabels = DEFAULT_SHOW_EDGE_LABELS;
+
+    //Global
+    private float[] backgroundColor = DEFAULT_BACKGROUND_COLOR;
+    private float zoom = DEFAULT_ZOOM;
+    private final Vector2f pan = new Vector2f(DEFAULT_PAN_X, DEFAULT_PAN_Y);
 
     //Edges
     private float edgeScale = DEFAULT_EDGE_SCALE;
@@ -28,6 +35,81 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private boolean hideNonSelectedEdges = DEFAULT_HIDE_NON_SELECTED_EDGES;
     private boolean lightenNonSelected = DEFAULT_LIGHTEN_NON_SELECTED;
     private float lightenNonSelectedFactor = DEFAULT_LIGHTEN_NON_SELECTED_FACTOR;
+
+    public GraphRenderingOptionsImpl() {
+    }
+
+    public GraphRenderingOptionsImpl(GraphRenderingOptions other) {
+        Objects.requireNonNull(other, "other");
+
+        // Show
+        this.showNodes = other.isShowNodes();
+        this.showEdges = other.isShowEdges();
+        this.showNodeLabels = other.isShowNodeLabels();
+        this.showEdgeLabels = other.isShowEdgeLabels();
+
+        // Global
+        float[] otherBg = other.getBackgroundColor();
+        this.backgroundColor = otherBg.clone();
+        this.zoom = other.getZoom();
+        this.pan.set(other.getPan());
+
+        // Edges
+        this.edgeScale = other.getEdgeScale();
+        this.edgeSelectionColor = other.isEdgeSelectionColor();
+        this.edgeBothSelectionColor = other.getEdgeBothSelectionColor();
+        this.edgeInSelectionColor = other.getEdgeInSelectionColor();
+        this.edgeOutSelectionColor = other.getEdgeOutSelectionColor();
+        this.edgeColorMode = other.getEdgeColorMode();
+        this.edgeWeightEnabled = other.isEdgeWeightEnabled();
+
+        // Nodes
+        this.nodeScale = other.getNodeScale();
+
+        // Selection
+        this.autoSelectNeighbours = other.isAutoSelectNeighbours();
+        this.hideNonSelectedEdges = other.isHideNonSelectedEdges();
+        this.lightenNonSelected = other.isLightenNonSelected();
+        this.lightenNonSelectedFactor = other.getLightenNonSelectedFactor();
+    }
+
+    @Override
+    public float[] getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color color) {
+        Objects.requireNonNull(color, "backgroundColor can't be null");
+        float[] backgroundColorComponents = new float[4];
+        color.getRGBComponents(backgroundColorComponents);
+        this.backgroundColor = backgroundColorComponents;
+    }
+
+    @Override
+    public void setBackgroundColor(float[] backgroundColor) {
+        Objects.requireNonNull(backgroundColor, "backgroundColor can't be null");
+        this.backgroundColor = backgroundColor;
+    }
+
+    @Override
+    public float getZoom() {
+        return zoom;
+    }
+
+    @Override
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+    }
+
+    @Override
+    public Vector2fc getPan() {
+        return pan;
+    }
+
+    @Override
+    public void setPan(Vector2fc value) {
+        pan.set(value);
+    }
 
     @Override
     public float getEdgeScale() {
@@ -170,7 +252,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     @Override
     public void setEdgeBothSelectionColor(Color color) {
-        Objects.requireNonNull(color, "color");
+        Objects.requireNonNull(color, "edge both selection color can't be null");
         this.edgeBothSelectionColor = color;
     }
 
@@ -181,7 +263,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     @Override
     public void setEdgeOutSelectionColor(Color color) {
-        Objects.requireNonNull(color, "color");
+        Objects.requireNonNull(color, "edge out selection color can't be null");
         this.edgeOutSelectionColor = color;
     }
 
@@ -192,7 +274,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     @Override
     public void setEdgeInSelectionColor(Color color) {
-        Objects.requireNonNull(color, "color");
+        Objects.requireNonNull(color, "edge in selection color can't be null");
         this.edgeInSelectionColor = color;
     }
 
@@ -203,7 +285,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
 
     @Override
     public void setEdgeColorMode(EdgeColorMode mode) {
-        this.edgeColorMode = Objects.requireNonNull(mode, "mode");
+        this.edgeColorMode = Objects.requireNonNull(mode, "mode can't be null");
     }
 
     @Override

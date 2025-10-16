@@ -35,8 +35,6 @@ import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.EdgesUpdaterInstanc
 import org.gephi.viz.engine.jogl.pipeline.instanced.updaters.NodesUpdaterInstancedRendering;
 import org.gephi.viz.engine.jogl.pipeline.text.NodeLabelRenderer;
 import org.gephi.viz.engine.spi.VizEngineConfigurator;
-import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
 /**
  *
@@ -80,12 +78,6 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
     @Override
     public void configure(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
-        final GraphRenderingOptionsImpl renderingOptions = new GraphRenderingOptionsImpl();
-        final OpenGLOptions openGLOptions = new OpenGLOptions();
-
-        engine.addToLookup(renderingOptions);
-        engine.addToLookup(openGLOptions);
-
         setupIndirectRendering(engine);
         setupInstancedRendering(engine);
         setupVertexArrayRendering(engine);

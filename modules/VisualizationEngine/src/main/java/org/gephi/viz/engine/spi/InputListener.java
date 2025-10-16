@@ -1,5 +1,8 @@
 package org.gephi.viz.engine.spi;
 
+import java.util.List;
+import org.gephi.viz.engine.VizEngineModel;
+
 /**
  *
  * @param <R>
@@ -8,18 +11,19 @@ package org.gephi.viz.engine.spi;
  */
 public interface InputListener<R extends RenderingTarget, T> extends PipelinedExecutor<R> {
 
-    default void frameStart() {
+    default void frameStart(VizEngineModel model) {
 
     }
 
     /**
-     *
-     * @param event Event
-     * @return True if consumed
+     * Process a batch of events.
+     * 
+     * @param events List of events to process
+     * @return List of events that were NOT consumed (remaining for next listener in pipeline)
      */
-    boolean processEvent(T event);
+    List<T> processEvents(List<T> events);
 
-    default void frameEnd() {
+    default void frameEnd(VizEngineModel model) {
 
     }
 }

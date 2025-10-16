@@ -3,23 +3,18 @@ package org.gephi.desktop.visualization.collapse;
 import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
-import org.gephi.visualization.text.FixedSizeMode;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -37,7 +32,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
     private final JPopupButton labelColorModeButton;
     private final JButton fontButton;
     private final JSlider fontSizeSlider;
-    private final ColorChooser colorChooser;
     private final JButton attributesButton;
 
 
@@ -97,25 +91,12 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         fontSizeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                vizController.setNodeLabelSize(fontSizeSlider.getValue() / 100f);
+                vizController.setNodeLabelScale(fontSizeSlider.getValue() / 100f);
             }
         });
         fontSizeSlider.setPreferredSize(new Dimension(100, 20));
         fontSizeSlider.setMaximumSize(new Dimension(100, 20));
 
-        //Color
-        colorChooser = new ColorChooser();
-        colorChooser.setToolTipText(NbBundle.getMessage(LabelGroup.class, "VizToolbar.Labels.defaultColor"));
-        colorChooser.setPreferredSize(new Dimension(16, 16));
-        colorChooser.setMaximumSize(new Dimension(16, 16));
-        colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    vizController.setNodeLabelColor(colorChooser.getColor());
-                }
-            }
-        });
 
         //Attributes
         attributesButton = new JButton();
@@ -142,8 +123,7 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
         labelSizeModeButton.setSelectedItem(vizModel.getNodeLabelSizeMode());
         labelColorModeButton.setSelectedItem(vizModel.getNodeLabelColorMode());
         fontButton.setText(vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
-        fontSizeSlider.setValue((int) (vizModel.getNodeLabelSize() * 100));
-        colorChooser.setColor(vizModel.getNodeLabelColor());
+        fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100));
 
         if (vizModel.isShowNodeLabels()) {
             // Toolbar
@@ -177,12 +157,8 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
             Font font = vizModel.getNodeLabelFont();
             fontButton.setText(font.getFontName() + ", " + font.getSize());
         } else if (evt.getPropertyName().equals("nodeLabelSize")) {
-            if (((int) (vizModel.getNodeLabelSize() * 100f)) != fontSizeSlider.getValue()) {
-                fontSizeSlider.setValue((int) (vizModel.getNodeLabelSize() * 100f));
-            }
-        } else if (evt.getPropertyName().equals("nodeLabelColor")) {
-            if (!vizModel.getNodeLabelColor().equals(colorChooser.getColor())) {
-                colorChooser.setColor(vizModel.getNodeLabelColor());
+            if (((int) (vizModel.getNodeLabelScale() * 100f)) != fontSizeSlider.getValue()) {
+                fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100f));
             }
         }
     }
@@ -207,7 +183,6 @@ public class LabelGroup implements CollapseGroup, VisualizationPropertyChangeLis
             labelColorModeButton,
             fontButton,
             fontSizeSlider,
-            colorChooser,
             attributesButton
         };
     }

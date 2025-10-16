@@ -1,12 +1,5 @@
 package org.gephi.visualization.component;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Logger;
-import javax.swing.JComponent;
-
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
@@ -16,18 +9,24 @@ import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.swing.JComponent;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
+import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineFactory;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
 import org.gephi.viz.engine.spi.InputListener;
-import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
-import org.joml.Vector2fc;
-import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
 
@@ -39,9 +38,7 @@ public class VizEngineGraphCanvasManager {
 
     private static final boolean DEBUG = false;
 
-    private final Workspace workspace;
     private final VizController vizController;
-    private final GraphModel graphModel;
 
     private boolean initialized = false;
 
@@ -54,10 +51,8 @@ public class VizEngineGraphCanvasManager {
     // Engine state saved for when it's restarted:
 
 
-    public VizEngineGraphCanvasManager(Workspace workspace, GraphModel graphModel) {
-        this.vizController = Lookup.getDefault().lookup(VizController.class);
-        this.workspace = Objects.requireNonNull(workspace, "workspace");
-        this.graphModel = Objects.requireNonNull(graphModel, "graphModel");
+    public VizEngineGraphCanvasManager(VizController vizController) {
+        this.vizController = Objects.requireNonNull(vizController);
     }
 
     public Optional<VizEngine<JOGLRenderingTarget, NEWTEvent>> getEngine() {
@@ -93,22 +88,12 @@ public class VizEngineGraphCanvasManager {
 
         this.engine = VizEngineFactory.newEngine(
             renderingTarget,
-            graphModel,
             Collections.singletonList(
                 new VizEngineJOGLConfigurator()
             )
         );
 
-//        workspace.add(engine);
-
-        // Previous state for this workspace? keep it:
-//        if (engineTranslate != null) {
-//            engine.setTranslate(engineTranslate);
-//            engine.setZoom(engineZoom);
-//            engine.setBackgroundColor(engineBackgroundColor);
-//        }
-
-        final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
+        final OpenGLOptions glOptions = engine.getOpenGLOptions();
         glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
         glOptions.setDisableInstancedDrawing(DISABLE_INSTANCED_RENDERING);
         glOptions.setDisableVAOS(DISABLE_VAOS);
@@ -116,13 +101,20 @@ public class VizEngineGraphCanvasManager {
 
         engine.addInputListener(new InputListener<>() {
             @Override
-            public boolean processEvent(NEWTEvent inputEvent) {
-                if (engine != null && inputEvent instanceof MouseEvent && vizController.getVizEventManager() != null) {
-                    return vizController.getVizEventManager()
-                        .processMouseEvent(glCanvas, VizEngineGraphCanvasManager.this, engine, (MouseEvent) inputEvent);
+            public List<NEWTEvent> processEvents(List<NEWTEvent> inputEvents) {
+                if (engine!=null && vizController.getVizEventManager() != null) {
+                    StandardVizEventManager vizEventManager = vizController.getVizEventManager();
+                    List<NEWTEvent> remainingEvents = new ArrayList<>();
+                    for (NEWTEvent inputEvent : inputEvents) {
+                        if(!(inputEvent instanceof MouseEvent && vizEventManager.processMouseEvent(glCanvas, VizEngineGraphCanvasManager.this, engine,
+                            (MouseEvent) inputEvent))) {
+                            remainingEvents.add(inputEvent);
+                        }
+                    }
+                    return remainingEvents;
                 }
 
-                return false;
+                return inputEvents;
             }
 
             @Override
@@ -163,6 +155,25 @@ public class VizEngineGraphCanvasManager {
         return engine;
     }
 
+    public synchronized VizModel loadWorkspace(Workspace workspace) {
+        if (!initialized) {
+            throw new IllegalStateException("Not initialized");
+        }
+        VizModel model = vizController.getModel(workspace);
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        engine.setGraphModel(graphModel, model.toGraphRenderingOptions());
+        return model;
+    }
+
+    public synchronized VizModel unloadWorkspace(Workspace workspace) {
+        if (!initialized) {
+            throw new IllegalStateException("Not initialized");
+        }
+        VizModel model = vizController.getModel(workspace);
+        model.unsetup();
+        return model;
+    }
+
     public synchronized void destroy(JComponent component) {
         if (glCanvas != null) {
             component.remove(glCanvas);
@@ -195,10 +206,5 @@ public class VizEngineGraphCanvasManager {
 
     public synchronized boolean isInitialized() {
         return initialized;
-    }
-
-    public synchronized void reinit(JComponent component) {
-        destroy(component);
-        init(component);
     }
 }

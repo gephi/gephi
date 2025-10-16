@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced.updaters;
 
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.InstancedDraw;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedEdgeData;
@@ -32,8 +33,9 @@ public class EdgesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
     }
 
     @Override
-    public void updateWorld() {
-        edgeData.update(engine);
+    public void updateWorld(VizEngineModel model) {
+        edgeData.update(model.getGraphIndex(), model.getGraphSelection(), model.getRenderingOptions(),
+            engine.getViewBoundaries());
     }
 
     @Override

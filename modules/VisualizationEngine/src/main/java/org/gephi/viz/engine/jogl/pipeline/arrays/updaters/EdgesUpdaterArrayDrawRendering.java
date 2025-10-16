@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays.updaters;
 
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawEdgeData;
@@ -32,8 +33,9 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
     }
 
     @Override
-    public void updateWorld() {
-        edgeData.update(engine);
+    public void updateWorld(VizEngineModel model) {
+        edgeData.update(model.getGraphIndex(), model.getGraphSelection(), model.getRenderingOptions(),
+            engine.getViewBoundaries());
     }
 
     @Override

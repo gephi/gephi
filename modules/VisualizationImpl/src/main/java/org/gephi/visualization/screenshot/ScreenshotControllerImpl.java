@@ -43,19 +43,12 @@
 package org.gephi.visualization.screenshot;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import org.gephi.desktop.visualization.screenshot.ScreenshotSettingsPanel;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.visualization.api.ScreenshotController;
-import org.gephi.visualization.api.ScreenshotModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.viz.engine.VizEngine;
-import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian

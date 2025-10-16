@@ -14,46 +14,65 @@ import org.gephi.viz.engine.structure.GraphIndex.ElementsCallback;
 public class NodesCallback implements ElementsCallback<Node> {
 
     private Node[] nodesArray = new Node[0];
-    private int nextIndex = 0;
+    private int maxIndex = 0;
+    private float maxNodeSize = 0f;
+    private int nodeCount = 0;
 
     @Override
     public void start(Graph graph) {
-        graph.readLock();
-        nodesArray = ensureNodesArraySize(nodesArray, graph.getNodeCount());
-        nextIndex = 0;
+        Arrays.fill(nodesArray, null);
+        nodesArray = ensureNodesArraySize(nodesArray, graph.getModel().getMaxNodeStoreId() + 1);
+        maxIndex = 0;
+        maxNodeSize = 0f;
+        nodeCount = 0;
     }
 
     @Override
     public void accept(Node node) {
-        nodesArray[nextIndex++] = node;
+        int storeId = node.getStoreId();
+        if (storeId > maxIndex) {
+            maxIndex = storeId;
+        }
+        float size = node.size();
+        if (size > maxNodeSize) {
+            maxNodeSize = size;
+        }
+        nodesArray[storeId] = node;
     }
 
     @Override
     public void end(Graph graph) {
-        graph.readUnlock();
+        // Count non-null nodes
+        // This can't be done in accept as nodes can be duplicated and accept is called via multiple threads (parallel stream)
+        nodeCount = 0;
+        for (int i = 0; i <= maxIndex; i++) {
+            if (nodesArray[i] != null) {
+                nodeCount++;
+            }
+        }
     }
 
     public void reset() {
         nodesArray = new Node[0];
-        nextIndex = 0;
-    }
-
-    public Iterable<Node> getNodes() {
-        return Arrays
-            .asList(nodesArray)
-            .subList(0, nextIndex);
+        maxIndex = 0;
+        maxNodeSize = 0f;
+        nodeCount = 0;
     }
 
     public Node[] getNodesArray() {
         return nodesArray;
     }
 
-    public int getCount() {
-        return nextIndex;
+    public int getMaxIndex() {
+        return maxIndex;
     }
 
-    public int getTotalCount() {
-        return nodesArray.length;
+    public float getMaxNodeSize() {
+        return maxNodeSize;
+    }
+
+    public int getCount() {
+        return nodeCount;
     }
 
     protected Node[] ensureNodesArraySize(Node[] array, int size) {

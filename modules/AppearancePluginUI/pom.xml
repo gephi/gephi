@@ -78,6 +78,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.ui.appearance.plugin.category</publicPackage>
+                        <publicPackage>org.gephi.ui.appearance.plugin</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.status;
 
 import java.awt.Color;
+import org.joml.Vector2fc;
 
 /**
  *
@@ -21,6 +22,12 @@ public interface GraphRenderingOptions {
     boolean DEFAULT_SHOW_NODE_LABELS = false;
     boolean DEFAULT_SHOW_EDGE_LABELS = false;
 
+    //Global
+    float[] DEFAULT_BACKGROUND_COLOR = new float[] {1, 1, 1, 1};
+    float DEFAULT_ZOOM = 0.3f;
+    float DEFAULT_PAN_X = 0f;
+    float DEFAULT_PAN_Y = 0f;
+
     //Nodes:
     float DEFAULT_NODE_SCALE = 1f;
 
@@ -38,6 +45,18 @@ public interface GraphRenderingOptions {
     boolean DEFAULT_LIGHTEN_NON_SELECTED = true;
     boolean DEFAULT_AUTO_SELECT_NEIGHBOURS = true;
     float DEFAULT_LIGHTEN_NON_SELECTED_FACTOR = 0.9f;
+
+    float[] getBackgroundColor();
+
+    void setBackgroundColor(float[] backgroundColor);
+
+    float getZoom();
+
+    void setZoom(float zoom);
+
+    Vector2fc getPan();
+
+    void setPan(Vector2fc pan);
 
     float getEdgeScale();
 

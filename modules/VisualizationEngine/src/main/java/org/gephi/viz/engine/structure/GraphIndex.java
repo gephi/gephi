@@ -20,10 +20,6 @@ public interface GraphIndex {
 
     int getEdgeCount();
 
-    float getEdgesMinWeight();
-
-    float getEdgesMaxWeight();
-
     Rect2D getGraphBoundaries();
 
     void getVisibleNodes(ElementsCallback<Node> callback, Rect2D viewBoundaries);

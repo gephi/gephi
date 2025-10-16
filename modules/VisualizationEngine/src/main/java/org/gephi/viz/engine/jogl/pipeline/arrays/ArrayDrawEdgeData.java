@@ -9,17 +9,14 @@ import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Rect2D;
-import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
+import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.ArrayUtils;
 
 /**
@@ -39,23 +36,14 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         super(false, false);
     }
 
-    @Override
-    public void update(VizEngine engine) {
-        updateData(
-            engine.getViewBoundaries(),
-            engine.getGraphIndex(),
-            engine.getRenderingOptions(),
-            engine.getGraphSelection()
-        );
+    public void drawArrays(GL2ES2 gl, RenderingLayer layer, EdgeWorldData data, float[] mvpFloats) {
+        drawUndirected(gl, data, layer, mvpFloats);
+        drawDirected(gl, data, layer, mvpFloats);
     }
 
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {
-        drawUndirected(gl, engine, layer, mvpFloats);
-        drawDirected(gl, engine, layer, mvpFloats);
-    }
-
-    private void drawUndirected(GL2ES2 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
-        final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, engine, mvpFloats);
+    private void drawUndirected(GL2ES2 gl, EdgeWorldData data,
+                                RenderingLayer layer, float[] mvpFloats) {
+        final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, data, mvpFloats);
 
         final boolean renderingUnselectedEdges = layer == BACK1;
         final int instancesOffset = renderingUnselectedEdges ? 0 : undirectedInstanceCounter.unselectedCountToDraw;
@@ -98,8 +86,9 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
-    private void drawDirected(GL2ES2 gl, VizEngine engine, RenderingLayer layer, float[] mvpFloats) {
-        final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, engine, mvpFloats);
+    private void drawDirected(GL2ES2 gl, EdgeWorldData data,
+                              RenderingLayer layer, float[] mvpFloats) {
+        final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, data, mvpFloats);
 
         final boolean renderingUnselectedEdges = layer == BACK1;
         final int instancesOffset;
@@ -219,58 +208,30 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         directedInstanceCounter.promoteCountToDraw();
     }
 
-    private void updateData(final Rect2D viewBoundaries,
-                            final GraphIndex graphIndex,
-                            final GraphRenderingOptions renderingOptions,
-                            final GraphSelection graphSelection) {
-        if (!renderingOptions.isShowEdges()) {
-            undirectedInstanceCounter.clearCount();
-            directedInstanceCounter.clearCount();
-            return;
-        }
+    @Override
+    protected void updateData(final GraphSelection selection) {
 
-        //Selection:
-        final boolean someSelection = graphSelection.someNodesOrEdgesSelection();
-        final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-        final boolean hideNonSelectedFlag = renderingOptions.isHideNonSelectedEdges();
-        // If hide-non-selected is enabled but there is no active selection, hide all edges
-        if (!someSelection && hideNonSelectedFlag) {
-            undirectedInstanceCounter.clearCount();
-            directedInstanceCounter.clearCount();
-            return;
-        }
-        // When there is a selection, hide unselected edges if the flag is on
-        final boolean hideNonSelected = someSelection && (hideNonSelectedFlag || lightenNonSelectedFactor >= 1);
-        final boolean edgeSelectionColor = renderingOptions.isEdgeSelectionColor();
-        setEdgeColorMode(renderingOptions.getEdgeColorMode());
-        setEdgeWeightEnabled(renderingOptions.isEdgeWeightEnabled());
-        final float edgeBothSelectionColor =
-            Float.intBitsToFloat(renderingOptions.getEdgeBothSelectionColor().getRGB());
-        final float edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());
-        final float edgeOutSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeOutSelectionColor().getRGB());
-
-        // Refresh visible edges
-        final Graph graph = graphIndex.getVisibleGraph();
-        graphIndex.getVisibleEdges(edgesCallback, viewBoundaries);
-        final int totalEdges = edgesCallback.getTotalCount();
-
+        int totalEdges = edgesCallback.getCount();
         final float[] attribs
             = attributesBuffer
             = ArrayUtils.ensureCapacityNoCopy(attributesBuffer, totalEdges * ATTRIBS_STRIDE);
 
         final Edge[] visibleEdgesArray = edgesCallback.getEdgesArray();
-        final int visibleEdgesCount = edgesCallback.getCount();
+        final float[] edgeWeightsArray = edgesCallback.getEdgeWeightsArray();
+        final int maxIndex = edgesCallback.getMaxIndex();
+        final boolean directed = edgesCallback.isDirected();
+        final boolean undirected = edgesCallback.isUndirected();
 
         int attribsIndex = 0;
         attribsIndex = updateUndirectedData(
-            graph,
-            someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
-            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
+            directed,
+            selection,
+            maxIndex, visibleEdgesArray, edgeWeightsArray,
             attribs, attribsIndex
         );
         updateDirectedData(
-            graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
-            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
+            undirected,
+            selection, maxIndex, visibleEdgesArray, edgeWeightsArray,
             attribs, attribsIndex
         );
     }

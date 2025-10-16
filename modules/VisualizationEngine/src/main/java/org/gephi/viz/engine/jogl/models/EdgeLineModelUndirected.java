@@ -151,7 +151,8 @@ public class EdgeLineModelUndirected {
         gl.glDrawArraysInstanced(GL_TRIANGLES, 0, VERTEX_COUNT, instanceCount);
     }
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight, float nodeScale) {
+    public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
+                           float nodeScale) {
         //Line:
         program.use(gl);
         prepareProgramData(gl, mvpFloats, edgeScale, minWeight, maxWeight, nodeScale);
@@ -175,7 +176,8 @@ public class EdgeLineModelUndirected {
         gl.glUseProgram(0);
     }
 
-    private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight, float nodeScale) {
+    private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight,
+                                    float nodeScale) {
         gl.glUniformMatrix4fv(program.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MIN), EDGE_SCALE_MIN * scale);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MAX), EDGE_SCALE_MAX * scale);

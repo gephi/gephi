@@ -10,13 +10,17 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
+import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -72,6 +76,16 @@ public abstract class AbstractEdgeData {
     protected float[] attributesBufferBatch;
     protected static final int BATCH_EDGES_SIZE = 32768;
 
+    // States
+    protected boolean someSelection;
+    protected boolean hideNonSelected;
+    protected boolean edgeSelectionColor;
+    protected boolean edgeWeightEnabled;
+    protected float edgeBothSelectionColor;
+    protected float edgeOutSelectionColor;
+    protected float edgeInSelectionColor;
+    protected GraphRenderingOptions.EdgeColorMode edgeColorMode;
+
     public AbstractEdgeData(boolean instanced, boolean usesSecondaryBuffer) {
         this.instanced = instanced;
         this.usesSecondaryBuffer = usesSecondaryBuffer;
@@ -90,27 +104,20 @@ public abstract class AbstractEdgeData {
 
     protected int setupShaderProgramForRenderingLayerUndirected(final GL2ES2 gl,
                                                                 final RenderingLayer layer,
-                                                                final VizEngine engine,
+                                                                final EdgeWorldData data,
                                                                 final float[] mvpFloats) {
-        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
+        final boolean someSelection = data.hasSomeSelection();
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
         }
 
-        final float[] backgroundColorFloats = engine.getBackgroundColor();
-
-        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
-
-        final float edgeScale = renderingOptions.getEdgeScale();
-        final float nodeScale = renderingOptions.getNodeScale();
-        float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-
-        final GraphIndex graphIndex = engine.getGraphIndex();
-
-        final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
-        final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
-        final float maxWeight = weightEnabled ? graphIndex.getEdgesMaxWeight() : 1f;
+        final float[] backgroundColorFloats = data.getBackgroundColor();
+        final float edgeScale = data.getEdgeScale();
+        final float nodeScale = data.getNodeScale();
+        float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
+        final float minWeight = data.getMinWeight();
+        final float maxWeight = data.getMaxWeight();
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
@@ -128,9 +135,9 @@ public abstract class AbstractEdgeData {
             );
 
             if (usesSecondaryBuffer) {
-                setupUndirectedVertexArrayAttributesSecondary(gl, engine);
+                setupUndirectedVertexArrayAttributesSecondary(gl, data);
             } else {
-                setupUndirectedVertexArrayAttributes(gl, engine);
+                setupUndirectedVertexArrayAttributes(gl, data);
             }
         } else {
             instanceCount = undirectedInstanceCounter.selectedCountToDraw;
@@ -174,7 +181,7 @@ public abstract class AbstractEdgeData {
                 );
             }
 
-            setupUndirectedVertexArrayAttributes(gl, engine);
+            setupUndirectedVertexArrayAttributes(gl, data);
         }
 
         return instanceCount;
@@ -182,27 +189,21 @@ public abstract class AbstractEdgeData {
 
     protected int setupShaderProgramForRenderingLayerDirected(final GL2ES2 gl,
                                                               final RenderingLayer layer,
-                                                              final VizEngine engine,
+                                                              final EdgeWorldData data,
                                                               final float[] mvpFloats) {
-        final boolean someSelection = engine.getGraphSelection().someNodesOrEdgesSelection();
+        final boolean someSelection = data.hasSomeSelection();
         final boolean renderingUnselectedEdges = layer.isBack();
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
         }
 
-        final float[] backgroundColorFloats = engine.getBackgroundColor();
+        final float[] backgroundColorFloats = data.getBackgroundColor();
 
-        final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
-
-        final float edgeScale = renderingOptions.getEdgeScale();
-        final float nodeScale = renderingOptions.getNodeScale();
-        float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
-
-        final GraphIndex graphIndex = engine.getGraphIndex();
-
-        final boolean weightEnabled = renderingOptions.isEdgeWeightEnabled();
-        final float minWeight = weightEnabled ? graphIndex.getEdgesMinWeight() : 0f;
-        final float maxWeight = weightEnabled ? graphIndex.getEdgesMaxWeight() : 1f;
+        final float edgeScale = data.getEdgeScale();
+        final float nodeScale = data.getNodeScale();
+        float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
+        final float minWeight = data.getMinWeight();
+        final float maxWeight = data.getMaxWeight();
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
@@ -219,9 +220,9 @@ public abstract class AbstractEdgeData {
             );
 
             if (usesSecondaryBuffer) {
-                setupDirectedVertexArrayAttributesSecondary(gl, engine);
+                setupDirectedVertexArrayAttributesSecondary(gl, data);
             } else {
-                setupDirectedVertexArrayAttributes(gl, engine);
+                setupDirectedVertexArrayAttributes(gl, data);
             }
         } else {
             instanceCount = directedInstanceCounter.selectedCountToDraw;
@@ -265,62 +266,112 @@ public abstract class AbstractEdgeData {
                 );
             }
 
-            setupDirectedVertexArrayAttributes(gl, engine);
+            setupDirectedVertexArrayAttributes(gl, data);
         }
 
         return instanceCount;
     }
 
-    public abstract void update(VizEngine engine);
+    public EdgeWorldData createWorldData(VizEngineModel model, VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
+        return new EdgeWorldData(
+            model.getRenderingOptions().getBackgroundColor(),
+            someSelection,
+            edgeWeightEnabled ? edgesCallback.getMinWeight() : 0f,
+            edgeWeightEnabled ? edgesCallback.getMaxWeight() : 1f,
+            model.getRenderingOptions().getNodeScale(),
+            model.getRenderingOptions().getEdgeScale(),
+            model.getRenderingOptions().getLightenNonSelectedFactor(),
+            engine.getOpenGLOptions(),
+            engine.getRenderingTarget().getGlCapabilitiesSummary()
+        );
+    }
+
+    protected abstract void updateData(GraphSelection selection);
+
+    public void update(GraphIndex graphIndex, GraphSelection selection, GraphRenderingOptions renderingOptions,
+                       Rect2D viewBoundaries) {
+        if (!renderingOptions.isShowEdges()) {
+            undirectedInstanceCounter.clearCount();
+            directedInstanceCounter.clearCount();
+            return;
+        }
+
+        //Selection:
+        this.someSelection = selection.someNodesOrEdgesSelection();
+        final float lightenNonSelectedFactor = renderingOptions.getLightenNonSelectedFactor();
+        final boolean hideNonSelectedFlag = renderingOptions.isHideNonSelectedEdges();
+        // If hide-non-selected is enabled but there is no active selection, hide all edges
+        if (!someSelection && hideNonSelectedFlag) {
+            undirectedInstanceCounter.clearCount();
+            directedInstanceCounter.clearCount();
+            return;
+        }
+        // When there is a selection, hide unselected edges if the flag is on
+        this.hideNonSelected = someSelection && (hideNonSelectedFlag || lightenNonSelectedFactor >= 1);
+        this.edgeSelectionColor = renderingOptions.isEdgeSelectionColor();
+        this.edgeColorMode = renderingOptions.getEdgeColorMode();
+        this.edgeWeightEnabled = renderingOptions.isEdgeWeightEnabled();
+        this.edgeBothSelectionColor =
+            Float.intBitsToFloat(renderingOptions.getEdgeBothSelectionColor().getRGB());
+        this.edgeInSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeInSelectionColor().getRGB());
+        this.edgeOutSelectionColor = Float.intBitsToFloat(renderingOptions.getEdgeOutSelectionColor().getRGB());
+
+        // Refresh visible edges
+        graphIndex.getVisibleEdges(edgesCallback, viewBoundaries);
+
+        updateData(selection);
+    }
 
     protected int updateDirectedData(
-        final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
-        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
-        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean isUndirected,
+        final GraphSelection selection,
+        final int maxIndex,
+        final Edge[] visibleEdgesArray,
+        final float[] edgeWeightsArray,
         final float[] attribs, int index
     ) {
-        return updateDirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
-            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
+        return updateDirectedData(isUndirected, selection, maxIndex, visibleEdgesArray, edgeWeightsArray,
             attribs, index, null);
     }
 
     protected int updateDirectedData(
-        final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
-        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
-        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean isUndirected,
+        final GraphSelection selection,
+        final int maxIndex,
+        final Edge[] visibleEdgesArray,
+        final float[] edgeWeightsArray,
         final float[] attribs, int index, final FloatBuffer directBuffer
     ) {
         checkBufferIndexing(directBuffer, attribs, index);
 
-        if (graph.isUndirected()) {
+        if (isUndirected) {
             directedInstanceCounter.unselectedCount = 0;
             directedInstanceCounter.selectedCount = 0;
             return index;
         }
 
-        saveSelectionState(this.someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor,
-            edgeOutSelectionColor, edgeInSelectionColor);
-
         int newEdgesCountUnselected = 0;
         int newEdgesCountSelected = 0;
         if (someSelection) {
             if (hideNonSelected) {
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (!edge.isDirected()) {
                         continue;
                     }
 
-                    final boolean selected = graphSelection.isEdgeSelected(edge);
+                    final boolean selected = selection.isEdgeSelected(edge);
                     if (!selected) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, selected);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, selected, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -330,19 +381,23 @@ public abstract class AbstractEdgeData {
                 }
             } else {
                 //First non-selected (bottom):
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (!edge.isDirected()) {
                         continue;
                     }
 
-                    if (graphSelection.isEdgeSelected(edge)) {
+                    if (selection.isEdgeSelected(edge)) {
                         continue;
                     }
 
                     newEdgesCountUnselected++;
 
-                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, false);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, false, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -352,19 +407,23 @@ public abstract class AbstractEdgeData {
                 }
 
                 //Then selected ones (up):
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (!edge.isDirected()) {
                         continue;
                     }
 
-                    if (!graphSelection.isEdgeSelected(edge)) {
+                    if (!selection.isEdgeSelected(edge)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, true);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -375,15 +434,19 @@ public abstract class AbstractEdgeData {
             }
         } else {
             //Just all edges, no selection active:
-            for (int j = 0; j < visibleEdgesCount; j++) {
+            for (int j = 0; j <= maxIndex; j++) {
                 final Edge edge = visibleEdgesArray[j];
+                if (edge == null) {
+                    continue;
+                }
                 if (!edge.isDirected()) {
                     continue;
                 }
 
                 newEdgesCountSelected++;
 
-                fillDirectedEdgeAttributesDataWithoutSelection(attribs, edge, index);
+                float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                fillDirectedEdgeAttributesDataWithoutSelection(attribs, edge, index, weight);
                 index += ATTRIBS_STRIDE;
 
                 if (directBuffer != null && index == attribs.length) {
@@ -406,53 +469,54 @@ public abstract class AbstractEdgeData {
     }
 
     protected int updateUndirectedData(
-        final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
-        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
-        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean isDirected,
+        final GraphSelection selection,
+        final int maxIndex,
+        final Edge[] visibleEdgesArray,
+        final float[] edgeWeightsArray,
         final float[] attribs, int index
     ) {
-        return updateUndirectedData(graph, someSelection, hideNonSelected, visibleEdgesCount, visibleEdgesArray,
-            graphSelection, edgeSelectionColor, edgeBothSelectionColor, edgeOutSelectionColor, edgeInSelectionColor,
-            attribs, index, null);
+        return updateUndirectedData(isDirected, selection, maxIndex, visibleEdgesArray, edgeWeightsArray, attribs, index, null);
     }
 
     protected int updateUndirectedData(
-        final Graph graph,
-        final boolean someSelection, final boolean hideNonSelected, final int visibleEdgesCount,
-        final Edge[] visibleEdgesArray, final GraphSelection graphSelection, final boolean edgeSelectionColor,
-        final float edgeBothSelectionColor, final float edgeOutSelectionColor, final float edgeInSelectionColor,
+        final boolean isDirected,
+        final GraphSelection selection,
+        final int maxIndex,
+        final Edge[] visibleEdgesArray,
+        final float[] edgeWeightsArray,
         final float[] attribs, int index, final FloatBuffer directBuffer
     ) {
         checkBufferIndexing(directBuffer, attribs, index);
 
-        if (graph.isDirected()) {
+        if (isDirected) {
             undirectedInstanceCounter.unselectedCount = 0;
             undirectedInstanceCounter.selectedCount = 0;
             return index;
         }
-
-        saveSelectionState(someSelection, edgeSelectionColor, graphSelection, edgeBothSelectionColor,
-            edgeOutSelectionColor, edgeInSelectionColor);
 
         int newEdgesCountUnselected = 0;
         int newEdgesCountSelected = 0;
         //Undirected edges:
         if (someSelection) {
             if (hideNonSelected) {
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (edge.isDirected()) {
                         continue;
                     }
 
-                    if (!graphSelection.isEdgeSelected(edge)) {
+                    if (!selection.isEdgeSelected(edge)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -462,19 +526,23 @@ public abstract class AbstractEdgeData {
                 }
             } else {
                 //First non-selected (bottom):
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (edge.isDirected()) {
                         continue;
                     }
 
-                    if (graphSelection.isEdgeSelected(edge)) {
+                    if (selection.isEdgeSelected(edge)) {
                         continue;
                     }
 
                     newEdgesCountUnselected++;
 
-                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, false);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, false, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -484,19 +552,23 @@ public abstract class AbstractEdgeData {
                 }
 
                 //Then selected ones (up):
-                for (int j = 0; j < visibleEdgesCount; j++) {
+                for (int j = 0; j <= maxIndex; j++) {
                     final Edge edge = visibleEdgesArray[j];
+                    if (edge == null) {
+                        continue;
+                    }
                     if (edge.isDirected()) {
                         continue;
                     }
 
-                    if (!graphSelection.isEdgeSelected(edge)) {
+                    if (!selection.isEdgeSelected(edge)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true);
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight, selection);
                     index += ATTRIBS_STRIDE;
 
                     if (directBuffer != null && index == attribs.length) {
@@ -507,15 +579,19 @@ public abstract class AbstractEdgeData {
             }
         } else {
             //Just all edges, no selection active:
-            for (int j = 0; j < visibleEdgesCount; j++) {
+            for (int j = 0; j <= maxIndex; j++) {
                 final Edge edge = visibleEdgesArray[j];
+                if (edge == null) {
+                    continue;
+                }
                 if (edge.isDirected()) {
                     continue;
                 }
 
                 newEdgesCountSelected++;
 
-                fillUndirectedEdgeAttributesDataWithoutSelection(attribs, edge, index);
+                float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                fillUndirectedEdgeAttributesDataWithoutSelection(attribs, edge, index, weight);
                 index += ATTRIBS_STRIDE;
 
                 if (directBuffer != null && index == attribs.length) {
@@ -552,35 +628,9 @@ public abstract class AbstractEdgeData {
         }
     }
 
-    private boolean someSelection;
-    private boolean edgeSelectionColor;
-    private GraphSelection graphSelection;
-    private float edgeBothSelectionColor;
-    private float edgeOutSelectionColor;
-    private float edgeInSelectionColor;
-    private GraphRenderingOptions.EdgeColorMode edgeColorMode;
-    private boolean edgeWeightEnabled = true;
 
-    protected void setEdgeColorMode(GraphRenderingOptions.EdgeColorMode mode) {
-        this.edgeColorMode = mode;
-    }
-
-    protected void setEdgeWeightEnabled(boolean enabled) {
-        this.edgeWeightEnabled = enabled;
-    }
-
-    private void saveSelectionState(final boolean someSelection, final boolean edgeSelectionColor,
-                                    final GraphSelection graphSelection, final float edgeBothSelectionColor,
-                                    final float edgeOutSelectionColor, final float edgeInSelectionColor) {
-        this.someSelection = someSelection;
-        this.edgeSelectionColor = edgeSelectionColor;
-        this.graphSelection = graphSelection;
-        this.edgeBothSelectionColor = edgeBothSelectionColor;
-        this.edgeOutSelectionColor = edgeOutSelectionColor;
-        this.edgeInSelectionColor = edgeInSelectionColor;
-    }
-
-    protected void fillUndirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index) {
+    protected void fillUndirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index,
+                                                        final float weight) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
@@ -598,12 +648,12 @@ public abstract class AbstractEdgeData {
         buffer[index + 3] = targetY;
 
         //Size (weight or constant):
-        buffer[index + 4] = edgeWeightEnabled ? (float) edge.getWeight() : 1f;
+        buffer[index + 4] = weight;
     }
 
     protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
-                                                                    final int index) {
-        fillUndirectedEdgeAttributesDataBase(buffer, edge, index);
+                                                                    final int index, final float weight) {
+        fillUndirectedEdgeAttributesDataBase(buffer, edge, index, weight);
 
         buffer[index + 5] = computeElementColor(edge);//Color
 
@@ -613,17 +663,18 @@ public abstract class AbstractEdgeData {
     }
 
     protected void fillUndirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
-                                                                 final boolean selected) {
+                                                                 final boolean selected, final float weight,
+                                                                 final GraphSelection selection) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
-        fillUndirectedEdgeAttributesDataBase(buffer, edge, index);
+        fillUndirectedEdgeAttributesDataBase(buffer, edge, index, weight);
 
         //Color:
         if (selected) {
             if (someSelection && edgeSelectionColor) {
-                boolean sourceSelected = graphSelection.isNodeSelected(source);
-                boolean targetSelected = graphSelection.isNodeSelected(target);
+                boolean sourceSelected = selection.isNodeSelected(source);
+                boolean targetSelected = selection.isNodeSelected(target);
 
                 if (sourceSelected && targetSelected) {
                     buffer[index + 5] = edgeBothSelectionColor;//Color
@@ -637,9 +688,9 @@ public abstract class AbstractEdgeData {
             } else {
                 // When a node is selected, color the edge with the opposite node color
                 if (someSelection) {
-                    if (graphSelection.isNodeSelected(source)) {
+                    if (selection.isNodeSelected(source)) {
                         buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
-                    } else if (graphSelection.isNodeSelected(target)) {
+                    } else if (selection.isNodeSelected(target)) {
                         buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
                     } else {
                         buffer[index + 5] = computeElementColor(edge);//Color
@@ -657,7 +708,8 @@ public abstract class AbstractEdgeData {
         buffer[index + 7] = edge.getTarget().size();
     }
 
-    protected void fillDirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index) {
+    protected void fillDirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index,
+                                                      final float weight) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
@@ -675,12 +727,12 @@ public abstract class AbstractEdgeData {
         buffer[index + 3] = targetY;
 
         //Size (weight or constant):
-        buffer[index + 4] = edgeWeightEnabled ? (float) edge.getWeight() : 1f;
+        buffer[index + 4] = weight;
     }
 
     protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
-                                                                  final int index) {
-        fillDirectedEdgeAttributesDataBase(buffer, edge, index);
+                                                                  final int index, final float weight) {
+        fillDirectedEdgeAttributesDataBase(buffer, edge, index, weight);
 
         //Color:
         buffer[index + 5] = computeElementColor(edge);//Color
@@ -691,17 +743,18 @@ public abstract class AbstractEdgeData {
     }
 
     protected void fillDirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
-                                                               final boolean selected) {
+                                                               final boolean selected, final float weight,
+                                                               GraphSelection selection) {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
-        fillDirectedEdgeAttributesDataBase(buffer, edge, index);
+        fillDirectedEdgeAttributesDataBase(buffer, edge, index, weight);
 
         //Color:
         if (selected) {
             if (someSelection && edgeSelectionColor) {
-                boolean sourceSelected = graphSelection.isNodeSelected(source);
-                boolean targetSelected = graphSelection.isNodeSelected(target);
+                boolean sourceSelected = selection.isNodeSelected(source);
+                boolean targetSelected = selection.isNodeSelected(target);
 
                 if (sourceSelected && targetSelected) {
                     buffer[index + 5] = edgeBothSelectionColor;//Color
@@ -715,9 +768,9 @@ public abstract class AbstractEdgeData {
             } else {
                 // When a node is selected, color the edge with the opposite node color
                 if (someSelection) {
-                    if (graphSelection.isNodeSelected(source)) {
+                    if (selection.isNodeSelected(source)) {
                         buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
-                    } else if (graphSelection.isNodeSelected(target)) {
+                    } else if (selection.isNodeSelected(target)) {
                         buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
                     } else {
                         buffer[index + 5] = computeElementColor(edge);//Color
@@ -749,6 +802,10 @@ public abstract class AbstractEdgeData {
             case MIXED: {
                 final int s = edge.getSource().getRGBA();
                 final int t = edge.getTarget().getRGBA();
+                if (s == t) {
+                    colorInt = s;
+                    break;
+                }
                 final int b0 = ((s) & 0xFF) + ((t) & 0xFF);
                 final int b1 = ((s >>> 8) & 0xFF) + ((t >>> 8) & 0xFF);
                 final int b2 = ((s >>> 16) & 0xFF) + ((t >>> 16) & 0xFF);
@@ -770,11 +827,11 @@ public abstract class AbstractEdgeData {
     private DirectedEdgesVAO directedEdgesVAO;
     private DirectedEdgesVAO directedEdgesVAOSecondary;
 
-    public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, VizEngine engine) {
+    public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                data.getGLCapabilitiesSummary(),
+                data.getOpenGLOptions(),
                 attributesGLBufferUndirected
             );
         }
@@ -782,11 +839,12 @@ public abstract class AbstractEdgeData {
         undirectedEdgesVAO.use(gl);
     }
 
-    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl, VizEngine engine) {
+    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+                                                              EdgeWorldData data) {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                data.getGLCapabilitiesSummary(),
+                data.getOpenGLOptions(),
                 attributesGLBufferUndirectedSecondary
             );
         }
@@ -804,11 +862,11 @@ public abstract class AbstractEdgeData {
         }
     }
 
-    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, VizEngine engine) {
+    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                data.getGLCapabilitiesSummary(),
+                data.getOpenGLOptions(),
                 attributesGLBufferDirected
             );
         }
@@ -816,11 +874,12 @@ public abstract class AbstractEdgeData {
         directedEdgesVAO.use(gl);
     }
 
-    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl, VizEngine engine) {
+    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+                                                            EdgeWorldData data) {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
-                engine.getLookup().lookup(GLCapabilitiesSummary.class),
-                engine.getLookup().lookup(OpenGLOptions.class),
+                data.getGLCapabilitiesSummary(),
+                data.getOpenGLOptions(),
                 attributesGLBufferDirectedSecondary
             );
         }

@@ -7,8 +7,8 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
-import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 
 /**
@@ -25,31 +25,21 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         super(false, false);
     }
 
-    @Override
-    public void update(VizEngine engine) {
-        updateData(
-            engine.getZoom(),
-            engine.getViewBoundaries(),
-            engine.getGraphIndex(),
-            engine.getRenderingOptions(),
-            engine.getGraphSelection()
-        );
-    }
-
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, VizEngine engine, float[] mvpFloats) {
+    public void drawArrays(GL2ES2 gl, RenderingLayer layer, NodeWorldData data,
+                           float[] mvpFloats) {
         //First we draw outside circle (for border) and then inside circle:
         //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawArraysInternal(gl, layer, engine, mvpFloats, true);
-        drawArraysInternal(gl, layer, engine, mvpFloats, false);
+        drawArraysInternal(gl, layer, data, mvpFloats, true);
+        drawArraysInternal(gl, layer, data, mvpFloats, false);
     }
 
     public void drawArraysInternal(final GL2ES2 gl,
                                    final RenderingLayer layer,
-                                   final VizEngine engine,
+                                   final NodeWorldData data,
                                    final float[] mvpFloats,
                                    final boolean isRenderingOutsideCircle) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, engine, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats, isRenderingOutsideCircle);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);
@@ -61,7 +51,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         final int instancesOffset = renderingUnselectedNodes ? 0 : instanceCounter.unselectedCountToDraw;
 
 
-        final float zoom = engine.getZoom();
+        final float zoom = data.getZoom();
         final float[] attrs = new float[ATTRIBS_STRIDE];
         int index = instancesOffset * ATTRIBS_STRIDE;
 
@@ -118,7 +108,6 @@ public class ArrayDrawNodeData extends AbstractNodeData {
 
     public void updateBuffers() {
         instanceCounter.promoteCountToDraw();
-        maxNodeSizeToDraw = maxNodeSize;
     }
 
     @Override
