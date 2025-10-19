@@ -651,19 +651,48 @@ public class VizEngine<R extends RenderingTarget, I> {
         return dest.set(worldCoordinates.x, worldCoordinates.y);
     }
 
+    /**
+     * Converts a world position (x, y) into the corresponding screen viewport position in pixels.
+     *
+     * @param x       World position X
+     * @param y       World position Y
+     * @param tempNDC Temporary vector to hold the NDC coordinates
+     * @param dest    Result vector where screen position will be stored
+     * @return The same dest vector
+     */
     public Vector2f worldCoordinatesToScreenCoordinates(float x, float y, Vector3f tempNDC, Vector2f dest) {
         // 1) world -> NDC
-        final Vector3f ndc = new Vector3f();
-        modelViewProjectionMatrix.transformProject(x, y, 0f, ndc); // ndc in [-1, 1]
+        modelViewProjectionMatrix.transformProject(x, y, 0f, tempNDC); // ndc in [-1, 1]
 
         // 2) NDC -> pixels (origin at top-left)
         final float halfW = width / 2f;
         final float halfH = height / 2f;
 
-        final float sx = halfW + ndc.x * halfW;   // map [-1,1] -> [0,width]
-        final float sy = halfH + ndc.y * halfH;   // map [-1,1] -> [0,]
+        final float sx = halfW + tempNDC.x * halfW;   // map [-1,1] -> [0,width]
+        final float sy = halfH + tempNDC.y * halfH;   // map [-1,1] -> [0,]
 
         return dest.set(sx, sy);
+    }
+
+    /**
+     * Returns the local number of screen pixels that correspond to one world unit near (x, y),
+     * measured along the +X direction in world space.
+     */
+    public float pixelsPerWorldUnitAt(float x, float y, Vector3f tempNDC) {
+        final float halfW = width / 2f;
+        final float halfH = height / 2f;
+
+        // (x, y) -> NDC -> pixels
+        modelViewProjectionMatrix.transformProject(x, y, 0f, tempNDC);
+        final float sx0 = halfW + tempNDC.x * halfW;
+        final float sy0 = halfH + tempNDC.y * halfH;
+
+        // (x + 1, y) -> NDC -> pixels
+        modelViewProjectionMatrix.transformProject(x + 1f, y, 0f, tempNDC);
+        final float sx1 = halfW + tempNDC.x * halfW;
+        final float sy1 = halfH + tempNDC.y * halfH;
+
+        return (float) Math.hypot(sx1 - sx0, sy1 - sy0);
     }
 
     private void processInputEvents(VizEngineModel model) {
