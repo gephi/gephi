@@ -18,7 +18,7 @@
 
     <!-- Properties -->
     <properties>
-        <jogl.version>2.5.0</jogl.version>
+        <jogl.version>2.6.0</jogl.version>
         <joml.version>1.10.8</joml.version>
         <skija.version>0.116.4</skija.version>
     </properties>
