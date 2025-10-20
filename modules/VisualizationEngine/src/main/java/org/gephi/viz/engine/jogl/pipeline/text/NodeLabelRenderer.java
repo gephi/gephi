@@ -85,7 +85,7 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, VoidWorl
             return;
         }
 
-        final float labelScale = 1f; // Scale of labels. TODO: to be passed as parameter
+        final float labelScale = 0.7f; // Scale of labels. TODO: to be passed as parameter
         final boolean scaleProportionalToNodeSize = true; // TODO: to be passed as parameter
 
         // start a new frame for the text renderer (screen-space API)
@@ -117,7 +117,7 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, VoidWorl
             // label height in px
             final int labelHeight = scaleProportionalToNodeSize
                 ? Math.round(nodeDiameterPx * labelScale)
-                : Math.round(labelScale);
+                : Math.max(1, Math.round(labelScale));
 
             if (labelHeight <= 0) {
                 continue;
@@ -130,7 +130,9 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, VoidWorl
                 text,
                 screenCoordinates.x,
                 screenCoordinates.y,
-                labelHeight, argb,
+                labelHeight,
+                argb,
+                0,
                 gl
             );
         }

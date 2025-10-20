@@ -14,7 +14,7 @@ import static com.jogamp.opengl.GL.*;
 /**
  * Generic batched text renderer using Skija for rasterization and a GL texture atlas for batching.
  * <p>
- * - Call {@link #beginFrame(int, int)}, then {@link #addText(String, float, float, int, int, GL2ES2)}  per label,
+ * - Call {@link #beginFrame(int, int)}, then {@link #addText(String, float, float, int, int, float, GL2ES2)}  per label,
  * then {@link #draw(GL2ES2)}.
  * - Positions are in <b>screen-space pixels</b> (origin top-left). Rendering centers the text on (x,y).
  * - Size and color are per-label. Color is ARGB (premultiplied alpha handled internally).
@@ -25,7 +25,7 @@ import static com.jogamp.opengl.GL.*;
 public final class SkijaTextRenderer {
     // ---- Config knobs ----
     private static final int SIZE_BUCKET_PX = 8;
-        // coarser buckets => more cache hits. Font sizes are approximated to multiples of this value.
+    // coarser buckets => more cache hits. Font sizes are approximated to multiples of this value.
     private static final float DEFAULT_RASTER_SCALE = 0.6f; // render at 60% of logical px to reduce atlas size
     private static final boolean DEFAULT_USE_MIPMAPS = true;
 
@@ -133,13 +133,12 @@ public final class SkijaTextRenderer {
         return Math.min(256, softLimit);
     }
 
-    /**
-     * Bucket + clamp height for better cache reuse.
-     */
+    private static final int MAX_LABEL_PX_HEIGHT = 96;
+
     private int bucketHeight(int pxHeight) {
         int h = Math.max(10, pxHeight);
-        h = (h + SIZE_BUCKET_PX / 2) / SIZE_BUCKET_PX * SIZE_BUCKET_PX; // bucket
-        h = Math.min(dynamicMaxLabelPxHeight(), h);
+        h = (h + SIZE_BUCKET_PX / 2) / SIZE_BUCKET_PX * SIZE_BUCKET_PX;
+        h = Math.min(MAX_LABEL_PX_HEIGHT, h);
         return h;
     }
 
@@ -157,50 +156,47 @@ public final class SkijaTextRenderer {
      * @param pxHeight Desired text height in pixels (bucketed & clamped internally)
      * @param argb     ARGB color (0xAARRGGBB). Premultiplied alpha handled internally.
      */
-    public void addText(String text, float centerX, float centerY, int pxHeight, int argb, GL2ES2 gl) {
-        if (viewportWidth <= 0 || viewportHeight <= 0 || gl == null) {
-            return;
+    public void addText(String text, float centerX, float centerY, int pxHeight, int argb,
+                        float maxDrawWidthPx, GL2ES2 gl) {
+        if (viewportWidth <= 0 || viewportHeight <= 0 || gl == null) return;
+        if (text == null || text.isEmpty()) return;
+        if (!isFinite(centerX) || !isFinite(centerY)) return;
+
+        // 1) Initial bucketed height
+        int h0 = bucketHeight(pxHeight);
+
+        // 2) Measure at h0 WITHOUT raster upload (fast path)
+        float logicalW0 = cache.measureLogicalWidth(fontCollection, paragraphStyle, text, h0);
+        if (logicalW0 <= 0) return;
+
+        // 3) If a max width is given, shrink the height pre-cache
+        int hFinal = h0;
+        if (maxDrawWidthPx > 0 && logicalW0 > maxDrawWidthPx) {
+            float s = maxDrawWidthPx / logicalW0;              // <= 1
+            int h1 = bucketHeight(Math.max(10, Math.round(h0 * s)));
+            if (h1 < h0) hFinal = h1;                          // only rebucket smaller
         }
 
-        if (text == null || text.isEmpty()) {
-            return;
-        }
+        // 4) Fetch sprite at the FINAL (smaller) height
+        final LabelSprite sprite = cache.getOrCreate(gl, fontCollection, paragraphStyle, text, hFinal, argb, rasterScale, useMipmaps);
+        if (sprite == null) return;
 
-        if (!isFinite(centerX) || !isFinite(centerY)) {
-            return;
-        }
+        // 5) Draw at sprite.logicalW/H (already width-fit by using hFinal)
+        float drawW = sprite.logicalW;
+        float drawH = sprite.logicalH;
 
-        final int h = bucketHeight(pxHeight);
-        final LabelSprite sprite =
-            cache.getOrCreate(gl, fontCollection, paragraphStyle, text, h, argb, rasterScale, useMipmaps);
-
-        if (sprite == null) {
-            return;
-        }
-
-        // No width clamp — draw at logical size. GL will clip outside the viewport.
-        final float drawW = sprite.logicalW;
-        final float drawH = sprite.logicalH;
-
-        // center quad at (cx, cy)
+        // center-quad → NDC (top-left origin)
         final float x0 = centerX - drawW * 0.5f;
         final float y0 = (viewportHeight - centerY) - drawH * 0.5f;
-        final float x1 = x0 + drawW;
-        final float y1 = y0 + drawH;
+        final float x1 = x0 + drawW, y1 = y0 + drawH;
 
-        // to NDC
         final float x0n = (x0 / viewportWidth) * 2f - 1f;
         final float x1n = (x1 / viewportWidth) * 2f - 1f;
         final float y0n = 1f - (y0 / viewportHeight) * 2f;
         final float y1n = 1f - (y1 / viewportHeight) * 2f;
 
-        if (!isFinite(x0n) || !isFinite(x1n) || !isFinite(y0n) || !isFinite(y1n)) {
-            return;
-        }
-
-        // Append as TRIANGLES
         BatchedVertices bv = frameBatches.computeIfAbsent(sprite.page, k -> new BatchedVertices());
-        final float u0 = sprite.u0, v0 = sprite.v0, u1 = sprite.u1, v1 = sprite.v1;
+        float u0 = sprite.u0, v0 = sprite.v0, u1 = sprite.u1, v1 = sprite.v1;
         bv.putQuad(
             x0n, y0n, u0, v1,
             x0n, y1n, u0, v0,
@@ -210,6 +206,7 @@ public final class SkijaTextRenderer {
             x1n, y0n, u1, v1
         );
     }
+
 
     /**
      * Draw all queued labels and clear the queue.
@@ -258,6 +255,11 @@ public final class SkijaTextRenderer {
             gl.glBufferSubData(GL_ARRAY_BUFFER, 0, byteCount, src);
 
             gl.glBindTexture(GL_TEXTURE_2D, page.texId);
+            if (page.dirty && useMipmaps) {
+                gl.glBindTexture(GL_TEXTURE_2D, page.texId);
+                gl.glGenerateMipmap(GL_TEXTURE_2D);
+                page.dirty = false;
+            }
             gl.glDrawArrays(GL.GL_TRIANGLES, 0, vertCount);
         }
 
@@ -569,6 +571,24 @@ public final class SkijaTextRenderer {
             return sprite;
         }
 
+        float measureLogicalWidth(FontCollection fonts, ParagraphStyle paraStyle, String text, int pxHeight) {
+            Paragraph p = null;
+            try {
+                TextStyle ts = new TextStyle();
+                ts.setFontSize(pxHeight);
+                ParagraphBuilder pb = new ParagraphBuilder(paraStyle, fonts);
+                pb.pushStyle(ts);
+                pb.addText(text);
+                p = pb.build();
+                p.layout(Float.MAX_VALUE);
+                return (float) Math.ceil(p.getMaxIntrinsicWidth());
+            } catch (Throwable t) {
+                return 0f;
+            } finally {
+                if (p != null) try { p.close(); } catch (Throwable ignore) {}
+            }
+        }
+
         private AtlasPage findPageWithRoom(GL2ES2 gl, int needW, int needH, boolean mipmaps) {
             if (needW > pageW || needH > pageH) {
                 return null;
@@ -609,6 +629,7 @@ public final class SkijaTextRenderer {
         final int h;
         private boolean alive = true;
         int curX = 0, curY = 0, shelfH = 0; // Simple shelf bin packer (top-left origin)
+        boolean dirty;
 
         AtlasPage(GL2ES2 gl, int w, int h, boolean mipmaps) {
             this.w = w;
@@ -623,9 +644,7 @@ public final class SkijaTextRenderer {
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
-            if (mipmaps) {
-                gl.glGenerateMipmap(GL_TEXTURE_2D);
-            }
+            dirty = true;
             gl.glBindTexture(GL_TEXTURE_2D, 0);
         }
 
