@@ -1,26 +1,9 @@
-//#if with_selection
-//#if selected
-//#outname "node_with_selection_selected.vert"
-//#else
-//#outname "node_with_selection_unselected.vert"
-//#endif
-//#endif
-#version 100
+//#include "../common.vert.glsl"
 
-uniform mat4 mvp;
-uniform float sizeMultiplier;
-uniform float colorMultiplier;
-//#if with_selection
-//#if !selected
-uniform vec4 backgroundColor;
-uniform float colorLightenFactor;
-//#endif
-//#endif
+//#include "common.node.vert.glsl"
+//#include "common.node.vert.attribute.glsl"
+//#include "common.node.vert.uniform.glsl"
 
-attribute vec2 vert;
-attribute vec2 position;
-attribute vec4 elementColor;
-attribute float size;
 
 varying vec4 fragColor;
 
@@ -31,16 +14,7 @@ void main() {
     //bgra -> rgba because Java color is argb big-endian
     vec4 color = elementColor.bgra / 255.0;
 
-    //#if with_selection
-    //#if selected
     color.rgb = color.rgb * colorMultiplier;
-    //#else
-    color.rgb = color.rgb * colorMultiplier;
-    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor);
-    //#endif
-    //#else
-    color.rgb = color.rgb * colorMultiplier;
-    //#endif
 
     fragColor = color;
 }

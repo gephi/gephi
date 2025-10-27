@@ -23,11 +23,20 @@
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Component id="scalePanel" min="-2" pref="190" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="edgeColor" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="edgeColorCombo" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="selfColorLink" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="edgeColor" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="edgeColorCombo" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="selfColorLink" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="edgeWeightEstimatorLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="edgeWeightEstimatorCombo" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace pref="34" max="32767" attributes="0"/>
                       <Component id="selectionColorPanel" min="-2" pref="176" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -57,7 +66,11 @@
                                   <Component id="edgeColorCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="selfColorLink" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="edgeWeightEstimatorLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="edgeWeightEstimatorCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <Component id="scalePanel" pref="62" max="32767" attributes="1"/>
                       </Group>
@@ -327,6 +340,18 @@
           <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeSettingsPanel.selfColorLink.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="edgeWeightEstimatorLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeSettingsPanel.edgeWeightEstimatorLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="edgeWeightEstimatorCombo">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Estimator&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

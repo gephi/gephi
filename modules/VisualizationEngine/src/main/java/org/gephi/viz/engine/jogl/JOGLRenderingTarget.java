@@ -13,7 +13,8 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.AnimatorBase;
+import com.jogamp.opengl.util.FPSAnimator;
 import java.awt.Frame;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
@@ -34,7 +35,7 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     private GLCapabilitiesSummary glCapabilitiesSummary;
 
     //Animators
-    private Animator animator;
+    private AnimatorBase animator;
     private VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
 
     //For displaying FPS in window title (optional)
@@ -46,7 +47,6 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     private final float[] backgroundColor = new float[4];
 
     // FPS States
-    private int fps = 0;
     private long lastFpsTime = 0;
 
     public JOGLRenderingTarget(GLAutoDrawable drawable) {
@@ -105,11 +105,9 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
             throw new IllegalStateException("Call stop first!");
         }
 
-        animator = new Animator();
-        animator.add(drawable);
-        animator.setRunAsFastAsPossible(false);
+        animator = new FPSAnimator(drawable, VizEngine.DEFAULT_FPS, true);
         animator.setExclusiveContext(false);
-//        animator.setUpdateFPSFrames(300, System.out);
+        animator.setUpdateFPSFrames(VizEngine.DEFAULT_FPS, null);
 
         animator.start();
     }
@@ -231,18 +229,17 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     }
 
     private void updateFPS() {
-        if (TimeUtils.getTimeMillis() - lastFpsTime > 1000) {
+        if (animator != null && TimeUtils.getTimeMillis() - lastFpsTime > 1000) {
             if (frame != null && windowTitleFormat != null && windowTitleFormat.contains("$FPS")) {
-                frame.setTitle(windowTitleFormat.replace("$FPS", String.valueOf(fps)));
+                int measuredFps = (int) animator.getLastFPS();
+                frame.setTitle(windowTitleFormat.replace("$FPS", String.valueOf(measuredFps)));
             }
-            fps = 0;
             lastFpsTime += 1000;
         }
-        fps++;
     }
 
     public int getFps() {
-        return fps;
+        return animator != null ? (int) animator.getLastFPS() : 0;
     }
 
     public GLCapabilitiesSummary getGlCapabilitiesSummary() {

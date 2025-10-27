@@ -1,37 +1,13 @@
-//#if with_selection
-//#if selected
-//#outname "edge-line-undirected_with_selection_selected.vert"
-//#else
-//#outname "edge-line-undirected_with_selection_unselected.vert"
-//#endif
-//#endif
-#version 100
+//#include "../common.vert.glsl"
 
-uniform mat4 mvp;
-//#if with_selection
-//#if !selected
-uniform vec4 backgroundColor;
-uniform float colorLightenFactor;
-//#endif
-//#endif
-uniform float minWeight;
-uniform float weightDifferenceDivisor;
-uniform float edgeScaleMin;
-uniform float edgeScaleMax;
-uniform float nodeScale;
-
-attribute vec2 vert;
-attribute vec2 position;
-attribute vec2 targetPosition;
-attribute float size;//It's the weight
-attribute vec4 elementColor;
-attribute float sourceSize;
-attribute float targetSize;
+//#include "common.edge.vert.glsl"
+//#include "common.edge.vert.uniform.glsl"
+//#include "common.edge.vert.attribute.glsl"
 
 varying vec4 fragColor;
 
 void main() {
-    float thickness = mix(edgeScaleMin, edgeScaleMax, (size - minWeight) / weightDifferenceDivisor);
+    float thickness = edge_thickness(edgeScaleMin, edgeScaleMax, size ,minWeight, weightDifferenceDivisor);
 
     vec2 direction = targetPosition - position;
     vec2 directionNormalized = normalize(direction);
@@ -47,12 +23,6 @@ void main() {
 
     //bgra -> rgba because Java color is argb big-endian
     vec4 color = elementColor.bgra / 255.0;
-
-    //#if with_selection
-    //#if !selected
-    color.rgb = mix(color.rgb, backgroundColor.rgb, colorLightenFactor);
-    //#endif
-    //#endif
 
     fragColor = color;
 }

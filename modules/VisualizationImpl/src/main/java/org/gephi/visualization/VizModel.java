@@ -51,7 +51,9 @@ import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -370,6 +372,21 @@ public class VizModel implements VisualisationModel {
             this.hideNonSelectedEdges = hideNonSelectedEdges;
             getRenderingOptions().ifPresent(options -> options.setHideNonSelectedEdges(hideNonSelectedEdges));
             firePropertyChange("hideNonSelectedEdges", oldValue, hideNonSelectedEdges);
+        }
+    }
+
+    public Estimator getEdgeWeightEstimator() {
+        if (AttributeUtils.isDynamicType(graphModel.getConfiguration().getEdgeWeightType())) {
+            return graphModel.getEdgeTable().getColumn("weight").getEstimator();
+        }
+        return null;
+    }
+
+    public void setEdgeWeightEstimator(Estimator estimator) {
+        if (AttributeUtils.isDynamicType(graphModel.getConfiguration().getEdgeWeightType())) {
+            Estimator oldValue = graphModel.getEdgeTable().getColumn("weight").getEstimator();
+            graphModel.getEdgeTable().getColumn("weight").setEstimator(estimator);
+            firePropertyChange("edgeWeightEstimator", oldValue, estimator);
         }
     }
 

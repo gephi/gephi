@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
@@ -175,6 +176,12 @@ public class VizController implements VisualizationController, Controller<VizMod
     public void setHideNonSelectedEdges(boolean hideNonSelectedEdges) {
         final VizModel model = getModel();
         model.setHideNonSelectedEdges(hideNonSelectedEdges);
+    }
+
+    @Override
+    public void setEdgeWeightEstimator(Estimator estimator) {
+        final VizModel model = getModel();
+        model.setEdgeWeightEstimator(estimator);
     }
 
     @Override

@@ -50,6 +50,7 @@ import org.joml.Vector3f;
 public class VizEngine<R extends RenderingTarget, I> {
 
     public static final int DEFAULT_MAX_WORLD_UPDATES_PER_SECOND = 60;
+    public static final int DEFAULT_FPS = 60;
     private static final RenderingLayer[] ALL_LAYERS = RenderingLayer.values();
 
     //Rendering target

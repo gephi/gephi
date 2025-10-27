@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Collection;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Node;
 import org.gephi.project.spi.Model;
 
@@ -42,6 +43,8 @@ public interface VisualisationModel extends Model {
     float getEdgeScale();
 
     boolean isUseEdgeWeight();
+
+    Estimator getEdgeWeightEstimator();
 
     // Selection
 

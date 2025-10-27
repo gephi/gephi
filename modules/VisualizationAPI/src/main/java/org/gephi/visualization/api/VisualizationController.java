@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Font;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 
@@ -87,6 +88,8 @@ public interface VisualizationController {
     void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto);
 
     void setHideNonSelectedEdges(boolean hideNonSelectedEdges);
+
+    void setEdgeWeightEstimator(Estimator estimator);
 
     void centerOnGraph();
 

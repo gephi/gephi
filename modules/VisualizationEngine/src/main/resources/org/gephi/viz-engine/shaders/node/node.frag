@@ -1,8 +1,4 @@
-#version 100
-
-#ifdef GL_ES
-precision lowp float;
-#endif
+//#include "../common.frag.glsl"
 
 varying vec4 fragColor;
 
