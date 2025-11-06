@@ -31,6 +31,8 @@ package jogamp.text.util;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
+import java.io.*;
+
 
 /**
  * Utility for drawing glyphs with OpenGL 3.
@@ -38,37 +40,6 @@ import com.jogamp.opengl.GL3;
 /*@VisibleForTesting*/
 /*@NotThreadSafe*/
 public final class GlyphRendererGL3 extends AbstractGlyphRenderer {
-
-    /**
-     * Source code of vertex shader.
-     */
-    /*@Nonnull*/
-    private static final String VERT_SOURCE =
-        "#version 140\n" +
-            "uniform mat4 MVPMatrix;\n" +
-            "in vec4 MCVertex;\n" +
-            "in vec2 TexCoord0;\n" +
-            "out vec2 Coord0;\n" +
-            "void main() {\n" +
-            "   gl_Position = MVPMatrix * MCVertex;\n" +
-            "   Coord0 = TexCoord0;\n" +
-            "}\n";
-
-    /**
-     * Source code of fragment shader.
-     */
-    /*@Nonnull*/
-    private static final String FRAG_SOURCE =
-        "#version 140\n" +
-            "uniform sampler2D Texture;\n" +
-            "uniform vec4 Color=vec4(1,1,1,1);\n" +
-            "in vec2 Coord0;\n" +
-            "out vec4 FragColor;\n" +
-            "void main() {\n" +
-            "   float sample;\n" +
-            "   sample = texture(Texture,Coord0).r;\n" +
-            "   FragColor = Color * sample;\n" +
-            "}\n";
 
     /**
      * True if blending needs to be reset.
@@ -121,7 +92,7 @@ public final class GlyphRendererGL3 extends AbstractGlyphRenderer {
 
         Check.notNull(gl, "GL cannot be null");
 
-        this.program = ShaderLoader.loadProgram(gl, VERT_SOURCE, FRAG_SOURCE);
+        this.program = ShaderLoader.loadProgram(gl,   TextShaderLoader.getVertexShader(), TextShaderLoader.getFragmentShader());
         this.transform = new Mat4Uniform(gl, program, "MVPMatrix");
         this.color = new Vec4Uniform(gl, program, "Color");
     }
