@@ -19,8 +19,8 @@ import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.models.Mesh;
-import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.util.structure.Mesh;
+import org.gephi.viz.engine.jogl.models.mesh.generator.NodeDiskVertexMeshGenerator;
 import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
@@ -62,7 +62,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final int circleVertexCount64;
 
     public SimpleMouseSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
-        circleMesh64 = NodeDiskVertexDataGenerator.generateFilledCircle(64);
+        circleMesh64 = NodeDiskVertexMeshGenerator.generateFilledCircle(64);
         circleVertexCount64 = circleMesh64.vertexCount;
 
         this.engine = engine;

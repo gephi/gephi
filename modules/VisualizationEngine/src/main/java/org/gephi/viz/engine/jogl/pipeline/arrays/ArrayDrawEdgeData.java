@@ -8,8 +8,8 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
-import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
-import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
+import org.gephi.viz.engine.jogl.models.mesh.generator.EdgeLineMeshGenerator;
+import org.gephi.viz.engine.util.structure.Mesh;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -158,10 +158,10 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
         {
-            float[] singleElementData = EdgeLineModelUndirected.getVertexData();
-            float[] undirectedVertexDataArray = new float[singleElementData.length * BATCH_EDGES_SIZE];
-            System.arraycopy(singleElementData, 0, undirectedVertexDataArray, 0, singleElementData.length);
-            ArrayUtils.repeat(undirectedVertexDataArray, 0, singleElementData.length, BATCH_EDGES_SIZE);
+            Mesh singleElementData = EdgeLineMeshGenerator.undirectedMeshGenerator();
+            float[] undirectedVertexDataArray = new float[singleElementData.vertexData.length * BATCH_EDGES_SIZE];
+            System.arraycopy(singleElementData.vertexData, 0, undirectedVertexDataArray, 0, singleElementData.vertexData.length);
+            ArrayUtils.repeat(undirectedVertexDataArray, 0, singleElementData.vertexData.length, BATCH_EDGES_SIZE);
 
             final FloatBuffer undirectedVertexData = GLBuffers.newDirectFloatBuffer(undirectedVertexDataArray);
 
@@ -173,10 +173,10 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         }
 
         {
-            float[] singleElementData = EdgeLineModelDirected.getVertexData();
-            float[] directedVertexDataArray = new float[singleElementData.length * BATCH_EDGES_SIZE];
-            System.arraycopy(singleElementData, 0, directedVertexDataArray, 0, singleElementData.length);
-            ArrayUtils.repeat(directedVertexDataArray, 0, singleElementData.length, BATCH_EDGES_SIZE);
+            Mesh singleElementData = EdgeLineMeshGenerator.directedMeshGenerator();
+            float[] directedVertexDataArray = new float[singleElementData.vertexData.length * BATCH_EDGES_SIZE];
+            System.arraycopy(singleElementData.vertexData, 0, directedVertexDataArray, 0, singleElementData.vertexData.length);
+            ArrayUtils.repeat(directedVertexDataArray, 0, singleElementData.vertexData.length, BATCH_EDGES_SIZE);
 
             final FloatBuffer directedVertexData = GLBuffers.newDirectFloatBuffer(directedVertexDataArray);
 

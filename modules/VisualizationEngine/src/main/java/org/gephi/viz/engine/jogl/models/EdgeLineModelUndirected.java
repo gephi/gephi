@@ -247,18 +247,4 @@ public class EdgeLineModelUndirected {
                 maxWeight - minWeight);
         }
     }
-
-    public static float[] getVertexData() {
-        //lineEnd, sideVector
-        return new float[] {
-            //Triangle 1
-            0, -1,// bottom left corner
-            1, -1,// top left corner
-            0, 1,// bottom right corner
-            //Triangle 2
-            0, 1,// bottom right corner
-            1, -1,// top left corner
-            1, 1// top right corner
-        };
-    }
 }

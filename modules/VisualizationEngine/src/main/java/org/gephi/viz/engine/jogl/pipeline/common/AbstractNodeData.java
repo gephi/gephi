@@ -8,9 +8,9 @@ import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.models.Mesh;
+import org.gephi.viz.engine.util.structure.Mesh;
 import org.gephi.viz.engine.jogl.models.NodeDiskModel;
-import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.jogl.models.mesh.generator.NodeDiskVertexMeshGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
@@ -57,10 +57,10 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     protected final NodeDiskModel diskModel;
 
-    protected final Mesh circleMesh64 =  NodeDiskVertexDataGenerator.generateFilledCircle(64);
-    protected final Mesh circleMesh32=  NodeDiskVertexDataGenerator.generateFilledCircle(32);
-    protected final Mesh circleMesh16=  NodeDiskVertexDataGenerator.generateFilledCircle(16);
-    protected final Mesh circleMesh8= NodeDiskVertexDataGenerator.generateFilledCircle(8);
+    protected final Mesh circleMesh64 =  NodeDiskVertexMeshGenerator.generateFilledCircle(64);
+    protected final Mesh circleMesh32 =  NodeDiskVertexMeshGenerator.generateFilledCircle(32);
+    protected final Mesh circleMesh16 =  NodeDiskVertexMeshGenerator.generateFilledCircle(16);
+    protected final Mesh circleMesh8  = NodeDiskVertexMeshGenerator.generateFilledCircle(8);
 
 
     protected final int firstVertex64;

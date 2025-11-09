@@ -1,4 +1,4 @@
-package org.gephi.viz.engine.jogl.models;
+package org.gephi.viz.engine.util.structure;
 
 public class Mesh {
     /**

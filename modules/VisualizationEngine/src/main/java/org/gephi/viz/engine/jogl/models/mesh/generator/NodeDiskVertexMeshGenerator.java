@@ -1,8 +1,10 @@
-package org.gephi.viz.engine.jogl.models;
+package org.gephi.viz.engine.jogl.models.mesh.generator;
 
-public class NodeDiskVertexDataGenerator {
+import org.gephi.viz.engine.util.structure.Mesh;
 
-    public static  Mesh generateFilledCircle(int triangleAmount) {
+public class NodeDiskVertexMeshGenerator {
+
+    public static Mesh generateFilledCircle(int triangleAmount) {
         final double twicePi = 2.0 * Math.PI;
 
         final Mesh mesh = new Mesh();
