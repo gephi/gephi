@@ -7,7 +7,7 @@
 //#include "common.edge.vert.in.glsl"
 
 //#include "common.edge.struct.glsl"
-out VertexData vertexData;
+flat out VertexData vertexData;
 
 void main() {
     float thickness = edge_thickness(edgeScaleMin, edgeScaleMax, size, minWeight, weightDifferenceDivisor);

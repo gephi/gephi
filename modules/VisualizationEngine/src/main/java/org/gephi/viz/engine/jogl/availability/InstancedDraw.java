@@ -16,7 +16,7 @@ public class InstancedDraw {
     }
 
     public static boolean isAvailable(VizEngine<JOGLRenderingTarget, NEWTEvent> engine, GLAutoDrawable drawable) {
-        if (engine.getOpenGLOptions().isDisableIndirectDrawing()) {
+        if (engine.getOpenGLOptions().isDisableInstancedDrawing()) {
             return false;
         }
 

@@ -2,7 +2,7 @@
 
 //#include "common.node.struct.glsl"
 
-in VertexData vertexData;
+flat in VertexData vertexData;
 out vec4 fragColor;
 
 void main(void) {

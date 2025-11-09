@@ -10,7 +10,7 @@
 
 //#include "common.node.struct.glsl"
 
-out VertexData vertexData;
+flat out VertexData vertexData;
 
 void main() {
     vec2 instancePosition = size * sizeMultiplier * vert + position;
