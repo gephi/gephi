@@ -66,20 +66,20 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, NodeLabe
             oldRenderer.dispose();
         }
 
-        if (data.getTextRenderer() == null) {
+        if (data.textRenderer() == null) {
             if (textRenderer != null) {
                 textRenderer.dispose();
                 textRenderer = null;
             }
             return;
         } else {
-            textRenderer = data.getTextRenderer();
+            textRenderer = data.textRenderer();
         }
 
         // Get the pre-computed batches from the WorldData (captured at worldUpdated time)
         // This ensures we use a consistent snapshot for this frame
-        final NodeLabelData.LabelBatch[] batches = data.getLabelBatches();
-        final int maxIndex = data.getMaxIndex();
+        final NodeLabelData.LabelBatch[] batches = data.labelBatches();
+        final int maxIndex = data.maxIndex();
 
         if (batches == null || batches.length == 0 || maxIndex < 0) {
             return;

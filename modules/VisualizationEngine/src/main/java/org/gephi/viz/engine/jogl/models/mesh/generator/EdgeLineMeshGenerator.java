@@ -4,26 +4,27 @@ import org.gephi.viz.engine.util.structure.Mesh;
 
 public class EdgeLineMeshGenerator {
     public static Mesh undirectedMeshGenerator() {
-            final Mesh mesh = new Mesh();
-            //lineEnd, sideVector
-            mesh.vertexData = new float[] {
-                //Triangle 1
-                0, -1,// bottom left corner
-                1, -1,// top left corner
-                0, 1,// bottom right corner
-                //Triangle 2
-                0, 1,// bottom right corner
-                1, -1,// top left corner
-                1, 1// top right corner
-            };
-            mesh.vertexComponentSize = 2;
-            mesh.vertexCount = 6;
-            return mesh;
+        final Mesh mesh = new Mesh();
+        //lineEnd, sideVector
+        mesh.vertexData = new float[] {
+            //Triangle 1
+            0, -1,// bottom left corner
+            1, -1,// top left corner
+            0, 1,// bottom right corner
+            //Triangle 2
+            0, 1,// bottom right corner
+            1, -1,// top left corner
+            1, 1// top right corner
+        };
+        mesh.vertexComponentSize = 2;
+        mesh.vertexCount = 6;
+        return mesh;
     }
+
     public static Mesh directedMeshGenerator() {
         final Mesh mesh = new Mesh();
         //lineEnd, sideVector
-        mesh.vertexData =new float[] {
+        mesh.vertexData = new float[] {
             //First 6 are the edge line as a rectangle:
             //Triangle 1
             0, 1, 0,// bottom right corner

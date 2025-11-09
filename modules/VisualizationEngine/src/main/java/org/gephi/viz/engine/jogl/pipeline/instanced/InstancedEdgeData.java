@@ -74,7 +74,8 @@ public class InstancedEdgeData extends AbstractEdgeData {
         vertexGLBufferUndirected.init(gl, undirectedVertexData, GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW);
         vertexGLBufferUndirected.unbind(gl);
 
-        final FloatBuffer directedVertexData = GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.directedMeshGenerator().vertexData);
+        final FloatBuffer directedVertexData =
+            GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.directedMeshGenerator().vertexData);
         vertexGLBufferDirected =
             new GLBufferMutable(bufferName[VERT_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBufferDirected.bind(gl);
