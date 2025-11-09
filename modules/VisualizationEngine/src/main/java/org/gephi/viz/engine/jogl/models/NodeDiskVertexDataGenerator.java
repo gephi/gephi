@@ -2,26 +2,7 @@ package org.gephi.viz.engine.jogl.models;
 
 public class NodeDiskVertexDataGenerator {
 
-
-    private final Mesh vertexData;
-    private final int vertexCount;
-
-    public NodeDiskVertexDataGenerator(int triangleAmount) {
-        this.vertexData = generateFilledCircle(triangleAmount);
-        this.vertexCount = triangleAmount * 3;
-    }
-
-
-
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
-    public Mesh getMesh() {
-        return vertexData;
-    }
-
-    private static  Mesh generateFilledCircle(int triangleAmount) {
+    public static  Mesh generateFilledCircle(int triangleAmount) {
         final double twicePi = 2.0 * Math.PI;
 
         final Mesh mesh = new Mesh();

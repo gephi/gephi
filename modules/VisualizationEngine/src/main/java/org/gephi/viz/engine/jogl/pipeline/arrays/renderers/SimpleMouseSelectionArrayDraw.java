@@ -19,6 +19,7 @@ import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.models.Mesh;
 import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
 import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -57,12 +58,12 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final int[] intData = new int[1];
     private final byte[] booleanData = new byte[1];
 
-    private final NodeDiskVertexDataGenerator generator64;
+    private final Mesh circleMesh64;
     private final int circleVertexCount64;
 
     public SimpleMouseSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
-        generator64 = new NodeDiskVertexDataGenerator(64);
-        circleVertexCount64 = generator64.getVertexCount();
+        circleMesh64 = NodeDiskVertexDataGenerator.generateFilledCircle(64);
+        circleVertexCount64 = circleMesh64.vertexCount;
 
         this.engine = engine;
     }
@@ -96,7 +97,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             // Vertex = 2 Float (xy)
-            float[] vertexData = Arrays.copyOf(generator64.getMesh().vertexData, circleVertexCount64 * VERTEX_FLOATS);
+            float[] vertexData = Arrays.copyOf(circleMesh64.vertexData, circleVertexCount64 * VERTEX_FLOATS);
 
             for (int vertexIndex = 0; vertexIndex < circleVertexCount64 * VERTEX_FLOATS; vertexIndex += 2) {
                 vertexData[vertexIndex] = vertexData[vertexIndex] * mouseSelectionDiameter + mousePosition.x;
