@@ -96,7 +96,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             // Vertex = 2 Float (xy)
-            float[] vertexData = Arrays.copyOf(generator64.getVertexData(), circleVertexCount64 * VERTEX_FLOATS);
+            float[] vertexData = Arrays.copyOf(generator64.getMesh().vertexData, circleVertexCount64 * VERTEX_FLOATS);
 
             for (int vertexIndex = 0; vertexIndex < circleVertexCount64 * VERTEX_FLOATS; vertexIndex += 2) {
                 vertexData[vertexIndex] = vertexData[vertexIndex] * mouseSelectionDiameter + mousePosition.x;

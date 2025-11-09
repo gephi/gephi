@@ -130,20 +130,20 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected void initCirclesGLVertexBuffer(GL gl, final int bufferName) {
 
         final float[] circleVertexData = new float[
-                generator64.getVertexData().length
-                        + generator32.getVertexData().length
-                        + generator16.getVertexData().length
-                        + generator8.getVertexData().length
+                generator64.getMesh().vertexData.length
+                        + generator32.getMesh().vertexData.length
+                        + generator16.getMesh().vertexData.length
+                        + generator8.getMesh().vertexData.length
                 ];
 
         int offset = 0;
-        System.arraycopy(generator64.getVertexData(), 0, circleVertexData, offset, generator64.getVertexData().length);
-        offset += generator64.getVertexData().length;
-        System.arraycopy(generator32.getVertexData(), 0, circleVertexData, offset, generator32.getVertexData().length);
-        offset += generator32.getVertexData().length;
-        System.arraycopy(generator16.getVertexData(), 0, circleVertexData, offset, generator16.getVertexData().length);
-        offset += generator16.getVertexData().length;
-        System.arraycopy(generator8.getVertexData(), 0, circleVertexData, offset, generator8.getVertexData().length);
+        System.arraycopy(generator64.getMesh().vertexData, 0, circleVertexData, offset, generator64.getMesh().vertexData.length);
+        offset += generator64.getMesh().vertexData.length;
+        System.arraycopy(generator32.getMesh().vertexData, 0, circleVertexData, offset, generator32.getMesh().vertexData.length);
+        offset += generator32.getMesh().vertexData.length;
+        System.arraycopy(generator16.getMesh().vertexData, 0, circleVertexData, offset, generator16.getMesh().vertexData.length);
+        offset += generator16.getMesh().vertexData.length;
+        System.arraycopy(generator8.getMesh().vertexData, 0, circleVertexData, offset, generator8.getMesh().vertexData.length);
 
 
         final FloatBuffer circleVertexBuffer = GLBuffers.newDirectFloatBuffer(circleVertexData);

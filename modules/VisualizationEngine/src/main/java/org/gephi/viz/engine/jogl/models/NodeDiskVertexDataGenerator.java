@@ -1,58 +1,62 @@
 package org.gephi.viz.engine.jogl.models;
 
 public class NodeDiskVertexDataGenerator {
-    public static final int VERTEX_FLOATS = 2;
-    private final int triangleAmount;
-    private final float[] vertexData;
+
+
+    private final Mesh vertexData;
     private final int vertexCount;
 
     public NodeDiskVertexDataGenerator(int triangleAmount) {
-        this.triangleAmount = triangleAmount;
         this.vertexData = generateFilledCircle(triangleAmount);
-
         this.vertexCount = triangleAmount * 3;
     }
 
-    public int getTriangleAmount() {
-        return triangleAmount;
-    }
+
 
     public int getVertexCount() {
         return vertexCount;
     }
 
-    public float[] getVertexData() {
+    public Mesh getMesh() {
         return vertexData;
     }
 
-    private static float[] generateFilledCircle(int triangleAmount) {
+    private static  Mesh generateFilledCircle(int triangleAmount) {
         final double twicePi = 2.0 * Math.PI;
 
-        final int circleFloatsCount = (triangleAmount * 3) * VERTEX_FLOATS;
-        final float[] data = new float[circleFloatsCount];
-        final int triangleFloats = 3 * VERTEX_FLOATS;
+        final Mesh mesh = new Mesh();
+        mesh.vertexCount = triangleAmount * 3;
+        mesh.vertexComponentSize = 2;
+
+        final int circleFloatsCount = mesh.vertexCount * mesh.vertexComponentSize;
+        mesh.vertexData = new float[circleFloatsCount];
+
+        final int triangleComponentSize = 3 * mesh.vertexComponentSize;
 
         //Circle:
-        for (int i = 1, j = 0; i <= triangleAmount; i++, j += triangleFloats) {
+        for (int i = 0; i < triangleAmount; i++) {
+            double current_radian = i  * twicePi / triangleAmount;
+            double next_radian =  (i+1) * twicePi / triangleAmount;
+            int index_offset = triangleComponentSize*i;
             //Center
-            data[j] = 0;//X
-            data[j + 1] = 0;//Y
+            mesh.vertexData[index_offset] = 0;//X
+            mesh.vertexData[index_offset + 1] = 0;//Y
 
             //Triangle start:
-            data[j + 2] = (float) Math.cos((i - 1) * twicePi / triangleAmount);//X
-            data[j + 3] = (float) Math.sin((i - 1) * twicePi / triangleAmount);//Y
+            mesh.vertexData[index_offset + 2] = (float) Math.cos(current_radian);//X
+            mesh.vertexData[index_offset + 3] = (float) Math.sin(current_radian);//Y
 
             //Triangle end:
-            if (i == triangleAmount) {
+            if (i == triangleAmount-1) {
                 //Last point
-                data[j + 4] = 1;//X
-                data[j + 5] = 0;//Y
+                mesh.vertexData[index_offset + 4] = 1;//X
+                mesh.vertexData[index_offset + 5] = 0;//Y
             } else {
-                data[j + 4] = (float) Math.cos(i * twicePi / triangleAmount);//X
-                data[j + 5] = (float) Math.sin(i * twicePi / triangleAmount);//Y
+                mesh.vertexData[index_offset + 4] = (float) Math.cos(next_radian);//X
+                mesh.vertexData[index_offset + 5] = (float) Math.sin(next_radian);//Y
             }
         }
 
-        return data;
+        return mesh;
     }
 }
