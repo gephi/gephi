@@ -33,6 +33,10 @@ public class NodesCallback implements ElementsCallback<Node> {
     private int nodeCount = 0;
     private boolean hasLabels = false;
     private boolean hideNonSelectedLabels = false;
+    private float minX = Float.POSITIVE_INFINITY;
+    private float minY = Float.POSITIVE_INFINITY;
+    private float maxX = Float.NEGATIVE_INFINITY;
+    private float maxY = Float.NEGATIVE_INFINITY;
 
     @Override
     public void run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries) {
@@ -49,6 +53,10 @@ public class NodesCallback implements ElementsCallback<Node> {
         maxIndex = 0;
         maxNodeSize = 0f;
         nodeCount = 0;
+        minX = Float.POSITIVE_INFINITY;
+        minY = Float.POSITIVE_INFINITY;
+        maxX = Float.NEGATIVE_INFINITY;
+        maxY = Float.NEGATIVE_INFINITY;
 
         hasSelection = graphSelection.someNodesOrEdgesSelection();
         if (hasSelection) {
@@ -87,12 +95,20 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     @Override
     public void end(Graph graph) {
-        // Count non-null nodes
+        // Count non-null nodes and track bounds
         // This can't be done in accept as nodes can be duplicated and accept is called via multiple threads (parallel stream)
         nodeCount = 0;
         for (int i = 0; i <= maxIndex; i++) {
-            if (nodesArray[i] != null) {
+            Node node = nodesArray[i];
+            if (node != null) {
                 nodeCount++;
+                // Track min/max positions for grid bounds
+                float x = node.x();
+                float y = node.y();
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
             }
         }
     }
@@ -109,6 +125,10 @@ public class NodesCallback implements ElementsCallback<Node> {
         nodesLabelsArray = new String[0];
         hasLabels = false;
         hideNonSelectedLabels = false;
+        minX = Float.POSITIVE_INFINITY;
+        minY = Float.POSITIVE_INFINITY;
+        maxX = Float.NEGATIVE_INFINITY;
+        maxY = Float.NEGATIVE_INFINITY;
     }
 
     public Node[] getNodesArray() {
@@ -137,6 +157,22 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     public String[] getNodesLabelsArray() {
         return nodesLabelsArray;
+    }
+
+    public float getMinX() {
+        return minX;
+    }
+
+    public float getMinY() {
+        return minY;
+    }
+
+    public float getMaxX() {
+        return maxX;
+    }
+
+    public float getMaxY() {
+        return maxY;
     }
 
     protected Node[] ensureNodesArraySize(Node[] array, int size) {

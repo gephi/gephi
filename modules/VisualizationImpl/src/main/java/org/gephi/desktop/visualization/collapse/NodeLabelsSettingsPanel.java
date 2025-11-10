@@ -80,6 +80,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
     private final VisualizationController vizController;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton attributesButton;
+    private javax.swing.JCheckBox avoidOverlap;
     private javax.swing.JToggleButton fitToNodeSizeToggleButton;
     private javax.swing.JCheckBox hideNonSelectedCheckbox;
     private javax.swing.JLabel labelNodeColor;
@@ -207,6 +208,9 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         fitToNodeSizeToggleButton.addActionListener(e -> vizController.setNodeLabelFitToNodeSize(fitToNodeSizeToggleButton.isSelected()));
         fitToNodeSizeToggleButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/fitToNodeSize.svg", false));
         fitToNodeSizeToggleButton.setToolTipText(NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.toolTipText"));
+
+        // Avoid overlap
+        avoidOverlap.addActionListener(e -> vizController.setAvoidNodeLabelOverlap(avoidOverlap.isSelected()));
     }
 
     public void setup(VisualisationModel model) {
@@ -241,6 +245,8 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("nodeLabelFitToNodeSize")) {
             refreshSharedConfig(model);
+        } else if (evt.getPropertyName().equals("avoidNodeLabelOverlap")) {
+            refreshSharedConfig(model);
         }
     }
 
@@ -264,6 +270,9 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         if (fitToNodeSizeToggleButton.isSelected() != vizModel.isNodeLabelFitToNodeSize()) {
             fitToNodeSizeToggleButton.setSelected(vizModel.isNodeLabelFitToNodeSize());
         }
+        if (avoidOverlap.isSelected() != vizModel.isAvoidNodeLabelOverlap()) {
+            avoidOverlap.setSelected(vizModel.isAvoidNodeLabelOverlap());
+        }
         selfColorLink.setVisible(nodeColorCombo.getSelectedItem() == LabelColorMode.SELF);
     }
 
@@ -279,6 +288,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         labelNodeSize.setEnabled(enable && showLabelsCheckbox.isSelected());
         fitToNodeSizeToggleButton.setEnabled(enable && showLabelsCheckbox.isSelected());
         hideNonSelectedCheckbox.setEnabled(enable && showLabelsCheckbox.isSelected());
+        avoidOverlap.setEnabled(enable && showLabelsCheckbox.isSelected());
         attributesButton.setEnabled(enable && showLabelsCheckbox.isSelected());
         selfColorLink.setEnabled(enable && showLabelsCheckbox.isSelected());
     }
@@ -305,6 +315,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         hideNonSelectedCheckbox = new javax.swing.JCheckBox();
         attributesButton = new javax.swing.JButton();
         selfColorLink = new org.jdesktop.swingx.JXHyperlink();
+        avoidOverlap = new javax.swing.JCheckBox();
 
         showLabelsCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         showLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.showLabelsCheckbox.text")); // NOI18N
@@ -338,6 +349,10 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
 
         selfColorLink.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.selfColorLink.text")); // NOI18N
 
+        avoidOverlap.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.avoidOverlap.text")); // NOI18N
+        avoidOverlap.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        avoidOverlap.setMargin(new java.awt.Insets(2, 0, 2, 2));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -369,17 +384,21 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(nodeFontButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(hideNonSelectedCheckbox))
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
                                 .addComponent(labelNodeScale)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(attributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(attributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(avoidOverlap))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(showLabelsCheckbox)))
-                .addContainerGap(230, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -394,14 +413,15 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
                     .addComponent(nodeFontButton)
                     .addComponent(labelNodeScale)
                     .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(attributesButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelNodeSize)
                     .addComponent(nodeSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fitToNodeSizeToggleButton)
                     .addComponent(hideNonSelectedCheckbox)
-                    .addComponent(attributesButton))
+                    .addComponent(avoidOverlap))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents

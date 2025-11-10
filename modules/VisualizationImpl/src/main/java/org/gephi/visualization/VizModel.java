@@ -118,6 +118,7 @@ public class VizModel implements VisualisationModel {
     private LabelSizeMode nodeLabelSizeMode;
     private boolean hideNonSelectedLabels;
     private boolean fitNodeLabelsToNodeSize;
+    private boolean avoidNodeLabelOverlap;
     private Column[] nodeLabelColumns = new Column[0];
 
     //Edge Labels
@@ -177,6 +178,7 @@ public class VizModel implements VisualisationModel {
         this.nodeLabelScale = config.getDefaultNodeLabelScale();
         this.hideNonSelectedLabels = config.isDefaultHideNonSelectedNodeLabels();
         this.fitNodeLabelsToNodeSize = config.isDefaultFitNodeLabelsToNodeSize();
+        this.avoidNodeLabelOverlap = config.isDefaultAvoidNodeLabelOverlap();
         this.nodeLabelColumns = new Column[] {this.graphModel.defaultColumns().nodeLabel()};
 
         //Edge Labels
@@ -212,6 +214,7 @@ public class VizModel implements VisualisationModel {
         options.setNodeLabelScale(getNodeLabelScale());
         options.setNodeLabelFitToNodeSize(isNodeLabelFitToNodeSize());
         options.setHideNonSelectedNodeLabels(isHideNonSelectedLabels());
+        options.setAvoidNodeLabelOverlap(isAvoidNodeLabelOverlap());
         options.setNodeLabelColumns(getNodeLabelColumns());
         options.setEdgeLabelColumns(getEdgeLabelColumns());
         return options;
@@ -654,6 +657,20 @@ public class VizModel implements VisualisationModel {
             this.fitNodeLabelsToNodeSize = fitNodeLabelsToNodeSize;
             getRenderingOptions().ifPresent(options -> options.setNodeLabelFitToNodeSize(fitNodeLabelsToNodeSize));
             firePropertyChange("nodeLabelFitToNodeSize", oldValue, fitNodeLabelsToNodeSize);
+        }
+    }
+
+    @Override
+    public boolean isAvoidNodeLabelOverlap() {
+        return avoidNodeLabelOverlap;
+    }
+
+    public void setAvoidNodeLabelOverlap(boolean avoidNodeLabelOverlap) {
+        boolean oldValue = this.avoidNodeLabelOverlap;
+        if (oldValue != avoidNodeLabelOverlap) {
+            this.avoidNodeLabelOverlap = avoidNodeLabelOverlap;
+            getRenderingOptions().ifPresent(options -> options.setAvoidNodeLabelOverlap(avoidNodeLabelOverlap));
+            firePropertyChange("avoidNodeLabelOverlap", oldValue, avoidNodeLabelOverlap);
         }
     }
 

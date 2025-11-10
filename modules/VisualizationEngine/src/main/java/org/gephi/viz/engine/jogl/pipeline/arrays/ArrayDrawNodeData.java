@@ -30,19 +30,15 @@ public class ArrayDrawNodeData extends AbstractNodeData {
                            float[] mvpFloats) {
         refreshTime();
 
-        //First we draw outside circle (for border) and then inside circle:
-        //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawArraysInternal(gl, layer, data, mvpFloats, true);
-        drawArraysInternal(gl, layer, data, mvpFloats, false);
+        drawArraysInternal(gl, layer, data, mvpFloats);
     }
 
     public void drawArraysInternal(final GL2ES2 gl,
                                    final RenderingLayer layer,
                                    final NodeWorldData data,
-                                   final float[] mvpFloats,
-                                   final boolean isRenderingOutsideCircle) {
+                                   final float[] mvpFloats) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);

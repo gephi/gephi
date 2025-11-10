@@ -93,7 +93,7 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     }
 
     public void setWeight(float weight) {
-        weightSpinner.getModel().setValue(new Float(weight));
+        weightSpinner.getModel().setValue(weight);
     }
 
     public void setType(boolean directed) {

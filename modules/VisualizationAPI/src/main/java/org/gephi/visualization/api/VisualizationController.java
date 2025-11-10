@@ -149,6 +149,8 @@ public interface VisualizationController {
 
     void setNodeLabelFitToNodeSize(boolean fitToNodeSize);
 
+    void setAvoidNodeLabelOverlap(boolean avoidOverlap);
+
     // Edge Labels
 
     void setShowEdgeLabels(boolean showEdgeLabels);

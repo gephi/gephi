@@ -27,6 +27,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
     private final JPopupButton labelColorModeButton;
     private final JPopupButton labelSizeModeButton;
     private final JToggleButton fitToNodeSizeButton;
+    private final JToggleButton avoidOverlapButton;
     private final JButton attributesButton;
     private final JSlider fontSizeSlider;
     private final VisualizationController vizController;
@@ -93,6 +94,12 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         fitToNodeSizeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/fitToNodeSize.svg", false));
         fitToNodeSizeButton.addActionListener(e -> vizController.setNodeLabelFitToNodeSize(fitToNodeSizeButton.isSelected()));
 
+        // Avoid overlap
+        avoidOverlapButton = new JToggleButton();
+        avoidOverlapButton.setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.avoidOverlap"));
+        avoidOverlapButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/avoidOverlap.svg", false));
+        avoidOverlapButton.addActionListener(e -> vizController.setAvoidNodeLabelOverlap(avoidOverlapButton.isSelected()));
+
         //Font size
         fontSizeSlider = new JSlider(1, 100, 1);
         fontSizeSlider.setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.fontScale"));
@@ -113,6 +120,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelColorModeButton.setSelectedItem(vizModel.getNodeLabelColorMode());
         labelSizeModeButton.setSelectedItem(vizModel.getNodeLabelSizeMode());
         fitToNodeSizeButton.setSelected(vizModel.isNodeLabelFitToNodeSize());
+        avoidOverlapButton.setSelected(vizModel.isAvoidNodeLabelOverlap());
         fontSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100));
         refreshEnable(true);
 
@@ -125,6 +133,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelColorModeButton.setEnabled(showLabels);
         labelSizeModeButton.setEnabled(showLabels);
         fitToNodeSizeButton.setEnabled(showLabels);
+        avoidOverlapButton.setEnabled(showLabels);
         attributesButton.setEnabled(showLabels);
         fontSizeSlider.setEnabled(showLabels);
     }
@@ -152,6 +161,8 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
             labelSizeModeButton.setSelectedItem(model.getNodeLabelSizeMode());
         } else if ("nodeLabelFitToNodeSize".equals(evt.getPropertyName())) {
             fitToNodeSizeButton.setSelected((Boolean) evt.getNewValue());
+        } else if ("avoidNodeLabelOverlap".equals(evt.getPropertyName())) {
+            avoidOverlapButton.setSelected((Boolean) evt.getNewValue());
         } else if ("nodeLabelScale".equals(evt.getPropertyName())) {
             float scale = (Float) evt.getNewValue();
             int sliderValue = (int) (scale * 100);
@@ -169,7 +180,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
     @Override
     public JComponent[] getToolbarComponents() {
         return new JComponent[] {showLabelsButton, labelColorModeButton, labelSizeModeButton, fitToNodeSizeButton,
-            fontSizeSlider};
+            avoidOverlapButton, fontSizeSlider};
     }
 
     @Override

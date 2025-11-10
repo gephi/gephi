@@ -248,6 +248,7 @@ public final class GlyphCache implements TextureBackingStore.EventListener {
             packer.remove(rect);
             final Glyph glyph = ((TextData) rect.getUserData()).glyph;
             glyph.location = null;
+            glyph.coordinates = null; // Also clear coordinates to prevent stale texture coordinates
             fireEvent(EventType.CLEAN, glyph);
             log("Cleared rectangle for glyph: %s", glyph);
             if (DEBUG) {

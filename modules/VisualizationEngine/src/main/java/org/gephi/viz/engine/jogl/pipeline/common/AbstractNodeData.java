@@ -5,7 +5,6 @@ import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_INT;
 import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_TYPE_ARRAY;
 import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW;
-import static org.gephi.viz.engine.util.gl.Constants.NODER_BORDER_DARKEN_FACTOR;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
@@ -150,8 +149,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected int setupShaderProgramForRenderingLayer(final GL2ES2 gl,
                                                       final RenderingLayer layer,
                                                       final NodeWorldData data,
-                                                      final float[] mvpFloats,
-                                                      final boolean isRenderingOutsideCircle) {
+                                                      final float[] mvpFloats) {
         final boolean someSelection = data.hasSomeSelection();
         final boolean renderingUnselectedNodes = layer.isBack();
 
@@ -162,19 +160,19 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         final float[] backgroundColorFloats = data.getBackgroundColor();
 
         final int instanceCount;
-        final float sizeMultiplier = isRenderingOutsideCircle ? 1f : INSIDE_CIRCLE_SIZE;
+
 
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
             final float colorLightenFactor = data.getLightenNonSelectedFactor();
-            final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
+
             diskModel.useProgramWithSelectionUnselected(
                 gl,
                 mvpFloats,
-                sizeMultiplier,
+
                 backgroundColorFloats,
                 colorLightenFactor,
-                colorMultiplier,
+
                 globalTime,
                 this.selectedTime
             );
@@ -184,18 +182,17 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             instanceCount = instanceCounter.selectedCountToDraw;
 
             if (someSelection) {
-                final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
+
                 diskModel.useProgramWithSelectionSelected(
                     gl,
                     mvpFloats,
-                    sizeMultiplier,
-                    colorMultiplier,
+
                     globalTime,
                     this.selectedTime
                 );
             } else {
-                final float colorMultiplier = isRenderingOutsideCircle ? NODER_BORDER_DARKEN_FACTOR : 1f;
-                diskModel.useProgram(gl, mvpFloats, sizeMultiplier, colorMultiplier);
+
+                diskModel.useProgram(gl, mvpFloats);
             }
 
             setupVertexArrayAttributes(gl, data);

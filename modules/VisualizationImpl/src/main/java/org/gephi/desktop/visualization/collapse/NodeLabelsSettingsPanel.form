@@ -51,14 +51,19 @@
                           </Group>
                           <Component id="hideNonSelectedCheckbox" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Component id="labelNodeScale" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="nodeSizeSlider" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="attributesButton" min="-2" pref="125" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="attributesButton" min="-2" pref="200" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="avoidOverlap" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -66,7 +71,7 @@
                       <Component id="showLabelsCheckbox" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="230" max="32767" attributes="0"/>
+              <EmptySpace pref="99" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -84,6 +89,7 @@
                   <Component id="labelNodeScale" alignment="3" min="-2" max="-2" attributes="1"/>
                   <Component id="nodeSizeSlider" alignment="3" min="-2" max="-2" attributes="1"/>
                   <Component id="selfColorLink" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="attributesButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -91,7 +97,7 @@
                   <Component id="nodeSizeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="fitToNodeSizeToggleButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="hideNonSelectedCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="attributesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="avoidOverlap" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -197,6 +203,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="NodeLabelsSettingsPanel.selfColorLink.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="avoidOverlap">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="NodeLabelsSettingsPanel.avoidOverlap.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="horizontalTextPosition" type="int" value="2"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 0, 2, 2]"/>
         </Property>
       </Properties>
     </Component>

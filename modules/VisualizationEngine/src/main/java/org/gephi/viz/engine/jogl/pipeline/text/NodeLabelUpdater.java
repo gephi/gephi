@@ -1,5 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.text;
 
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
@@ -13,6 +14,8 @@ import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
 public class NodeLabelUpdater implements WorldUpdater<JOGLRenderingTarget, Node> {
+
+    private static final int GRID_SIZE = 15;
 
     private final VizEngine engine;
     private final NodeLabelData labelData;
@@ -65,10 +68,10 @@ public class NodeLabelUpdater implements WorldUpdater<JOGLRenderingTarget, Node>
         final GraphRenderingOptions.LabelSizeMode labelSizeMode = options.getNodeLabelSizeMode();
         final float lightenNonSelectedFactor = options.getLightenNonSelectedFactor();
         final float nodeLabelScale = options.getNodeLabelScale();
-        final float nodeLabelSizeFactor = options.getNodeLabelSizeFactor();
         final float fitNodeLabelsToNodeSizeFactor = options.getNodeLabelFitToNodeSizeFactor();
         final boolean fitToNodeSize = options.isNodeLabelFitToNodeSize();
         final boolean hideNonSelectedLabels = options.isHideNonSelectedNodeLabels();
+        final boolean avoidOverlap = options.isAvoidNodeLabelOverlap();
         final float zoom = options.getZoom();
         final float nodeScale = options.getNodeScale();
 
@@ -85,6 +88,29 @@ public class NodeLabelUpdater implements WorldUpdater<JOGLRenderingTarget, Node>
 
         // Set the max valid index for this frame (used by renderer to limit iteration)
         labelData.setMaxValidIndex(maxIndex);
+
+        // Initialize grid for overlap detection if enabled
+        Int2IntOpenHashMap gridOccupancy = null; // Maps cell index -> storeId
+        float gridMinX = 0, gridMinY = 0;
+        float gridWidth = 0, gridHeight = 0;
+        int gridCols = 0, gridRows = 0;
+
+        if (avoidOverlap) {
+            // Get bounds from NodesCallback with padding
+            gridMinX = nodesCallback.getMinX() - GRID_SIZE;
+            gridMinY = nodesCallback.getMinY() - GRID_SIZE;
+            float gridMaxX = nodesCallback.getMaxX() + GRID_SIZE;
+            float gridMaxY = nodesCallback.getMaxY() + GRID_SIZE;
+            gridWidth = gridMaxX - gridMinX;
+            gridHeight = gridMaxY - gridMinY;
+
+            if (gridWidth > 0 && gridHeight > 0) {
+                gridCols = (int) Math.ceil(gridWidth / GRID_SIZE);
+                gridRows = (int) Math.ceil(gridHeight / GRID_SIZE);
+                gridOccupancy = new Int2IntOpenHashMap();
+                gridOccupancy.defaultReturnValue(-1); // -1 means empty cell
+            }
+        }
 
         // Update label data for each node
         // Only recomputes glyphs if text changed, only recomputes bounds if sizeFactor changed
@@ -113,8 +139,10 @@ public class NodeLabelUpdater implements WorldUpdater<JOGLRenderingTarget, Node>
             }
 
             // Size calculation
-            final float nodeSizeFactor = fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale :
-                node.getTextProperties().getSize() * nodeLabelSizeFactor;
+            final float baseNodeSizeFactor = fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale :
+                (float) Math.sqrt(node.getTextProperties().getSize());
+            // Add tiny bias (<1%) based on node size to prioritize labels of larger nodes in overlap detection
+            final float nodeSizeFactor = baseNodeSizeFactor * (1.0f + node.size() * nodeScale * 0.00001f);
             float sizeFactor = nodeLabelScale * nodeSizeFactor;
             if (labelSizeMode.equals(GraphRenderingOptions.LabelSizeMode.SCREEN)) {
                 sizeFactor /= zoom;
@@ -142,9 +170,72 @@ public class NodeLabelUpdater implements WorldUpdater<JOGLRenderingTarget, Node>
                 finalA = a;
             }
 
-            // Update batch for this node (by storeId)
-            // Glyphs are only recreated if text changed, bounds only recomputed if sizeFactor changed
-            labelData.updateBatch(node, i, text, sizeFactor, node.x(), node.y(), finalR, finalG, finalB, finalA);
+            // Update batch first - this computes dimensions and glyphs
+            NodeLabelData.LabelBatch batch = labelData.updateBatch(node, i, text, sizeFactor, node.x(), node.y(),
+                finalR, finalG, finalB, finalA);
+
+            // Check for overlap if enabled (after dimensions are computed)
+            boolean shouldRender = true;
+            if (avoidOverlap && gridOccupancy != null && batch.isWriteValid()) {
+                // Get label dimensions from node text properties (set by updateBatch)
+                float width = node.getTextProperties().getWidth();
+                float height = node.getTextProperties().getHeight();
+
+                if (width > 0 && height > 0) {
+                    // Calculate grid cells this label overlaps
+                    float labelMinX = node.x() - width * 0.5f;
+                    float labelMaxX = node.x() + width * 0.5f;
+                    float labelMinY = node.y() - height * 0.5f;
+                    float labelMaxY = node.y() + height * 0.5f;
+
+                    int minCol = Math.max(0, (int) ((labelMinX - gridMinX) / GRID_SIZE));
+                    int maxCol = Math.min(gridCols - 1, (int) ((labelMaxX - gridMinX) / GRID_SIZE));
+                    int minRow = Math.max(0, (int) ((labelMinY - gridMinY) / GRID_SIZE));
+                    int maxRow = Math.min(gridRows - 1, (int) ((labelMaxY - gridMinY) / GRID_SIZE));
+
+                    // Check all overlapping cells
+                    for (int row = minRow; row <= maxRow && shouldRender; row++) {
+                        for (int col = minCol; col <= maxCol && shouldRender; col++) {
+                            int cellIndex = row * gridCols + col;
+                            int occupyingStoreId = gridOccupancy.get(cellIndex);
+
+                            if (occupyingStoreId != -1) {
+                                // Cell is occupied - check if occupying batch is still valid
+                                NodeLabelData.LabelBatch occupyingBatch = labelData.getBatch(occupyingStoreId);
+                                if (occupyingBatch != null && occupyingBatch.isWriteValid()) {
+                                    // Compare size factors
+                                    float occupyingSizeFactor = occupyingBatch.getWriteScale();
+                                    if (sizeFactor <= occupyingSizeFactor) {
+                                        // Current label is smaller or equal - don't render
+                                        shouldRender = false;
+                                    } else {
+                                        // Current label is larger - invalidate the smaller one
+                                        labelData.invalidateBatch(occupyingStoreId);
+                                        // Note: We don't clean up grid cells of the invalidated label
+                                        // as it doesn't matter - larger labels will overwrite
+                                    }
+                                }
+                                // If occupying batch is invalid or null, treat cell as free
+                            }
+                        }
+                    }
+
+                    if (shouldRender) {
+                        // Mark all cells as occupied by this label
+                        for (int row = minRow; row <= maxRow; row++) {
+                            for (int col = minCol; col <= maxCol; col++) {
+                                int cellIndex = row * gridCols + col;
+                                gridOccupancy.put(cellIndex, i);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!shouldRender) {
+                // Mark as invalid (overlapping with larger label)
+                labelData.invalidateBatch(i);
+            }
         }
     }
 

@@ -118,7 +118,7 @@ public final class ShaderLoader {
             final String log = ShaderUtil.getProgramInfoLog(gl, program);
             throw new GLException(log);
         }
-        
+
         // Note: We don't validate here because glValidateProgram checks if the program
         // can execute in the CURRENT GL state, which may not have a VAO bound yet.
         // The program will still fail at runtime with clear errors if there are issues.

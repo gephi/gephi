@@ -19,7 +19,6 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BACKGROUND_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_LIGHTEN_FACTOR;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_MULTIPLIER;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MAX;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MIN;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_GLOBAL_TIME;
@@ -105,7 +104,6 @@ public class EdgeLineModelDirected {
             new GLShaderProgram(SHADERS_ROOT, SHADERS_EDGE_LINE_SOURCE_WITH_SELECTION_SELECTED,
                 SHADERS_EDGE_LINE_SOURCE)
                 .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
-                .addUniformName(UNIFORM_NAME_COLOR_MULTIPLIER)
                 .addUniformName(UNIFORM_NAME_EDGE_SCALE_MIN)
                 .addUniformName(UNIFORM_NAME_EDGE_SCALE_MAX)
                 .addUniformName(UNIFORM_NAME_MIN_WEIGHT)

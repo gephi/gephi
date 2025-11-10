@@ -8,3 +8,4 @@ public record NodeLabelWorldData(TextRenderer textRenderer, NodeLabelData.LabelB
     implements WorldData {
 
 }
+

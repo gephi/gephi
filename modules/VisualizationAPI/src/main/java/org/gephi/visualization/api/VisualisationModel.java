@@ -82,6 +82,8 @@ public interface VisualisationModel extends Model {
 
     boolean isHideNonSelectedLabels();
 
+    boolean isAvoidNodeLabelOverlap();
+
     Column[] getNodeLabelColumns();
 
     // Edge Labels

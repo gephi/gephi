@@ -295,6 +295,12 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
+    public void setAvoidNodeLabelOverlap(boolean avoidOverlap) {
+        final VizModel model = getModel();
+        model.setAvoidNodeLabelOverlap(avoidOverlap);
+    }
+
+    @Override
     public void setNodeLabelColumns(Column[] columns) {
         final VizModel model = getModel();
         model.setNodeLabelColumns(columns);

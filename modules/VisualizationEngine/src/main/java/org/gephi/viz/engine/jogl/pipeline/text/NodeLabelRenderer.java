@@ -61,11 +61,11 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, NodeLabe
     public void render(NodeLabelWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
         // Dispose any old renderer that was replaced (e.g., due to font change)
         // This must be done in render thread because dispose() requires GL context
-        TextRenderer oldRenderer = nodeLabelData.getAndClearRendererToDispose();
-        if (oldRenderer != null) {
-            oldRenderer.dispose();
+        if (textRenderer != null && data.textRenderer() != null && textRenderer != data.textRenderer()) {
+            textRenderer.dispose();
         }
 
+        // Update to the new TextRenderer
         if (data.textRenderer() == null) {
             if (textRenderer != null) {
                 textRenderer.dispose();
@@ -117,11 +117,14 @@ public class NodeLabelRenderer implements Renderer<JOGLRenderingTarget, NodeLabe
 
             for (final Glyph glyph : glyphs) {
                 // Upload glyph to texture cache if needed (requires GL)
+                // Note: After the fix in GlyphCache.clearUnusedEntries(),
+                // both location and coordinates are cleared on eviction.
+                // GlyphCache.find() will recompute coordinates if needed.
                 if (glyph.location == null) {
                     textRenderer.getGlyphCache().upload(glyph);
                 }
 
-                // Get texture coordinates
+                // Get texture coordinates (will recompute if needed)
                 final TextureCoords coords = textRenderer.getGlyphCache().find(glyph);
 
                 // Draw the glyph

@@ -33,19 +33,15 @@ public class IndirectNodeData extends AbstractNodeData {
     public void drawIndirect(GL4 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
         refreshTime();
 
-        //First we draw outside circle (for border) and then inside circle:
-        //FIXME: all node parts should be drawn at the same time, otherwise internal parts of nodes can cover external parts!
-        drawIndirectInternal(gl, layer, data, mvpFloats, true);
-        drawIndirectInternal(gl, layer, data, mvpFloats, false);
+        drawIndirectInternal(gl, layer, data, mvpFloats);
     }
 
     private void drawIndirectInternal(final GL4 gl,
                                       final RenderingLayer layer,
                                       final NodeWorldData data,
-                                      final float[] mvpFloats,
-                                      final boolean isRenderingOutsideCircle) {
+                                      final float[] mvpFloats) {
         final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats, isRenderingOutsideCircle);
+            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
             diskModel.stopUsingProgram(gl);
