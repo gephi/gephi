@@ -143,21 +143,8 @@ public class EdgeLineModelDirected {
                 .init(gl);
     }
 
-    public void drawArraysMultipleInstance(GL2ES2 gl, final int drawBatchCount) {
-        if (drawBatchCount <= 0) {
-            return;
-        }
-        //Multiple lines, attributes must be in the buffer once per vertex count:
-        gl.glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT * drawBatchCount);
-    }
 
-    public void drawInstanced(GL3ES3 gl, int instanceCount) {
-        gl.glDrawArraysInstanced(GL_TRIANGLES, 0, VERTEX_COUNT, instanceCount);
-    }
 
-    public void stopUsingProgram(GL2ES2 gl) {
-        gl.glUseProgram(0);
-    }
 
     public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
                            float nodeScale) {

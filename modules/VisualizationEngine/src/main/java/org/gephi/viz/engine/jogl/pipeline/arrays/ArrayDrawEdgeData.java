@@ -8,6 +8,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
+import org.gephi.viz.engine.jogl.EdgeGLCommands;
 import org.gephi.viz.engine.jogl.models.mesh.generator.EdgeLineMeshGenerator;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
@@ -81,10 +82,10 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             attributesGLBufferUndirected.bind(gl);
             attributesGLBufferUndirected.updateWithOrphaning(gl, batchUpdateBuffer);
             attributesGLBufferUndirected.unbind(gl);
-            lineModelUndirected.drawArraysMultipleInstance(gl, drawBatchCount);
+            EdgeGLCommands.drawArraysMultipleInstance(gl, drawBatchCount,lineModelUndirected.getVertexCount());
         }
 
-        lineModelUndirected.stopUsingProgram(gl);
+        EdgeGLCommands.stopUsingProgram(gl);
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
@@ -132,10 +133,10 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             attributesGLBufferDirected.updateWithOrphaning(gl, batchUpdateBuffer);
             attributesGLBufferDirected.unbind(gl);
 
-            lineModelDirected.drawArraysMultipleInstance(gl, drawBatchCount);
+            EdgeGLCommands.drawArraysMultipleInstance(gl, drawBatchCount,lineModelDirected.getVertexCount());
         }
 
-        lineModelDirected.stopUsingProgram(gl);
+        EdgeGLCommands.stopUsingProgram(gl);
         unsetupDirectedVertexArrayAttributes(gl);
     }
 
