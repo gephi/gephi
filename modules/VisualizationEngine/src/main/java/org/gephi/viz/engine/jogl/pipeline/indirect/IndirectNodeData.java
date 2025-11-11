@@ -7,6 +7,8 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import org.gephi.viz.engine.jogl.NodeGLCommands;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
@@ -44,7 +46,7 @@ public class IndirectNodeData extends AbstractNodeData {
             setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
-            diskModel.stopUsingProgram(gl);
+            NodeGLCommands.stopUsingProgram(gl);
             unsetupVertexArrayAttributes(gl);
             return;
         }
@@ -53,11 +55,11 @@ public class IndirectNodeData extends AbstractNodeData {
         final int instancesOffset = renderingUnselectedNodes ? 0 : instanceCounter.unselectedCountToDraw;
 
         commandsGLBuffer.bind(gl);
-        diskModel.drawIndirect(
+        NodeGLCommands.drawIndirect(
             gl, instanceCount, instancesOffset
         );
         commandsGLBuffer.unbind(gl);
-        diskModel.stopUsingProgram(gl);
+        NodeGLCommands.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);
     }
 

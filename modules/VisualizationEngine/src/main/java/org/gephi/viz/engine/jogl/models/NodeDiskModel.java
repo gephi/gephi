@@ -91,24 +91,9 @@ public class NodeDiskModel {
                 .init(gl);
     }
 
-    public void drawArraysSingleInstance(GL2ES2 gl, int firstVertexIndex, int vertexCount) {
-        gl.glDrawArrays(GL_TRIANGLES, firstVertexIndex, vertexCount);
-    }
 
-    public void drawInstanced(GL2ES3 gl, int vertexOffset, int vertexCount, int instanceCount) {
-        if (instanceCount <= 0) {
-            return;
-        }
-        gl.glDrawArraysInstanced(GL_TRIANGLES, vertexOffset, vertexCount, instanceCount);
-    }
 
-    public void drawIndirect(GL4 gl, int instanceCount, int instancesOffset) {
-        if (instanceCount <= 0) {
-            return;
-        }
-        gl.glMultiDrawArraysIndirect(GL_TRIANGLES, (long) instancesOffset * INDIRECT_DRAW_COMMAND_BYTES, instanceCount,
-            0);
-    }
+
 
     public void useProgramWithSelectionSelected(GL2ES2 gl, float[] mvpFloats,
                                                 float globalTime, float selectedTime) {
@@ -162,7 +147,5 @@ public class NodeDiskModel {
 
     }
 
-    public void stopUsingProgram(GL2ES2 gl) {
-        gl.glUseProgram(0);
-    }
+
 }

@@ -7,6 +7,8 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
+
+import org.gephi.viz.engine.jogl.NodeGLCommands;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
@@ -41,7 +43,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
-            diskModel.stopUsingProgram(gl);
+            NodeGLCommands.stopUsingProgram(gl);
             unsetupVertexArrayAttributes(gl);
             return;
         }
@@ -98,10 +100,10 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             gl.glVertexAttrib1f(SHADER_SIZE_LOCATION, size);
 
             //Draw the instance:
-            diskModel.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
+            NodeGLCommands.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
         }
 
-        diskModel.stopUsingProgram(gl);
+        NodeGLCommands.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);
     }
 
