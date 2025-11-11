@@ -3,7 +3,6 @@ package org.gephi.viz.engine.jogl.pipeline.instanced;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
-import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.viz.engine.jogl.EdgeGLCommands;
 import org.gephi.viz.engine.jogl.models.mesh.generator.EdgeLineMeshGenerator;
@@ -13,6 +12,8 @@ import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.structure.EdgesCallback;
+
+import java.nio.FloatBuffer;
 
 /**
  *
@@ -46,7 +47,7 @@ public class InstancedEdgeData extends AbstractEdgeData {
                                 float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, data, mvpFloats);
 
-        EdgeGLCommands.drawInstanced(gl, instanceCount,lineModelUndirected.getVertexCount());
+        EdgeGLCommands.drawInstanced(gl, instanceCount, lineModelUndirected.getVertexCount());
         EdgeGLCommands.stopUsingProgram(gl);
         unsetupUndirectedVertexArrayAttributes(gl);
     }
@@ -56,7 +57,7 @@ public class InstancedEdgeData extends AbstractEdgeData {
                               float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, data, mvpFloats);
 
-        EdgeGLCommands.drawInstanced(gl, instanceCount,lineModelDirected.getVertexCount());
+        EdgeGLCommands.drawInstanced(gl, instanceCount, lineModelDirected.getVertexCount());
         EdgeGLCommands.stopUsingProgram(gl);
         unsetupDirectedVertexArrayAttributes(gl);
     }
@@ -67,49 +68,49 @@ public class InstancedEdgeData extends AbstractEdgeData {
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
         final FloatBuffer undirectedVertexData =
-            GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.undirectedMeshGenerator().vertexData);
+                GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.undirectedMeshGenerator().vertexData);
 
         vertexGLBufferUndirected =
-            new GLBufferMutable(bufferName[VERT_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[VERT_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBufferUndirected.bind(gl);
         vertexGLBufferUndirected.init(gl, undirectedVertexData, GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW);
         vertexGLBufferUndirected.unbind(gl);
 
         final FloatBuffer directedVertexData =
-            GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.directedMeshGenerator().vertexData);
+                GLBuffers.newDirectFloatBuffer(EdgeLineMeshGenerator.directedMeshGenerator().vertexData);
         vertexGLBufferDirected =
-            new GLBufferMutable(bufferName[VERT_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[VERT_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBufferDirected.bind(gl);
         vertexGLBufferDirected.init(gl, directedVertexData, GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW);
         vertexGLBufferDirected.unbind(gl);
 
         //Initialize for batch edges size:
         attributesGLBufferDirected =
-            new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferDirected.bind(gl);
         attributesGLBufferDirected.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
-            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+                GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferDirected.unbind(gl);
 
         attributesGLBufferDirectedSecondary =
-            new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[ATTRIBS_BUFFER_DIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferDirectedSecondary.bind(gl);
         attributesGLBufferDirectedSecondary.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
-            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+                GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferDirectedSecondary.unbind(gl);
 
         attributesGLBufferUndirected =
-            new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferUndirected.bind(gl);
         attributesGLBufferUndirected.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
-            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+                GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferUndirected.unbind(gl);
 
         attributesGLBufferUndirectedSecondary =
-            new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
+                new GLBufferMutable(bufferName[ATTRIBS_BUFFER_UNDIRECTED_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferUndirectedSecondary.bind(gl);
         attributesGLBufferUndirectedSecondary.init(gl, (long) ATTRIBS_STRIDE * Float.BYTES * BATCH_EDGES_SIZE,
-            GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
+                GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferUndirectedSecondary.unbind(gl);
     }
 
@@ -166,15 +167,15 @@ public class InstancedEdgeData extends AbstractEdgeData {
         final boolean isUndirected = edgesCallback.isUndirected();
 
         updateUndirectedData(
-            isDirected,
-            selection,
-            maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0, attribsDirectBuffer
+                isDirected,
+                selection,
+                maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0, attribsDirectBuffer
         );
         updateDirectedData(
-            isUndirected,
-            selection,
-            maxIndex, visibleEdgesArray, edgeWeightsArray,
-            attributesBufferBatch, 0, attribsDirectBuffer
+                isUndirected,
+                selection,
+                maxIndex, visibleEdgesArray, edgeWeightsArray,
+                attributesBufferBatch, 0, attribsDirectBuffer
         );
     }
 

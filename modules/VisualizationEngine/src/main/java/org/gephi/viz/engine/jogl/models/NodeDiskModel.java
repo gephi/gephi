@@ -1,28 +1,10 @@
 package org.gephi.viz.engine.jogl.models;
 
-import static com.jogamp.opengl.GL.GL_TRIANGLES;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_COLOR;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SIZE;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BACKGROUND_COLOR;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BORDER_SIZE;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_LIGHTEN_FACTOR;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_DARKEN_FACTOR;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_GLOBAL_TIME;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME;
-import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_BYTES;
-
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL2ES3;
-import com.jogamp.opengl.GL4;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.gl.Constants;
+
+import static org.gephi.viz.engine.util.gl.Constants.*;
 
 /**
  * @author Eduardo Ramos
@@ -35,9 +17,9 @@ public class NodeDiskModel {
     public static final int SIZE_FLOATS = 1;
 
     public static final int TOTAL_ATTRIBUTES_FLOATS
-        = POSITION_FLOATS
-        + COLOR_FLOATS
-        + SIZE_FLOATS;
+            = POSITION_FLOATS
+            + COLOR_FLOATS
+            + SIZE_FLOATS;
 
     private GLShaderProgram program;
     private GLShaderProgram programWithSelectionSelected;
@@ -51,48 +33,45 @@ public class NodeDiskModel {
 
     public void initGLPrograms(GL2ES2 gl) {
         program = new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE, SHADERS_NODE_CIRCLE_SOURCE)
-            .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
-            .addUniformName(UNIFORM_NAME_BORDER_SIZE)
-            .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
-            .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-            .init(gl);
+                .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
+                .addUniformName(UNIFORM_NAME_BORDER_SIZE)
+                .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
+                .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
+                .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
+                .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
+                .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
+                .init(gl);
 
         programWithSelectionSelected =
-            new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_SELECTED,
-                SHADERS_NODE_CIRCLE_SOURCE)
-                .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
-                .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
-                .addUniformName(UNIFORM_NAME_SELECTION_TIME)
-                .addUniformName(UNIFORM_NAME_BORDER_SIZE)
-                .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
-                .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-                .init(gl);
+                new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_SELECTED,
+                        SHADERS_NODE_CIRCLE_SOURCE)
+                        .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
+                        .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+                        .addUniformName(UNIFORM_NAME_SELECTION_TIME)
+                        .addUniformName(UNIFORM_NAME_BORDER_SIZE)
+                        .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
+                        .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
+                        .init(gl);
 
         programWithSelectionUnselected =
-            new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_UNSELECTED,
-                SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_UNSELECTED)
-                .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
-                .addUniformName(UNIFORM_NAME_BACKGROUND_COLOR)
-                .addUniformName(UNIFORM_NAME_COLOR_LIGHTEN_FACTOR)
-                .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
-                .addUniformName(UNIFORM_NAME_SELECTION_TIME)
-                .addUniformName(UNIFORM_NAME_BORDER_SIZE)
-                .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
-                .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
-                .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-                .init(gl);
+                new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_UNSELECTED,
+                        SHADERS_NODE_CIRCLE_SOURCE_WITH_SELECTION_UNSELECTED)
+                        .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
+                        .addUniformName(UNIFORM_NAME_BACKGROUND_COLOR)
+                        .addUniformName(UNIFORM_NAME_COLOR_LIGHTEN_FACTOR)
+                        .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+                        .addUniformName(UNIFORM_NAME_SELECTION_TIME)
+                        .addUniformName(UNIFORM_NAME_BORDER_SIZE)
+                        .addUniformName(UNIFORM_NAME_DARKEN_FACTOR)
+                        .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
+                        .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
+                        .init(gl);
     }
-
-
-
 
 
     public void useProgramWithSelectionSelected(GL2ES2 gl, float[] mvpFloats,
@@ -101,15 +80,15 @@ public class NodeDiskModel {
         programWithSelectionSelected.use(gl);
 
         gl.glUniformMatrix4fv(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1,
-            false, mvpFloats, 0);
+                false, mvpFloats, 0);
 
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_GLOBAL_TIME), globalTime);
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_SELECTION_TIME), selectedTime);
 
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
-            Constants.getNodeBorderSize());
+                Constants.getNodeBorderSize());
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-            Constants.getNodeBorderDarkenFactor());
+                Constants.getNodeBorderDarkenFactor());
     }
 
     public void useProgramWithSelectionUnselected(GL2ES2 gl, float[] mvpFloats,
@@ -119,20 +98,20 @@ public class NodeDiskModel {
         programWithSelectionUnselected.use(gl);
 
         gl.glUniformMatrix4fv(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1,
-            false, mvpFloats, 0);
+                false, mvpFloats, 0);
 
         gl.glUniform4fv(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_BACKGROUND_COLOR), 1,
-            backgroundColorFloats, 0);
+                backgroundColorFloats, 0);
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_COLOR_LIGHTEN_FACTOR),
-            colorLightenFactor);
+                colorLightenFactor);
 
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_GLOBAL_TIME), globalTime);
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_SELECTION_TIME), selectedTime);
 
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
-            Constants.getNodeBorderSize());
+                Constants.getNodeBorderSize());
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-            Constants.getNodeBorderDarkenFactor());
+                Constants.getNodeBorderDarkenFactor());
     }
 
     public void useProgram(GL2ES2 gl, float[] mvpFloats) {
@@ -141,9 +120,9 @@ public class NodeDiskModel {
 
         gl.glUniformMatrix4fv(program.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
-            Constants.getNodeBorderSize());
+                Constants.getNodeBorderSize());
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-            Constants.getNodeBorderDarkenFactor());
+                Constants.getNodeBorderDarkenFactor());
 
     }
 

@@ -11,9 +11,11 @@ public class NodeGLCommands {
     static public void stopUsingProgram(GL2ES2 gl) {
         gl.glUseProgram(0);
     }
-    static  public void drawArraysSingleInstance(GL2ES2 gl, int firstVertexIndex, int vertexCount) {
+
+    static public void drawArraysSingleInstance(GL2ES2 gl, int firstVertexIndex, int vertexCount) {
         gl.glDrawArrays(GL_TRIANGLES, firstVertexIndex, vertexCount);
     }
+
     static public void drawInstanced(GL2ES3 gl, int vertexOffset, int vertexCount, int instanceCount) {
         if (instanceCount <= 0) {
             return;

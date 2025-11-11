@@ -1,17 +1,15 @@
 package org.gephi.viz.engine.jogl;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3ES3;
-import com.jogamp.opengl.GL4;
 
 import static com.jogamp.opengl.GL.GL_TRIANGLES;
-import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_BYTES;
 
 public class EdgeGLCommands {
     static public void stopUsingProgram(GL2ES2 gl) {
         gl.glUseProgram(0);
     }
+
     public static void drawArraysMultipleInstance(GL2ES2 gl, final int drawBatchCount, final int vertexCount) {
         if (drawBatchCount <= 0) {
             return;
