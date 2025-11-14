@@ -25,11 +25,13 @@ public abstract class GLVertexArrayObject {
     private int arrayId = -1;
     private final int[] previousArrayId = new int[1];
 
-    public GLVertexArrayObject(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, GLBuffer vertexBuffer,
+    public GLVertexArrayObject(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+                               GLBuffer vertexBuffer,
                                GLBuffer attributesBuffer) {
         this.vertexBuffer = vertexBuffer;
         this.attributesBuffer = attributesBuffer;
         vaoSupported = capabilities.isVAOSupported(openGLOptions);
+        init(gl);
     }
 
     private void init(GL2ES2 gl) {
@@ -66,9 +68,6 @@ public abstract class GLVertexArrayObject {
     }
 
     public void use(GL2ES2 gl) {
-        if (attributeLocations == null) {
-            init(gl);
-        }
 
         if (vaoSupported) {
             bind(gl);

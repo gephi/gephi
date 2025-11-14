@@ -201,6 +201,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
+            gl,
             target.getGlCapabilitiesSummary(),
             engine.getOpenGLOptions()
         );
@@ -213,8 +214,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
     private class SelectionMouseVAO extends GLVertexArrayObject {
 
-        public SelectionMouseVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(capabilities, openGLOptions, vertexGLBuffer, null);
+        public SelectionMouseVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
+            super(gl, capabilities, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override

@@ -419,6 +419,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     public void setupVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
         if (nodesVAO == null) {
             nodesVAO = new NodesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(), data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBuffer
             );
@@ -430,6 +431,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     public void setupSecondaryVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
         if (nodesVAOSecondary == null) {
             nodesVAOSecondary = new NodesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(), data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBufferSecondary
             );
@@ -481,9 +483,10 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     private class NodesVAO extends GLVertexArrayObject {
 
 
-        public NodesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer,
+        public NodesVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+                        final GLBuffer vertexBuffer,
                         final GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions, vertexBuffer, attributesBuffer);
+            super(gl, capabilities, openGLOptions, vertexBuffer, attributesBuffer);
 
         }
 

@@ -841,6 +841,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirected
@@ -854,6 +855,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                                                               EdgeWorldData data) {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirectedSecondary
@@ -876,6 +878,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferDirected
@@ -889,6 +892,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                                                             EdgeWorldData data) {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
+                gl,
                 data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferDirectedSecondary
@@ -939,9 +943,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     private class UndirectedEdgesVAO extends GLVertexArrayObject {
 
 
-        public UndirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public UndirectedEdgesVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
                                   GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions, vertexGLBufferUndirected, attributesBuffer);
+            super(gl, capabilities, openGLOptions, vertexGLBufferUndirected, attributesBuffer);
 
         }
 
@@ -1018,9 +1022,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     private class DirectedEdgesVAO extends GLVertexArrayObject {
 
 
-        public DirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public DirectedEdgesVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
                                 GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions, vertexGLBufferDirected, attributesBuffer);
+            super(gl, capabilities, openGLOptions, vertexGLBufferDirected, attributesBuffer);
 
         }
 

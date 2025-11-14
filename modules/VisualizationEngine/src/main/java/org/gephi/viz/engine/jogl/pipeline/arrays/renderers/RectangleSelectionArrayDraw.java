@@ -85,6 +85,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
         vertexGLBuffer.unbind(gl);
 
         vao = new SelectionRectangleVAO(
+            gl,
             engine.getRenderingTarget().getGlCapabilitiesSummary(),
             engine.getOpenGLOptions()
         );
@@ -207,8 +208,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
     private class SelectionRectangleVAO extends GLVertexArrayObject {
 
-        public SelectionRectangleVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(capabilities, openGLOptions, vertexGLBuffer, null);
+        public SelectionRectangleVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
+            super(gl, capabilities, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override
