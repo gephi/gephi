@@ -17,12 +17,18 @@ public abstract class GLVertexArrayObject {
 
     private final boolean vaoSupported;
 
+    protected final GLBuffer vertexBuffer;
+    protected final GLBuffer attributesBuffer;
+
     private int[] attributeLocations;
     private int[] instancedAttributeLocations;
     private int arrayId = -1;
-    private int[] previousArrayId = new int[1];
+    private final int[] previousArrayId = new int[1];
 
-    public GLVertexArrayObject(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
+    public GLVertexArrayObject(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, GLBuffer vertexBuffer,
+                               GLBuffer attributesBuffer) {
+        this.vertexBuffer = vertexBuffer;
+        this.attributesBuffer = attributesBuffer;
         vaoSupported = capabilities.isVAOSupported(openGLOptions);
     }
 

@@ -1,8 +1,19 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
+import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
@@ -22,12 +33,6 @@ import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.EdgesCallback;
-
-import java.nio.FloatBuffer;
-
-import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-import static org.gephi.viz.engine.util.gl.Constants.*;
 
 /**
  *
@@ -933,12 +938,11 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     private class UndirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
 
         public UndirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
                                   GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.attributesBuffer = attributesBuffer;
+            super(capabilities, openGLOptions, vertexGLBufferUndirected, attributesBuffer);
+
         }
 
         @Override
@@ -1013,12 +1017,11 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     private class DirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
 
         public DirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
                                 GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.attributesBuffer = attributesBuffer;
+            super(capabilities, openGLOptions, vertexGLBufferDirected, attributesBuffer);
+
         }
 
         @Override

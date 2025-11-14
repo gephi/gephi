@@ -208,7 +208,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private class SelectionRectangleVAO extends GLVertexArrayObject {
 
         public SelectionRectangleVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(capabilities, openGLOptions);
+            super(capabilities, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override

@@ -214,7 +214,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private class SelectionMouseVAO extends GLVertexArrayObject {
 
         public SelectionMouseVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(capabilities, openGLOptions);
+            super(capabilities, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override

@@ -480,14 +480,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     private class NodesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer vertexBuffer;
-        private final GLBuffer attributesBuffer;
 
         public NodesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer,
                         final GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.vertexBuffer = vertexBuffer;
-            this.attributesBuffer = attributesBuffer;
+            super(capabilities, openGLOptions, vertexBuffer, attributesBuffer);
+
         }
 
         @Override
