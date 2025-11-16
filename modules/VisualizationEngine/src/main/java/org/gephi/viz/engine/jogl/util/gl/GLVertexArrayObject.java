@@ -5,7 +5,6 @@ import static com.jogamp.opengl.GL2ES3.GL_VERTEX_ARRAY_BINDING;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.IntBuffer;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
 /**
@@ -25,12 +24,13 @@ public abstract class GLVertexArrayObject {
     private int arrayId = -1;
     private final int[] previousArrayId = new int[1];
 
-    public GLVertexArrayObject(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+    public GLVertexArrayObject(GL2ES2 gl,OpenGLOptions openGLOptions,
                                GLBuffer vertexBuffer,
-                               GLBuffer attributesBuffer) {
+                               GLBuffer attributesBuffer
+                               ) {
         this.vertexBuffer = vertexBuffer;
         this.attributesBuffer = attributesBuffer;
-        vaoSupported = capabilities.isVAOSupported(openGLOptions);
+        vaoSupported = openGLOptions.isVAOSupported();
         init(gl);
     }
 

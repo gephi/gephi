@@ -15,7 +15,7 @@
 
 [Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
-![Gephi](https://gephi.github.io/images/screenshots/select-tool-mini.png)
+![Gephi](https://gephi.org/select-tool-mini.png)
 
 ## Install and use Gephi
 

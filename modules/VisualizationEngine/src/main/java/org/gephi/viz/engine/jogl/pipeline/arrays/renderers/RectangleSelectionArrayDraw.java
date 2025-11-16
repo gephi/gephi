@@ -22,7 +22,6 @@ import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
@@ -86,7 +85,6 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
         vao = new SelectionRectangleVAO(
             gl,
-            engine.getRenderingTarget().getGlCapabilitiesSummary(),
             engine.getOpenGLOptions()
         );
     }
@@ -208,8 +206,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
     private class SelectionRectangleVAO extends GLVertexArrayObject {
 
-        public SelectionRectangleVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(gl, capabilities, openGLOptions, vertexGLBuffer, null);
+        public SelectionRectangleVAO(GL2ES2 gl, OpenGLOptions openGLOptions) {
+            super(gl, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override

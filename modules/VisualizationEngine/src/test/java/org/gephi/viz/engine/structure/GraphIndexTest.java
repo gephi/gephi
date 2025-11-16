@@ -64,16 +64,6 @@ public class GraphIndexTest {
         }
 
         @Override
-        public void start() {
-
-        }
-
-        @Override
-        public void stop() {
-
-        }
-
-        @Override
         public int getFps() {
             return 0;
         }

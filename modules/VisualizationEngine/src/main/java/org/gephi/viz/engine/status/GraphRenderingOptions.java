@@ -192,4 +192,24 @@ public interface GraphRenderingOptions {
 
     void setEdgeLabelColumns(Column[] columns);
 
+    LabelColorMode getEdgeLabelColorMode();
+
+    void setEdgeLabelColorMode(LabelColorMode labelColorMode);
+
+    LabelSizeMode getEdgeLabelSizeMode();
+
+    void setEdgeLabelSizeMode(LabelSizeMode labelSizeMode);
+
+    Font getEdgeLabelFont();
+
+    void setEdgeLabelFont(Font font);
+
+    float getEdgeLabelScale();
+
+    void setEdgeLabelScale(float edgeLabelScale);
+
+    boolean isHideNonSelectedEdgeLabels();
+
+    void setHideNonSelectedEdgeLabels(boolean hideNonSelected);
+
 }

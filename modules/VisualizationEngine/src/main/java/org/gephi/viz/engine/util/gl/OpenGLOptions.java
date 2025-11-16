@@ -1,5 +1,7 @@
 package org.gephi.viz.engine.util.gl;
 
+import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
+
 /**
  *
  * @author Eduardo Ramos
@@ -11,6 +13,7 @@ public class OpenGLOptions {
     private boolean disableVertexArrayDrawing = false;
     private boolean disableVAOS = false;
     private boolean debug = false;
+    private GLCapabilitiesSummary glCapabilitiesSummary = null;
 
     public OpenGLOptions() {
     }
@@ -53,6 +56,26 @@ public class OpenGLOptions {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public void setGlCapabilitiesSummary(GLCapabilitiesSummary glCapabilitiesSummary) {
+        this.glCapabilitiesSummary = glCapabilitiesSummary;
+    }
+
+    public boolean isVAOSupported() {
+        return glCapabilitiesSummary.isVAOSupported() && !this.isDisableVAOS();
+    }
+
+    public boolean isInstancingSupported() {
+        return glCapabilitiesSummary.isInstancingSupported();
+    }
+
+    public boolean isIndirectDrawSupported() {
+        return glCapabilitiesSummary.isIndirectDrawSupported();
+    }
+
+    public boolean isVendorIntel() {
+        return glCapabilitiesSummary.isVendorIntel();
     }
 
     @Override

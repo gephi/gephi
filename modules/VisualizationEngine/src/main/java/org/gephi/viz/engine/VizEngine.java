@@ -182,6 +182,7 @@ public class VizEngine<R extends RenderingTarget, I> {
     }
 
     private void setupElementsCallbackPipeline() {
+        updatersElementsCallbacks.clear();
         for (WorldUpdater<R, ?> updater : updatersPipeline) {
             ElementsCallback<?> callback = updater.getElementsCallback();
             if (callback != null && !updatersElementsCallbacks.contains(callback)) {
@@ -333,7 +334,6 @@ public class VizEngine<R extends RenderingTarget, I> {
         }
 
         setup();
-        renderingTarget.start();
     }
 
     public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions) {
@@ -382,11 +382,53 @@ public class VizEngine<R extends RenderingTarget, I> {
         loadModelViewProjection();
     }
 
+    public synchronized void disposePipeline() {
+        // Cancel any pending world updates
+        if (allUpdatersCompletableFuture != null) {
+            allUpdatersCompletableFuture.cancel(false);
+            allUpdatersCompletableFuture = null;
+        }
+
+        // Shutdown thread pool if it exists
+        if (updatersThreadPool != null) {
+            updatersThreadPool.shutdown();
+            try {
+                updatersThreadPool.awaitTermination(1, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VizEngine.class.getName())
+                    .log(Level.WARNING, "Interrupted while disposing VizEngine", ex);
+            }
+        }
+
+        updatersPipeline.forEach((worldUpdater) -> {
+            worldUpdater.dispose(renderingTarget);
+        });
+        updatersElementsCallbacks.forEach(ElementsCallback::reset);
+
+        renderersPipeline.forEach((renderer) -> {
+            renderer.dispose(renderingTarget);
+        });
+
+        // Clear all pipelines and world data
+        renderersPipeline.clear();
+        updatersPipeline.clear();
+        updatersElementsCallbacks.clear();
+        inputListenersPipeline.clear();
+
+        // Clear current world data to prevent using disposed resources
+        currentWorldData = Collections.emptyList();
+
+        // Clear any pending input events
+        eventsQueue.clear();
+
+        // Reset world update timing to allow immediate update on next init
+        lastWorldUpdateMillis = 0;
+    }
+
     public synchronized void destroy() {
         allInputListeners.clear();
         inputListenersPipeline.clear();
 
-        this.renderingTarget.stop();
         if (worldUpdatersExecutionMode.isConcurrent()) {
             try {
                 updatersThreadPool.shutdown();

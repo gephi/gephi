@@ -19,9 +19,10 @@ import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.jogl.models.mesh.NodeDiskVertexMeshGenerator;
 import org.gephi.viz.engine.jogl.pipeline.common.VoidWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
@@ -57,12 +58,11 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
     private final int[] intData = new int[1];
     private final byte[] booleanData = new byte[1];
 
-    private final NodeDiskVertexDataGenerator generator64;
-    private final int circleVertexCount64;
+    private final Mesh meshCircle64 = NodeDiskVertexMeshGenerator.generateFilledCircle(64);
+
 
     public SimpleMouseSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
-        generator64 = new NodeDiskVertexDataGenerator(64);
-        circleVertexCount64 = generator64.getVertexCount();
+
 
         this.engine = engine;
     }
@@ -96,9 +96,9 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
             mouseSelectionDiameter = graphSelection.getMouseSelectionEffectiveDiameter();
             final FloatBuffer floatBuffer = circleVertexDataBuffer.floatBuffer();
             // Vertex = 2 Float (xy)
-            float[] vertexData = Arrays.copyOf(generator64.getVertexData(), circleVertexCount64 * VERTEX_FLOATS);
+            float[] vertexData = Arrays.copyOf(meshCircle64.vertexData, meshCircle64.vertexData.length);
 
-            for (int vertexIndex = 0; vertexIndex < circleVertexCount64 * VERTEX_FLOATS; vertexIndex += 2) {
+            for (int vertexIndex = 0; vertexIndex < meshCircle64.vertexData.length; vertexIndex += 2) {
                 vertexData[vertexIndex] = vertexData[vertexIndex] * mouseSelectionDiameter + mousePosition.x;
                 vertexData[vertexIndex + 1] = vertexData[vertexIndex + 1] * mouseSelectionDiameter + mousePosition.y;
 
@@ -145,7 +145,7 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
                 gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             }
 
-            gl.glDrawArrays(GL_TRIANGLES, 0, circleVertexCount64);
+            gl.glDrawArrays(GL_TRIANGLES, 0, meshCircle64.vertexCount);
 
             //Restore state:
             if (!blendEnabled) {
@@ -193,16 +193,15 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
-        circleVertexDataBuffer = new ManagedDirectBuffer(GL_FLOAT, Float.BYTES * circleVertexCount64 * VERTEX_FLOATS);
+        circleVertexDataBuffer = new ManagedDirectBuffer(GL_FLOAT, Float.BYTES * meshCircle64.vertexData.length);
 
         vertexGLBuffer = new GLBufferMutable(bufferName[VERT_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
-        vertexGLBuffer.init(gl, (long) Float.BYTES * circleVertexCount64 * VERTEX_FLOATS,
+        vertexGLBuffer.init(gl, (long) Float.BYTES * meshCircle64.vertexData.length,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
         vao = new SelectionMouseVAO(
             gl,
-            target.getGlCapabilitiesSummary(),
             engine.getOpenGLOptions()
         );
     }
@@ -214,8 +213,8 @@ public class SimpleMouseSelectionArrayDraw implements Renderer<JOGLRenderingTarg
 
     private class SelectionMouseVAO extends GLVertexArrayObject {
 
-        public SelectionMouseVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-            super(gl, capabilities, openGLOptions, vertexGLBuffer, null);
+        public SelectionMouseVAO(GL2ES2 gl, OpenGLOptions openGLOptions) {
+            super(gl, openGLOptions, vertexGLBuffer, null);
         }
 
         @Override

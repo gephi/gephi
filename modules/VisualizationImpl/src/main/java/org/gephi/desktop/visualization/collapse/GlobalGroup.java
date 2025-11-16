@@ -33,12 +33,6 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
             .setToolTipText(NbBundle.getMessage(GlobalGroup.class, "VizToolbar.Global.background"));
         backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, evt -> {
             vizController.setBackgroundColor(backgroundColorButton.getColor());
-
-//                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//                    boolean isDarkBackground =
-//                        (backgroundColor.getRed() + backgroundColor.getGreen() + backgroundColor.getBlue()) / 3 < 128;
-//                    textModel.setNodeColor(isDarkBackground ? Color.WHITE : Color.BLACK);
-            //TODO
         });
 
         //Screenshots
@@ -121,5 +115,10 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
     @Override
     public boolean hasExtended() {
         return true;
+    }
+
+    @Override
+    public boolean drawSeparator() {
+        return false;
     }
 }

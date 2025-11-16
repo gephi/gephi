@@ -81,8 +81,11 @@ public class VizConfig {
     public static final String NODE_LABEL_COLOR_MODE = "VizConfig.defaultNodeLabelColorMode";
     public static final String NODE_LABEL_SCALE = "VizConfig.defaultNodeLabelScale";
     public static final String EDGE_LABEL_SCALE = "VizConfig.defaultEdgeLabelScale";
+    public static final String EDGE_LABEL_SIZE_MODE = "VizConfig.defaultEdgeLabelSizeMode";
+    public static final String EDGE_LABEL_COLOR_MODE = "VizConfig.defaultEdgeLabelColorMode";
     public static final String ZOOM = "VizConfig.defaultZoom";
     public static final String HIDE_NONSELECTED_NODE_LABELS = "VizConfig.hideNonSelectedNodeLabels";
+    public static final String HIDE_NONSELECTED_EDGE_LABELS = "VizConfig.hideNonSelectedEdgeLabels";
     public static final String FIT_NODE_LABELS_TO_NODE_SIZE = "VizConfig.fitNodeLabelsToNodeSize";
     public static final String AVOID_NODE_LABEL_OVERLAP = "VizConfig.avoidNodeLabelOverlap";
     //Const Prefs
@@ -115,6 +118,7 @@ public class VizConfig {
     public static final Font DEFAULT_EDGE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
     public static final float DEFAULT_ZOOM = 0.3f;
     public static final boolean DEFAULT_HIDE_NONSELECTED_NODE_LABELS = false;
+    public static final boolean DEFAULT_HIDE_NONSELECTED_EDGE_LABELS = false;
     public static final boolean DEFAULT_FIT_NODE_LABELS_TO_NODE_SIZE = false;
     public static final boolean DEFAULT_AVOID_NODE_LABEL_OVERLAP = true;
     public static final boolean DEFAULT_SELECTEDEDGE_HAS_COLOR = false;
@@ -143,6 +147,8 @@ public class VizConfig {
     public static final float DEFAULT_EDGE_LABEL_SCALE = 0.5f;
     public static final String DEFAULT_NODE_LABEL_SIZE_MODE = LabelSizeMode.ZOOM.name();
     public static final String DEFAULT_NODE_LABEL_COLOR_MODE = LabelColorMode.SELF.name();
+    public static final String DEFAULT_EDGE_LABEL_SIZE_MODE = LabelSizeMode.ZOOM.name();
+    public static final String DEFAULT_EDGE_LABEL_COLOR_MODE = LabelColorMode.SELF.name();
     public static final boolean DEFAULT_EDGE_WEIGHTED = true;
 
     //Default config - loaded in the VizModel
@@ -178,6 +184,9 @@ public class VizConfig {
     protected boolean defaultHideNonSelectedNodeLabels =
         NbPreferences.forModule(VizConfig.class)
             .getBoolean(HIDE_NONSELECTED_NODE_LABELS, DEFAULT_HIDE_NONSELECTED_NODE_LABELS);
+    protected boolean defaultHideNonSelectedEdgeLabels =
+        NbPreferences.forModule(VizConfig.class)
+            .getBoolean(HIDE_NONSELECTED_EDGE_LABELS, DEFAULT_HIDE_NONSELECTED_EDGE_LABELS);
     protected boolean defaultFitNodeLabelsToNodeSize =
         NbPreferences.forModule(VizConfig.class).getBoolean(FIT_NODE_LABELS_TO_NODE_SIZE,
             DEFAULT_FIT_NODE_LABELS_TO_NODE_SIZE);
@@ -208,6 +217,12 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getFloat(NODE_LABEL_SCALE, DEFAULT_NODE_LABEL_SCALE);
     protected float defaultEdgeLabelScale =
         NbPreferences.forModule(VizConfig.class).getFloat(EDGE_LABEL_SCALE, DEFAULT_EDGE_LABEL_SCALE);
+    protected LabelSizeMode defaultEdgeLabelSizeMode =
+        LabelSizeMode.valueOf(
+            NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_SIZE_MODE, DEFAULT_EDGE_LABEL_SIZE_MODE));
+    protected LabelColorMode defaultEdgeLabelColorMode =
+        LabelColorMode.valueOf(
+            NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR_MODE, DEFAULT_EDGE_LABEL_COLOR_MODE));
     protected float defaultZoom = NbPreferences.forModule(VizConfig.class).getFloat(ZOOM, DEFAULT_ZOOM);
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
@@ -302,6 +317,10 @@ public class VizConfig {
         return defaultHideNonSelectedNodeLabels;
     }
 
+    public boolean isDefaultHideNonSelectedEdgeLabels() {
+        return defaultHideNonSelectedEdgeLabels;
+    }
+
     public boolean isDefaultFitNodeLabelsToNodeSize() {
         return defaultFitNodeLabelsToNodeSize;
     }
@@ -352,6 +371,14 @@ public class VizConfig {
 
     public float getDefaultEdgeLabelScale() {
         return defaultEdgeLabelScale;
+    }
+
+    public LabelSizeMode getDefaultEdgeLabelSizeMode() {
+        return defaultEdgeLabelSizeMode;
+    }
+
+    public LabelColorMode getDefaultEdgeLabelColorMode() {
+        return defaultEdgeLabelColorMode;
     }
 
     public boolean isLabelAntialiased() {

@@ -48,16 +48,16 @@ public class InstancedNodeData extends AbstractNodeData {
         final int circleVertexCount;
         final int firstVertex;
         if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-            circleVertexCount = circleVertexCount64;
+            circleVertexCount = circleMesh64.vertexCount;
             firstVertex = firstVertex64;
         } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-            circleVertexCount = circleVertexCount32;
+            circleVertexCount = circleMesh32.vertexCount;
             firstVertex = firstVertex32;
         } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-            circleVertexCount = circleVertexCount16;
+            circleVertexCount = circleMesh16.vertexCount;
             firstVertex = firstVertex16;
         } else {
-            circleVertexCount = circleVertexCount8;
+            circleVertexCount = circleMesh8.vertexCount;
             firstVertex = firstVertex8;
         }
 

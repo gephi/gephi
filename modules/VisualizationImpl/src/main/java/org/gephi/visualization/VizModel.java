@@ -116,7 +116,7 @@ public class VizModel implements VisualisationModel {
     private float nodeLabelScale;
     private LabelColorMode nodeLabelColorMode;
     private LabelSizeMode nodeLabelSizeMode;
-    private boolean hideNonSelectedLabels;
+    private boolean hideNonSelectedNodeLabels;
     private boolean fitNodeLabelsToNodeSize;
     private boolean avoidNodeLabelOverlap;
     private Column[] nodeLabelColumns = new Column[0];
@@ -125,6 +125,9 @@ public class VizModel implements VisualisationModel {
     private boolean showEdgeLabels;
     private Font edgeLabelFont;
     private float edgeLabelScale;
+    private LabelColorMode edgeLabelColorMode;
+    private LabelSizeMode edgeLabelSizeMode;
+    private boolean hideNonSelectedEdgeLabels;
     private Column[] edgeLabelColumns = new Column[0];
 
     // Selection
@@ -176,15 +179,18 @@ public class VizModel implements VisualisationModel {
         this.nodeLabelSizeMode = config.getDefaultNodeLabelSizeMode();
         this.nodeLabelFont = config.getDefaultNodeLabelFont();
         this.nodeLabelScale = config.getDefaultNodeLabelScale();
-        this.hideNonSelectedLabels = config.isDefaultHideNonSelectedNodeLabels();
+        this.hideNonSelectedNodeLabels = config.isDefaultHideNonSelectedNodeLabels();
         this.fitNodeLabelsToNodeSize = config.isDefaultFitNodeLabelsToNodeSize();
         this.avoidNodeLabelOverlap = config.isDefaultAvoidNodeLabelOverlap();
         this.nodeLabelColumns = new Column[] {this.graphModel.defaultColumns().nodeLabel()};
 
         //Edge Labels
         this.showEdgeLabels = config.isDefaultShowEdgeLabels();
+        this.edgeLabelColorMode = config.getDefaultEdgeLabelColorMode();
+        this.edgeLabelSizeMode = config.getDefaultEdgeLabelSizeMode();
         this.edgeLabelFont = config.getDefaultEdgeLabelFont();
         this.edgeLabelScale = config.getDefaultEdgeLabelScale();
+        this.hideNonSelectedEdgeLabels = config.isDefaultHideNonSelectedEdgeLabels();
         this.edgeLabelColumns = new Column[] {this.graphModel.defaultColumns().edgeLabel()};
     }
 
@@ -213,9 +219,14 @@ public class VizModel implements VisualisationModel {
         options.setNodeLabelFont(getNodeLabelFont());
         options.setNodeLabelScale(getNodeLabelScale());
         options.setNodeLabelFitToNodeSize(isNodeLabelFitToNodeSize());
-        options.setHideNonSelectedNodeLabels(isHideNonSelectedLabels());
+        options.setHideNonSelectedNodeLabels(isHideNonSelectedNodeLabels());
         options.setAvoidNodeLabelOverlap(isAvoidNodeLabelOverlap());
         options.setNodeLabelColumns(getNodeLabelColumns());
+        options.setEdgeLabelColorMode(GraphRenderingOptions.LabelColorMode.valueOf(getEdgeLabelColorMode().name()));
+        options.setEdgeLabelSizeMode(GraphRenderingOptions.LabelSizeMode.valueOf(getEdgeLabelSizeMode().name()));
+        options.setEdgeLabelFont(getEdgeLabelFont());
+        options.setEdgeLabelScale(getEdgeLabelScale());
+        options.setHideNonSelectedEdgeLabels(isHideNonSelectedEdgeLabels());
         options.setEdgeLabelColumns(getEdgeLabelColumns());
         return options;
     }
@@ -557,7 +568,7 @@ public class VizModel implements VisualisationModel {
         if (oldValue != nodeLabelColorMode) {
             this.nodeLabelColorMode = nodeLabelColorMode;
             getRenderingOptions().ifPresent(options -> options.setNodeLabelColorMode(
-                    GraphRenderingOptions.LabelColorMode.valueOf(nodeLabelColorMode.name())));
+                GraphRenderingOptions.LabelColorMode.valueOf(nodeLabelColorMode.name())));
             firePropertyChange("nodeLabelColorMode", oldValue, nodeLabelColorMode);
         }
     }
@@ -572,8 +583,8 @@ public class VizModel implements VisualisationModel {
         if (oldValue != nodeLabelSizeMode) {
             this.nodeLabelSizeMode = nodeLabelSizeMode;
             getRenderingOptions().ifPresent(options -> options.setNodeLabelSizeMode(
-                    GraphRenderingOptions.LabelSizeMode.valueOf(nodeLabelSizeMode.name()))
-                );
+                GraphRenderingOptions.LabelSizeMode.valueOf(nodeLabelSizeMode.name()))
+            );
             firePropertyChange("nodeLabelSizeMode", oldValue, nodeLabelSizeMode);
         }
     }
@@ -601,7 +612,39 @@ public class VizModel implements VisualisationModel {
         Font oldValue = this.edgeLabelFont;
         if (oldValue != edgeLabelFont) {
             this.edgeLabelFont = edgeLabelFont;
+            getRenderingOptions().ifPresent(options -> options.setEdgeLabelFont(edgeLabelFont));
             firePropertyChange("edgeLabelFont", oldValue, edgeLabelFont);
+        }
+    }
+
+    @Override
+    public LabelColorMode getEdgeLabelColorMode() {
+        return edgeLabelColorMode;
+    }
+
+    public void setEdgeLabelColorMode(LabelColorMode edgeLabelColorMode) {
+        LabelColorMode oldValue = this.edgeLabelColorMode;
+        if (oldValue != edgeLabelColorMode) {
+            this.edgeLabelColorMode = edgeLabelColorMode;
+            getRenderingOptions().ifPresent(options -> options.setEdgeLabelColorMode(
+                GraphRenderingOptions.LabelColorMode.valueOf(edgeLabelColorMode.name())));
+            firePropertyChange("edgeLabelColorMode", oldValue, edgeLabelColorMode);
+        }
+    }
+
+    @Override
+    public LabelSizeMode getEdgeLabelSizeMode() {
+        return edgeLabelSizeMode;
+    }
+
+    public void setEdgeLabelSizeMode(LabelSizeMode edgeLabelSizeMode) {
+        LabelSizeMode oldValue = this.edgeLabelSizeMode;
+        if (oldValue != edgeLabelSizeMode) {
+            this.edgeLabelSizeMode = edgeLabelSizeMode;
+            getRenderingOptions().ifPresent(options -> options.setEdgeLabelSizeMode(
+                GraphRenderingOptions.LabelSizeMode.valueOf(edgeLabelSizeMode.name()))
+            );
+            firePropertyChange("edgeLabelSizeMode", oldValue, edgeLabelSizeMode);
         }
     }
 
@@ -628,21 +671,36 @@ public class VizModel implements VisualisationModel {
         float oldValue = this.edgeLabelScale;
         if (oldValue != edgeLabelScale) {
             this.edgeLabelScale = edgeLabelScale;
+            getRenderingOptions().ifPresent(options -> options.setEdgeLabelScale(edgeLabelScale));
             firePropertyChange("edgeLabelScale", oldValue, edgeLabelScale);
         }
     }
 
     @Override
-    public boolean isHideNonSelectedLabels() {
-        return hideNonSelectedLabels;
+    public boolean isHideNonSelectedNodeLabels() {
+        return hideNonSelectedNodeLabels;
     }
 
-    public void setHideNonSelectedLabels(boolean hideNonSelectedLabels) {
-        boolean oldValue = this.hideNonSelectedLabels;
-        if (oldValue != hideNonSelectedLabels) {
-            this.hideNonSelectedLabels = hideNonSelectedLabels;
-            getRenderingOptions().ifPresent(options -> options.setHideNonSelectedNodeLabels(hideNonSelectedLabels));
-            firePropertyChange("hideNonSelectedLabels", oldValue, hideNonSelectedLabels);
+    public void setHideNonSelectedNodeLabels(boolean hideNonSelectedNodeLabels) {
+        boolean oldValue = this.hideNonSelectedNodeLabels;
+        if (oldValue != hideNonSelectedNodeLabels) {
+            this.hideNonSelectedNodeLabels = hideNonSelectedNodeLabels;
+            getRenderingOptions().ifPresent(options -> options.setHideNonSelectedNodeLabels(hideNonSelectedNodeLabels));
+            firePropertyChange("hideNonSelectedNodeLabels", oldValue, hideNonSelectedNodeLabels);
+        }
+    }
+
+    @Override
+    public boolean isHideNonSelectedEdgeLabels() {
+        return hideNonSelectedEdgeLabels;
+    }
+
+    public void setHideNonSelectedEdgeLabels(boolean hideNonSelectedEdgeLabels) {
+        boolean oldValue = this.hideNonSelectedEdgeLabels;
+        if (oldValue != hideNonSelectedEdgeLabels) {
+            this.hideNonSelectedEdgeLabels = hideNonSelectedEdgeLabels;
+            getRenderingOptions().ifPresent(options -> options.setHideNonSelectedEdgeLabels(hideNonSelectedEdgeLabels));
+            firePropertyChange("hideNonSelectedEdgeLabels", oldValue, hideNonSelectedEdgeLabels);
         }
     }
 

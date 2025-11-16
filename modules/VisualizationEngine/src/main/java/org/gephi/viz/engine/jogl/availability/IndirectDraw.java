@@ -21,7 +21,7 @@ public class IndirectDraw {
         }
 
         return drawable.getGLProfile().isGL4()
-            && engine.getRenderingTarget().getGlCapabilitiesSummary().isIndirectDrawSupported();
+            && engine.getOpenGLOptions().isIndirectDrawSupported();
     }
 
 }

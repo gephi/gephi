@@ -22,10 +22,11 @@ import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
+import org.gephi.viz.engine.jogl.models.mesh.EdgeLineMeshGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
@@ -45,6 +46,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     protected final InstanceCounter undirectedInstanceCounter = new InstanceCounter();
     protected final InstanceCounter directedInstanceCounter = new InstanceCounter();
+
+    protected final Mesh undirectedEdgeMesh = EdgeLineMeshGenerator.undirectedMeshGenerator();
+    protected final Mesh directedEdgeMesh = EdgeLineMeshGenerator.directedMeshGenerator();
 
     // NOTE: Why secondary buffers and VAOs?
     // Sadly, we cannot use glDrawArraysInstancedBaseInstance in MacOS and it will be never available
@@ -294,8 +298,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             model.getRenderingOptions().getNodeScale(),
             model.getRenderingOptions().getEdgeScale(),
             model.getRenderingOptions().getLightenNonSelectedFactor(),
-            engine.getOpenGLOptions(),
-            engine.getRenderingTarget().getGlCapabilitiesSummary()
+            engine.getOpenGLOptions()
         );
     }
 
@@ -842,7 +845,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
                 gl,
-                data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirected
             );
@@ -856,7 +858,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
                 gl,
-                data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirectedSecondary
             );
@@ -878,8 +879,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
-                gl,
-                data.getGLCapabilitiesSummary(),
+               gl,
                 data.getOpenGLOptions(),
                 attributesGLBufferDirected
             );
@@ -893,7 +893,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
                 gl,
-                data.getGLCapabilitiesSummary(),
                 data.getOpenGLOptions(),
                 attributesGLBufferDirectedSecondary
             );
@@ -943,9 +942,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     private class UndirectedEdgesVAO extends GLVertexArrayObject {
 
 
-        public UndirectedEdgesVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public UndirectedEdgesVAO(GL2ES2 gl, OpenGLOptions openGLOptions,
                                   GLBuffer attributesBuffer) {
-            super(gl, capabilities, openGLOptions, vertexGLBufferUndirected, attributesBuffer);
+            super(gl,openGLOptions, vertexGLBufferUndirected, attributesBuffer);
 
         }
 
@@ -1022,10 +1021,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     private class DirectedEdgesVAO extends GLVertexArrayObject {
 
 
-        public DirectedEdgesVAO(GL2ES2 gl, GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public DirectedEdgesVAO(GL2ES2 gl,  OpenGLOptions openGLOptions,
                                 GLBuffer attributesBuffer) {
-            super(gl, capabilities, openGLOptions, vertexGLBufferDirected, attributesBuffer);
-
+            super(gl, openGLOptions, vertexGLBufferDirected, attributesBuffer);
         }
 
         @Override

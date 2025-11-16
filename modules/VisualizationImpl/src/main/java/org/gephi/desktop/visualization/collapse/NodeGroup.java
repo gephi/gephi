@@ -3,6 +3,7 @@ package org.gephi.desktop.visualization.collapse;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
@@ -15,11 +16,15 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     private final VisualizationController vizController;
     private final NodeSettingsPanel nodeSettingsPanel = new NodeSettingsPanel();
     private final JSlider nodeScaleSlider;
+    private final JLabel titleLabel;
 
     public NodeGroup() {
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 
-        //NodeScale slider
+        // Label
+        titleLabel = new JLabel(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.groupLabel"));
+
+        // NodeScale slider
         nodeScaleSlider = new JSlider(1, 100, 1);
         nodeScaleSlider.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.nodeScale"));
         nodeScaleSlider.addChangeListener(e -> {
@@ -33,6 +38,8 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     @Override
     public void setup(VisualisationModel vizModel) {
         nodeSettingsPanel.setup(vizModel);
+
+        titleLabel.setEnabled(true);
 
         nodeScaleSlider.setEnabled(true);
         nodeScaleSlider.setValue((int) ((vizModel.getNodeScale() - 0.1f) * 10));
@@ -50,6 +57,7 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     public void disable() {
         nodeSettingsPanel.setup(null);
         nodeScaleSlider.setEnabled(false);
+        titleLabel.setEnabled(false);
     }
 
     @Override
@@ -68,7 +76,7 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
     @Override
     public JComponent[] getToolbarComponents() {
-        return new JComponent[] {nodeScaleSlider};
+        return new JComponent[] {titleLabel, nodeScaleSlider};
     }
 
     @Override

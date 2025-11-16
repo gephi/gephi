@@ -139,7 +139,7 @@ public interface VisualizationController {
 
     void setNodeLabelScale(float scale);
 
-    void setHideNonSelectedLabels(boolean hideNonSelected);
+    void setHideNonSelectedNodeLabels(boolean hideNonSelected);
 
     void setNodeLabelColorMode(LabelColorMode mode);
 
@@ -158,6 +158,12 @@ public interface VisualizationController {
     void setEdgeLabelFont(Font font);
 
     void setEdgeLabelScale(float scale);
+
+    void setEdgeLabelColorMode(LabelColorMode mode);
+
+    void setEdgeLabelSizeMode(LabelSizeMode mode);
+
+    void setHideNonSelectedEdgeLabels(boolean hideNonSelected);
 
     void setEdgeLabelColumns(Column[] columns);
 }

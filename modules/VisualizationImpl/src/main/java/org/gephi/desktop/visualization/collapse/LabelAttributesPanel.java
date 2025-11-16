@@ -58,6 +58,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
@@ -86,12 +87,14 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     /**
      * Creates new form LabelAttributesPanel
      */
-    public LabelAttributesPanel(VisualisationModel vizModel) {
+    public LabelAttributesPanel(VisualisationModel vizModel, boolean selectEdges) {
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
         this.vizModel = vizModel;
+        this.showProperties = NbPreferences.forModule(LabelAttributesPanel.class)
+            .getBoolean("LabelAttributesPanel_showProperties", showProperties);
 
         initComponents();
-        selectedModel = nodesToggleButton.getModel();
+        selectedModel = selectEdges ? edgesToggleButton.getModel() : nodesToggleButton.getModel();
         elementButtonGroup.setSelected(selectedModel, true);
         nodesToggleButton.addActionListener(new ActionListener() {
             @Override
@@ -196,6 +199,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         if (!nodeColumnsList.isEmpty()) {
             vizController.setNodeLabelColumns(nodeColumnsList.toArray(new Column[0]));
         }
+        NbPreferences.forModule(LabelAttributesPanel.class)
+            .putBoolean("LabelAttributesPanel_showProperties", showProperties);
     }
 
     /**
