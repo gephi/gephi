@@ -1,6 +1,5 @@
 package org.gephi.viz.engine.jogl.models;
 
-import static com.jogamp.opengl.GL.GL_TRIANGLES;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SIZE;
@@ -16,11 +15,8 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_DARKEN_FACTOR;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_GLOBAL_TIME;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME;
-import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_BYTES;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL2ES3;
-import com.jogamp.opengl.GL4;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.gl.Constants;
 
@@ -91,24 +87,6 @@ public class NodeDiskModel {
                 .init(gl);
     }
 
-    public void drawArraysSingleInstance(GL2ES2 gl, int firstVertexIndex, int vertexCount) {
-        gl.glDrawArrays(GL_TRIANGLES, firstVertexIndex, vertexCount);
-    }
-
-    public void drawInstanced(GL2ES3 gl, int vertexOffset, int vertexCount, int instanceCount) {
-        if (instanceCount <= 0) {
-            return;
-        }
-        gl.glDrawArraysInstanced(GL_TRIANGLES, vertexOffset, vertexCount, instanceCount);
-    }
-
-    public void drawIndirect(GL4 gl, int instanceCount, int instancesOffset) {
-        if (instanceCount <= 0) {
-            return;
-        }
-        gl.glMultiDrawArraysIndirect(GL_TRIANGLES, (long) instancesOffset * INDIRECT_DRAW_COMMAND_BYTES, instanceCount,
-            0);
-    }
 
     public void useProgramWithSelectionSelected(GL2ES2 gl, float[] mvpFloats,
                                                 float globalTime, float selectedTime) {
@@ -162,7 +140,4 @@ public class NodeDiskModel {
 
     }
 
-    public void stopUsingProgram(GL2ES2 gl) {
-        gl.glUseProgram(0);
-    }
 }

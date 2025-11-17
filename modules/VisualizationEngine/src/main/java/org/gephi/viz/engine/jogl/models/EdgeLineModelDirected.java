@@ -29,7 +29,6 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -151,13 +150,6 @@ public class EdgeLineModelDirected {
         gl.glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT * drawBatchCount);
     }
 
-    public void drawInstanced(GL3ES3 gl, int instanceCount) {
-        gl.glDrawArraysInstanced(GL_TRIANGLES, 0, VERTEX_COUNT, instanceCount);
-    }
-
-    public void stopUsingProgram(GL2ES2 gl) {
-        gl.glUseProgram(0);
-    }
 
     public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
                            float nodeScale) {

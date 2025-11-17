@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
+import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
@@ -39,7 +40,7 @@ public class InstancedNodeData extends AbstractNodeData {
             setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
-            diskModel.stopUsingProgram(gl);
+            GLFunctions.stopUsingProgram(gl);
             unsetupVertexArrayAttributes(gl);
             return;
         }
@@ -61,11 +62,11 @@ public class InstancedNodeData extends AbstractNodeData {
             firstVertex = firstVertex8;
         }
 
-        diskModel.drawInstanced(
+        GLFunctions.drawInstanced(
             gl,
             firstVertex, circleVertexCount, instanceCount
         );
-        diskModel.stopUsingProgram(gl);
+        GLFunctions.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);
     }
 
