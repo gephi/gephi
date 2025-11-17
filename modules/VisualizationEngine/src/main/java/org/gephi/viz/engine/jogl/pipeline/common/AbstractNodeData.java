@@ -40,9 +40,6 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  */
 public abstract class AbstractNodeData extends AbstractSelectionData {
 
-    protected static final float BORDER_SIZE = 0.16f;
-    protected static final float INSIDE_CIRCLE_SIZE = 1 - BORDER_SIZE;
-
     protected static final int OBSERVED_SIZE_LOD_THRESHOLD_64 = 128;
     protected static final int OBSERVED_SIZE_LOD_THRESHOLD_32 = 16;
     protected static final int OBSERVED_SIZE_LOD_THRESHOLD_16 = 2;
