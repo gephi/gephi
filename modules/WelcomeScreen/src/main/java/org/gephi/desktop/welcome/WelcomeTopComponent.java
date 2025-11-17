@@ -82,6 +82,7 @@ public final class WelcomeTopComponent extends JPanel {
     private Action openFileAction;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelNew;
     private javax.swing.JLabel labelProjects;
     private javax.swing.JLabel labelRecent;
@@ -250,6 +251,7 @@ public final class WelcomeTopComponent extends JPanel {
             "Topology of the Western States Power Grid of the US", "D. Watts & S. Strogatz", null));
         samples.add(new FileSample("/org/gephi/desktop/welcome/samples/US Airports.gexf",
             "Example of a geographical network with latitude/longitude attributes", null, null));
+
         return samples;
     }
 
@@ -281,12 +283,13 @@ public final class WelcomeTopComponent extends JPanel {
         labelNew = new javax.swing.JLabel();
         newProjectLink = new org.jdesktop.swingx.JXHyperlink();
         labelSamples = new javax.swing.JLabel();
-        samplesPanel = new javax.swing.JPanel();
         openFileLink = new org.jdesktop.swingx.JXHyperlink();
         labelProjects = new javax.swing.JLabel();
         projectsScrollPane = new javax.swing.JScrollPane();
         projectsPanel = new javax.swing.JPanel();
         recentPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        samplesPanel = new javax.swing.JPanel();
         southPanel = new javax.swing.JPanel();
         openOnStartupCheckbox = new javax.swing.JCheckBox();
 
@@ -294,7 +297,7 @@ public final class WelcomeTopComponent extends JPanel {
         setLayout(new java.awt.BorderLayout());
 
         header.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
-        header.setIcon(ImageUtilities.loadImageIcon("WelcomeScreen/logo_transparent_small.svg", false)
+        header.setIcon(ImageUtilities.loadImageIcon("WelcomeScreen/logo_transparent_small.png", false)
         );
         header.setTitle(org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class,
             "WelcomeTopComponent.header.title")); // NOI18N
@@ -324,8 +327,6 @@ public final class WelcomeTopComponent extends JPanel {
             org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class,
                 "WelcomeTopComponent.labelSamples.text")); // NOI18N
 
-        samplesPanel.setOpaque(false);
-
         org.openide.awt.Mnemonics.setLocalizedText(openFileLink,
             org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class,
                 "WelcomeTopComponent.openFileLink.text")); // NOI18N
@@ -348,7 +349,7 @@ public final class WelcomeTopComponent extends JPanel {
         );
         projectsPanelLayout.setVerticalGroup(
             projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 168, Short.MAX_VALUE)
+                .addGap(0, 169, Short.MAX_VALUE)
         );
 
         projectsScrollPane.setViewportView(projectsPanel);
@@ -364,6 +365,12 @@ public final class WelcomeTopComponent extends JPanel {
                 .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setOpaque(false);
+
+        samplesPanel.setOpaque(false);
+        jScrollPane1.setViewportView(samplesPanel);
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -371,7 +378,7 @@ public final class WelcomeTopComponent extends JPanel {
                 .addGroup(mainPanelLayout.createSequentialGroup()
                     .addGap(20, 20, 20)
                     .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                        .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                         .addGroup(mainPanelLayout.createSequentialGroup()
                             .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(labelProjects)
@@ -393,9 +400,9 @@ public final class WelcomeTopComponent extends JPanel {
                         .addComponent(labelRecent)
                         .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
                             javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 260,
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260,
                             javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap())
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,8 +429,7 @@ public final class WelcomeTopComponent extends JPanel {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(labelSamples)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(samplesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 106,
-                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1)))
                     .addContainerGap())
         );
 
