@@ -1,4 +1,4 @@
-package org.gephi.desktop.welcome;
+package org.gephi.graph.sample;
 
 public record FileSample(String filepath,
                          String description,

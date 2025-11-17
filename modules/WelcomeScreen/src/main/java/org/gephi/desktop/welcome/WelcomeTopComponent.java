@@ -60,6 +60,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
+import org.gephi.graph.sample.FileSample;
+import org.gephi.graph.sample.ISampleGraphLibrary;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.jdesktop.swingx.JXHyperlink;
@@ -209,10 +211,10 @@ public final class WelcomeTopComponent extends JPanel {
         net.miginfocom.swing.MigLayout migLayout1 = new net.miginfocom.swing.MigLayout("insets 6");
         migLayout1.setColumnConstraints("[pref]");
         samplesPanel.setLayout(migLayout1);
-
+        ISampleGraphLibrary lib = Lookup.getDefault().lookup(ISampleGraphLibrary.class);
 
         List<FileSample> samples = getFileSamples();
-
+        samples.addAll(lib.getFileSamples());
 
         try {
             for (FileSample fileSample : samples) {
