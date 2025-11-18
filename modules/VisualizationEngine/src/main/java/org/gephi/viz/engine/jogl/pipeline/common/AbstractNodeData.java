@@ -459,6 +459,25 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             commandsBuffer = null;
         }
 
+        if (commandsGLBuffer != null) {
+            commandsGLBuffer.destroy(gl);
+            commandsGLBuffer = null;
+        }
+
+        // Destroy and reset VAOs to prevent reuse after re-init
+        if (nodesVAO != null) {
+            nodesVAO.destroy(gl.getGL2ES2());
+            nodesVAO = null;
+        }
+
+        if (nodesVAOSecondary != null) {
+            nodesVAOSecondary.destroy(gl.getGL2ES2());
+            nodesVAOSecondary = null;
+        }
+
+        // Destroy shader programs
+        diskModel.destroy(gl.getGL2ES2());
+
         nodesCallback.reset();
     }
 

@@ -9,6 +9,7 @@ import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JPopupButton;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
@@ -116,7 +117,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
     }
 
     @Override
-    public void setup(VisualisationModel vizModel) {
+    public void setup(VizModel vizModel) {
         nodeLabelsSettingsPanel.setup(vizModel);
         showLabelsButton.setSelected(vizModel.isShowNodeLabels());
         labelColorModeButton.setSelectedItem(vizModel.getNodeLabelColorMode());
@@ -141,7 +142,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
     }
 
     @Override
-    public void unsetup(VisualisationModel vizModel) {
+    public void unsetup(VizModel vizModel) {
         vizController.removePropertyChangeListener(this);
         nodeLabelsSettingsPanel.unsetup(vizModel);
     }

@@ -60,6 +60,7 @@ public class VizConfig {
 
     //Const Default Config
     public static final String BACKGROUND_COLOR = "VizConfig.defaultBackgroundColor";
+    public static final String BACKGROUND_COLOR_DARK = "VizConfig.defaultDarkBackgroundColor";
     public static final String NODE_LABELS = "VizConfig.defaultShowNodeLabels";
     public static final String EDGE_LABELS = "VizConfig.defaultShowEdgeLabels";
     public static final String SHOW_EDGES = "VizConfig.defaultShowEdges";
@@ -105,7 +106,7 @@ public class VizConfig {
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
     //Default values
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
-    public static final Color DEFAULT_DARK_BACKGROUND_COLOR = Color.BLACK;
+    public static final Color DEFAULT_DARK_BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final boolean DEFAULT_NODE_LABELS = false;
     public static final boolean DEFAULT_EDGE_LABELS = false;
     public static final boolean DEFAULT_SHOW_EDGES = true;
@@ -157,7 +158,7 @@ public class VizConfig {
 
     protected Color defaultDarkBackgroundColor = ColorUtils.decode(
         NbPreferences.forModule(VizConfig.class)
-            .get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_DARK_BACKGROUND_COLOR)));
+            .get(BACKGROUND_COLOR_DARK, ColorUtils.encode(DEFAULT_DARK_BACKGROUND_COLOR)));
     protected float[] defaultCameraTarget = {0f, 0f, 0f};
     protected float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected boolean defaultShowNodeLabels =

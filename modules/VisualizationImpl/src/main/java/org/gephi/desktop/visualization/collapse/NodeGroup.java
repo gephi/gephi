@@ -5,6 +5,7 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
@@ -36,7 +37,7 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     }
 
     @Override
-    public void setup(VisualisationModel vizModel) {
+    public void setup(VizModel vizModel) {
         nodeSettingsPanel.setup(vizModel);
 
         titleLabel.setEnabled(true);
@@ -48,7 +49,7 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     }
 
     @Override
-    public void unsetup(VisualisationModel vizModel) {
+    public void unsetup(VizModel vizModel) {
         nodeSettingsPanel.unsetup(vizModel);
         vizController.removePropertyChangeListener(this);
     }

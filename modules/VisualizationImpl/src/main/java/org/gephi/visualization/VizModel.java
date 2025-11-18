@@ -239,6 +239,10 @@ public class VizModel implements VisualisationModel {
         });
     }
 
+    public VizConfig getConfig() {
+        return config;
+    }
+
     public SelectionModelImpl getSelectionModel() {
         return selectionModel;
     }

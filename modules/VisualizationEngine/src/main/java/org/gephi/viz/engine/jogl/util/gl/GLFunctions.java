@@ -18,6 +18,14 @@ public class GLFunctions {
         }
     }
 
+    public static void glDeleteVertexArrays(GL2ES2 gl, int n, IntBuffer arrays) {
+        if (gl.isGL2GL3()) {
+            gl.getGL2GL3().glDeleteVertexArrays(n, arrays);
+        } else {
+            gl.getGLES2().glDeleteVertexArraysOES(n, arrays);
+        }
+    }
+
     public static void glBindVertexArray(GL2ES2 gl, int array) {
         if (gl.isGL2GL3()) {
             gl.getGL2GL3().glBindVertexArray(array);

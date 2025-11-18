@@ -105,10 +105,18 @@ public class NodesCallback implements ElementsCallback<Node> {
                 // Track min/max positions for grid bounds
                 float x = node.x();
                 float y = node.y();
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
+                if (x < minX) {
+                    minX = x;
+                }
+                if (x > maxX) {
+                    maxX = x;
+                }
+                if (y < minY) {
+                    minY = y;
+                }
+                if (y > maxY) {
+                    maxY = y;
+                }
             }
         }
     }

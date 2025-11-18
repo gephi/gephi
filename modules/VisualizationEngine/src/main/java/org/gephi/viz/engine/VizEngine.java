@@ -337,17 +337,22 @@ public class VizEngine<R extends RenderingTarget, I> {
     }
 
     public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions) {
-        this.engineModel = new VizEngineModel(graphModel,
-            renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl());
+        if (this.engineModel.getGraphModel() != graphModel) {
+            this.engineModel = new VizEngineModel(graphModel,
+                renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl());
+        }
+
         // Sync local translate from new model's pan
         this.translate.set(engineModel.getRenderingOptions().getPan());
         loadModelViewProjection();
     }
 
-    public synchronized void unsetGraphModel() {
-        this.engineModel = VizEngineModel.createEmptyModel();
-        this.translate.set(0, 0);
-        loadModelViewProjection();
+    public synchronized void unsetGraphModel(GraphModel graphModel) {
+        if (engineModel.getGraphModel() == graphModel) {
+            this.engineModel = VizEngineModel.createEmptyModel();
+            this.translate.set(0, 0);
+            loadModelViewProjection();
+        }
     }
 
     public synchronized void initPipeline() {

@@ -87,7 +87,6 @@ public class NodeDiskModel {
                 .init(gl);
     }
 
-
     public void useProgramWithSelectionSelected(GL2ES2 gl, float[] mvpFloats,
                                                 float globalTime, float selectedTime) {
         //Circle:
@@ -140,4 +139,18 @@ public class NodeDiskModel {
 
     }
 
+    public void destroy(GL2ES2 gl) {
+        if (program != null) {
+            program.destroy(gl);
+            program = null;
+        }
+        if (programWithSelectionSelected != null) {
+            programWithSelectionSelected.destroy(gl);
+            programWithSelectionSelected = null;
+        }
+        if (programWithSelectionUnselected != null) {
+            programWithSelectionUnselected.destroy(gl);
+            programWithSelectionUnselected = null;
+        }
+    }
 }

@@ -115,6 +115,17 @@ public abstract class GLVertexArrayObject {
         }
     }
 
+    public void destroy(GL2ES2 gl) {
+        if (vaoSupported && arrayId != -1) {
+            IntBuffer vertexArrayName = GLBuffers.newDirectIntBuffer(1);
+            vertexArrayName.put(0, arrayId);
+            GLFunctions.glDeleteVertexArrays(gl, 1, vertexArrayName);
+            arrayId = -1;
+        }
+        attributeLocations = null;
+        instancedAttributeLocations = null;
+    }
+
     protected abstract void configure(GL2ES2 gl);
 
     protected abstract int[] getUsedAttributeLocations();

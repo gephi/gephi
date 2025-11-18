@@ -162,9 +162,8 @@ public class VizEngineGraphCanvasManager {
         }
         VizModel model = vizController.getModel(workspace);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        if (engine.getGraphModel() != graphModel) {
-            engine.setGraphModel(graphModel, model.toGraphRenderingOptions());
-        }
+
+        engine.setGraphModel(graphModel, model.toGraphRenderingOptions());
         return model;
     }
 
@@ -173,8 +172,16 @@ public class VizEngineGraphCanvasManager {
             throw new IllegalStateException("Not initialized");
         }
         VizModel model = vizController.getModel(workspace);
-        model.unsetup();
-        engine.unsetGraphModel();
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+
+        if (engine.getGraphModel() == graphModel) {
+            // We want to avoid calling that twice to not override zoom/pan with default values
+            model.unsetup();
+
+            // Only then, reset the engine's engine model
+            engine.unsetGraphModel(graphModel);
+        }
+
         return model;
     }
 

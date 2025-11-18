@@ -914,27 +914,63 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void dispose(GL gl) {
         if (vertexGLBufferUndirected != null) {
             vertexGLBufferUndirected.destroy(gl);
+            vertexGLBufferUndirected = null;
         }
 
         if (vertexGLBufferDirected != null) {
             vertexGLBufferDirected.destroy(gl);
+            vertexGLBufferDirected = null;
         }
 
         if (attributesGLBufferDirected != null) {
             attributesGLBufferDirected.destroy(gl);
+            attributesGLBufferDirected = null;
         }
 
         if (attributesGLBufferDirectedSecondary != null) {
             attributesGLBufferDirectedSecondary.destroy(gl);
+            attributesGLBufferDirectedSecondary = null;
         }
 
         if (attributesGLBufferUndirected != null) {
             attributesGLBufferUndirected.destroy(gl);
+            attributesGLBufferUndirected = null;
         }
 
         if (attributesGLBufferUndirectedSecondary != null) {
             attributesGLBufferUndirectedSecondary.destroy(gl);
+            attributesGLBufferUndirectedSecondary = null;
         }
+
+        if (attributesBuffer != null) {
+            attributesBuffer.destroy();
+            attributesBuffer = null;
+        }
+
+        // Destroy and reset VAOs to prevent reuse after re-init
+        if (undirectedEdgesVAO != null) {
+            undirectedEdgesVAO.destroy(gl.getGL2ES2());
+            undirectedEdgesVAO = null;
+        }
+
+        if (undirectedEdgesVAOSecondary != null) {
+            undirectedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            undirectedEdgesVAOSecondary = null;
+        }
+
+        if (directedEdgesVAO != null) {
+            directedEdgesVAO.destroy(gl.getGL2ES2());
+            directedEdgesVAO = null;
+        }
+
+        if (directedEdgesVAOSecondary != null) {
+            directedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            directedEdgesVAOSecondary = null;
+        }
+
+        // Destroy shader programs
+        lineModelUndirected.destroy(gl.getGL2ES2());
+        lineModelDirected.destroy(gl.getGL2ES2());
 
         edgesCallback.reset();
     }

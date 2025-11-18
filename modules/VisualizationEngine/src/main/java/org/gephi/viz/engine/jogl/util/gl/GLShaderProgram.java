@@ -147,4 +147,14 @@ public class GLShaderProgram {
     public void stopUsing(GL2ES2 gl) {
         gl.glUseProgram(0);
     }
+
+    public void destroy(GL2ES2 gl) {
+        if (id != -1) {
+            gl.glDeleteProgram(id);
+            id = -1;
+        }
+        uniformLocations.clear();
+        attribLocations.clear();
+        initDone = false;
+    }
 }

@@ -90,6 +90,31 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     }
 
     @Override
+    public void dispose(JOGLRenderingTarget target) {
+        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+
+        if (shaderProgram != null) {
+            shaderProgram.destroy(gl);
+            shaderProgram = null;
+        }
+
+        if (vertexGLBuffer != null) {
+            vertexGLBuffer.destroy(gl);
+            vertexGLBuffer = null;
+        }
+
+        if (rectangleVertexDataBuffer != null) {
+            rectangleVertexDataBuffer.destroy();
+            rectangleVertexDataBuffer = null;
+        }
+
+        if (vao != null) {
+            vao.destroy(gl);
+            vao = null;
+        }
+    }
+
+    @Override
     public int getOrder() {
         return 0;
     }
