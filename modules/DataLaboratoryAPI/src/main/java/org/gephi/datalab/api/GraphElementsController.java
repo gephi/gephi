@@ -119,7 +119,7 @@ public interface GraphElementsController {
      * @param source   Source node
      * @param target   Target node
      * @param directed Indicates if the edge has to be directed
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed);
 
@@ -130,7 +130,7 @@ public interface GraphElementsController {
      * @param target    Target node
      * @param directed  Indicates if the edge has to be directed
      * @param typeLabel Edge type label or null
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed, Object typeLabel);
 
@@ -141,7 +141,7 @@ public interface GraphElementsController {
      * @param target   Target node
      * @param directed Indicates if the edge has to be directed
      * @param graph    Graph to insert the node into
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed, Graph graph);
 
@@ -153,7 +153,7 @@ public interface GraphElementsController {
      * @param directed  Indicates if the edge has to be directed
      * @param typeLabel Edge type label or null
      * @param graph     Graph to insert the node into
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed, Object typeLabel, Graph graph);
 
@@ -165,7 +165,7 @@ public interface GraphElementsController {
      * @param source   Source node
      * @param target   Target node
      * @param directed Indicates if the edge has to be directed
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed);
 
@@ -178,7 +178,7 @@ public interface GraphElementsController {
      * @param target    Target node
      * @param directed  Indicates if the edge has to be directed
      * @param typeLabel Edge type label or null
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel);
 
@@ -191,7 +191,7 @@ public interface GraphElementsController {
      * @param target   Target node
      * @param directed Indicates if the edge has to be directed
      * @param graph    Graph to insert the node into
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed, Graph graph);
 
@@ -205,7 +205,7 @@ public interface GraphElementsController {
      * @param directed  Indicates if the edge has to be directed
      * @param typeLabel Edge type label or null
      * @param graph     Graph to insert the node into
-     * @return New edge if the edge was created succesfully, null otherwise
+     * @return New edge if the edge was created successfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel, Graph graph);
 
