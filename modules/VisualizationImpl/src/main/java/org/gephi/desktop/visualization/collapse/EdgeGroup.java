@@ -4,12 +4,15 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JPopupButton;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
@@ -26,9 +29,14 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     private final JToggleButton showEdgeButton;
     private final JSlider edgeScaleSlider;
     private final JPopupButton edgeColorModeButton;
+    private final JLabel titleLabel;
 
     public EdgeGroup() {
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
+
+        //Title
+        titleLabel = new JLabel(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.groupLabel"));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
 
         //Show edges
         showEdgeButton = new JToggleButton();
@@ -71,8 +79,10 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     }
 
     @Override
-    public void setup(VisualisationModel vizModel) {
+    public void setup(VizModel vizModel) {
         edgeSettingsPanel.setup(vizModel);
+
+        titleLabel.setEnabled(true);
 
         edgeColorModeButton.setEnabled(true);
         edgeColorModeButton.setSelectedItem(vizModel.getEdgeColorMode());
@@ -88,7 +98,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
     }
 
     @Override
-    public void unsetup(VisualisationModel vizModel) {
+    public void unsetup(VizModel vizModel) {
         vizController.removePropertyChangeListener(this);
         edgeSettingsPanel.unsetup(vizModel);
     }
@@ -125,7 +135,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
 
     @Override
     public JComponent[] getToolbarComponents() {
-        return new JComponent[] {
+        return new JComponent[] {titleLabel,
             showEdgeButton,
             edgeScaleSlider,
             edgeColorModeButton

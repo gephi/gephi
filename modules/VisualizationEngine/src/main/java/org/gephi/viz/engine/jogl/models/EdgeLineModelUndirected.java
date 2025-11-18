@@ -1,6 +1,5 @@
 package org.gephi.viz.engine.jogl.models;
 
-import static com.jogamp.opengl.GL.GL_TRIANGLES;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION_TARGET;
@@ -29,7 +28,6 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -143,21 +141,6 @@ public class EdgeLineModelUndirected {
                 .init(gl);
     }
 
-    public void drawArraysMultipleInstance(GL2ES2 gl, final int drawBatchCount) {
-        if (drawBatchCount <= 0) {
-            return;
-        }
-        //Multiple lines, attributes must be in the buffer once per vertex count:
-        gl.glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT * drawBatchCount);
-    }
-
-    public void drawInstanced(GL3ES3 gl, int instanceCount) {
-        if (instanceCount <= 0) {
-            return;
-        }
-        gl.glDrawArraysInstanced(GL_TRIANGLES, 0, VERTEX_COUNT, instanceCount);
-    }
-
     public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
                            float nodeScale) {
         //Line:
@@ -180,10 +163,6 @@ public class EdgeLineModelUndirected {
         programWithSelectionUnselected.use(gl);
         prepareProgramDataWithSelectionUnselected(gl, mvpFloats, edgeScale, minWeight, maxWeight, backgroundColorFloats,
             colorLightenFactor, nodeScale, globalTime, selectionTime);
-    }
-
-    public void stopUsingProgram(GL2ES2 gl) {
-        gl.glUseProgram(0);
     }
 
     private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight,
@@ -248,17 +227,18 @@ public class EdgeLineModelUndirected {
         }
     }
 
-    public static float[] getVertexData() {
-        //lineEnd, sideVector
-        return new float[] {
-            //Triangle 1
-            0, -1,// bottom left corner
-            1, -1,// top left corner
-            0, 1,// bottom right corner
-            //Triangle 2
-            0, 1,// bottom right corner
-            1, -1,// top left corner
-            1, 1// top right corner
-        };
+    public void destroy(GL2ES2 gl) {
+        if (program != null) {
+            program.destroy(gl);
+            program = null;
+        }
+        if (programWithSelectionSelected != null) {
+            programWithSelectionSelected.destroy(gl);
+            programWithSelectionSelected = null;
+        }
+        if (programWithSelectionUnselected != null) {
+            programWithSelectionUnselected.destroy(gl);
+            programWithSelectionUnselected = null;
+        }
     }
 }

@@ -44,6 +44,11 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private Column[] nodeLabelColumns = new Column[0];
 
     //Edge Labels
+    private LabelColorMode edgeLabelColorMode = DEFAULT_NODE_LABEL_COLOR_MODE;
+    private LabelSizeMode edgeLabelSizeMode = DEFAULT_NODE_LABEL_SIZE_MODE;
+    private Font edgeLabelFont = DEFAULT_NODE_LABEL_FONT;
+    private float edgeLabelScale = DEFAULT_NODE_LABEL_SCALE;
+    private boolean hideNonSelectedEdgeLabels = DEFAULT_HIDE_NON_SELECTED_NODE_LABELS;
     private Column[] edgeLabelColumns = new Column[0];
 
     //Selection:
@@ -94,6 +99,11 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
         this.avoidNodeLabelOverlap = other.isAvoidNodeLabelOverlap();
 
         // Edge Labels
+        this.edgeLabelColorMode = other.getEdgeLabelColorMode();
+        this.edgeLabelSizeMode = other.getEdgeLabelSizeMode();
+        this.edgeLabelFont = other.getEdgeLabelFont();
+        this.edgeLabelScale = other.getEdgeLabelScale();
+        this.hideNonSelectedEdgeLabels = other.isHideNonSelectedEdgeLabels();
         this.edgeLabelColumns = other.getEdgeLabelColumns();
 
         // Selection
@@ -439,5 +449,59 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     @Override
     public void setEdgeLabelColumns(Column[] edgeLabelColumns) {
         this.edgeLabelColumns = Objects.requireNonNull(edgeLabelColumns, "edgeLabelColumns can't be null");
+    }
+
+    @Override
+    public LabelColorMode getEdgeLabelColorMode() {
+        return edgeLabelColorMode;
+    }
+
+    @Override
+    public void setEdgeLabelColorMode(LabelColorMode labelColorMode) {
+        this.edgeLabelColorMode = Objects.requireNonNull(labelColorMode, "labelColorMode can't be null");
+    }
+
+    @Override
+    public LabelSizeMode getEdgeLabelSizeMode() {
+        return edgeLabelSizeMode;
+    }
+
+    @Override
+    public void setEdgeLabelSizeMode(LabelSizeMode labelSizeMode) {
+        this.edgeLabelSizeMode = Objects.requireNonNull(labelSizeMode, "labelSizeMode can't be null");
+    }
+
+    @Override
+    public Font getEdgeLabelFont() {
+        return edgeLabelFont;
+    }
+
+    @Override
+    public void setEdgeLabelFont(Font font) {
+        this.edgeLabelFont = Objects.requireNonNull(font, "font can't be null");
+    }
+
+    @Override
+    public float getEdgeLabelScale() {
+        return edgeLabelScale;
+    }
+
+    @Override
+    public void setEdgeLabelScale(float edgeLabelScale) {
+        if (edgeLabelScale <= 0f || Float.isNaN(edgeLabelScale) || Float.isInfinite(edgeLabelScale)) {
+            throw new IllegalArgumentException("edgeLabelScale should be > 0");
+        }
+
+        this.edgeLabelScale = edgeLabelScale;
+    }
+
+    @Override
+    public boolean isHideNonSelectedEdgeLabels() {
+        return hideNonSelectedEdgeLabels;
+    }
+
+    @Override
+    public void setHideNonSelectedEdgeLabels(boolean hideNonSelected) {
+        this.hideNonSelectedEdgeLabels = hideNonSelected;
     }
 }

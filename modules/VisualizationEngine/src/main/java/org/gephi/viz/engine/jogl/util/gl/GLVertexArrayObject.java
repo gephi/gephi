@@ -5,7 +5,6 @@ import static com.jogamp.opengl.GL2ES3.GL_VERTEX_ARRAY_BINDING;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.IntBuffer;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
 /**
@@ -17,13 +16,22 @@ public abstract class GLVertexArrayObject {
 
     private final boolean vaoSupported;
 
+    protected final GLBuffer vertexBuffer;
+    protected final GLBuffer attributesBuffer;
+
     private int[] attributeLocations;
     private int[] instancedAttributeLocations;
     private int arrayId = -1;
-    private int[] previousArrayId = new int[1];
+    private final int[] previousArrayId = new int[1];
 
-    public GLVertexArrayObject(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions) {
-        vaoSupported = capabilities.isVAOSupported(openGLOptions);
+    public GLVertexArrayObject(GL2ES2 gl,OpenGLOptions openGLOptions,
+                               GLBuffer vertexBuffer,
+                               GLBuffer attributesBuffer
+                               ) {
+        this.vertexBuffer = vertexBuffer;
+        this.attributesBuffer = attributesBuffer;
+        vaoSupported = openGLOptions.isVAOSupported();
+        init(gl);
     }
 
     private void init(GL2ES2 gl) {
@@ -60,9 +68,6 @@ public abstract class GLVertexArrayObject {
     }
 
     public void use(GL2ES2 gl) {
-        if (attributeLocations == null) {
-            init(gl);
-        }
 
         if (vaoSupported) {
             bind(gl);
@@ -108,6 +113,17 @@ public abstract class GLVertexArrayObject {
         for (int instancedAttributeLocation : instancedAttributeLocations) {
             GLFunctions.glVertexAttribDivisor(gl, instancedAttributeLocation, 0);
         }
+    }
+
+    public void destroy(GL2ES2 gl) {
+        if (vaoSupported && arrayId != -1) {
+            IntBuffer vertexArrayName = GLBuffers.newDirectIntBuffer(1);
+            vertexArrayName.put(0, arrayId);
+            GLFunctions.glDeleteVertexArrays(gl, 1, vertexArrayName);
+            arrayId = -1;
+        }
+        attributeLocations = null;
+        instancedAttributeLocations = null;
     }
 
     protected abstract void configure(GL2ES2 gl);

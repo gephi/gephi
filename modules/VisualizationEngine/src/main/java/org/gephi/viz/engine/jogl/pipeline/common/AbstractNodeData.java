@@ -22,12 +22,12 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.NodeDiskModel;
-import org.gephi.viz.engine.jogl.models.NodeDiskVertexDataGenerator;
+import org.gephi.viz.engine.jogl.models.mesh.NodeDiskVertexMeshGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
@@ -39,9 +39,6 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  * @author Eduardo Ramos
  */
 public abstract class AbstractNodeData extends AbstractSelectionData {
-
-    protected static final float BORDER_SIZE = 0.16f;
-    protected static final float INSIDE_CIRCLE_SIZE = 1 - BORDER_SIZE;
 
     protected static final int OBSERVED_SIZE_LOD_THRESHOLD_64 = 128;
     protected static final int OBSERVED_SIZE_LOD_THRESHOLD_32 = 16;
@@ -60,15 +57,12 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     protected final NodeDiskModel diskModel;
 
-    private final NodeDiskVertexDataGenerator generator64;
-    private final NodeDiskVertexDataGenerator generator32;
-    private final NodeDiskVertexDataGenerator generator16;
-    private final NodeDiskVertexDataGenerator generator8;
+    protected final Mesh circleMesh64 = NodeDiskVertexMeshGenerator.generateFilledCircle(64);
+    protected final Mesh circleMesh32 = NodeDiskVertexMeshGenerator.generateFilledCircle(32);
+    protected final Mesh circleMesh16 = NodeDiskVertexMeshGenerator.generateFilledCircle(16);
+    protected final Mesh circleMesh8 = NodeDiskVertexMeshGenerator.generateFilledCircle(8);
 
-    protected final int circleVertexCount64;
-    protected final int circleVertexCount32;
-    protected final int circleVertexCount16;
-    protected final int circleVertexCount8;
+
     protected final int firstVertex64;
     protected final int firstVertex32;
     protected final int firstVertex16;
@@ -99,20 +93,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
         diskModel = new NodeDiskModel();
 
-        generator64 = new NodeDiskVertexDataGenerator(64);
-        generator32 = new NodeDiskVertexDataGenerator(32);
-        generator16 = new NodeDiskVertexDataGenerator(16);
-        generator8 = new NodeDiskVertexDataGenerator(8);
-
-        circleVertexCount64 = generator64.getVertexCount();
-        circleVertexCount32 = generator32.getVertexCount();
-        circleVertexCount16 = generator16.getVertexCount();
-        circleVertexCount8 = generator8.getVertexCount();
 
         firstVertex64 = 0;
-        firstVertex32 = generator64.getVertexCount();
-        firstVertex16 = firstVertex32 + generator32.getVertexCount();
-        firstVertex8 = firstVertex16 + generator16.getVertexCount();
+        firstVertex32 = circleMesh64.vertexCount;
+        firstVertex16 = circleMesh64.vertexCount + circleMesh32.vertexCount;
+        firstVertex8 = circleMesh64.vertexCount + circleMesh32.vertexCount + circleMesh16.vertexCount;
     }
 
     public void init(GL2ES2 gl) {
@@ -134,20 +119,20 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected void initCirclesGLVertexBuffer(GL gl, final int bufferName) {
 
         final float[] circleVertexData = new float[
-            generator64.getVertexData().length
-                + generator32.getVertexData().length
-                + generator16.getVertexData().length
-                + generator8.getVertexData().length
+            circleMesh64.vertexData.length
+                + circleMesh32.vertexData.length
+                + circleMesh16.vertexData.length
+                + circleMesh8.vertexData.length
             ];
 
         int offset = 0;
-        System.arraycopy(generator64.getVertexData(), 0, circleVertexData, offset, generator64.getVertexData().length);
-        offset += generator64.getVertexData().length;
-        System.arraycopy(generator32.getVertexData(), 0, circleVertexData, offset, generator32.getVertexData().length);
-        offset += generator32.getVertexData().length;
-        System.arraycopy(generator16.getVertexData(), 0, circleVertexData, offset, generator16.getVertexData().length);
-        offset += generator16.getVertexData().length;
-        System.arraycopy(generator8.getVertexData(), 0, circleVertexData, offset, generator8.getVertexData().length);
+        System.arraycopy(circleMesh64.vertexData, 0, circleVertexData, offset, circleMesh64.vertexData.length);
+        offset += circleMesh64.vertexData.length;
+        System.arraycopy(circleMesh32.vertexData, 0, circleVertexData, offset, circleMesh32.vertexData.length);
+        offset += circleMesh32.vertexData.length;
+        System.arraycopy(circleMesh16.vertexData, 0, circleVertexData, offset, circleMesh16.vertexData.length);
+        offset += circleMesh16.vertexData.length;
+        System.arraycopy(circleMesh8.vertexData, 0, circleVertexData, offset, circleMesh8.vertexData.length);
 
 
         final FloatBuffer circleVertexBuffer = GLBuffers.newDirectFloatBuffer(circleVertexData);
@@ -216,8 +201,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             maxNodeSize,
             currentZoom,
             model.getRenderingOptions().getLightenNonSelectedFactor(),
-            engine.getOpenGLOptions(),
-            engine.getRenderingTarget().getGlCapabilitiesSummary()
+            engine.getOpenGLOptions()
         );
     }
 
@@ -394,16 +378,16 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         final int circleVertexCount;
         final int firstVertex;
         if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-            circleVertexCount = circleVertexCount64;
+            circleVertexCount = circleMesh64.vertexCount;
             firstVertex = firstVertex64;
         } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-            circleVertexCount = circleVertexCount32;
+            circleVertexCount = circleMesh32.vertexCount;
             firstVertex = firstVertex32;
         } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-            circleVertexCount = circleVertexCount16;
+            circleVertexCount = circleMesh16.vertexCount;
             firstVertex = firstVertex16;
         } else {
-            circleVertexCount = circleVertexCount8;
+            circleVertexCount = circleMesh8.vertexCount;
             firstVertex = firstVertex8;
         }
 
@@ -419,7 +403,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     public void setupVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
         if (nodesVAO == null) {
             nodesVAO = new NodesVAO(
-                data.getGLCapabilitiesSummary(), data.getOpenGLOptions(),
+                gl, data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBuffer
             );
         }
@@ -430,7 +414,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     public void setupSecondaryVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
         if (nodesVAOSecondary == null) {
             nodesVAOSecondary = new NodesVAO(
-                data.getGLCapabilitiesSummary(), data.getOpenGLOptions(),
+                gl, data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBufferSecondary
             );
         }
@@ -475,19 +459,35 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             commandsBuffer = null;
         }
 
+        if (commandsGLBuffer != null) {
+            commandsGLBuffer.destroy(gl);
+            commandsGLBuffer = null;
+        }
+
+        // Destroy and reset VAOs to prevent reuse after re-init
+        if (nodesVAO != null) {
+            nodesVAO.destroy(gl.getGL2ES2());
+            nodesVAO = null;
+        }
+
+        if (nodesVAOSecondary != null) {
+            nodesVAOSecondary.destroy(gl.getGL2ES2());
+            nodesVAOSecondary = null;
+        }
+
+        // Destroy shader programs
+        diskModel.destroy(gl.getGL2ES2());
+
         nodesCallback.reset();
     }
 
     private class NodesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer vertexBuffer;
-        private final GLBuffer attributesBuffer;
 
-        public NodesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer,
+        public NodesVAO(GL2ES2 gl, OpenGLOptions openGLOptions, final GLBuffer vertexBuffer,
                         final GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.vertexBuffer = vertexBuffer;
-            this.attributesBuffer = attributesBuffer;
+            super(gl, openGLOptions,vertexBuffer, attributesBuffer);
+
         }
 
         @Override

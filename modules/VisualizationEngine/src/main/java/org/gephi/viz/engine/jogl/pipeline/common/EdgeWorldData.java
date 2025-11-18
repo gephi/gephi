@@ -1,6 +1,5 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.spi.WorldData;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
@@ -14,7 +13,6 @@ public class EdgeWorldData implements WorldData {
     private final float edgeScale;
     private final float lightenNonSelectedFactor;
     private final OpenGLOptions openGLOptions;
-    private final GLCapabilitiesSummary glCapabilitiesSummary;
 
     public EdgeWorldData(float[] backgroundColor,
                          boolean someSelection,
@@ -23,8 +21,7 @@ public class EdgeWorldData implements WorldData {
                          float nodeScale,
                          float edgeScale,
                          float lightenNonSelectedFactor,
-                         OpenGLOptions openGLOptions,
-                         GLCapabilitiesSummary glCapabilitiesSummary) {
+                         OpenGLOptions openGLOptions) {
         this.backgroundColor = backgroundColor;
         this.someSelection = someSelection;
         this.minWeight = minWeight;
@@ -33,7 +30,6 @@ public class EdgeWorldData implements WorldData {
         this.edgeScale = edgeScale;
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
         this.openGLOptions = openGLOptions;
-        this.glCapabilitiesSummary = glCapabilitiesSummary;
     }
 
     public float getLightenNonSelectedFactor() {
@@ -66,9 +62,5 @@ public class EdgeWorldData implements WorldData {
 
     public OpenGLOptions getOpenGLOptions() {
         return openGLOptions;
-    }
-
-    public GLCapabilitiesSummary getGLCapabilitiesSummary() {
-        return glCapabilitiesSummary;
     }
 }

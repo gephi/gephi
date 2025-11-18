@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
 
 /**
  *
@@ -687,8 +686,8 @@ public final class GLCapabilitiesSummary {
         }
     }
 
-    public boolean isVAOSupported(OpenGLOptions openGLOptions) {
-        return (version.MAJOR_VERSION >= 3 || extensions.ARB_vertex_array_object) && !openGLOptions.isDisableVAOS();
+    public boolean isVAOSupported() {
+        return (version.MAJOR_VERSION >= 3 || extensions.ARB_vertex_array_object);
     }
 
     public boolean isInstancingSupported() {

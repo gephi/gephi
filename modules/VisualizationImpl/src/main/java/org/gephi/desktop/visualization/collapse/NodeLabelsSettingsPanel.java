@@ -54,10 +54,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.desktop.appearance.AppearanceUIController;
-import org.gephi.ui.appearance.plugin.UniqueElementColorTransformerUI;
 import org.gephi.ui.appearance.plugin.UniqueLabelColorTransformerUI;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.gephi.visualization.api.EdgeColorMode;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
 import org.gephi.visualization.api.VisualisationModel;
@@ -107,13 +105,13 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         final DefaultComboBoxModel<LabelColorMode> colorModeModel = new DefaultComboBoxModel<>(LabelColorMode.values());
         nodeColorCombo.setModel(colorModeModel);
         nodeColorCombo.addActionListener(e -> {
-                LabelColorMode selected = (LabelColorMode) nodeColorCombo.getSelectedItem();
-                if (selected == null) {
-                    return;
-                }
-                vizController.setNodeLabelColorMode(selected);
-                selfColorLink.setVisible(selected.equals(LabelColorMode.SELF));
-            });
+            LabelColorMode selected = (LabelColorMode) nodeColorCombo.getSelectedItem();
+            if (selected == null) {
+                return;
+            }
+            vizController.setNodeLabelColorMode(selected);
+            selfColorLink.setVisible(selected.equals(LabelColorMode.SELF));
+        });
         nodeColorCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -126,7 +124,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
                     label.setIcon(ImageUtilities.loadIcon(
                         "VisualizationImpl/LabelColorMode_" + ((LabelColorMode) value).name() + ".svg"));
                 } else {
-                    throw new IllegalArgumentException("Expected NodeLabelColorMode");
+                    throw new IllegalArgumentException("Expected LabelColorMode");
                 }
                 return this;
             }
@@ -149,7 +147,8 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         // Size node
         final DefaultComboBoxModel<LabelSizeMode> sizeModeModel = new DefaultComboBoxModel<>(LabelSizeMode.values());
         nodeSizeCombo.setModel(sizeModeModel);
-        nodeSizeCombo.addActionListener(e -> vizController.setNodeLabelSizeMode((LabelSizeMode) nodeSizeCombo.getSelectedItem()));
+        nodeSizeCombo.addActionListener(
+            e -> vizController.setNodeLabelSizeMode((LabelSizeMode) nodeSizeCombo.getSelectedItem()));
         nodeSizeCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -158,7 +157,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
                     (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof LabelSizeMode) {
                     label.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
-                        "NodeLabelSizeMode." + ((LabelSizeMode) value).name().toLowerCase() + ".name"));
+                        "LabelSizeMode." + ((LabelSizeMode) value).name().toLowerCase() + ".name"));
                     label.setIcon(ImageUtilities.loadIcon(
                         "VisualizationImpl/LabelSizeMode_" + ((LabelSizeMode) value).name() + ".svg"));
                 } else {
@@ -190,7 +189,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
             @Override
             public void actionPerformed(ActionEvent e) {
                 VisualisationModel model = vizController.getModel();
-                LabelAttributesPanel panel = new LabelAttributesPanel(model);
+                LabelAttributesPanel panel = new LabelAttributesPanel(model, false);
                 panel.setup();
                 DialogDescriptor dd = new DialogDescriptor(panel,
                     NbBundle.getMessage(NodeLabelsSettingsPanel.class, "LabelAttributesPanel.title"), true,
@@ -200,14 +199,18 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
                 }
             }
         });
+        attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.svg", false));
 
         // Hide non selected
-        hideNonSelectedCheckbox.addActionListener(e -> vizController.setHideNonSelectedLabels(hideNonSelectedCheckbox.isSelected()));
+        hideNonSelectedCheckbox.addActionListener(
+            e -> vizController.setHideNonSelectedNodeLabels(hideNonSelectedCheckbox.isSelected()));
 
         // Fit to node size
-        fitToNodeSizeToggleButton.addActionListener(e -> vizController.setNodeLabelFitToNodeSize(fitToNodeSizeToggleButton.isSelected()));
+        fitToNodeSizeToggleButton.addActionListener(
+            e -> vizController.setNodeLabelFitToNodeSize(fitToNodeSizeToggleButton.isSelected()));
         fitToNodeSizeToggleButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/fitToNodeSize.svg", false));
-        fitToNodeSizeToggleButton.setToolTipText(NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.toolTipText"));
+        fitToNodeSizeToggleButton.setToolTipText(NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.toolTipText"));
 
         // Avoid overlap
         avoidOverlap.addActionListener(e -> vizController.setAvoidNodeLabelOverlap(avoidOverlap.isSelected()));
@@ -237,7 +240,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("nodeLabelScale")) {
             refreshSharedConfig(model);
-        } else if (evt.getPropertyName().equals("hideNonSelectedLabels")) {
+        } else if (evt.getPropertyName().equals("hideNonSelectedNodeLabels")) {
             refreshSharedConfig(model);
         } else if (evt.getPropertyName().equals("nodeLabelSizeMode")) {
             refreshSharedConfig(model);
@@ -260,12 +263,13 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         if (nodeSizeCombo.getSelectedItem() != vizModel.getNodeLabelSizeMode()) {
             nodeSizeCombo.setSelectedItem(vizModel.getNodeLabelSizeMode());
         }
-        nodeFontButton.setText(vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
+        nodeFontButton.setText(
+            vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
         if (nodeSizeSlider.getValue() / 100f != vizModel.getNodeLabelScale()) {
             nodeSizeSlider.setValue((int) (vizModel.getNodeLabelScale() * 100f));
         }
-        if (hideNonSelectedCheckbox.isSelected() != vizModel.isHideNonSelectedLabels()) {
-            hideNonSelectedCheckbox.setSelected(vizModel.isHideNonSelectedLabels());
+        if (hideNonSelectedCheckbox.isSelected() != vizModel.isHideNonSelectedNodeLabels()) {
+            hideNonSelectedCheckbox.setSelected(vizModel.isHideNonSelectedNodeLabels());
         }
         if (fitToNodeSizeToggleButton.isSelected() != vizModel.isNodeLabelFitToNodeSize()) {
             fitToNodeSizeToggleButton.setSelected(vizModel.isNodeLabelFitToNodeSize());
@@ -318,38 +322,44 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         avoidOverlap = new javax.swing.JCheckBox();
 
         showLabelsCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        showLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.showLabelsCheckbox.text")); // NOI18N
-        showLabelsCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showLabelsCheckboxActionPerformed(evt);
-            }
-        });
+        showLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.showLabelsCheckbox.text")); // NOI18N
 
-        labelNodeColor.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.labelNodeColor.text")); // NOI18N
+        labelNodeColor.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.labelNodeColor.text")); // NOI18N
 
-        labelNodeFont.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.labelNodeFont.text")); // NOI18N
+        labelNodeFont.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.labelNodeFont.text")); // NOI18N
         labelNodeFont.setMaximumSize(new java.awt.Dimension(60, 15));
 
-        nodeFontButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.nodeFontButton.text")); // NOI18N
+        nodeFontButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.nodeFontButton.text")); // NOI18N
 
-        labelNodeScale.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.labelNodeScale.text")); // NOI18N
+        labelNodeScale.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.labelNodeScale.text")); // NOI18N
 
         nodeSizeSlider.setMinimum(1);
 
-        labelNodeSize.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.labelNodeSize.text")); // NOI18N
+        labelNodeSize.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.labelNodeSize.text")); // NOI18N
 
-        fitToNodeSizeToggleButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.text")); // NOI18N
+        fitToNodeSizeToggleButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.text")); // NOI18N
 
-        hideNonSelectedCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.hideNonSelectedCheckbox.text")); // NOI18N
+        hideNonSelectedCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.hideNonSelectedCheckbox.text")); // NOI18N
         hideNonSelectedCheckbox.setBorder(null);
         hideNonSelectedCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         hideNonSelectedCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
-        attributesButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.attributesButton.text")); // NOI18N
+        attributesButton.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.attributesButton.text")); // NOI18N
 
-        selfColorLink.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.selfColorLink.text")); // NOI18N
+        selfColorLink.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.selfColorLink.text")); // NOI18N
 
-        avoidOverlap.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class, "NodeLabelsSettingsPanel.avoidOverlap.text")); // NOI18N
+        avoidOverlap.setText(org.openide.util.NbBundle.getMessage(NodeLabelsSettingsPanel.class,
+            "NodeLabelsSettingsPanel.avoidOverlap.text")); // NOI18N
         avoidOverlap.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         avoidOverlap.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
@@ -357,77 +367,86 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelNodeColor)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nodeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelNodeSize)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(nodeSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addComponent(fitToNodeSizeToggleButton))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nodeFontButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(hideNonSelectedCheckbox))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(labelNodeScale)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(attributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(avoidOverlap))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(showLabelsCheckbox)))
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(19, 19, 19)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelNodeColor)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(nodeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelNodeSize)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(nodeSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(13, 13, 13)
+                                    .addComponent(fitToNodeSizeToggleButton))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE, 31,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(nodeFontButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(hideNonSelectedCheckbox))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(18, 18, 18)
+                                    .addComponent(labelNodeScale)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(attributesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(18, 18, 18)
+                                    .addComponent(avoidOverlap))))
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(showLabelsCheckbox)))
+                    .addContainerGap(99, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(showLabelsCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNodeColor)
-                    .addComponent(nodeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nodeFontButton)
-                    .addComponent(labelNodeScale)
-                    .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(attributesButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNodeSize)
-                    .addComponent(nodeSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fitToNodeSizeToggleButton)
-                    .addComponent(hideNonSelectedCheckbox)
-                    .addComponent(avoidOverlap))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(showLabelsCheckbox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelNodeColor)
+                        .addComponent(nodeColorCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nodeFontButton)
+                        .addComponent(labelNodeScale)
+                        .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(selfColorLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(attributesButton))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelNodeSize)
+                        .addComponent(nodeSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(fitToNodeSizeToggleButton)
+                        .addComponent(hideNonSelectedCheckbox)
+                        .addComponent(avoidOverlap))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void showLabelsCheckboxActionPerformed(
-        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showLabelsCheckboxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_showLabelsCheckboxActionPerformed
 }
+
+

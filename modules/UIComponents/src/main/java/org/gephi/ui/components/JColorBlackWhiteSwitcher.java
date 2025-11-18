@@ -68,6 +68,8 @@ public class JColorBlackWhiteSwitcher extends JButton {
     public static String EVENT_COLOR = "color";
     private Color color;
     private boolean includeOpacity;
+    private Color lightColor = Color.WHITE;
+    private Color darkColor = Color.BLACK;
 
     public JColorBlackWhiteSwitcher(Color color) {
         this(color, false);
@@ -94,26 +96,31 @@ public class JColorBlackWhiteSwitcher extends JButton {
             }
         });
         /**
-         * Left click action: switch between white and black
+         * Left click action: switch between light and dark color
          */
         addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!color.equals(Color.BLACK) && !color.equals(Color.WHITE)) {
-                    //Color is not white or black. Set to white to be swithed un future clicks
-                    setColor(Color.WHITE);
+                if (!color.equals(darkColor) && !color.equals(lightColor)) {
+                    //Color is not light or dark. Set to light color to be switched in future clicks
+                    setColor(lightColor);
                 } else {
-                    setColor(new Color(0xffffff - color.getRGB()));//switch black-white
+                    // Switch between light and dark color
+                    if (color.equals(lightColor)) {
+                        setColor(darkColor);
+                    } else {
+                        setColor(lightColor);
+                    }
                 }
             }
         });
     }
 
     private void refreshIcon() {
-        if (color.equals(Color.WHITE)) {//White color, show a lightbulb on:
+        if (color.equals(lightColor)) {//Light color, show a lightbulb on:
             setIcon(ImageUtilities.loadImageIcon("UIComponents/light-bulb.svg", false));
-        } else if (color.equals(Color.BLACK)) {//Black color, show a lightbulb off:
+        } else if (color.equals(darkColor)) {//Dark color, show a lightbulb off:
             setIcon(ImageUtilities.loadImageIcon("UIComponents/light-bulb-off.svg", false));
         } else {
             setIcon(new ColorIcon());//Other color, show the color in a square as the icon
@@ -125,7 +132,7 @@ public class JColorBlackWhiteSwitcher extends JButton {
     }
 
     public void setColor(Color color) {
-        if (color != this.color || (color != null && !color.equals(this.color))) {
+        if (color != this.color) {
             Color oldColor = this.color;
             this.color = color;
             firePropertyChange(EVENT_COLOR, oldColor, color);
@@ -141,6 +148,26 @@ public class JColorBlackWhiteSwitcher extends JButton {
 
     public void setIncludeOpacity(boolean includeOpacity) {
         this.includeOpacity = includeOpacity;
+    }
+
+    public Color getLightColor() {
+        return lightColor;
+    }
+
+    public void setLightColor(Color lightColor) {
+        if (lightColor != null) {
+            this.lightColor = lightColor;
+        }
+    }
+
+    public Color getDarkColor() {
+        return darkColor;
+    }
+
+    public void setDarkColor(Color darkColor) {
+        if (darkColor != null) {
+            this.darkColor = darkColor;
+        }
     }
 
     class ColorIcon implements Icon {

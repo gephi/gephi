@@ -10,6 +10,7 @@ import javax.swing.JPopupMenu;
 import org.gephi.ui.components.JColorBlackWhiteSwitcher;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.VisualisationModel;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
@@ -33,12 +34,6 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
             .setToolTipText(NbBundle.getMessage(GlobalGroup.class, "VizToolbar.Global.background"));
         backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, evt -> {
             vizController.setBackgroundColor(backgroundColorButton.getColor());
-
-//                    TextModelImpl textModel = VizController.getInstance().getVizModel().getTextModel();
-//                    boolean isDarkBackground =
-//                        (backgroundColor.getRed() + backgroundColor.getGreen() + backgroundColor.getBlue()) / 3 < 128;
-//                    textModel.setNodeColor(isDarkBackground ? Color.WHITE : Color.BLACK);
-            //TODO
         });
 
         //Screenshots
@@ -75,17 +70,19 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
     }
 
     @Override
-    public void setup(VisualisationModel vizModel) {
+    public void setup(VizModel vizModel) {
         for (JComponent component : getToolbarComponents()) {
             component.setEnabled(true);
         }
         backgroundColorButton.setColor(vizModel.getBackgroundColor());
+        backgroundColorButton.setDarkColor(vizModel.getConfig().getDefaultDarkBackgroundColor());
+        backgroundColorButton.setLightColor(vizModel.getConfig().getDefaultBackgroundColor());
         globalSettingsPanel.setup(vizModel);
         vizController.addPropertyChangeListener(this);
     }
 
     @Override
-    public void unsetup(VisualisationModel vizModel) {
+    public void unsetup(VizModel vizModel) {
         vizController.removePropertyChangeListener(this);
         globalSettingsPanel.unsetup(vizModel);
     }
@@ -121,5 +118,10 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
     @Override
     public boolean hasExtended() {
         return true;
+    }
+
+    @Override
+    public boolean drawSeparator() {
+        return false;
     }
 }

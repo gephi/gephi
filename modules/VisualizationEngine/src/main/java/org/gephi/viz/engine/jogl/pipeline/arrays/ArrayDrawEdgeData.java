@@ -1,19 +1,21 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
+import static org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected.VERTEX_COUNT;
 import static org.gephi.viz.engine.pipeline.RenderingLayer.BACK1;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
-import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
+import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.ArrayUtils;
@@ -81,10 +83,11 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             attributesGLBufferUndirected.bind(gl);
             attributesGLBufferUndirected.updateWithOrphaning(gl, batchUpdateBuffer);
             attributesGLBufferUndirected.unbind(gl);
-            lineModelUndirected.drawArraysMultipleInstance(gl, drawBatchCount);
+
+            GLFunctions.drawInstanced((GL3ES3) gl, 0, drawBatchCount, VERTEX_COUNT * drawBatchCount);
         }
 
-        lineModelUndirected.stopUsingProgram(gl);
+        GLFunctions.stopUsingProgram(gl);
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
@@ -132,10 +135,11 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             attributesGLBufferDirected.updateWithOrphaning(gl, batchUpdateBuffer);
             attributesGLBufferDirected.unbind(gl);
 
-            lineModelDirected.drawArraysMultipleInstance(gl, drawBatchCount);
+
+            GLFunctions.drawArraysSingleInstance(gl, 0, EdgeLineModelDirected.VERTEX_COUNT * drawBatchCount);
         }
 
-        lineModelDirected.stopUsingProgram(gl);
+        GLFunctions.stopUsingProgram(gl);
         unsetupDirectedVertexArrayAttributes(gl);
     }
 
@@ -158,10 +162,11 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
         {
-            float[] singleElementData = EdgeLineModelUndirected.getVertexData();
-            float[] undirectedVertexDataArray = new float[singleElementData.length * BATCH_EDGES_SIZE];
-            System.arraycopy(singleElementData, 0, undirectedVertexDataArray, 0, singleElementData.length);
-            ArrayUtils.repeat(undirectedVertexDataArray, 0, singleElementData.length, BATCH_EDGES_SIZE);
+
+            float[] undirectedVertexDataArray = new float[undirectedEdgeMesh.vertexData.length * BATCH_EDGES_SIZE];
+            System.arraycopy(undirectedEdgeMesh.vertexData, 0, undirectedVertexDataArray, 0,
+                undirectedEdgeMesh.vertexData.length);
+            ArrayUtils.repeat(undirectedVertexDataArray, 0, undirectedEdgeMesh.vertexData.length, BATCH_EDGES_SIZE);
 
             final FloatBuffer undirectedVertexData = GLBuffers.newDirectFloatBuffer(undirectedVertexDataArray);
 
@@ -173,10 +178,11 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         }
 
         {
-            float[] singleElementData = EdgeLineModelDirected.getVertexData();
-            float[] directedVertexDataArray = new float[singleElementData.length * BATCH_EDGES_SIZE];
-            System.arraycopy(singleElementData, 0, directedVertexDataArray, 0, singleElementData.length);
-            ArrayUtils.repeat(directedVertexDataArray, 0, singleElementData.length, BATCH_EDGES_SIZE);
+
+            float[] directedVertexDataArray = new float[directedEdgeMesh.vertexData.length * BATCH_EDGES_SIZE];
+            System.arraycopy(directedEdgeMesh.vertexData, 0, directedVertexDataArray, 0,
+                directedEdgeMesh.vertexData.length);
+            ArrayUtils.repeat(directedVertexDataArray, 0, directedEdgeMesh.vertexData.length, BATCH_EDGES_SIZE);
 
             final FloatBuffer directedVertexData = GLBuffers.newDirectFloatBuffer(directedVertexDataArray);
 

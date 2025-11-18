@@ -65,7 +65,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JColorButton(Color.BLACK)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JColorButton(Color.DARK_GRAY)"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JCheckBox" name="hightlightCheckBox">

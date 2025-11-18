@@ -271,6 +271,18 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
+    public void setEdgeLabelColorMode(LabelColorMode mode) {
+        final VizModel model = getModel();
+        model.setEdgeLabelColorMode(mode);
+    }
+
+    @Override
+    public void setEdgeLabelSizeMode(LabelSizeMode mode) {
+        final VizModel model = getModel();
+        model.setEdgeLabelSizeMode(mode);
+    }
+
+    @Override
     public void setNodeLabelColorMode(LabelColorMode mode) {
         final VizModel model = getModel();
         model.setNodeLabelColorMode(mode);
@@ -283,9 +295,15 @@ public class VizController implements VisualizationController, Controller<VizMod
     }
 
     @Override
-    public void setHideNonSelectedLabels(boolean hideNonSelected) {
+    public void setHideNonSelectedNodeLabels(boolean hideNonSelected) {
         final VizModel model = getModel();
-        model.setHideNonSelectedLabels(hideNonSelected);
+        model.setHideNonSelectedNodeLabels(hideNonSelected);
+    }
+
+    @Override
+    public void setHideNonSelectedEdgeLabels(boolean hideNonSelected) {
+        final VizModel model = getModel();
+        model.setHideNonSelectedEdgeLabels(hideNonSelected);
     }
 
     @Override

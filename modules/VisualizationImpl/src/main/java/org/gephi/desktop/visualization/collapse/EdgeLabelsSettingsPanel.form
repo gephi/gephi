@@ -19,65 +19,67 @@
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="397" max="-2" attributes="0"/>
-                      <Component id="labelEdgeScale" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="edgeSizeSlider" min="0" pref="194" max="32767" attributes="1"/>
-                  </Group>
-                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
+                              <Component id="labelEdgeColor" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="showLabelsCheckbox" min="-2" max="-2" attributes="0"/>
+                              <Component id="edgeColorCombo" min="-2" pref="145" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="labelEdgeSize" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="labelEdgeColor" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="edgeColorCombo" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="labelEdgeFont" min="-2" pref="32" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="edgeFontButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="labelEdgeSize" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="edgeSizeCombo" min="-2" pref="145" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="selfColorLink" min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="labelEdgeFont" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="edgeFontButton" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="hideNonSelectedCheckbox" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <Component id="labelEdgeScale" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="edgeSizeSlider" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="attributesButton" min="-2" pref="125" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="showLabelsCheckbox" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace pref="99" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                          <Component id="labelEdgeScale" min="-2" max="-2" attributes="1"/>
-                      </Group>
-                      <Component id="edgeSizeSlider" alignment="0" min="-2" pref="34" max="-2" attributes="1"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="showLabelsCheckbox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="labelEdgeColor" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="edgeColorCombo" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="labelEdgeFont" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="edgeFontButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="labelEdgeSize" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                  </Group>
+              <Component id="showLabelsCheckbox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelEdgeColor" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="edgeColorCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelEdgeFont" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="edgeFontButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelEdgeScale" alignment="3" min="-2" max="-2" attributes="1"/>
+                  <Component id="edgeSizeSlider" alignment="3" min="-2" max="-2" attributes="1"/>
+                  <Component id="selfColorLink" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="attributesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelEdgeSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="edgeSizeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hideNonSelectedCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -94,9 +96,6 @@
           <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeLabelsSettingsPanel.showLabelsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showLabelsCheckboxActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="labelEdgeColor">
       <Properties>
@@ -107,7 +106,7 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="edgeColorCombo">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;EdgeColorMode&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LabelColorMode&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="labelEdgeFont">
@@ -135,11 +134,47 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JSlider" name="edgeSizeSlider">
+      <Properties>
+        <Property name="minimum" type="int" value="1"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelEdgeSize">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeLabelsSettingsPanel.labelEdgeSize.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="edgeSizeCombo">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LabelSizeMode&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="hideNonSelectedCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeLabelsSettingsPanel.hideNonSelectedCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="null"/>
+        </Property>
+        <Property name="horizontalTextPosition" type="int" value="2"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 0, 2, 2]"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="attributesButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeLabelsSettingsPanel.attributesButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="org.jdesktop.swingx.JXHyperlink" name="selfColorLink">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/visualization/collapse/Bundle.properties" key="EdgeLabelsSettingsPanel.selfColorLink.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

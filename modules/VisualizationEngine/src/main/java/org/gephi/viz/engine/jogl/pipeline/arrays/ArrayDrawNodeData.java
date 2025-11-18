@@ -9,6 +9,7 @@ import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
+import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
@@ -41,7 +42,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
-            diskModel.stopUsingProgram(gl);
+            GLFunctions.stopUsingProgram(gl);
             unsetupVertexArrayAttributes(gl);
             return;
         }
@@ -69,16 +70,16 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             final int circleVertexCount;
             final int firstVertex;
             if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-                circleVertexCount = circleVertexCount64;
+                circleVertexCount = circleMesh64.vertexCount;
                 firstVertex = firstVertex64;
             } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-                circleVertexCount = circleVertexCount32;
+                circleVertexCount = circleMesh32.vertexCount;
                 firstVertex = firstVertex32;
             } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-                circleVertexCount = circleVertexCount16;
+                circleVertexCount = circleMesh16.vertexCount;
                 firstVertex = firstVertex16;
             } else {
-                circleVertexCount = circleVertexCount8;
+                circleVertexCount = circleMesh8.vertexCount;
                 firstVertex = firstVertex8;
             }
 
@@ -98,10 +99,10 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             gl.glVertexAttrib1f(SHADER_SIZE_LOCATION, size);
 
             //Draw the instance:
-            diskModel.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
+            GLFunctions.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
         }
 
-        diskModel.stopUsingProgram(gl);
+        GLFunctions.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);
     }
 

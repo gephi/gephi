@@ -80,7 +80,7 @@ public interface VisualisationModel extends Model {
 
     float getNodeLabelScale();
 
-    boolean isHideNonSelectedLabels();
+    boolean isHideNonSelectedNodeLabels();
 
     boolean isAvoidNodeLabelOverlap();
 
@@ -90,9 +90,15 @@ public interface VisualisationModel extends Model {
 
     boolean isShowEdgeLabels();
 
+    LabelColorMode getEdgeLabelColorMode();
+
+    LabelSizeMode getEdgeLabelSizeMode();
+
     Font getEdgeLabelFont();
 
     float getEdgeLabelScale();
+
+    boolean isHideNonSelectedEdgeLabels();
 
     Column[] getEdgeLabelColumns();
 

@@ -141,7 +141,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel implements Visualiza
         java.awt.GridBagConstraints gridBagConstraints;
 
         labelBackgroundColor = new javax.swing.JLabel();
-        backgroundColorButton = new JColorButton(Color.BLACK);
+        backgroundColorButton = new JColorButton(Color.DARK_GRAY);
         hightlightCheckBox = new javax.swing.JCheckBox();
         autoSelectNeigborCheckbox = new javax.swing.JCheckBox();
 

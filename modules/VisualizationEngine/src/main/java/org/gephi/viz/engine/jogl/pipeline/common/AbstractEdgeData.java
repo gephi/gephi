@@ -1,8 +1,19 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
+import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Rect2D;
@@ -11,10 +22,11 @@ import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
 import org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected;
+import org.gephi.viz.engine.jogl.models.mesh.EdgeLineMeshGenerator;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
+import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
-import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
@@ -22,12 +34,6 @@ import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.EdgesCallback;
-
-import java.nio.FloatBuffer;
-
-import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-import static org.gephi.viz.engine.util.gl.Constants.*;
 
 /**
  *
@@ -40,6 +46,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     protected final InstanceCounter undirectedInstanceCounter = new InstanceCounter();
     protected final InstanceCounter directedInstanceCounter = new InstanceCounter();
+
+    protected final Mesh undirectedEdgeMesh = EdgeLineMeshGenerator.undirectedMeshGenerator();
+    protected final Mesh directedEdgeMesh = EdgeLineMeshGenerator.directedMeshGenerator();
 
     // NOTE: Why secondary buffers and VAOs?
     // Sadly, we cannot use glDrawArraysInstancedBaseInstance in MacOS and it will be never available
@@ -289,8 +298,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             model.getRenderingOptions().getNodeScale(),
             model.getRenderingOptions().getEdgeScale(),
             model.getRenderingOptions().getLightenNonSelectedFactor(),
-            engine.getOpenGLOptions(),
-            engine.getRenderingTarget().getGlCapabilitiesSummary()
+            engine.getOpenGLOptions()
         );
     }
 
@@ -836,7 +844,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
-                data.getGLCapabilitiesSummary(),
+                gl,
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirected
             );
@@ -849,7 +857,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                                                               EdgeWorldData data) {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
-                data.getGLCapabilitiesSummary(),
+                gl,
                 data.getOpenGLOptions(),
                 attributesGLBufferUndirectedSecondary
             );
@@ -871,7 +879,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
-                data.getGLCapabilitiesSummary(),
+               gl,
                 data.getOpenGLOptions(),
                 attributesGLBufferDirected
             );
@@ -884,7 +892,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                                                             EdgeWorldData data) {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
-                data.getGLCapabilitiesSummary(),
+                gl,
                 data.getOpenGLOptions(),
                 attributesGLBufferDirectedSecondary
             );
@@ -906,39 +914,74 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void dispose(GL gl) {
         if (vertexGLBufferUndirected != null) {
             vertexGLBufferUndirected.destroy(gl);
+            vertexGLBufferUndirected = null;
         }
 
         if (vertexGLBufferDirected != null) {
             vertexGLBufferDirected.destroy(gl);
+            vertexGLBufferDirected = null;
         }
 
         if (attributesGLBufferDirected != null) {
             attributesGLBufferDirected.destroy(gl);
+            attributesGLBufferDirected = null;
         }
 
         if (attributesGLBufferDirectedSecondary != null) {
             attributesGLBufferDirectedSecondary.destroy(gl);
+            attributesGLBufferDirectedSecondary = null;
         }
 
         if (attributesGLBufferUndirected != null) {
             attributesGLBufferUndirected.destroy(gl);
+            attributesGLBufferUndirected = null;
         }
 
         if (attributesGLBufferUndirectedSecondary != null) {
             attributesGLBufferUndirectedSecondary.destroy(gl);
+            attributesGLBufferUndirectedSecondary = null;
         }
+
+        if (attributesBuffer != null) {
+            attributesBuffer.destroy();
+            attributesBuffer = null;
+        }
+
+        // Destroy and reset VAOs to prevent reuse after re-init
+        if (undirectedEdgesVAO != null) {
+            undirectedEdgesVAO.destroy(gl.getGL2ES2());
+            undirectedEdgesVAO = null;
+        }
+
+        if (undirectedEdgesVAOSecondary != null) {
+            undirectedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            undirectedEdgesVAOSecondary = null;
+        }
+
+        if (directedEdgesVAO != null) {
+            directedEdgesVAO.destroy(gl.getGL2ES2());
+            directedEdgesVAO = null;
+        }
+
+        if (directedEdgesVAOSecondary != null) {
+            directedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            directedEdgesVAOSecondary = null;
+        }
+
+        // Destroy shader programs
+        lineModelUndirected.destroy(gl.getGL2ES2());
+        lineModelDirected.destroy(gl.getGL2ES2());
 
         edgesCallback.reset();
     }
 
     private class UndirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
 
-        public UndirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public UndirectedEdgesVAO(GL2ES2 gl, OpenGLOptions openGLOptions,
                                   GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.attributesBuffer = attributesBuffer;
+            super(gl,openGLOptions, vertexGLBufferUndirected, attributesBuffer);
+
         }
 
         @Override
@@ -1013,12 +1056,10 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     private class DirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
 
-        public DirectedEdgesVAO(GLCapabilitiesSummary capabilities, OpenGLOptions openGLOptions,
+        public DirectedEdgesVAO(GL2ES2 gl,  OpenGLOptions openGLOptions,
                                 GLBuffer attributesBuffer) {
-            super(capabilities, openGLOptions);
-            this.attributesBuffer = attributesBuffer;
+            super(gl, openGLOptions, vertexGLBufferDirected, attributesBuffer);
         }
 
         @Override
