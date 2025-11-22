@@ -42,9 +42,17 @@
 
 package org.gephi.layout;
 
+import com.illposed.osc.OSCBadDataEvent;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacketEvent;
+import com.illposed.osc.OSCPacketListener;
+import com.illposed.osc.transport.OSCPortIn;
+import com.illposed.osc.transport.OSCPortInBuilder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +94,8 @@ public class LayoutModelImpl implements LayoutModel, Model {
     private Layout selectedLayout;
     private LayoutBuilder selectedBuilder;
 
+    private final OSCPortIn oscIn;
+
     public LayoutModelImpl(Workspace workspace) {
         this.workspace = workspace;
         listeners = new ArrayList<>();
@@ -104,6 +114,61 @@ public class LayoutModelImpl implements LayoutModel, Model {
                 Exceptions.printStackTrace(t);
             }
         });
+        try {
+            oscIn = new OSCPortInBuilder().setPort(48999).build();
+            oscIn.startListening();
+            oscIn.addPacketListener(new OSCPacketListener() {
+                @Override
+                public void handlePacket(OSCPacketEvent oscPacketEvent) {
+                    OSCMessage message = (OSCMessage) oscPacketEvent.getPacket();
+                    Layout selectedLayout = getSelectedLayout();
+                    if (selectedLayout == null) {
+                        return;
+                    }
+
+                    for (LayoutProperty p : selectedLayout.getProperties()) {
+
+                        if (message.getAddress().endsWith(p.getCanonicalName())) {
+                            /*System.out.println(p.getCanonicalName());
+                            System.out.println(p.getCategory());
+                            System.out.println(p.getProperty());*/
+                            //System.out.println(message.getInfo().getArgumentTypeTags());
+                            try {
+                                if (message.getInfo().getArgumentTypeTags().equals("f")) {
+                                    p.getProperty().setValue(((Float) message.getArguments().get(0)).doubleValue());
+                                } else if (message.getInfo().getArgumentTypeTags().equals("i")) {
+                                    p.getProperty().setValue(((Integer) message.getArguments().get(0)) == 1);
+                                }
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                            return;
+                        }
+
+                    }
+                    if (message.getAddress().equals("/FA2/Scaling")) {
+
+                        return;
+                    }
+                    if (message.getAddress().equals("/FA2/Gravity")) {
+
+                        return;
+                    }
+                    if (message.getAddress().equals("/FA2/GravityWheel")) {
+
+                    }
+                }
+
+                @Override
+                public void handleBadData(OSCBadDataEvent oscBadDataEvent) {
+
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -341,13 +406,12 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof LayoutPropertyKey)) {
+            if (!(obj instanceof LayoutPropertyKey s)) {
                 return false;
             }
             if (obj == this) {
                 return true;
             }
-            LayoutPropertyKey s = (LayoutPropertyKey) obj;
             return s.layoutClassName.equals(layoutClassName) && s.name.equals(name);
         }
 
