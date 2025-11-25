@@ -18,6 +18,7 @@ import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.util.gl.Constants;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
@@ -152,7 +153,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         final float[] backgroundColorFloats = data.getBackgroundColor();
 
         final int instanceCount;
-
+        double backgroundLuma = backgroundColorFloats[0] * .2126 + backgroundColorFloats[1] * .7152 + backgroundColorFloats[2] * .0722;
+        float nodeBorderColorFactor = backgroundLuma < .5f ? 1f + Constants.getNodeBorderDarkenFactor() : Constants.getNodeBorderDarkenFactor();
 
         if (renderingUnselectedNodes) {
             instanceCount = instanceCounter.unselectedCountToDraw;
@@ -164,7 +166,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                     backgroundColorFloats,
                     colorLightenFactor,
                     globalTime,
-                    this.selectedTime
+                    this.selectedTime,
+                    nodeBorderColorFactor
             );
 
             setupSecondaryVertexArrayAttributes(gl, data);
@@ -177,11 +180,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                         gl,
                         mvpFloats,
                         globalTime,
-                        this.selectedTime
+                        this.selectedTime,
+                        nodeBorderColorFactor
                 );
             } else {
-                double a = backgroundColorFloats[0] * .2126 + backgroundColorFloats[1] * .7152 + backgroundColorFloats[2] * .0722;
-                diskModel.useProgram(gl, mvpFloats, a);
+                diskModel.useProgram(gl, mvpFloats, nodeBorderColorFactor);
             }
 
             setupVertexArrayAttributes(gl, data);

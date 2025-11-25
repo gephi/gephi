@@ -74,7 +74,7 @@ public class NodeDiskModel {
     }
 
     public void useProgramWithSelectionSelected(GL2ES2 gl, float[] mvpFloats,
-                                                float globalTime, float selectedTime) {
+                                                float globalTime, float selectedTime, float nodeBorderColorFactor) {
         //Circle:
         programWithSelectionSelected.use(gl);
 
@@ -87,12 +87,12 @@ public class NodeDiskModel {
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
                 Constants.getNodeBorderSize());
         gl.glUniform1f(programWithSelectionSelected.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-                Constants.getNodeBorderDarkenFactor());
+                nodeBorderColorFactor);
     }
 
     public void useProgramWithSelectionUnselected(GL2ES2 gl, float[] mvpFloats,
                                                   float[] backgroundColorFloats, float colorLightenFactor,
-                                                  float globalTime, float selectedTime) {
+                                                  float globalTime, float selectedTime, float nodeBorderColorFactor) {
         //Circle:
         programWithSelectionUnselected.use(gl);
 
@@ -110,10 +110,10 @@ public class NodeDiskModel {
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
                 Constants.getNodeBorderSize());
         gl.glUniform1f(programWithSelectionUnselected.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-                Constants.getNodeBorderDarkenFactor());
+                nodeBorderColorFactor);
     }
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, double a) {
+    public void useProgram(GL2ES2 gl, float[] mvpFloats, float nodeBorderColorFactor) {
         //Circle:
         program.use(gl);
 
@@ -121,7 +121,7 @@ public class NodeDiskModel {
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_BORDER_SIZE),
                 Constants.getNodeBorderSize());
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_DARKEN_FACTOR),
-                a < .5 ? 1 + Constants.getNodeBorderDarkenFactor() : Constants.getNodeBorderDarkenFactor());
+                nodeBorderColorFactor);
 
     }
 
