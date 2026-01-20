@@ -42,11 +42,11 @@
 
 package org.gephi.ui.tools.plugin.edit;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
 
@@ -57,6 +57,9 @@ import org.openide.windows.WindowManager;
  */
 @ServiceProvider(service = EditWindowController.class)
 public class EditWindowControllerImpl implements EditWindowController {
+
+    // Cached open state to avoid blocking invokeAndWait calls
+    private final AtomicBoolean cachedOpenState = new AtomicBoolean(false);
 
     public EditToolTopComponent findInstance() {
         return (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
@@ -72,114 +75,79 @@ public class EditWindowControllerImpl implements EditWindowController {
 
     @Override
     public void openEditWindow() {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.open();
-                topComponent.requestActive();
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.open();
+            topComponent.requestActive();
+            cachedOpenState.set(true);
         });
-
     }
 
     @Override
     public void closeEditWindow() {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.disableEdit();
-                topComponent.close();
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.disableEdit();
+            topComponent.close();
+            cachedOpenState.set(false);
         });
     }
 
     @Override
     public boolean isOpen() {
-        IsOpenRunnable runnable = new IsOpenRunnable();
         if (SwingUtilities.isEventDispatchThread()) {
-            runnable.run();
+            // On EDT, get actual state and update cache
+            EditToolTopComponent topComponent = findInstance();
+            boolean open = topComponent != null && topComponent.isOpened();
+            cachedOpenState.set(open);
+            return open;
         } else {
-            try {
-                SwingUtilities.invokeAndWait(runnable);
-            } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            // Off EDT, schedule update and return cached value to avoid blocking
+            SwingUtilities.invokeLater(() -> {
+                EditToolTopComponent topComponent = findInstance();
+                cachedOpenState.set(topComponent != null && topComponent.isOpened());
+            });
+            return cachedOpenState.get();
         }
-        return runnable.open;
     }
 
     @Override
     public void editNode(final Node node) {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.editNode(node);
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.editNode(node);
         });
     }
 
     @Override
     public void editNodes(final Node[] nodes) {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.editNodes(nodes);
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.editNodes(nodes);
         });
     }
 
     @Override
     public void editEdge(final Edge edge) {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.editEdge(edge);
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.editEdge(edge);
         });
     }
 
     @Override
     public void editEdges(final Edge[] edges) {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.editEdges(edges);
-            }
+        runAction(() -> {
+            EditToolTopComponent topComponent = findInstance();
+            topComponent.editEdges(edges);
         });
     }
 
     @Override
     public void disableEdit() {
-        runAction(new Runnable() {
-
-            @Override
-            public void run() {
-                EditToolTopComponent topComponent = findInstance();
-                topComponent.disableEdit();
-            }
-        });
-    }
-
-    class IsOpenRunnable implements Runnable {
-
-        boolean open = false;
-
-        @Override
-        public void run() {
+        runAction(() -> {
             EditToolTopComponent topComponent = findInstance();
-            open = topComponent != null && topComponent.isOpened();
-        }
+            topComponent.disableEdit();
+        });
     }
 }
