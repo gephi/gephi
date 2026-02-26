@@ -21,8 +21,11 @@ import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.models.NodeDiskModel;
 import org.gephi.viz.engine.jogl.models.mesh.NodeDiskVertexMeshGenerator;
+import org.gephi.viz.engine.jogl.models.nodedisk.CommonNodeDiskModel;
+import org.gephi.viz.engine.jogl.models.nodedisk.NodeDiskModelNoSelection;
+import org.gephi.viz.engine.jogl.models.nodedisk.NodeDiskModelSelectionSelected;
+import org.gephi.viz.engine.jogl.models.nodedisk.NodeDiskModelSelectionUnselected;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
@@ -55,9 +58,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected GLBuffer commandsGLBuffer;
     protected final NodesCallback nodesCallback;
 
-    protected static final int ATTRIBS_STRIDE = NodeDiskModel.TOTAL_ATTRIBUTES_FLOATS;
+    protected static final int ATTRIBS_STRIDE = CommonNodeDiskModel.TOTAL_ATTRIBUTES_FLOATS;
 
-    protected final NodeDiskModel diskModel;
+    protected final NodeDiskModelNoSelection diskModelNoSelection;
+    protected final NodeDiskModelSelectionSelected diskModelSelectionSelected;
+    protected final NodeDiskModelSelectionUnselected diskModelSelectionUnselected;
 
     protected final Mesh circleMesh64 = NodeDiskVertexMeshGenerator.generateFilledCircle(64);
     protected final Mesh circleMesh32 = NodeDiskVertexMeshGenerator.generateFilledCircle(32);
@@ -93,7 +98,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         this.indirectCommands = indirectCommands;
         this.nodesCallback = nodesCallback;
 
-        diskModel = new NodeDiskModel();
+        diskModelNoSelection = new NodeDiskModelNoSelection();
+        diskModelSelectionSelected = new NodeDiskModelSelectionSelected();
+        diskModelSelectionUnselected = new NodeDiskModelSelectionUnselected();
 
 
         firstVertex64 = 0;
@@ -103,7 +110,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     }
 
     public void init(GL2ES2 gl) {
-        diskModel.initGLPrograms(gl);
+        diskModelNoSelection.initGLPrograms(gl);
+        diskModelSelectionSelected.initGLPrograms(gl);
+        diskModelSelectionUnselected.initGLPrograms(gl);
         initBuffers(gl);
     }
 
@@ -167,7 +176,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             instanceCount = instanceCounter.unselectedCountToDraw;
             final float colorLightenFactor = data.getLightenNonSelectedFactor();
 
-            diskModel.useProgramWithSelectionUnselected(
+            diskModelSelectionUnselected.useProgram(
                 gl,
                 mvpFloats,
                 backgroundColorFloats,
@@ -183,7 +192,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
             if (someSelection) {
 
-                diskModel.useProgramWithSelectionSelected(
+                diskModelSelectionSelected.useProgram(
                     gl,
                     mvpFloats,
                     globalTime,
@@ -191,7 +200,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                     nodeBorderColorFactor
                 );
             } else {
-                diskModel.useProgram(gl, mvpFloats, nodeBorderColorFactor);
+                diskModelNoSelection.useProgram(gl, mvpFloats, nodeBorderColorFactor);
             }
 
             setupVertexArrayAttributes(gl, data);
@@ -480,7 +489,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         }
 
         // Destroy shader programs
-        diskModel.destroy(gl.getGL2ES2());
+        diskModelNoSelection.destroy(gl.getGL2ES2());
+        diskModelSelectionSelected.destroy(gl.getGL2ES2());
+        diskModelSelectionUnselected.destroy(gl.getGL2ES2());
 
         nodesCallback.reset();
     }
@@ -501,7 +512,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         protected void configure(GL2ES2 gl) {
             vertexBuffer.bind(gl);
             {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, NodeDiskModel.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
+                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonNodeDiskModel.VERTEX_FLOATS, GL_FLOAT, false,
+                    0, 0);
             }
             vertexBuffer.unbind(gl);
 
@@ -511,15 +523,17 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                     final int stride = ATTRIBS_STRIDE * Float.BYTES;
                     int offset = 0;
 
-                    gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, NodeDiskModel.POSITION_FLOATS, GL_FLOAT, false,
+                    gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonNodeDiskModel.POSITION_FLOATS,
+                        GL_FLOAT, false,
                         stride, offset);
-                    offset += NodeDiskModel.POSITION_FLOATS * Float.BYTES;
+                    offset += CommonNodeDiskModel.POSITION_FLOATS * Float.BYTES;
 
-                    gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, NodeDiskModel.COLOR_FLOATS * Float.BYTES,
+                    gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, CommonNodeDiskModel.COLOR_FLOATS * Float.BYTES,
                         GL_UNSIGNED_BYTE, false, stride, offset);
-                    offset += NodeDiskModel.COLOR_FLOATS * Float.BYTES;
+                    offset += CommonNodeDiskModel.COLOR_FLOATS * Float.BYTES;
 
-                    gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, NodeDiskModel.SIZE_FLOATS, GL_FLOAT, false, stride,
+                    gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, CommonNodeDiskModel.SIZE_FLOATS, GL_FLOAT,
+                        false, stride,
                         offset);
                 }
                 attributesBuffer.unbind(gl);
