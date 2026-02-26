@@ -10,6 +10,22 @@ import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.io.importer.GraphImporter;
+import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
+import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
+import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.status.GraphSelection;
+
+import org.gephi.viz.engine.profiling.ProfilingFlag;
+import org.gephi.viz.engine.util.gl.OpenGLOptions;
+import org.junit.Test;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -20,24 +36,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.io.importer.GraphImporter;
-import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
-import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
-import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
-import org.gephi.viz.engine.status.GraphSelection;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class SimpleViewerTest {
 
-    @Ignore
+    // @Ignore
     @Test
     public void testSimpleViewer() {
         final SimpleViewer viewer = new SimpleViewer();
@@ -81,16 +83,16 @@ public class SimpleViewerTest {
                 throw new RuntimeException("Graph file not found: " + file.getAbsolutePath());
             }
             GraphModel graphModel = GraphImporter.importGraph(file);
-            engine = VizEngineFactory.<JOGLRenderingTarget, NEWTEvent>newEngine(
-                renderingTarget,
-                graphModel,
-                Collections.singletonList(
-                    new VizEngineJOGLConfigurator()
-                )
+            engine = VizEngineFactory.newEngine(
+                    renderingTarget,
+                    graphModel,
+                    Collections.singletonList(
+                            new VizEngineJOGLConfigurator()
+                    )
             );
 
             final GraphRenderingOptions renderingOptions = engine.getRenderingOptions();
-            renderingOptions.setNodeLabelColumns(new Column[] {graphModel.defaultColumns().nodeLabel()});
+            renderingOptions.setNodeLabelColumns(new Column[]{graphModel.defaultColumns().nodeLabel()});
 
             final OpenGLOptions glOptions = engine.getOpenGLOptions();
             glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
@@ -125,7 +127,9 @@ public class SimpleViewerTest {
             System.out.println("Press ctrl key to toggle selection mode");
             System.out.println("Press T to toggle node labels");
             System.out.println("Press +/- to scale node labels");
-
+            if (ProfilingFlag.ENABLED) {
+                System.out.println("Press P to toggle profiling");
+            }
             try {
                 latch.await(); // Blocks until window is closed
             } catch (InterruptedException e) {
@@ -149,11 +153,11 @@ public class SimpleViewerTest {
                     break;
                 case KeyEvent.VK_MINUS:
                     engine.getRenderingOptions()
-                        .setNodeLabelScale(Math.max(engine.getRenderingOptions().getNodeLabelScale() - 0.1f, 0.1f));
+                            .setNodeLabelScale(Math.max(engine.getRenderingOptions().getNodeLabelScale() - 0.1f, 0.1f));
                     break;
                 case KeyEvent.VK_EQUALS:
                     engine.getRenderingOptions()
-                        .setNodeLabelScale(engine.getRenderingOptions().getNodeLabelScale() + 0.1f);
+                            .setNodeLabelScale(engine.getRenderingOptions().getNodeLabelScale() + 0.1f);
                     break;
                 case KeyEvent.VK_T:
                     final boolean showLabels = engine.getRenderingOptions().isShowNodeLabels();
@@ -166,6 +170,13 @@ public class SimpleViewerTest {
                         ImageIO.write(image, "png", outputFile);
                     } catch (IOException | ExecutionException | InterruptedException ex) {
                         throw new RuntimeException(ex);
+                    }
+                    break;
+                case KeyEvent.VK_P:
+                    if (ProfilingFlag.ENABLED) {
+                        boolean wasEnabled = engine.getProfiler().isEnabled();
+                        engine.getProfiler().setEnabled(!wasEnabled);
+                        System.out.println("Profiling " + (!wasEnabled ? "enabled" : "disabled"));
                     }
                     break;
             }

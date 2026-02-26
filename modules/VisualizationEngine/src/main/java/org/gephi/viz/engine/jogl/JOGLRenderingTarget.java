@@ -24,6 +24,8 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.jogl.util.ScreenshotTaker;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.Profile;
+import org.gephi.viz.engine.profiling.EngineProfiler;
+import org.gephi.viz.engine.profiling.ProfilingFlag;
 import org.gephi.viz.engine.spi.RenderingTarget;
 import org.gephi.viz.engine.util.TimeUtils;
 
@@ -145,12 +147,28 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
     public void display(GLAutoDrawable drawable) {
         final GL gl = drawable.getGL().getGL();
 
-        engine.getBackgroundColor(backgroundColor);
-        gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
-        gl.glClear(GL_COLOR_BUFFER_BIT);
+        if (ProfilingFlag.ENABLED) {
+            final EngineProfiler profiler = engine.getProfiler();
+            profiler.beginFrame(gl);
 
-        updateFPS();
-        engine.display();
+            profiler.beginStage("frame_clear_ms");
+            engine.getBackgroundColor(backgroundColor);
+            gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+            gl.glClear(GL_COLOR_BUFFER_BIT);
+            profiler.endStage("frame_clear_ms");
+
+            updateFPS();
+            engine.display();
+
+            profiler.endFrame(gl);
+        } else {
+            engine.getBackgroundColor(backgroundColor);
+            gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+            gl.glClear(GL_COLOR_BUFFER_BIT);
+
+            updateFPS();
+            engine.display();
+        }
 
         // Screenshot handling
         ScreenshotRequest request = screenshotRequest;

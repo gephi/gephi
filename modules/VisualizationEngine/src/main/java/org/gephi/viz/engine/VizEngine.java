@@ -19,11 +19,14 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.nio.file.Path;
 import java.util.stream.Collectors;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.profiling.EngineProfiler;
+import org.gephi.viz.engine.profiling.ProfilingFlag;
 import org.gephi.viz.engine.spi.ElementsCallback;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.PipelinedExecutor;
@@ -108,6 +111,9 @@ public class VizEngine<R extends RenderingTarget, I> {
     private boolean darkLaf = DEFAULT_DARK_LAF;
     private int maxWorldUpdatesPerSecond = DEFAULT_MAX_WORLD_UPDATES_PER_SECOND;
 
+    //Profiling
+    private EngineProfiler profiler;
+
     public VizEngine(R renderingTarget) {
         this.engineModel = createEmptyModel();
         this.openGLOptions = new OpenGLOptions();
@@ -135,6 +141,10 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     public OpenGLOptions getOpenGLOptions() {
         return openGLOptions;
+    }
+
+    public EngineProfiler getProfiler() {
+        return profiler;
     }
 
     private <T extends PipelinedExecutor> void setupPipelineOfElements(Set<T> allAvailable, List<T> dest,
@@ -429,6 +439,12 @@ public class VizEngine<R extends RenderingTarget, I> {
             updatersThreadPool = null;
         }
 
+        if (ProfilingFlag.ENABLED) {
+            profiler = new EngineProfiler(
+                Path.of("engine-profiling.jsonl")
+            );
+        }
+
         loadModelViewProjection();
     }
 
@@ -473,6 +489,11 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Reset world update timing to allow immediate update on next init
         lastWorldUpdateMillis = 0;
+
+        if (ProfilingFlag.ENABLED && profiler != null) {
+            profiler.dispose();
+            profiler = null;
+        }
     }
 
     public synchronized void destroy() {
@@ -556,15 +577,40 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Render
         if (!worldData.isEmpty()) {
-            for (RenderingLayer layer : ALL_LAYERS) {
-                int rendererIndex = 0;
-                for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
-                    if (renderer.getLayers().contains(layer)) {
-                        // Get world data for this renderer:
-                        WorldData localWorldData = worldData.get(rendererIndex);
-                        ((Renderer<R, WorldData>) renderer).render(localWorldData, renderingTarget, layer);
+            if (ProfilingFlag.ENABLED) {
+                profiler.beginStage("render_total_ms");
+
+                final long[] renderTimers = new long[renderersPipeline.size()];
+                for (RenderingLayer layer : ALL_LAYERS) {
+                    int rendererIndex = 0;
+                    for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
+                        if (renderer.getLayers().contains(layer)) {
+                            WorldData localWorldData = worldData.get(rendererIndex);
+                            long t0 = System.nanoTime();
+                            ((Renderer<R, WorldData>) renderer).render(localWorldData, renderingTarget, layer);
+                            renderTimers[rendererIndex] += System.nanoTime() - t0;
+                        }
+                        rendererIndex++;
                     }
-                    rendererIndex++;
+                }
+
+                profiler.endStage("render_total_ms");
+
+                for (int i = 0; i < renderersPipeline.size(); i++) {
+                    profiler.recordDetail("render_detail",
+                        renderersPipeline.get(i).getName(),
+                        renderTimers[i] / 1_000_000.0);
+                }
+            } else {
+                for (RenderingLayer layer : ALL_LAYERS) {
+                    int rendererIndex = 0;
+                    for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
+                        if (renderer.getLayers().contains(layer)) {
+                            WorldData localWorldData = worldData.get(rendererIndex);
+                            ((Renderer<R, WorldData>) renderer).render(localWorldData, renderingTarget, layer);
+                        }
+                        rendererIndex++;
+                    }
                 }
             }
         }
@@ -605,9 +651,24 @@ public class VizEngine<R extends RenderingTarget, I> {
         }
         lastWorldUpdateMillis = TimeUtils.getTimeMillis();
 
-        return renderersPipeline.stream().map(
-            r -> r.worldUpdated(model, renderingTarget)
-        ).collect(Collectors.toList());
+        if (ProfilingFlag.ENABLED) {
+            profiler.beginStage("world_update_total_ms");
+            List<WorldData> result = new ArrayList<>(renderersPipeline.size());
+            for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
+                long t0 = System.nanoTime();
+                @SuppressWarnings("unchecked")
+                WorldData wd = ((Renderer<R, WorldData>) renderer).worldUpdated(model, renderingTarget);
+                profiler.recordDetail("world_update_detail",
+                    renderer.getName(), (System.nanoTime() - t0) / 1_000_000.0);
+                result.add(wd);
+            }
+            profiler.endStage("world_update_total_ms");
+            return result;
+        } else {
+            return renderersPipeline.stream().map(
+                r -> r.worldUpdated(model, renderingTarget)
+            ).collect(Collectors.toList());
+        }
     }
 
     private List<? extends WorldData> checkConcurrentWorldUpdateIsDone() {
@@ -631,9 +692,24 @@ public class VizEngine<R extends RenderingTarget, I> {
             VizEngineModel modelUsedByUpdaters = allUpdatersCompletableFuture.get();
             allUpdatersCompletableFuture = null;
 
-            return renderersPipeline.stream().map(
-                r -> r.worldUpdated(modelUsedByUpdaters, renderingTarget)
-            ).toList();
+            if (ProfilingFlag.ENABLED) {
+                profiler.beginStage("world_update_total_ms");
+                List<WorldData> result = new ArrayList<>(renderersPipeline.size());
+                for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
+                    long t0 = System.nanoTime();
+                    @SuppressWarnings("unchecked")
+                    WorldData wd = ((Renderer<R, WorldData>) renderer).worldUpdated(modelUsedByUpdaters, renderingTarget);
+                    profiler.recordDetail("world_update_detail",
+                        renderer.getName(), (System.nanoTime() - t0) / 1_000_000.0);
+                    result.add(wd);
+                }
+                profiler.endStage("world_update_total_ms");
+                return result;
+            } else {
+                return renderersPipeline.stream().map(
+                    r -> r.worldUpdated(modelUsedByUpdaters, renderingTarget)
+                ).toList();
+            }
         } catch (Throwable t) {
             Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.SEVERE, null, t);
             throw new RuntimeException(t);
