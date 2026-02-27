@@ -82,7 +82,7 @@ public final class DependantColor {
     public Color getColor(Color parentColor) {
         if (mode.equals(Mode.CUSTOM) && customColor != null) {
             return customColor;
-        } else if (mode.equals(Mode.DARKER)){
+        } else if (mode.equals(Mode.DARKER)) {
             return ColorUtils.darken(parentColor, DARKEN_FACTOR);
         } else if (mode.equals(Mode.LIGHTER)) {
             return ColorUtils.lighten(parentColor, 1f + DARKEN_FACTOR);

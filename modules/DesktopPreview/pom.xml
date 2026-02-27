@@ -92,6 +92,10 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-core</artifactId>
+        </dependency>
         <!-- Test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -121,8 +125,13 @@
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
-                    <publicPackages>
-                    </publicPackages>
+                    <moduleDependencies>
+                        <!-- Required to allow to extend FontEditor -->
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-core</id>
+                            <type>impl</type>
+                        </dependency>
+                    </moduleDependencies>
                 </configuration>
             </plugin>
         </plugins>

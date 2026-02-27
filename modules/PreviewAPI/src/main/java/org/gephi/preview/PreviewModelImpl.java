@@ -42,16 +42,15 @@
 
 package org.gephi.preview;
 
-import java.awt.Color;
 import java.beans.PropertyEditorManager;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -225,7 +224,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
     }
 
     protected void buildAndLoadItems(Renderer[] renderers, Graph graph) {
-        itemMaps.putAll(Lookup.getDefault()
+        Map<String, Map<Object, Item>> groupedItems = Lookup.getDefault()
             .lookupAll(ItemBuilder.class)
             .parallelStream()
             .filter(b -> isItemBuilderNeeded(b, getProperties(), renderers))
@@ -233,7 +232,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
                 try {
                     Item[] items = b.getItems(graph);
                     if (items == null || items.length == 0) {
-                        return Stream.empty();
+                        return Stream.<Entry<String, Item>>empty();
                     }
 
                     return Arrays.stream(items)
@@ -247,12 +246,15 @@ public class PreviewModelImpl implements PreviewModel, Model {
             })
             .collect(Collectors.groupingBy(
                 Entry::getKey,
-                Collectors.toMap(
+                LinkedHashMap::new,
+                Collectors.<Entry<String, Item>, Object, Item, Map<Object, Item>>toMap(
                     e -> e.getValue().getSource(),
                     Entry::getValue,
-                    this::mergeItems
+                    this::mergeItems,
+                    LinkedHashMap::new
                 )
-            )));
+            ));
+        itemMaps.putAll(groupedItems);
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
@@ -268,8 +270,8 @@ public class PreviewModelImpl implements PreviewModel, Model {
     protected void updateCanvasSize(Renderer[] renderers) {
         float x1 = Float.MAX_VALUE;
         float y1 = Float.MAX_VALUE;
-        float x2 = Float.MIN_VALUE;
-        float y2 = Float.MIN_VALUE;
+        float x2 = -Float.MAX_VALUE;
+        float y2 = -Float.MAX_VALUE;
         PreviewProperties properties = getProperties();
         for (Renderer r : renderers) {
             for (String type : getItemTypes()) {
@@ -497,7 +499,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
                             managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass),
                                 Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
                         }
-                    } else if("globalcanvassize".equalsIgnoreCase(name)) {
+                    } else if ("globalcanvassize".equalsIgnoreCase(name)) {
                         this.globalCanvasSize = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
                     }
                     break;

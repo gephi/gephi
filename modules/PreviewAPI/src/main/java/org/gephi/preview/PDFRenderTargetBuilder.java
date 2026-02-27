@@ -47,6 +47,8 @@ import java.awt.Font;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -65,7 +67,6 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -75,6 +76,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RenderTargetBuilder.class)
 public class PDFRenderTargetBuilder implements RenderTargetBuilder {
+
+    private static final Logger logger = Logger.getLogger(PDFRenderTargetBuilder.class.getName());
 
     @Override
     public String getName() {
@@ -92,7 +95,8 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         final PDRectangle pageSize = properties.getValue(PDFTarget.PAGESIZE);
         boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
         boolean transparentBackground = properties.getBooleanValue(PDFTarget.TRANSPARENT_BACKGROUND);
-        Color backgroundColor = transparentBackground ? null : properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+        Color backgroundColor =
+            transparentBackground ? null : properties.getColorValue(PreviewProperty.BACKGROUND_COLOR);
         PDPageContentStream cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
         PDDocument doc = properties.getValue(PDFTarget.PDF_DOCUMENT);
         PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(
@@ -178,29 +182,62 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         public PDFont getPDFont(java.awt.Font font) {
-            final String fontKey = getFontKey(font);
+            final String fontKey = font.getPSName();
             return fontMap.computeIfAbsent(fontKey, (key) -> {
-                FontMapping<TrueTypeFont> mapping = FontMappers.instance().getTrueTypeFont(fontKey, null);
-                if (mapping != null) {
-                    try {
-                        return PDType0Font.load(document, mapping.getFont(), true);
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
+                // 1. Try the PostScript name directly (e.g. "ArialMT", "Arial-BoldMT").
+                //    This is the most accurate as PDFBox indexes fonts by PostScript name.
+                PDFont result = loadFontByName(font.getPSName());
+                if (result != null) {
+                    return result;
                 }
+
+                // 2. Fall back to family + style suffixes (e.g. "Arial-Bold").
+                //    This can work via PDFBox's substitution tables for common fonts
+                //    (e.g. "Arial-Bold" is a registered substitute for "Helvetica-Bold").
+                String familyKey = getFamilyStyleKey(font);
+                result = loadFontByName(familyKey);
+                if (result != null) {
+                    return result;
+                }
+
+                // 3. Fall back to Helvetica
+                logger.log(Level.WARNING,
+                    "No PDF font found for ''{0}'' (psName=''{1}'', familyKey=''{2}''), falling back to Helvetica",
+                    new Object[] {font.getName(), font.getPSName(), familyKey});
                 return new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
             });
         }
 
-        private static String getFontKey(Font font) {
-            StringBuilder name = new StringBuilder(font.getName().replace(" ", "-"));
+        /**
+         * Tries to load a TrueType font by name via PDFBox's FontMappers.
+         * Returns null if the font was not found or could not be loaded.
+         */
+        private PDFont loadFontByName(String fontName) {
+            FontMapping<TrueTypeFont> mapping = FontMappers.instance().getTrueTypeFont(fontName, null);
+            if (mapping != null && !mapping.isFallback()) {
+                try {
+                    return PDType0Font.load(document, mapping.getFont(), true);
+                } catch (IOException ex) {
+                    logger.log(Level.WARNING,
+                        "Failed to load PDF font for ''{0}'': {1}",
+                        new Object[] {fontName, ex.getMessage()});
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Builds a font lookup key from the font family and style, e.g. "Arial-Bold".
+         * This format matches PDFBox's substitution table entries for common fonts.
+         */
+        private static String getFamilyStyleKey(Font font) {
+            StringBuilder name = new StringBuilder(font.getFamily().replace(" ", "-"));
             if (font.isBold()) {
                 name.append("-Bold");
             }
             if (font.isItalic()) {
                 name.append("-Italic");
             }
-
             return name.toString();
         }
 

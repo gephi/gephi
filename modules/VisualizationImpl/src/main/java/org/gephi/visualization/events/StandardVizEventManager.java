@@ -202,7 +202,11 @@ public class StandardVizEventManager {
         if (!graphSelection.getMode().equals(GraphSelection.GraphSelectionMode.CUSTOM_SELECTION)) {
             clickedNodes = graphSelection.getSelectedNodes().toArray(new Node[0]);
         } else {
-            clickedNodes = graphIndex.getNodesUnderPosition(mouseWorldPosition.x, mouseWorldPosition.y).toArray();
+            clickedNodes = graphIndex.getNodesUnderPosition(
+                mouseWorldPosition.x,
+                mouseWorldPosition.y,
+                engine.getRenderingOptions().getNodeScale()
+            ).toArray();
         }
 
         //Node Left click

@@ -5,7 +5,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceProvider;
 import org.openide.util.Lookup;
 
 public class WorkspaceHelper {

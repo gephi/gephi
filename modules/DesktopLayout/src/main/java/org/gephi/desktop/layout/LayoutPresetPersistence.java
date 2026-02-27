@@ -241,9 +241,10 @@ public class LayoutPresetPersistence {
 
     private Preset addPreset(Preset preset) {
         List<Preset> layoutPresets = presets.computeIfAbsent(preset.layoutClassName, k -> new ArrayList<>());
-        for (Preset p : layoutPresets) {
-            if (p.equals(preset)) {
-                return p;
+        for (int i = 0; i < layoutPresets.size(); i++) {
+            if (layoutPresets.get(i).equals(preset)) {
+                layoutPresets.set(i, preset);
+                return preset;
             }
         }
         layoutPresets.add(preset);

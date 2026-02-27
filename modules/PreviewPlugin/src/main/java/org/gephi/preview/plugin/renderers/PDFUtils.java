@@ -19,8 +19,9 @@ public class PDFUtils {
         stream.curveTo(x + r * b, y - r, x + r, y - r * b, x + r, y);
     }
 
-    public static void drawArc(PDPageContentStream stream, final float x1, final float y1, final float x2, final float y2,
-                        final float startAng, final float extent) throws IOException {
+    public static void drawArc(PDPageContentStream stream, final float x1, final float y1, final float x2,
+                               final float y2,
+                               final float startAng, final float extent) throws IOException {
         List<float[]> ar = bezierArc(x1, y1, x2, y2, startAng, extent);
         if (ar.isEmpty()) {
             return;
@@ -95,6 +96,10 @@ public class PDFUtils {
 
     public static float getTextHeight(PDFont pdFont, float fontSize) throws IOException {
         return pdFont.getFontDescriptor().getCapHeight() / 1000 * fontSize;
+    }
+
+    public static float getMaxTextHeight(PDFont pdFont, float fontSize) throws IOException {
+        return pdFont.getBoundingBox().getHeight() / 1000 * fontSize;
     }
 
     public static float getTextWidth(PDFont pdFont, float fontSize, String text) throws IOException {

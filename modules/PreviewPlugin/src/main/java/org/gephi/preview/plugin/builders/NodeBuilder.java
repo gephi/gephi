@@ -56,7 +56,7 @@ public class NodeBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-        return graph.getNodes().parallelStream().map(
+        return graph.getNodes().stream().map(
             n -> {
                 NodeItem nodeItem = new NodeItem(n);
                 nodeItem.setData(NodeItem.X, n.x());

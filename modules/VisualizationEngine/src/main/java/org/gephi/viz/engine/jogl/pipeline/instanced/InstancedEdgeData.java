@@ -1,13 +1,12 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced;
 
-import static org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected.VERTEX_COUNT;
-
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
-import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
+import org.gephi.viz.engine.jogl.models.edgeline.directed.CommonEdgeLineDirected;
+import org.gephi.viz.engine.jogl.models.edgeline.undirected.CommonEdgeLineUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
@@ -66,7 +65,7 @@ public class InstancedEdgeData extends AbstractEdgeData {
                                 float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, data, mvpFloats);
 
-        GLFunctions.drawInstanced(gl, 0, VERTEX_COUNT, instanceCount);
+        GLFunctions.drawInstanced(gl, 0, CommonEdgeLineUndirected.VERTEX_COUNT, instanceCount);
         GLFunctions.stopUsingProgram(gl);
         unsetupUndirectedVertexArrayAttributes(gl);
     }
@@ -76,7 +75,7 @@ public class InstancedEdgeData extends AbstractEdgeData {
                               float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, data, mvpFloats);
 
-        GLFunctions.drawInstanced(gl, 0, EdgeLineModelDirected.VERTEX_COUNT, instanceCount);
+        GLFunctions.drawInstanced(gl, 0, CommonEdgeLineDirected.VERTEX_COUNT, instanceCount);
         GLFunctions.stopUsingProgram(gl);
         unsetupDirectedVertexArrayAttributes(gl);
     }
@@ -148,7 +147,8 @@ public class InstancedEdgeData extends AbstractEdgeData {
         attributesGLBufferSelfLoopSecondary =
             new GLBufferMutable(bufferName[ATTRIBS_BUFFER_SELF_LOOP_SECONDARY], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
         attributesGLBufferSelfLoopSecondary.bind(gl);
-        attributesGLBufferSelfLoopSecondary.init(gl, (long) ATTRIBS_STRIDE_SELFLOOP * Float.BYTES * BATCH_SELFLOOP_EDGES_SIZE,
+        attributesGLBufferSelfLoopSecondary.init(gl,
+            (long) ATTRIBS_STRIDE_SELFLOOP * Float.BYTES * BATCH_SELFLOOP_EDGES_SIZE,
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         attributesGLBufferSelfLoopSecondary.unbind(gl);
 

@@ -42,10 +42,6 @@
 
 package org.gephi.preview.plugin.builders;
 
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Element;
-import org.gephi.graph.api.GraphView;
-
 public abstract class AbstractLabelBuilder {
 
 }

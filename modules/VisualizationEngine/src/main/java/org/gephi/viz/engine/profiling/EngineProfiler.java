@@ -8,10 +8,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -174,13 +174,12 @@ public class EngineProfiler {
         }
         gpuTimerInitialized = true;
 
-        if (!(gl instanceof GL2ES3)) {
+        if (!(gl instanceof GL2ES3 gl3)) {
             gpuTimerSupported = false;
             return;
         }
 
         try {
-            GL2ES3 gl3 = (GL2ES3) gl;
             gl3.glGenQueries(2, gpuQueryIds, 0);
             if (gl3.glGetError() == GL.GL_NO_ERROR && gpuQueryIds[0] != 0) {
                 gpuTimerSupported = true;

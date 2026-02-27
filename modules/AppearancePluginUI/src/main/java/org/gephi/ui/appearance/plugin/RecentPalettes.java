@@ -43,15 +43,11 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.gephi.appearance.plugin.RankingElementColorTransformer.LinearGradient;
-import org.openide.util.Exceptions;
+import org.gephi.utils.ColorUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -101,12 +97,8 @@ public class RecentPalettes {
 
         int i = 0;
         for (LinearGradient gradient : gradients) {
-            try {
-                prefs.putByteArray(COLORS + i, serializeColors(gradient.getColors()));
-                prefs.putByteArray(POSITIONS + i, serializePositions(gradient.getPositions()));
-            } catch (Exception e) {
-                Exceptions.printStackTrace(e);
-            }
+            prefs.putByteArray(COLORS + i, ColorUtils.serializeColors(gradient.getColors()));
+            prefs.putByteArray(POSITIONS + i, ColorUtils.serializeFloats(gradient.getPositions()));
             i++;
         }
     }
@@ -119,13 +111,10 @@ public class RecentPalettes {
             byte[] cols = prefs.getByteArray(COLORS + i, null);
             byte[] poss = prefs.getByteArray(POSITIONS + i, null);
             if (cols != null && poss != null) {
-                try {
-                    Color[] colors = deserializeColors(cols);
-                    float[] posisitons = deserializePositions(poss);
-                    LinearGradient linearGradient = new LinearGradient(colors, posisitons);
-                    gradients.addLast(linearGradient);
-                } catch (Exception e) {
-                    Exceptions.printStackTrace(e);
+                Color[] colors = ColorUtils.deserializeColors(cols);
+                float[] positions = ColorUtils.deserializeFloats(poss);
+                if (colors != null && positions != null) {
+                    gradients.addLast(new LinearGradient(colors, positions));
                 }
             } else {
                 break;
@@ -147,39 +136,5 @@ public class RecentPalettes {
         Preferences prefs = NbPreferences.forModule(this.getClass()).node("options").node(name);
 
         return prefs;
-    }
-
-    private byte[] serializePositions(float[] positions) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
-            out.writeObject(positions);
-        }
-        return bos.toByteArray();
-    }
-
-    private float[] deserializePositions(byte[] positions) throws Exception {
-        ByteArrayInputStream bis = new ByteArrayInputStream(positions);
-        float[] array;
-        try (ObjectInputStream in = new ObjectInputStream(bis)) {
-            array = (float[]) in.readObject();
-        }
-        return array;
-    }
-
-    private byte[] serializeColors(Color[] colors) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
-            out.writeObject(colors);
-        }
-        return bos.toByteArray();
-    }
-
-    private Color[] deserializeColors(byte[] colors) throws Exception {
-        ByteArrayInputStream bis = new ByteArrayInputStream(colors);
-        Color[] array;
-        try (ObjectInputStream in = new ObjectInputStream(bis)) {
-            array = (Color[]) in.readObject();
-        }
-        return array;
     }
 }

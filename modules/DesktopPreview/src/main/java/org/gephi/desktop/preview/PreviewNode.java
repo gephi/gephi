@@ -117,16 +117,10 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
                         sheetSet.setDisplayName(category);
                         sheetSet.setName(category);
                     }
-                    Node.Property nodeProperty = null;
+                    Node.Property nodeProperty;
                     PreviewProperty[] parents = properties.getParentProperties(property);
                     PreviewProperty[] children = properties.getChildProperties(property);
-                    if (parents.length > 0) {
-                        nodeProperty = new ChildPreviewPropertyWrapper(property, parents);
-                    } else if (children.length > 0) {
-                        nodeProperty = new ParentPreviewPropertyWrapper(property, children);
-                    } else {
-                        nodeProperty = new PreviewPropertyWrapper(property);
-                    }
+                    nodeProperty = new PreviewPropertyWrapper(property, parents, children);
 
                     sheetSet.put(nodeProperty);
                     sheetSets.put(category, sheetSet);
@@ -178,71 +172,19 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         });
     }
 
-    private static class PreviewPropertyWrapper extends PropertySupport.ReadWrite {
-
-        private final PreviewProperty property;
-
-        public PreviewPropertyWrapper(PreviewProperty previewProperty) {
-            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
-                previewProperty.getDescription());
-            this.property = previewProperty;
-        }
-
-        @Override
-        public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return property.getValue();
-        }
-
-        @Override
-        public void setValue(Object t)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            property.setValue(t);
-        }
-    }
-
-    private static class ChildPreviewPropertyWrapper extends PropertySupport.ReadWrite {
+    private class PreviewPropertyWrapper extends PropertySupport.ReadWrite {
 
         private final PreviewProperty property;
         private final PreviewProperty[] parents;
+        private final PreviewProperty[] children;
 
-        public ChildPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] parents) {
+        public PreviewPropertyWrapper(PreviewProperty previewProperty,
+                                       PreviewProperty[] parents,
+                                       PreviewProperty[] children) {
             super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
                 previewProperty.getDescription());
             this.property = previewProperty;
             this.parents = parents;
-        }
-
-        @Override
-        public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return property.getValue();
-        }
-
-        @Override
-        public void setValue(Object t)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            property.setValue(t);
-        }
-
-        @Override
-        public boolean canWrite() {
-            for (PreviewProperty parent : parents) {
-                if (parent.getType().equals(Boolean.class) && parent.getValue().equals(Boolean.FALSE)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    private class ParentPreviewPropertyWrapper extends PropertySupport.ReadWrite {
-
-        private final PreviewProperty property;
-        private final PreviewProperty[] children;
-
-        public ParentPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] children) {
-            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
-                previewProperty.getDescription());
-            this.property = previewProperty;
             this.children = children;
         }
 
@@ -255,9 +197,19 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         public void setValue(Object t)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             property.setValue(t);
-            for (PreviewProperty p : children) {
-                propertyChange(new PropertyChangeEvent(this, p.getName(), p.getValue(), p.getValue()));
+            for (PreviewProperty child : children) {
+                propertyChange(new PropertyChangeEvent(this, child.getName(), child.getValue(), child.getValue()));
             }
+        }
+
+        @Override
+        public boolean canWrite() {
+            for (PreviewProperty parent : parents) {
+                if (parent.getType().equals(Boolean.class) && parent.getValue().equals(Boolean.FALSE)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

@@ -106,7 +106,8 @@ public class ImporterDOT implements FileImporter, LongTask {
         tk.slashStarComments(true);
         tk.slashSlashComments(true);
         tk.whitespaceChars(0, ' ');
-        tk.wordChars(' ' + 1, '\u00ff');
+        tk.wordChars(' ' + 1, '#' - 1);
+        tk.wordChars('#' + 1, '\u00ff');
         tk.ordinaryChar('[');
         tk.ordinaryChar(']');
         tk.ordinaryChar('{');

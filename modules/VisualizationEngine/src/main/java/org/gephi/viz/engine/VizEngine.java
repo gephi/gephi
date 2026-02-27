@@ -1,6 +1,7 @@
 package org.gephi.viz.engine;
 
 import java.awt.Color;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +20,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.nio.file.Path;
 import java.util.stream.Collectors;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.GraphModel;
@@ -301,9 +301,9 @@ public class VizEngine<R extends RenderingTarget, I> {
     /**
      * Centers the view on a specific tile of a larger image by adjusting the zoom and translation.
      *
-     * @param tileX the X coordinate of the tile in the larger image
-     * @param tileY the Y coordinate of the tile in the larger image
-     * @param imageWidth the width of the full image
+     * @param tileX       the X coordinate of the tile in the larger image
+     * @param tileY       the Y coordinate of the tile in the larger image
+     * @param imageWidth  the width of the full image
      * @param imageHeight the height of the full image
      */
     public void centerOnTile(float tileX, float tileY, float imageWidth, float imageHeight) {
@@ -384,7 +384,8 @@ public class VizEngine<R extends RenderingTarget, I> {
         setup();
     }
 
-    public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions, GraphSelection graphSelection) {
+    public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions,
+                                           GraphSelection graphSelection) {
         if (this.engineModel.getGraphModel() != graphModel) {
             this.engineModel = new VizEngineModel(graphModel,
                 renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl(darkLaf),
@@ -658,7 +659,7 @@ public class VizEngine<R extends RenderingTarget, I> {
                 long t0 = System.nanoTime();
                 @SuppressWarnings("unchecked")
                 WorldData wd = ((Renderer<R, WorldData>) renderer).worldUpdated(model, renderingTarget);
-                profiler.recordDetail("world_update_detail",
+                profiler.recordDetail("world_update_detail_ms",
                     renderer.getName(), (System.nanoTime() - t0) / 1_000_000.0);
                 result.add(wd);
             }
@@ -698,8 +699,9 @@ public class VizEngine<R extends RenderingTarget, I> {
                 for (Renderer<R, ? extends WorldData> renderer : renderersPipeline) {
                     long t0 = System.nanoTime();
                     @SuppressWarnings("unchecked")
-                    WorldData wd = ((Renderer<R, WorldData>) renderer).worldUpdated(modelUsedByUpdaters, renderingTarget);
-                    profiler.recordDetail("world_update_detail",
+                    WorldData wd =
+                        ((Renderer<R, WorldData>) renderer).worldUpdated(modelUsedByUpdaters, renderingTarget);
+                    profiler.recordDetail("world_update_detail_ms",
                         renderer.getName(), (System.nanoTime() - t0) / 1_000_000.0);
                     result.add(wd);
                 }

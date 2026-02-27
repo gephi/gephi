@@ -31,9 +31,15 @@ public interface GraphIndex {
 
     NodeIterable getNodesUnderPosition(float x, float y);
 
+    NodeIterable getNodesUnderPosition(float x, float y, float nodeScale);
+
     NodeIterable getNodesInsideRectangle(Rect2D rect);
 
+    NodeIterable getNodesInsideRectangle(Rect2D rect, float nodeScale);
+
     NodeIterable getNodesInsideCircle(float x, float y, float radius);
+
+    NodeIterable getNodesInsideCircle(float x, float y, float radius, float nodeScale);
 
     EdgeIterable getEdgesInsideRectangle(Rect2D rect);
 

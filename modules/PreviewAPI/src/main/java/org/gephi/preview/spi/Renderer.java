@@ -154,8 +154,8 @@ public interface Renderer {
      * This method has access to the <code>model</code> but also to the <code>target</code> and <code>properties</code>.
      *
      * @param previewModel the model to get items from
-     * @param target     the target to render the item on
-     * @param properties the central properties
+     * @param target       the target to render the item on
+     * @param properties   the central properties
      */
     void postProcess(PreviewModel previewModel, RenderTarget target, PreviewProperties properties);
 

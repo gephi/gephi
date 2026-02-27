@@ -42,6 +42,7 @@
 
 package org.gephi.desktop.preview;
 
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorManager;
@@ -56,6 +57,7 @@ import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.desktop.preview.propertyeditors.DependantColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.DependantOriginalColorPropertyEditor;
+import org.gephi.desktop.preview.propertyeditors.DisabledAwareFontEditor;
 import org.gephi.desktop.preview.propertyeditors.EdgeColorPropertyEditor;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -166,6 +168,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);
+
+        // Overriding Netbeans font editor to support disabled state, #3105
+        PropertyEditorManager.registerEditor(Font.class, DisabledAwareFontEditor.class);
     }
 
     /**

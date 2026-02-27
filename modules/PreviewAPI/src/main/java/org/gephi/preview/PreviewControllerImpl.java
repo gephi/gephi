@@ -66,6 +66,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Controller;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -116,6 +117,20 @@ public class PreviewControllerImpl implements PreviewController, Controller<Prev
         //Directed graph?
         previewModel.getProperties()
             .putValue(PreviewProperty.DIRECTED, graphModel.isDirected() || graphModel.isMixed());
+
+        //Viz engine properties
+        VisualizationModel vizModel = workspace.getLookup().lookup(VisualizationModel.class);
+        if (vizModel != null) {
+            previewModel.getProperties().putValue(PreviewProperty.NODE_SCALE_FACTOR, vizModel.getNodeScale());
+            previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_SCALE, vizModel.getNodeLabelScale());
+            previewModel.getProperties().putValue(PreviewProperty.EDGE_SCALE_FACTOR, vizModel.getEdgeScale());
+            previewModel.getProperties().putValue(PreviewProperty.EDGE_LABEL_SCALE, vizModel.getEdgeLabelScale());
+        } else {
+            previewModel.getProperties().putValue(PreviewProperty.NODE_SCALE_FACTOR, 1f);
+            previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_SCALE, 1f);
+            previewModel.getProperties().putValue(PreviewProperty.EDGE_SCALE_FACTOR, 1f);
+            previewModel.getProperties().putValue(PreviewProperty.EDGE_LABEL_SCALE, 1f);
+        }
 
         //Graph
         Graph graph = graphModel.getGraphVisible();

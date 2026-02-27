@@ -116,11 +116,10 @@ public class NodeLabelUpdater extends AbstractLabelUpdater<Node> {
             }
 
             // Size calculation
-            final float baseNodeSizeFactor = fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale :
-                (float) Math.sqrt(node.getTextProperties().getSize());
+            final float baseNodeSizeFactor = fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale : 1f;
             // Add tiny bias (<1%) based on node size to prioritize labels of larger nodes in overlap detection
             final float nodeSizeFactor = baseNodeSizeFactor * (1.0f + node.size() * nodeScale * 0.00001f);
-            float sizeFactor = nodeLabelScale * nodeSizeFactor;
+            float sizeFactor = nodeLabelScale * nodeSizeFactor * (float) Math.sqrt(node.getTextProperties().getSize());
             if (labelSizeMode.equals(GraphRenderingOptions.LabelSizeMode.SCREEN)) {
                 sizeFactor /= zoom;
             }

@@ -42,7 +42,6 @@
 
 package org.gephi.desktop.visualization.tools;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,7 +54,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
@@ -68,9 +66,6 @@ import org.openide.util.NbBundle;
 public class ActionsToolbar extends JToolBar {
 
     private final VisualizationController visualizationController;
-    //Settings
-    private Color color = new Color(0.6f, 0.6f, 0.6f);
-    private float size = 10.0f;
 
     public ActionsToolbar() {
         this.visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
@@ -110,56 +105,6 @@ public class ActionsToolbar extends JToolBar {
             }
         });
         add(centerOnZeroButton);
-
-        //Reset colors
-        final JColorButton resetColorButton = new JColorButton(color, true, false);
-        resetColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetColors"));
-        resetColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                color = resetColorButton.getColor();
-                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraphVisible();
-                for (Node n : graph.getNodes()) {
-                    n.setR(color.getRed() / 255f);
-                    n.setG(color.getGreen() / 255f);
-                    n.setB(color.getBlue() / 255f);
-                    n.setAlpha(1f);
-                }
-                for (Edge e : graph.getEdges()) {
-                    e.setR(color.getRed() / 255f);
-                    e.setG(color.getGreen() / 255f);
-                    e.setB(color.getBlue() / 255f);
-                    e.setAlpha(0f);
-                }
-            }
-        });
-        add(resetColorButton);
-
-        //Reset sizes
-        //Reset label colors
-        final JButton resetLabelColorButton = new JButton();
-        resetLabelColorButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/resetLabelColor.svg", false));
-        resetLabelColorButton
-            .setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelColors"));
-        resetLabelColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraphVisible();
-                for (Node n : graph.getNodes().toArray()) {
-                    n.getTextProperties().setColor(Color.BLACK);
-                    n.getTextProperties().setAlpha(0f);
-                }
-                for (Edge e : graph.getEdges().toArray()) {
-                    e.getTextProperties().setColor(Color.BLACK);
-                    e.getTextProperties().setAlpha(0f);
-                }
-            }
-        });
-        add(resetLabelColorButton);
 
         //Reset label visible
         final JButton resetLabelVisibleButton = new JButton();

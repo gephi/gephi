@@ -43,9 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
-import java.beans.PropertyEditorSupport;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.gephi.preview.types.EdgeColor;
 
 /**
@@ -77,7 +74,7 @@ public class BasicEdgeColorPropertyEditor extends AbstractColorPropertyEditor {
     @Override
     public void setAsText(String s) {
         if (matchColorMode(s, EdgeColor.Mode.CUSTOM.name().toLowerCase())) {
-             setValue(new EdgeColor(toColor(s)));
+            setValue(new EdgeColor(toColor(s)));
         } else if (matchColorMode(s, EdgeColor.Mode.MIXED.name().toLowerCase())) {
             setValue(new EdgeColor(EdgeColor.Mode.MIXED));
         } else if (matchColorMode(s, EdgeColor.Mode.ORIGINAL.name().toLowerCase())) {

@@ -42,9 +42,7 @@
 
 package org.gephi.preview.plugin.builders;
 
-import java.awt.Color;
 import java.util.Objects;
-import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.TextProperties;
@@ -72,7 +70,7 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         VisualizationModel vizModel = vizController != null ? vizController.getModel(workspace) : null;
         GraphView graphView = graph.getView();
 
-        return graph.getNodes().parallelStream().map(
+        return graph.getNodes().stream().map(
             n -> {
                 TextProperties textData = n.getTextProperties();
                 if (textData != null && textData.isVisible()) {
@@ -81,13 +79,9 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
                     labelItem.setData(NodeLabelItem.LABEL, label);
 
                     if (label != null && !label.isEmpty()) {
-                        labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
-                            (int) (textData.getG() * 255),
-                            (int) (textData.getB() * 255),
-                            (int) (textData.getAlpha() * 255)));
+                        labelItem.setData(NodeLabelItem.COLOR, textData.getColor());
                         labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
                         labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
-                        labelItem.setData(NodeLabelItem.LABEL, label);
                         return labelItem;
                     }
                 }

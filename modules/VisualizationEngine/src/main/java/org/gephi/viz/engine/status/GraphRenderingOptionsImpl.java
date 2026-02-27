@@ -29,7 +29,7 @@ public class GraphRenderingOptionsImpl implements GraphRenderingOptions {
     private Color edgeOutSelectionColor = DEFAULT_EDGE_OUT_SELECTION_COLOR;
     private EdgeColorMode edgeColorMode = DEFAULT_EDGE_COLOR_MODE;
     private boolean edgeWeightEnabled = DEFAULT_EDGE_WEIGHT_ENABLED;
-    private boolean edgeRescaleWeightEnabled = DEFAULT_EDGE_WEIGHT_ENABLED;
+    private boolean edgeRescaleWeightEnabled = DEFAULT_EDGE_RESCALE_WEIGHT_ENABLED ;
     private float edgeRescaleMin = DEFAULT_EDGE_RESCALE_MIN;
     private float edgeRescaleMax = DEFAULT_EDGE_RESCALE_MAX;
 

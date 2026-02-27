@@ -1,7 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
-import static org.gephi.viz.engine.jogl.models.EdgeLineModelUndirected.VERTEX_COUNT;
 import static org.gephi.viz.engine.pipeline.RenderingLayer.BACK1;
 
 import com.jogamp.opengl.GL;
@@ -9,7 +8,8 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
-import org.gephi.viz.engine.jogl.models.EdgeLineModelDirected;
+import org.gephi.viz.engine.jogl.models.edgeline.directed.CommonEdgeLineDirected;
+import org.gephi.viz.engine.jogl.models.edgeline.undirected.CommonEdgeLineUndirected;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractEdgeData;
 import org.gephi.viz.engine.jogl.pipeline.common.EdgeWorldData;
 import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
@@ -124,28 +124,29 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             for (int edgeIndex = 0; edgeIndex < drawBatchCount; edgeIndex++) {
                 System.arraycopy(
                     attributesBuffer, (edgeBase + edgeIndex) * ATTRIBS_STRIDE,
-                    attributesDrawBufferBatchOneCopyPerVertex, edgeIndex * ATTRIBS_STRIDE * VERTEX_COUNT_UNDIRECTED,
+                    attributesDrawBufferBatchOneCopyPerVertex,
+                    edgeIndex * ATTRIBS_STRIDE * CommonEdgeLineUndirected.VERTEX_COUNT,
                     ATTRIBS_STRIDE
                 );
 
                 ArrayUtils.repeat(
                     attributesDrawBufferBatchOneCopyPerVertex,
-                    edgeIndex * ATTRIBS_STRIDE * VERTEX_COUNT_UNDIRECTED,
+                    edgeIndex * ATTRIBS_STRIDE * CommonEdgeLineUndirected.VERTEX_COUNT,
                     ATTRIBS_STRIDE,
-                    VERTEX_COUNT_UNDIRECTED
+                    CommonEdgeLineUndirected.VERTEX_COUNT
                 );
             }
 
             batchUpdateBuffer.clear();
             batchUpdateBuffer.put(attributesDrawBufferBatchOneCopyPerVertex, 0,
-                drawBatchCount * ATTRIBS_STRIDE * VERTEX_COUNT_UNDIRECTED);
+                drawBatchCount * ATTRIBS_STRIDE * CommonEdgeLineUndirected.VERTEX_COUNT);
             batchUpdateBuffer.flip();
 
             attributesGLBufferUndirected.bind(gl);
             attributesGLBufferUndirected.updateWithOrphaning(gl, batchUpdateBuffer);
             attributesGLBufferUndirected.unbind(gl);
 
-            GLFunctions.drawArraysSingleInstance(gl, 0, VERTEX_COUNT * drawBatchCount);
+            GLFunctions.drawArraysSingleInstance(gl, 0, CommonEdgeLineUndirected.VERTEX_COUNT * drawBatchCount);
         }
 
         GLFunctions.stopUsingProgram(gl);
@@ -175,21 +176,22 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             for (int edgeIndex = 0; edgeIndex < drawBatchCount; edgeIndex++) {
                 System.arraycopy(
                     attributesBuffer, (edgeBase + edgeIndex) * ATTRIBS_STRIDE,
-                    attributesDrawBufferBatchOneCopyPerVertex, edgeIndex * ATTRIBS_STRIDE * VERTEX_COUNT_DIRECTED,
+                    attributesDrawBufferBatchOneCopyPerVertex,
+                    edgeIndex * ATTRIBS_STRIDE * CommonEdgeLineDirected.VERTEX_COUNT,
                     ATTRIBS_STRIDE
                 );
 
                 ArrayUtils.repeat(
                     attributesDrawBufferBatchOneCopyPerVertex,
-                    edgeIndex * ATTRIBS_STRIDE * VERTEX_COUNT_DIRECTED,
+                    edgeIndex * ATTRIBS_STRIDE * CommonEdgeLineDirected.VERTEX_COUNT,
                     ATTRIBS_STRIDE,
-                    VERTEX_COUNT_DIRECTED
+                    CommonEdgeLineDirected.VERTEX_COUNT
                 );
             }
 
             batchUpdateBuffer.clear();
             batchUpdateBuffer.put(attributesDrawBufferBatchOneCopyPerVertex, 0,
-                drawBatchCount * ATTRIBS_STRIDE * VERTEX_COUNT_DIRECTED);
+                drawBatchCount * ATTRIBS_STRIDE * CommonEdgeLineDirected.VERTEX_COUNT);
             batchUpdateBuffer.flip();
 
             attributesGLBufferDirected.bind(gl);
@@ -197,7 +199,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
             attributesGLBufferDirected.unbind(gl);
 
 
-            GLFunctions.drawArraysSingleInstance(gl, 0, EdgeLineModelDirected.VERTEX_COUNT * drawBatchCount);
+            GLFunctions.drawArraysSingleInstance(gl, 0, CommonEdgeLineDirected.VERTEX_COUNT * drawBatchCount);
         }
 
         GLFunctions.stopUsingProgram(gl);

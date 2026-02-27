@@ -21,18 +21,22 @@ public class InputActionsProcessor {
     }
 
     public void selectNodesWithinRadius(VizEngineModel model, float x, float y, float radius) {
-        final NodeIterable iterable = model.getGraphIndex().getNodesInsideCircle(x, y, radius);
+        final float nodeScale = model.getRenderingOptions().getNodeScale();
+        final NodeIterable iterable = model.getGraphIndex().getNodesInsideCircle(x, y, radius, nodeScale);
         selectNodes(model, iterable);
     }
 
     public void selectNodesAndEdgesOnRectangle(VizEngineModel model, final Rect2D rectangle) {
-        final NodeIterable iterable = model.getGraphIndex().getNodesInsideRectangle(rectangle);
+        final float nodeScale = model.getRenderingOptions().getNodeScale();
+        final NodeIterable iterable = model.getGraphIndex().getNodesInsideRectangle(rectangle, nodeScale);
 
         selectNodes(model, iterable);
     }
 
     public void selectNodesAndEdgesUnderPosition(VizEngineModel model, Vector2f worldCoords) {
-        final NodeIterable iterable = model.getGraphIndex().getNodesUnderPosition(worldCoords.x, worldCoords.y);
+        final float nodeScale = model.getRenderingOptions().getNodeScale();
+        final NodeIterable iterable =
+            model.getGraphIndex().getNodesUnderPosition(worldCoords.x, worldCoords.y, nodeScale);
 
         selectNodes(model, iterable);
     }

@@ -79,9 +79,15 @@ public class GraphIndexImpl implements GraphIndex {
 
     @Override
     public NodeIterable getNodesUnderPosition(float x, float y) {
-        return getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(x, y, 0),
+        return getNodesUnderPosition(x, y, 1f);
+    }
+
+    @Override
+    public NodeIterable getNodesUnderPosition(float x, float y, float nodeScale) {
+        final float searchExpansion = getScaledNodeSearchExpansion(nodeScale);
+        return getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(x, y, searchExpansion),
             node -> {
-                final float size = node.size();
+                final float size = node.size() * nodeScale;
 
                 return Intersectionf.testPointCircle(x, y, node.x(), node.y(), size * size);
             });
@@ -89,14 +95,37 @@ public class GraphIndexImpl implements GraphIndex {
 
     @Override
     public NodeIterable getNodesInsideCircle(float centerX, float centerY, float radius) {
-        return getVisibleGraph().getSpatialIndex().getNodesInArea(getCircleRect2D(centerX, centerY, radius),
-            node -> Intersectionf.testCircleCircle(centerX, centerY, radius, node.x(), node.y(), node.size()));
+        return getNodesInsideCircle(centerX, centerY, radius, 1f);
+    }
+
+    @Override
+    public NodeIterable getNodesInsideCircle(float centerX, float centerY, float radius, float nodeScale) {
+        final float searchExpansion = getScaledNodeSearchExpansion(nodeScale);
+        return getVisibleGraph().getSpatialIndex().getNodesInArea(
+            getCircleRect2D(centerX, centerY, radius + searchExpansion),
+            node -> Intersectionf.testCircleCircle(centerX, centerY, radius, node.x(), node.y(),
+                node.size() * nodeScale));
     }
 
     @Override
     public NodeIterable getNodesInsideRectangle(Rect2D rect) {
-        return getVisibleGraph().getSpatialIndex().getNodesInArea(rect, node -> {
-            final float size = node.size();
+        return getNodesInsideRectangle(rect, 1f);
+    }
+
+    @Override
+    public NodeIterable getNodesInsideRectangle(Rect2D rect, float nodeScale) {
+        final float searchExpansion = getScaledNodeSearchExpansion(nodeScale);
+        final Rect2D searchRect = searchExpansion <= 0f
+            ? rect
+            : new Rect2D(
+            rect.minX - searchExpansion,
+            rect.minY - searchExpansion,
+            rect.maxX + searchExpansion,
+            rect.maxY + searchExpansion
+        );
+
+        return getVisibleGraph().getSpatialIndex().getNodesInArea(searchRect, node -> {
+            final float size = node.size() * nodeScale;
 
             return Intersectionf.testAarCircle(rect.minX, rect.minY, rect.maxX, rect.maxY, node.x(), node.y(),
                 size * size);
@@ -139,5 +168,19 @@ public class GraphIndexImpl implements GraphIndex {
 
     private Rect2D getCircleRect2D(float x, float y, float radius) {
         return new Rect2D(x - radius, y - radius, x + radius, y + radius);
+    }
+
+    private float getScaledNodeSearchExpansion(float nodeScale) {
+        if (nodeScale <= 1f) {
+            return 0f;
+        }
+
+        float maxNodeSize = 0f;
+        for (Node node : getVisibleGraph().getNodes()) {
+            if (node.size() > maxNodeSize) {
+                maxNodeSize = node.size();
+            }
+        }
+        return maxNodeSize * (nodeScale - 1f);
     }
 }
