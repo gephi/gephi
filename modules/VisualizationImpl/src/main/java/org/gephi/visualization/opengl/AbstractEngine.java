@@ -66,7 +66,10 @@ import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
+import org.gephi.visualization.profiling.EngineProfiler;
+import org.gephi.visualization.profiling.ProfilingFlag;
 import org.gephi.visualization.text.TextManager;
+import java.nio.file.Path;
 
 /**
  * Abstract graphic engine. Real graphic engines inherit from this class and can use the common functionalities.
@@ -98,6 +101,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected NodeModeler nodeModeler;
     protected EdgeModeler edgeModeler;
 
+    //Profiling
+    protected EngineProfiler profiler;
+
     @Override
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
@@ -108,6 +114,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
         initSelection();
+
+        if (ProfilingFlag.ENABLED) {
+            profiler = new EngineProfiler(Path.of("engine-profiling.jsonl"));
+        }
 
         //Vizconfig events
         vizController.getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
@@ -230,6 +240,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public void resumeDisplay() {
         lifeCycle.requestResumeAnimating();
+    }
+
+    public EngineProfiler getProfiler() {
+        return profiler;
     }
 
     public Octree getOctree() {

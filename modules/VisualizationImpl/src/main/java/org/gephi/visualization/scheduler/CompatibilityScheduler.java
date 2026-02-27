@@ -51,6 +51,8 @@ import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.CompatibilityEngine;
+import org.gephi.visualization.profiling.EngineProfiler;
+import org.gephi.visualization.profiling.ProfilingFlag;
 
 /**
  * @author Mathieu Bastian
@@ -71,6 +73,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private GraphDrawable graphDrawable;
     private CompatibilityEngine engine;
     private VizConfig vizConfig;
+    private volatile double lastWorldUpdateMs;
     //Animators
     private BasicFPSAnimator displayAnimator;
     private BasicFPSAnimator updateAnimator;
@@ -119,6 +122,10 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         drag.set(false);
         stopDrag.set(false);
         mouseClick.set(false);
+
+        if (ProfilingFlag.ENABLED && engine.getProfiler() != null) {
+            engine.getProfiler().dispose();
+        }
     }
 
     @Override
@@ -166,16 +173,42 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         }
 
         //Display
-        engine.beforeDisplay(gl, glu);
-        engine.display(gl, glu);
-        engine.afterDisplay(gl, glu);
+        if (ProfilingFlag.ENABLED) {
+            EngineProfiler profiler = engine.getProfiler();
+            profiler.beginFrame(gl);
+
+            profiler.beginStage("frame_clear_ms");
+            engine.beforeDisplay(gl, glu);
+            profiler.endStage("frame_clear_ms");
+
+            profiler.beginStage("render_total_ms");
+            engine.display(gl, glu);
+            profiler.endStage("render_total_ms");
+
+            engine.afterDisplay(gl, glu);
+
+            profiler.recordDetail("world_update_detail_ms", "world_update_total_ms", lastWorldUpdateMs);
+
+            profiler.endFrame(gl);
+        } else {
+            engine.beforeDisplay(gl, glu);
+            engine.display(gl, glu);
+            engine.afterDisplay(gl, glu);
+        }
     }
 
     @Override
     public void updateWorld() {
+        long start = 0;
+        if (ProfilingFlag.ENABLED) {
+            start = System.nanoTime();
+        }
         if (engine.updateWorld()) {
             cameraMoved.set(true);
             mouseMoved.set(true);
+        }
+        if (ProfilingFlag.ENABLED) {
+            lastWorldUpdateMs = (System.nanoTime() - start) / 1_000_000.0;
         }
     }
 

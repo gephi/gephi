@@ -60,6 +60,8 @@ import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
+import org.gephi.visualization.profiling.EngineProfiler;
+import org.gephi.visualization.profiling.ProfilingFlag;
 import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.selection.Cylinder;
 import org.gephi.visualization.selection.Rectangle;
@@ -157,6 +159,10 @@ public class CompatibilityEngine extends AbstractEngine {
         VizModel vizModel = VizController.getInstance().getVizModel();
 
         //Edges
+        long edgesStart = 0;
+        if (ProfilingFlag.ENABLED) {
+            edgesStart = System.nanoTime();
+        }
         if (edgeModeler.isEnabled()) {
             edgeModeler.beforeDisplay(gl, glu);
 
@@ -185,8 +191,15 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             gl.glEnd();
         }
+        if (ProfilingFlag.ENABLED) {
+            profiler.recordDetail("render_detail_ms", "edges_ms", (System.nanoTime() - edgesStart) / 1_000_000.0);
+        }
 
         //Nodes
+        long nodesStart = 0;
+        if (ProfilingFlag.ENABLED) {
+            nodesStart = System.nanoTime();
+        }
         if (nodeModeler.isEnabled()) {
             nodeModeler.beforeDisplay(gl, glu);
             for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
@@ -198,8 +211,15 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             nodeModeler.afterDisplay(gl, glu);
         }
+        if (ProfilingFlag.ENABLED) {
+            profiler.recordDetail("render_detail_ms", "nodes_ms", (System.nanoTime() - nodesStart) / 1_000_000.0);
+        }
 
         //Labels
+        long labelsStart = 0;
+        if (ProfilingFlag.ENABLED) {
+            labelsStart = System.nanoTime();
+        }
         if (vizModel.getTextModel().isShowNodeLabels() || vizModel.getTextModel().isShowEdgeLabels()) {
             markTime++;
             if (nodeModeler.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
@@ -273,6 +293,9 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
                 textManager.getEdgeRenderer().endRendering();
             }
+        }
+        if (ProfilingFlag.ENABLED) {
+            profiler.recordDetail("render_detail_ms", "labels_ms", (System.nanoTime() - labelsStart) / 1_000_000.0);
         }
 
 //        octree.displayOctree(gl, glu);
