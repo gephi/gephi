@@ -116,7 +116,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         initSelection();
 
         if (ProfilingFlag.ENABLED) {
-            profiler = new EngineProfiler(Path.of("engine-profiling.jsonl"));
+            profiler = new EngineProfiler(Path.of("engine-profiling-v.0.10.1.jsonl"));
         }
 
         //Vizconfig events

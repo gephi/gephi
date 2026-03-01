@@ -63,6 +63,7 @@ public class EngineProfiler {
 
     public EngineProfiler(Path outputPath, int batchSize) {
         this.outputPath = appendTimestamp(outputPath);
+        System.out.println(outputPath.toAbsolutePath());
         this.batchSize = batchSize;
         this.currentBatch = new ArrayList<>(batchSize);
         this.writerExecutor = Executors.newSingleThreadExecutor(r -> {

@@ -59,6 +59,7 @@ import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.profiling.ProfilingFlag;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -274,8 +275,16 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
      */
     @Override
     public void eventDispatched(AWTEvent event) {
+
         KeyEvent evt = (KeyEvent) event;
 
+        if(evt.getID() == KeyEvent.KEY_RELEASED && evt.getKeyCode()==KeyEvent.VK_P){
+            if (ProfilingFlag.ENABLED) {
+                boolean wasEnabled = engine.getProfiler().isEnabled();
+                engine.getProfiler().setEnabled(!wasEnabled);
+                System.out.println("Profiling " + (!wasEnabled ? "enabled" : "disabled"));
+            }
+        }
         if (evt.getID() == KeyEvent.KEY_RELEASED &&
             (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
 //            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
