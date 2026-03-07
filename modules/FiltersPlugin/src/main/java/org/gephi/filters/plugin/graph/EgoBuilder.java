@@ -228,7 +228,7 @@ public class EgoBuilder implements FilterBuilder {
                     if (edges.contains(e)) {
                         continue; //edge already filtered
                     }
-                    if(nodes.contains(e.getSource()) && nodes.contains(e.getTarget())){
+                    if (nodes.contains(e.getSource()) && nodes.contains(e.getTarget())) {
                         edges.add(e); //edge connects two nodes inside the bfs tree
                     }
                 }
