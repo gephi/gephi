@@ -116,11 +116,11 @@ public class EgoBuilder implements FilterBuilder {
         private String inputID = "";
         private boolean self = true;
         private boolean considerNonDirected = true;
-        private String depth = "1";
+        private String depth = "0";
 
         @Override
         public Graph filter(Graph graph) {
-            String str = inputID.toLowerCase();
+            String idStr = inputID.toLowerCase();
             String depthStr = depth.toLowerCase();
             Node ego = null;
             int depth = 0;
@@ -136,15 +136,17 @@ public class EgoBuilder implements FilterBuilder {
             }
 
             for (Node n : graph.getNodes()) {
-                if (n.getId().toString().toLowerCase().equals(str)) {
+                if (n.getId().toString().toLowerCase().equals(idStr)) {
                     ego = n;
                     break; //if found, stop looking
-                } else if ((n.getLabel() != null) && n.getLabel().toLowerCase().equals(str)) {
+                } else if (n.getLabel() != null && n.getLabel().toLowerCase().equals(idStr)) {
                     ego = n;
+                    break;
                 }
             }
 
             bfs(graph, ego, depth, nodes, edges);
+            discoverCrossLevelEdges(graph, nodes, edges);
 
             if (!self) {
                 nodes.remove(ego);
@@ -167,7 +169,7 @@ public class EgoBuilder implements FilterBuilder {
 
         /**
          * Breadth First Search algorithm that iterates over the given graph from the ego starting point,
-         * stopping at a depth of k. The nodes and edges which will be in the resulting graph
+         * stopping at a depth of {@code k}. The nodes and edges which will be in the resulting graph
          * are stored in a HashSet via reference.
          *
          * @param graph    the graph to iterate over
@@ -209,6 +211,27 @@ public class EgoBuilder implements FilterBuilder {
                     }
                 }
                 k--;
+            }
+        }
+
+        /**
+         * Considering {@code graph} and {@code nodes} this function looks for edges who connect
+         * two nodes on the same level of the bfs tree and adds them to {@code edges}
+         *
+         * @param graph the unfiltered graph on the canvas
+         * @param nodes nodes of the bfs tree
+         * @param edges edges of the bfs tree
+         */
+        private void discoverCrossLevelEdges(Graph graph, HashSet<Node> nodes, HashSet<Edge> edges) {
+            for (Node n : nodes) {
+                for (Edge e : graph.getEdges(n)) {
+                    if (edges.contains(e)) {
+                        continue; //edge already filtered
+                    }
+                    if(nodes.contains(e.getSource()) && nodes.contains(e.getTarget())){
+                        edges.add(e); //edge connects two nodes inside the bfs tree
+                    }
+                }
             }
         }
 

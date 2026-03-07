@@ -191,8 +191,6 @@ public class EgoPanel extends javax.swing.JPanel {
         considerNonDirectEdgesCheckBox.setText(
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.considerNonDirectEdges.text")); // NOI18N
 
-        depthTextField.setText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.text")); // NOI18N
         depthTextField.setToolTipText(
                 org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.toolTipText")); // NOI18N
 
