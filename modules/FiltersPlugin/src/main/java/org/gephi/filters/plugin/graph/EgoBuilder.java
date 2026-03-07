@@ -148,6 +148,7 @@ public class EgoBuilder implements FilterBuilder {
             bfs(graph, ego, depth, nodes, edges);
             discoverCrossLevelEdges(graph, nodes, edges);
 
+
             if (!self) {
                 nodes.remove(ego);
             }
@@ -215,21 +216,21 @@ public class EgoBuilder implements FilterBuilder {
         }
 
         /**
-         * Considering {@code graph} and {@code nodes} this function looks for edges who connect
-         * two nodes on the same level of the bfs tree and adds them to {@code edges}
+         * Considering {@code graph} and {@code resNodes} this function looks for resEdges who connect
+         * two resNodes on the same level of the bfs tree and adds them to {@code resEdges}
          *
          * @param graph the unfiltered graph on the canvas
-         * @param nodes nodes of the bfs tree
-         * @param edges edges of the bfs tree
+         * @param resNodes resNodes of the bfs tree
+         * @param resEdges resEdges of the bfs tree
          */
-        private void discoverCrossLevelEdges(Graph graph, HashSet<Node> nodes, HashSet<Edge> edges) {
-            for (Node n : nodes) {
+        private void discoverCrossLevelEdges(Graph graph, HashSet<Node> resNodes, HashSet<Edge> resEdges) {
+            for (Node n : resNodes) {
                 for (Edge e : graph.getEdges(n)) {
-                    if (edges.contains(e)) {
+                    if (resEdges.contains(e)) {
                         continue; //edge already filtered
                     }
-                    if (nodes.contains(e.getSource()) && nodes.contains(e.getTarget())) {
-                        edges.add(e); //edge connects two nodes inside the bfs tree
+                    if (resNodes.contains(e.getSource()) && resNodes.contains(e.getTarget())) {
+                        resEdges.add(e); //edge connects two resNodes inside the bfs tree
                     }
                 }
             }
