@@ -542,31 +542,45 @@ public final class UIUtils {
         }
     }
 
+    /**
+     * Runs the given runnable on the EDT. If not already on the EDT, this method blocks
+     * until the runnable completes. This is necessary for operations that must complete
+     * on the EDT before continuing (e.g., component painting for screenshots).
+     *
+     * @param r the runnable to execute on the EDT
+     */
     public static void runInEventDispatchThreadAndWait(final Runnable r) {
         if (SwingUtilities.isEventDispatchThread()) {
             r.run();
         } else {
             try {
                 SwingUtilities.invokeAndWait(r);
-            } catch (InvocationTargetException | InterruptedException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Exceptions.printStackTrace(e);
+            } catch (InvocationTargetException e) {
                 Exceptions.printStackTrace(e);
             }
         }
     }
 
+    /**
+     * Creates a screenshot of the given component. The component's printAll method must be
+     * called on the EDT to ensure proper rendering, so this method uses invokeAndWait when
+     * called from a background thread. This is a blocking operation by design.
+     *
+     * @param component the component to screenshot
+     * @return the screenshot image, or null if an error occurred
+     */
     public static BufferedImage createComponentScreenshot(final Component component) {
         final BufferedImage[] result = new BufferedImage[1];
 
-        final Runnable screenshotPerformer = new Runnable() {
-
-            @Override
-            public void run() {
-                if (component instanceof JTable ||
-                    (component instanceof JViewport && ((JViewport) component).getView() instanceof JTable)) {
-                    result[0] = createTableScreenshot(component);
-                } else {
-                    result[0] = createGeneralComponentScreenshot(component);
-                }
+        final Runnable screenshotPerformer = () -> {
+            if (component instanceof JTable ||
+                (component instanceof JViewport && ((JViewport) component).getView() instanceof JTable)) {
+                result[0] = createTableScreenshot(component);
+            } else {
+                result[0] = createGeneralComponentScreenshot(component);
             }
         };
 
@@ -576,7 +590,10 @@ public final class UIUtils {
             } else {
                 SwingUtilities.invokeAndWait(screenshotPerformer);
             }
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (InvocationTargetException e) {
             return null;
         }
 

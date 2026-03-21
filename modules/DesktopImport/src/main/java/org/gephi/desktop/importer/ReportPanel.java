@@ -155,21 +155,26 @@ public class ReportPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public ReportPanel() {
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    initComponents();
-                    initIcons();
-                    initProcessors();
-                    initMoreOptionsPanel();
-                    initMergeStrategyCombo();
-                }
-            });
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+        // Initialize components on EDT - use invokeLater if not already on EDT
+        Runnable initRunnable = () -> {
+            initComponents();
+            initIcons();
+            initProcessors();
+            initMoreOptionsPanel();
+            initMergeStrategyCombo();
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            initRunnable.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(initRunnable);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                Exceptions.printStackTrace(ex);
+            } catch (InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
 
         fillingThreads = new ThreadGroup("Report Panel Issues");

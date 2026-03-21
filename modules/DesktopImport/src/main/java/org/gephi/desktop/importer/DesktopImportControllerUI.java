@@ -655,30 +655,37 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 final ProcessorUI pui = getProcessorUI(processor);
                 final ValidResult validResult = new ValidResult();
                 if (pui != null) {
-                    try {
-                        final JPanel panel = pui.getPanel();
-                        if (panel != null) {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
-                                    String title = NbBundle.getMessage(DesktopImportControllerUI.class,
-                                        "DesktopImportControllerUI.processor.ui.dialog.title");
+                    final JPanel panel = pui.getPanel();
+                    if (panel != null) {
+                        Runnable dialogRunnable = () -> {
+                            String title = NbBundle.getMessage(DesktopImportControllerUI.class,
+                                "DesktopImportControllerUI.processor.ui.dialog.title");
 
-                                    pui.setup(processor);
-                                    final DialogDescriptor dd2 = DialogDescriptorWithValidation.dialog(panel, title);
-                                    Object result = DialogDisplayer.getDefault().notify(dd2);
-                                    if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
-                                        result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-                                        validResult.setResult(false);
-                                    } else {
-                                        pui.unsetup(); //true
-                                        validResult.setResult(true);
-                                    }
-                                }
-                            });
+                            pui.setup(processor);
+                            final DialogDescriptor dd2 = DialogDescriptorWithValidation.dialog(panel, title);
+                            Object result = DialogDisplayer.getDefault().notify(dd2);
+                            if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
+                                result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                                validResult.setResult(false);
+                            } else {
+                                pui.unsetup(); //true
+                                validResult.setResult(true);
+                            }
+                        };
+
+                        // Show dialog on EDT - must wait for user input before continuing
+                        if (SwingUtilities.isEventDispatchThread()) {
+                            dialogRunnable.run();
+                        } else {
+                            try {
+                                SwingUtilities.invokeAndWait(dialogRunnable);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                                Exceptions.printStackTrace(ex);
+                            } catch (InvocationTargetException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
                         }
-                    } catch (InterruptedException | InvocationTargetException ex) {
-                        Exceptions.printStackTrace(ex);
                     }
                 }
 

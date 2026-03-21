@@ -49,8 +49,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
@@ -80,7 +78,8 @@ public class ProjectControllerImpl implements ProjectController {
 
     private final List<ProjectListener> projectListeners = new ArrayList<>();
 
-    private final LongTaskExecutor longTaskExecutor = new LongTaskExecutor(false, "ProjectController");
+    // Run project I/O operations in background with 10 second interrupt delay for cancel
+    private final LongTaskExecutor longTaskExecutor = new LongTaskExecutor(true, "ProjectController", 10);
 
     public ProjectControllerImpl() {
         registerNetbeansPropertyEditors();
@@ -137,10 +136,10 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Project openProject(File file) {
-        synchronized (this) {
-            fireProjectEvent(ProjectListener::lock);
-            LoadTask loadTask = new LoadTask(file);
-            Future<ProjectImpl> res = longTaskExecutor.execute(loadTask, () -> {
+        fireProjectEvent(ProjectListener::lock);
+        LoadTask loadTask = new LoadTask(file);
+        longTaskExecutor.execute(loadTask, () -> {
+            synchronized (ProjectControllerImpl.this) {
                 ProjectImpl project = loadTask.execute(getProjects());
                 // Null if cancelled
                 if (project != null) {
@@ -149,14 +148,11 @@ public class ProjectControllerImpl implements ProjectController {
                 } else {
                     fireProjectEvent(ProjectListener::unlock);
                 }
-                return project;
-            }, "", t -> handleException(null, t));
-            try {
-                return res.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
             }
-        }
+        }, "", t -> handleException(null, t));
+        // Return null immediately - project is loaded asynchronously
+        // Use ProjectListener.opened() to be notified when project is ready
+        return null;
     }
 
     @Override
@@ -186,10 +182,10 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void saveProject(Project project, File file) {
-        synchronized (this) {
-            fireProjectEvent(ProjectListener::lock);
-            SaveTask saveTask = new SaveTask(project, file);
-            longTaskExecutor.execute(saveTask, () -> {
+        fireProjectEvent(ProjectListener::lock);
+        SaveTask saveTask = new SaveTask(project, file);
+        longTaskExecutor.execute(saveTask, () -> {
+            synchronized (ProjectControllerImpl.this) {
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 if (saveTask.run()) {
                     ((ProjectImpl) project).setLastOpened();
@@ -197,8 +193,8 @@ public class ProjectControllerImpl implements ProjectController {
                 } else {
                     fireProjectEvent(ProjectListener::unlock);
                 }
-            }, "", t -> handleException(project, t));
-        }
+            }
+        }, "", t -> handleException(project, t));
     }
 
     @Override
@@ -401,9 +397,10 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
-        synchronized (this) {
-            DuplicateTask duplicateTask = new DuplicateTask(workspace);
-            Future<WorkspaceImpl> res = longTaskExecutor.execute(duplicateTask, () -> {
+        fireProjectEvent(ProjectListener::lock);
+        DuplicateTask duplicateTask = new DuplicateTask(workspace);
+        longTaskExecutor.execute(duplicateTask, () -> {
+            synchronized (ProjectControllerImpl.this) {
                 WorkspaceImpl newWorkspace = duplicateTask.run();
                 // Null if cancelled
                 if (newWorkspace != null) {
@@ -413,15 +410,15 @@ public class ProjectControllerImpl implements ProjectController {
                     fireWorkspaceEvent(EventType.INITIALIZE, newWorkspace);
 
                     openWorkspace(newWorkspace);
+                    fireProjectEvent(ProjectListener::unlock);
+                } else {
+                    fireProjectEvent(ProjectListener::unlock);
                 }
-                return newWorkspace;
-            }, "", t -> handleException(workspace.getProject(), t));
-            try {
-                return res.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
             }
-        }
+        }, "", t -> handleException(workspace.getProject(), t));
+        // Return null immediately - workspace is duplicated asynchronously
+        // The workspace will be automatically selected when ready
+        return null;
     }
 
     @Override

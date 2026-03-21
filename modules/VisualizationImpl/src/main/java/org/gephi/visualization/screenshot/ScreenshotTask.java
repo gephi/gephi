@@ -55,8 +55,8 @@ public class ScreenshotTask implements LongTask, Runnable {
                 renderingTarget.requestScreenshot(scaleFactor, transparentBackground, isCancelled).get();
 
             // Write image to file
-            // Get File
-            SwingUtilities.invokeAndWait(() -> {
+            // Get File - must show dialog on EDT and wait for user choice
+            Runnable fileChooserRunnable = () -> {
                 if (!model.isAutoSave()) {
                     //Get last directory
                     String lastPathDefault =
@@ -90,7 +90,13 @@ public class ScreenshotTask implements LongTask, Runnable {
                 } else {
                     this.file = new File(model.getDefaultDirectory(), getDefaultFileName() + ".png");
                 }
-            });
+            };
+
+            if (SwingUtilities.isEventDispatchThread()) {
+                fileChooserRunnable.run();
+            } else {
+                SwingUtilities.invokeAndWait(fileChooserRunnable);
+            }
 
             // Write file
             if (file != null) {

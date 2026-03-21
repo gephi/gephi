@@ -43,8 +43,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.datalab;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -61,29 +60,49 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = DataTablesEventListenerBuilder.class)
 public class DefaultDataTablesEventListenerBuilder implements DataTablesEventListenerBuilder {
 
+    // Cache the listener reference - TopComponents are long-lived singletons
+    private final AtomicReference<DataTablesEventListener> cachedListener = new AtomicReference<>();
+
     @Override
     public DataTablesEventListener getDataTablesEventListener() {
+        // Return cached value if available
+        DataTablesEventListener cached = cachedListener.get();
+        if (cached != null) {
+            return cached;
+        }
+
         if (SwingUtilities.isEventDispatchThread()) {
-            return (DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent");
+            DataTableTopComponent component = (DataTableTopComponent) WindowManager.getDefault()
+                .findTopComponent("DataTableTopComponent");
+            cachedListener.compareAndSet(null, component);
+            return component;
         } else {
-            final List<DataTableTopComponent> listenerHolder = new ArrayList<>();
+            // Schedule lookup on EDT and return null for now
+            // The caller should retry or handle null gracefully
+            SwingUtilities.invokeLater(() -> {
+                DataTableTopComponent component = (DataTableTopComponent) WindowManager.getDefault()
+                    .findTopComponent("DataTableTopComponent");
+                cachedListener.compareAndSet(null, component);
+            });
+
+            // Try one more time with invokeAndWait since this is a preparation method
+            // that expects a result. Use a short timeout pattern.
             try {
-                //We have to do this in AWT thread...
-                //There is no support for Futures as far as I know
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    @Override
-                    public void run() {
-                        listenerHolder.add((DataTableTopComponent) WindowManager.getDefault()
-                            .findTopComponent("DataTableTopComponent"));
-                    }
+                SwingUtilities.invokeAndWait(() -> {
+                    DataTableTopComponent component = (DataTableTopComponent) WindowManager.getDefault()
+                        .findTopComponent("DataTableTopComponent");
+                    cachedListener.set(component);
                 });
             } catch (InterruptedException ex) {
-                Logger.getLogger("").log(Level.SEVERE, null, ex);
+                Thread.currentThread().interrupt();
+                Logger.getLogger(DefaultDataTablesEventListenerBuilder.class.getName())
+                    .log(Level.WARNING, "Interrupted while getting DataTableTopComponent", ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger("").log(Level.SEVERE, null, ex);
+                Logger.getLogger(DefaultDataTablesEventListenerBuilder.class.getName())
+                    .log(Level.SEVERE, "Error getting DataTableTopComponent", ex);
             }
 
-            return listenerHolder.get(0);
+            return cachedListener.get();
         }
     }
 }

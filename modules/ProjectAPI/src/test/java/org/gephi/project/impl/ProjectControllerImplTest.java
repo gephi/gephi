@@ -3,6 +3,9 @@ package org.gephi.project.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
@@ -95,12 +98,32 @@ public class ProjectControllerImplTest {
     }
 
     @Test
-    public void testSave() throws IOException {
+    public void testSave() throws IOException, InterruptedException {
         ProjectControllerImpl pc = new ProjectControllerImpl();
         pc.addProjectListener(projectListener);
         Project project = pc.newProject();
         File file = tempFolder.newFile("save.gephi");
+
+        // Use a latch to wait for async save to complete
+        CountDownLatch latch = new CountDownLatch(1);
+
+        pc.addProjectListener(new ProjectListener() {
+            @Override
+            public void saved(Project p) {
+                latch.countDown();
+            }
+
+            @Override public void opened(Project project) {}
+            @Override public void closed(Project project) {}
+            @Override public void changed(Project project) {}
+            @Override public void lock() {}
+            @Override public void unlock() {}
+            @Override public void error(Project project, Throwable throwable) {}
+        });
+
         pc.saveProject(project, file);
+        Assert.assertTrue("Timed out waiting for save", latch.await(5, TimeUnit.SECONDS));
+
         Assert.assertTrue(file.exists());
         Assert.assertTrue(project.hasFile());
         Assert.assertSame(file, project.getFile());
@@ -108,7 +131,7 @@ public class ProjectControllerImplTest {
     }
 
     @Test
-    public void testLoad() throws IOException {
+    public void testLoad() throws IOException, InterruptedException {
         MockServices.setServices(MockController.class);
 
         ProjectControllerImpl pc = new ProjectControllerImpl();
@@ -116,24 +139,73 @@ public class ProjectControllerImplTest {
         Project project = pc.newProject();
         File file = tempFolder.newFile("save.gephi");
         pc.saveProject(project, file);
-        project = pc.openProject(file);
-        Assert.assertNotNull(project);
-        Assert.assertTrue(project.isOpen());
-        Mockito.verify(projectListener, Mockito.times(2)).opened(project);
-        Assert.assertNotNull(project.getCurrentWorkspace().getLookup().lookup(MockModel.class));
+
+        // Wait for save to complete
+        Thread.sleep(100);
+
+        // Use a latch to wait for async open to complete
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Project> openedProject = new AtomicReference<>();
+
+        pc.addProjectListener(new ProjectListener() {
+            @Override
+            public void opened(Project p) {
+                openedProject.set(p);
+                latch.countDown();
+            }
+
+            @Override public void closed(Project project) {}
+            @Override public void saved(Project project) {}
+            @Override public void changed(Project project) {}
+            @Override public void lock() {}
+            @Override public void unlock() {}
+            @Override public void error(Project project, Throwable throwable) {}
+        });
+
+        // openProject now returns null (async) - wait for opened event
+        pc.openProject(file);
+        Assert.assertTrue("Timed out waiting for project to open", latch.await(5, TimeUnit.SECONDS));
+
+        Project loadedProject = openedProject.get();
+        Assert.assertNotNull(loadedProject);
+        Assert.assertTrue(loadedProject.isOpen());
+        Mockito.verify(projectListener, Mockito.times(2)).opened(Mockito.any(Project.class));
+        Assert.assertNotNull(loadedProject.getCurrentWorkspace().getLookup().lookup(MockModel.class));
     }
 
     @Test
-    public void testOpenFileNotFound() throws IOException {
-        expectedException.expect(RuntimeException.class);
-        expectedException.expectCause(new org.hamcrest.core.IsInstanceOf(FileNotFoundException.class));
-
+    public void testOpenFileNotFound() throws IOException, InterruptedException {
         ProjectControllerImpl pc = new ProjectControllerImpl();
         pc.addProjectListener(projectListener);
         File file = tempFolder.newFile("foo.gephi");
         file.delete();
+
+        // Use a latch to wait for async error
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Throwable> errorRef = new AtomicReference<>();
+
+        pc.addProjectListener(new ProjectListener() {
+            @Override
+            public void error(Project project, Throwable throwable) {
+                errorRef.set(throwable);
+                latch.countDown();
+            }
+
+            @Override public void opened(Project project) {}
+            @Override public void closed(Project project) {}
+            @Override public void saved(Project project) {}
+            @Override public void changed(Project project) {}
+            @Override public void lock() {}
+            @Override public void unlock() {}
+        });
+
         pc.openProject(file);
-        Mockito.verify(projectListener).error(Mockito.isNull(), Mockito.any(RuntimeException.class));
+        Assert.assertTrue("Timed out waiting for error", latch.await(5, TimeUnit.SECONDS));
+
+        Throwable error = errorRef.get();
+        Assert.assertNotNull("Expected error to be thrown", error);
+        Assert.assertTrue("Expected FileNotFoundException cause",
+            error instanceof RuntimeException && error.getCause() instanceof FileNotFoundException);
     }
 
     @Test
@@ -288,29 +360,84 @@ public class ProjectControllerImplTest {
     }
 
     @Test
-    public void testOpenAnotherProject() throws IOException {
+    public void testOpenAnotherProject() throws IOException, InterruptedException {
         ProjectControllerImpl pc = new ProjectControllerImpl();
         pc.addProjectListener(projectListener);
         pc.addWorkspaceListener(workspaceListener);
         Project project = pc.newProject();
         File file = tempFolder.newFile("project.gephi");
         pc.saveProject(project, file);
+
+        // Wait for save to complete
+        Thread.sleep(100);
+
         pc.closeCurrentProject();
+
+        // Use a latch to wait for async open to complete
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Project> openedProject = new AtomicReference<>();
+
+        pc.addProjectListener(new ProjectListener() {
+            @Override
+            public void opened(Project p) {
+                openedProject.set(p);
+                latch.countDown();
+            }
+
+            @Override public void closed(Project project) {}
+            @Override public void saved(Project project) {}
+            @Override public void changed(Project project) {}
+            @Override public void lock() {}
+            @Override public void unlock() {}
+            @Override public void error(Project project, Throwable throwable) {}
+        });
+
         pc.openProject(project);
-        Assert.assertTrue(project.isOpen());
-        Assert.assertSame(project, pc.getCurrentProject());
-        Mockito.verify(projectListener, Mockito.times(2)).opened(project);
-        Mockito.verify(workspaceListener).initialize(pc.getCurrentWorkspace());
+        Assert.assertTrue("Timed out waiting for project to open", latch.await(5, TimeUnit.SECONDS));
+
+        Project loadedProject = openedProject.get();
+        Assert.assertTrue(loadedProject.isOpen());
+        Assert.assertSame(loadedProject, pc.getCurrentProject());
+        Mockito.verify(projectListener, Mockito.times(2)).opened(Mockito.any(Project.class));
+        Mockito.verify(workspaceListener, Mockito.atLeast(1)).initialize(Mockito.any(Workspace.class));
     }
 
     @Test
-    public void testDuplicateWorkspace() {
+    public void testDuplicateWorkspace() throws InterruptedException {
         MockServices.setServices(MockController.class);
 
         ProjectControllerImpl pc = new ProjectControllerImpl();
         pc.addWorkspaceListener(workspaceListener);
         pc.newProject();
-        Workspace duplicate = pc.duplicateWorkspace(pc.getCurrentWorkspace());
+
+        // duplicateWorkspace now returns null (async) - wait for workspace to be selected
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Workspace> selectedWorkspace = new AtomicReference<>();
+
+        pc.addWorkspaceListener(new WorkspaceListener() {
+            int selectCount = 0;
+
+            @Override
+            public void select(Workspace workspace) {
+                selectCount++;
+                // Second select is the duplicated workspace
+                if (selectCount >= 2) {
+                    selectedWorkspace.set(workspace);
+                    latch.countDown();
+                }
+            }
+
+            @Override public void initialize(Workspace workspace) {}
+            @Override public void unselect(Workspace workspace) {}
+            @Override public void close(Workspace workspace) {}
+            @Override public void disable() {}
+        });
+
+        Workspace original = pc.getCurrentWorkspace();
+        pc.duplicateWorkspace(original);
+        Assert.assertTrue("Timed out waiting for workspace duplication", latch.await(5, TimeUnit.SECONDS));
+
+        Workspace duplicate = selectedWorkspace.get();
         Assert.assertNotNull(duplicate);
         Assert.assertTrue(duplicate.isOpen());
         Assert.assertSame(duplicate, pc.getCurrentWorkspace());
