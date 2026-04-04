@@ -223,7 +223,7 @@
 
         <gephi.maven-dependency-plugin.version>3.6.1</gephi.maven-dependency-plugin.version>
 
-        <gephi.maven-deploy-plugin.version>3.1.2</gephi.maven-deploy-plugin.version>
+        <gephi.maven-deploy-plugin.version>3.1.4</gephi.maven-deploy-plugin.version>
 
         <gephi.maven-enforcer-plugin.version>3.5.0</gephi.maven-enforcer-plugin.version>
 
