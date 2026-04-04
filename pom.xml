@@ -231,7 +231,7 @@
 
         <gephi.maven-install-plugin.version>3.1.4</gephi.maven-install-plugin.version>
 
-        <gephi.maven-jar-plugin.version>3.4.1</gephi.maven-jar-plugin.version>
+        <gephi.maven-jar-plugin.version>3.5.0</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
