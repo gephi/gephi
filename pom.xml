@@ -239,7 +239,7 @@
 
         <gephi.maven-license-plugin.version>2.4.0</gephi.maven-license-plugin.version>
 
-        <gephi.maven-release-plugin.version>3.0.1</gephi.maven-release-plugin.version>
+        <gephi.maven-release-plugin.version>3.3.1</gephi.maven-release-plugin.version>
 
         <gephi.maven-resources-plugin.version>3.5.0</gephi.maven-resources-plugin.version>
 
