@@ -45,7 +45,8 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
         final GraphRenderingOptions.LabelColorMode labelColorMode = options.getEdgeLabelColorMode();
         final GraphRenderingOptions.LabelSizeMode labelSizeMode = options.getEdgeLabelSizeMode();
         final GraphRenderingOptions.EdgeColorMode edgeColorMode = options.getEdgeColorMode();
-        final float lightenNonSelectedFactor = options.isLightenNonSelected() ? options.getLightenNonSelectedFactor() : 0f;
+        final float lightenNonSelectedFactor =
+            options.isLightenNonSelected() ? options.getLightenNonSelectedFactor() : 0f;
         final float edgeLabelScale = options.getEdgeLabelScale();
         final float nodeScale = options.getNodeScale();
         final boolean hideNonSelectedLabels = options.isHideNonSelectedEdgeLabels();

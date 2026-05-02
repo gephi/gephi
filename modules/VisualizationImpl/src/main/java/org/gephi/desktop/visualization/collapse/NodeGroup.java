@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.VizModel;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -31,7 +31,9 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
         nodeScaleSlider = new JSlider(0, 100, 0);
         nodeScaleSlider.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.nodeScale"));
         nodeScaleSlider.addChangeListener(e -> {
-            float scale = VizConfig.NODE_SCALE_MIN * (float) Math.pow((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN, nodeScaleSlider.getValue() / 100.0);
+            float scale = VizConfig.NODE_SCALE_MIN *
+                (float) Math.pow((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN,
+                    nodeScaleSlider.getValue() / 100.0);
             vizController.setNodeScale(scale);
         });
         nodeScaleSlider.setPreferredSize(new Dimension(100, 20));
@@ -45,7 +47,9 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
         titleLabel.setEnabled(true);
 
         nodeScaleSlider.setEnabled(true);
-        nodeScaleSlider.setValue((int) Math.round(Math.log((double) vizModel.getNodeScale() / VizConfig.NODE_SCALE_MIN) / Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100));
+        nodeScaleSlider.setValue((int) Math.round(
+            Math.log((double) vizModel.getNodeScale() / VizConfig.NODE_SCALE_MIN) /
+                Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100));
 
         vizController.addPropertyChangeListener(this);
     }
@@ -66,7 +70,8 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
     @Override
     public void propertyChange(VisualizationModel model, PropertyChangeEvent evt) {
         if ("nodeScale".equals(evt.getPropertyName())) {
-            int targetSlider = (int) Math.round(Math.log((double) model.getNodeScale() / VizConfig.NODE_SCALE_MIN) / Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100);
+            int targetSlider = (int) Math.round(Math.log((double) model.getNodeScale() / VizConfig.NODE_SCALE_MIN) /
+                Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100);
             if (nodeScaleSlider.getValue() != targetSlider) {
                 nodeScaleSlider.setValue(targetSlider);
             }

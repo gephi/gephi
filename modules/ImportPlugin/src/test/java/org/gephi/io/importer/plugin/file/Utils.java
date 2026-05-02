@@ -3,6 +3,7 @@ package org.gephi.io.importer.plugin.file;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,7 +72,7 @@ public class Utils {
     public static Reader getReader(String fileName) {
         try {
             String content = new String(Utils.class.getResourceAsStream(fileName)
-                .readAllBytes());
+                .readAllBytes(), StandardCharsets.UTF_8);
             return new StringReader(content);
         } catch (IOException e) {
             throw new RuntimeException(e);

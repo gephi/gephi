@@ -13,8 +13,8 @@ import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -110,7 +110,9 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         fontSizeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                float scale = VizConfig.NODE_LABEL_SCALE_MIN + (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * (fontSizeSlider.getValue() - 1) / 99f;
+                float scale = VizConfig.NODE_LABEL_SCALE_MIN +
+                    (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) *
+                        (fontSizeSlider.getValue() - 1) / 99f;
                 vizController.setNodeLabelScale(scale);
             }
         });
@@ -126,7 +128,8 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelSizeModeButton.setSelectedItem(vizModel.getNodeLabelSizeMode());
         fitToNodeSizeButton.setSelected(vizModel.isNodeLabelFitToNodeSize());
         avoidOverlapButton.setSelected(vizModel.isAvoidNodeLabelOverlap());
-        fontSizeSlider.setValue(1 + (int) ((vizModel.getNodeLabelScale() - VizConfig.NODE_LABEL_SCALE_MIN) / (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99));
+        fontSizeSlider.setValue(1 + (int) ((vizModel.getNodeLabelScale() - VizConfig.NODE_LABEL_SCALE_MIN) /
+            (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99));
         refreshEnable(true);
 
         vizController.addPropertyChangeListener(this);
@@ -169,7 +172,8 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         } else if ("avoidNodeLabelOverlap".equals(evt.getPropertyName())) {
             avoidOverlapButton.setSelected((Boolean) evt.getNewValue());
         } else if ("nodeLabelScale".equals(evt.getPropertyName())) {
-            int sliderValue = 1 + (int) (((Float) evt.getNewValue() - VizConfig.NODE_LABEL_SCALE_MIN) / (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99);
+            int sliderValue = 1 + (int) (((Float) evt.getNewValue() - VizConfig.NODE_LABEL_SCALE_MIN) /
+                (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99);
             if (fontSizeSlider.getValue() != sliderValue) {
                 fontSizeSlider.setValue(sliderValue);
             }

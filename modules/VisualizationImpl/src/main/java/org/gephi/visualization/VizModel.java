@@ -879,13 +879,13 @@ public class VizModel implements VisualizationModel {
                         screenshotModel.readXML(reader);
                     } else if ("selectionModel".equalsIgnoreCase(name)) {
                         selectionModel.readXML(reader);
-                    // Legacy: old TextModelImpl persisted under <textmodel> inside <vizmodel>
+                        // Legacy: old TextModelImpl persisted under <textmodel> inside <vizmodel>
                     } else if ("textmodel".equalsIgnoreCase(name)) {
                         readLegacyTextModel(reader);
-                    // Legacy: old <screenshotMaker> was a self-closing element with inline attributes
+                        // Legacy: old <screenshotMaker> was a self-closing element with inline attributes
                     } else if ("screenshotMaker".equalsIgnoreCase(name)) {
                         readLegacyScreenshotMaker(reader);
-                    // Global
+                        // Global
                     } else if ("cameraposition".equalsIgnoreCase(name)) {
                         String x = reader.getAttributeValue(null, "x");
                         String y = reader.getAttributeValue(null, "y");
@@ -894,7 +894,7 @@ public class VizModel implements VisualizationModel {
                         }
                     } else if ("zoom".equalsIgnoreCase(name)) {
                         this.zoom = Float.parseFloat(reader.getAttributeValue(null, "value"));
-                    // Edges
+                        // Edges
                     } else if ("showedges".equalsIgnoreCase(name)) {
                         setShowEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgeScale".equalsIgnoreCase(name)) {
@@ -913,7 +913,7 @@ public class VizModel implements VisualizationModel {
                         setUseEdgeWeight(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgeRescaleWeightEnabled".equalsIgnoreCase(name)) {
                         setEdgeRescaleWeightEnabled(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
-                    // Selection
+                        // Selection
                     } else if ("autoselectneighbor".equalsIgnoreCase(name)) {
                         setAutoSelectNeighbors(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
@@ -924,7 +924,7 @@ public class VizModel implements VisualizationModel {
                         setLightenNonSelectedFactor(Float.parseFloat(reader.getAttributeValue(null, "value")));
                     } else if ("edgeSelectionColor".equalsIgnoreCase(name)) {
                         setEdgeSelectionColor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
-                    // Colors
+                        // Colors
                     } else if ("backgroundcolor".equalsIgnoreCase(name)) {
                         setBackgroundColor(ColorUtils.decode(reader.getAttributeValue(null, "value")));
                     } else if ("edgeInSelectionColor".equalsIgnoreCase(name)) {
@@ -933,7 +933,7 @@ public class VizModel implements VisualizationModel {
                         setEdgeOutSelectionColor(ColorUtils.decode(reader.getAttributeValue(null, "value")));
                     } else if ("edgeBothSelectionColor".equalsIgnoreCase(name)) {
                         setEdgeBothSelectionColor(ColorUtils.decode(reader.getAttributeValue(null, "value")));
-                    // Node Labels
+                        // Node Labels
                     } else if ("showNodeLabels".equalsIgnoreCase(name)) {
                         setShowNodeLabels(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("nodeLabelFont".equalsIgnoreCase(name)) {
@@ -970,7 +970,7 @@ public class VizModel implements VisualizationModel {
                         if (cols != null) {
                             setNodeLabelColumns(cols);
                         }
-                    // Edge Labels
+                        // Edge Labels
                     } else if ("showEdgeLabels".equalsIgnoreCase(name)) {
                         setShowEdgeLabels(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgeLabelFont".equalsIgnoreCase(name)) {

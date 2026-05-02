@@ -46,8 +46,8 @@ import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 

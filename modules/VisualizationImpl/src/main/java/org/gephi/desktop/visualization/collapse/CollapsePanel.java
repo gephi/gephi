@@ -72,9 +72,11 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         this.extended = extended;
         if (extended) {
-            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/bottomPanelClose.svg", false)); // NOI18N
+            extendButton.setIcon(
+                ImageUtilities.loadImageIcon("VisualizationImpl/bottomPanelClose.svg", false)); // NOI18N
         } else {
-            extendButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/bottomPanelOpen.svg", false)); // NOI18N
+            extendButton.setIcon(
+                ImageUtilities.loadImageIcon("VisualizationImpl/bottomPanelOpen.svg", false)); // NOI18N
         }
         extendButton.addActionListener(new ActionListener() {
 

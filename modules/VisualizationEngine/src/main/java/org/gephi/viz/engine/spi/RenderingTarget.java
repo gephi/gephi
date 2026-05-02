@@ -1,6 +1,5 @@
 package org.gephi.viz.engine.spi;
 
-import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.VizEngine;
 
 /**

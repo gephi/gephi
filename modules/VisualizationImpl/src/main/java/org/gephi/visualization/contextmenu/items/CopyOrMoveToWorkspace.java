@@ -49,7 +49,6 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.Lookup;
 

@@ -135,7 +135,8 @@ public class GLBufferMutable implements GLBuffer {
         if (sizeBytes < neededBytes) {
             long newSizeBytes = getNextPowerOf2(neededBytes);
 
-            Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.FINE, "Growing GL buffer from " + sizeBytes + " to " + newSizeBytes + " bytes");
+            Logger.getLogger(VizEngine.class.getSimpleName())
+                .log(Level.FINE, "Growing GL buffer from " + sizeBytes + " to " + newSizeBytes + " bytes");
             init(gl, newSizeBytes, usage);
         }
     }

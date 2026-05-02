@@ -55,12 +55,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VisualizationEvent;
 import org.gephi.visualization.api.VisualizationEventListener;
-import org.gephi.visualization.contextmenu.GraphContextMenu;
-import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.component.VizEngineGraphCanvasManager;
+import org.gephi.visualization.contextmenu.GraphContextMenu;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.status.GraphSelection;
@@ -347,7 +347,8 @@ public class StandardVizEventManager {
     public boolean mouseRightClick(Component parentComponent, VizEngineGraphCanvasManager canvasManager,
                                    VizEngineModel model) {
         VizController controller = Lookup.getDefault().lookup(VizController.class);
-        if (controller != null && controller.getModel() != null && VizConfig.isEnableContextMenu() && model.getGraphSelection() != null) {
+        if (controller != null && controller.getModel() != null && VizConfig.isEnableContextMenu() &&
+            model.getGraphSelection() != null) {
             GraphContextMenu popupMenu = new GraphContextMenu();
             float globalScale = canvasManager.getSurfaceScale().orElse(1.0f);
             int x = (int) (mouseScreenPosition.x / globalScale);

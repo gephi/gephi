@@ -55,8 +55,8 @@ import net.miginfocom.swing.MigLayout;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.Workspace;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 

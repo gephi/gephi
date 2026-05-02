@@ -108,7 +108,7 @@ import jogamp.opengl.awt.AWTTilePainter;
  * AWT {@link java.awt.Canvas Canvas} containing a NEWT {@link Window} using native parenting.
  *
  * <h5><A NAME="java2dgl">Offscreen Layer Remarks</A></h5>
- *
+ * <p>
  * {@link OffscreenLayerOption#setShallUseOffscreenLayer(boolean) setShallUseOffscreenLayer(true)}
  * maybe called to use an offscreen drawable (FBO or PBuffer) allowing
  * the underlying JAWT mechanism to composite the image, if supported.
@@ -122,7 +122,7 @@ public class NewtCanvasAWT extends java.awt.Canvas
 
     private final Object sync = new Object();
     private volatile JAWTWindow jawtWindow = null;
-        // the JAWTWindow presentation of this AWT Canvas, bound to the 'drawable' lifecycle
+    // the JAWTWindow presentation of this AWT Canvas, bound to the 'drawable' lifecycle
     private boolean isApplet = false;
     private boolean shallUseOffscreenLayer = false;
     private Window newtChild = null;
@@ -135,12 +135,18 @@ public class NewtCanvasAWT extends java.awt.Canvas
 
     private volatile AWTGraphicsConfiguration awtConfig;
 
-    /** Mitigates Bug 910 (IcedTea-Web), i.e. crash via removeNotify() invoked before Applet.destroy(). */
+    /**
+     * Mitigates Bug 910 (IcedTea-Web), i.e. crash via removeNotify() invoked before Applet.destroy().
+     */
     private boolean destroyJAWTPending = false;
-    /** Mitigates Bug 910 (IcedTea-Web), i.e. crash via removeNotify() invoked before Applet.destroy(). */
+    /**
+     * Mitigates Bug 910 (IcedTea-Web), i.e. crash via removeNotify() invoked before Applet.destroy().
+     */
     private boolean skipJAWTDestroy = false;
 
-    /** Safeguard for AWTWindowClosingProtocol and 'removeNotify()' on other thread than AWT-EDT. */
+    /**
+     * Safeguard for AWTWindowClosingProtocol and 'removeNotify()' on other thread than AWT-EDT.
+     */
     private volatile boolean componentAdded = false;
 
     private final AWTWindowClosingProtocol awtWindowClosingProtocol =
@@ -275,7 +281,9 @@ public class NewtCanvasAWT extends java.awt.Canvas
 
     private static final Runnable awtClearGlobalFocusOwner = new ClearFocusOwner();
 
-    /** Must run on AWT-EDT non-blocking, since it invokes tasks on AWT-EDT w/ waiting otherwise. */
+    /**
+     * Must run on AWT-EDT non-blocking, since it invokes tasks on AWT-EDT w/ waiting otherwise.
+     */
     private final Runnable awtClearSelectedMenuPath = new Runnable() {
         @Override
         public void run() {
@@ -415,6 +423,7 @@ public class NewtCanvasAWT extends java.awt.Canvas
      * Note: When switching NEWT child's, detaching the previous first via <code>setNEWTChild(null)</code>
      * produced much cleaner visual results.
      * </p>
+     *
      * @return the previous attached newt child.
      */
     public Window setNEWTChild(final Window newChild) {
@@ -450,13 +459,16 @@ public class NewtCanvasAWT extends java.awt.Canvas
         }
     }
 
-    /** @return the current NEWT child */
+    /**
+     * @return the current NEWT child
+     */
     public Window getNEWTChild() {
         return newtChild;
     }
 
     /**
      * {@inheritDoc}
+     *
      * @return this AWT Canvas {@link NativeWindow} representation, may be null in case {@link #removeNotify()} has been called,
      * or {@link #addNotify()} hasn't been called yet.
      */
@@ -467,6 +479,7 @@ public class NewtCanvasAWT extends java.awt.Canvas
 
     /**
      * {@inheritDoc}
+     *
      * @return this AWT Canvas {@link NativeSurface} representation, may be null in case {@link #removeNotify()} has been called,
      * or {@link #addNotify()} hasn't been called yet.
      */
@@ -499,7 +512,9 @@ public class NewtCanvasAWT extends java.awt.Canvas
         skipJAWTDestroy = v;
     }
 
-    /** See {@link #setSkipJAWTDestroy(boolean)}. */
+    /**
+     * See {@link #setSkipJAWTDestroy(boolean)}.
+     */
     public final boolean getSkipJAWTDestroy() {
         return skipJAWTDestroy;
     }
@@ -694,7 +709,9 @@ public class NewtCanvasAWT extends java.awt.Canvas
         }
     }
 
-    /** Propagates AWT pixelScale to NEWT */
+    /**
+     * Propagates AWT pixelScale to NEWT
+     */
     private final boolean updatePixelScale(final GraphicsConfiguration gc, final boolean force) {
         if (jawtWindow.updatePixelScale(gc, false) || jawtWindow.hasPixelScaleChanged() || force) {
             jawtWindow.hasPixelScaleChanged(); // clear
@@ -736,6 +753,7 @@ public class NewtCanvasAWT extends java.awt.Canvas
      *   <li> Issues <code>destroy()</code> on the NEWT Child</li>
      *   <li> Remove reference to the NEWT Child</li>
      * </ul>
+     *
      * @see Window#destroy()
      */
     public final void destroy() {

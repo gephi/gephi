@@ -297,9 +297,9 @@ public class VizEngine<R extends RenderingTarget, I> {
     /**
      * Centers the view on a specific tile of a larger image by adjusting the zoom and translation.
      *
-     * @param tileX the X coordinate of the tile in the larger image
-     * @param tileY the Y coordinate of the tile in the larger image
-     * @param imageWidth the width of the full image
+     * @param tileX       the X coordinate of the tile in the larger image
+     * @param tileY       the Y coordinate of the tile in the larger image
+     * @param imageWidth  the width of the full image
      * @param imageHeight the height of the full image
      */
     public void centerOnTile(float tileX, float tileY, float imageWidth, float imageHeight) {
@@ -380,7 +380,8 @@ public class VizEngine<R extends RenderingTarget, I> {
         setup();
     }
 
-    public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions, GraphSelection graphSelection) {
+    public synchronized void setGraphModel(GraphModel graphModel, GraphRenderingOptions renderingOptions,
+                                           GraphSelection graphSelection) {
         if (this.engineModel.getGraphModel() != graphModel) {
             this.engineModel = new VizEngineModel(graphModel,
                 renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl(darkLaf),

@@ -57,8 +57,8 @@ import org.gephi.ui.appearance.plugin.UniqueElementColorTransformerUI;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.api.EdgeColorMode;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -165,7 +165,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         // centred (slider=50) at the default value (geometric mean of MIN and MAX).
         scaleSlider.setMinimum(0);
         scaleSlider.addChangeListener(e -> {
-            float scale = VizConfig.EDGE_SCALE_MIN * (float) Math.pow((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN, scaleSlider.getValue() / 100.0);
+            float scale = VizConfig.EDGE_SCALE_MIN *
+                (float) Math.pow((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN,
+                    scaleSlider.getValue() / 100.0);
             vizController.setEdgeScale(scale);
         });
         useEdgeWeightCheckbox.addItemListener(e -> {
@@ -270,7 +272,8 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         if (!edgeOutSelectionColorChooser.getColor().equals(out)) {
             edgeOutSelectionColorChooser.setColor(out);
         }
-        int targetSlider = (int) Math.round(Math.log((double) vizModel.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) / Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100);
+        int targetSlider = (int) Math.round(Math.log((double) vizModel.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) /
+            Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100);
         if (scaleSlider.getValue() != targetSlider) {
             scaleSlider.setValue(targetSlider);
         }

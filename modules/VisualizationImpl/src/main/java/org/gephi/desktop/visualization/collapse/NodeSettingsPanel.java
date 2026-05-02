@@ -44,8 +44,8 @@ package org.gephi.desktop.visualization.collapse;
 
 import java.beans.PropertyChangeEvent;
 import org.gephi.visualization.VizConfig;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.Lookup;
 
@@ -74,7 +74,9 @@ public class NodeSettingsPanel extends javax.swing.JPanel implements Visualizati
         // centred (slider=50) at the default value (geometric mean of MIN and MAX).
         scaleSlider.setMinimum(0);
         scaleSlider.addChangeListener(e -> {
-            float scale = VizConfig.NODE_SCALE_MIN * (float) Math.pow((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN, scaleSlider.getValue() / 100.0);
+            float scale = VizConfig.NODE_SCALE_MIN *
+                (float) Math.pow((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN,
+                    scaleSlider.getValue() / 100.0);
             vizController.setNodeScale(scale);
         });
     }
@@ -101,7 +103,8 @@ public class NodeSettingsPanel extends javax.swing.JPanel implements Visualizati
     }
 
     private void refreshSharedConfig(VisualizationModel vizModel) {
-        int targetSlider = (int) Math.round(Math.log((double) vizModel.getNodeScale() / VizConfig.NODE_SCALE_MIN) / Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100);
+        int targetSlider = (int) Math.round(Math.log((double) vizModel.getNodeScale() / VizConfig.NODE_SCALE_MIN) /
+            Math.log((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN) * 100);
         if (scaleSlider.getValue() != targetSlider) {
             scaleSlider.setValue(targetSlider);
         }

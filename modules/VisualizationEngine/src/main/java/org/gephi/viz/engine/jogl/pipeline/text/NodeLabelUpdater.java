@@ -42,7 +42,8 @@ public class NodeLabelUpdater extends AbstractLabelUpdater<Node> {
         // Rendering parameters
         final GraphRenderingOptions.LabelColorMode labelColorMode = options.getNodeLabelColorMode();
         final GraphRenderingOptions.LabelSizeMode labelSizeMode = options.getNodeLabelSizeMode();
-        final float lightenNonSelectedFactor = options.isLightenNonSelected() ? options.getLightenNonSelectedFactor() : 0f;
+        final float lightenNonSelectedFactor =
+            options.isLightenNonSelected() ? options.getLightenNonSelectedFactor() : 0f;
         final float nodeLabelScale = options.getNodeLabelScale();
         final float fitNodeLabelsToNodeSizeFactor = options.getNodeLabelFitToNodeSizeFactor();
         final boolean fitToNodeSize = options.isNodeLabelFitToNodeSize();
@@ -116,7 +117,8 @@ public class NodeLabelUpdater extends AbstractLabelUpdater<Node> {
             }
 
             // Size calculation
-            final float baseNodeSizeFactor = fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale : 1f;
+            final float baseNodeSizeFactor =
+                fitToNodeSize ? node.size() * fitNodeLabelsToNodeSizeFactor * nodeScale : 1f;
             // Add tiny bias (<1%) based on node size to prioritize labels of larger nodes in overlap detection
             final float nodeSizeFactor = baseNodeSizeFactor * (1.0f + node.size() * nodeScale * 0.00001f);
             float sizeFactor = nodeLabelScale * nodeSizeFactor * (float) Math.sqrt(node.getTextProperties().getSize());

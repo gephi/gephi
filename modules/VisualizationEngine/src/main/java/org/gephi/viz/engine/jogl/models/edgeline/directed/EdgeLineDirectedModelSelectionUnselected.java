@@ -16,8 +16,8 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BACKGROUND_COLOR;
-import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_INSET;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_LIGHTEN_FACTOR;
+import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_INSET;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MAX;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_EDGE_SCALE_MIN;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_GLOBAL_TIME;

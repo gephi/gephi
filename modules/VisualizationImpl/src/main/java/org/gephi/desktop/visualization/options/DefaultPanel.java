@@ -45,8 +45,6 @@ package org.gephi.desktop.visualization.options;
 import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -307,13 +305,16 @@ final class DefaultPanel extends javax.swing.JPanel {
         resetPanel = new javax.swing.JPanel();
         resetButton = new javax.swing.JButton();
 
-        titleGlobalSettings.setFont(titleGlobalSettings.getFont().deriveFont(titleGlobalSettings.getFont().getStyle() | java.awt.Font.BOLD));
-        titleGlobalSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleGlobalSettings.title")); // NOI18N
+        titleGlobalSettings.setFont(
+            titleGlobalSettings.getFont().deriveFont(titleGlobalSettings.getFont().getStyle() | java.awt.Font.BOLD));
+        titleGlobalSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+            "DefaultPanel.titleGlobalSettings.title")); // NOI18N
 
         globalPanel.setOpaque(false);
         globalPanel.setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelBackground, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelBackground.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelBackground,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelBackground.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -328,11 +329,11 @@ final class DefaultPanel extends javax.swing.JPanel {
         backgroundColor.setLayout(backgroundColorLayout);
         backgroundColorLayout.setHorizontalGroup(
             backgroundColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
         );
         backgroundColorLayout.setVerticalGroup(
             backgroundColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -341,7 +342,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         globalPanel.add(backgroundColor, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(highlightCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.highlightCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(highlightCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.highlightCheckbox.text")); // NOI18N
         highlightCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -350,7 +352,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 20, 3, 8);
         globalPanel.add(highlightCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(autoSelectNeighborCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.autoSelectNeighborCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(autoSelectNeighborCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.autoSelectNeighborCheckbox.text")); // NOI18N
         autoSelectNeighborCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -360,13 +364,16 @@ final class DefaultPanel extends javax.swing.JPanel {
         globalPanel.add(autoSelectNeighborCheckbox, gridBagConstraints);
 
         titleNodeSettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(7, 0, 0, 0));
-        titleNodeSettings.setFont(titleNodeSettings.getFont().deriveFont(titleNodeSettings.getFont().getStyle() | java.awt.Font.BOLD));
-        titleNodeSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleNodeSettings.title")); // NOI18N
+        titleNodeSettings.setFont(
+            titleNodeSettings.getFont().deriveFont(titleNodeSettings.getFont().getStyle() | java.awt.Font.BOLD));
+        titleNodeSettings.setTitle(
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleNodeSettings.title")); // NOI18N
 
         nodePanel.setOpaque(false);
         nodePanel.setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeScale, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeScale.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelNodeScale,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeScale.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -382,13 +389,16 @@ final class DefaultPanel extends javax.swing.JPanel {
         nodePanel.add(nodeScaleSlider, gridBagConstraints);
 
         titleEdgeSettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(7, 0, 0, 0));
-        titleEdgeSettings.setFont(titleEdgeSettings.getFont().deriveFont(titleEdgeSettings.getFont().getStyle() | java.awt.Font.BOLD));
-        titleEdgeSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleEdgeSettings.title")); // NOI18N
+        titleEdgeSettings.setFont(
+            titleEdgeSettings.getFont().deriveFont(titleEdgeSettings.getFont().getStyle() | java.awt.Font.BOLD));
+        titleEdgeSettings.setTitle(
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleEdgeSettings.title")); // NOI18N
 
         edgePanel.setOpaque(false);
         edgePanel.setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeColor.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -402,7 +412,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(edgeColorCombo, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeScale, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeScale.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeScale,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeScale.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -418,7 +429,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(edgeScaleSlider, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(showEdgesCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.showEdgesCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(showEdgesCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.showEdgesCheckbox.text")); // NOI18N
         showEdgesCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -427,7 +439,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(showEdgesCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedEdgesCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.hideNonSelectedEdgesCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedEdgesCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.hideNonSelectedEdgesCheckbox.text")); // NOI18N
         hideNonSelectedEdgesCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -436,7 +450,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(hideNonSelectedEdgesCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(useEdgeWeightCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.useEdgeWeightCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(useEdgeWeightCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.useEdgeWeightCheckbox.text")); // NOI18N
         useEdgeWeightCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -445,7 +461,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(useEdgeWeightCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(rescaleEdgeWeightCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.rescaleEdgeWeightCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(rescaleEdgeWeightCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.rescaleEdgeWeightCheckbox.text")); // NOI18N
         rescaleEdgeWeightCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -454,7 +472,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgePanel.add(rescaleEdgeWeightCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(selectionColorCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.selectionColorCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(selectionColorCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.selectionColorCheckbox.text")); // NOI18N
         selectionColorCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -466,59 +486,65 @@ final class DefaultPanel extends javax.swing.JPanel {
 
         edgeSelectionColorsPanel.setOpaque(false);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeInColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeInColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeInColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeInColor.text")); // NOI18N
         edgeSelectionColorsPanel.add(labelEdgeInColor);
 
         edgeInSelectionColorChooser.setPreferredSize(new java.awt.Dimension(16, 16));
         edgeInSelectionColorChooser.setMaximumSize(new java.awt.Dimension(16, 16));
 
-        javax.swing.GroupLayout edgeInSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeInSelectionColorChooser);
+        javax.swing.GroupLayout edgeInSelectionColorChooserLayout =
+            new javax.swing.GroupLayout(edgeInSelectionColorChooser);
         edgeInSelectionColorChooser.setLayout(edgeInSelectionColorChooserLayout);
         edgeInSelectionColorChooserLayout.setHorizontalGroup(
             edgeInSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
         edgeInSelectionColorChooserLayout.setVerticalGroup(
             edgeInSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
 
         edgeSelectionColorsPanel.add(edgeInSelectionColorChooser);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeOutColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeOutColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeOutColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeOutColor.text")); // NOI18N
         edgeSelectionColorsPanel.add(labelEdgeOutColor);
 
         edgeOutSelectionColorChooser.setPreferredSize(new java.awt.Dimension(16, 16));
         edgeOutSelectionColorChooser.setMaximumSize(new java.awt.Dimension(16, 16));
 
-        javax.swing.GroupLayout edgeOutSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeOutSelectionColorChooser);
+        javax.swing.GroupLayout edgeOutSelectionColorChooserLayout =
+            new javax.swing.GroupLayout(edgeOutSelectionColorChooser);
         edgeOutSelectionColorChooser.setLayout(edgeOutSelectionColorChooserLayout);
         edgeOutSelectionColorChooserLayout.setHorizontalGroup(
             edgeOutSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
         edgeOutSelectionColorChooserLayout.setVerticalGroup(
             edgeOutSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
 
         edgeSelectionColorsPanel.add(edgeOutSelectionColorChooser);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeBothColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeBothColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeBothColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeBothColor.text")); // NOI18N
         edgeSelectionColorsPanel.add(labelEdgeBothColor);
 
         edgeBothSelectionColorChooser.setMaximumSize(new java.awt.Dimension(16, 16));
         edgeBothSelectionColorChooser.setPreferredSize(new java.awt.Dimension(16, 16));
 
-        javax.swing.GroupLayout edgeBothSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeBothSelectionColorChooser);
+        javax.swing.GroupLayout edgeBothSelectionColorChooserLayout =
+            new javax.swing.GroupLayout(edgeBothSelectionColorChooser);
         edgeBothSelectionColorChooser.setLayout(edgeBothSelectionColorChooserLayout);
         edgeBothSelectionColorChooserLayout.setHorizontalGroup(
             edgeBothSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
         edgeBothSelectionColorChooserLayout.setVerticalGroup(
             edgeBothSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
+                .addGap(0, 14, Short.MAX_VALUE)
         );
 
         edgeSelectionColorsPanel.add(edgeBothSelectionColorChooser);
@@ -531,13 +557,16 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 3, 8);
         edgePanel.add(edgeSelectionColorsPanel, gridBagConstraints);
 
-        titleNodeLabelSettings.setFont(titleNodeLabelSettings.getFont().deriveFont(titleNodeLabelSettings.getFont().getStyle() | java.awt.Font.BOLD));
-        titleNodeLabelSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleNodeLabelSettings.title")); // NOI18N
+        titleNodeLabelSettings.setFont(titleNodeLabelSettings.getFont()
+            .deriveFont(titleNodeLabelSettings.getFont().getStyle() | java.awt.Font.BOLD));
+        titleNodeLabelSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+            "DefaultPanel.titleNodeLabelSettings.title")); // NOI18N
 
         nodeLabelPanel.setOpaque(false);
         nodeLabelPanel.setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeFont, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeFont.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelNodeFont,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeFont.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -545,7 +574,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(labelNodeFont, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(nodeFontButton, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.nodeFontButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(nodeFontButton,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.nodeFontButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -555,7 +585,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(nodeFontButton, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeLabelColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelNodeLabelColor.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -569,7 +601,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(nodeLabelColorCombo, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelSize, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeLabelSize.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelSize,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeLabelSize.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -583,7 +616,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(nodeLabelSizeCombo, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelScale, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelNodeLabelScale.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelNodeLabelScale,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelNodeLabelScale.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -602,7 +637,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(nodeLabelScaleSlider, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedNodeLabelsCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.hideNonSelectedNodeLabelsCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedNodeLabelsCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.hideNonSelectedNodeLabelsCheckbox.text")); // NOI18N
         hideNonSelectedNodeLabelsCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -611,7 +648,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(hideNonSelectedNodeLabelsCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(fitToNodeSizeCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.fitToNodeSizeCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(fitToNodeSizeCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.fitToNodeSizeCheckbox.text")); // NOI18N
         fitToNodeSizeCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -620,7 +659,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         nodeLabelPanel.add(fitToNodeSizeCheckbox, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(avoidNodeLabelOverlapCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.avoidNodeLabelOverlapCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(avoidNodeLabelOverlapCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.avoidNodeLabelOverlapCheckbox.text")); // NOI18N
         avoidNodeLabelOverlapCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -630,13 +671,16 @@ final class DefaultPanel extends javax.swing.JPanel {
         nodeLabelPanel.add(avoidNodeLabelOverlapCheckbox, gridBagConstraints);
 
         titleEdgeLabelSettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(7, 0, 0, 0));
-        titleEdgeLabelSettings.setFont(titleEdgeLabelSettings.getFont().deriveFont(titleEdgeLabelSettings.getFont().getStyle() | java.awt.Font.BOLD));
-        titleEdgeLabelSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleEdgeLabelSettings.title")); // NOI18N
+        titleEdgeLabelSettings.setFont(titleEdgeLabelSettings.getFont()
+            .deriveFont(titleEdgeLabelSettings.getFont().getStyle() | java.awt.Font.BOLD));
+        titleEdgeLabelSettings.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+            "DefaultPanel.titleEdgeLabelSettings.title")); // NOI18N
 
         edgeLabelPanel.setOpaque(false);
         edgeLabelPanel.setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeFont, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeFont.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeFont,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeFont.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -644,7 +688,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgeLabelPanel.add(labelEdgeFont, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(edgeFontButton, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.edgeFontButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(edgeFontButton,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.edgeFontButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -654,7 +699,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgeLabelPanel.add(edgeFontButton, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeLabelColor.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelColor,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelEdgeLabelColor.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -668,7 +715,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgeLabelPanel.add(edgeLabelColorCombo, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelSize, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeLabelSize.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelSize,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeLabelSize.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -682,7 +730,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgeLabelPanel.add(edgeLabelSizeCombo, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelScale, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelEdgeLabelScale.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelEdgeLabelScale,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.labelEdgeLabelScale.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -701,7 +751,9 @@ final class DefaultPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 8, 3, 8);
         edgeLabelPanel.add(edgeLabelScaleSlider, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedEdgeLabelsCheckbox, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.hideNonSelectedEdgeLabelsCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(hideNonSelectedEdgeLabelsCheckbox,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class,
+                "DefaultPanel.hideNonSelectedEdgeLabelsCheckbox.text")); // NOI18N
         hideNonSelectedEdgeLabelsCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -712,66 +764,89 @@ final class DefaultPanel extends javax.swing.JPanel {
 
         resetPanel.setOpaque(false);
 
-        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.resetButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(resetButton,
+            org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.resetButton.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(resetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(edgePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nodePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(globalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(nodeLabelPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(titleEdgeLabelSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(titleNodeLabelSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(titleEdgeSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(titleGlobalSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(titleNodeSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addComponent(edgeLabelPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(resetButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(resetPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(edgePanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nodePanel, javax.swing.GroupLayout.Alignment.TRAILING,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(globalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 344,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(nodeLabelPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(titleEdgeLabelSettings, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(titleNodeLabelSettings, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(titleEdgeSettings, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(titleGlobalSettings, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(titleNodeSettings, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addContainerGap())
+                        .addComponent(edgeLabelPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(titleGlobalSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(globalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(titleNodeSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(nodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(titleEdgeSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edgePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(titleNodeLabelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nodeLabelPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(titleEdgeLabelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edgeLabelPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                        .addComponent(resetButton)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(resetPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(titleGlobalSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(globalPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(titleNodeSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, 0)
+                    .addComponent(nodePanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(titleEdgeSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(edgePanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(titleNodeLabelSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(nodeLabelPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(titleEdgeLabelSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(edgeLabelPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                            .addComponent(resetButton)
+                            .addContainerGap())
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(13, 13, 13)
+                            .addComponent(resetPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -869,7 +944,8 @@ final class DefaultPanel extends javax.swing.JPanel {
         edgeOutSelectionColorChooser.setColor(ColorUtils.decode(
             prefs.get(VizConfig.SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(VizConfig.DEFAULT_SELECTEDEDGE_OUT_COLOR))));
         edgeBothSelectionColorChooser.setColor(ColorUtils.decode(
-            prefs.get(VizConfig.SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(VizConfig.DEFAULT_SELECTEDEDGE_BOTH_COLOR))));
+            prefs.get(VizConfig.SELECTEDEDGE_BOTH_COLOR,
+                ColorUtils.encode(VizConfig.DEFAULT_SELECTEDEDGE_BOTH_COLOR))));
 
         // Edge label settings
         edgeFont = Font.decode(

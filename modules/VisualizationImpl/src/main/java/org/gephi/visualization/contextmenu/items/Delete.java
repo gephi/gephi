@@ -73,7 +73,7 @@ public class Delete extends BasicItem {
     @Override
     public String getName() {
         return nodes.length > 1 ? NbBundle.getMessage(Delete.class, "GraphContextMenu_Delete_Plural", nodes.length)
-                : NbBundle.getMessage(Delete.class, "GraphContextMenu_Delete");
+            : NbBundle.getMessage(Delete.class, "GraphContextMenu_Delete");
     }
 
     @Override

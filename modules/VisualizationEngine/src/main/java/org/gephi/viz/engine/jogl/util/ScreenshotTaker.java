@@ -105,27 +105,27 @@ public class ScreenshotTaker {
         // Check for potential overflow when calculating final image dimensions
         long imageWidthLong = (long) tileWidth * scaleFactor;
         long imageHeightLong = (long) tileHeight * scaleFactor;
-        
+
         // Check if dimensions exceed int range
         if (imageWidthLong > Integer.MAX_VALUE || imageHeightLong > Integer.MAX_VALUE) {
             throw new IllegalArgumentException(
                 String.format("Image dimensions too large: %dx%d (scale factor: %d). Maximum dimension is %d.",
                     imageWidthLong, imageHeightLong, scaleFactor, Integer.MAX_VALUE));
         }
-        
+
         // Check if total byte array size would exceed array size limits
         // BufferedImage uses byte[] internally: TYPE_3BYTE_BGR (3 bytes/pixel) or TYPE_4BYTE_ABGR (4 bytes/pixel)
         long totalPixels = imageWidthLong * imageHeightLong;
         int bytesPerPixel = transparentBackground ? 4 : 3;
         long totalBytes = totalPixels * bytesPerPixel;
-        
+
         if (totalBytes > Integer.MAX_VALUE) {
             int maxScaleFactor = getMaxScaleFactor(tileWidth, tileHeight, transparentBackground);
             throw new IllegalArgumentException(
                 String.format("Scale factor %d is too large for %dx%d viewport. Maximum scale factor: %d",
                     scaleFactor, tileWidth, tileHeight, maxScaleFactor));
         }
-        
+
         int imageWidth = (int) imageWidthLong;
         int imageHeight = (int) imageHeightLong;
 

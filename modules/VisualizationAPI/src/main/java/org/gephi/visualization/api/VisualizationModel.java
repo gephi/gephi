@@ -48,7 +48,6 @@ import java.util.Collection;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Estimator;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.spi.Model;

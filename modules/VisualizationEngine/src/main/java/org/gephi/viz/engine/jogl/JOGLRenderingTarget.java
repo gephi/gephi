@@ -316,7 +316,8 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
      * @param transparentBackground Whether the screenshot should have a transparent background
      * @return A CompletableFuture that will be completed with the screenshot image
      */
-    public CompletableFuture<BufferedImage> requestScreenshot(int scaleFactor, boolean transparentBackground, BooleanSupplier isCancelled) {
+    public CompletableFuture<BufferedImage> requestScreenshot(int scaleFactor, boolean transparentBackground,
+                                                              BooleanSupplier isCancelled) {
         if (scaleFactor < 1) {
             throw new IllegalArgumentException("Scale factor must be 1 or greater");
         }
@@ -325,29 +326,31 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
         CompletableFuture<BufferedImage> future = new CompletableFuture<>();
         if (scaleFactor > 1) {
             // With scale factor > 1 we need to do tiled screenshot
-                boolean wasAnimating = animator.isAnimating();
-                try {
-                    // Pause animation and  update
-                    if (wasAnimating) {
-                        animator.pause();
-                    }
-                    engine.pauseUpdating();
-
-                    // Locks key and mouse events processing
-                    this.screenshotRequest = new ScreenshotRequest(scaleFactor, transparentBackground, future);;
-
-                    // Take tiled screenshot
-                    future.complete(ScreenshotTaker.takeTiledScreenshot(engine, scaleFactor, transparentBackground, isCancelled));
-                } finally {
-                    // Resume update and animation
-                    engine.resumeUpdating();
-                    if (wasAnimating) {
-                        animator.resume();
-                    }
-
-                    this.screenshotRequest = null;
+            boolean wasAnimating = animator.isAnimating();
+            try {
+                // Pause animation and  update
+                if (wasAnimating) {
+                    animator.pause();
                 }
-                return future;
+                engine.pauseUpdating();
+
+                // Locks key and mouse events processing
+                this.screenshotRequest = new ScreenshotRequest(scaleFactor, transparentBackground, future);
+                ;
+
+                // Take tiled screenshot
+                future.complete(
+                    ScreenshotTaker.takeTiledScreenshot(engine, scaleFactor, transparentBackground, isCancelled));
+            } finally {
+                // Resume update and animation
+                engine.resumeUpdating();
+                if (wasAnimating) {
+                    animator.resume();
+                }
+
+                this.screenshotRequest = null;
+            }
+            return future;
         } else {
             // Regular simple screenshot
             if (transparentBackground) {

@@ -59,8 +59,8 @@ import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -186,7 +186,9 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         });
         // Slider maps [1, 100] to [NODE_LABEL_SCALE_MIN, NODE_LABEL_SCALE_MAX]
         nodeSizeSlider.addChangeListener(e -> {
-            float scale = VizConfig.NODE_LABEL_SCALE_MIN + (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * (nodeSizeSlider.getValue() - 1) / 99f;
+            float scale = VizConfig.NODE_LABEL_SCALE_MIN +
+                (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * (nodeSizeSlider.getValue() - 1) /
+                    99f;
             vizController.setNodeLabelScale(scale);
         });
 
@@ -272,9 +274,11 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         }
         nodeFontButton.setText(
             vizModel.getNodeLabelFont().getFontName() + ", " + vizModel.getNodeLabelFont().getSize());
-        float sliderScale = VizConfig.NODE_LABEL_SCALE_MIN + (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * (nodeSizeSlider.getValue() - 1) / 99f;
+        float sliderScale = VizConfig.NODE_LABEL_SCALE_MIN +
+            (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * (nodeSizeSlider.getValue() - 1) / 99f;
         if (sliderScale != vizModel.getNodeLabelScale()) {
-            nodeSizeSlider.setValue(1 + (int) ((vizModel.getNodeLabelScale() - VizConfig.NODE_LABEL_SCALE_MIN) / (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99));
+            nodeSizeSlider.setValue(1 + (int) ((vizModel.getNodeLabelScale() - VizConfig.NODE_LABEL_SCALE_MIN) /
+                (VizConfig.NODE_LABEL_SCALE_MAX - VizConfig.NODE_LABEL_SCALE_MIN) * 99));
         }
         if (hideNonSelectedCheckbox.isSelected() != vizModel.isHideNonSelectedNodeLabels()) {
             hideNonSelectedCheckbox.setSelected(vizModel.isHideNonSelectedNodeLabels());

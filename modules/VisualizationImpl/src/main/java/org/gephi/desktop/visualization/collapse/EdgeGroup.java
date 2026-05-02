@@ -15,8 +15,8 @@ import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.EdgeColorMode;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -72,7 +72,9 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         edgeScaleSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                float scale = VizConfig.EDGE_SCALE_MIN * (float) Math.pow((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN, edgeScaleSlider.getValue() / 100.0);
+                float scale = VizConfig.EDGE_SCALE_MIN *
+                    (float) Math.pow((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN,
+                        edgeScaleSlider.getValue() / 100.0);
                 vizController.setEdgeScale(scale);
             }
         });
@@ -93,7 +95,9 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         showEdgeButton.setSelected(vizModel.isShowEdges());
 
         edgeScaleSlider.setEnabled(true);
-        edgeScaleSlider.setValue((int) Math.round(Math.log((double) vizModel.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) / Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100));
+        edgeScaleSlider.setValue((int) Math.round(
+            Math.log((double) vizModel.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) /
+                Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100));
 
         // Listeners
         vizController.addPropertyChangeListener(this);
@@ -120,7 +124,8 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
                 showEdgeButton.setSelected(model.isShowEdges());
             }
         } else if (evt.getPropertyName().equals("edgeScale")) {
-            int targetSlider = (int) Math.round(Math.log((double) model.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) / Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100);
+            int targetSlider = (int) Math.round(Math.log((double) model.getEdgeScale() / VizConfig.EDGE_SCALE_MIN) /
+                Math.log((double) VizConfig.EDGE_SCALE_MAX / VizConfig.EDGE_SCALE_MIN) * 100);
             if (edgeScaleSlider.getValue() != targetSlider) {
                 edgeScaleSlider.setValue(targetSlider);
             }

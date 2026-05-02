@@ -42,9 +42,6 @@
 
 package org.gephi.layout.plugin.noverlap;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
 
 /**
@@ -52,5 +49,4 @@ import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
  */
 public class NoverlapLayoutData extends ForceVectorNodeLayoutData {
 
-    public final List<Node> neighbours = new ArrayList<>();
 }

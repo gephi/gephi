@@ -42,20 +42,16 @@
 
 package org.gephi.visualization.contextmenu.items;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceInformation;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 

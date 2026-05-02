@@ -59,8 +59,8 @@ import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.api.LabelColorMode;
 import org.gephi.visualization.api.LabelSizeMode;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -184,7 +184,9 @@ public class EdgeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         });
         // Slider maps [1, 100] to [EDGE_LABEL_SCALE_MIN, EDGE_LABEL_SCALE_MAX]
         edgeSizeSlider.addChangeListener(e -> {
-            float scale = VizConfig.EDGE_LABEL_SCALE_MIN + (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * (edgeSizeSlider.getValue() - 1) / 99f;
+            float scale = VizConfig.EDGE_LABEL_SCALE_MIN +
+                (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * (edgeSizeSlider.getValue() - 1) /
+                    99f;
             vizController.setEdgeLabelScale(scale);
         });
 
@@ -254,9 +256,11 @@ public class EdgeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         }
         edgeFontButton.setText(
             vizModel.getEdgeLabelFont().getFontName() + ", " + vizModel.getEdgeLabelFont().getSize());
-        float sliderScale = VizConfig.EDGE_LABEL_SCALE_MIN + (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * (edgeSizeSlider.getValue() - 1) / 99f;
+        float sliderScale = VizConfig.EDGE_LABEL_SCALE_MIN +
+            (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * (edgeSizeSlider.getValue() - 1) / 99f;
         if (sliderScale != vizModel.getEdgeLabelScale()) {
-            edgeSizeSlider.setValue(1 + (int) ((vizModel.getEdgeLabelScale() - VizConfig.EDGE_LABEL_SCALE_MIN) / (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * 99));
+            edgeSizeSlider.setValue(1 + (int) ((vizModel.getEdgeLabelScale() - VizConfig.EDGE_LABEL_SCALE_MIN) /
+                (VizConfig.EDGE_LABEL_SCALE_MAX - VizConfig.EDGE_LABEL_SCALE_MIN) * 99));
         }
         if (hideNonSelectedCheckbox.isSelected() != vizModel.isHideNonSelectedEdgeLabels()) {
             hideNonSelectedCheckbox.setSelected(vizModel.isHideNonSelectedEdgeLabels());

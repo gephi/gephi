@@ -47,8 +47,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -109,7 +109,8 @@ public class VizController implements VisualizationController, Controller<VizMod
                 VizEngineModel model = (VizEngineModel) event.getData();
                 Collection<Node> selectedNodes = model.getGraphSelection().getSelectedNodes();
 
-                AttributesUIController attributesUIController = Lookup.getDefault().lookup(AttributesUIController.class);
+                AttributesUIController attributesUIController =
+                    Lookup.getDefault().lookup(AttributesUIController.class);
                 if (attributesUIController != null) {
                     attributesUIController.selectNodes(selectedNodes.toArray(new Node[0]));
                 }

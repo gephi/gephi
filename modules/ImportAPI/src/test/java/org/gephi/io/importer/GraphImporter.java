@@ -1,10 +1,10 @@
 package org.gephi.io.importer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.io.importer.api.Container;
@@ -66,7 +66,7 @@ public class GraphImporter {
     private static Reader getReader(Class resourceLocation, String fileName) {
         try {
             String content = new String(resourceLocation.getResourceAsStream(fileName)
-                .readAllBytes());
+                .readAllBytes(), StandardCharsets.UTF_8);
             return new StringReader(content);
         } catch (IOException e) {
             throw new RuntimeException(e);

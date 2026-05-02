@@ -47,7 +47,6 @@ import org.gephi.desktop.visualization.screenshot.ScreenshotSettingsPanel;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ScreenshotController;
-import org.gephi.viz.engine.VizEngine;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;

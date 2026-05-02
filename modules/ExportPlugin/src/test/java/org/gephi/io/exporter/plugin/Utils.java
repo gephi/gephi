@@ -2,6 +2,7 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.junit.Assert;
@@ -41,18 +42,18 @@ public class Utils {
                 System.err.println("Difference: " + iter.next().toString());
                 size++;
             }
-            Assert.assertEquals("Expected: \n"+cleanString(actual), 0, size);
+            Assert.assertEquals("Expected: \n" + cleanString(actual), 0, size);
         } else {
             Assert.assertEquals(cleanString(expected), cleanString(actual));
         }
     }
 
     private static String cleanString(String str) {
-        return str.replaceAll("[\\r]", "");
+        return str.replaceAll("\\r", "");
     }
 
     public static String getResourceContent(String fileName) throws IOException {
         return new String(Utils.class.getResourceAsStream(fileName)
-            .readAllBytes());
+            .readAllBytes(), StandardCharsets.UTF_8);
     }
 }

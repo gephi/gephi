@@ -53,8 +53,8 @@ import javax.swing.border.EmptyBorder;
 import org.gephi.desktop.visualization.selection.SelectionPropertiesToolbar;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizConfig;
-import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationController;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.Lookup;
 
 /**
@@ -110,7 +110,7 @@ public class PropertiesBar extends JPanel {
     }
 
     private void startFpsThread() {
-        if(!VizConfig.isShowFps()) {
+        if (!VizConfig.isShowFps()) {
             return;
         }
         if (fpsThreadRunning) {

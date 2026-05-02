@@ -99,8 +99,10 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         // Setup combo listener for custom scale factor toggle
         scaleFactorCombo.addItemListener(e -> {
             String customElement =
-                NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.scaleFactorCombo.customItem");
-            if (scaleFactorCombo.getSelectedItem() != null && scaleFactorCombo.getSelectedItem().equals(customElement)) {
+                NbBundle.getMessage(ScreenshotSettingsPanel.class,
+                    "ScreenshotSettingsPanel.scaleFactorCombo.customItem");
+            if (scaleFactorCombo.getSelectedItem() != null &&
+                scaleFactorCombo.getSelectedItem().equals(customElement)) {
                 customScaleFactorSpinner.setVisible(true);
                 labelCustomScaleFactor.setVisible(true);
                 refreshWidthAndHeightLabels((Integer) customScaleFactorSpinner.getModel().getValue());
@@ -130,10 +132,10 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     public void setup(final ScreenshotModel model) {
         this.surfaceHeight = controller.getSurfaceHeight();
         this.surfaceWidth = controller.getSurfaceWidth();
-        
+
         // Calculate maximum scale factor using worst case (transparent = 4 bytes/pixel)
         int maxScaleFactor = ScreenshotTaker.getMaxScaleFactor(surfaceWidth, surfaceHeight, true);
-        
+
         // Build combo model with scale factors up to the maximum
         String customElement =
             NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.scaleFactorCombo.customItem");
@@ -146,7 +148,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         }
         comboModel.addElement(customElement);
         scaleFactorCombo.setModel(comboModel);
-        
+
         // Update spinner model with maximum
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(
             Math.min(model.getScaleFactor(), maxScaleFactor), // current value
@@ -155,12 +157,12 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
             1  // step
         );
         customScaleFactorSpinner.setModel(spinnerModel);
-        
+
         autoSaveCheckBox.setSelected(model.isAutoSave());
         selectDirectoryButton.setEnabled(autoSaveCheckBox.isSelected());
         customScaleFactorSpinner.setVisible(false);
         labelCustomScaleFactor.setVisible(false);
-        
+
         // Select appropriate combo item based on model's scale factor
         int modelScaleFactor = Math.min(model.getScaleFactor(), maxScaleFactor);
         boolean foundInCombo = false;
@@ -173,7 +175,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 break;
             }
         }
-        
+
         if (!foundInCombo) {
             // Select custom and show spinner
             scaleFactorCombo.setSelectedIndex(comboModel.getSize() - 1);
@@ -181,9 +183,9 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
             customScaleFactorSpinner.setVisible(true);
             labelCustomScaleFactor.setVisible(true);
         }
-        
+
         transparentBackgroundCheckbox.setSelected(model.isTransparentBackground());
-        
+
         selectDirectoryButton.addActionListener(new ActionListener() {
 
             @Override
@@ -201,18 +203,18 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
 
     public void unsetup() {
         controller.setAutoSave(autoSaveCheckBox.isSelected());
-        
+
         // Get scale factor from either combo or custom spinner
         String customElement =
             NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.scaleFactorCombo.customItem");
         Object selectedItem = scaleFactorCombo.getSelectedItem();
-        
+
         if (selectedItem != null && selectedItem.equals(customElement)) {
             controller.setScaleFactor((Integer) customScaleFactorSpinner.getModel().getValue());
         } else if (selectedItem != null) {
             controller.setScaleFactor(Integer.parseInt(selectedItem.toString().replace("x", "")));
         }
-        
+
         controller.setTransparentBackground(transparentBackgroundCheckbox.isSelected());
     }
 

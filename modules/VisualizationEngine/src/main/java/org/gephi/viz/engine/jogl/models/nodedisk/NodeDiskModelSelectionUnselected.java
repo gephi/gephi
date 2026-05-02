@@ -28,7 +28,7 @@ public class NodeDiskModelSelectionUnselected {
     private GLShaderProgram program;
 
     private static final String SHADERS_ROOT = Constants.SHADERS_ROOT + "node";
-    
+
     private static final String SHADERS_NODE_CIRCLE_SOURCE_VS = "node_with_selection_unselected";
     private static final String SHADERS_NODE_CIRCLE_SOURCE_FS = "node_with_selection_unselected";
 

@@ -48,7 +48,8 @@ public class ArrayUtils {
         if (capacity < elements) {
             int newElementsCapacity = getNextPowerOf2(elements);
 
-            Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.FINE, "Growing float buffer from " + capacity + " to " + newElementsCapacity + " elements");
+            Logger.getLogger(VizEngine.class.getSimpleName())
+                .log(Level.FINE, "Growing float buffer from " + capacity + " to " + newElementsCapacity + " elements");
             return new float[newElementsCapacity];
         } else {
             return buffer;

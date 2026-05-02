@@ -10,11 +10,11 @@ import org.gephi.ui.components.JColorBlackWhiteSwitcher;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.visualization.VizConfig;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.VisualizationModel;
 import org.gephi.visualization.api.VisualizationPropertyChangeListener;
-import org.gephi.visualization.VizConfig;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 

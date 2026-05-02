@@ -215,7 +215,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             model.getRenderingOptions().getBackgroundColor(),
             maxNodeSize,
             currentZoom,
-            model.getRenderingOptions().isLightenNonSelected() ? model.getRenderingOptions().getLightenNonSelectedFactor() : 0f,
+            model.getRenderingOptions().isLightenNonSelected() ?
+                model.getRenderingOptions().getLightenNonSelectedFactor() : 0f,
             engine.getOpenGLOptions()
         );
     }

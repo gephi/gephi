@@ -21,7 +21,8 @@ public class VizEngineModel {
     //Rendering Options
     private final GraphRenderingOptionsImpl renderingOptions;
 
-    protected VizEngineModel(GraphModel graphModel, GraphRenderingOptions renderingOptions, GraphSelection graphSelection) {
+    protected VizEngineModel(GraphModel graphModel, GraphRenderingOptions renderingOptions,
+                             GraphSelection graphSelection) {
         this.graphModel = graphModel;
         this.graphSelection = new GraphSelectionImpl(graphSelection);
         this.graphIndex = new GraphIndexImpl(graphModel, this.graphSelection);

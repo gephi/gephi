@@ -24,7 +24,7 @@ import org.gephi.viz.engine.util.gl.Constants;
 public class NodeDiskModelSelectionSelected {
 
     private GLShaderProgram program;
-    
+
     private static final String SHADERS_ROOT = Constants.SHADERS_ROOT + "node";
 
     private static final String SHADERS_NODE_CIRCLE_SOURCE_VS = "node_with_selection_selected";
