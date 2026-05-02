@@ -159,6 +159,14 @@
                     <groupId>org.netbeans.modules</groupId>
                     <artifactId>org-netbeans-modules-htmlui</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-core-kit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-favorites</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -265,6 +273,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>visualization-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -392,10 +404,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-tools</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-timeline</artifactId>
         </dependency>
         <dependency>
@@ -417,6 +425,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-search</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-attributes</artifactId>
         </dependency>
     </dependencies>
     
@@ -526,15 +538,6 @@
 
             <build>
                 <plugins>
-                    <!-- Enable artifact deploy -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <configuration>
-                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
-                        </configuration>
-                    </plugin>
-
                     <!-- Permits NbModuleSuite to be run in integration-test phase: -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -696,7 +699,7 @@
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Info.plist" file="${project.build.directory}/Info.plist"/>
 
                                         <!-- Move Native Launcher into MacOS/gephi and modify the exec script to be runable -->
-                                        <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" file="../../src/macosx-launcher/Binaries/AppLauncher_x86_64" />
+                                        <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" file="../../src/macosx-launcher/Binaries/AppLauncher_${gephi.bundle.arch}" />
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" perm="ugo+rx"/>
 
@@ -1092,9 +1095,12 @@
                                     </fileset>
                                     <name>Gephi</name>
                                     <url>https://gephi.org</url>
-                                    <keystore>${gephi.windows.codesign.keystore}</keystore>
-                                    <storepass>${gephi.windows.codesign.password}</storepass>
-                                    <tsaurl>http://timestamp.sectigo.com</tsaurl>
+                                    <storetype>ESIGNER</storetype>
+                                    <alias>22db8e8d-981f-462c-a675-35ae68b9de27</alias>
+                                    <storepass>${gephi.windows.codesign.username}|${gephi.windows.codesign.password}</storepass>
+                                    <keypass>${gephi.windows.codesign.totp}</keypass>
+                                    <tsaurl>http://ts.ssl.com</tsaurl>
+                                    <tsmode>RFC3161</tsmode>
                                 </configuration>
                             </execution>
                         </executions>

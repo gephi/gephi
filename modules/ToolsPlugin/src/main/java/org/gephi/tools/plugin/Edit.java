@@ -42,11 +42,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.tools.plugin;
 
+import java.awt.FlowLayout;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Node;
-import org.gephi.tools.api.EditWindowController;
+import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.gephi.tools.spi.NodeClickEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
@@ -62,32 +62,35 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Tool.class)
 public class Edit implements Tool {
-    private EditWindowController edc;
 
     @Override
     public void select() {
-        edc = Lookup.getDefault().lookup(EditWindowController.class);
-        edc.openEditWindow();
+        AttributesUIController controller = Lookup.getDefault().lookup(AttributesUIController.class);
+        if (controller != null) {
+            controller.enableEdit();
+            controller.openWindowAndRequestActive();
+        }
     }
 
     @Override
     public void unselect() {
-        edc.disableEdit();
-        edc.closeEditWindow();
+        AttributesUIController controller = Lookup.getDefault().lookup(AttributesUIController.class);
+        if (controller != null) {
+            controller.disableEdit();
+        }
     }
 
     @Override
     public ToolEventListener[] getListeners() {
-        return new ToolEventListener[] {new NodeClickEventListener() {
-
-            @Override
-            public void clickNodes(Node[] nodes) {
-                if (nodes.length > 0) {
-                    edc.editNode(nodes[0]);
-                } else {
-                    edc.disableEdit();
-                }
+        return new ToolEventListener[] {(NodeClickEventListener) nodes -> {
+            AttributesUIController controller = Lookup.getDefault().lookup(AttributesUIController.class);
+            if (nodes != null && nodes.length > 0) {
+                controller.editNode(nodes[0]);
+            } else {
+                controller.disableEdit();
             }
+
+            return true;
         }};
     }
 
@@ -97,12 +100,16 @@ public class Edit implements Tool {
 
             @Override
             public JPanel getPropertiesBar(Tool tool) {
-                return new JPanel();
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                JLabel label = new JLabel(NbBundle.getMessage(Edit.class, "Edit.propertiesbar"));
+                label.setFont(label.getFont().deriveFont(10f));
+                panel.add(label);
+                return panel;
             }
 
             @Override
             public Icon getIcon() {
-                return ImageUtilities.loadImageIcon("ToolsPlugin/edit.png", false);
+                return ImageUtilities.loadImageIcon("ToolsPlugin/edit.svg", false);
             }
 
             @Override

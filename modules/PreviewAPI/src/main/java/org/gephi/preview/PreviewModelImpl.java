@@ -42,18 +42,22 @@
 
 package org.gephi.preview;
 
-import java.awt.Color;
 import java.beans.PropertyEditorManager;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -90,8 +94,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
     private final PreviewController previewController;
     private final Workspace workspace;
     //Items
-    private final Map<String, List<Item>> typeMap;
-    private final Map<Object, Object> sourceMap;
+    private final Map<String, Map<Object, Item>> itemMaps;
     // Canvas size
     private CanvasSize canvasSize;
     private boolean globalCanvasSize = false;
@@ -104,8 +107,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
 
     public PreviewModelImpl(Workspace workspace) {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
-        typeMap = new HashMap<>();
-        sourceMap = new HashMap<>();
+        itemMaps = new HashMap<>();
         this.workspace = workspace;
 
         initBasicPropertyEditors();
@@ -197,53 +199,62 @@ public class PreviewModelImpl implements PreviewModel, Model {
 
     @Override
     public Item[] getItems(String type) {
-        List<Item> list = typeMap.get(type);
-        if (list != null) {
-            return list.toArray(new Item[0]);
-        }
-        return new Item[0];
+        return itemMaps.getOrDefault(type, Collections.emptyMap()).values().toArray(new Item[0]);
     }
 
     @Override
     public Item getItem(String type, Object source) {
-        Item[] items = getItems(source);
-        for (Item item : items) {
-            if (item.getType().equals(type)) {
-                return item;
-            }
-        }
-        return null;
+        return itemMaps.getOrDefault(type, Collections.emptyMap()).getOrDefault(source, null);
     }
 
     @Override
     public Item[] getItems(Object source) {
-        Object value = sourceMap.get(source);
-        if (value instanceof List) {
-            return ((List<Item>) value).toArray(new Item[0]);
-        } else if (value instanceof Item) {
-            return new Item[] {(Item) value};
+        List<Item> items = new ArrayList<>();
+        for (Map<Object, Item> itemMap : itemMaps.values()) {
+            Item item = itemMap.get(source);
+            if (item != null) {
+                items.add(item);
+            }
         }
-        return new Item[0];
+        return items.toArray(new Item[0]);
     }
 
     public String[] getItemTypes() {
-        return typeMap.keySet().toArray(new String[0]);
+        return itemMaps.keySet().toArray(new String[0]);
     }
 
     protected void buildAndLoadItems(Renderer[] renderers, Graph graph) {
-        for (ItemBuilder b : Lookup.getDefault().lookupAll(ItemBuilder.class)) {
-            //Only build items of this builder if some renderer needs it:
-            if (isItemBuilderNeeded(b, getProperties(), renderers)) {
+        Map<String, Map<Object, Item>> groupedItems = Lookup.getDefault()
+            .lookupAll(ItemBuilder.class)
+            .parallelStream()
+            .filter(b -> isItemBuilderNeeded(b, getProperties(), renderers))
+            .flatMap(b -> {
                 try {
                     Item[] items = b.getItems(graph);
-                    if (items != null) {
-                        loadItems(b.getType(), items);
+                    if (items == null || items.length == 0) {
+                        return Stream.<Entry<String, Item>>empty();
                     }
+
+                    return Arrays.stream(items)
+                        .filter(Objects::nonNull)
+                        .map(item -> new AbstractMap.SimpleImmutableEntry<>(b.getType(), item));
+
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
+                    return Stream.empty();
                 }
-            }
-        }
+            })
+            .collect(Collectors.groupingBy(
+                Entry::getKey,
+                LinkedHashMap::new,
+                Collectors.<Entry<String, Item>, Object, Item, Map<Object, Item>>toMap(
+                    e -> e.getValue().getSource(),
+                    Entry::getValue,
+                    this::mergeItems,
+                    LinkedHashMap::new
+                )
+            ));
+        itemMaps.putAll(groupedItems);
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
@@ -259,8 +270,8 @@ public class PreviewModelImpl implements PreviewModel, Model {
     protected void updateCanvasSize(Renderer[] renderers) {
         float x1 = Float.MAX_VALUE;
         float y1 = Float.MAX_VALUE;
-        float x2 = Float.MIN_VALUE;
-        float y2 = Float.MIN_VALUE;
+        float x2 = -Float.MAX_VALUE;
+        float y2 = -Float.MAX_VALUE;
         PreviewProperties properties = getProperties();
         for (Renderer r : renderers) {
             for (String type : getItemTypes()) {
@@ -278,58 +289,17 @@ public class PreviewModelImpl implements PreviewModel, Model {
         canvasSize = new CanvasSize(x1, y1, x2 - x1, y2 - y1);
     }
 
-    protected void loadItems(String type, Item[] items) {
-        //Add to type map
-        List<Item> typeList = typeMap.get(type);
-        if (typeList == null) {
-            typeList = new ArrayList<>(items.length);
-            typeList.addAll(Arrays.asList(items));
-            typeMap.put(type, typeList);
-
-            //Add to source map
-            for (Item item : items) {
-                Object value = sourceMap.get(item.getSource());
-                if (value == null) {
-                    sourceMap.put(item.getSource(), item);
-                } else if (value instanceof List) {
-                    ((List) value).add(item);
-                }
-            }
-        } else {
-            //Possible items to merge
-            for (Item item : items) {
-                Object value = sourceMap.get(item.getSource());
-                if (value == null) {
-                    //No other object attached to this item
-                    typeList.add(item);
-                    sourceMap.put(item.getSource(), item);
-                } else if (value instanceof Item && ((Item) value).getType().equals(item.getType())) {
-                    //An object already exists with the same type and source, merge them
-                    mergeItems(item, ((Item) value));
-                } else if (value instanceof List) {
-                    List<Item> list = (List<Item>) value;
-                    for (Item itemSameSource : list) {
-                        if (itemSameSource.getType().equals(item.getType())) {
-                            //An object already exists with the same type and source, merge them
-                            mergeItems(item, itemSameSource);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private Item mergeItems(Item item, Item toBeMerged) {
         for (String key : toBeMerged.getKeys()) {
-            item.setData(key, toBeMerged.getData(key));
+            if (!item.hasData(key)) {
+                item.setData(key, toBeMerged.getData(key));
+            }
         }
         return item;
     }
 
     public void clear() {
-        typeMap.clear();
-        sourceMap.clear();
+        itemMaps.clear();
     }
 
     @Override
@@ -529,7 +499,7 @@ public class PreviewModelImpl implements PreviewModel, Model {
                             managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass),
                                 Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
                         }
-                    } else if("globalcanvassize".equalsIgnoreCase(name)) {
+                    } else if ("globalcanvassize".equalsIgnoreCase(name)) {
                         this.globalCanvasSize = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
                     }
                     break;

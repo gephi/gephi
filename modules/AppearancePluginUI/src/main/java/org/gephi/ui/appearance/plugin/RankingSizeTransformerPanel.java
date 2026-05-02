@@ -42,13 +42,9 @@
 
 package org.gephi.ui.appearance.plugin;
 
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
-import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
 import org.gephi.appearance.plugin.RankingSizeTransformer;
-import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
@@ -59,6 +55,9 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     private RankingSizeTransformer sizeTransformer;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
+
+    private ChangeListener maxSizeChangeEvent = null;
+    private ChangeListener minSizeChangeEvent = null;
     // End of variables declaration//GEN-END:variables
 
     public RankingSizeTransformerPanel() {
@@ -68,14 +67,24 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     public void setup(RankingFunction function) {
         sizeTransformer = function.getTransformer();
 
+        // setup is called at each change of function, so we need to clean the minSize and maxSize changeEvent
+        if (minSizeChangeEvent != null) {
+            minSize.removeChangeListener(minSizeChangeEvent);
+        }
+        if (maxSizeChangeEvent != null) {
+            maxSize.removeChangeListener(maxSizeChangeEvent);
+        }
+
         minSize.setValue(sizeTransformer.getMinSize());
         maxSize.setValue(sizeTransformer.getMaxSize());
-        minSize.addChangeListener(e -> {
-            sizeTransformer.setMinSize((Float) minSize.getValue());
-        });
-        maxSize.addChangeListener(e -> {
-            sizeTransformer.setMaxSize((Float) maxSize.getValue());
-        });
+
+        // Regenerate the event function. Used also to delete it later
+        minSizeChangeEvent = (e -> sizeTransformer.setMinSize((Float) minSize.getValue()));
+        maxSizeChangeEvent = (e -> sizeTransformer.setMaxSize((Float) maxSize.getValue()));
+
+        // Add the change event listener
+        minSize.addChangeListener(minSizeChangeEvent);
+        maxSize.addChangeListener(maxSizeChangeEvent);
     }
 
     /**

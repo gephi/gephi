@@ -226,7 +226,6 @@ public class SaveTask implements LongTask {
             }
         }
 
-        Progress.finish(progressTicket);
         return !cancel;
     }
 

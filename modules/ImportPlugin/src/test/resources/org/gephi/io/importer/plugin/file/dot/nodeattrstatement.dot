@@ -1,0 +1,4 @@
+digraph {
+    node [shape=box];
+    n1 -> n2;
+}

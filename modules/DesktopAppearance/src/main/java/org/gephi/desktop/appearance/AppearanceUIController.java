@@ -43,13 +43,12 @@
 package org.gephi.desktop.appearance;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
@@ -76,7 +75,7 @@ public class AppearanceUIController {
     protected final Map<String, Map<TransformerCategory, Set<TransformerUI>>> transformers;
     //Architecture
     protected final AppearanceController appearanceController;
-    private final Set<AppearanceUIModelListener> listeners;
+    private final CopyOnWriteArraySet<AppearanceUIModelListener> listeners;
     //Model
     private AppearanceUIModel model;
 
@@ -131,7 +130,7 @@ public class AppearanceUIController {
             }
         }
 
-        listeners = Collections.synchronizedSet(new HashSet<AppearanceUIModelListener>());
+        listeners = new CopyOnWriteArraySet<>();
 
         transformers = new HashMap<>();
         for (String ec : ELEMENT_CLASSES) {
@@ -165,6 +164,10 @@ public class AppearanceUIController {
         if (model != null && function != null) {
             model.saveTransformerProperties();
             appearanceController.transform(function);
+            TransformerUI selectedUI = model.getSelectedTransformerUI();
+            if (selectedUI != null) {
+                selectedUI.onApply(function);
+            }
         }
     }
 

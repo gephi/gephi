@@ -44,6 +44,7 @@ package org.gephi.layout.plugin.forceAtlas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Interval;
@@ -66,6 +67,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     public double inertia;
     //Graph
     protected Graph graph;
+    private long initialisationSeed = new Random().nextLong();
     private double repulsionStrength;
     private double attractionStrength;
     private double maxDisplacement;
@@ -100,7 +102,11 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     @Override
     public void initAlgo() {
-        ensureSafeLayoutNodePositions(graphModel);
+        ensureSafeLayoutNodePositions(graphModel, initialisationSeed);
+    }
+
+    public void setInitialisationSeed(long initialisationSeed) {
+        this.initialisationSeed = initialisationSeed;
     }
 
     private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {

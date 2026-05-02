@@ -149,6 +149,8 @@ public class Worker implements Runnable {
             n.energy = energies[1];
         }
 
+        n.x = DensityGrid.clampToGrid(n.x);
+        n.y = DensityGrid.clampToGrid(n.y);
         densityGrid.add(n, fineDensity);
     }
 

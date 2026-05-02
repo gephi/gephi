@@ -77,6 +77,11 @@ public abstract class AbstractItem implements Item {
     }
 
     @Override
+    public boolean hasData(String key) {
+        return data.containsKey(key);
+    }
+
+    @Override
     public void setData(String key, Object value) {
         data.put(key, value);
     }

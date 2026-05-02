@@ -42,23 +42,16 @@
 
 package org.gephi.preview.plugin.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeIterable;
+import java.util.Objects;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.visualization.api.VisualizationController;
-import org.openide.util.Exceptions;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -70,39 +63,31 @@ public class EdgeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
 
     @Override
     public Item[] getItems(Graph graph) {
+        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
+
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
-        Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns(workspace) : null;
+        VisualizationModel vizModel = vizController != null ? vizController.getModel(workspace) : null;
+        GraphView graphView = graph.getView();
 
-        List<Item> items = new ArrayList<>();
-        EdgeIterable edgeIterable = graph.getEdges();
-        try {
-            for (Edge e : edgeIterable) {
-                EdgeLabelItem labelItem = new EdgeLabelItem(e);
-                String label = getLabel(e, edgeColumns, graph.getView());
-                labelItem.setData(EdgeLabelItem.LABEL, label);
+        return graph.getEdges().stream().map(
+            e -> {
                 TextProperties textData = e.getTextProperties();
-                if (textData != null) {
-                    if (textData.getAlpha() != 0) {
+                if (textData != null && textData.isVisible()) {
+                    EdgeLabelItem labelItem = new EdgeLabelItem(e);
+                    String label = vizModel != null ? vizModel.getEdgeLabel(e, graphView) : e.getLabel();
+                    labelItem.setData(EdgeLabelItem.LABEL, label);
+
+                    if (label != null && !label.isEmpty()) {
                         labelItem.setData(EdgeLabelItem.COLOR, textData.getColor());
+                        labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
+                        labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
+                        return labelItem;
                     }
-//                labelItem.setData(EdgeLabelItem.WIDTH, textData.getWidth());
-//                labelItem.setData(EdgeLabelItem.HEIGHT, textData.getHeight());
-                    labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
-                    labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
-                    if (textData.isVisible() && !label.isEmpty()) {
-                        items.add(labelItem);
-                    }
-                } else if (!label.isEmpty()) {
-                    items.add(labelItem);
                 }
+                return null;
             }
-        } catch (Exception e) {
-            edgeIterable.doBreak();
-            Exceptions.printStackTrace(e);
-        }
-        return items.toArray(new Item[0]);
+        ).filter(Objects::nonNull).toArray(EdgeLabelItem[]::new);
     }
 
     @Override

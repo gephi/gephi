@@ -58,8 +58,21 @@ public class DensityGrid implements Cloneable {
     private float[][] fallOff;
     private ArrayDeque<Node>[][] bins;
 
-    public static float getViewSize() {
-        return (VIEW_SIZE * 0.8f) - (RADIUS / 0.25f) * 2f;
+    /**
+     * Returns the usable coordinate range for layout, excluding boundary padding.
+     * Used to scale fixed nodes so they fit within the active area of the grid.
+     */
+    public static float getUsableSize() {
+        return (VIEW_SIZE * 0.8f) - (RADIUS / VIEW_TO_GRID) * 2f;
+    }
+
+    /**
+     * Clamps a layout coordinate to the valid range that maps within the density grid bounds.
+     */
+    public static float clampToGrid(float coord) {
+        float min = RADIUS / VIEW_TO_GRID - HALF_VIEW;
+        float max = (GRID_SIZE - 1) / VIEW_TO_GRID - HALF_VIEW;
+        return Math.max(min, Math.min(max, coord));
     }
 
     public void init() {
@@ -169,8 +182,7 @@ public class DensityGrid implements Cloneable {
 
         if ((xGrid + RADIUS >= GRID_SIZE) || (xGrid < 0)
             || (yGrid + RADIUS >= GRID_SIZE) || (yGrid < 0)) {
-            throw new RuntimeException("Error: Exceeded density grid with "
-                + "xGrid = " + xGrid + " and yGrid = " + yGrid);
+            return;
         }
 
         for (int i = 0; i <= diam; i++) {
@@ -200,6 +212,10 @@ public class DensityGrid implements Cloneable {
 
         xGrid = (int) ((n.x + HALF_VIEW + .5) * VIEW_TO_GRID);
         yGrid = (int) ((n.y + HALF_VIEW + .5) * VIEW_TO_GRID);
+
+        if (xGrid < 0 || xGrid >= GRID_SIZE || yGrid < 0 || yGrid >= GRID_SIZE) {
+            return;
+        }
 
         n.subX = n.x;
         n.subY = n.y;

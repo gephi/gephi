@@ -214,12 +214,12 @@ public class ImportTest {
             showReport(container2.getReport());
             showReport(container3.getReport());
             showReport(mergeProcessor.getReport());
-            Assert.assertTrue(mergeProcessor.getReport().isEmpty());
+            Assert.assertFalse(mergeProcessor.getReport().hasIssues());
         } else {
             importController.process(container, defaultProcessor, workspace);
             showReport(container.getReport());
             showReport(defaultProcessor.getReport());
-            Assert.assertTrue(defaultProcessor.getReport().isEmpty());
+            Assert.assertFalse(defaultProcessor.getReport().hasIssues());
         }
 
         Graph graph = graphController.getGraphModel(workspace).getGraph();

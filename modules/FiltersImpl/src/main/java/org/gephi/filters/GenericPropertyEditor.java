@@ -48,7 +48,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.apache.commons.codec.binary.Base64;
 import org.openide.util.Exceptions;
 
 public class GenericPropertyEditor extends PropertyEditorSupport {
@@ -92,7 +91,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
                 }
             }
             if (bos != null) {
-                return Base64.encodeBase64String(bos.toByteArray());
+                return java.util.Base64.getEncoder().encodeToString(bos.toByteArray());
             }
         }
         return "null";
@@ -104,7 +103,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
             ByteArrayInputStream bis = null;
             ObjectInputStream ois = null;
             try {
-                bis = new ByteArrayInputStream(Base64.decodeBase64(text));
+                bis = new ByteArrayInputStream(java.util.Base64.getMimeDecoder().decode(text));
                 ois = new ObjectInputStream(bis);
                 val = ois.readObject();
             } catch (Exception e) {

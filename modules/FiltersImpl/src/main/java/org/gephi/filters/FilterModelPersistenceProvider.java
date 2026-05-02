@@ -296,6 +296,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
             }
 
             FilterProperty property = null;
+            StringBuilder textBuffer = new StringBuilder();
             boolean end = false;
             while (reader.hasNext() && !end) {
                 Integer eventType = reader.next();
@@ -304,17 +305,21 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                     if ("parameter".equalsIgnoreCase(name)) {
                         int index = Integer.parseInt(reader.getAttributeValue(null, "index"));
                         property = query.getFilter().getProperties()[index];
+                        textBuffer.setLength(0);
                     }
                 } else if (eventType.equals(XMLStreamReader.CHARACTERS) && property != null) {
-                    try {
-                        String textValue = reader.getText();
-                        Object value = serialization.fromText(textValue, property.getValueType());
-                        property.setValue(value);
-                        model.updateParameters(query);
-                    } catch (Exception e) {
-                        Exceptions.printStackTrace(e);
-                    }
+                    textBuffer.append(reader.getText());
                 } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                    if (property != null && textBuffer.length() > 0) {
+                        try {
+                            Object value = serialization.fromText(textBuffer.toString(), property.getValueType());
+                            property.setValue(value);
+                            model.updateParameters(query);
+                        } catch (Exception e) {
+                            Exceptions.printStackTrace(e);
+                        }
+                        textBuffer.setLength(0);
+                    }
                     property = null;
                     if ("query".equalsIgnoreCase(reader.getLocalName())) {
                         end = true;

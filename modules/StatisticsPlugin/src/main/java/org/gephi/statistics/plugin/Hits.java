@@ -78,7 +78,7 @@ public class Hits implements Statistics, LongTask {
     private double[] authority;
     private double[] hubs;
     private boolean useUndirected;
-    private double epsilon = 0.0001;
+    private double epsilon = 1e-8;
 
     public Hits() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -157,13 +157,13 @@ public class Hits implements Statistics, LongTask {
 
     private void initializeAttributeColunms(GraphModel graphModel) {
         Table nodeTable = graphModel.getNodeTable();
-        ColumnUtils.cleanUpColumns(nodeTable, new String[] {AUTHORITY, HUB}, Float.class);
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {AUTHORITY, HUB}, Double.class);
 
         if (!nodeTable.hasColumn(AUTHORITY)) {
-            nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));
+            nodeTable.addColumn(AUTHORITY, "Authority", Double.class, 0.0);
         }
         if (!nodeTable.hasColumn(HUB)) {
-            nodeTable.addColumn(HUB, "Hub", Float.class, new Float(0));
+            nodeTable.addColumn(HUB, "Hub", Double.class, 0.0);
         }
     }
 
@@ -251,8 +251,8 @@ public class Hits implements Statistics, LongTask {
         for (Node n : indices.keySet()) {
             int index = indices.get(n);
 
-            n.setAttribute(AUTHORITY, (float) nodeAuthority[index]);
-            n.setAttribute(HUB, (float) nodeHubs[index]);
+            n.setAttribute(AUTHORITY, nodeAuthority[index]);
+            n.setAttribute(HUB, nodeHubs[index]);
         }
     }
 

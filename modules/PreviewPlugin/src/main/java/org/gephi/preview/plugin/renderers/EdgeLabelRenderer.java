@@ -50,7 +50,11 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -75,6 +79,7 @@ import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -88,10 +93,13 @@ public class EdgeLabelRenderer implements Renderer {
     //Custom properties
 
     public static final String EDGE_COLOR = "edge.label.edgeColor";
+    public static final String EDGE_THICKNESS = "edge.label.edgeThickness";
     public static final String LABEL_X = "edge.label.x";
     public static final String LABEL_Y = "edge.label.y";
+    public static final String FONT_SIZE = "edge.label.fontSize";
     //Default values
     protected final boolean defaultShowLabels = true;
+    protected final boolean defaultCustomFont = false;
     protected final Font defaultFont = new Font("Arial", Font.PLAIN, 10);
     protected final boolean defaultShorten = false;
     protected final DependantOriginalColor defaultColor =
@@ -101,7 +109,8 @@ public class EdgeLabelRenderer implements Renderer {
     protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
     protected final float defaultOutlineOpacity = 40;
     //Font cache
-    protected Font font;
+    protected final Map<Integer, Font> fontCache = new HashMap<>();
+    protected final FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
 
     @Override
     public void preProcess(PreviewModel previewModel) {
@@ -132,21 +141,22 @@ public class EdgeLabelRenderer implements Renderer {
             NodeItem targetItem = edgeItem.getData(EdgeRenderer.TARGET);
 
             item.setData(EDGE_COLOR, EdgeRenderer.getColor(edgeItem, properties));
+            item.setData(EDGE_THICKNESS, EdgeRenderer.getThickness(edgeItem));
+
             if (edge.isSelfLoop()) {
-                //Middle
+                // Position label near the self-loop, accounting for node size and edge thickness.
+                // Matches the VisualizationEngine EdgeLabelUpdater formula:
+                //   loopRadius = nodeRadius * 0.5 + strokeWidth * 0.33  (strokeWidth = thickness * 1.3)
+                // Label is placed at 45° (upper-right in screen space) on the loop circumference.
                 Float x = sourceItem.getData(NodeItem.X);
                 Float y = sourceItem.getData(NodeItem.Y);
-                Float size = sourceItem.getData(NodeItem.SIZE);
-
-                Vector v1 = new Vector(x, y);
-                v1.add(size, -size);
-
-                Vector v2 = new Vector(x, y);
-                v2.add(size, size);
-
-                Vector middle = bezierPoint(x, y, v1.x, v1.y, v2.x, v2.y, x, y, 0.5f);
-                item.setData(LABEL_X, middle.x);
-                item.setData(LABEL_Y, middle.y);
+                float sourceRadius = SizeUtils.getNodeSize(sourceItem, properties) / 2f;
+                float thickness = EdgeRenderer.getThickness(edgeItem);
+                float loopRadius = sourceRadius * 0.5f + thickness * EdgeRenderer.STROKE_MULTIPLIER * 0.33f;
+                final float cos45 = 0.707f;
+                // In Preview (y increases downward), upper-right = x+, y-
+                item.setData(LABEL_X, x + loopRadius * (1 + cos45));
+                item.setData(LABEL_Y, y - loopRadius * (1 + cos45));
 
             } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
                 //Middle of the curve
@@ -162,10 +172,10 @@ public class EdgeLabelRenderer implements Renderer {
                 // Arc radius
                 double r = length / properties.getDoubleValue(EdgeRenderer.ARC_CURVENESS);
                 // Arc bounding box
-                Double _xa = 0.5*(x1-x2);
-                Double _ya = 0.5*(y1-y2);
-                Double _x0 = x2+_xa;
-                Double _y0 = y2+_ya;
+                Double _xa = 0.5 * (x1 - x2);
+                Double _ya = 0.5 * (y1 - y2);
+                Double _x0 = x2 + _xa;
+                Double _y0 = y2 + _ya;
                 Double _a = Math.sqrt(Math.pow(_xa, 2) + Math.pow(_ya, 2));
                 Double _b = 0.;
                 if (_a < r) {
@@ -173,10 +183,10 @@ public class EdgeLabelRenderer implements Renderer {
                 }
                 Double xc = _x0 + (_b * _ya) / _a;
                 Double yc = _y0 - (_b * _xa / _a);
-                Double angle1 = Math.atan2(y1-yc, x1-xc);
-                Double angle2 = Math.atan2(y2-yc, x2-xc);
-                while (angle2<angle1) {
-                    angle2 += 2*Math.PI;
+                Double angle1 = Math.atan2(y1 - yc, x1 - xc);
+                Double angle2 = Math.atan2(y2 - yc, x2 - xc);
+                while (angle2 < angle1) {
+                    angle2 += 2 * Math.PI;
                 }
                 double arcAngle = Math.abs(angle2 - angle1);
                 while (arcAngle >= Math.PI) {
@@ -197,22 +207,78 @@ public class EdgeLabelRenderer implements Renderer {
                     angle1 -= sourceOffset;
                 }
                 // Label coordinates
-                final Double lAngle = (angle1+angle2)/2;
-                final Float x = length != 0 ? (float)(xc + r*Math.cos(lAngle)) : x1;
-                final Float y = length != 0 ? (float)(yc + r*Math.sin(lAngle)) : y1;
+                final Double lAngle = (angle1 + angle2) / 2;
+                final Float x = length != 0 ? (float) (xc + r * Math.cos(lAngle)) : x1;
+                final Float y = length != 0 ? (float) (yc + r * Math.sin(lAngle)) : y1;
                 item.setData(LABEL_X, x);
                 item.setData(LABEL_Y, y);
 
             } else {
-                Float x = ((Float) sourceItem.getData(NodeItem.X) + (Float) targetItem.getData(NodeItem.X)) / 2f;
-                Float y = ((Float) sourceItem.getData(NodeItem.Y) + (Float) targetItem.getData(NodeItem.Y)) / 2f;
-                item.setData(LABEL_X, x);
-                item.setData(LABEL_Y, y);
+                // Straight edges: position label along the visible edge (accounting for node sizes).
+                // Matches the VisualizationEngine EdgeLabelUpdater formula:
+                //   - Undirected: midpoint of visible edge (1/2 fraction)
+                //   - Directed: 2/3 from source along visible edge (label closer to the arrow target)
+                Float x1 = sourceItem.getData(NodeItem.X);
+                Float y1 = sourceItem.getData(NodeItem.Y);
+                Float x2 = targetItem.getData(NodeItem.X);
+                Float y2 = targetItem.getData(NodeItem.Y);
+
+                float dx = x2 - x1;
+                float dy = y2 - y1;
+                float edgeLength = (float) Math.sqrt(dx * dx + dy * dy);
+
+                float labelX, labelY;
+                if (edgeLength > 0) {
+                    float sourceRadius = SizeUtils.getNodeSize(sourceItem, properties) / 2f;
+                    float targetRadius = SizeUtils.getNodeSize(targetItem, properties) / 2f;
+                    float ndx = dx / edgeLength;
+                    float ndy = dy / edgeLength;
+
+                    float offsetFromSource;
+                    if (edge.isDirected()) {
+                        // 2/3 along the visible edge (between the node borders)
+                        offsetFromSource = sourceRadius + (edgeLength - sourceRadius - targetRadius) * 2f / 3f;
+                    } else {
+                        // Midpoint of the visible edge (between the node borders)
+                        offsetFromSource = sourceRadius + (edgeLength - sourceRadius - targetRadius) * 0.5f;
+                    }
+
+                    labelX = x1 + ndx * offsetFromSource;
+                    labelY = y1 + ndy * offsetFromSource;
+                } else {
+                    // Overlapping nodes: fall back to source node center
+                    labelX = x1;
+                    labelY = y1;
+                }
+                item.setData(LABEL_X, labelX);
+                item.setData(LABEL_Y, labelY);
             }
         }
 
-        //Property font
-        font = properties.getFontValue(PreviewProperty.EDGE_LABEL_FONT);
+        // Get Viz model
+        final VisualizationModel vizModel = previewModel.getWorkspace().getLookup().lookup(VisualizationModel.class);
+
+        // Get font
+        Font font = properties.getFontValue(PreviewProperty.EDGE_LABEL_FONT);
+        if (!properties.getBooleanValue(PreviewProperty.EDGE_LABEL_CUSTOM_FONT)) {
+            // Use font from visualization model for consistent font family and style with the graph view
+            if (vizModel != null && vizModel.getEdgeLabelFont() != null) {
+                font = vizModel.getEdgeLabelFont();
+            }
+        }
+
+        //Calculate font size and cache fonts
+        final float baseFontSize = font.getSize() * properties.getFloatValue(PreviewProperty.EDGE_LABEL_SCALE);
+        for (Item item : previewModel.getItems(Item.EDGE_LABEL)) {
+            float fontSize = baseFontSize;
+            if (item.getData(EdgeLabelItem.SIZE) != null) {
+                Float labelSize = item.getData(EdgeLabelItem.SIZE);
+                fontSize *= (float) Math.sqrt(labelSize);
+            }
+            Font labelFont = font.deriveFont(fontSize);
+            fontCache.put(labelFont.getSize(), labelFont);
+            item.setData(FONT_SIZE, labelFont.getSize());
+        }
     }
 
     @Override
@@ -224,6 +290,7 @@ public class EdgeLabelRenderer implements Renderer {
         DependantOriginalColor propColor = properties.getValue(PreviewProperty.EDGE_LABEL_COLOR);
         color = propColor.getColor(edgeColor, color);
         String label = item.getData(EdgeLabelItem.LABEL);
+        Integer fontSize = item.getData(FONT_SIZE);
         Float x = item.getData(LABEL_X);
         Float y = item.getData(LABEL_Y);
 
@@ -235,23 +302,17 @@ public class EdgeLabelRenderer implements Renderer {
         //Outline
         DependantColor outlineDependantColor = properties.getValue(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR);
         Float outlineSize = properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE);
-        outlineSize = outlineSize * (font.getSize() / 32f);
+        outlineSize = outlineSize * (fontSize / 32f);
         int outlineAlpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY) / 100f) * 255f);
-        if (outlineAlpha < 0) {
-            outlineAlpha = 0;
-        }
-        if (outlineAlpha > 255) {
-            outlineAlpha = 255;
-        }
         Color outlineColor = outlineDependantColor.getColor(edgeColor);
         outlineColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), outlineAlpha);
 
         if (target instanceof G2DTarget) {
-            renderG2D((G2DTarget) target, label, x, y, color, outlineSize, outlineColor);
+            renderG2D((G2DTarget) target, label, fontSize, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof SVGTarget) {
-            renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
+            renderSVG((SVGTarget) target, edge, label, fontSize, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof PDFTarget) {
-            renderPDF(((PDFTarget) target), label, x, y, color, outlineSize, outlineColor);
+            renderPDF(((PDFTarget) target), label, fontSize, x, y, color, outlineSize, outlineColor);
         }
     }
 
@@ -267,15 +328,19 @@ public class EdgeLabelRenderer implements Renderer {
         return new CanvasSize();
     }
 
-    public void renderG2D(G2DTarget target, String label, float x, float y, Color color, float outlineSize,
+    public void renderG2D(G2DTarget target, String label, int fontSize, float x, float y, Color color,
+                          float outlineSize,
                           Color outlineColor) {
         Graphics2D graphics = target.getGraphics();
 
+        Font font = fontCache.get(fontSize);
         graphics.setFont(font);
 
         FontMetrics fm = graphics.getFontMetrics();
         float posX = x - fm.stringWidth(label) / 2f;
-        float posY = y + fm.getAscent() / 2f;
+        // Center text vertically: baseline = centerY + (ascent - descent) / 2
+        // Matches NodeLabelRenderer and TextRenderer approaches for consistent positioning
+        float posY = y + (fm.getAscent() - fm.getDescent()) / 2f;
 
         Shape outlineGlyph = null;
 
@@ -316,46 +381,69 @@ public class EdgeLabelRenderer implements Renderer {
         return 2 * Math.atan2(rt / 2, x);
     }
 
-    public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize,
+    public void renderSVG(SVGTarget target, Edge edge, String label, int fontSize, float x, float y, Color color,
+                          float outlineSize,
                           Color outlineColor) {
         Text labelText = target.createTextNode(label);
+        Font font = fontCache.get(fontSize);
+
+        // Calculate proper baseline Y position using font metrics
+        // Matches G2D and TextRenderer approaches for consistent positioning across renderers
+        Rectangle2D bounds = font.getStringBounds(label, frc);
+        float ascent = (float) -bounds.getY();
+        float descent = (float) (bounds.getHeight() + bounds.getY());
+        float baselineY = y + (ascent - descent) / 2f;
 
         if (outlineSize > 0) {
             Text labelTextOutline = target.createTextNode(label);
             Element outlineElem = target.createElement("text");
             outlineElem.setAttribute("class", SVGUtils.idAsClassAttribute(edge.getId()));
             outlineElem.setAttribute("x", String.valueOf(x));
-            outlineElem.setAttribute("y", String.valueOf(y));
-            outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
-            outlineElem.setAttribute("fill", target.toHexString(color));
+            outlineElem.setAttribute("y", String.valueOf(baselineY));
+            outlineElem.setAttribute("style", "text-anchor: middle;");
+            outlineElem.setAttribute("fill", "none");
             outlineElem.setAttribute("font-family", font.getFamily());
             outlineElem.setAttribute("font-size", font.getSize() + "");
+            if (font.isBold()) {
+                outlineElem.setAttribute("font-weight", "bold");
+            }
+            if (font.isItalic()) {
+                outlineElem.setAttribute("font-style", "italic");
+            }
             outlineElem.setAttribute("stroke", target.toHexString(outlineColor));
             outlineElem.setAttribute("stroke-width", (outlineSize * target.getScaleRatio()) + "px");
             outlineElem.setAttribute("stroke-linecap", "round");
             outlineElem.setAttribute("stroke-linejoin", "round");
             outlineElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
             outlineElem.appendChild(labelTextOutline);
-            target.getTopElement(SVGTarget.TOP_NODE_LABELS_OUTLINE).appendChild(outlineElem);
+            target.getTopElement(SVGTarget.TOP_EDGE_LABELS_OUTLINE).appendChild(outlineElem);
         }
 
         Element labelElem = target.createElement("text");
         labelElem.setAttribute("class", SVGUtils.idAsClassAttribute(edge.getId()));
         labelElem.setAttribute("x", x + "");
-        labelElem.setAttribute("y", y + "");
-        labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
+        labelElem.setAttribute("y", baselineY + "");
+        labelElem.setAttribute("style", "text-anchor: middle;");
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", font.getSize() + "");
+        if (font.isBold()) {
+            labelElem.setAttribute("font-weight", "bold");
+        }
+        if (font.isItalic()) {
+            labelElem.setAttribute("font-style", "italic");
+        }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
     }
 
-    public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize,
+    public void renderPDF(PDFTarget target, String label, int fontSize, float x, float y, Color color,
+                          float outlineSize,
                           Color outlineColor) {
         PDPageContentStream contentStream = target.getContentStream();
+
+        Font font = fontCache.get(fontSize);
         PDFont pdFont = target.getPDFont(font);
-        int fontSize = font.getSize();
 
         try {
             float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
@@ -411,6 +499,10 @@ public class EdgeLabelRenderer implements Renderer {
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.displayName"),
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.description"),
                 PreviewProperty.CATEGORY_EDGE_LABELS).setValue(defaultShowLabels),
+            PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_CUSTOM_FONT, Boolean.class,
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.customFont.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.customFont.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultCustomFont),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_FONT, Font.class,
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.displayName"),
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.description"),
@@ -430,7 +522,8 @@ public class EdgeLabelRenderer implements Renderer {
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, Float.class,
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.displayName"),
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.description"),
-                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineSize),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setMinMax(0f, null).setValue(
+                defaultOutlineSize),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, DependantColor.class,
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.displayName"),
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.description"),
@@ -438,7 +531,7 @@ public class EdgeLabelRenderer implements Renderer {
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY, Float.class,
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.displayName"),
                 NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.description"),
-                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setMinMax(0f, 100f).setValue(
                 defaultOutlineOpacity),};
     }
 

@@ -43,9 +43,25 @@
 package org.gephi.io.importer.api;
 
 /**
- * Defines the way edge weights are merged.
+ * Defines the strategy used to merge the weights of parallel edges.
+ * <p>
+ * When a container allows parallel edges but a processor merges them into a single edge, this strategy determines
+ * how the resulting weight is computed.
  */
 public enum EdgeMergeStrategy {
 
-    SUM, AVG, MAX, MIN, FIRST, LAST, NO_MERGE
+    /** Sum all parallel edge weights. */
+    SUM,
+    /** Average the parallel edge weights. */
+    AVG,
+    /** Keep the maximum parallel edge weight. */
+    MAX,
+    /** Keep the minimum parallel edge weight. */
+    MIN,
+    /** Keep the weight of the first parallel edge encountered. */
+    FIRST,
+    /** Keep the weight of the last parallel edge encountered. */
+    LAST,
+    /** Do not merge parallel edges; keep them as separate edges. */
+    NO_MERGE
 }

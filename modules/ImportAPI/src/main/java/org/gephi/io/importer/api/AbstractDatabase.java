@@ -46,6 +46,8 @@ import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 
 /**
+ * Abstract base implementation of {@link Database}, providing storage for standard connection parameters.
+ *
  * @author Mathieu Bastian
  */
 public abstract class AbstractDatabase implements Database {

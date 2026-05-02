@@ -42,6 +42,7 @@
 
 package org.gephi.layout.plugin;
 
+import java.util.Random;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -69,7 +70,24 @@ public abstract class AbstractLayout implements Layout {
      *
      * @param graphModel
      */
+    /**
+     * See https://github.com/gephi/gephi/issues/603 Nodes position to NaN on applied layout
+     *
+     * @param graphModel
+     */
     public static void ensureSafeLayoutNodePositions(GraphModel graphModel) {
+        ensureSafeLayoutNodePositions(graphModel, new Random().nextLong());
+    }
+
+    /**
+     * See https://github.com/gephi/gephi/issues/603 Nodes position to NaN on applied layout.
+     * <p>
+     * The {@code seed} controls the random number generator used for initialisation, making the result reproducible.
+     *
+     * @param graphModel the graph model
+     * @param seed       seed for the random number generator
+     */
+    public static void ensureSafeLayoutNodePositions(GraphModel graphModel, long seed) {
         Graph graph = graphModel.getGraph();
         NodeIterable nodesIterable = graph.getNodes();
         for (Node node : nodesIterable) {
@@ -80,10 +98,11 @@ public abstract class AbstractLayout implements Layout {
         }
 
         //All at 0.0, init some random positions
+        Random random = new Random(seed);
         nodesIterable = graph.getNodes();
         for (Node node : nodesIterable) {
-            node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
-            node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+            node.setX((float) ((0.01 + random.nextDouble()) * 1000) - 500);
+            node.setY((float) ((0.01 + random.nextDouble()) * 1000) - 500);
         }
     }
 

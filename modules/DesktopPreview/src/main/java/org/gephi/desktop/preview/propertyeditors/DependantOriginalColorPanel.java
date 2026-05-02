@@ -130,57 +130,47 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
         originalRadio = new javax.swing.JRadioButton();
         parentRadio = new javax.swing.JRadioButton();
 
-        jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class,
-            "DependantOriginalColorPanel.jXHeader1.description")); // NOI18N
-        jXHeader1.setTitle(org.openide.util.NbBundle
-            .getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.jXHeader1.title")); // NOI18N
+        jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.jXHeader1.description")); // NOI18N
+        jXHeader1.setTitle(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.jXHeader1.title")); // NOI18N
 
         buttonGroup1.add(customRadio);
-        customRadio.setText(org.openide.util.NbBundle
-            .getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.customRadio.text")); // NOI18N
+        customRadio.setText(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.customRadio.text")); // NOI18N
 
         buttonGroup1.add(originalRadio);
-        originalRadio.setText(org.openide.util.NbBundle
-            .getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.originalRadio.text")); // NOI18N
+        originalRadio.setText(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.originalRadio.text")); // NOI18N
 
         buttonGroup1.add(parentRadio);
-        parentRadio.setText(org.openide.util.NbBundle
-            .getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.parentRadio.text")); // NOI18N
+        parentRadio.setText(org.openide.util.NbBundle.getMessage(DependantOriginalColorPanel.class, "DependantOriginalColorPanel.parentRadio.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
+            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(originalRadio)
-                    .addContainerGap(360, Short.MAX_VALUE))
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
                     .addComponent(parentRadio)
-                    .addContainerGap(365, Short.MAX_VALUE))
-                .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(customRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(colorButton)
-                    .addContainerGap(326, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(customRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(colorButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, 77,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(originalRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(parentRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(customRadio)
-                        .addComponent(colorButton))
-                    .addGap(47, 47, 47))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(originalRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(parentRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(customRadio)
+                    .addComponent(colorButton))
+                .addGap(47, 47, 47))
         );
     }// </editor-fold>//GEN-END:initComponents
 }

@@ -1,0 +1,4 @@
+digraph{
+#node[];
+n1 -> n2;
+}

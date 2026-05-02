@@ -105,6 +105,6 @@ public class DeleteColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-delete-column.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-delete-column.svg", false);
     }
 }

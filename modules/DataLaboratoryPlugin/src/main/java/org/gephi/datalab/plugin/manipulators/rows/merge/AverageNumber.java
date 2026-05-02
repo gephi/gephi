@@ -116,6 +116,6 @@ public class AverageNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/balance.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/balance.svg", false);
     }
 }

@@ -46,6 +46,7 @@ import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -89,12 +90,12 @@ public class EdgePencil implements Tool {
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                updatePanel();
+                SwingUtilities.invokeLater(() -> updatePanel());
             }
 
             @Override
             public void select(Workspace workspace) {
-                updatePanel();
+                SwingUtilities.invokeLater(() -> updatePanel());
             }
 
             @Override
@@ -130,8 +131,10 @@ public class EdgePencil implements Tool {
     public void unselect() {
         listeners = null;
         sourceNode = null;
-        color = edgePencilPanel.getColor();
-        weight = edgePencilPanel.getWeight();
+        if (edgePencilPanel != null) {
+            color = edgePencilPanel.getColor();
+            weight = edgePencilPanel.getWeight();
+        }
     }
 
     @Override
@@ -139,7 +142,7 @@ public class EdgePencil implements Tool {
         listeners = new ToolEventListener[2];
         listeners[0] = new NodeClickEventListener() {
             @Override
-            public void clickNodes(Node[] nodes) {
+            public boolean clickNodes(Node[] nodes) {
                 Node n = nodes[0];
 
                 if (sourceNode == null) {
@@ -151,20 +154,27 @@ public class EdgePencil implements Tool {
                     boolean directed = edgePencilPanel.isDirected;
                     Edge edge =
                         Lookup.getDefault().lookup(GraphElementsController.class).createEdge(sourceNode, n, directed);
+                    edge.setWeight(weight);
                     edge.setColor(color);
                     sourceNode = null;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                 }
+
+                return true;
             }
         };
         listeners[1] = new MouseClickEventListener() {
             @Override
-            public void mouseClick(int[] positionViewport, float[] position3d) {
+            public boolean mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                     sourceNode = null;
+
+                    return true;
                 }
+
+                return false;
             }
         };
         return listeners;
@@ -206,6 +216,6 @@ public class EdgePencil implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SINGLE_NODE_SELECTION;
     }
 }

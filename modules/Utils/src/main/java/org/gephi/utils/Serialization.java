@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -218,7 +219,13 @@ public class Serialization {
 
                 try {
                     editor.setValue(value);
-                    return editor.getAsText();
+                    try {
+                        Method m = editor.getClass().getMethod("getAsSerializableText");
+                        return (String) m.invoke(editor);
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        // Fallback: old behavior
+                        return editor.getAsText();
+                    }
                 } finally {
                     if (setGraphModelMethod != null) {
                         try {

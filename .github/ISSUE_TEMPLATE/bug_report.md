@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-<!-- Want to try the latest development version and see if the issue persists? Check https://github.com/gephi/gephi#nightly-builds -->
+<!-- Want to try the latest development version and see if the issue persists? Check https://github.com/gephi/gephi?tab=readme-ov-file#development-builds -->
 
 ## Expected Behavior
 
@@ -34,3 +34,4 @@ assignees: ''
 * Operating System: 
 
 <!--- Or preferably, include a copy of your messages.log file in your user directory (see https://github.com/gephi/gephi/wiki/Troubleshooting) -->
+

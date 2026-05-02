@@ -50,11 +50,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
-import org.openide.util.Lookup;
 
 /**
  * @author Julian Bilcke, Daniel Bernardes
@@ -85,10 +83,12 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
     private int currentMousePositionX = 0;
     private boolean mouseInside = false;
     //Model
-    private TimelineModel model;
-    private TimelineController controller;
+    private final TimelineModel model;
+    private final TimelineController controller;
 
-    public TimelineDrawer() {
+    public TimelineDrawer(TimelineController controller, TimelineModel model) {
+        this.controller = controller;
+        this.model = model;
         addMouseMotionListener(this);
         addMouseListener(this);
 //        viewToModelSync = new Timer(150, updateModelAction);
@@ -101,52 +101,10 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
     public void consumeEvent(TimelineModelEvent event) {
         switch (event.getEventType()) {
-            case INTERVAL:
-                double[] data = (double[]) event.getData();
-                setInterval(data[0], data[1]);
-                break;
-            case CUSTOM_BOUNDS:
-                double[] data2 = (double[]) event.getData();
-                setCustomBounds(data2[0], data2[1]);
-                break;
-            case MIN_MAX:
-                double[] data3 = (double[]) event.getData();
-                setMinMax(data3[0], data3[1]);
-                break;
-            case CHART:
-                setChart((TimelineChart) event.getData());
+            case INTERVAL, CUSTOM_BOUNDS, MIN_MAX, CHART:
+                repaint();
                 break;
         }
-    }
-
-    public void setModel(TimelineModel model) {
-        this.controller = Lookup.getDefault().lookup(TimelineController.class);
-        this.model = model;
-        if (model != null) {
-            setMinMax(model.getMin(), model.getMax());
-            if (model.hasCustomBounds()) {
-                setCustomBounds(model.getCustomMin(), model.getCustomMax());
-            }
-            setInterval(model.getIntervalStart(), model.getIntervalEnd());
-        } else {
-            repaint();
-        }
-    }
-
-    public void setChart(TimelineChart chart) {
-        repaint();
-    }
-
-    public void setMinMax(double min, double max) {
-        repaint();
-    }
-
-    public void setCustomBounds(double min, double max) {
-        repaint();
-    }
-
-    public void setInterval(double from, double to) {
-        repaint();
     }
 
     public int getPixelPosition(double val, double duration, double min, int width) {
@@ -354,7 +312,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
                     break;
             }
 
-            setInterval(model.getIntervalStart(), model.getIntervalEnd());
+            repaint();
         }
     }
 

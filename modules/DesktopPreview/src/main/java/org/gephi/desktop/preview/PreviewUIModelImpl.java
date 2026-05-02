@@ -55,28 +55,52 @@ import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.UIUtils;
-import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
  */
 public class PreviewUIModelImpl implements PreviewUIModel {
 
+    public static final String DEFAULT_PRESET_CLASS = "PreviewOptions.defaultPresetClass";
+    public static final String DEFAULT_PRESET_NAME = "PreviewOptions.defaultPresetName";
+
     private final PreviewModel previewModel;
+    private final PreviewUIController controller;
     //Data
     private float visibilityRatio = 1f;
     private PreviewPreset currentPreset;
     private boolean refreshing;
 
-    public PreviewUIModelImpl(PreviewModel model) {
+    public PreviewUIModelImpl(PreviewModel model, PreviewUIController controller) {
         previewModel = model;
-
-        if (UIUtils.isDarkLookAndFeel()) {
-            currentPreset = new BlackBackground();
-        } else {
-            currentPreset = new DefaultPreset();
-        }
+        this.controller = controller;
+        currentPreset = resolveDefaultPreset();
         model.getProperties().applyPreset(currentPreset);
+    }
+
+    private PreviewPreset resolveDefaultPreset() {
+        String presetClass = NbPreferences.forModule(PreviewUIModelImpl.class).get(DEFAULT_PRESET_CLASS, "");
+        String presetName = NbPreferences.forModule(PreviewUIModelImpl.class).get(DEFAULT_PRESET_NAME, "");
+
+        if (!presetClass.isEmpty()) {
+            Optional<PreviewPreset> found = Arrays.stream(controller.getDefaultPresets())
+                .filter(p -> p.getClass().getName().equals(presetClass))
+                .findFirst();
+            if (found.isPresent()) {
+                return found.get();
+            }
+        } else if (!presetName.isEmpty()) {
+            Optional<PreviewPreset> found = Arrays.stream(controller.getUserPresets())
+                .filter(p -> p.getName().equals(presetName))
+                .findFirst();
+            if (found.isPresent()) {
+                return found.get();
+            }
+        }
+
+        // Fall back to dark mode auto-selection
+        return UIUtils.isDarkLookAndFeel() ? new BlackBackground() : new DefaultPreset();
     }
 
     @Override
@@ -117,16 +141,16 @@ public class PreviewUIModelImpl implements PreviewUIModel {
     }
 
     private void setCurrentPresetBasedOnString(String className, String displayName) {
-        // Retrieve preset, either default (by class) or user (by name)
-        PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
-        PreviewPreset[] defaultPresets = controller.getDefaultPresets();
         Optional<PreviewPreset> preset =
-            Arrays.stream(defaultPresets).filter(p -> p.getClass().getName().equals(className)).findFirst();
+            Arrays.stream(controller.getDefaultPresets())
+                .filter(p -> p.getClass().getName().equals(className))
+                .findFirst();
         if (preset.isPresent()) {
             setCurrentPreset(preset.get());
         } else {
-            PreviewPreset[] userPresets = controller.getUserPresets();
-            preset = Arrays.stream(userPresets).filter(p -> p.getName().equals(displayName)).findFirst();
+            preset = Arrays.stream(controller.getUserPresets())
+                .filter(p -> p.getName().equals(displayName))
+                .findFirst();
             preset.ifPresent(this::setCurrentPreset);
         }
     }

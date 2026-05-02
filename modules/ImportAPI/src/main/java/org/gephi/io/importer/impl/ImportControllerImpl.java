@@ -293,23 +293,24 @@ public class ImportControllerImpl implements ImportController {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            report.close();
         }
         return null;
     }
 
     @Override
-    public void process(Container container) {
+    public Workspace process(Container container) {
         Processor processor = Lookup.getDefault().lookup(Processor.class);
         if (processor == null) {
-            throw new RuntimeException("Impossible to find Default Processor");
+            throw new RuntimeException("Impossible to find a default processor");
         }
-        process(container, processor, null);
+        return process(container, processor, null);
     }
 
     @Override
-    public void process(Container container, Processor processor, Workspace workspace) {
+    public Workspace process(Container container, Processor processor, Workspace workspace) {
         processor.setContainers(new ContainerUnloader[] {container.getUnloader()});
-        processor.setWorkspace(workspace);
 
         container.setReport(processor.getReport());
         container.closeLoader();
@@ -320,12 +321,22 @@ public class ImportControllerImpl implements ImportController {
             }
         }
 
-        processor.process();
+        if (workspace != null) {
+            processor.setWorkspace(workspace);
+        }
+        Workspace[] workspaces = processor.process();
+        if (workspaces == null || workspaces.length == 0) {
+            throw new RuntimeException("The processor "+processor.getClass().getSimpleName()+" didn't return any workspace");
+        } else if (workspaces.length > 1) {
+            throw new RuntimeException("The processor "+processor.getClass().getSimpleName()+" returned more than one workspace");
+        }
+        return workspaces[0];
     }
 
     @Override
-    public void process(Container[] containers, Processor processor, Workspace workspace) {
-        processor.setContainers(Arrays.stream(containers).map(Container::getUnloader).toArray(ContainerUnloader[]::new));
+    public Workspace[] process(Container[] containers, Processor processor, Workspace workspace) {
+        processor.setContainers(
+            Arrays.stream(containers).map(Container::getUnloader).toArray(ContainerUnloader[]::new));
         for (Container container : containers) {
             container.setReport(processor.getReport());
             container.closeLoader();
@@ -336,8 +347,15 @@ public class ImportControllerImpl implements ImportController {
                 }
             }
         }
-        processor.setWorkspace(workspace);
-        processor.process();
+        if (workspace != null) {
+            processor.setWorkspace(workspace);
+        }
+        Workspace[] workspaces = processor.process();
+        if (workspaces == null || workspaces.length == 0) {
+            throw new RuntimeException(
+                "The processor " + processor.getClass().getSimpleName() + " didn't return any workspace");
+        }
+        return workspaces;
     }
 
     private FileImporterBuilder getMatchingImporter(FileObject fileObject) {

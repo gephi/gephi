@@ -123,7 +123,7 @@ public class GephiReader {
                         workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
                     }
 
-                    workspace = project.newWorkspace(workspaceId);
+                    workspace = project.newWorkspaceWithoutModels(workspaceId);
                     WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
                     //Name
@@ -131,10 +131,10 @@ public class GephiReader {
 
                     //Status
                     String workspaceStatus = reader.getAttributeValue(null, "status");
-                    if (workspaceStatus.equals("open")) {
-                        info.open();
-                    } else if (workspaceStatus.equals("closed")) {
-                        info.close();
+                    if ("open".equals(workspaceStatus)) {
+                        info.setStatus(WorkspaceInformationImpl.Status.OPEN);
+                    } else if ("closed".equals(workspaceStatus)) {
+                        info.setStatus(WorkspaceInformationImpl.Status.CLOSED);
                     } else {
                         info.invalid();
                     }

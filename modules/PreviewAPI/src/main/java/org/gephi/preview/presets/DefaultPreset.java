@@ -64,7 +64,10 @@ public class DefaultPreset extends PreviewPreset {
 
         properties.put(PreviewProperty.EDGE_COLOR, new EdgeColor(EdgeColor.Mode.MIXED));
         properties.put(PreviewProperty.EDGE_CURVED, true);
+        properties.put(PreviewProperty.EDGE_USE_WEIGHT, true);
         properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.FALSE);
+        properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, 0.4f);
+        properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, 8f);
         properties.put(PreviewProperty.EDGE_OPACITY, 100f);
         properties.put(PreviewProperty.EDGE_RADIUS, 0f);
         properties.put(PreviewProperty.EDGE_THICKNESS, 1f);
@@ -86,6 +89,7 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.NODE_LABEL_BOX_COLOR, new DependantColor(DependantColor.Mode.PARENT));
         properties.put(PreviewProperty.NODE_LABEL_BOX_OPACITY, 100f);
         properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));
+        properties.put(PreviewProperty.NODE_LABEL_CUSTOM_FONT, false);
         properties.put(PreviewProperty.NODE_LABEL_FONT, new Font("Arial", Font.PLAIN, 12));
         properties.put(PreviewProperty.NODE_LABEL_MAX_CHAR, 30);
         properties.put(PreviewProperty.NODE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
@@ -94,6 +98,8 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, true);
         properties.put(PreviewProperty.NODE_LABEL_SHORTEN, false);
         properties.put(PreviewProperty.NODE_LABEL_SHOW_BOX, false);
+        properties.put(PreviewProperty.NODE_LABEL_AVOID_OVERLAP, Boolean.TRUE);
+        properties.put(PreviewProperty.NODE_LABEL_OVERLAP_GRID_SIZE, 10);
 
         properties.put(PreviewProperty.SHOW_EDGES, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.FALSE);

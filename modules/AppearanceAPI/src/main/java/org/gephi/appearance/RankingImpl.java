@@ -47,15 +47,17 @@ import org.gephi.appearance.api.Ranking;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
+import org.openide.util.NbPreferences;
 
 /**
  * @author mbastian
  */
 public abstract class RankingImpl implements Ranking {
 
-    public static Interpolator DEFAULT_INTERPOLATOR = Interpolator.LINEAR;
+    static final String PREF_DEFAULT_INTERPOLATOR = "Appearance.defaultInterpolator";
 
-    protected Interpolator interpolator = DEFAULT_INTERPOLATOR;
+    protected Interpolator interpolator = Interpolator.fromString(
+        NbPreferences.forModule(Interpolator.class).get(PREF_DEFAULT_INTERPOLATOR, null));
 
     public Interpolator getInterpolator() {
         return interpolator;

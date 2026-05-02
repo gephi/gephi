@@ -108,7 +108,7 @@ public class SetNodesSize extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/size.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/size.svg", false);
     }
 
     public float getSize() {

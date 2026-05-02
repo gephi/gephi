@@ -3,6 +3,7 @@ package org.gephi.desktop.preview;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.Workspace;
@@ -35,7 +36,8 @@ public class PreviewUIPersistenceProvider implements WorkspaceXMLPersistenceProv
             previewModel = previewController.getModel(workspace);
         }
         if (model == null) {
-            model = new PreviewUIModelImpl(previewModel);
+            PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+            model = new PreviewUIModelImpl(previewModel, previewUIController);
             workspace.add(model);
         }
         try {

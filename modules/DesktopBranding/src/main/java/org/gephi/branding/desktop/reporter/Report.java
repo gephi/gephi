@@ -60,9 +60,10 @@ public class Report {
 
     private final Date date;
     private Throwable throwable;
+    private io.sentry.protocol.SentryId sentryEventId;
     private String summary = "";
     private String userDescription = "";
-    private String userEmail = "";
+    private String userGitHubUsername = "";
     //IDELog
     private String log = "";
     //Version
@@ -82,6 +83,7 @@ public class Report {
     private String glVendor = "";
     private String glRenderer = "";
     private String glVersion = "";
+    private String glProfile = "";
     //Modules
     private final List<String> enabledModules = new ArrayList<>();
     private final List<String> disabledModules = new ArrayList<>();
@@ -89,6 +91,14 @@ public class Report {
     public Report() {
         Calendar cal = Calendar.getInstance();
         date = cal.getTime();
+    }
+
+    public io.sentry.protocol.SentryId getSentryEventId() {
+        return sentryEventId;
+    }
+
+    public void setSentryEventId(io.sentry.protocol.SentryId sentryEventId) {
+        this.sentryEventId = sentryEventId;
     }
 
     public String getSummary() {
@@ -107,12 +117,12 @@ public class Report {
         this.throwable = throwable;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getUserGitHubUsername() {
+        return userGitHubUsername;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUserGitHubUsername(String userGitHubUsername) {
+        this.userGitHubUsername = userGitHubUsername;
     }
 
     public String getUserDescription() {
@@ -211,6 +221,14 @@ public class Report {
         this.glVersion = glVersion;
     }
 
+    public String getGlProfile() {
+        return glProfile;
+    }
+
+    public void setGlProfile(String glProfile) {
+        this.glProfile = glProfile;
+    }
+
     public void addEnabledModule(String str) {
         enabledModules.add(str);
     }
@@ -270,10 +288,10 @@ public class Report {
         userDescriptionE.setTextContent(userDescription);
         reportE.appendChild(userDescriptionE);
 
-        //User email
-        Element userEmailE = document.createElement("email");
-        userEmailE.setTextContent(userEmail);
-        reportE.appendChild(userEmailE);
+        //GitHub username
+        Element userGitHubUsernameE = document.createElement("github_username");
+        userGitHubUsernameE.setTextContent(userGitHubUsername);
+        reportE.appendChild(userGitHubUsernameE);
 
         //Version
         Element versionE = document.createElement("version");
@@ -305,6 +323,9 @@ public class Report {
         Element glVersionE = document.createElement("glVersion");
         glVersionE.setTextContent(glVersion);
         reportE.appendChild(glVersionE);
+        Element glProfileE = document.createElement("glProfile");
+        glProfileE.setTextContent(glProfile);
+        reportE.appendChild(glProfileE);
 
         //Heap
         Element heapE = document.createElement("heapmemory");

@@ -46,6 +46,7 @@ import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -66,7 +67,7 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
     }
 
     @Override
-    public void process() {
+    public Workspace[] process() {
         try {
             if (containers.length <= 1) {
                 throw new RuntimeException("This processor can only handle multiple containers");
@@ -91,13 +92,11 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
             Progress.start(progressTicket, calculateWorkUnits());
             for (ContainerUnloader container : containers) {
                 Configuration config = createConfiguration(container);
-                if(configurationMatchesExisting(config, workspace)) {
-                    process(container, workspace);
-                } else {
-                    Progress.progress(progressTicket, AbstractProcessor.calculateWorkUnits(container));
-                }
+                validateConfigurationMatchesExisting(container, config, workspace);
+                process(container, workspace);
             }
             Progress.finish(progressTicket);
+            return new Workspace[] {workspace};
         } finally {
             clean();
         }

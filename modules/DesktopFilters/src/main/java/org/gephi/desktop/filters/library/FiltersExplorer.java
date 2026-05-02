@@ -94,7 +94,9 @@ public class FiltersExplorer extends BeanTreeView {
 
                 @Override
                 public void run() {
-                    manager.setRootContext(new CategoryNode(new Utils(), null));
+                    if (filterLibrary != null) {
+                        manager.setRootContext(new CategoryNode(new Utils(), null));
+                    }
                 }
             });
         } else {

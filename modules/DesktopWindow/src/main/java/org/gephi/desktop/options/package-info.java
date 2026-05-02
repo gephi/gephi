@@ -4,7 +4,8 @@
         categoryName = "#OptionsCategory_Name_Gephi",
         iconBase = "DesktopWindow/options_gephi.svg",
         keywords = "#OptionsCategory_Keywords_Gephi",
-        keywordsCategory = "Gephi")
+        keywordsCategory = "Gephi",
+        position = 1000)
 @Messages(value = {
     "OptionsCategory_Name_Gephi=Gephi",
     "OptionsCategory_Keywords_Gephi=gephi"})

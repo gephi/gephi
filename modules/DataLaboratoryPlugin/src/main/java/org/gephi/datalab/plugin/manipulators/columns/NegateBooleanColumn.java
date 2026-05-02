@@ -100,6 +100,6 @@ public class NegateBooleanColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/ui-check-boxes.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-negate-boolean-column.svg", false);
     }
 }

@@ -48,8 +48,8 @@ package org.gephi.layout.plugin.openord;
 public enum Params {
 
     DEFAULT(new Stage(0, 2000f, 10f, 1f),
-        new Stage(0.25f, 2000f, 10f, 1f),
         new Stage(0.25f, 2000f, 2f, 1f),
+        new Stage(0.25f, 2000f, 10f, 1f),
         new Stage(0.25f, 2000f, 1f, 0.1f),
         new Stage(0.10f, 250f, 1f, 0.25f),
         new Stage(0.15f, 250f, 0.5f, 0f)),

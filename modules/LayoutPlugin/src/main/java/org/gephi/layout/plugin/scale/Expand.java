@@ -65,7 +65,7 @@ public class Expand implements LayoutBuilder {
 
     @Override
     public ExpandLayout buildLayout() {
-        return new ExpandLayout(this, 1.2);
+        return new ExpandLayout(this, 1.2f);
     }
 
     @Override

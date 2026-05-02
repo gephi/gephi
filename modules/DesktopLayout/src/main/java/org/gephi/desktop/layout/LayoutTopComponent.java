@@ -43,6 +43,7 @@
 package org.gephi.desktop.layout;
 
 import java.awt.BorderLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.project.api.ProjectController;
@@ -59,7 +60,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.layout//Layout//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "LayoutTopComponent",
-    iconBase = "org/gephi/desktop/layout/resources/small.png",
+    iconBase = "DesktopLayout/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.layout.LayoutTopComponent")
@@ -69,6 +70,7 @@ import org.openide.windows.TopComponent;
 public final class LayoutTopComponent extends TopComponent {
 
     private final LayoutPanel layoutPanel;
+    private final TransformationPanel transformationPanel;
     private LayoutModel model;
 
     public LayoutTopComponent() {
@@ -78,9 +80,11 @@ public final class LayoutTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         layoutPanel = new LayoutPanel();
+        transformationPanel = new TransformationPanel();
         if (UIUtils.isAquaLookAndFeel()) {
             layoutPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
+        add(transformationPanel,BorderLayout.PAGE_START);
         add(layoutPanel, BorderLayout.CENTER);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
@@ -91,7 +95,7 @@ public final class LayoutTopComponent extends TopComponent {
             @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(LayoutModel.class);
-                refreshModel();
+                SwingUtilities.invokeLater(() -> refreshModel());
             }
 
             @Override
@@ -108,7 +112,7 @@ public final class LayoutTopComponent extends TopComponent {
             @Override
             public void disable() {
                 model = null;
-                refreshModel();
+                SwingUtilities.invokeLater(() -> refreshModel());
             }
         });
 

@@ -98,6 +98,13 @@ public class RankingLabelColorTransformerUI implements TransformerUI {
     }
 
     @Override
+    public synchronized void onApply(Function function) {
+        if (panel != null) {
+            panel.saveCurrentGradientAsRecent();
+        }
+    }
+
+    @Override
     public Class<? extends RankingTransformer> getTransformerClass() {
         return RankingLabelColorTransformer.class;
     }

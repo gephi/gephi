@@ -87,9 +87,9 @@ public class CategoryNode extends AbstractNode {
         } catch (Exception e) {
         }
         if (category == null) {
-            return ImageUtilities.loadImage("DesktopFilters/library.png", false);
+            return ImageUtilities.loadImage("DesktopFilters/library.svg", false);
         } else {
-            return ImageUtilities.loadImage("DesktopFilters/folder.png", false);
+            return ImageUtilities.loadImage("DesktopFilters/folder.svg", false);
         }
     }
 

@@ -56,7 +56,6 @@ import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
@@ -64,6 +63,7 @@ import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
@@ -72,28 +72,25 @@ import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TimelineController.class)
-public class TimelineControllerImpl implements TimelineController {
+@ServiceProviders({
+    @ServiceProvider(service = TimelineController.class),
+    @ServiceProvider(service = Controller.class, position = 3000)})
+public class TimelineControllerImpl implements TimelineController, Controller<TimelineModelImpl> {
 
     private final List<TimelineModelListener> listeners;
-    private final FilterController filterController;
-    private TimelineModelImpl model;
     private GraphObserverThread observerThread;
-    private GraphModel graphModel;
     private ScheduledExecutorService playExecutor;
-    private FilterModel filterModel;
 
     public TimelineControllerImpl() {
         listeners = new ArrayList<>();
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        filterController = Lookup.getDefault().lookup(FilterController.class);
-
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             @Override
@@ -102,25 +99,19 @@ public class TimelineControllerImpl implements TimelineController {
 
             @Override
             public void select(Workspace workspace) {
-                model = workspace.getLookup().lookup(TimelineModelImpl.class);
-                graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-                if (model == null) {
-                    model = new TimelineModelImpl(graphModel);
-                    workspace.add(model);
-                }
+                TimelineModelImpl model = workspace.getLookup().lookup(TimelineModelImpl.class);
+                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null));
                 observerThread = new GraphObserverThread(TimelineControllerImpl.this, model);
-                setup();
-                filterModel = filterController.getModel(workspace);
                 observerThread.start();
             }
 
             @Override
             public void unselect(Workspace workspace) {
-                unsetup();
+                stopPlay();
                 if (observerThread != null) {
                     observerThread.stopThread();
+                    observerThread = null;
                 }
-                filterModel = null;
             }
 
             @Override
@@ -129,226 +120,166 @@ public class TimelineControllerImpl implements TimelineController {
 
             @Override
             public void disable() {
-                model = null;
-                graphModel = null;
-                filterModel = null;
+                stopPlay();
                 if (observerThread != null) {
                     observerThread.stopThread();
+                    observerThread = null;
                 }
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, null, null));
             }
         });
-
-        if (pc.getCurrentWorkspace() != null) {
-            Workspace workspace = pc.getCurrentWorkspace();
-            model = workspace.getLookup().lookup(TimelineModelImpl.class);
-            graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-            if (model == null) {
-                model = new TimelineModelImpl(graphModel);
-                pc.getCurrentWorkspace().add(model);
-            }
-            filterModel = filterController.getModel(workspace);
-            setup();
-        }
     }
 
     @Override
-    public synchronized TimelineModel getModel(Workspace workspace) {
-        return workspace.getLookup().lookup(TimelineModel.class);
+    public TimelineModelImpl newModel(Workspace workspace) {
+        return new TimelineModelImpl(workspace);
     }
 
     @Override
-    public synchronized TimelineModel getModel() {
-        return model;
+    public Class<TimelineModelImpl> getModelClass() {
+        return TimelineModelImpl.class;
     }
 
-    private void setup() {
-        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null));
+    @Override
+    public TimelineModelImpl getModel(Workspace workspace) {
+        return Controller.super.getModel(workspace);
     }
 
-    private void unsetup() {
+    @Override
+    public TimelineModelImpl getModel() {
+        return Controller.super.getModel();
     }
 
     @Override
     public void setTimeFormat(TimeFormat timeFormat) {
-        graphModel.setTimeFormat(timeFormat);
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null) {
+            currentModel.getGraphModel().setTimeFormat(timeFormat);
+        }
     }
 
-    //
-//    @Override
-//    public void dynamicModelChanged(DynamicModelEvent event) {
-//        if (event.getEventType().equals(DynamicModelEvent.EventType.MIN_CHANGED)
-//                || event.getEventType().equals(DynamicModelEvent.EventType.MAX_CHANGED)) {
-//            double newMax = event.getSource().getMax();
-//            double newMin = event.getSource().getMin();
-//            setMinMax(newMin, newMax);
-//        } else if (event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
-//            TimeInterval timeInterval = (TimeInterval) event.getData();
-//            double min = timeInterval.getLow();
-//            double max = timeInterval.getHigh();
-//            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{min, max}));
-//        } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
-//            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null)); //refresh display
-//        }
-//    }
     protected boolean setMinMax(double min, double max) {
-        if (model != null) {
-            if (min > max) {
-                throw new IllegalArgumentException("min should be less than max");
-            } else if (min == max) {
-                //Avoid setting values at this point
-                return false;
-            }
-            double previousBoundsMin = model.getCustomMin();
-            double previousBoundsMax = model.getCustomMax();
-
-            //Custom bounds
-            if (model.getCustomMin() == model.getPreviousMin()) {
-                model.setCustomMin(min);
-            } else if (model.getCustomMin() < min) {
-                model.setCustomMin(min);
-            }
-            if (model.getCustomMax() == model.getPreviousMax()) {
-                model.setCustomMax(max);
-            } else if (model.getCustomMax() > max) {
-                model.setCustomMax(max);
-            }
-
-            model.setPreviousMin(min);
-            model.setPreviousMax(max);
-
-            if (model.hasValidBounds()) {
-                fireTimelineModelEvent(
-                    new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[] {min, max}));
-
-                if (model.getCustomMax() != max || model.getCustomMin() != min) {
-                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model,
-                        new double[] {min, max}));
-                }
-            }
-
-            if ((Double.isInfinite(previousBoundsMax) || Double.isInfinite(previousBoundsMin)) &&
-                model.hasValidBounds()) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, model, true));
-            } else if (!Double.isInfinite(previousBoundsMax) && !Double.isInfinite(previousBoundsMin) &&
-                !model.hasValidBounds()) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, model, false));
-            }
-
-            return true;
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel == null) {
+            return false;
         }
+        double[] prevCustomBounds = new double[2];
+        if (!currentModel.updateMinMax(min, max, prevCustomBounds)) {
+            return false;
+        }
+        if (currentModel.hasValidBounds()) {
+            fireTimelineModelEvent(
+                new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, currentModel, new double[] {min, max}));
 
-        return false;
+            if (currentModel.getCustomMax() != max || currentModel.getCustomMin() != min) {
+                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
+                    new double[] {min, max}));
+            }
+        }
+        if ((Double.isInfinite(prevCustomBounds[1]) || Double.isInfinite(prevCustomBounds[0])) &&
+            currentModel.hasValidBounds()) {
+            fireTimelineModelEvent(
+                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, true));
+        } else if (!Double.isInfinite(prevCustomBounds[1]) && !Double.isInfinite(prevCustomBounds[0]) &&
+            !currentModel.hasValidBounds()) {
+            fireTimelineModelEvent(
+                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, false));
+        }
+        return true;
     }
 
     @Override
     public void setCustomBounds(double min, double max) {
-        if (model != null) {
-            if (model.getCustomMin() != min || model.getCustomMax() != max) {
-                if (min >= max) {
-                    throw new IllegalArgumentException("min should be less than max");
-                }
-                if (min < model.getMin() || max > model.getMax()) {
-                    throw new IllegalArgumentException("Min and max should be in the bounds");
-                }
-
-                //Interval
-                if (model.getIntervalStart() < min || model.getIntervalEnd() > max) {
-//                    dynamicController.setVisibleInterval(min, max);
-                }
-
-                //Custom bounds
-                double[] val = new double[] {min, max};
-                model.setCustomMin(min);
-                model.setCustomMax(max);
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model, val));
-            }
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null && currentModel.setCustomBounds(min, max)) {
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
+                new double[] {min, max}));
         }
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        if (model != null) {
-            if (enabled != model.isEnabled() && model.hasValidBounds()) {
-                model.setEnabled(enabled);
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.ENABLED, model, enabled));
-            }
-            if (!enabled) {
-                //Disable filtering
-                setInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-            }
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel == null) {
+            return;
+        }
+        if (currentModel.setEnabled(enabled)) {
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.ENABLED, currentModel, enabled));
+        }
+        if (!enabled) {
+            setInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
     }
 
     @Override
     public void setInterval(double from, double to) {
-        if (model != null && filterModel != null) {
-            if (model.getIntervalStart() != from || model.getIntervalEnd() != to) {
-                if (from >= to) {
-                    throw new IllegalArgumentException("from should be less than to");
-                }
-                if (!(Double.isInfinite(from) && Double.isInfinite(to))) {
-                    if (from < model.getCustomMin() || to > model.getCustomMax()) {
-                        throw new IllegalArgumentException("From and to should be in the bounds");
-                    }
-                }
-                model.setInterval(from, to);
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel == null) {
+            return;
+        }
+        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+        FilterModel filterModel = filterController.getModel(currentModel.getWorkspace());
+        if (filterModel == null || !currentModel.setInterval(from, to)) {
+            return;
+        }
+        applyIntervalFilter(currentModel, filterModel, from, to);
+    }
 
-                //Filter magic
-                Query dynamicQuery = null;
-                boolean selecting = false;
+    private void applyIntervalFilter(TimelineModelImpl currentModel, FilterModel filterModel, double from, double to) {
+        Query dynamicQuery = null;
+        boolean selecting = false;
 
-                //Get or create Dynamic Query
-                if (filterModel.getCurrentQuery() != null) {
-                    //Look if current query is dynamic - filtering must be active
-                    Query query = filterModel.getCurrentQuery();
-                    Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
-                    if (dynamicQueries.length > 0) {
-                        dynamicQuery = query;
-                        selecting = filterModel.isSelecting();
-                    }
-                } else if (filterModel.getQueries().length == 1) {
-                    //Look if a dynamic query alone exists
-                    Query query = filterModel.getQueries()[0];
-                    Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
-                    if (dynamicQueries.length > 0) {
-                        dynamicQuery = query;
+        if (filterModel.getCurrentQuery() != null) {
+            Query query = filterModel.getCurrentQuery();
+            Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+            if (dynamicQueries.length > 0) {
+                dynamicQuery = query;
+                selecting = filterModel.isSelecting();
+            }
+        } else if (filterModel.getQueries().length == 1) {
+            Query query = filterModel.getQueries()[0];
+            Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+            if (dynamicQueries.length > 0) {
+                dynamicQuery = query;
+            }
+        }
+
+        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+        if (Double.isInfinite(from) && Double.isInfinite(to)) {
+            if (dynamicQuery != null) {
+                filterController.remove(dynamicQuery);
+            }
+        } else {
+            if (dynamicQuery == null) {
+                DynamicRangeBuilder rangeBuilder =
+                    filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                if (rangeBuilder != null) {
+                    FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
+                    if (fb.length > 0) {
+                        dynamicQuery = filterController.createQuery(fb[0]);
+                        filterController.add(dynamicQuery);
                     }
                 }
-
-                if (Double.isInfinite(from) && Double.isInfinite(to)) {
-                    if (dynamicQuery != null) {
-                        filterController.remove(dynamicQuery);
-                    }
+            }
+            if (dynamicQuery != null) {
+                dynamicQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
+                if (selecting) {
+                    filterController.selectVisible(dynamicQuery);
                 } else {
-                    if (dynamicQuery == null) {
-                        //Create dynamic filter
-                        DynamicRangeBuilder rangeBuilder =
-                            filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
-                        FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
-                        if (fb.length > 0) {
-                            dynamicQuery = filterController.createQuery(fb[0]);
-                            filterController.add(dynamicQuery);
-                        }
-                    }
-                    if (dynamicQuery != null) {
-                        dynamicQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
-                        if (selecting) {
-                            filterController.selectVisible(dynamicQuery);
-                        } else {
-                            filterController.filterVisible(dynamicQuery);
-                        }
-                        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model,
-                            new double[] {from, to}));
-                    }
+                    filterController.filterVisible(dynamicQuery);
                 }
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, currentModel,
+                        new double[] {from, to}));
             }
         }
     }
 
     @Override
     public String[] getDynamicGraphColumns() {
-        if (graphModel != null) {
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null) {
+            GraphModel graphModel = currentModel.getGraphModel();
             List<String> columns = new ArrayList<>();
             for (String k : graphModel.getGraph().getAttributeKeys()) {
                 Object a = graphModel.getGraph().getAttribute(k);
@@ -363,27 +294,28 @@ public class TimelineControllerImpl implements TimelineController {
 
     @Override
     public void selectColumn(final String column) {
-        if (model != null) {
-            if (!(model.getChart() == null && column == null)
-                || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
-                if (column != null && graphModel.getGraph().getAttribute(column) == null) {
-                    throw new IllegalArgumentException("Not a graph column");
-                }
-                Thread thread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Graph graph =
-                            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
-                        TimelineChart chart = TimelineChartImpl.of(graph, column);
-                        model.setChart(chart);
-
-                        fireTimelineModelEvent(
-                            new TimelineModelEvent(TimelineModelEvent.EventType.CHART, model, chart));
-                    }
-                }, "Timeline Chart");
-                thread.start();
+        final TimelineModelImpl currentModel = getModel();
+        if (currentModel == null) {
+            return;
+        }
+        if (!(currentModel.getChart() == null && column == null)
+            || (currentModel.getChart() != null && !currentModel.getChart().getColumn().equals(column))) {
+            if (column != null && currentModel.getGraphModel().getGraph().getAttribute(column) == null) {
+                throw new IllegalArgumentException("Not a graph column");
             }
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    Graph graph = currentModel.getGraphModel().getGraphVisible();
+                    TimelineChart chart = TimelineChartImpl.of(graph, column);
+                    currentModel.setChart(chart);
+
+                    fireTimelineModelEvent(
+                        new TimelineModelEvent(TimelineModelEvent.EventType.CHART, currentModel, chart));
+                }
+            }, "Timeline Chart");
+            thread.start();
         }
     }
 
@@ -407,63 +339,70 @@ public class TimelineControllerImpl implements TimelineController {
 
     @Override
     public void startPlay() {
-        if (model != null && !model.isPlaying()) {
-            model.setPlaying(true);
-            playExecutor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel == null || currentModel.isPlaying()) {
+            return;
+        }
+        currentModel.setPlaying(true);
+        playExecutor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
-                @Override
-                public Thread newThread(Runnable r) {
-                    return new Thread(r, "Timeline animator");
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Timeline animator");
+            }
+        });
+        playExecutor.scheduleAtFixedRate(new Runnable() {
+
+            @Override
+            public void run() {
+                TimelineModelImpl m = getModel();
+                if (m == null) {
+                    return;
                 }
-            });
-            playExecutor.scheduleAtFixedRate(new Runnable() {
-
-                @Override
-                public void run() {
-                    double min = model.getCustomMin();
-                    double max = model.getCustomMax();
-                    double duration = max - min;
-                    double step = (duration * model.getPlayStep()) * 0.95;
-                    double from = model.getIntervalStart();
-                    double to = model.getIntervalEnd();
-                    boolean bothBounds = model.getPlayMode().equals(TimelineModel.PlayMode.TWO_BOUNDS);
-                    boolean someAction = false;
-                    if (bothBounds) {
-                        if (step > 0 && to < max) {
-                            from += step;
-                            to += step;
-                            someAction = true;
-                        } else if (step < 0 && from > min) {
-                            from += step;
-                            to += step;
-                            someAction = true;
-                        }
-                    } else if (step > 0 && to < max) {
+                double min = m.getCustomMin();
+                double max = m.getCustomMax();
+                double duration = max - min;
+                double step = (duration * m.getPlayStep()) * 0.95;
+                double from = m.getIntervalStart();
+                double to = m.getIntervalEnd();
+                boolean bothBounds = m.getPlayMode().equals(TimelineModel.PlayMode.TWO_BOUNDS);
+                boolean someAction = false;
+                if (bothBounds) {
+                    if (step > 0 && to < max) {
+                        from += step;
                         to += step;
                         someAction = true;
                     } else if (step < 0 && from > min) {
                         from += step;
+                        to += step;
                         someAction = true;
                     }
-
-                    if (someAction) {
-                        from = Math.max(from, min);
-                        to = Math.min(to, max);
-                        setInterval(from, to);
-                    } else {
-                        stopPlay();
-                    }
+                } else if (step > 0 && to < max) {
+                    to += step;
+                    someAction = true;
+                } else if (step < 0 && from > min) {
+                    from += step;
+                    someAction = true;
                 }
-            }, model.getPlayDelay(), model.getPlayDelay(), TimeUnit.MILLISECONDS);
-            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.PLAY_START, model, null));
-        }
+
+                if (someAction) {
+                    from = Math.max(from, min);
+                    to = Math.min(to, max);
+                    setInterval(from, to);
+                } else {
+                    stopPlay();
+                }
+            }
+        }, currentModel.getPlayDelay(), currentModel.getPlayDelay(), TimeUnit.MILLISECONDS);
+        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.PLAY_START, currentModel, null));
     }
 
     @Override
     public void stopPlay() {
-        if (model != null && model.isPlaying()) {
-            model.setPlaying(false);
-            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.PLAY_STOP, model, null));
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null && currentModel.isPlaying()) {
+            currentModel.setPlaying(false);
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.PLAY_STOP, currentModel, null));
         }
         if (playExecutor != null) {
             playExecutor.shutdown();
@@ -472,22 +411,25 @@ public class TimelineControllerImpl implements TimelineController {
 
     @Override
     public void setPlaySpeed(int delay) {
-        if (model != null) {
-            model.setPlayDelay(delay);
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null) {
+            currentModel.setPlayDelay(delay);
         }
     }
 
     @Override
     public void setPlayStep(double step) {
-        if (model != null) {
-            model.setPlayStep(step);
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null) {
+            currentModel.setPlayStep(step);
         }
     }
 
     @Override
     public void setPlayMode(PlayMode playMode) {
-        if (model != null) {
-            model.setPlayMode(playMode);
+        TimelineModelImpl currentModel = getModel();
+        if (currentModel != null) {
+            currentModel.setPlayMode(playMode);
         }
     }
 }

@@ -42,6 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.filters.plugin.attribute;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -75,7 +77,16 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     public void stateChanged(ChangeEvent evt) {
         FilterProperty match = filter.getProperties()[1];
         try {
-            match.setValue(valueSpinner.getValue());
+            Number spinnerValue = (Number) valueSpinner.getValue();
+            // SpinnerNumberModel uses Long/Double proxies for BigInteger/BigDecimal columns;
+            // convert back to the correct column type before storing in the filter.
+            Class type = filter.getColumn().getTypeClass();
+            if (type.equals(BigInteger.class)) {
+                spinnerValue = BigInteger.valueOf(spinnerValue.longValue());
+            } else if (type.equals(BigDecimal.class)) {
+                spinnerValue = BigDecimal.valueOf(spinnerValue.doubleValue());
+            }
+            match.setValue(spinnerValue);
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -88,38 +99,71 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
             @Override
             public void run() {
                 setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
-                Number match = filter.getMatch();
-                Number stepSize = null;
+                Number currentMatch = filter.getMatch();
                 final Comparable min = (Comparable) filter.getRange().getMinimum();
                 final Comparable max = (Comparable) filter.getRange().getMaximum();
                 Class type = filter.getColumn().getTypeClass();
+
+                // spinnerMin/spinnerMax may differ from min/max for BigInteger/BigDecimal because
+                // SpinnerNumberModel doesn't handle those types reliably across JDK versions.
+                // We use Long/Double proxies for the spinner and convert back in stateChanged().
+                Comparable spinnerMinVal = min;
+                Comparable spinnerMaxVal = max;
+                Number match;
+                Number stepSize;
+
                 if (type.equals(Double.class)) {
-                    match = (match != null ? match : (Double) min);
+                    match = (currentMatch instanceof Double) ? currentMatch : (Double) min;
                     stepSize = .1;
                 } else if (type.equals(Float.class)) {
-                    match = (match != null ? match : (Float) min);
+                    match = (currentMatch instanceof Float) ? currentMatch : (Float) min;
                     stepSize = .1f;
                 } else if (type.equals(Long.class)) {
-                    match = (match != null ? match : (Long) min);
+                    match = (currentMatch instanceof Long) ? currentMatch : (Long) min;
                     stepSize = 1l;
                 } else if (type.equals(Integer.class)) {
-                    match = (match != null ? match : (Integer) min);
+                    match = (currentMatch instanceof Integer) ? currentMatch : (Integer) min;
                     stepSize = 1;
+                } else if (type.equals(Short.class)) {
+                    match = (currentMatch instanceof Short) ? currentMatch : (Short) min;
+                    stepSize = (short) 1;
+                } else if (type.equals(Byte.class)) {
+                    match = (currentMatch instanceof Byte) ? currentMatch : (Byte) min;
+                    stepSize = (byte) 1;
+                } else if (type.equals(BigInteger.class)) {
+                    BigInteger bigMin = (BigInteger) min;
+                    BigInteger bigMax = (BigInteger) max;
+                    BigInteger bigMatch = (currentMatch instanceof BigInteger) ? (BigInteger) currentMatch : bigMin;
+                    spinnerMinVal = bigMin.longValue();
+                    spinnerMaxVal = bigMax.longValue();
+                    match = bigMatch.longValue();
+                    stepSize = 1L;
+                } else if (type.equals(BigDecimal.class)) {
+                    BigDecimal bdMin = (BigDecimal) min;
+                    BigDecimal bdMax = (BigDecimal) max;
+                    BigDecimal bdMatch = (currentMatch instanceof BigDecimal) ? (BigDecimal) currentMatch : bdMin;
+                    spinnerMinVal = bdMin.doubleValue();
+                    spinnerMaxVal = bdMax.doubleValue();
+                    match = bdMatch.doubleValue();
+                    stepSize = .1;
                 } else {
                     throw new IllegalArgumentException("Column must be number");
                 }
 
-                Number minNumber = (Number) min;
-                Number maxNumber = (Number) max;
-                if (match.doubleValue() < minNumber.doubleValue()) {
-                    match = minNumber;
-                    filter.getProperties()[1].setValue(minNumber);
-                } else if (match.doubleValue() > maxNumber.doubleValue()) {
-                    match = maxNumber;
-                    filter.getProperties()[1].setValue(maxNumber);
+                final Comparable spinnerMin = spinnerMinVal;
+                final Comparable spinnerMax = spinnerMaxVal;
+
+                Number spinnerMinNumber = (Number) spinnerMin;
+                Number spinnerMaxNumber = (Number) spinnerMax;
+                if (match.doubleValue() < spinnerMinNumber.doubleValue()) {
+                    match = spinnerMinNumber;
+                    filter.getProperties()[1].setValue((Number) min);
+                } else if (match.doubleValue() > spinnerMaxNumber.doubleValue()) {
+                    match = spinnerMaxNumber;
+                    filter.getProperties()[1].setValue((Number) max);
                 }
 
-                final SpinnerNumberModel model = new SpinnerNumberModel(match, min, max, stepSize);
+                final SpinnerNumberModel model = new SpinnerNumberModel(match, spinnerMin, spinnerMax, stepSize);
                 SwingUtilities.invokeLater(new Runnable() {
 
                     @Override

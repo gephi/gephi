@@ -1,0 +1,3 @@
+digraph {
+    a -> b [label="ab"] [color="red"] -> c [label="bc"] [color="blue"];
+}

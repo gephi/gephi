@@ -60,6 +60,11 @@
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>visualization</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

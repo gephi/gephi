@@ -64,6 +64,10 @@ public class WorkspaceImpl implements Workspace {
     private final WorkspaceMetaDataImpl workspaceMetaData;
 
     public WorkspaceImpl(ProjectImpl project, int id, Object... objectsForLookup) {
+        this(project, id, true, objectsForLookup);
+    }
+
+    public WorkspaceImpl(ProjectImpl project, int id, boolean initModels, Object... objectsForLookup) {
         this.instanceContent = new InstanceContent();
         this.lookup = new AbstractLookup(instanceContent);
         this.id = id;
@@ -73,14 +77,26 @@ public class WorkspaceImpl implements Workspace {
         workspaceInformation = new WorkspaceInformationImpl(NbBundle.getMessage(WorkspaceImpl.class, "Workspace.default.prefix") + " " + id);
         instanceContent.add(workspaceInformation);
         for (Object o : objectsForLookup) {
-            instanceContent.add(o);
+            if (o != null) {
+                instanceContent.add(o);
+            }
         }
 
         workspaceMetaData = new WorkspaceMetaDataImpl();
 
         // Models
+        if (initModels) {
+            initModels();
+        }
+    }
+
+    public void initModels() {
         Lookup.getDefault().lookupAll(Controller.class).forEach(c -> {
             Model model = c.newModel(this);
+            // Check if it doesn't already exist
+            if (lookup.lookup(model.getClass()) != null) {
+                throw new IllegalStateException("Model already exists");
+            }
             add(model);
         });
     }

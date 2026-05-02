@@ -102,7 +102,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
 
     @Override
     public Image getIcon() {
-        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-duplicate-column.png", false);
+        return ImageUtilities.loadImage("DataLaboratoryPlugin/table-duplicate-column.svg", false);
     }
 
     public String getTitle() {

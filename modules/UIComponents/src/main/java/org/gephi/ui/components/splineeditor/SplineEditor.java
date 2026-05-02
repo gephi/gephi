@@ -76,7 +76,7 @@ public class SplineEditor extends JDialog {
     }
 
     private Component buildHeader() {
-        ImageIcon icon = ImageUtilities.loadImageIcon("UIComponents/simulator.png", false);
+        ImageIcon icon = ImageUtilities.loadImageIcon("UIComponents/simulator.svg", false);
         JXHeader header = new JXHeader(NbBundle.getMessage(SplineEditor.class, "splineEditor_title"),
             NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
             icon);

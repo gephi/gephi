@@ -46,8 +46,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
-import java.awt.geom.GeneralPath;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.Locale;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -85,6 +86,10 @@ public class EdgeRenderer implements Renderer {
     //Custom properties
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
+    // Same multiplier as the GLSL selfloop.vert shader constant
+    public static final float STROKE_MULTIPLIER = 1.3f;
+    // Stores the source node radius for self-loops (used for partial arc clipping)
+    public static final String SELF_LOOP_NODE_RADIUS = "edge.selfloop.nodeRadius";
     /**
      * @deprecated We now use circle arcs to draw curved edges. See ARC_CURVENESS instead.
      */
@@ -104,9 +109,10 @@ public class EdgeRenderer implements Renderer {
     //Default values
     protected boolean defaultShowEdges = true;
     protected float defaultThickness = 1;
+    protected boolean defaultUseWeight = true;
     protected boolean defaultRescaleWeight = true;
-    protected float defaultRescaleWeightMin = 0.1f;
-    protected float defaultRescaleWeightMax = 1.0f;
+    protected float defaultRescaleWeightMin = 0.4f;
+    protected float defaultRescaleWeightMax = 8f;
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
     protected static float defaultArcCurviness = 1.2f;
@@ -139,7 +145,7 @@ public class EdgeRenderer implements Renderer {
         return item instanceof EdgeItem && sourceItem == targetItem;
     }
 
-    private static float getThickness(final Item item) {
+    public static float getThickness(final Item item) {
         return ((Double) item.getData(EdgeItem.WEIGHT)).floatValue();
     }
 
@@ -184,23 +190,19 @@ public class EdgeRenderer implements Renderer {
         }
 
         //Rescale weight if necessary - and avoid negative weights
+        final boolean useWeight = properties.getBooleanValue(
+            PreviewProperty.EDGE_USE_WEIGHT);
         final boolean rescaleWeight = properties.getBooleanValue(
             PreviewProperty.EDGE_RESCALE_WEIGHT);
 
-        if (rescaleWeight) {
+        // Get thickness
+        double thickness = properties.getFloatValue(PreviewProperty.EDGE_THICKNESS);
+        thickness *= properties.getFloatValue(PreviewProperty.EDGE_SCALE_FACTOR);
+
+        if (useWeight && rescaleWeight) {
             final double weightDiff = maxWeight - minWeight;
             double minRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN);
             double maxRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX);
-
-            if (minRescaledWeight < 0) {
-                minRescaledWeight = defaultRescaleWeightMin;
-                properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, defaultRescaleWeightMin);
-            }
-
-            if (maxRescaledWeight < 0) {
-                maxRescaledWeight = defaultRescaleWeightMax;
-                properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, defaultRescaleWeightMax);
-            }
 
             if (minRescaledWeight > maxRescaledWeight) {
                 minRescaledWeight = maxRescaledWeight;
@@ -214,14 +216,14 @@ public class EdgeRenderer implements Renderer {
                 for (final Item item : edgeItems) {
                     double weight = item.getData(EdgeItem.WEIGHT);
                     weight = rescaledWeightsDiff * (weight - minWeight) / weightDiff + minRescaledWeight;
-                    setEdgeWeight(weight, properties, item);
+                    item.setData(EdgeItem.WEIGHT, weight * thickness);
                 }
             } else {
                 for (final Item item : edgeItems) {
-                    setEdgeWeight(1.0, properties, item);
+                    item.setData(EdgeItem.WEIGHT, thickness);
                 }
             }
-        } else {
+        } else if (useWeight) {
             for (final Item item : edgeItems) {
                 double weight = item.getData(EdgeItem.WEIGHT);
 
@@ -231,7 +233,11 @@ public class EdgeRenderer implements Renderer {
                 }
 
                 //Multiply by thickness
-                setEdgeWeight(weight, properties, item);
+                item.setData(EdgeItem.WEIGHT, weight * thickness);
+            }
+        } else {
+            for (final Item item : edgeItems) {
+                item.setData(EdgeItem.WEIGHT, thickness);
             }
         }
 
@@ -246,33 +252,31 @@ public class EdgeRenderer implements Renderer {
                 //Target
                 final Item targetItem = item.getData(TARGET);
                 final Double weight = item.getData(EdgeItem.WEIGHT);
-                //Avoid negative arrow size:
-                float arrowSize = properties.getFloatValue(
-                    PreviewProperty.ARROW_SIZE);
-                if (arrowSize < 0F) {
-                    arrowSize = 0F;
-                }
-
+                final float arrowSize = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
                 final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
 
                 final float targetRadius = -(edgeRadius
-                    + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                    + SizeUtils.getNodeSize(targetItem, properties) / 2f
                     + arrowRadiusSize);
                 item.setData(TARGET_RADIUS, targetRadius);
 
                 //Source
                 final Item sourceItem = item.getData(SOURCE);
                 final float sourceRadius = -(edgeRadius
-                    + (Float) sourceItem.getData(NodeItem.SIZE) / 2f);
+                    + SizeUtils.getNodeSize(sourceItem, properties) / 2f);
                 item.setData(SOURCE_RADIUS, sourceRadius);
+            } else {
+                // Self-loop: precompute loopRadius matching the GLSL selfloop.vert shader formula:
+                //   loopRadius = scaledNodeSize * 0.5 + strokeWidth * 0.33
+                //   strokeWidth = thickness * STROKE_MULTIPLIER
+                final Item sourceItem = item.getData(SOURCE);
+                final float nodeRadius = SizeUtils.getNodeSize(sourceItem, properties) / 2f;
+                final float strokeWidth = getThickness(item) * STROKE_MULTIPLIER;
+                final float loopRadius = nodeRadius * 0.5f + strokeWidth * 0.33f;
+                item.setData(SOURCE_RADIUS, loopRadius);
+                item.setData(SELF_LOOP_NODE_RADIUS, nodeRadius);
             }
         }
-    }
-
-    private void setEdgeWeight(double weight, final PreviewProperties properties, final Item item) {
-        //Multiply by thickness
-        weight *= properties.getFloatValue(PreviewProperty.EDGE_THICKNESS);
-        item.setData(EdgeItem.WEIGHT, weight);
     }
 
     @Override
@@ -314,19 +318,27 @@ public class EdgeRenderer implements Renderer {
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_THICKNESS, Float.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultThickness),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setMinMax(0f, null).setValue(
+                defaultThickness),
+            PreviewProperty.createProperty(this, PreviewProperty.EDGE_USE_WEIGHT, Boolean.class,
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.useWeight.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.useWeight.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultUseWeight),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES, PreviewProperty.EDGE_USE_WEIGHT).setValue(
+                defaultRescaleWeight),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, Float.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMin),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT,
+                PreviewProperty.EDGE_USE_WEIGHT).setMinMax(0f, null).setValue(defaultRescaleWeightMin),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, Float.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMax),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT,
+                PreviewProperty.EDGE_USE_WEIGHT).setMinMax(0f, null).setValue(defaultRescaleWeightMax),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_COLOR, EdgeColor.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),
@@ -334,7 +346,8 @@ public class EdgeRenderer implements Renderer {
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_OPACITY, Float.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultOpacity),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setMinMax(0f, 100f).setValue(
+                defaultOpacity),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_CURVED, Boolean.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
@@ -342,7 +355,8 @@ public class EdgeRenderer implements Renderer {
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RADIUS, Float.class,
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.displayName"),
                 NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.description"),
-                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setMinMax(0f, null).setValue(
+                defaultRadius),};
     }
 
     @Override
@@ -476,11 +490,14 @@ public class EdgeRenderer implements Renderer {
                 if (targetRadius != null && targetRadius < 0) {
                     Vector direction = new Vector(_x2, _y2);
                     direction.sub(new Vector(_x1, _y1));
-                    direction.normalize();
-                    direction.mult(targetRadius);
-                    direction.add(new Vector(_x2, _y2));
-                    _x2 = direction.x;
-                    _y2 = direction.y;
+                    // Guard: skip offset when nodes overlap to avoid NaN from normalize()
+                    if (direction.mag() > 0) {
+                        direction.normalize();
+                        direction.mult(targetRadius);
+                        direction.add(new Vector(_x2, _y2));
+                        _x2 = direction.x;
+                        _y2 = direction.y;
+                    }
                 }
 
                 //Source radius
@@ -489,11 +506,14 @@ public class EdgeRenderer implements Renderer {
                 if (sourceRadius != null && sourceRadius < 0) {
                     Vector direction = new Vector(_x1, _y1);
                     direction.sub(new Vector(_x2, _y2));
-                    direction.normalize();
-                    direction.mult(sourceRadius);
-                    direction.add(new Vector(_x1, _y1));
-                    _x1 = direction.x;
-                    _y1 = direction.y;
+                    // Guard: skip offset when nodes overlap to avoid NaN from normalize()
+                    if (direction.mag() > 0) {
+                        direction.normalize();
+                        direction.mult(sourceRadius);
+                        direction.add(new Vector(_x1, _y1));
+                        _x1 = direction.x;
+                        _y1 = direction.y;
+                    }
                 }
 
                 x1 = _x1;
@@ -558,7 +578,8 @@ public class EdgeRenderer implements Renderer {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
-                    PDFUtils.drawArc(cb, (float)h.bbx, (float)-h.bby, (float)(h.bbx+h.bbw), (float)-(h.bby+h.bbh), (float)h.astart, (float)h.asweep);
+                    PDFUtils.drawArc(cb, (float) h.bbx, (float) -h.bby, (float) (h.bbx + h.bbw),
+                        (float) -(h.bby + h.bbh), (float) h.astart, (float) h.asweep);
                     cb.setStrokingColor(color);
                     cb.setLineWidth(getThickness(item));
                     cb.setLineJoinStyle(1); //round
@@ -584,15 +605,20 @@ public class EdgeRenderer implements Renderer {
             final PreviewProperties properties
         ) {
             final Helper h = new Helper(item, properties);
-            final float minX
-                = Math.min(h.x1, h.x2);
-            final float minY
-                = Math.min(h.y1, h.y2);
-            final float maxX
-                = Math.max(h.x1, h.x2);
-            final float maxY
-                = Math.max(h.y1, h.y2);
-            return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+            if (h.asweep == 0) {
+                // Edge not rendered (too short/swallowed by nodes); fall back to endpoint bbox
+                final float minX = Math.min(h.x1, h.x2);
+                final float minY = Math.min(h.y1, h.y2);
+                return new CanvasSize(minX, minY, Math.abs(h.x2 - h.x1), Math.abs(h.y2 - h.y1));
+            }
+            // The arc can bow significantly beyond its endpoints (e.g. for near-vertical edges).
+            // Use Arc2D.getBounds2D() which computes the exact tight bounding box of the arc,
+            // accounting for any cardinal-angle extrema the sweep passes through.
+            final Rectangle2D bounds = new Arc2D.Double(
+                h.bbx, h.bby, h.bbw, h.bbh, h.astart, h.asweep, Arc2D.OPEN).getBounds2D();
+            return new CanvasSize(
+                (float) bounds.getX(), (float) bounds.getY(),
+                (float) bounds.getWidth(), (float) bounds.getHeight());
         }
 
         private static class Helper {
@@ -679,8 +705,8 @@ public class EdgeRenderer implements Renderer {
                     Double targetOffset = this.computeTruncateAngle(r, (double) targetRadius, (double) arcAngle);
                     angle2 += targetOffset;
 
-                    x2WithRadius = (float)(r*Math.cos(angle2) + xc);
-                    y2WithRadius = (float)(r*Math.sin(angle2) + yc);
+                    x2WithRadius = (float) (r * Math.cos(angle2) + xc);
+                    y2WithRadius = (float) (r * Math.sin(angle2) + yc);
                 } else {
                     x2WithRadius = x2;
                     y2WithRadius = y2;
@@ -693,8 +719,8 @@ public class EdgeRenderer implements Renderer {
                     Double sourceOffset = this.computeTruncateAngle(r, (double) sourceRadius, (double) arcAngle);
                     angle1 -= sourceOffset;
 
-                    x1WithRadius = (float)(r*Math.cos(angle1) + xc);
-                    y1WithRadius = (float)(r*Math.sin(angle1) + yc);
+                    x1WithRadius = (float) (r * Math.cos(angle1) + xc);
+                    y1WithRadius = (float) (r * Math.sin(angle1) + yc);
                 } else {
                     x1WithRadius = x1;
                     y1WithRadius = y1;
@@ -716,7 +742,8 @@ public class EdgeRenderer implements Renderer {
                 }
             }
 
-            private Double computeTruncateAngle(Double radius_curvature_edge, Double truncature_length, Double arc_angle) {
+            private Double computeTruncateAngle(Double radius_curvature_edge, Double truncature_length,
+                                                Double arc_angle) {
                 // The edge is an arc of a circle.
                 // We want to truncate that arc so that truncated part has a chord of a given length.
                 // i.e. not the length along the arc, but as a straight segment (like the string of a bow)
@@ -740,8 +767,7 @@ public class EdgeRenderer implements Renderer {
 
     private static class SelfLoopEdgeRenderer {
 
-        public static final String ID = "SelfLoopEdge";
-
+        // Bezier kappa constant for approximating a circle with 4 cubic segments
         public void render(
             final Item item,
             final RenderTarget target,
@@ -752,43 +778,84 @@ public class EdgeRenderer implements Renderer {
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
-                    getThickness(item),
-                    BasicStroke.CAP_BUTT,
-                    BasicStroke.JOIN_MITER));
+                    h.strokeWidth,
+                    BasicStroke.CAP_ROUND,
+                    BasicStroke.JOIN_ROUND));
                 graphics.setColor(color);
-                final GeneralPath gp
-                    = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-                gp.moveTo(h.x, h.y);
-                gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y);
-                graphics.draw(gp);
+                if (h.fullCircle) {
+                    graphics.draw(new Ellipse2D.Float(
+                        h.cx - h.loopRadius, h.cy - h.loopRadius,
+                        2 * h.loopRadius, 2 * h.loopRadius));
+                } else {
+                    // Partial arc: endpoints touch the node circle.
+                    // CAP_ROUND extends the stroke by strokeWidth/2 beyond each endpoint,
+                    // visually hiding the gap between the arc and the node.
+                    // arcExtent is negative = CW on screen (outer arc, away from node).
+                    graphics.draw(new Arc2D.Float(
+                        h.cx - h.loopRadius, h.cy - h.loopRadius,
+                        2 * h.loopRadius, 2 * h.loopRadius,
+                        h.arcStart, h.arcExtent, Arc2D.OPEN));
+                }
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
+                final Element selfLoopElem;
 
-                final Element selfLoopElem = svgTarget.createElement("path");
-                selfLoopElem.setAttribute("d", String.format(
-                    Locale.ENGLISH,
-                    "M %f,%f C %f,%f %f,%f %f,%f",
-                    h.x, h.y, h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y));
+                if (h.fullCircle) {
+                    selfLoopElem = svgTarget.createElement("circle");
+                    selfLoopElem.setAttribute("cx", String.format(Locale.ENGLISH, "%f", h.cx));
+                    selfLoopElem.setAttribute("cy", String.format(Locale.ENGLISH, "%f", h.cy));
+                    selfLoopElem.setAttribute("r", String.format(Locale.ENGLISH, "%f", h.loopRadius));
+                } else {
+                    // SVG arc: M startPoint A rx,ry 0 largeArcFlag,sweep endPoint
+                    // sweep=1 = CW in SVG (y+ down) = CW on screen = outer arc direction.
+                    // stroke-linecap="round" visually bridges the gap into the node,
+                    // matching G2D's CAP_ROUND behaviour.
+                    selfLoopElem = svgTarget.createElement("path");
+                    selfLoopElem.setAttribute("d", String.format(Locale.ENGLISH,
+                        "M %f,%f A %f,%f 0 %d,1 %f,%f",
+                        h.svgSx, h.svgSy,
+                        h.loopRadius, h.loopRadius,
+                        h.svgLargeArcFlag,
+                        h.svgEx, h.svgEy));
+                    selfLoopElem.setAttribute("stroke-linecap", "round");
+                }
                 selfLoopElem.setAttribute("class", SVGUtils.idAsClassAttribute(h.node.getId()));
-                selfLoopElem.setAttribute(
-                    "stroke",
-                    svgTarget.toHexString(color));
-                selfLoopElem.setAttribute(
-                    "stroke-opacity",
-                    (color.getAlpha() / 255f) + "");
-                selfLoopElem.setAttribute("stroke-width", Float.toString(
-                    getThickness(item) * svgTarget.getScaleRatio()));
+                selfLoopElem.setAttribute("stroke", svgTarget.toHexString(color));
+                selfLoopElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
+                selfLoopElem.setAttribute("stroke-width",
+                    Float.toString(h.strokeWidth * svgTarget.getScaleRatio()));
                 selfLoopElem.setAttribute("fill", "none");
-                svgTarget.getTopElement(SVGTarget.TOP_EDGES)
-                    .appendChild(selfLoopElem);
+                svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(selfLoopElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PDPageContentStream cb = pdfTarget.getContentStream();
                 try {
-                    cb.moveTo(h.x, -h.y);
-                    cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
+                    // PDF uses y+ up, so negate y relative to Preview/G2D coordinates.
+                    final float pdfCx = h.cx;
+                    final float pdfCy = -h.cy;
+                    final float r = h.loopRadius;
+
+                    if (h.fullCircle) {
+                        // Full circle: 4-segment bezier approximation (kappa = 0.5523)
+                        final float k = 0.5523f * r;
+                        cb.moveTo(pdfCx + r, pdfCy);
+                        cb.curveTo(pdfCx + r, pdfCy + k, pdfCx + k, pdfCy + r, pdfCx, pdfCy + r);
+                        cb.curveTo(pdfCx - k, pdfCy + r, pdfCx - r, pdfCy + k, pdfCx - r, pdfCy);
+                        cb.curveTo(pdfCx - r, pdfCy - k, pdfCx - k, pdfCy - r, pdfCx, pdfCy - r);
+                        cb.curveTo(pdfCx + k, pdfCy - r, pdfCx + r, pdfCy - k, pdfCx + r, pdfCy);
+                        cb.closePath();
+                    } else {
+                        // Partial arc: arc endpoints are already extended into the node (capExt
+                        // baked into pdfArcAlpha/pdfArcBeta in Helper), so round caps are hidden.
+                        cb.moveTo(pdfCx + r * (float) Math.cos(h.pdfArcAlpha),
+                            pdfCy + r * (float) Math.sin(h.pdfArcAlpha));
+                        appendCWArcPDF(cb, pdfCx, pdfCy, r, h.pdfArcAlpha, h.pdfArcBeta);
+                    }
+
                     cb.setStrokingColor(color);
-                    cb.setLineWidth(getThickness(item));
+                    cb.setLineWidth(h.strokeWidth);
+                    cb.setLineJoinStyle(1); // round
+                    cb.setLineCapStyle(1);  // round
                     if (color.getAlpha() < 255) {
                         PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
                         graphicsState.setStrokingAlphaConstant(color.getAlpha() / 255f);
@@ -805,38 +872,142 @@ public class EdgeRenderer implements Renderer {
             }
         }
 
+        /**
+         * Appends a clockwise arc in PDF coordinate space (y+ up) using cubic bezier approximation.
+         * Splits into ≤90° segments for accuracy.
+         * CW direction = decreasing angle, so {@code startAngle > endAngle}.
+         */
+        private static void appendCWArcPDF(final PDPageContentStream cb,
+                                           final float cx, final float cy, final float r,
+                                           final float startAngle, final float endAngle)
+            throws IOException {
+            final float span = startAngle - endAngle; // positive for CW
+            final int nSegments = Math.max(1, (int) Math.ceil(span / (Math.PI / 2)));
+            final float segSpan = span / nSegments;
+
+            float angle = startAngle;
+            for (int i = 0; i < nSegments; i++) {
+                final float next = angle - segSpan;
+                final float k = (4f / 3f) * (float) Math.tan(segSpan / 4f);
+                final float cosA = (float) Math.cos(angle), sinA = (float) Math.sin(angle);
+                final float cosB = (float) Math.cos(next), sinB = (float) Math.sin(next);
+                // CW tangent at angle a: (sin a, −cos a); at b: (sin b, −cos b)
+                cb.curveTo(
+                    cx + r * (cosA + k * sinA), cy + r * (sinA - k * cosA),
+                    cx + r * (cosB - k * sinB), cy + r * (sinB + k * cosB),
+                    cx + r * cosB, cy + r * sinB);
+                angle = next;
+            }
+        }
+
         public CanvasSize getCanvasSize(
             final Item item,
             final PreviewProperties properties) {
             final Helper h = new Helper(item);
-            final float minX = Math.min(Math.min(h.x, h.v1.x), h.v2.x);
-            final float minY = Math.min(Math.min(h.y, h.v1.y), h.v2.y);
-            final float maxX = Math.max(Math.max(h.x, h.v1.x), h.v2.x);
-            final float maxY = Math.max(Math.max(h.y, h.v1.y), h.v2.y);
-            return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+            final float halfStroke = h.strokeWidth / 2f;
+            final float extent = h.loopRadius + halfStroke;
+            return new CanvasSize(h.cx - extent, h.cy - extent, 2 * extent, 2 * extent);
         }
 
         private static class Helper {
 
-            public final Float x;
-            public final Float y;
+            public final float x;
+            public final float y;
             public final Node node;
-            public final Vector v1;
-            public final Vector v2;
+            // Loop circle center in Preview/G2D coordinates (y+ down):
+            // placed upper-right of node to match VisualizationEngine's selfloop shader
+            public final float cx;
+            public final float cy;
+            public final float loopRadius;
+            public final float strokeWidth;
+
+            // true when the loop and node circles don't intersect: fall back to full circle
+            public final boolean fullCircle;
+            // G2D Arc2D parameters (valid when !fullCircle):
+            //   arcExtent is negative = CW on screen = outer arc (away from node)
+            public final float arcStart;
+            public final float arcExtent;
+            // SVG arc: start/end points on loop circle, and large-arc flag
+            public final float svgSx, svgSy;
+            public final float svgEx, svgEy;
+            public final int svgLargeArcFlag; // 0 if arc < 180°, 1 if >= 180°
+            // PDF arc angles in PDF y+ up convention; CW = decreasing, pdfArcAlpha > pdfArcBeta
+            public final float pdfArcAlpha;
+            public final float pdfArcBeta;
 
             public Helper(final Item item) {
                 node = ((Edge) item.getSource()).getSource();
 
-                Item nodeSource = item.getData(SOURCE);
+                final Item nodeSource = item.getData(SOURCE);
                 x = nodeSource.getData(NodeItem.X);
                 y = nodeSource.getData(NodeItem.Y);
-                Float size = nodeSource.getData(NodeItem.SIZE);
+                // loopRadius was precomputed in preProcess (shader formula):
+                //   loopRadius = nodeRadius * 0.5 + strokeWidth * 0.33
+                loopRadius = item.getData(SOURCE_RADIUS);
+                strokeWidth = getThickness(item) * STROKE_MULTIPLIER;
+                // Circle center: upper-right in screen space.
+                // In Preview (y+ down), "up" = negative y direction.
+                cx = x + loopRadius;
+                cy = y - loopRadius;
 
-                v1 = new Vector(x, y);
-                v1.add(size, -size);
+                // ── Compute intersection of the loop circle with the node circle ──────────────
+                //
+                // A point on the loop circle at angle θ (G2D atan2, y+ down):
+                //   P = (cx + R·cos θ,  cy + R·sin θ)
+                //     = (nx + R·(1 + cos θ),  ny − R·(1 − sin θ))
+                //
+                // Substituting into X² + Y² = nodeRadius² and simplifying:
+                //   cos θ − sin θ = C,   C = (nodeRadius² − 3·R²) / (2·R²)
+                //
+                // Identity:  cos θ − sin θ = √2·cos(θ + π/4)
+                //   ⟹  θ = −π/4 ± arccos(C / √2)
+                //
+                // Outer arc (away from node): θ₂ → θ₁ clockwise on screen,
+                // spanning 2·arccos(C/√2) degrees.
+                final Float nodeRadiusData = item.getData(SELF_LOOP_NODE_RADIUS);
+                final float nodeRadius = nodeRadiusData != null ? nodeRadiusData : loopRadius;
+                final float R = loopRadius;
 
-                v2 = new Vector(x, y);
-                v2.add(size, size);
+                final float C = (nodeRadius * nodeRadius - 3 * R * R) / (2 * R * R);
+                final float cosArg = C / (float) Math.sqrt(2);
+
+                if (Math.abs(cosArg) > 1f) {
+                    // No intersection: fall back to full circle
+                    fullCircle = true;
+                    arcStart = arcExtent = 0;
+                    svgSx = svgSy = svgEx = svgEy = 0;
+                    svgLargeArcFlag = 0;
+                    pdfArcAlpha = pdfArcBeta = 0;
+                } else {
+                    fullCircle = false;
+                    final float alpha = (float) Math.acos(cosArg);
+                    final float theta1 = (float) (-Math.PI / 4) + alpha; // arc end   (lower-right)
+                    final float theta2 = (float) (-Math.PI / 4) - alpha; // arc start (upper-left)
+
+                    // Extend arc endpoints slightly into the node so that the round stroke caps
+                    // are fully hidden behind the node boundary in all renderers (G2D, SVG, PDF).
+                    // arcsin(strokeWidth/2 / R) is the angle whose chord equals the stroke half-width.
+                    final float capExt = (float) Math.asin(Math.min(1f, strokeWidth / (2 * R)));
+                    final float extTheta1 = theta1 + capExt; // extend arc end further CW
+                    final float extTheta2 = theta2 - capExt; // extend arc start further CCW
+
+                    // G2D Arc2D: negate atan2 angle → Arc2D convention (y+ up math).
+                    // Negative extent = CW on screen.
+                    arcStart = -(float) Math.toDegrees(extTheta2);
+                    arcExtent = -(float) Math.toDegrees(extTheta1 - extTheta2);
+
+                    // SVG arc endpoints (using extended angles)
+                    svgSx = cx + R * (float) Math.cos(extTheta2);
+                    svgSy = cy + R * (float) Math.sin(extTheta2);
+                    svgEx = cx + R * (float) Math.cos(extTheta1);
+                    svgEy = cy + R * (float) Math.sin(extTheta1);
+                    svgLargeArcFlag = (extTheta1 - extTheta2 >= Math.PI) ? 1 : 0;
+
+                    // PDF: y-flip maps G2D atan2 angle θ → PDF angle −θ.
+                    // CW in PDF = decreasing angle → pdfArcAlpha > pdfArcBeta.
+                    pdfArcAlpha = -extTheta2; // start (larger angle)
+                    pdfArcBeta = -extTheta1;  // end (smaller angle)
+                }
             }
         }
     }

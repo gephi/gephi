@@ -45,6 +45,7 @@ package org.gephi.layout.plugin.forceAtlas2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -153,6 +154,7 @@ public class ForceAtlas2 implements Layout {
     private int currentThreadCount;
     private Region rootRegion;
     private ExecutorService pool;
+    private long initialisationSeed = new Random().nextLong();
 
     public ForceAtlas2(ForceAtlas2Builder layoutBuilder) {
         this.layoutBuilder = layoutBuilder;
@@ -193,7 +195,7 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void initAlgo() {
-        AbstractLayout.ensureSafeLayoutNodePositions(graphModel);
+        AbstractLayout.ensureSafeLayoutNodePositions(graphModel, initialisationSeed);
 
         speed = 1.;
         speedEfficiency = 1.;
@@ -795,5 +797,9 @@ public class ForceAtlas2 implements Layout {
 
     public void setBarnesHutOptimize(Boolean barnesHutOptimize) {
         this.barnesHutOptimize = barnesHutOptimize;
+    }
+
+    public void setInitialisationSeed(long initialisationSeed) {
+        this.initialisationSeed = initialisationSeed;
     }
 }

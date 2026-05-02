@@ -133,7 +133,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         showReportButton = new javax.swing.JButton();
 
         configurePieChartButton.setIcon(
-            ImageUtilities.loadImageIcon("DataLaboratoryPlugin/category.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DataLaboratoryPlugin/category.svg", false)); // NOI18N
         configurePieChartButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class,
             "ColumnValuesFrequencyUI.configurePieChartButton.text")); // NOI18N
         configurePieChartButton.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +143,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
             }
         });
 
-        showReportButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/application-block.png", false)); // NOI18N
+        showReportButton.setIcon(ImageUtilities.loadImageIcon("DataLaboratoryPlugin/application-block.svg", false)); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle
             .getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {

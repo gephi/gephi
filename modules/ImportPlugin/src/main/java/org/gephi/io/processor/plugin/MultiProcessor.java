@@ -42,10 +42,11 @@
 
 package org.gephi.io.processor.plugin;
 
+import java.util.Arrays;
 import org.gephi.graph.api.Configuration;
-import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -61,11 +62,11 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(MergeProcessor.class, "MultiProcessor.displayName");
+        return NbBundle.getMessage(MultiProcessor.class, "MultiProcessor.displayName");
     }
 
     @Override
-    public void process() {
+    public Workspace[] process() {
         try {
             if (containers.length <= 1) {
                 throw new RuntimeException("This processor can only handle multiple containers");
@@ -74,20 +75,31 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
             Progress.start(progressTicket, calculateWorkUnits());
-            for (ContainerUnloader container : containers) {
+            Workspace[] workspaces = Arrays.stream(containers).map(container -> {
                 Configuration config = createConfiguration(container);
-                if (workspace != null && configurationMatchesExisting(config, workspace)) {
-                    pc.openWorkspace(workspace);
-                } else {
-                    workspace = pc.newWorkspace(pc.getCurrentProject(), config);
-                }
+                workspace = pc.openNewWorkspace(config);
                 processMeta(container, workspace);
                 process(container, workspace);
-                workspace = null;
-            }
+
+                if (container.getSource() != null && !container.getSource().isEmpty()) {
+                    pc.setSource(workspace, container.getSource());
+
+                    // Remove extensions
+                    pc.renameWorkspace(workspace, container.getSource().replaceAll("(?<!^)[.].*", ""));
+                }
+
+                Progress.progress(progressTicket);
+                return workspace;
+            }).toArray(Workspace[]::new);
             Progress.finish(progressTicket);
+            return workspaces;
         } finally {
             clean();
         }
+    }
+
+    @Override
+    public void setWorkspace(Workspace workspace) {
+        throw new UnsupportedOperationException("This processor does not support setting the workspace");
     }
 }

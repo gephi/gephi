@@ -46,6 +46,7 @@ import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
@@ -154,6 +155,11 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     @Override
     public Iterable<ColumnDraft> getColumns() {
         return container.getEdgeColumns();
+    }
+
+    @Override
+    String getElementClassName() {
+        return NbBundle.getMessage(EdgeDraftImpl.class, "ElementClassName.Edge");
     }
 
     @Override

@@ -45,7 +45,6 @@ package org.gephi.datalab.plugin.manipulators.edges;
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -109,6 +108,6 @@ public class SelectOnGraph extends BasicEdgesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DataLaboratoryPlugin/magnifier--arrow.png", false);
+            .loadImageIcon("DataLaboratoryPlugin/magnifier--arrow.svg", false);
     }
 }

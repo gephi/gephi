@@ -111,6 +111,10 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
         fireChangeEvent(WorkspaceInformation.EVENT_CLOSE, oldValue, status);
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public void invalid() {
         this.status = Status.INVALID;
     }

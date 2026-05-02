@@ -60,6 +60,11 @@ public abstract class Interpolator {
         public float interpolate(float x) {
             return x;
         }
+
+        @Override
+        public String toString() {
+            return "LINEAR";
+        }
     };
     /**
      * Log2 interpolation
@@ -70,7 +75,46 @@ public abstract class Interpolator {
         public float interpolate(float x) {
             return (float) (Math.log(1 + x) / Math.log(2));
         }
+
+        @Override
+        public String toString() {
+            return "LOG2";
+        }
     };
+
+    /**
+     * Deserializes an interpolator from its string representation, as produced
+     * by {@link #toString()}.
+     * <p>
+     * Recognized formats:
+     * <ul>
+     *   <li>{@code "LINEAR"} → {@link #LINEAR}</li>
+     *   <li>{@code "LOG2"} → {@link #LOG2}</li>
+     *   <li>{@code "BEZIER:x1,y1,x2,y2"} → {@link BezierInterpolator}</li>
+     * </ul>
+     * Returns {@link #LINEAR} for any unrecognized or malformed input.
+     *
+     * @param s serialized string, may be null
+     * @return corresponding interpolator, never null
+     */
+    public static Interpolator fromString(String s) {
+        if (s == null || s.isEmpty() || "LINEAR".equals(s)) {
+            return LINEAR;
+        }
+        if ("LOG2".equals(s)) {
+            return LOG2;
+        }
+        if (s.startsWith("BEZIER:")) {
+            try {
+                String[] parts = s.substring(7).split(",");
+                return new BezierInterpolator(
+                    Float.parseFloat(parts[0]), Float.parseFloat(parts[1]),
+                    Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+            } catch (Exception ignored) {
+            }
+        }
+        return LINEAR;
+    }
 
     /**
      * Builds a bezier interpolator with two control points (px1, py1) and (px2,
@@ -318,6 +362,11 @@ public abstract class Interpolator {
             }
 
             return t;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("BEZIER:%s,%s,%s,%s", x1, y1, x2, y2);
         }
 
         @Override

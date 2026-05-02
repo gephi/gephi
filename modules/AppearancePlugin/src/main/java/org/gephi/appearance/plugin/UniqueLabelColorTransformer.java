@@ -56,7 +56,6 @@ public class UniqueLabelColorTransformer extends AbstractUniqueColorTransformer 
     @Override
     public void transform(Element element) {
         element.getTextProperties().setColor(color);
-        element.getTextProperties().setAlpha(1f);
     }
 
     @Override

@@ -123,4 +123,28 @@ public class ElementDraftTest {
         edge.parseAndSetValue("foo", null);
         Assert.assertNull(edge.getValue("foo"));
     }
+
+    // Bug fix: parseAndSetValue variants were calling getColumn(key) which returns
+    // null for undeclared columns, then dereferencing it without a null check (NPE).
+    @Test
+    public void testParseAndSetValueMissingColumn() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        // "unknown" column was never registered — must log SEVERE, not throw NPE
+        edge.parseAndSetValue("unknown", "value");
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.SEVERE, "unknown");
+    }
+
+    @Test
+    public void testParseAndSetValueMissingColumnTimestamp() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.parseAndSetValue("unknown", "value", 1.0);
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.SEVERE, "unknown");
+    }
+
+    @Test
+    public void testParseAndSetValueMissingColumnInterval() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(new ImportContainerImpl(), "0");
+        edge.parseAndSetValue("unknown", "value", 1.0, 2.0);
+        Utils.assertContainerIssues(edge.container.getReport(), Issue.Level.SEVERE, "unknown");
+    }
 }

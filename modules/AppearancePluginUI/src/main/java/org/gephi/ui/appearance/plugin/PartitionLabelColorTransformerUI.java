@@ -101,6 +101,13 @@ public class PartitionLabelColorTransformerUI implements TransformerUI {
     }
 
     @Override
+    public synchronized void onApply(Function function) {
+        if (panel != null) {
+            panel.saveCurrentPaletteAsRecent();
+        }
+    }
+
+    @Override
     public Class<? extends PartitionTransformer> getTransformerClass() {
         return PartitionLabelColorTransformer.class;
     }

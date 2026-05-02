@@ -134,10 +134,10 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platform version -->
-        <netbeans.version>RELEASE220</netbeans.version>
+        <netbeans.version>RELEASE290</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.7.1</graphstore.version>
+        <graphstore.version>0.8.5</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -149,7 +149,7 @@
         <gephi.minor.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}</gephi.minor.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.release>11</gephi.javac.release>
+        <gephi.javac.release>17</gephi.javac.release>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
         <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
         <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
@@ -187,10 +187,6 @@
         <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
         <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>
         
-        <!-- Repository URLs -->
-        <gephi.ossrh.repository.id>ossrh</gephi.ossrh.repository.id>
-        <gephi.ossrh.repository.url>https://oss.sonatype.org/content/repositories/snapshots</gephi.ossrh.repository.url>
-        
         <!-- SCM -->
         <gephi.scm>git</gephi.scm>
         
@@ -205,15 +201,16 @@
         <gephi.apple.notarization.username/>
         <gephi.apple.notarization.password/>
         <gephi.apple.notarization.teamId/>
-        <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
+        <gephi.apple.notarization.timeout>15m</gephi.apple.notarization.timeout>
 
         <!-- Windows signing settings -->
-        <gephi.windows.codesign.keystore>codesign.pfx</gephi.windows.codesign.keystore>
+        <gephi.windows.codesign.username/>
         <gephi.windows.codesign.password/>
+        <gephi.windows.codesign.totp/>
         
         <!--==== Dependency Versions ==================================================================================-->
         
-        <gephi.sentry.version>5.7.3</gephi.sentry.version>
+        <gephi.sentry.version>8.40.0</gephi.sentry.version>
         
         <!--==== Plugin Versions ==================================================================================-->
 
@@ -233,7 +230,7 @@
 
         <gephi.maven-gpg-plugin.version>3.0.1</gephi.maven-gpg-plugin.version>
 
-        <gephi.maven-install-plugin.version>3.1.2</gephi.maven-install-plugin.version>
+        <gephi.maven-install-plugin.version>3.1.4</gephi.maven-install-plugin.version>
 
         <gephi.maven-jar-plugin.version>3.4.1</gephi.maven-jar-plugin.version>
 
@@ -245,7 +242,7 @@
 
         <gephi.maven-release-plugin.version>3.0.1</gephi.maven-release-plugin.version>
 
-        <gephi.maven-resources-plugin.version>3.3.1</gephi.maven-resources-plugin.version>
+        <gephi.maven-resources-plugin.version>3.5.0</gephi.maven-resources-plugin.version>
 
         <gephi.maven-site-plugin.version>3.12.1</gephi.maven-site-plugin.version>
 
@@ -255,28 +252,25 @@
 
         <gephi.build-helper-maven-plugin.version>3.6.0</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>14.3</gephi.nbm-maven-plugin.version>
         
         <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
-        <gephi.nexus-staging-maven-plugin.version>1.7.0</gephi.nexus-staging-maven-plugin.version>
+        <gephi.central-publishing-maven-plugin.version>0.10.0</gephi.central-publishing-maven-plugin.version>
         
         <gephi.scm-publish-plugin.version>3.2.1</gephi.scm-publish-plugin.version>
         
-        <gephi.versions-maven-plugin.version>2.16.2</gephi.versions-maven-plugin.version>
+        <gephi.versions-maven-plugin.version>2.21.0</gephi.versions-maven-plugin.version>
 
         <gephi.maven-checkstyle-plugin.version>3.4.0</gephi.maven-checkstyle-plugin.version>
 
-        <gephi.jsign.version>6.0</gephi.jsign.version>
+        <gephi.jsign.version>7.4</gephi.jsign.version>
 
         <gephi.checkstyle.version>10.17.0</gephi.checkstyle.version>
+
+        <gephi.jcp-maven-plugin.version>7.1.2</gephi.jcp-maven-plugin.version>
     </properties>
     
-    <!-- Maven required version -->
-    <prerequisites>
-        <maven>${gephi.maven.requiredVersion}</maven>
-    </prerequisites>
- 
     <!-- Repositories -->
     <repositories>
         <repository>
@@ -287,14 +281,6 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <!-- Locations of the artifacts published -->
-    <distributionManagement>
-        <snapshotRepository>
-            <id>${gephi.ossrh.repository.id}</id>
-            <url>${gephi.ossrh.repository.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
     
     <!-- List all dependencies with versions so it can be used in child POMs 
     without explicit versions -->
@@ -400,6 +386,11 @@
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-io</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.modules</groupId>
+                <artifactId>org-netbeans-core</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>
@@ -559,6 +550,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>visualization-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>tools-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -714,11 +710,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-tools</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-timeline</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -750,6 +741,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-search</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-attributes</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -853,6 +849,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${gephi.maven-enforcer-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${gephi.maven-release-plugin.version}</version>
                 </plugin>
@@ -917,9 +918,9 @@
                     <version>${gephi.maven-site-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${gephi.nexus-staging-maven-plugin.version}</version>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${gephi.central-publishing-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -943,12 +944,38 @@
                     <artifactId>jsign-maven-plugin</artifactId>
                     <version>${gephi.jsign.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.igormaznitsa</groupId>
+                    <artifactId>jcp</artifactId>
+                    <version>${gephi.jcp-maven-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         
         <!-- Plugins configuration ===============================================================-->
         
         <plugins>
+
+            <!-- Enforce minimum Maven version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${gephi.maven.requiredVersion}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Compiler -->
             <plugin>
@@ -969,7 +996,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
                     <trimStackTrace>false</trimStackTrace>                                                              
                 </configuration>
             </plugin>
@@ -1086,7 +1113,6 @@
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                     <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                    <encoding>UTF-8</encoding>
                     <failsOnError>true</failsOnError>
                     <consoleOutput>false</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -1109,9 +1135,9 @@
     <!-- Profiles -->
     <profiles>
 
-        <!-- Profile to enable tests (disabled by default in non-deployment) -->
+        <!-- Profile to skip tests -->
         <profile>
-            <id>enableTests</id>
+            <id>skipTests</id>
             
             <build>
                 <plugins>
@@ -1119,7 +1145,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <skipTests>false</skipTests>
+                            <skipTests>true</skipTests>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1193,15 +1219,6 @@
 
             <build>
                 <plugins>
-                    <!-- Enable tests -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                        </configuration>
-                    </plugin>
-
                     <!-- Enable checkstyle -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -1210,19 +1227,17 @@
                             <skip>false</skip>
                         </configuration>
                     </plugin>
-				
-                    <!-- Nexus staging, https://oss.sonatype.org/ -->
+
+                    <!-- Maven central -->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                            <!-- The create-modules profile overrides this -->
-                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-                            <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
+                            <deploymentName>${project.version}</deploymentName>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1274,7 +1289,7 @@
                             <detectOfflineLinks>true</detectOfflineLinks>   
                             <quiet>false</quiet>
                             <doclint>none</doclint>
-                            <source>11</source>
+                            <source>17</source>
                         </configuration>
                         <executions>
                             <execution> 
@@ -1295,7 +1310,7 @@
                                 <configuration>
                                     <show>public</show>
                                     <doctitle>Gephi ${project.version} API Index</doctitle>
-                                    <subpackages>org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.api.types:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                    <subpackages>org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.api.types:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress:org.gephi.visualization.api:org.gephi.visualization.spi</subpackages>
                                     <nohelp>true</nohelp>
                                     <detectLinks>false</detectLinks>
                                     <detectOfflineLinks>true</detectOfflineLinks>
@@ -1314,13 +1329,7 @@
             <build>
                 <plugins>
                     <!-- Enable artifact deploy -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <configuration>
-                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
-                        </configuration>
-                    </plugin>
+                    <!-- Not needed anymore after the migration from the nexus to the central maven plugin, but will keep the goal for now -->
                 </plugins>
             </build>
         </profile>
@@ -1394,7 +1403,6 @@
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopStatistics</module>
-        <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
@@ -1431,11 +1439,13 @@
         <module>modules/Utils</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
+        <module>modules/VisualizationEngine</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
         <module>modules/DesktopIcons</module>
         <module>modules/DesktopSearch</module>
+        <module>modules/DesktopAttributes</module>
     </modules>
 </project>

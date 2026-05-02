@@ -329,7 +329,8 @@ public class MemoryStarvationManager implements NotificationListener {
 
     private void freeSomeMemory() {
         //Stop Graphics engine and free all elements models. Should be enough
-        VizController.getInstance().destroy();
+        // TODO fix
+//        VizController.getInstance().destroy();
     }
 
     private boolean canRestart() {

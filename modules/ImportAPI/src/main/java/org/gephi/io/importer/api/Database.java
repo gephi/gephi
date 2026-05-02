@@ -52,33 +52,108 @@ import org.gephi.io.database.drivers.SQLDriver;
  */
 public interface Database extends Serializable {
 
+    /**
+     * Returns the name of this database connection configuration.
+     *
+     * @return connection name
+     */
     String getName();
 
+    /**
+     * Sets the name of this database connection configuration.
+     *
+     * @param name connection name
+     */
     void setName(String name);
 
+    /**
+     * Returns the SQL driver used for this database connection.
+     *
+     * @return SQL driver
+     */
     SQLDriver getSQLDriver();
 
+    /**
+     * Sets the SQL driver used for this database connection.
+     *
+     * @param driver SQL driver
+     */
     void setSQLDriver(SQLDriver driver);
 
+    /**
+     * Returns the database server host name or IP address.
+     *
+     * @return host
+     */
     String getHost();
 
+    /**
+     * Sets the database server host name or IP address.
+     *
+     * @param host host name or IP address
+     */
     void setHost(String host);
 
+    /**
+     * Returns the database server port number.
+     *
+     * @return port number
+     */
     int getPort();
 
+    /**
+     * Sets the database server port number.
+     *
+     * @param port port number
+     */
     void setPort(int port);
 
+    /**
+     * Returns the username used for authentication.
+     *
+     * @return username
+     */
     String getUsername();
 
+    /**
+     * Sets the username used for authentication.
+     *
+     * @param username username
+     */
     void setUsername(String username);
 
+    /**
+     * Returns the password used for authentication.
+     *
+     * @return password
+     */
     String getPasswd();
 
+    /**
+     * Sets the password used for authentication.
+     *
+     * @param passwd password
+     */
     void setPasswd(String passwd);
 
+    /**
+     * Returns the name of the target database (schema) on the server.
+     *
+     * @return database name
+     */
     String getDBName();
 
+    /**
+     * Sets the name of the target database (schema) on the server.
+     *
+     * @param dbName database name
+     */
     void setDBName(String dbName);
 
+    /**
+     * Returns the column-to-property associations configured for this database.
+     *
+     * @return properties associations
+     */
     PropertiesAssociations getPropertiesAssociations();
 }

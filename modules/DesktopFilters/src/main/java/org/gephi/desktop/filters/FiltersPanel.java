@@ -57,6 +57,11 @@ import org.gephi.desktop.filters.query.QueryExplorer;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -78,6 +83,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private FilterModel filterModel;
     private FilterUIModel uiModel;
     private QueryExplorer queriesExplorer;
+    private javax.swing.JButton resetLabelVisibleButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton exportColumnButton;
@@ -105,6 +111,14 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
             setBackground(UIManager.getColor("NbExplorerView.background"));
         }
+
+        resetLabelVisibleButton = new javax.swing.JButton();
+        resetLabelVisibleButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/resetLabelVisible.svg", false));
+        resetLabelVisibleButton.setToolTipText(NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.resetLabelVisible.toolTipText"));
+        resetLabelVisibleButton.setFocusable(false);
+        resetLabelVisibleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        resetLabelVisibleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(resetLabelVisibleButton);
 
         //Components
         queriesPanel = new QueriesPanel();
@@ -209,6 +223,21 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
+        resetLabelVisibleButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                GraphModel gm = gc.getGraphModel();
+                Graph graph = gm.getGraphVisible();
+                for (Node n : graph.getNodes()) {
+                    n.getTextProperties().setVisible(true);
+                }
+                for (Edge edge : graph.getEdges()) {
+                    edge.getTextProperties().setVisible(true);
+                }
+            }
+        });
 
         updateEnabled(false);
     }
@@ -231,20 +260,26 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }
 
     private void updateEnabled(final boolean enabled) {
+        final FilterUIModel currentUiModel = uiModel;
+        final FilterModel currentFilterModel = filterModel;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 resetButton.setEnabled(enabled);
-                selectButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
-                filterButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+                resetLabelVisibleButton.setEnabled(enabled);
+                selectButton.setEnabled(enabled && currentUiModel != null && currentUiModel.getSelectedQuery() != null);
+                filterButton.setEnabled(enabled && currentUiModel != null && currentUiModel.getSelectedQuery() != null);
                 /*autoRefreshButton.setEnabled(enabled);*/
                 exportColumnButton
-                    .setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
+                    .setEnabled(enabled && currentUiModel != null && currentUiModel.getSelectedQuery() != null
+                        && currentFilterModel != null && currentFilterModel.getCurrentQuery() != null);
                 exportWorkspaceButton
-                    .setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
+                    .setEnabled(enabled && currentUiModel != null && currentUiModel.getSelectedQuery() != null
+                        && currentFilterModel != null && currentFilterModel.getCurrentQuery() != null);
                 exportLabelVisible
-                    .setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
+                    .setEnabled(enabled && currentUiModel != null && currentUiModel.getSelectedQuery() != null
+                        && currentFilterModel != null && currentFilterModel.getCurrentQuery() != null);
             }
         });
     }
@@ -361,7 +396,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar.add(separator);
 
         exportColumnButton.setIcon(
-            ImageUtilities.loadImageIcon("DesktopFilters/table_export.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DesktopFilters/table_export.svg", false)); // NOI18N
         exportColumnButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.text")); // NOI18N
         exportColumnButton.setToolTipText(org.openide.util.NbBundle
@@ -371,7 +406,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportColumnButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportColumnButton);
 
-        exportWorkspaceButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/workspace_export.png", false)); // NOI18N
+        exportWorkspaceButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/workspace_export.svg", false)); // NOI18N
         exportWorkspaceButton.setText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.text")); // NOI18N
         exportWorkspaceButton.setToolTipText(org.openide.util.NbBundle
@@ -381,7 +416,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportWorkspaceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportWorkspaceButton);
 
-        exportLabelVisible.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/labelvisible_export.png", false)); // NOI18N
+        exportLabelVisible.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/labelvisible_export.svg", false)); // NOI18N
         exportLabelVisible.setToolTipText(org.openide.util.NbBundle
             .getMessage(FiltersPanel.class, "FiltersPanel.exportLabelVisible.toolTipText")); // NOI18N
         exportLabelVisible.setFocusable(false);
@@ -444,20 +479,19 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
 
-        selectButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/select.png", false)); // NOI18N
+        selectButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/select.svg", false)); // NOI18N
         selectButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.selectButton.text")); // NOI18N
         selectButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(selectButton);
 
-        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/filter.png", false)); // NOI18N
+        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/filter.svg", false)); // NOI18N
         filterButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.filterButton.text")); // NOI18N
-        filterButton.setFocusable(false);
         filterButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(filterButton);
 
-        stopButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/stop.png", false)); // NOI18N
+        stopButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/stop.svg", false)); // NOI18N
         stopButton.setText(
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.stopButton.text")); // NOI18N
         stopButton.setMargin(new java.awt.Insets(2, 7, 2, 14));

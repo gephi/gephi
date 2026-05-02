@@ -58,11 +58,16 @@ import java.util.Optional;
 import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
+import org.gephi.appearance.plugin.RankingElementColorTransformer;
+import org.gephi.appearance.plugin.RankingLabelColorTransformer;
+import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
+import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.desktop.appearance.options.AppearancePreferences;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.openide.util.Lookup;
@@ -100,6 +105,37 @@ public class AppearanceUIModel {
         //Init observers
         tableObserverExecutor = new TableObserverExecutor(this);
         functionObserverExecutor = new FunctionObserverExecutor(this);
+
+        //Apply preference defaults to transformers that have no saved properties yet
+        applyPreferenceDefaults();
+    }
+
+    private void applyPreferenceDefaults() {
+        float nodeMinSize = AppearancePreferences.getNodeRankingSizeMin();
+        float nodeMaxSize = AppearancePreferences.getNodeRankingSizeMax();
+        float labelMinSize = AppearancePreferences.getLabelRankingSizeMin();
+        float labelMaxSize = AppearancePreferences.getLabelRankingSizeMax();
+        Color[] elementColors = AppearancePreferences.getElementRankingColors();
+        float[] elementColorPositions = AppearancePreferences.getElementRankingColorPositions();
+        Color[] labelColors = AppearancePreferences.getLabelRankingColors();
+        float[] labelColorPositions = AppearancePreferences.getLabelRankingColorPositions();
+
+        for (Function func : appearanceModel.getNodeFunctions()) {
+            Transformer transformer = func.getTransformer();
+            if (transformer instanceof RankingNodeSizeTransformer) {
+                ((RankingNodeSizeTransformer) transformer).setMinSize(nodeMinSize);
+                ((RankingNodeSizeTransformer) transformer).setMaxSize(nodeMaxSize);
+            } else if (transformer instanceof RankingLabelSizeTransformer) {
+                ((RankingLabelSizeTransformer) transformer).setMinSize(labelMinSize);
+                ((RankingLabelSizeTransformer) transformer).setMaxSize(labelMaxSize);
+            } else if (transformer instanceof RankingLabelColorTransformer) {
+                ((RankingLabelColorTransformer) transformer).setColors(labelColors);
+                ((RankingLabelColorTransformer) transformer).setColorPositions(labelColorPositions);
+            } else if (transformer instanceof RankingElementColorTransformer) {
+                ((RankingElementColorTransformer) transformer).setColors(elementColors);
+                ((RankingElementColorTransformer) transformer).setColorPositions(elementColorPositions);
+            }
+        }
     }
 
     private void initSelectedTransformerUIs(String elementClass) {

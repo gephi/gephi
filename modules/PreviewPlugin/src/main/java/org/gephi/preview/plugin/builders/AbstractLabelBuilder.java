@@ -42,27 +42,6 @@
 
 package org.gephi.preview.plugin.builders;
 
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Element;
-import org.gephi.graph.api.GraphView;
+public abstract class AbstractLabelBuilder {
 
-public class AbstractLabelBuilder {
-
-    protected String getLabel(Element e, Column[] cols, GraphView view) {
-        StringBuilder str = new StringBuilder();
-        if (cols != null) {
-            int i = 0;
-            for (Column c : cols) {
-                if (i++ > 0) {
-                    str.append(" - ");
-                }
-                Object val = e.getAttribute(c, view);
-                str.append(val != null ? val : "");
-            }
-        }
-        if (str.length() == 0 && e.getLabel() != null) {
-            str = new StringBuilder(e.getLabel());
-        }
-        return str.toString();
-    }
 }

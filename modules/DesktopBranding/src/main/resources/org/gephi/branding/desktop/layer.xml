@@ -51,7 +51,9 @@
             <file name="org-netbeans-core-multiview-SplitAction.instance_hidden"/>
             <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
             <file name="org-netbeans-core-windows-actions-ToolbarsListAction.shadow_hidden"/>
-            <file name="org-netbeans-core-windows-actions-ToggleFullScreenAction.instance\position" intvalue="1000"/>
+            <file name="org-netbeans-core-windows-actions-ToggleFullScreenAction.instance">
+                <attr name="position" intvalue="1000"/>
+            </file>
         </folder>
         <folder name="Window">
             <file name="CloneDocumentAction.shadow_hidden"/>

@@ -76,6 +76,7 @@ import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
 import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorConfigurationException;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.project.api.Project;
@@ -86,6 +87,7 @@ import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -643,14 +645,6 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 final Processor processor = reportPanel.getProcessor();
                 processor.setProgressTicket(progressTicket);
 
-                //Project
-                Workspace workspace = null;
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                if (pc.getCurrentProject() == null) {
-                    Project project = pc.newProject();
-                    workspace = project.getCurrentWorkspace();
-                }
-
                 //Process
                 final ProcessorUI pui = getProcessorUI(processor);
                 final ValidResult validResult = new ValidResult();
@@ -683,7 +677,17 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 }
 
                 if (validResult.isResult()) {
-                    controller.process(containers.toArray(new Container[0]), processor, workspace);
+                    // We don't pre-create the workspace
+                    // This is now required because GraphModel's configuration needs to be final
+                    // at the time of creation, and therefore if we were to create a workspace now
+                    // it could have conflicting configuration
+                    try {
+                        controller.process(containers.toArray(new Container[0]), processor, null);
+                    } catch (ProcessorConfigurationException e) {
+                        // Configuration mismatch is already captured as a SEVERE issue in the processor report
+                    } finally {
+                        Progress.finish(progressTicket);
+                    }
 
                     Report report = processor.getReport();
                     if (report != null && !report.isEmpty()) {

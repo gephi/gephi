@@ -79,7 +79,6 @@ public interface GraphController {
      * @return a new configuration builder with default values
      */
     default Configuration.Builder getDefaultConfigurationBuilder() {
-        return Configuration.builder().timeRepresentation(TimeRepresentation.INTERVAL)
-            .enableSpatialIndex(true);
+        return Configuration.builder().timeRepresentation(TimeRepresentation.INTERVAL);
     }
 }

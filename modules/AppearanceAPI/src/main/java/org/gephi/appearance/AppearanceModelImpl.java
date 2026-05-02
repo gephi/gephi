@@ -68,6 +68,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.Model;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  * @author mbastian
@@ -95,10 +96,13 @@ public class AppearanceModelImpl implements AppearanceModel, Model {
     private final List<FunctionImpl> nodeStaticFunctions;
     private final List<FunctionImpl> edgeStaticFunctions;
     // LocalScale (if true, uses visible graph)
-    private boolean rankingLocalScale = false;
-    private boolean partitionLocalScale = false;
+    private boolean rankingLocalScale = NbPreferences.forModule(AppearanceModel.class)
+        .getBoolean("Appearance.rankingLocalScale", false);
+    private boolean partitionLocalScale = NbPreferences.forModule(AppearanceModel.class)
+        .getBoolean("Appearance.partitionLocalScale", false);
     // Null values settings
-    private boolean transformNullValues = false;
+    private boolean transformNullValues = NbPreferences.forModule(AppearanceModel.class)
+        .getBoolean("Appearance.transformNullValues", false);
 
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -378,7 +382,7 @@ public class AppearanceModelImpl implements AppearanceModel, Model {
         return res;
     }
 
-    private void initAttributeRankingsAndPartitions() {
+    protected void initAttributeRankingsAndPartitions() {
         for (Column column : graphModel.getNodeTable()) {
             if (!column.isProperty()) {
                 if (column.isNumber()) {

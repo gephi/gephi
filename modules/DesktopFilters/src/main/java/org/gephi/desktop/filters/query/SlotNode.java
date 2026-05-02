@@ -71,7 +71,7 @@ public class SlotNode extends AbstractNode {
     public SlotNode(Query parent) {
         super(Children.LEAF);
         this.parent = parent;
-        setIconBaseWithExtension("DesktopFilters/drop.png");
+        setIconBaseWithExtension("DesktopFilters/drop.svg");
         setShortDescription(NbBundle.getMessage(SlotNode.class, "SlotNode.description"));
     }
 

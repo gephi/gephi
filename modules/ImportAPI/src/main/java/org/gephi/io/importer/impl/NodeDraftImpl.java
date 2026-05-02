@@ -44,6 +44,7 @@ package org.gephi.io.importer.impl;
 
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.NodeDraft;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
@@ -143,6 +144,11 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     @Override
     public Iterable<ColumnDraft> getColumns() {
         return container.getNodeColumns();
+    }
+
+    @Override
+    String getElementClassName() {
+        return NbBundle.getMessage(NodeDraftImpl.class, "ElementClassName.Node");
     }
 
     @Override

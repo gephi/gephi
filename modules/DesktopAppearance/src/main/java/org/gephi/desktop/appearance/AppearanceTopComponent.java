@@ -75,9 +75,9 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.appearance//Appearance//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "AppearanceTopComponent",
-    iconBase = "org/gephi/desktop/appearance/resources/small.png",
+    iconBase = "DesktopAppearance/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"})
+@TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"}, position = 10)
 @ActionID(category = "Window", id = "org.gephi.desktop.appearance.AppearanceTopComponent")
 @ActionReference(path = "Menu/Window", position = 1100)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_AppearanceAction",
@@ -258,11 +258,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     }
 
     private void refreshCombo() {
-        if (model != null && model.getSelectedTransformerUI() != null &&
-            model.isAttributeTransformerUI(model.getSelectedTransformerUI())) {
+        final AppearanceUIModel currentModel = model;
+        if (currentModel != null && currentModel.getSelectedTransformerUI() != null &&
+            currentModel.isAttributeTransformerUI(currentModel.getSelectedTransformerUI())) {
 
 
-            final List<Function> rows = new ArrayList<>(model.getFunctions());
+            final List<Function> rows = new ArrayList<>(currentModel.getFunctions());
 
             Collections.sort(rows, (o1, o2) -> {
                 if (o1.isAttribute() && !o2.isAttribute()) {
@@ -277,7 +278,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 
                 //Ranking
-                Function selectedColumn = model.getSelectedFunction();
+                Function selectedColumn = currentModel.getSelectedFunction();
                 attibuteBox.removeItemListener(attributeListener);
 
                 comboBoxModel.addElement(NO_SELECTION);
@@ -607,7 +608,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         partitionLocalScaleButton.setFocusable(false);
         controlToolbar.add(partitionLocalScaleButton);
 
-        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.png", false)); // NOI18N
+        transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.svg", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N

@@ -152,6 +152,9 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
                 }
             }
         }
+
+        // Load saved properties
+        model.loadTransformerProperties();
     }
 
     private void readSelected(XMLStreamReader reader, AppearanceUIModel model) {

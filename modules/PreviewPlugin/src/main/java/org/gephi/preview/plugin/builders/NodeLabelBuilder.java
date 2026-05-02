@@ -42,21 +42,16 @@
 
 package org.gephi.preview.plugin.builders;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import org.gephi.graph.api.Column;
+import java.util.Objects;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
-import org.openide.util.Exceptions;
+import org.gephi.visualization.api.VisualizationModel;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -68,43 +63,31 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
 
     @Override
     public Item[] getItems(Graph graph) {
+        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
+
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        Workspace workspace = WorkspaceHelper.getWorkspace(graph);
-        Column[] nodeColumns = workspace != null && vizController != null ? vizController.getNodeTextColumns(workspace) : null;
+        VisualizationModel vizModel = vizController != null ? vizController.getModel(workspace) : null;
+        GraphView graphView = graph.getView();
 
-        List<Item> items = new ArrayList<>();
-        NodeIterable nodeIterable = graph.getNodes();
-        try {
-            for (Node n : nodeIterable) {
-                NodeLabelItem labelItem = new NodeLabelItem(n);
-                String label = getLabel(n, nodeColumns, graph.getView());
-                labelItem.setData(NodeLabelItem.LABEL, label);
+        return graph.getNodes().stream().map(
+            n -> {
                 TextProperties textData = n.getTextProperties();
-                if (textData != null) {
-                    if (textData.getR() != -1) {
-                        labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
-                            (int) (textData.getG() * 255),
-                            (int) (textData.getB() * 255),
-                            (int) (textData.getAlpha() * 255)));
-                    }
-//                labelItem.setData(NodeLabelItem.WIDTH, textData.getWidth());
-//                labelItem.setData(NodeLabelItem.HEIGHT, textData.getHeight());
-                    labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
-                    labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
+                if (textData != null && textData.isVisible()) {
+                    NodeLabelItem labelItem = new NodeLabelItem(n);
+                    String label = vizModel != null ? vizModel.getNodeLabel(n, graphView) : n.getLabel();
                     labelItem.setData(NodeLabelItem.LABEL, label);
-                    if (textData.isVisible() && !label.isEmpty()) {
-                        items.add(labelItem);
+
+                    if (label != null && !label.isEmpty()) {
+                        labelItem.setData(NodeLabelItem.COLOR, textData.getColor());
+                        labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
+                        labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
+                        return labelItem;
                     }
-                } else if (!label.isEmpty()) {
-                    items.add(labelItem);
                 }
+                return null;
             }
-        } catch (Exception e) {
-            nodeIterable.doBreak();
-            Exceptions.printStackTrace(e);
-        }
-        return items.toArray(new Item[0]);
+        ).filter(Objects::nonNull).toArray(NodeLabelItem[]::new);
     }
 
     @Override

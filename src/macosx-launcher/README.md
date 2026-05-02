@@ -26,7 +26,7 @@
 
 Manually build with the following command:
 ```shell
-% swift build -c release
+% swift build -c release --arch arm64
 ```
 
 Then, run the two following commands to fix some erroneous rpath added automatically (more details [here](https://developer.apple.com/forums/thread/706414)):
@@ -37,7 +37,15 @@ install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolc
 
 Finally, copy the binary to the right folder.
 ```shell
-cp .build/release/AppLauncher Binaries/AppLauncher_x86_64
+cp .build/release/AppLauncher Binaries/AppLauncher_aarch64
+```
+
+Repeat the same operation for `x86_64`:
+```shell
+swift build -c release --arch x86_64
+install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx .build/release/AppLauncher
+install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx .build/release/AppLauncher
+cp .build/release/AppLauncher Binaries/AppLauncher_x64
 ```
 
 Binaries are stored in the `Binaries` folder.

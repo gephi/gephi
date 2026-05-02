@@ -63,7 +63,15 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     protected WorkspaceImpl newWorkspace(int id, Object... objectsForLookup) {
         synchronized (workspaces) {
-            WorkspaceImpl workspace = new WorkspaceImpl(project, id, objectsForLookup);
+            WorkspaceImpl workspace = new WorkspaceImpl(project, id, true, objectsForLookup);
+            workspaces.add(workspace);
+            return workspace;
+        }
+    }
+
+    protected WorkspaceImpl newWorkspaceWithoutModels(int id, Object... objectsForLookup) {
+        synchronized (workspaces) {
+            WorkspaceImpl workspace = new WorkspaceImpl(project, id, false, objectsForLookup);
             workspaces.add(workspace);
             return workspace;
         }

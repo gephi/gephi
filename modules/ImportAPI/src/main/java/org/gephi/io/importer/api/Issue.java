@@ -133,16 +133,29 @@ public final class Issue {
 
     public enum Level {
 
+        /** Informational message; does not indicate a problem. */
         INFO(100),
+        /** A potential problem that does not prevent the import from completing. */
         WARNING(200),
+        /** A significant problem that may affect the import result. */
         SEVERE(500),
+        /**
+         * A fatal problem that, by default, causes the import to be aborted by throwing a
+         * {@link RuntimeException}.
+         */
         CRITICAL(1000);
+
         private final int levelInt;
 
         Level(int levelInt) {
             this.levelInt = levelInt;
         }
 
+        /**
+         * Returns the integer value of this level, used for severity comparisons.
+         *
+         * @return integer severity value
+         */
         public int toInteger() {
             return levelInt;
         }

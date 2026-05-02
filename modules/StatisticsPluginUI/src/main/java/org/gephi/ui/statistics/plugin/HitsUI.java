@@ -118,7 +118,7 @@ public class HitsUI implements StatisticsUI {
 
     private static class StatSettings {
 
-        private double epsilon = 0.0001;
+        private double epsilon = 1e-8;
 
         private void save(Hits stat) {
             this.epsilon = stat.getEpsilon();

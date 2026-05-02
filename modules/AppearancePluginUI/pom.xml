@@ -38,6 +38,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-icons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>appearance-plugin</artifactId>
         </dependency>
         <dependency>
@@ -57,10 +61,6 @@
             <artifactId>ui-library-wrapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-icons</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-ui</artifactId>
         </dependency>
@@ -74,6 +74,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.ui.appearance.plugin.category</publicPackage>
+                        <publicPackage>org.gephi.ui.appearance.plugin</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

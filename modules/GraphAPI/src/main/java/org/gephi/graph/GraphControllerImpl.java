@@ -79,6 +79,9 @@ public class GraphControllerImpl implements GraphController {
         Configuration config = workspace.getLookup().lookup(Configuration.class);
         if (config == null) {
             config = getDefaultConfigurationBuilder().build();
+        } else {
+            // Clean config as we don't need it after creating the graph model
+            workspace.remove(config);
         }
         GraphModel graphModelImpl = GraphModel.Factory.newInstance(config);
         workspace.add(graphModelImpl);

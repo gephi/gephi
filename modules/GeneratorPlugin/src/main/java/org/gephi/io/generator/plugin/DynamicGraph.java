@@ -66,9 +66,9 @@ public class DynamicGraph implements Generator {
     @Override
     public void generate(ContainerLoader container) {
         Random random = new Random();
-        double start = 2000.0;
-        double end = 2015.0;
-        double tick = 1.0;
+        final double start = 2000.0;
+        final double end = 2015.0;
+        final double tick = 1.0;
         ColumnDraft col = container.addNodeColumn("score", Integer.class, true);
         container.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
 
@@ -89,8 +89,7 @@ public class DynamicGraph implements Generator {
         }
 
         if (wiringProbability > 0) {
-//            AttributeColumn oldWeight = container.getGraphModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex());
-//            AttributeColumn weightCol = container.getGraphModel().getEdgeTable().replaceColumn(oldWeight, PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
+            ColumnDraft edgeWeightCol = container.addEdgeColumn("weight", Double.class, true);
 
             for (int i = 0; i < numberOfNodes - 1; i++) {
                 NodeDraft node1 = nodeArray[i];
@@ -102,15 +101,13 @@ public class DynamicGraph implements Generator {
                         edgeDraft.setTarget(node2);
 
                         Random r = new Random();
-//                        DynamicFloat dynamicWeight = new DynamicFloat(new Interval<Float>(2010, 2012, false, true, new Float(r.nextInt(3) + 1)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2012, 2014, false, true, new Float(r.nextInt(3) + 2)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2014, 2016, false, true, new Float(r.nextInt(3) + 3)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2016, 2018, false, true, new Float(r.nextInt(3) + 4)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2018, 2020, false, true, new Float(r.nextInt(3) + 5)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2020, 2022, false, true, new Float(r.nextInt(3) + 6)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2022, 2024, false, true, new Float(r.nextInt(3) + 7)));
-//                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2024, 2026, false, false, new Float(r.nextInt(3) + 8)));
-//                        edgeDraft.addAttributeValue(weightCol, dynamicWeight);
+                        for (double t = start; t < end; t += tick) {
+                            if (r.nextBoolean()) {
+                                edgeDraft.setValue(edgeWeightCol.getId(), (double)(r.nextInt(2) + 1), t);
+                            } else {
+                                edgeDraft.setValue(edgeWeightCol.getId(), 1.0, t);
+                            }
+                        }
 
                         container.addEdge(edgeDraft);
                     }

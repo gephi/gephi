@@ -1,6 +1,7 @@
 include config/Preferences/.*
 exclude config/Preferences/org/netbeans/.*
 exclude config/Preferences/org/openide/.*
+exclude config/Preferences/laf.properties
 include config/.*
 exclude config/Toolbars/.*
 exclude config/Windows2Local-datalab/.*

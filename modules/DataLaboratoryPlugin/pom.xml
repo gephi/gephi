@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>tools-api</artifactId>
+            <artifactId>desktop-attributes</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -90,10 +90,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>visualization</artifactId>
         </dependency>
     </dependencies>
 

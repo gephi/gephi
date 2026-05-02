@@ -66,18 +66,29 @@ public class FilterThread extends Thread {
 
     private final FilterModelImpl model;
     private final AtomicReference<AbstractQueryImpl> rootQuery;
+    private final AbstractQueryImpl initialQuery;
     private final Object lock = new Object();
     private final boolean filtering;
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
     private boolean running = true;
 
-    public FilterThread(FilterModelImpl model) {
+    public FilterThread(FilterModelImpl model, AbstractQueryImpl initialQuery) {
         super("Filter Thread - " + model.getWorkspace().toString());
         setDaemon(true);
         this.model = model;
         this.filtering = model.isFiltering();
+        this.initialQuery = initialQuery;
         rootQuery = new AtomicReference<>();
         modifiersMap = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Returns the query this thread was created to filter. Unlike
+     * {@link #getRootQuery()}, this value is stable for the entire lifetime of
+     * the thread and is not consumed when the worker loop picks up the query.
+     */
+    public AbstractQueryImpl getInitialQuery() {
+        return initialQuery;
     }
 
     @Override

@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceInformationImpl;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
@@ -41,13 +42,26 @@ public class DuplicateTask implements LongTask {
 
             Collection<WorkspacePersistenceProvider> providers = PersistenceProviderUtils.getPersistenceProviders();
 
+            // First the bytes model
             for (WorkspacePersistenceProvider provider : providers) {
-                if (!cancel) {
-                    if (provider instanceof WorkspaceXMLPersistenceProvider) {
-                        duplicateWorkspaceModel(workspace, newWorkspace, (WorkspaceXMLPersistenceProvider) provider);
-                    } else if (provider instanceof WorkspaceBytesPersistenceProvider) {
-                        duplicateWorkspaceModel(workspace, newWorkspace, (WorkspaceBytesPersistenceProvider) provider);
-                    }
+                if (cancel) {
+                    return null;
+                }
+                if (provider instanceof WorkspaceBytesPersistenceProvider) {
+                    duplicateWorkspaceModel(workspace, newWorkspace, (WorkspaceBytesPersistenceProvider) provider);
+                }
+            }
+
+            // Init models
+            newWorkspace.initModels();
+
+            // And then the XML ones
+            for (WorkspacePersistenceProvider provider : providers) {
+                if (cancel) {
+                    return null;
+                }
+                if (provider instanceof WorkspaceXMLPersistenceProvider) {
+                    duplicateWorkspaceModel(workspace, newWorkspace, (WorkspaceXMLPersistenceProvider) provider);
                 }
             }
 
@@ -97,6 +111,10 @@ public class DuplicateTask implements LongTask {
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         XMLStreamReader reader = LoadTask.newXMLReader(bis);
         WorkspaceImpl newWorkspace = GephiReader.readWorkspace(reader, (ProjectImpl) workspace.getProject());
+        // Set to closed as the status should be controlled upstream
+        WorkspaceInformationImpl info = newWorkspace.getLookup().lookup(WorkspaceInformationImpl.class);
+        info.setStatus(WorkspaceInformationImpl.Status.CLOSED);
+
         reader.close();
         bis.close();
         return newWorkspace;

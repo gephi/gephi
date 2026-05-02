@@ -69,7 +69,7 @@ public class PreviewProperty {
 
     //Constants global
     /**
-     * General <code>Boolean</code> property which indicates wheter the graph is directed
+     * General <code>Boolean</code> property which indicates whether the graph is directed
      */
     public static final String DIRECTED = "directed";
     /**
@@ -88,6 +88,10 @@ public class PreviewProperty {
      */
     public static final String MARGIN = "margin";
     //Constants nodes
+    /**
+     * General <code>Float</code> property defining a global scale factor applied to all nodes sizes
+     */
+    public static final String NODE_SCALE_FACTOR = "node.scale.factor";
     /**
      * Node <code>Boolean</code> property which indicates if the border size is either fixed or relative to the node size
      */
@@ -120,6 +124,10 @@ public class PreviewProperty {
      */
     public static final String SHOW_EDGES = "edge.show";
     /**
+     * General <code>Float</code> property defining a global scale factor applied to all edge thickness
+     */
+    public static final String EDGE_SCALE_FACTOR = "edge.scale.factor";
+    /**
      * Edge <code>Float</code> property for the edge's thickness
      */
     public static final String EDGE_THICKNESS = "edge.thickness";
@@ -130,7 +138,7 @@ public class PreviewProperty {
     public static final String EDGE_CURVED = "edge.curved";
     /**
      * Edge <code>EdgeColor</code> property defining the edge color. It could be
-     * the source's color, the target's color, a mixed color, the edge's original
+     * the source's color, the target's color, a mixed color, the edge's self
      * color or a custom color.
      */
     public static final String EDGE_COLOR = "edge.color";
@@ -139,6 +147,11 @@ public class PreviewProperty {
      * 100 means opaque.
      */
     public static final String EDGE_OPACITY = "edge.opacity";
+    /**
+     * Edge <code>Boolean</code> property defining whether edge's weight should be used
+     * in edge thickness calculation.
+     */
+    public static final String EDGE_USE_WEIGHT = "edge.use-weight";
     /**
      * Edge <code>Boolean</code> property defining whether edge's weight should be
      * rescaled between fixed bounds.
@@ -168,9 +181,18 @@ public class PreviewProperty {
      */
     public static final String SHOW_NODE_LABELS = "node.label.show";
     /**
+     * When <code>True</code>, uses the node label <code>Font</code>, and otherwise uses the font from the
+     * Visualization API.
+     */
+    public static final String NODE_LABEL_CUSTOM_FONT = "node.label.customFont";
+    /**
      * Node Label <code>Font</code> property defining node label's font.
      */
     public static final String NODE_LABEL_FONT = "node.label.font";
+    /**
+     * Node Label <code>Float</code> property defining a global scale factor applied to all node labels sizes.
+     */
+    public static final String NODE_LABEL_SCALE = "node.label.scale";
     /**
      * Node Label <code>Boolean</code> property defining whether to use node's size
      * in label size calculation.
@@ -178,10 +200,21 @@ public class PreviewProperty {
     public static final String NODE_LABEL_PROPORTIONAL_SIZE = "node.label.proportinalSize";
     /**
      * Node Label <code>DependantOriginalColor</code> property defining the color label.
-     * The color could either be the node's color, the label original color if it has any
+     * The color could either be the node's color, the label self color if it has any
      * or a custom color.
      */
     public static final String NODE_LABEL_COLOR = "node.label.color";
+    /**
+     * Node Label <code>Boolean</code> property defining whether to avoid label overlaps.
+     * When true, a grid-based algorithm hides labels that overlap with labels of larger nodes.
+     */
+    public static final String NODE_LABEL_AVOID_OVERLAP = "node.label.avoidOverlap";
+    /**
+     * Node Label <code>Integer</code> property defining the grid cell size (in graph coordinate units)
+     * used by the label overlap avoidance algorithm. Larger values create coarser cells and are faster
+     * but less precise; smaller values give finer resolution.
+     */
+    public static final String NODE_LABEL_OVERLAP_GRID_SIZE = "node.label.overlapGridSize";
     /**
      * Node Label <code>Boolean</code> property defining whether the label is shortened.
      */
@@ -214,12 +247,21 @@ public class PreviewProperty {
      */
     public static final String SHOW_EDGE_LABELS = "edge.label.show";
     /**
+     * Edge Label <code>Float</code> property defining a global scale factor applied to all edge labels sizes.
+     */
+    public static final String EDGE_LABEL_SCALE = "edge.label.scale";
+    /**
+     * When <code>True</code>, uses the edge label <code>Font</code>, and otherwise uses the font from the
+     * Visualization API.
+     */
+    public static final String EDGE_LABEL_CUSTOM_FONT = "edge.label.customFont";
+    /**
      * Edge Label <code>Font</code> property defining edge label's font.
      */
     public static final String EDGE_LABEL_FONT = "edge.label.font";
     /**
      * Edge Label <code>DependantOriginalColor</code> property defining the color label.
-     * The color could either be the edge's color, the label original color if it has any
+     * The color could either be the edge's color, the label self color if it has any
      * or a custom color.
      */
     public static final String EDGE_LABEL_COLOR = "edge.label.color";
@@ -288,6 +330,8 @@ public class PreviewProperty {
     final Class type;
     Object value;
     String[] dependencies = new String[0];
+    Number minValue;
+    Number maxValue;
 
     PreviewProperty(Object source, String name, Class type, String displayName, String description, String category) {
         this.source = source;
@@ -401,13 +445,70 @@ public class PreviewProperty {
 
     /**
      * Sets this property value and return it. The value can be <code>null</code>.
+     * If min/max bounds have been set via {@link #setMinMax(Number, Number)}, numeric values
+     * are clamped to those bounds before being stored.
      *
      * @param value the value to be set
      * @return this property instance
      */
     public PreviewProperty setValue(Object value) {
+        if (value instanceof Number && (minValue != null || maxValue != null)) {
+            double v = ((Number) value).doubleValue();
+            if (minValue != null) {
+                v = Math.max(v, minValue.doubleValue());
+            }
+            if (maxValue != null) {
+                v = Math.min(v, maxValue.doubleValue());
+            }
+            if (value instanceof Integer) {
+                value = (int) v;
+            } else if (value instanceof Float) {
+                value = (float) v;
+            } else if (value instanceof Double) {
+                value = v;
+            } else if (value instanceof Long) {
+                value = (long) v;
+            }
+        }
         this.value = value;
         return this;
+    }
+
+    /**
+     * Sets optional minimum and maximum bounds for this property's numeric value.
+     * <p>
+     * When either bound is non-null, any numeric value passed to {@link #setValue(Object)}
+     * is clamped to the range {@code [min, max]} before being stored. Pass <code>null</code>
+     * for either bound to leave that side unbounded.
+     *
+     * @param min the inclusive lower bound, or <code>null</code> for no lower bound
+     * @param max the inclusive upper bound, or <code>null</code> for no upper bound
+     * @return this property instance
+     */
+    public PreviewProperty setMinMax(Number min, Number max) {
+        this.minValue = min;
+        this.maxValue = max;
+        return this;
+    }
+
+    /**
+     * Returns the minimum allowed value for this property, or <code>null</code> if no lower
+     * bound has been set.
+     *
+     * @return the minimum value or <code>null</code>
+     */
+    public Number getMinValue() {
+        return minValue;
+    }
+
+    /**
+     * Returns the maximum allowed value for this property, or <code>null</code> if no upper
+     * bound has been set.
+     *
+     * @return the maximum value or <code>null</code>
+     */
+    public Number getMaxValue() {
+        return maxValue;
     }
 
     /**

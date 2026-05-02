@@ -114,7 +114,7 @@ public class DataTablesObservers {
         columnObservers.clear();
     }
 
-    public boolean hasChanges() {
+    public synchronized boolean hasChanges() {
         if (graphObserver == null) {
             return false;//Not initialized
         }

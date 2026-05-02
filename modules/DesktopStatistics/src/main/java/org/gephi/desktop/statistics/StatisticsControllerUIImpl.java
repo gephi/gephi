@@ -115,6 +115,9 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         for (StatisticsUI s : uis) {
             s.setup(statistics);
         }
+        if (model == null) {
+            return;
+        }
         model.setRunning(statistics, true);
 
         controller.execute(statistics, new LongTaskListener() {
@@ -138,6 +141,9 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         for (StatisticsUI s : uis) {
             s.setup(statistics);
         }
+        if (model == null) {
+            return;
+        }
         model.setRunning(statistics, true);
 
         controller.execute(statistics, new LongTaskListener() {
@@ -160,7 +166,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         boolean dynamic = false;
         ArrayList<StatisticsUI> list = new ArrayList<>();
         for (StatisticsUI sui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
-            if (sui.getStatisticsClass().equals(statistics.getClass())) {
+            if (statistics.getClass().equals(sui.getStatisticsClass())) {
                 list.add(sui);
             }
         }

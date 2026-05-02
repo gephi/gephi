@@ -1,0 +1,72 @@
+package org.gephi.viz.engine.jogl.pipeline.instanced.updaters;
+
+import org.gephi.graph.api.Node;
+import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.VizEngineModel;
+import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.availability.InstancedDraw;
+import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
+import org.gephi.viz.engine.pipeline.PipelineCategory;
+import org.gephi.viz.engine.spi.ElementsCallback;
+import org.gephi.viz.engine.spi.WorldUpdater;
+
+/**
+ *
+ * @author Eduardo Ramos
+ */
+public class NodesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderingTarget, Node> {
+
+    private final VizEngine engine;
+    private final InstancedNodeData nodeData;
+
+    public NodesUpdaterInstancedRendering(VizEngine engine, InstancedNodeData nodeData) {
+        this.engine = engine;
+        this.nodeData = nodeData;
+    }
+
+    @Override
+    public void init(JOGLRenderingTarget target) {
+        nodeData.init(target.getDrawable().getGL().getGL2ES2());
+    }
+
+    @Override
+    public void dispose(JOGLRenderingTarget target) {
+        nodeData.dispose(target.getDrawable().getGL());
+    }
+
+    @Override
+    public void updateWorld(VizEngineModel model) {
+        nodeData.update(model.getRenderingOptions());
+    }
+
+    @Override
+    public ElementsCallback<Node> getElementsCallback() {
+        return nodeData.getNodesCallback();
+    }
+
+    @Override
+    public String getCategory() {
+        return PipelineCategory.NODE;
+    }
+
+    @Override
+    public int getPreferenceInCategory() {
+        return InstancedDraw.getPreferenceInCategory();
+    }
+
+    @Override
+    public String getName() {
+        return "Nodes (Instanced)";
+    }
+
+    @Override
+    public boolean isAvailable(JOGLRenderingTarget target) {
+        return InstancedDraw.isAvailable(engine, target.getDrawable());
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
+}

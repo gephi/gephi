@@ -43,6 +43,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.branding.desktop.reporter;
 
 import io.sentry.Attachment;
+import io.sentry.Hint;
+import io.sentry.UserFeedback;
+import io.sentry.protocol.SentryId;
 import io.sentry.protocol.User;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
@@ -56,19 +59,13 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.MissingResourceException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import io.sentry.Sentry;
-import io.sentry.SentryEvent;
-import io.sentry.SentryLevel;
-import io.sentry.protocol.SentryException;
+import org.gephi.branding.desktop.SentryIdentity;
+import org.openide.util.NbPreferences;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
@@ -86,41 +83,32 @@ import org.w3c.dom.Document;
  */
 public class ReportController {
 
-    private static final String POST_URL =
-        "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.sentry.io/85815";
+    public static final String SEND_CRASH_REPORTS = "send_crash_reports";
+    public static final boolean DEFAULT_SEND_CRASH_REPORTS = false;
 
-    public ReportController() {
-        Sentry.init(options -> {
-            String gephiVersion = System.getProperty("netbeans.productversion");
-            if (!gephiVersion.contains("SNAPSHOT")) {
-                // Strip build
-                gephiVersion = gephiVersion.substring(0, gephiVersion.length() - 13);
-            }
+    public static final String TRACK_USAGE = "track_usage";
+    public static final boolean DEFAULT_TRACK_USAGE = false;
 
-            options.setDsn(POST_URL);
-            options.setRelease(gephiVersion);
-            options.setDiagnosticLevel(SentryLevel.ERROR);
-            options.setServerName("Gephi Desktop");
-            options.setEnvironment(gephiVersion.contains("SNAPSHOT") ? "development" : "production");
-        });
-    }
+    public static final String DO_NOT_REMIND_ANALYTICS = "do_not_remind_analytics";
 
     public void sendReport(final Report report) {
-        Thread thread = new Thread(new Runnable() {
+        boolean autoSend = NbPreferences.forModule(ReportController.class)
+            .getBoolean(SEND_CRASH_REPORTS, DEFAULT_SEND_CRASH_REPORTS);
+        String sendingKey = autoSend ? "ReportController.autoSend.status.sending" : "ReportController.manual.status.sending";
+        String sentKey = autoSend ? "ReportController.autoSend.status.sent" : "ReportController.manual.status.sent";
 
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 ProgressHandle handle = ProgressHandleFactory
-                    .createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
+                    .createHandle(NbBundle.getMessage(ReportController.class, sendingKey));
                 try {
                     handle.start();
-
-                    sendSentryReport(report);
-
+                    sendSentryReport(report, autoSend);
                     handle.finish();
                     DialogDisplayer.getDefault().notify(
                         new NotifyDescriptor.Message(
-                            NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
+                            NbBundle.getMessage(ReportController.class, sentKey),
                             NotifyDescriptor.INFORMATION_MESSAGE));
                     return;
                 } catch (Exception e) {
@@ -132,49 +120,80 @@ public class ReportController {
                         NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
                         NotifyDescriptor.WARNING_MESSAGE));
             }
-
         }, "Exception Reporter");
         thread.start();
     }
 
-    private void sendSentryReport(Report report) {
-        final User user = !report.getUserEmail().isEmpty() ? new User() : null;
-        if (user != null) {
-            user.setEmail(report.getUserEmail());
+    private void sendSentryReport(Report report, boolean autoSend) {
+        String username = report.getUserGitHubUsername();
+        if (!username.isEmpty()) {
+            NbPreferences.forModule(ReportController.class).put("github_username", username);
         }
 
-        Sentry.withScope(scope -> {
-            // Main
-            scope.setLevel(SentryLevel.ERROR);
+        if (!autoSend) {
+            // Manual mode: capture the full exception first to obtain a SentryId.
+            captureExceptionToSentry(report);
+        }
 
-            // Extra
-            scope.setContexts("OS", report.getOs());
+        // Both modes: attach user feedback (username + description) to the Sentry event.
+        SentryId eventId = report.getSentryEventId();
+        if (eventId == null || SentryId.EMPTY_ID.equals(eventId)) {
+            throw new RuntimeException("No Sentry event ID — capture may have failed");
+        }
+        if (!username.isEmpty() || !report.getUserDescription().isEmpty()) {
+            UserFeedback feedback = new UserFeedback(eventId);
+            if (!username.isEmpty()) {
+                feedback.setName("@" + username.replace("@", ""));
+            }
+            if (!report.getUserDescription().isEmpty()) {
+                feedback.setComments(report.getUserDescription());
+            }
+            Sentry.captureUserFeedback(feedback);
+        }
+    }
+
+    /**
+     * Captures the exception to Sentry with all available system context and the log attachment.
+     * In auto-send mode, called from {@link ReporterHandler#publish} immediately when the
+     * exception is logged. In manual mode, called from {@link #sendSentryReport} when the user
+     * clicks "Send Report". GitHub username and description are included if already set on the
+     * report.
+     */
+    void captureExceptionToSentry(Report report) {
+        Attachment log =
+            new Attachment(anonymizeLog(report.getLog()).getBytes(StandardCharsets.UTF_8), "messages.log",
+                "text/plain");
+        Hint hint = Hint.withAttachment(log);
+
+        final User user = new User();
+        user.setId(SentryIdentity.getOrCreateDistinctId());
+
+        final SentryId[] eventId = {SentryId.EMPTY_ID};
+        Sentry.withIsolationScope(scope -> {
+            scope.setUser(user);
+            scope.setTag("OS", report.getOs());
             scope.setContexts("Heap memory usage", report.getHeapMemoryUsage());
             scope.setContexts("Non heap memory usage", report.getNonHeapMemoryUsage());
             scope.setContexts("Processors", report.getNumberOfProcessors());
             scope.setContexts("Screen devices", report.getScreenDevices());
             scope.setContexts("Screen size", report.getScreenSize());
             scope.setContexts("VM", report.getVm());
+            scope.setContexts("OpenGL Profile", report.getGlProfile());
             scope.setContexts("OpenGL Vendor", report.getGlVendor());
             scope.setContexts("OpenGL Renderer", report.getGlRenderer());
             scope.setContexts("OpenGL Version", report.getGlVersion());
-            scope.setContexts("Description", report.getUserDescription());
 
-            //User
-            scope.setUser(user);
-
-            // Log
-            Attachment log =
-                new Attachment(anonymizeLog(report.getLog()).getBytes(StandardCharsets.UTF_8), "messages.log",
-                    "text/plain");
-            scope.addAttachment(log);
-
-            // Send
-            Sentry.captureException(report.getThrowable());
+            eventId[0] = Sentry.captureException(report.getThrowable(), hint);
         });
+        report.setSentryEventId(eventId[0]);
     }
 
-    public Document buildReportDocument(Report report) {
+    /**
+     * Populates the report with system information. Called from {@link ReporterHandler#publish}
+     * immediately when the exception is logged, before the Sentry capture, so all context is
+     * available at capture time regardless of whether the user opens the dialog.
+     */
+    void populateSystemInfo(Report report) {
         logMessageLog(report);
         logVersion(report);
         logScreenSize(report);
@@ -182,7 +201,10 @@ public class ReportController {
         logMemoryInfo(report);
         logJavaInfo(report);
         logGLInfo(report);
-        //logModules(report);
+    }
+
+    public Document buildReportDocument(Report report) {
+        populateSystemInfo(report);
         return buildXMLDocument(report);
     }
 
@@ -246,13 +268,24 @@ public class ReportController {
             LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(output));
             String line;
             while ((line = lineNumberReader.readLine()) != null) {
-                if (line.contains("GL_VENDOR:")) {
-                    report.setGlVendor(line.replaceFirst(".*GL_VENDOR:", ""));
-                } else if (line.contains("GL_RENDERER:")) {
-                    report.setGlRenderer(line.replaceFirst(".*GL_RENDERER:", ""));
-                } else if (line.contains("GL_VERSION:")) {
-                    report.setGlVersion(line.replaceFirst(".*GL_VERSION:", ""));
-                    break;
+                if (line.contains("Chosen GL Profile: ")) {
+                    report.setGlProfile(line.replaceFirst(".*Chosen GL Profile: ", "").trim());
+                } else if (line.contains("OpenGL Vendor: ")) {
+                    String rest = line.replaceFirst(".*OpenGL Vendor: ", "");
+                    int rendererIdx = rest.indexOf(", Renderer: ");
+                    if (rendererIdx >= 0) {
+                        report.setGlVendor(rest.substring(0, rendererIdx).trim());
+                        rest = rest.substring(rendererIdx + ", Renderer: ".length());
+                        int versionIdx = rest.indexOf(", Version: ");
+                        if (versionIdx >= 0) {
+                            report.setGlRenderer(rest.substring(0, versionIdx).trim());
+                            report.setGlVersion(rest.substring(versionIdx + ", Version: ".length()).trim());
+                        } else {
+                            report.setGlRenderer(rest.trim());
+                        }
+                    } else {
+                        report.setGlVendor(rest.trim());
+                    }
                 }
             }
             lineNumberReader.close();

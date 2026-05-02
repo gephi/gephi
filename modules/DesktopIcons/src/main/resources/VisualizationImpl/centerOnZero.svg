@@ -1,186 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg19713" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
 
-<svg
-   width="15.999999"
-   height="15.999999"
-   viewBox="0 0 4.2333333 4.2333333"
-   version="1.1"
-   id="svg19713"
-   xml:space="preserve"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs19710"><style
-       id="style36518">.cls-1{fill:none;}</style><style
-       id="style36538">.cls-1{fill:none;}</style><style
-       id="style48643">
-      .cls-1 {
-        fill: none;
+      .st1 {
+        fill: #555;
       }
-    </style><style
-       id="style49369">.cls-1{fill:none;}</style><style
-       id="style68473">.cls-1{fill:none;}</style><style
-       id="style34301">.cls-1{fill:none;}</style><style
-       id="style40867">.cls-1{fill:none;}</style><style
-       id="style3486">.cls-1{fill:none;}</style><style
-       id="style16714">.cls-1{fill:none;}</style><style
-       id="style16734">.cls-1{fill:none;}</style><style
-       id="style598">.cls-1{fill:none;}</style><style
-       id="style938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style953">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style988">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style6804">.cls-1{fill:none;}</style><style
-       id="style8295">.cls-1{fill:none;}</style><style
-       id="style9297">.cls-1{fill:none;}</style><style
-       id="style10710">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style616">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style640">.cls-1{fill:none;}</style><style
-       id="style732">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1166">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1186">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1201">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2604">.cls-1{fill:none;}</style><style
-       id="style3041">.cls-1{fill:none;}</style><style
-       id="style34659">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style931">.cls-1{fill:#000000;}.cls-2{fill:none;}</style><style
-       id="style1772">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style4214">.cls-1{fill:none;}</style><style
-       id="style5886">.cls-1{fill:none;}</style><style
-       id="style5923">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style5938">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8494">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style8509">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10257">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style10280">.cls-1{fill:none;}</style><style
-       id="style11171">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style1997">.cls-1{fill:none;}</style><style
-       id="style2928">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style2943">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3863">.cls-1{fill:none;}</style><style
-       id="style3880">.cls-1{fill:none;}</style><style
-       id="style1078">
-      .cls-1 {
-        fill: none;
-      }
-    </style><style
-       id="style3954">.cls-1{fill:none;}</style></defs><g
-     id="layer76"
-     style="display:inline"
-     transform="translate(-63.500004,-29.633334)"><g
-       id="g16093"
-       transform="matrix(0.50000003,0,0,0.50000003,-4.2333296,19.05)"
-       style="display:inline;stroke-width:2"><path
-         d="m 139.17084,25.929166 h -0.52917 A 0.52916666,0.52916666 0 0 1 138.1125,25.4 v -1.5875 a 0.52916666,0.52916666 0 0 1 0.52917,-0.529167 h 0.52917 A 0.52916666,0.52916666 0 0 1 139.7,23.8125 V 25.4 a 0.52916666,0.52916666 0 0 1 -0.52916,0.529166 z M 138.64167,23.8125 V 25.4 h 0.52917 v -1.5875 z"
-         id="path53435"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:0.529166" /><path
-         d="m 141.14142,26.458333 a 2.8723166,2.8723166 0 0 0 0.67524,-1.852084 2.9104166,2.9104166 0 1 0 -2.91042,2.910417 2.8723166,2.8723166 0 0 0 1.85209,-0.675243 l 2.0071,1.99816 0.37415,-0.374148 z m -2.23518,0.529166 a 2.38125,2.38125 0 1 1 2.38125,-2.38125 2.3838958,2.3838958 0 0 1 -2.38125,2.38125 z"
-         id="path53450-9"
-         style="fill:#6e6e6e;fill-opacity:1;stroke-width:0.529166" /><rect
-         id="_Transparent_Rectangle_-63-5"
-         data-name="&lt;Transparent Rectangle&gt;"
-         class="cls-1"
-         width="15.999999"
-         height="15.999999"
-         x="135.46666"
-         y="21.166666"
-         style="fill:none;stroke-width:0.529166" /></g></g><style
-     type="text/css"
-     id="style578">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style968">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style3690">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5365">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style596">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style660">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style5861">
-	.st0{fill:none;}
-</style><style
-     type="text/css"
-     id="style25784">
-	.st0{fill:none;}
-</style></svg>
+    </style>
+  </defs>
+  <g id="g29015">
+    <path id="path29009" class="st1" d="M7,9h-1c-.552,0-1-.448-1-1v-3c0-.552.448-1,1-1h1c.552,0,1,.448,1,1v3c0,.552-.448,1-1,1ZM6,5v3h1v-3h-1Z"/>
+    <path id="path29011" class="st1" d="M10.724,10c.825-.98,1.277-2.219,1.276-3.5,0-3.038-2.462-5.5-5.5-5.5S1,3.462,1,6.5s2.462,5.5,5.5,5.5c1.281,0,2.52-.451,3.5-1.276l3.793,3.776.707-.707-3.776-3.793ZM6.5,11c-2.485,0-4.5-2.015-4.5-4.5S4.015,2,6.5,2c2.485,0,4.5,2.015,4.5,4.5-.003,2.484-2.016,4.497-4.5,4.5Z"/>
+    <rect id="rect29013" class="st0" x="0" y="0" width="16" height="16"/>
+  </g>
+</svg>

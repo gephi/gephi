@@ -42,13 +42,27 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.preview.propertyeditors;
 
+import java.awt.Color;
 import java.awt.Component;
+import org.gephi.preview.types.EdgeColor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
 public class EdgeColorPropertyEditor extends BasicEdgeColorPropertyEditor {
+
+    @Override
+    public String getAsText() {
+        EdgeColor c = (EdgeColor) getValue();
+        if (c.getMode().equals(EdgeColor.Mode.CUSTOM)) {
+            String localizedCustom = NbBundle.getMessage(EdgeColorPropertyEditor.class, "EdgeColorPropertyEditor.custom.text");
+            return toText(localizedCustom, c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
+        } else {
+            return NbBundle.getMessage(EdgeColorPropertyEditor.class, "EdgeColorPropertyEditor."+c.getMode().name().toLowerCase()+".text");
+        }
+    }
 
     @Override
     public Component getCustomEditor() {

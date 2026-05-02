@@ -75,6 +75,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * Utility methods for importers, providing readers, XML parsers, archive extraction, and color parsing.
+ *
  * @author Mathieu Bastian
  */
 public final class ImportUtils {
@@ -786,6 +788,15 @@ public final class ImportUtils {
         }
     }
 
+    /**
+     * Parses a color string and returns the corresponding {@link Color}, or {@code null} if unrecognized.
+     * <p>
+     * Accepts Java color names (e.g. {@code "yellow"}), extended color names (e.g. {@code "navyblue"}),
+     * octal notation (e.g. {@code "0xFF0096"}), and hexadecimal notation (e.g. {@code "#FF0096"}).
+     *
+     * @param colorString the color string to parse
+     * @return the parsed color, or {@code null} if the string could not be parsed
+     */
     public static Color parseColor(String colorString) {
         colorString = colorString.toLowerCase().replace(" ", "");
 
@@ -833,11 +844,24 @@ public final class ImportUtils {
         return reader;
     }
 
+    /**
+     * Wraps the given reader in a {@link LineNumberReader}.
+     *
+     * @param reader the reader to wrap
+     * @return a {@link LineNumberReader} wrapping the given reader
+     */
     public static LineNumberReader getTextReader(Reader reader) {
         LineNumberReader lineNumberReader = new LineNumberReader(reader);
         return lineNumberReader;
     }
 
+    /**
+     * Parses an XML document from the given input stream.
+     *
+     * @param stream the input stream to parse
+     * @return the parsed {@link Document}
+     * @throws RuntimeException if the XML cannot be parsed or the stream cannot be read
+     */
     public static Document getXMLDocument(InputStream stream) throws RuntimeException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -856,6 +880,13 @@ public final class ImportUtils {
         }
     }
 
+    /**
+     * Parses an XML document from the given reader.
+     *
+     * @param reader the reader to parse
+     * @return the parsed {@link Document}
+     * @throws RuntimeException if the XML cannot be parsed or the reader cannot be read
+     */
     public static Document getXMLDocument(Reader reader) throws RuntimeException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -874,6 +905,13 @@ public final class ImportUtils {
         }
     }
 
+    /**
+     * Parses an XML document from the given file object.
+     *
+     * @param fileObject the file object to parse
+     * @return the parsed {@link Document}
+     * @throws RuntimeException if the file cannot be found or the XML cannot be parsed
+     */
     public static Document getXMLDocument(FileObject fileObject) throws RuntimeException {
         try {
             InputStream stream = fileObject.getInputStream();
@@ -883,6 +921,15 @@ public final class ImportUtils {
         }
     }
 
+    /**
+     * Creates a streaming XML reader from the given reader.
+     * <p>
+     * Validation is disabled for performance.
+     *
+     * @param reader the reader to read XML from
+     * @return a configured {@link XMLStreamReader}
+     * @throws RuntimeException if the XML stream cannot be created
+     */
     public static XMLStreamReader getXMLReader(Reader reader) {
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -904,6 +951,14 @@ public final class ImportUtils {
         }
     }
 
+    /**
+     * Returns true if the given file object is a supported archive (zip, jar, gz, bz2).
+     * <p>
+     * Excel files ({@code .xls*}) are explicitly excluded even though they are technically ZIP archives.
+     *
+     * @param fileObject the file object to check
+     * @return true if the file is a supported archive, false otherwise
+     */
     public static boolean isArchiveFile(FileObject fileObject) {
         if (fileObject == null) {
             return false;
@@ -923,6 +978,15 @@ public final class ImportUtils {
         return FileUtil.isArchiveFile(fileObject);
     }
 
+    /**
+     * Returns the content file object extracted from an archive, or the original file object if it is not an archive.
+     * <p>
+     * Supports zip, jar, gz, bz2, and tar.gz / tar.bz2 archives. Extracted files are written to a temporary
+     * directory and deleted on JVM exit.
+     *
+     * @param fileObject the file object to extract if it is an archive
+     * @return the content file object, or the original file object if not an archive or extraction failed
+     */
     public static FileObject getArchivedFile(final FileObject fileObject) {
         if (!isArchiveFile(fileObject)) {
             return fileObject;
@@ -987,6 +1051,15 @@ public final class ImportUtils {
         return result;
     }
 
+    /**
+     * Decompresses a bzip2-compressed file to the specified output file.
+     *
+     * @param in    the bzip2-compressed source file object
+     * @param out   the destination file to write the decompressed content to
+     * @param isTar true if the compressed content is a tar archive (tar header is skipped)
+     * @return the output file
+     * @throws IOException if an I/O error occurs during decompression
+     */
     public static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
 
         // Stream buffer
@@ -1045,6 +1118,15 @@ public final class ImportUtils {
         return out;
     }
 
+    /**
+     * Decompresses a gzip-compressed file to the specified output file.
+     *
+     * @param in    the gzip-compressed source file object
+     * @param out   the destination file to write the decompressed content to
+     * @param isTar true if the compressed content is a tar archive (tar header is skipped)
+     * @return the output file
+     * @throws IOException if an I/O error occurs during decompression
+     */
     public static File getGzFile(FileObject in, File out, boolean isTar) throws IOException {
 
         // Stream buffer

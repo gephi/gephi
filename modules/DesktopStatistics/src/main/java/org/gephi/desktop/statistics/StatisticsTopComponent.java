@@ -45,6 +45,7 @@ package org.gephi.desktop.statistics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -71,7 +72,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.statistics//Statistics//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "StatisticsTopComponent",
-    iconBase = "org/gephi/desktop/statistics/resources/small.png",
+    iconBase = "DesktopStatistics/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.statistics.StatisticsTopComponent")
@@ -106,12 +107,13 @@ public final class StatisticsTopComponent extends TopComponent implements Change
 
             @Override
             public void select(Workspace workspace) {
-                StatisticsModelUIImpl model = workspace.getLookup().lookup(StatisticsModelUIImpl.class);
-                if (model == null) {
-                    model = new StatisticsModelUIImpl(workspace);
-                    workspace.add(model);
+                StatisticsModelUIImpl m = workspace.getLookup().lookup(StatisticsModelUIImpl.class);
+                if (m == null) {
+                    m = new StatisticsModelUIImpl(workspace);
+                    workspace.add(m);
                 }
-                refreshModel(model);
+                final StatisticsModelUIImpl selected = m;
+                SwingUtilities.invokeLater(() -> refreshModel(selected));
             }
 
             @Override
@@ -124,7 +126,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
 
             @Override
             public void disable() {
-                refreshModel(null);
+                SwingUtilities.invokeLater(() -> refreshModel(null));
             }
         });
 

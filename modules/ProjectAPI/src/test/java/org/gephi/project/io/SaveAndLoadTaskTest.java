@@ -82,6 +82,17 @@ public class SaveAndLoadTaskTest {
         saveAndLoad(workspace.getProject());
     }
 
+    @Test
+    public void testDuplicateTaskCancelReturnsNull() {
+        MockServices.setServices(MockXMLPersistenceProvider.class);
+
+        WorkspaceImpl workspace = Utils.newWorkspace();
+        DuplicateTask task = new DuplicateTask(workspace);
+        task.cancel();
+        WorkspaceImpl result = task.run();
+        Assert.assertNull(result);
+    }
+
     private ProjectImpl saveAndLoad(ProjectImpl project) throws IOException {
         final File tempFile = new File(tempFolder.getRoot(), "tmp.gephi");
 

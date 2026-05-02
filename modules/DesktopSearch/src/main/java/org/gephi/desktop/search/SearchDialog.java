@@ -138,12 +138,17 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
             search();
         }
 
-        // Focus
-        searchField.requestFocusInWindow();
+        // Focus - defer until the dialog is actually displayable, otherwise
+        // requestFocusInWindow() is a no-op and the search field starts unfocused.
+        SwingUtilities.invokeLater(this::refocusSearchField);
     }
 
     protected void unsetup() {
         resetSelection();
+    }
+
+    protected void refocusSearchField() {
+        searchField.requestFocusInWindow();
     }
 
     protected void search() {
@@ -168,8 +173,12 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
                     Lookup.getDefault().lookup(VisualizationController.class);
                 if (visualizationController != null) {
                     if (val instanceof Node) {
+                        visualizationController.resetSelection();
+                        visualizationController.selectNodes(new Node[] {(Node) val});
                         visualizationController.centerOnNode((Node) val);
                     } else if (val instanceof Edge) {
+                        visualizationController.resetSelection();
+                        visualizationController.selectEdges(new Edge[] {(Edge) val});
                         visualizationController.centerOnEdge((Edge) val);
                     }
                 }
@@ -190,22 +199,17 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
     }
 
     protected void select() {
+        // NOTE: Do NOT call into VisualizationController.selectNodes/selectEdges here.
+        // That switches the engine to custom-selection mode, which calls
+        // disableMouseHandler() -> AttributesUIController.closeWindow() ->
+        // TopComponent.close(). Closing a TopComponent triggers NetBeans focus events
+        // that dismiss this undecorated search popup on the very first keystroke when
+        // a graph is open. Graph selection + centering only happens on commit (Enter
+        // or double-click) via click(). Live preview into the data lab table is still
+        // safe and useful, so we keep it here.
         SearchResult result = resultsList.getSelectedValue();
         if (result != null) {
             Object val = result.getResult();
-            if (isGraphOpened()) {
-                VisualizationController visualizationController =
-                    Lookup.getDefault().lookup(VisualizationController.class);
-                if (visualizationController != null) {
-                    if (val instanceof Node) {
-                        visualizationController.resetSelection();
-                        visualizationController.selectNodes(new Node[] {(Node) val});
-                    } else if (val instanceof Edge) {
-                        visualizationController.resetSelection();
-                        visualizationController.selectEdges(new Edge[] {(Edge) val});
-                    }
-                }
-            }
             if (isDataLabOpened()) {
                 DataTablesController dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
                 if (dataTablesController != null) {
@@ -428,7 +432,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
 
         optionToolbar.setRollover(true);
 
-        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopSearch/filter.png", false)
+        filterButton.setIcon(ImageUtilities.loadImageIcon("DesktopSearch/filter.svg", false)
         );
         filterButton.setToolTipText(org.openide.util.NbBundle.getMessage(SearchDialog.class,
             "SearchDialog.filterButton.toolTipText")); // NOI18N

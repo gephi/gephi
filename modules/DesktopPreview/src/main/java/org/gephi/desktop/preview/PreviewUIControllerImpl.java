@@ -42,6 +42,7 @@
 
 package org.gephi.desktop.preview;
 
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorManager;
@@ -56,6 +57,7 @@ import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.desktop.preview.propertyeditors.DependantColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.DependantOriginalColorPropertyEditor;
+import org.gephi.desktop.preview.propertyeditors.DisabledAwareFontEditor;
 import org.gephi.desktop.preview.propertyeditors.EdgeColorPropertyEditor;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -105,7 +107,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
             public void initialize(Workspace workspace) {
                 PreviewModel previewModel = previewController.getModel(workspace);
                 if (workspace.getLookup().lookup(PreviewUIModelImpl.class) == null) {
-                    workspace.add(new PreviewUIModelImpl(previewModel));
+                    workspace.add(new PreviewUIModelImpl(previewModel, PreviewUIControllerImpl.this));
                 }
                 enableRefresh();
             }
@@ -117,7 +119,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                 PreviewModel previewModel = previewController.getModel(workspace);
                 model = workspace.getLookup().lookup(PreviewUIModelImpl.class);
                 if (model == null) {
-                    model = new PreviewUIModelImpl(previewModel);
+                    model = new PreviewUIModelImpl(previewModel, PreviewUIControllerImpl.this);
                     workspace.add(model);
                 }
                 Float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
@@ -150,7 +152,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
             model = pc.getCurrentWorkspace().getLookup().lookup(PreviewUIModelImpl.class);
             if (model == null) {
                 PreviewModel previewModel = previewController.getModel(pc.getCurrentWorkspace());
-                model = new PreviewUIModelImpl(previewModel);
+                model = new PreviewUIModelImpl(previewModel, this);
                 pc.getCurrentWorkspace().add(model);
             }
             Float visibilityRatio =
@@ -166,6 +168,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);
+
+        // Overriding Netbeans font editor to support disabled state, #3105
+        PropertyEditorManager.registerEditor(Font.class, DisabledAwareFontEditor.class);
     }
 
     /**
@@ -247,6 +252,16 @@ public class PreviewUIControllerImpl implements PreviewUIController {
     @Override
     public void addPreset(PreviewPreset preset) {
         presetUtils.savePreset(preset);
+    }
+
+    @Override
+    public void removePreset(PreviewPreset preset) {
+        presetUtils.removePreset(preset);
+    }
+
+    @Override
+    public boolean hasPreset(String name) {
+        return presetUtils.hasPreset(name);
     }
 
     @Override

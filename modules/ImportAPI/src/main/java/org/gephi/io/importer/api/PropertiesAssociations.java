@@ -46,35 +46,62 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Maps column titles to known node and edge properties for database importers.
+ * <p>
+ * This allows importers to declare which database column corresponds to which graph property (e.g. id, label,
+ * color, position).
+ */
 public final class PropertiesAssociations implements Serializable {
 
     private final Map<String, NodeProperties> titleToNodeProperty = new HashMap<>();
     private final Map<String, EdgeProperties> titleToEdgeProperty = new HashMap<>();
 
+    /**
+     * Associates a column title with a node property.
+     *
+     * @param property the node property to associate
+     * @param title    the column title that maps to this property
+     */
     public void addNodePropertyAssociation(NodeProperties property, String title) {
         titleToNodeProperty.put(title, property);
     }
 
+    /**
+     * Associates a column title with an edge property.
+     *
+     * @param property the edge property to associate
+     * @param title    the column title that maps to this property
+     */
     public void addEdgePropertyAssociation(EdgeProperties property, String title) {
         titleToEdgeProperty.put(title, property);
     }
 
+    /**
+     * Returns the node property associated with the given column title, or {@code null} if none is found.
+     *
+     * @param title column title
+     * @return node property or null
+     */
     public NodeProperties getNodeProperty(String title) {
-        if (titleToNodeProperty.containsKey(title)) {
-            return titleToNodeProperty.get(title);
-        } else {
-            return null;
-        }
+        return titleToNodeProperty.getOrDefault(title, null);
     }
 
+    /**
+     * Returns the edge property associated with the given column title, or {@code null} if none is found.
+     *
+     * @param title column title
+     * @return edge property or null
+     */
     public EdgeProperties getEdgeProperty(String title) {
-        if (titleToEdgeProperty.containsKey(title)) {
-            return titleToEdgeProperty.get(title);
-        } else {
-            return null;
-        }
+        return titleToEdgeProperty.getOrDefault(title, null);
     }
 
+    /**
+     * Returns a human-readable summary of all node and edge property associations.
+     *
+     * @return formatted string listing all associations
+     */
     public String getInfos() {
         StringBuilder builder = new StringBuilder("***Node Properties Associations***\n");
         for (Map.Entry<String, NodeProperties> entry : titleToNodeProperty.entrySet()) {

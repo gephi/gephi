@@ -44,6 +44,7 @@ package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
 import java.util.TimerTask;
+import javax.swing.SwingUtilities;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -59,7 +60,7 @@ import org.openide.windows.TopComponent;
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.filters//Filters//EN",
     autostore = false)
 @TopComponent.Description(preferredID = "FiltersTopComponent",
-    iconBase = "DesktopFilters/small.png",
+    iconBase = "DesktopFilters/small.svg",
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.filters.FiltersTopComponent")
@@ -97,12 +98,14 @@ public final class FiltersTopComponent extends TopComponent {
             @Override
             public void select(Workspace workspace) {
                 activateWorkspace(workspace);
-                refreshModel();
+                SwingUtilities.invokeLater(() -> refreshModel());
             }
 
             @Override
             public void unselect(Workspace workspace) {
-                observers.destroy();
+                if (observers != null) {
+                    observers.destroy();
+                }
             }
 
             @Override
@@ -114,7 +117,7 @@ public final class FiltersTopComponent extends TopComponent {
                 filterModel = null;
                 uiModel = null;
                 observers = null;
-                refreshModel();
+                SwingUtilities.invokeLater(() -> refreshModel());
             }
         });
 

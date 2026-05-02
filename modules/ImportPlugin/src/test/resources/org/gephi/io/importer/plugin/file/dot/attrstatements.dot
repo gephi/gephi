@@ -1,0 +1,7 @@
+digraph {
+    graph [label="My Graph" rankdir=LR];
+    node [shape=box style=filled];
+    edge [style=dashed];
+    A -> B;
+    B -> C;
+}

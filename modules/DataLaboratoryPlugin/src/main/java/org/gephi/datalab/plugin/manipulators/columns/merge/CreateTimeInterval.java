@@ -129,7 +129,7 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clock-select.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/clock-select.svg", false);
     }
 
     public Column[] getColumns() {

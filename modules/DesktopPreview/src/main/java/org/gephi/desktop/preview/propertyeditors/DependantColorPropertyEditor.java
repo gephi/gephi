@@ -42,13 +42,27 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.preview.propertyeditors;
 
+import java.awt.Color;
 import java.awt.Component;
+import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.editors.BasicDependantColorPropertyEditor;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
 public class DependantColorPropertyEditor extends BasicDependantColorPropertyEditor {
+
+    @Override
+    public String getAsText() {
+        DependantColor c = (DependantColor) getValue();
+        if (c.getMode().equals(DependantColor.Mode.CUSTOM)) {
+            String localizedCustom = NbBundle.getMessage(DependantColorPropertyEditor.class, "DependantColorPropertyEditor.custom.text");
+            return toText(localizedCustom, c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
+        } else {
+            return NbBundle.getMessage(DependantColorPropertyEditor.class, "DependantColorPropertyEditor."+c.getMode().name().toLowerCase()+".text");
+        }
+    }
 
     @Override
     public Component getCustomEditor() {

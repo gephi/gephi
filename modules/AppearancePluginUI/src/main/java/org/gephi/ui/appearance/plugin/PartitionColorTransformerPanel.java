@@ -196,7 +196,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     }
 
     private void applyPalette(Palette palette) {
-        PaletteManager.getInstance().addRecentPalette(palette);
         Color[] colors = palette.getColors();
         int i = 0;
         boolean ignoreNull = !function.getModel().isTransformNullValues();
@@ -208,6 +207,20 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         }
         table.revalidate();
         table.repaint();
+    }
+
+    void saveCurrentPaletteAsRecent() {
+        List<Color> colors = new ArrayList<>();
+        boolean ignoreNull = !function.getModel().isTransformNullValues();
+        for (Object value : values) {
+            if (!ignoreNull || value != null) {
+                Color c = function.getPartition().getColor(value);
+                colors.add(c != null ? c : Partition.DEFAULT_COLOR);
+            }
+        }
+        if (!colors.isEmpty()) {
+            PaletteManager.getInstance().addRecentPalette(new Palette(colors.toArray(new Color[0])));
+        }
     }
 
     private void applyColor(Color col) {

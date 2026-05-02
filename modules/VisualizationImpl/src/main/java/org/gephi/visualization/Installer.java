@@ -42,8 +42,10 @@
 
 package org.gephi.visualization;
 
-import com.jogamp.opengl.GLProfile;
+import org.gephi.visualization.component.GraphTopComponent;
 import org.openide.modules.ModuleInstall;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 public class Installer extends ModuleInstall {
 
@@ -56,6 +58,10 @@ public class Installer extends ModuleInstall {
     @Override
     public void close() {
         // Destroy JOGL
-        VizController.getInstance().destroy();
+        //VizController.getInstance().destroy();
+        final TopComponent tc = WindowManager.getDefault().findTopComponent("GraphTopComponent");
+        if (tc instanceof GraphTopComponent) {
+            ((GraphTopComponent) tc).shutdown();
+        }
     }
 }

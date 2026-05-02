@@ -1,7 +1,7 @@
 name: gephi
 title: Gephi
-base: core18
-version: 0.10.0-SNAPSHOT
+base: core24
+version: 0.11.0-SNAPSHOT
 summary: The Open Graph Viz Platform
 description: |
   **Gephi is the leading open-source platform for visualizing and manipulating large graphs.**
@@ -9,12 +9,15 @@ description: |
   * **Simple** Easy to install and get started. An UI that is centered around the visualization. Like Photoshop™ for graphs.
   * **Extensible** Extend Gephi with plug-ins.
 
-  Example datasets can be found on our wiki: https://github.com/gephi/gephi/wiki/Datasets
+  Example datasets can be found on our docs: https://docs.gephi.org/desktop/User_Manual/Datasets/
 
-  Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech and German.
+  Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech, German, Romanian, Greek, Hungarian, Korean, Swedish and Ukrainian.
 
 license: GPL-3.0
-architectures: [ amd64 ]
+donation: https://opencollective.com/gephi/donate?interval=oneTime&amount=5&contributeAs=me&tags=snapcraft
+platforms:
+  amd64:
+  arm64:
 icon: snap/gui/gephi.png
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict
@@ -23,24 +26,15 @@ parts:
   gephi:
     stage-packages:
       - libglu1-mesa
-    after:
-      - desktop-glib-only
     plugin: dump
     source:
-      - on amd64: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=$SNAPCRAFT_PROJECT_VERSION&c=linux-x64&p=tar.gz
+      - on amd64: https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260315.161618-58-linux-x64.tar.gz
+      - on arm64: https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260315.163347-61-linux-aarch64.tar.gz
     source-type: tar
-  desktop-glib-only:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: glib-only
-    plugin: make
-    build-packages:
-      - libglib2.0-dev
-    stage-packages:
-      - libglib2.0-bin
 
 apps:
   gephi:
-    extensions: [gnome-3-28]
+    extensions: [gnome]
     plugs:
       - home
       - network

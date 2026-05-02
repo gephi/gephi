@@ -14,7 +14,6 @@ import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.gephi.io.importer.spi.FileImporter;
-import org.gephi.io.importer.spi.Importer;
 import org.junit.Assert;
 
 public class Utils {
@@ -59,7 +58,8 @@ public class Utils {
     public static void assertSameEdges(EdgeDraft[] actual, String... edges) {
         Assert.assertEquals(edges.length, actual.length);
         Assert.assertEquals(new HashSet<>(Arrays.asList(edges)),
-            Arrays.stream(actual).map(e -> e.getSource().getId()+" -> "+e.getTarget().getId()).collect(Collectors.toSet()));
+            Arrays.stream(actual).map(e -> e.getSource().getId() + " -> " + e.getTarget().getId())
+                .collect(Collectors.toSet()));
     }
 
     public static void assertSameLabels(ElementDraft[] actual, String... labels) {

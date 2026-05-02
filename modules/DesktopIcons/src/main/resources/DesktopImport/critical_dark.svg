@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16" width="15.999999" height="15.999999">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #aaa;
+      }
+    </style>
+  </defs>
+  <path class="st1" d="M12.887,11.473c1.922-2.695,1.294-6.438-1.401-8.36-2.082-1.484-4.877-1.484-6.959,0l8.36,8.359Z"/>
+  <path class="st1" d="M3.113,4.527c-1.922,2.695-1.294,6.438,1.401,8.36,2.082,1.484,4.877,1.484,6.959,0L3.113,4.527Z"/>
+  <rect id="_Transparent_Rectangle_" class="st0" y="0" width="16" height="16"/>
+</svg>

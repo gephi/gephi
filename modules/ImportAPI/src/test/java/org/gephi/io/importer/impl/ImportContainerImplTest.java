@@ -48,6 +48,7 @@ import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.junit.Assert;
@@ -121,6 +122,90 @@ public class ImportContainerImplTest {
 
         Assert.assertTrue(importContainer.verify());
         Assert.assertEquals(1, importContainer.getUnloader().getEdgeCount());
+    }
+
+    // Bug fix: removeEdge was leaving a stale empty int[] in edgeTypeSets, blocking
+    // any subsequent addEdge for the same source/target pair.
+    @Test
+    public void testRemoveEdgeAndReAdd() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        generateTinyGraph(importContainer);
+        importContainer.removeEdge(importContainer.getEdge("1"));
+
+        // Re-add a new edge between the same nodes — must not be rejected
+        NodeDraft node1 = importContainer.getNode("1");
+        NodeDraft node2 = importContainer.getNode("2");
+        EdgeDraft newEdge = importContainer.factory().newEdgeDraft("3");
+        newEdge.setDirection(EdgeDirection.DIRECTED);
+        newEdge.setSource(node1);
+        newEdge.setTarget(node2);
+        importContainer.addEdge(newEdge);
+
+        Assert.assertEquals(2, importContainer.getEdgeCount());
+        Assert.assertNotNull(importContainer.getEdge("3"));
+        Assert.assertFalse(
+            importContainer.getReport().getIssues(1).hasNext()
+        );
+    }
+
+    // Bug fix: verify() was iterating nodeList without null guards in the ID-type
+    // validation section, causing NPE when removed nodes left null tombstones.
+    @Test
+    public void testVerifyWithRemovedNodeIntegerIdType() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        importContainer.setElementIdType(ElementIdType.INTEGER);
+        importContainer.setAllowAutoNode(true);
+
+        // Add a node explicitly and an edge referencing an unknown node (auto-created)
+        NodeDraft node1 = importContainer.factory().newNodeDraft("1");
+        importContainer.addNode(node1);
+        EdgeDraft edge = importContainer.factory().newEdgeDraft("10");
+        edge.setDirection(EdgeDirection.DIRECTED);
+        edge.setSource(node1);
+        edge.setTarget(importContainer.getNode("2")); // auto-creates node "2"
+        importContainer.addEdge(edge);
+
+        // Disabling auto-node and calling closeLoader() removes the auto-created node,
+        // leaving a null tombstone in nodeList.
+        importContainer.setAllowAutoNode(false);
+        importContainer.closeLoader();
+
+        // verify() must not throw NullPointerException when nodeList contains nulls
+        Assert.assertTrue(importContainer.verify());
+    }
+
+    // Bug fix: edgeExists(String, String) was calling getNode() which auto-creates
+    // nodes when allowAutoNode is true, corrupting the container as a side-effect.
+    @Test
+    public void testEdgeExistsNoAutoNodeSideEffect() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        importContainer.setAllowAutoNode(true);
+
+        Assert.assertFalse(importContainer.edgeExists("ghost1", "ghost2"));
+        Assert.assertEquals(0, importContainer.getNodeCount());
+        Assert.assertFalse(importContainer.nodeExists("ghost1"));
+        Assert.assertFalse(importContainer.nodeExists("ghost2"));
+    }
+
+    // Bug fix: NullFilterIterator.hasNext() was advancing the underlying iterator
+    // on every call, so calling it twice without next() skipped an element.
+    @Test
+    public void testNullFilterIteratorHasNextIdempotent() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        NodeDraft node1 = importContainer.factory().newNodeDraft("1");
+        NodeDraft node2 = importContainer.factory().newNodeDraft("2");
+        importContainer.addNode(node1);
+        importContainer.addNode(node2);
+
+        java.util.Iterator<NodeDraft> it = importContainer.getNodes().iterator();
+        // Call hasNext() twice without next() — both calls must report true and
+        // the subsequent next() must return the first node, not skip it.
+        Assert.assertTrue(it.hasNext());
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals("1", it.next().getId());
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals("2", it.next().getId());
+        Assert.assertFalse(it.hasNext());
     }
 
     @Test

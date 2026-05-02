@@ -8,6 +8,8 @@ Before diving into the details, it's important to note that Gephi is a **desktop
 
 All of the data you load into Gephi only resides in your computer's memory and hard drive. As a result, Gephi is much less exposed to security problems compared to web software for instance. Please take that in account while evaluating the policy below.
 
+The only exception when it comes to **connecting to the web** is for crash reporting.
+
 ## Supported Versions
 
 We monitor security vulnerabilities in the dependencies we use, as well as within the core codebase. In case of a major vulnerability, we would release a new patch version of Gephi to address it.

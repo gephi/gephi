@@ -59,19 +59,20 @@ import org.openide.util.NbBundle;
  */
 public class RandomLayout extends AbstractLayout implements Layout {
 
-    private final Random random;
+    private Random random;
     private Graph graph;
     private boolean converged;
     private double size;
+    private long seed;
 
     public RandomLayout(LayoutBuilder layoutBuilder, double size) {
         super(layoutBuilder);
         this.size = size;
-        random = new Random();
     }
 
     @Override
     public void initAlgo() {
+        random = new Random(seed);
         converged = false;
     }
 
@@ -116,11 +117,24 @@ public class RandomLayout extends AbstractLayout implements Layout {
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
+        try {
+            properties.add(LayoutProperty.createProperty(
+                this, Long.class,
+                NbBundle.getMessage(getClass(), "Random.seed.name"),
+                null,
+                "Random.seed.name",
+                NbBundle.getMessage(getClass(), "Random.seed.desc"),
+                "getSeed", "setSeed"));
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
         return properties.toArray(new LayoutProperty[0]);
     }
 
     @Override
     public void resetPropertiesValues() {
+        setSize(50.0);
+        setSeed(new Random().nextLong());
     }
 
     public Double getSize() {
@@ -129,5 +143,13 @@ public class RandomLayout extends AbstractLayout implements Layout {
 
     public void setSize(Double size) {
         this.size = size;
+    }
+
+    public Long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(Long seed) {
+        this.seed = seed;
     }
 }

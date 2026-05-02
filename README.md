@@ -5,23 +5,23 @@
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/total.svg)](https://github.com/gephi/gephi/releases/)
 [![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
 
-[Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech, German and Romanian.
+[Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech, German, Romanian, Greek, Hungarian, Korean, Swedish and Ukrainian.
 
 - **Fast** Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
 
-- **Simple** Easy to install and [get started](https://gephi.github.io/users/quick-start). An UI that is centered around the visualization. Like Photoshop™ for graphs.
+- **Simple** Easy to install and [get started](https://gephi.org/quickstart/). An UI that is centered around the visualization. Like Photoshop™ for graphs.
 
-- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of [Apache Netbeans Platform](https://netbeans.apache.org/tutorials/nbm-quick-start.html) and can be extended or reused easily through well-written APIs.
+- **Modular** Extend Gephi with [plug-ins](https://gephi.org/desktop/plugins/). The architecture is built on top of [Apache Netbeans Platform](https://netbeans.apache.org/tutorials/nbm-quick-start.html) and can be extended or reused easily through well-written APIs.
 
-[Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
+[Download Gephi](https://gephi.org/desktop/) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/releases). Example datasets can be found on our [wiki](https://docs.gephi.org/desktop/User_Manual/Datasets/).
 
-![Gephi](https://gephi.github.io/images/screenshots/select-tool-mini.png)
+![Gephi](https://gephi.org/select-tool-mini.png)
 
 ## Install and use Gephi
 
 Download and [Install](https://gephi.github.io/users/install/) Gephi on your computer. 
 
-Get started with the [Quick Start](https://gephi.github.io/users/quick-start/) and follow the [Tutorials](https://gephi.github.io/users/). Load a sample [dataset](https://github.com/gephi/gephi/wiki/Datasets) and start to play with the data.
+Get started with the [Quick Start](https://gephi.org/quickstart/) and follow the [Tutorials](https://gephi.org/quickstart/). Load a sample [dataset](https://docs.gephi.org/desktop/User_Manual/Datasets/) and start to play with the data.
 
 If you run into any trouble or have questions consult our [discussions](https://github.com/gephi/gephi/discussions).
 
@@ -29,21 +29,21 @@ If you run into any trouble or have questions consult our [discussions](https://
 
 ### Stable
 
-- Latest stable release on [gephi.org](https://gephi.org/users/download/).
+- Latest stable release on [gephi.org](https://gephi.org/desktop/).
 
 ### Development builds
 
-Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml). Current version is 0.11.0-SNAPSHOT
+Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.0-SNAPSHOT
 
-- [gephi-0.11.0-SNAPSHOT-windows-x64.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=windows-x64&p=exe) (Windows)
+- [gephi-0.11.0-SNAPSHOT-windows-x64.exe](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.171923-100-windows-x64.exe) (Windows)
 
-- [gephi-0.11.0-SNAPSHOT-windows-x32.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=windows-x32&p=exe) (Windows x32)
+- [gephi-0.11.0-SNAPSHOT-macos-x64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.172355-101-macos-x64.dmg) (Mac OS X)
 
-- [gephi-0.11.0-SNAPSHOT-macos-x64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=macos-x64&p=dmg) (Mac OS X)
+- [gephi-0.11.0-SNAPSHOT-macos-aarch64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.173808-103-macos-aarch64.dmg) (Mac OS X Silicon)
 
-- [gephi-0.11.0-SNAPSHOT-macos-aarch64.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=macos-aarch64&p=dmg) (Mac OS X Silicon)
+- [gephi-0.11.0-SNAPSHOT-linux-aarch64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.173559-102-linux-aarch64.tar.gz) (Linux aarch64)
 
-- [gephi-0.11.0-SNAPSHOT-linux-x64.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.11.0-SNAPSHOT&c=linux-x64&p=tar.gz) (Linux)
+- [gephi-0.11.0-SNAPSHOT-linux-x64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.171637-99-linux-x64.tar.gz) (Linux)
 
 ## Developer Introduction
 
@@ -53,7 +53,7 @@ Consult the [**Javadoc**](https://javadoc.io/doc/org.gephi/gephi/latest/index.ht
 
 ### Requirements
 
-- Java JDK 11 (or later)
+- Java JDK 17 (or later)
 
 - [Apache Maven](http://maven.apache.org/) version 3.6.3 or later
 
@@ -63,24 +63,28 @@ Consult the [**Javadoc**](https://javadoc.io/doc/org.gephi/gephi/latest/index.ht
 
         git clone git@github.com:username/gephi.git
 
-- Run the following command or [open the project in an IDE](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
+- Run the following command or [open the project in an IDE](https://docs.gephi.org/desktop/Developer_Documentation/how_to_build_gephi)
 
         mvn -T 4 clean install
+
+- To skip tests and speed up the build, use the `skipTests` profile
+
+        mvn -T 4 clean install -P skipTests
 
 - Once built, one can test running Gephi
 
 		cd modules/application
 		mvn nbm:cluster-app nbm:run-platform
 
-Note that while Gephi can be built using JDK 11 or later, it currently requires JDK 11 to run.
+Note that while Gephi can be built using JDK 17 or later, it currently requires JDK 17 to run.
 
 ### Create Plug-ins
 
 Gephi is extensible and lets developers create plug-ins to add new features, or to modify existing features. For example, you can create a new layout algorithm, add a metric, create a filter or a tool, support a new file format or database, or modify the visualization.
 
-- [**Plugins Portal**](https://github.com/gephi/gephi/wiki/Plugins)
+- [**Plugins Portal**](https://gephi.org/desktop/plugins/)
 
-- [Plugins Quick Start (5 minutes)](https://github.com/gephi/gephi/wiki/Plugin-Quick-Start)
+- [Plugins Quick Start (5 minutes)](https://docs.gephi.org/desktop/Plugins)
 
 - Browse the [plugins](https://gephi.org/plugins) created by the community
 
@@ -98,7 +102,7 @@ The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filte
 
 ## Localization
 
-We use [Weblate](https://hosted.weblate.org/projects/gephi/) for localization. Follow the guidelines on the [wiki](https://github.com/gephi/gephi/wiki/Localization) for more details how to contribute.
+We use [Weblate](https://hosted.weblate.org/projects/gephi/) for localization. Follow the guidelines on the [wiki](https://docs.gephi.org/desktop/Developer_Documentation/localization) for more details how to contribute.
 
 ## Icons
 
@@ -108,7 +112,7 @@ All icons can be found in the `DesktopIcons` module, organised by module name.
 
 ## License
 
-Gephi main source code is distributed under the dual license [CDDL 1.0](http://www.opensource.org/licenses/CDDL-1.0) and [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html). Read the [Legal FAQs](http://gephi.github.io/legal/faq/)  to learn more.
+Gephi main source code is distributed under the dual license [CDDL 1.0](http://www.opensource.org/licenses/CDDL-1.0) and [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html). Read the [Legal FAQs](https://gephi.org/about/)  to learn more.
 	
 Copyright 2011 Gephi Consortium. All rights reserved.
 
@@ -137,3 +141,4 @@ to extend the choice of license to its licensees as provided above.
 However, if you add GPL Version 3 code and therefore, elected the GPL
 Version 3 license, then the option applies only if the new code is
 made subject to such option by the copyright holder.
+

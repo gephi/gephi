@@ -50,11 +50,11 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- * Interface that define the way data are <b>unloaded</b> from containers and
- * appended to the workspace.
+ * Interface that defines the way data are <b>unloaded</b> from containers and
+ * appended to the workspace(s).
  * <p>
  * The purpose of processors is to unload data from the import containers and
- * push it to the workspace, with various strategies. For instance, a processor
+ * push it to the workspace(s), with various strategies. For instance, a processor
  * could either create a new workspace or append data to the current workspace,
  * managing duplicates.
  *
@@ -64,12 +64,13 @@ import org.gephi.utils.progress.ProgressTicket;
 public interface Processor {
 
     /**
-     * Process data <b>from</b> the container <b>to</b> the workspace. This task
-     * is done after an importer pushed data to the container.
+     * Process data <b>from</b> the container <b>to</b> the workspace(s). It
+     * returns the workspace(s) where data have been pushed.
      *
      * @see Importer
+     * @return the workspace(s) where data have been pushed
      */
-    void process();
+    Workspace[] process();
 
     /**
      * Sets the data containers. The processor's job is to get data from the
@@ -81,7 +82,8 @@ public interface Processor {
 
     /**
      * Sets the destination workspace for the data in the containers. If no
-     * workspace is provided, the current workspace will be used.
+     * workspace is provided, it's up to the processor's implementation to decide where to push data -
+     * for instance, a processor could create a new workspace or append data to the current workspace.
      *
      * @param workspace the workspace where data are to be pushed
      */
@@ -104,7 +106,7 @@ public interface Processor {
     /**
      * Returns the report of the processor after processing is done, with possible warnings and errors.
      *
-     * @return Processor report after processing
+     * @return the processor report after processing
      */
     Report getReport();
 }

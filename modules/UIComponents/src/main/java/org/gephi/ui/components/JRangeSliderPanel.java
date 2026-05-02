@@ -45,10 +45,13 @@ package org.gephi.ui.components;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -94,17 +97,15 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!lowerBoundTextField.getText().equals(lowerBound)) {
-                    lowerBound = lowerBoundTextField.getText();
-                    if (range != null) {
-                        range.setLowerBound(lowerBound);
-                        firePropertyChange(LOWER_BOUND, null, lowerBound);
-                    }
-                } else {
-                    lowerBound = lowerBoundTextField.getText();
-                }
-                refreshBoundTexts();
+                applyLowerBound();
                 JRangeSliderPanel.this.requestFocusInWindow();
+            }
+        });
+        lowerBoundTextField.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                applyLowerBound();
             }
         });
         upperBoundTextField.addMouseListener(new MouseAdapter() {
@@ -118,17 +119,15 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!upperBoundTextField.getText().equals(upperBound)) {
-                    upperBound = upperBoundTextField.getText();
-                    if (range != null) {
-                        range.setUpperBound(upperBound);
-                        firePropertyChange(UPPER_BOUND, null, upperBound);
-                    }
-                } else {
-                    upperBound = upperBoundTextField.getText();
-                }
-                refreshBoundTexts();
+                applyUpperBound();
                 JRangeSliderPanel.this.requestFocusInWindow();
+            }
+        });
+        upperBoundTextField.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                applyUpperBound();
             }
         });
 
@@ -145,6 +144,32 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    private void applyLowerBound() {
+        if (!lowerBoundTextField.getText().equals(lowerBound)) {
+            lowerBound = lowerBoundTextField.getText();
+            if (range != null) {
+                range.setLowerBound(lowerBound);
+                firePropertyChange(LOWER_BOUND, null, lowerBound);
+            }
+        } else {
+            lowerBound = lowerBoundTextField.getText();
+        }
+        refreshBoundTexts();
+    }
+
+    private void applyUpperBound() {
+        if (!upperBoundTextField.getText().equals(upperBound)) {
+            upperBound = upperBoundTextField.getText();
+            if (range != null) {
+                range.setUpperBound(upperBound);
+                firePropertyChange(UPPER_BOUND, null, upperBound);
+            }
+        } else {
+            upperBound = upperBoundTextField.getText();
+        }
+        refreshBoundTexts();
     }
 
     private void refreshBoundTexts() {
@@ -326,11 +351,14 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             BigDecimal minBigDecimal = new BigDecimal(min.toString());
             BigDecimal maxBigDecimal = new BigDecimal(max.toString());
 
+            // Use MathContext.DECIMAL64 so that integer-typed ranges (e.g. degree)
+            // don't get the result truncated to scale 0 (yielding only 0 or 1) when
+            // dividing two BigDecimals that share the dividend's scale.
             double normalizedLow = (lowerBoundBigDecimal.subtract(minBigDecimal))
-                .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
+                .divide(maxBigDecimal.subtract(minBigDecimal), MathContext.DECIMAL64)
                 .doubleValue();
             double normalizedUp = (upperBoundBigDecimal.subtract(minBigDecimal))
-                .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
+                .divide(maxBigDecimal.subtract(minBigDecimal), MathContext.DECIMAL64)
                 .doubleValue();
 
             sliderLowValue = (int) (normalizedLow * SLIDER_MAXIMUM);

@@ -56,7 +56,7 @@ import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.tools.api.EditWindowController;
+import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -162,7 +162,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!isRefreshingTable()) {
-                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    AttributesUIController edc = Lookup.getDefault().lookup(AttributesUIController.class);
                     if (edc != null && edc.isOpen()) {
                         if (table.getSelectedRow() != -1) {
                             edc.editEdges(getElementsFromSelectedRows().toArray(new Edge[0]));

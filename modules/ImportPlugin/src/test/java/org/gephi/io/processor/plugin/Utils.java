@@ -2,6 +2,7 @@ package org.gephi.io.processor.plugin;
 
 import org.gephi.graph.api.GraphModel;
 import org.gephi.io.importer.impl.ImportContainerImpl;
+import org.gephi.project.api.Workspace;
 
 public class Utils {
 
@@ -17,8 +18,8 @@ public class Utils {
         }
 
         @Override
-        public void process() {
-
+        public Workspace[] process() {
+            return new Workspace[0];
         }
 
         @Override

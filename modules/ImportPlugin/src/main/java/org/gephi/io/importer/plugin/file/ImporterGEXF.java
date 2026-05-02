@@ -239,12 +239,12 @@ public class ImporterGEXF implements FileImporter, LongTask {
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 elmt = reader.getLocalName();
             } else if (eventType.equals(XMLStreamReader.CHARACTERS)) {
-                if(!reader.isWhiteSpace()) {
+                if (!reader.isWhiteSpace()) {
                     if (META_DESCRIPTION.equalsIgnoreCase(elmt)) {
                         description = reader.getText();
                     } else if (META_TITLE.equalsIgnoreCase(elmt)) {
                         title = reader.getText();
-                    } else if(META_KEYWORDS.equalsIgnoreCase(elmt)) {
+                    } else if (META_KEYWORDS.equalsIgnoreCase(elmt)) {
                         // Not used
                     }
                 }

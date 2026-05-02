@@ -47,7 +47,6 @@ import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.util.Exceptions;
@@ -58,12 +57,11 @@ import org.openide.util.NbBundle;
  *
  * @author Helder Suzuki
  */
-public class RotateLayout extends AbstractLayout implements Layout {
+public class RotateLayout extends AbstractLayout {
 
-    private double angle;
-    private Graph graph;
+    private float angle;
 
-    public RotateLayout(LayoutBuilder layoutBuilder, double angle) {
+    public RotateLayout(LayoutBuilder layoutBuilder, float angle) {
         super(layoutBuilder);
         this.angle = angle;
     }
@@ -75,21 +73,19 @@ public class RotateLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        graph = graphModel.getGraphVisible();
+        Graph graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
-            double sin = Math.sin(-getAngle() * Math.PI / 180);
-            double cos = Math.cos(-getAngle() * Math.PI / 180);
-            double px = 0f;
-            double py = 0f;
+            float sin = (float) Math.sin(-getAngle() * Math.PI / 180f);
+            float cos = (float) Math.cos(-getAngle() * Math.PI / 180f);
+            float px = 0f;
+            float py = 0f;
 
             for (Node n : graph.getNodes()) {
                 if (!n.isFixed()) {
-                    double dx = n.x() - px;
-                    double dy = n.y() - py;
-
-                    n.setX((float) (px + dx * cos - dy * sin));
-                    n.setY((float) (py + dy * cos + dx * sin));
+                    float dx = n.x() - px;
+                    float dy = n.y() - py;
+                    n.setPosition(px + dx * cos - dy * sin, py + dy * cos + dx * sin);
                 }
             }
             setConverged(true);
@@ -104,6 +100,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
 
     @Override
     public void resetPropertiesValues() {
+        setAngle(90.0f);
     }
 
     @Override
@@ -111,7 +108,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class,
+                this, Float.class,
                 NbBundle.getMessage(getClass(), "rotate.angle.name"),
                 null,
                 "clockwise.angle.name",
@@ -126,14 +123,19 @@ public class RotateLayout extends AbstractLayout implements Layout {
     /**
      * @return the angle
      */
-    public Double getAngle() {
+    public Float getAngle() {
         return angle;
     }
 
     /**
      * @param angle the angle to set
      */
-    public void setAngle(Double angle) {
+    public void setAngle(Float angle) {
         this.angle = angle;
+    }
+
+    // Backward compatibility
+    public void setAngle(Double angle) {
+        setAngle(angle.floatValue());
     }
 }

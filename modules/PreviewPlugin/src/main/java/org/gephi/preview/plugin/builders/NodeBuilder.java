@@ -43,7 +43,6 @@
 package org.gephi.preview.plugin.builders;
 
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
@@ -57,19 +56,17 @@ public class NodeBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-
-        Item[] items = new NodeItem[graph.getNodeCount()];
-        int i = 0;
-        for (Node n : graph.getNodes()) {
-            NodeItem nodeItem = new NodeItem(n);
-            nodeItem.setData(NodeItem.X, n.x());
-            nodeItem.setData(NodeItem.Y, -n.y());
-            nodeItem.setData(NodeItem.Z, n.z());
-            nodeItem.setData(NodeItem.SIZE, n.size() * 2f);
-            nodeItem.setData(NodeItem.COLOR, n.getColor());
-            items[i++] = nodeItem;
-        }
-        return items;
+        return graph.getNodes().stream().map(
+            n -> {
+                NodeItem nodeItem = new NodeItem(n);
+                nodeItem.setData(NodeItem.X, n.x());
+                nodeItem.setData(NodeItem.Y, -n.y());
+                nodeItem.setData(NodeItem.Z, n.z());
+                nodeItem.setData(NodeItem.SIZE, n.size() * 2f);
+                nodeItem.setData(NodeItem.COLOR, n.getColor());
+                return nodeItem;
+            }
+        ).toArray(NodeItem[]::new);
     }
 
     @Override

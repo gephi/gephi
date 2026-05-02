@@ -43,6 +43,7 @@
 package org.gephi.desktop.context;
 
 import java.awt.BorderLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -96,7 +97,7 @@ public final class ContextTopComponent extends TopComponent {
             public void select(Workspace workspace) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel(workspace);
-                contextPanel.refreshModel(gm);
+                SwingUtilities.invokeLater(() -> contextPanel.refreshModel(gm));
             }
 
             @Override
@@ -109,7 +110,7 @@ public final class ContextTopComponent extends TopComponent {
 
             @Override
             public void disable() {
-                contextPanel.refreshModel(null);
+                SwingUtilities.invokeLater(() -> contextPanel.refreshModel(null));
             }
         });
         if (pc.getCurrentWorkspace() != null) {

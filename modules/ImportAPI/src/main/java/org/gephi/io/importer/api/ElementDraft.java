@@ -330,24 +330,78 @@ public interface ElementDraft {
      */
     void setLabelColor(int r, int g, int b);
 
+    /**
+     * Adds a timestamp to this element's time set, marking it as present at the given double timestamp.
+     *
+     * @param timestamp timestamp value
+     */
     void addTimestamp(double timestamp);
 
+    /**
+     * Adds a timestamp to this element's time set by parsing the given date or datetime string.
+     *
+     * @param dateTime date or datetime string
+     */
     void addTimestamp(String dateTime);
 
+    /**
+     * Parses and adds multiple timestamps to this element's time set from a string representation.
+     *
+     * @param timestamps timestamps string (e.g. {@code "[1.0, 2.0, 3.0]"})
+     */
     void addTimestamps(String timestamps);
 
+    /**
+     * Adds an interval to this element's time set, marking it as present during {@code [start, end]}.
+     *
+     * @param start interval start
+     * @param end   interval end
+     */
     void addInterval(double start, double end);
 
+    /**
+     * Adds an interval to this element's time set by parsing the given start and end datetime strings.
+     *
+     * @param startDateTime interval start as a date or datetime string
+     * @param endDateTime   interval end as a date or datetime string
+     */
     void addInterval(String startDateTime, String endDateTime);
 
+    /**
+     * Parses and adds multiple intervals to this element's time set from a string representation.
+     *
+     * @param intervals intervals string (e.g. {@code "[[1.0, 2.0]; [3.0, 4.0]]"})
+     */
     void addIntervals(String intervals);
 
+    /**
+     * Returns this element's time set, or {@code null} if the element has no time information.
+     *
+     * @return time set or null
+     */
     TimeSet getTimeSet();
 
+    /**
+     * Returns the columns that have a value set on this element.
+     *
+     * @return an iterable of column drafts with values on this element
+     */
     Iterable<ColumnDraft> getColumns();
 
+    /**
+     * Returns the graph-level timestamp that will be applied to this element during processing, or {@code null} if
+     * not set.
+     *
+     * @return graph timestamp or null
+     */
     Double getGraphTimestamp();
 
+    /**
+     * Returns the graph-level interval that will be applied to this element during processing, or {@code null} if
+     * not set.
+     *
+     * @return graph interval or null
+     */
     Interval getGraphInterval();
 
     /**

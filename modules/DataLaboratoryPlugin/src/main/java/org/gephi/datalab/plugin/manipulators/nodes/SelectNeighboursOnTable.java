@@ -106,6 +106,6 @@ public class SelectNeighboursOnTable extends BasicNodesManipulator {
     @Override
     public Icon getIcon() {
         return ImageUtilities
-            .loadImageIcon("DataLaboratoryPlugin/table-select-row.png", false);
+            .loadImageIcon("DataLaboratoryPlugin/table-select-row.svg", false);
     }
 }

@@ -47,7 +47,6 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.math3.analysis.function.Abs;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
@@ -75,6 +74,7 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorConfigurationException;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.Attributes;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -174,7 +174,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
             Color labelColor = nodeDraft.getLabelColor();
             node.getTextProperties().setColor(labelColor);
         } else {
-            node.getTextProperties().setColor(new Color(0, 0, 0, 0));
+            node.getTextProperties().setColor(new Color(0, 0, 0, 255));
         }
 
         if (nodeDraft.getLabelSize() != -1f && node.getTextProperties() != null) {
@@ -192,6 +192,11 @@ public abstract class AbstractProcessor implements Processor, LongTask {
             node.setSize(nodeDraft.getSize());
         } else if (node.size() == 0) {
             node.setSize(10f);
+        }
+
+        //Fixed
+        if(nodeDraft.isFixed()) {
+            node.setFixed(true);
         }
 
         //Timeset
@@ -295,7 +300,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
                 edge.setR(0f);
                 edge.setG(0f);
                 edge.setB(0f);
-                edge.setAlpha(0f);
+                edge.setAlpha(1f);
             }
 
             flushLabel(edgeDraft, edge);
@@ -312,7 +317,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
                 Color labelColor = edgeDraft.getLabelColor();
                 edge.getTextProperties().setColor(labelColor);
             } else {
-                edge.getTextProperties().setColor(new Color(0, 0, 0, 0));
+                edge.getTextProperties().setColor(new Color(0, 0, 0, 255));
             }
 
             //Attributes
@@ -507,19 +512,63 @@ public abstract class AbstractProcessor implements Processor, LongTask {
         return configBuilder.build();
     }
 
-    protected boolean configurationMatchesExisting(Configuration newConfig, Workspace workspace) {
+    protected void validateConfigurationMatchesExisting(ContainerUnloader container, Configuration newConfig,
+                                                        Workspace workspace) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Configuration existingConfig = graphController.getGraphModel(workspace).getConfiguration();
-        if(!newConfig.equals(graphController.getGraphModel(workspace).getConfiguration())) {
+
+        if (container.isDynamicGraph() || container.hasDynamicAttributes()) {
+            if (newConfig.getTimeRepresentation() != existingConfig.getTimeRepresentation()) {
+                String message = NbBundle.getMessage(
+                    AbstractProcessor.class, "AbstractProcessor.error.timeRepresentationMismatch",
+                    newConfig.getTimeRepresentation().name(),
+                    existingConfig.getTimeRepresentation().name()
+                );
+                report.logIssue(new Issue(message, Issue.Level.SEVERE));
+            }
+        }
+
+        if (!newConfig.getEdgeWeightType().equals(existingConfig.getEdgeWeightType())) {
             String message = NbBundle.getMessage(
-                DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
-                existingConfig.toString(),
-                newConfig.toString()
+                AbstractProcessor.class, "AbstractProcessor.error.edgeWeightTypeMismatch",
+                newConfig.getEdgeWeightType().getSimpleName(),
+                existingConfig.getEdgeWeightType().getSimpleName()
             );
             report.logIssue(new Issue(message, Issue.Level.SEVERE));
-            return false;
         }
-        return true;
+
+        if (container.getEdgeTypeLabelClass() != null &&
+            !newConfig.getEdgeLabelType().equals(container.getEdgeTypeLabelClass())) {
+            String message = NbBundle.getMessage(
+                AbstractProcessor.class, "AbstractProcessor.error.edgeLabelTypeMismatch",
+                newConfig.getEdgeLabelType().getSimpleName(),
+                container.getEdgeTypeLabelClass().getSimpleName()
+            );
+            report.logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
+
+        if (!newConfig.getNodeIdType().equals(existingConfig.getNodeIdType())) {
+            String message = NbBundle.getMessage(
+                AbstractProcessor.class, "AbstractProcessor.error.nodeIdTypeMismatch",
+                newConfig.getNodeIdType().getSimpleName(),
+                existingConfig.getNodeIdType().getSimpleName()
+            );
+            report.logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
+
+        if (!newConfig.getEdgeIdType().equals(existingConfig.getEdgeIdType())) {
+            String message = NbBundle.getMessage(
+                AbstractProcessor.class, "AbstractProcessor.error.edgeIdTypeMismatch",
+                newConfig.getEdgeIdType().getSimpleName(),
+                existingConfig.getEdgeIdType().getSimpleName()
+            );
+            report.logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
+
+        if (report.hasIssues()) {
+            throw new ProcessorConfigurationException(
+                "Processor configuration does not match existing workspace configuration. See report for details.");
+        }
     }
 
     @Override

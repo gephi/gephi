@@ -19,7 +19,7 @@
     <p>
       Example datasets can be found on our wiki: https://github.com/gephi/gephi/wiki/Datasets
     </p>
-    <p>Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech and German.</p>
+    <p>Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech, German, Romanian, Greek, Hungarian, Korean, Swedish and Ukrainian.</p>
   </description>
   <launchable type="desktop-id">org.gephi.Gephi.desktop</launchable>
   <screenshots>

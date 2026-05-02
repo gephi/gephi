@@ -43,17 +43,22 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
+import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
-public class TimelineModelImpl implements TimelineModel {
+public class TimelineModelImpl implements TimelineModel, Model {
 
+    private final Workspace workspace;
     private final GraphModel graphModel;
     private final AtomicBoolean playing;
     private boolean enabled;
@@ -71,10 +76,11 @@ public class TimelineModelImpl implements TimelineModel {
     //
     private Interval interval;
 
-    public TimelineModelImpl(GraphModel dynamicModel) {
-        this.graphModel = dynamicModel;
-        this.customMin = dynamicModel.getTimeBounds().getLow();
-        this.customMax = dynamicModel.getTimeBounds().getHigh();
+    public TimelineModelImpl(Workspace workspace) {
+        this.workspace = workspace;
+        this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        this.customMin = graphModel.getTimeBounds().getLow();
+        this.customMax = graphModel.getTimeBounds().getHigh();
         this.previousMin = customMin;
         this.previousMax = customMax;
         playDelay = 100;
@@ -89,8 +95,16 @@ public class TimelineModelImpl implements TimelineModel {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    /**
+     * Sets enabled state. Returns {@code true} if the state actually changed.
+     * Only allows enabling when valid bounds exist.
+     */
+    public boolean setEnabled(boolean enabled) {
+        if (this.enabled == enabled || (enabled && !hasValidBounds())) {
+            return false;
+        }
         this.enabled = enabled;
+        return true;
     }
 
     @Override
@@ -103,20 +117,12 @@ public class TimelineModelImpl implements TimelineModel {
         return graphModel.getTimeBounds().getHigh();
     }
 
-    public double getPreviousMin() {
+    double getPreviousMin() {
         return previousMin;
     }
 
-    public void setPreviousMin(double previousMin) {
-        this.previousMin = previousMin;
-    }
-
-    public double getPreviousMax() {
+    double getPreviousMax() {
         return previousMax;
-    }
-
-    public void setPreviousMax(double previousMax) {
-        this.previousMax = previousMax;
     }
 
     @Override
@@ -124,17 +130,54 @@ public class TimelineModelImpl implements TimelineModel {
         return customMin;
     }
 
-    public void setCustomMin(double customMin) {
-        this.customMin = customMin;
-    }
-
     @Override
     public double getCustomMax() {
         return customMax;
     }
 
-    public void setCustomMax(double customMax) {
-        this.customMax = customMax;
+    /**
+     * Validates and updates custom bounds. Returns {@code true} if the bounds changed.
+     */
+    public boolean setCustomBounds(double min, double max) {
+        if (customMin == min && customMax == max) {
+            return false;
+        }
+        if (min >= max) {
+            throw new IllegalArgumentException("min should be less than max");
+        }
+        if (min < getMin() || max > getMax()) {
+            throw new IllegalArgumentException("Min and max should be in the bounds");
+        }
+        customMin = min;
+        customMax = max;
+        return true;
+    }
+
+    /**
+     * Adjusts custom and previous min/max bounds based on a new observed time range.
+     * Returns {@code true} if the update was applied (min != max).
+     * Captures the previous custom bounds before update into {@code previousCustomBounds[0..1]}
+     * so the caller can detect valid-bounds transitions.
+     */
+    public boolean updateMinMax(double min, double max, double[] previousCustomBounds) {
+        if (min > max) {
+            throw new IllegalArgumentException("min should be less than max");
+        }
+        if (min == max) {
+            return false;
+        }
+        previousCustomBounds[0] = customMin;
+        previousCustomBounds[1] = customMax;
+
+        if (customMin == previousMin || customMin < min) {
+            customMin = min;
+        }
+        if (customMax == previousMax || customMax > max) {
+            customMax = max;
+        }
+        previousMin = min;
+        previousMax = max;
+        return true;
     }
 
     @Override
@@ -166,8 +209,23 @@ public class TimelineModelImpl implements TimelineModel {
         return graphModel.getTimeFormat();
     }
 
-    public void setInterval(double start, double end) {
-        this.interval = new Interval(start, end);
+    /**
+     * Validates and stores the interval. Returns {@code true} if the interval changed.
+     */
+    public boolean setInterval(double from, double to) {
+        if (from >= to) {
+            throw new IllegalArgumentException("from should be less than to");
+        }
+        if (!(Double.isInfinite(from) && Double.isInfinite(to))) {
+            if (from < customMin || to > customMax) {
+                throw new IllegalArgumentException("From and to should be in the bounds");
+            }
+        }
+        if (getIntervalStart() == from && getIntervalEnd() == to) {
+            return false;
+        }
+        interval = new Interval(from, to);
+        return true;
     }
 
     @Override
@@ -178,6 +236,14 @@ public class TimelineModelImpl implements TimelineModel {
 
     public GraphModel getGraphModel() {
         return graphModel;
+    }
+
+    /**
+     * Returns the workspace this model belongs to. Used by the controller to obtain
+     * workspace-specific services (e.g. FilterModel) without storing them.
+     */
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override

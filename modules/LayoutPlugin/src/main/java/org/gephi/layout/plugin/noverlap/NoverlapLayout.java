@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
@@ -56,6 +57,7 @@ import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Jacomy
@@ -64,6 +66,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     protected boolean cancel;
     protected Graph graph;
+    private Random random;
+    private long seed;
     private double speed;
     private double ratio;
     private double margin;
@@ -79,6 +83,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     @Override
     public void initAlgo() {
         this.graph = graphModel.getGraphVisible();
+        random = new Random(seed);
         setConverged(false);
         cancel = false;
     }
@@ -195,8 +200,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                             layoutData.dy += yDist / dist * f;
                         } else {
                             // Same exact position, divide by zero impossible: jitter
-                            layoutData.dx += 0.01 * (0.5 - Math.random());
-                            layoutData.dy += 0.01 * (0.5 - Math.random());
+                            layoutData.dx += 0.01 * (0.5 - random.nextDouble());
+                            layoutData.dy += 0.01 * (0.5 - random.nextDouble());
                         }
                     }
                     if (cancel) {
@@ -242,22 +247,48 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<>();
-        final String NOVERLAP_CATEGORY = "Noverlap";
+        final String NOVERLAP_CATEGORY = NbBundle.getMessage(getClass(), "name");
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "Noverlap.speed.name"),
+                NOVERLAP_CATEGORY,
+                "Noverlap.speed.name",
+                NbBundle.getMessage(getClass(), "Noverlap.speed.desc"),
+                "getSpeed", "setSpeed"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "Noverlap.ratio.name"),
+                NOVERLAP_CATEGORY,
+                "Noverlap.ratio.name",
+                NbBundle.getMessage(getClass(), "Noverlap.ratio.desc"),
+                "getRatio", "setRatio"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "margin", NOVERLAP_CATEGORY, "margin", "getMargin", "setMargin"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "Noverlap.margin.name"),
+                NOVERLAP_CATEGORY,
+                "Noverlap.margin.name",
+                NbBundle.getMessage(getClass(), "Noverlap.margin.desc"),
+                "getMargin", "setMargin"));
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
+        try {
+            properties.add(LayoutProperty.createProperty(
+                this, Long.class,
+                NbBundle.getMessage(getClass(), "Noverlap.seed.name"),
+                NOVERLAP_CATEGORY,
+                "Noverlap.seed.name",
+                NbBundle.getMessage(getClass(), "Noverlap.seed.desc"),
+                "getSeed", "setSeed"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -269,6 +300,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         setSpeed(3.);
         setRatio(1.2);
         setMargin(5.);
+        setSeed(new Random().nextLong());
     }
 
     public Double getSpeed() {
@@ -293,6 +325,14 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     public void setMargin(Double margin) {
         this.margin = margin;
+    }
+
+    public Long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(Long seed) {
+        this.seed = seed;
     }
 
     @Override

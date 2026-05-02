@@ -78,6 +78,7 @@ public class OpenOrdLayout implements Layout, LongTask {
     private long randSeed;
     private int numIterations;
     private float realTime;
+    private int layoutSize;
     //Layout
     private Worker[] workers;
     private Combine combine;
@@ -99,6 +100,7 @@ public class OpenOrdLayout implements Layout, LongTask {
         randSeed = r.nextLong();
         running = true;
         realTime = 0.2f;
+        layoutSize = 20000;
         param = Params.DEFAULT;
     }
 
@@ -182,7 +184,7 @@ public class OpenOrdLayout implements Layout, LongTask {
                 float shiftX = minX + (maxX - minX) / 2f;
                 float shiftY = minY + (maxY - minY) / 2f;
                 float ratio =
-                    Math.min(DensityGrid.getViewSize() / (maxX - minX), DensityGrid.getViewSize() / (maxY - minY));
+                    Math.min(DensityGrid.getUsableSize() / (maxX - minX), DensityGrid.getUsableSize() / (maxY - minY));
                 ratio = Math.min(1f, ratio);
                 for (Node n : nodes) {
                     if (n.fixed) {
@@ -325,6 +327,12 @@ public class OpenOrdLayout implements Layout, LongTask {
                 "getRandSeed", "setRandSeed"));
             properties.add(LayoutProperty.createProperty(
                 this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.layoutsize.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.layoutsize.description"),
+                "getLayoutSize", "setLayoutSize"));
+            properties.add(LayoutProperty.createProperty(
+                this, Integer.class,
                 NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.name"),
                 STAGE,
                 NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.description"),
@@ -409,6 +417,14 @@ public class OpenOrdLayout implements Layout, LongTask {
         realTime = Math.min(1f, realTime);
         realTime = Math.max(0, realTime);
         this.realTime = realTime;
+    }
+
+    public Integer getLayoutSize() {
+        return layoutSize;
+    }
+
+    public void setLayoutSize(Integer layoutSize) {
+        this.layoutSize = Math.max(4000, layoutSize);
     }
 
     public Integer getLiquidStage() {

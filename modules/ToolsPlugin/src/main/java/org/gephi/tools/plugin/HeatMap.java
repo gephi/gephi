@@ -104,7 +104,7 @@ public class HeatMap implements Tool {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodeClickEventListener() {
             @Override
-            public void clickNodes(Node[] nodes) {
+            public boolean clickNodes(Node[] nodes) {
                 try {
                     Node n = nodes[0];
                     Color[] colors;
@@ -157,10 +157,13 @@ public class HeatMap implements Tool {
                     Color c = colors[0];
                     n.setColor(c);
                     heatMapPanel.setStatus(NbBundle.getMessage(HeatMap.class, "HeatMap.status.maxdistance") +
-                        new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
+                        " " + new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
+
                 } catch (Exception e) {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
                 }
+
+                return true;
             }
         };
         return listeners;

@@ -114,6 +114,6 @@ public class ImportCSV implements GeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-excel.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/table-excel.svg", false);
     }
 }

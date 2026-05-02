@@ -91,6 +91,14 @@ public interface Item {
     <D> D getData(String key);
 
     /**
+     * Returns true if the item has data associated to the given key.
+     *
+     * @param key the key
+     * @return true if data associated to <code>key</code> exists
+     */
+    boolean hasData(String key);
+
+    /**
      * Sets data to this item.
      *
      * @param key   the key

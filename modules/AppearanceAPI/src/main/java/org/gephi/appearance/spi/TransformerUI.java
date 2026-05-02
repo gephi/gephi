@@ -112,4 +112,16 @@ public interface TransformerUI<T extends Transformer> {
      * @return transformer class
      */
     Class<? extends T> getTransformerClass();
+
+    /**
+     * Called after the transformer has been applied to the graph, either via
+     * the Apply button or auto-apply.
+     * <p>
+     * Implementations can override this to react to apply events, for example
+     * to persist UI state that depends on the current function configuration.
+     *
+     * @param function function that was applied
+     */
+    default void onApply(Function function) {
+    }
 }

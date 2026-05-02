@@ -77,7 +77,7 @@ public class FilterModelImpl implements FilterModel, Model {
     private GraphView currentResult;
     private boolean autoRefresh;
     //Listeners
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
 
     public FilterModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -303,7 +303,7 @@ public class FilterModelImpl implements FilterModel, Model {
         }
         autoRefreshor.setRunning(false);
         currentResult = null;
-        listeners = null;
+        listeners.clear();
         for (Query q : queries) {
             destroyQuery(q);
         }
@@ -334,9 +334,7 @@ public class FilterModelImpl implements FilterModel, Model {
 
     @Override
     public void removeChangeListener(ChangeListener listener) {
-        if (listeners != null) {
-            listeners.remove(listener);
-        }
+        listeners.remove(listener);
     }
 
     private void fireChangeEvent() {

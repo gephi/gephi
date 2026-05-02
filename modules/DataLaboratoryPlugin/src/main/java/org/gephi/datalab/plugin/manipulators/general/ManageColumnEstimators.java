@@ -134,7 +134,7 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/gear.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/gear.svg", false);
     }
 
     public void setup(Column[] columns, Estimator[] estimators) {

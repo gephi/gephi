@@ -60,7 +60,7 @@ import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.ui.tools.plugin.ShortestPathPanel;
-import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -73,6 +73,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ShortestPath implements Tool {
 
     //Architecture
+    private final VisualizationController visualizationController;
     private ToolEventListener[] listeners;
     private ShortestPathPanel shortestPathPanel;
     //Settings
@@ -84,13 +85,15 @@ public class ShortestPath implements Tool {
     public ShortestPath() {
         //Default settings
         color = Color.RED;
+        visualizationController = Lookup.getDefault().lookup(VisualizationController.class);
     }
 
     @Override
     public void select() {
-        settingEdgeSourceColor = !VizController.getInstance().getVizModel().isEdgeHasUniColor();
-        VizController.getInstance().getVizModel().setEdgeHasUniColor(true);
-        VizController.getInstance().getVizConfig().setEnableAutoSelect(false);
+//        settingEdgeSourceColor = !VizController.getInstance().getVizModel().isEdgeHasUniColor();
+//        VizController.getInstance().getVizModel().setEdgeHasUniColor(true);
+//        VizController.getInstance().getVizConfig().setEnableAutoSelect(false);
+        //TODO
     }
 
     @Override
@@ -98,8 +101,9 @@ public class ShortestPath implements Tool {
         listeners = null;
         sourceNode = null;
         shortestPathPanel = null;
-        VizController.getInstance().getVizModel().setEdgeHasUniColor(settingEdgeSourceColor);
-        VizController.getInstance().getVizConfig().setEnableAutoSelect(true);
+//        VizController.getInstance().getVizModel().setEdgeHasUniColor(settingEdgeSourceColor);
+//        VizController.getInstance().getVizConfig().setEnableAutoSelect(true);
+        //TODO
     }
 
     @Override
@@ -107,7 +111,7 @@ public class ShortestPath implements Tool {
         listeners = new ToolEventListener[2];
         listeners[0] = new NodeClickEventListener() {
             @Override
-            public void clickNodes(Node[] nodes) {
+            public boolean clickNodes(Node[] nodes) {
                 Node n = nodes[0];
                 if (sourceNode == null) {
                     sourceNode = n;
@@ -130,21 +134,22 @@ public class ShortestPath implements Tool {
                     double distance;
                     if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
                         targetNode.setColor(color);
-                        VizController.getInstance().selectNode(targetNode);
+                        visualizationController.setCustomSelection();
+                        visualizationController.selectNodes(new Node[]{targetNode});
                         Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
                         Node predecessor = algorithm.getPredecessor(targetNode);
                         while (predecessorEdge != null && predecessor != sourceNode) {
                             predecessorEdge.setColor(color);
-                            VizController.getInstance().selectEdge(predecessorEdge);
+                            visualizationController.selectEdges(new Edge[]{predecessorEdge});
                             predecessor.setColor(color);
-                            VizController.getInstance().selectNode(predecessor);
+                            visualizationController.selectNodes(new Node[]{predecessor});
                             predecessorEdge = algorithm.getPredecessorIncoming(predecessor);
                             predecessor = algorithm.getPredecessor(predecessor);
                         }
                         predecessorEdge.setColor(color);
-                        VizController.getInstance().selectEdge(predecessorEdge);
+                        visualizationController.selectEdges(new Edge[]{predecessorEdge});
                         sourceNode.setColor(color);
-                        VizController.getInstance().selectNode(sourceNode);
+                        visualizationController.selectNodes(new Node[]{sourceNode});
                         shortestPathPanel
                             .setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.result", distance));
                     } else {
@@ -155,18 +160,22 @@ public class ShortestPath implements Tool {
                     sourceNode = null;
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                 }
+
+                return true;
             }
         };
         listeners[1] = new MouseClickEventListener() {
             @Override
-            public void mouseClick(int[] positionViewport, float[] position3d) {
+            public boolean mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                     sourceNode = null;
                 } else {
-                    VizController.getInstance().resetSelection();
+                    visualizationController.resetSelection();
                 }
+
+                return true;
             }
         };
         return listeners;
@@ -207,6 +216,6 @@ public class ShortestPath implements Tool {
 
     @Override
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SINGLE_NODE_SELECTION;
     }
 }

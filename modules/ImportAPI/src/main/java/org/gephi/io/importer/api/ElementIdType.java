@@ -49,8 +49,11 @@ package org.gephi.io.importer.api;
  */
 public enum ElementIdType {
 
+    /** Element ids are stored as {@link String}. */
     STRING(String.class),
+    /** Element ids are stored as {@link Integer}. */
     INTEGER(Integer.class),
+    /** Element ids are stored as {@link Long}. */
     LONG(Long.class);
 
     private final Class cls;
@@ -59,6 +62,11 @@ public enum ElementIdType {
         this.cls = cls;
     }
 
+    /**
+     * Returns the Java class corresponding to this id type.
+     *
+     * @return id type class
+     */
     public Class getTypeClass() {
         return cls;
     }

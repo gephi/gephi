@@ -54,12 +54,12 @@ import org.openide.nodes.PropertySupport;
  */
 public final class LayoutProperty {
 
-    protected Property property;
-    protected String category;
+    private Property property;
+    private String category;
     /**
      * Should be unique for a property and not localized.
      */
-    protected String canonicalName;
+    private String canonicalName;
 
     public LayoutProperty(Property property, String category, String canonicalName) {
         this.property = property;

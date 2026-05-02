@@ -118,11 +118,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             public void close(Workspace workspace) {
                 FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (m != null) {
-                    m.destroy();
                     if (m.getCurrentResult() != null && m.getGraphModel() != null) {
                         m.getGraphModel().destroyView(m.getCurrentResult());
                         m.setCurrentResult(null);
                     }
+                    m.destroy();
                 }
             }
 
@@ -249,18 +249,25 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     @Override
     public void filterVisible(Query query) {
         FilterModelImpl model = getModel();
-        if (query != null && model.getCurrentQuery() == query && model.isFiltering()) {
+        // Skip only if the active FilterThread was actually started for this
+        // query. Checking model.getCurrentQuery() alone is unreliable: when a
+        // new query is added, FilterModelImpl.addFirst() updates currentQuery
+        // before the UI has had a chance to start a new FilterThread for it,
+        // which previously caused the new query to never be filtered.
+        FilterThread currentThread = model.getFilterThread();
+        if (query != null && model.isFiltering() && currentThread != null
+            && currentThread.getInitialQuery() == query) {
             return;
         }
         model.setFiltering(query != null);
         model.setCurrentQuery(query);
 
-        if (model.getFilterThread() != null) {
-            model.getFilterThread().setRunning(false);
+        if (currentThread != null) {
+            currentThread.setRunning(false);
             model.setFilterThread(null);
         }
         if (query != null) {
-            FilterThread filterThread = new FilterThread(model);
+            FilterThread filterThread = new FilterThread(model, (AbstractQueryImpl) query);
             model.setFilterThread(filterThread);
             filterThread.setRootQuery((AbstractQueryImpl) query);
             filterThread.start();
@@ -285,14 +292,18 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     @Override
     public void selectVisible(Query query) {
         FilterModelImpl model = getModel();
-        if (query != null && model.getCurrentQuery() == query && model.isSelecting()) {
+        // Same rationale as filterVisible: only skip when an active FilterThread
+        // was actually started for this query.
+        FilterThread currentThread = model.getFilterThread();
+        if (query != null && model.isSelecting() && currentThread != null
+            && currentThread.getInitialQuery() == query) {
             return;
         }
         model.setSelecting(query != null);
         model.setCurrentQuery(query);
 
-        if (model.getFilterThread() != null) {
-            model.getFilterThread().setRunning(false);
+        if (currentThread != null) {
+            currentThread.setRunning(false);
             model.setFilterThread(null);
         }
 
@@ -303,7 +314,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         }
 
         if (query != null) {
-            FilterThread filterThread = new FilterThread(model);
+            FilterThread filterThread = new FilterThread(model, (AbstractQueryImpl) query);
             model.setFilterThread(filterThread);
             filterThread.setRootQuery((AbstractQueryImpl) query);
             filterThread.start();

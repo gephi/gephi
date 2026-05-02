@@ -285,30 +285,39 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
         if (evt.getPropertyName().equals(WorkspaceInformation.EVENT_RENAME)) {
 
             final WorkspaceInformation workspaceInformation = (WorkspaceInformation) evt.getSource();
-            final int index = tabbedContainer.getSelectionModel().getSelectedIndex();
-            if (!tabDataModel.getTab(index).getText().equals(workspaceInformation.getName())) {
-                SwingUtilities.invokeLater(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        tabDataModel.setText(index, workspaceInformation.getName());
+                @Override
+                public void run() {
+                    for (int i = 0; i < tabDataModel.size(); i++) {
+                        if (tabDataModel.getTab(i).getUserObject() instanceof Workspace) {
+                            Workspace ws = (Workspace) tabDataModel.getTab(i).getUserObject();
+                            if (ws.getLookup().lookup(WorkspaceInformation.class) == workspaceInformation) {
+                                tabDataModel.setText(i, workspaceInformation.getName());
+                                break;
+                            }
+                        }
                     }
-                });
-            }
+                }
+            });
         } else if (evt.getPropertyName().equals(WorkspaceInformation.EVENT_SET_SOURCE)) {
 
             final WorkspaceInformation workspaceInformation = (WorkspaceInformation) evt.getSource();
-            final int index = tabbedContainer.getSelectionModel().getSelectedIndex();
-            if (tabDataModel.getTab(index).getTooltip() == null
-                || !tabDataModel.getTab(index).getTooltip().equals(workspaceInformation.getSource())) {
-                SwingUtilities.invokeLater(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        tabDataModel.setToolTipTextAt(index, workspaceInformation.getSource());
+                @Override
+                public void run() {
+                    for (int i = 0; i < tabDataModel.size(); i++) {
+                        if (tabDataModel.getTab(i).getUserObject() instanceof Workspace) {
+                            Workspace ws = (Workspace) tabDataModel.getTab(i).getUserObject();
+                            if (ws.getLookup().lookup(WorkspaceInformation.class) == workspaceInformation) {
+                                tabDataModel.setToolTipTextAt(i, workspaceInformation.getSource());
+                                break;
+                            }
+                        }
                     }
-                });
-            }
+                }
+            });
         }
     }
 }

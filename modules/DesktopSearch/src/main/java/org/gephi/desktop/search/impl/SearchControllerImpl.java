@@ -89,8 +89,12 @@ public class SearchControllerImpl implements SearchController {
                         throw new RuntimeException(ex);
                     }
                 }
-                if (!session.isObsolete()) {
-                    listener.finished(session.request, session.getResults());
+                // Synchronize with cancellation logic to avoid race condition
+                synchronized (currentSearch) {
+                    if (!session.isObsolete()) {
+                        session.markFinished();
+                        listener.finished(session.request, session.getResults());
+                    }
                 }
             });
         }
@@ -147,6 +151,10 @@ public class SearchControllerImpl implements SearchController {
             return !finished;
         }
 
+        protected void markFinished() {
+            this.finished = true;
+        }
+
         public boolean isObsolete() {
             return obsolete;
         }
@@ -163,7 +171,6 @@ public class SearchControllerImpl implements SearchController {
         }
 
         protected List<SearchResult<T>> getResults() {
-            this.finished = true;
             return resultSet.values().stream().sorted().collect(Collectors.toList());
         }
 

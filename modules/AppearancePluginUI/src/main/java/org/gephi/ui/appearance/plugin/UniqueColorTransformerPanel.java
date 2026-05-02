@@ -43,7 +43,6 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.SimpleFunction;
@@ -58,28 +57,35 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.java.dev.colorchooser.ColorChooser colorChooser;
     private javax.swing.JLabel colorLabel;
+
     // End of variables declaration//GEN-END:variables
+    private PropertyChangeListener colorPropertyChangeListener = null;
 
     public UniqueColorTransformerPanel() {
         initComponents();
 
-        colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    if (!transformer.getColor().equals(colorChooser.getColor())) {
-                        transformer.setColor(colorChooser.getColor());
-                        colorLabel.setText(getHex(colorChooser.getColor()));
-                    }
-                }
-            }
-        });
+
     }
 
     public void setup(SimpleFunction function) {
         transformer = function.getTransformer();
+
+        if (colorPropertyChangeListener != null) {
+            colorChooser.removePropertyChangeListener(colorPropertyChangeListener);
+        }
+
         colorChooser.setColor(transformer.getColor());
         colorLabel.setText(getHex(transformer.getColor()));
+        colorPropertyChangeListener = (evt -> {
+            if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                Color newColor = colorChooser.getColor();
+                if (!transformer.getColor().equals(newColor)) {
+                    transformer.setColor(newColor);
+                    colorLabel.setText(getHex(newColor));
+                }
+            }
+        });
+        colorChooser.addPropertyChangeListener(colorPropertyChangeListener);
     }
 
     private String getHex(Color color) {

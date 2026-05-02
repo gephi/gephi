@@ -50,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -121,9 +123,14 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
         injectGraph();
         if (selectedLayout != null) {
-            loadProperties(selectedLayout);
+            boolean onlyDefaults = loadProperties(selectedLayout);
+            firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
+            if (onlyDefaults) {
+                firePropertyChangeEvent(DEFAULTS_APPLIED, null, null);
+            }
+        } else {
+            firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, null);
         }
-        firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
     }
 
     @Override
@@ -172,12 +179,18 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
     private void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
         PropertyChangeEvent evt = null;
-        if (propertyName.equals(SELECTED_LAYOUT)) {
-            evt = new PropertyChangeEvent(this, SELECTED_LAYOUT, oldValue, newValue);
-        } else if (propertyName.equals(RUNNING)) {
-            evt = new PropertyChangeEvent(this, RUNNING, oldValue, newValue);
-        } else {
-            return;
+        switch (propertyName) {
+            case SELECTED_LAYOUT:
+                evt = new PropertyChangeEvent(this, SELECTED_LAYOUT, oldValue, newValue);
+                break;
+            case RUNNING:
+                evt = new PropertyChangeEvent(this, RUNNING, oldValue, newValue);
+                break;
+            case DEFAULTS_APPLIED:
+                evt = new PropertyChangeEvent(this, DEFAULTS_APPLIED, oldValue, newValue);
+                break;
+            default:
+                return;
         }
         for (PropertyChangeListener l : listeners) {
             l.propertyChange(evt);
@@ -201,15 +214,20 @@ public class LayoutModelImpl implements LayoutModel, Model {
                         .put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
             } catch (Exception e) {
-                Exceptions.printStackTrace(e);
+                Logger.getLogger("").log(
+                    Level.WARNING,
+                    String.format("Error while saving layout '%s' property '%s' from saved properties", layout.getBuilder().getName(), p.getCanonicalName()),
+                    e);
             }
         }
     }
 
-    public void loadProperties(Layout layout) {
+    // Returns true if only the default values were applied (no saved properties)
+    public boolean loadProperties(Layout layout) {
         // In case some properties are only locally defined (like cooling in ForceAtlas)
         layout.resetPropertiesValues();
 
+        boolean onlyDefaults = true;
         List<LayoutPropertyKey> layoutValues = new ArrayList<>();
         for (LayoutPropertyKey val : savedProperties.keySet()) {
             if (val.layoutClassName.equals(layout.getClass().getName())) {
@@ -225,15 +243,21 @@ public class LayoutModelImpl implements LayoutModel, Model {
                         if (property.getProperty().getValueType().isAssignableFrom(Column.class)) {
                             PropertyEditor propertyEditor = property.getProperty().getPropertyEditor();
                             propertyEditor.setAsText(savedProperties.get(l).toString());
+                            onlyDefaults = false;
                         } else {
                             property.getProperty().setValue(savedProperties.get(l));
+                            onlyDefaults = false;
                         }
                     } catch (Exception e) {
-                        Exceptions.printStackTrace(e);
+                        Logger.getLogger("").log(
+                            Level.WARNING,
+                            String.format("Error while loading layout '%s' property '%s' from saved properties", layout.getBuilder().getName(), property.getCanonicalName()),
+                            e);
                     }
                 }
             }
         }
+        return onlyDefaults;
     }
 
     @Override
@@ -325,13 +349,12 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof LayoutPropertyKey)) {
+            if (!(obj instanceof LayoutPropertyKey s)) {
                 return false;
             }
             if (obj == this) {
                 return true;
             }
-            LayoutPropertyKey s = (LayoutPropertyKey) obj;
             return s.layoutClassName.equals(layoutClassName) && s.name.equals(name);
         }
 

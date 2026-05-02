@@ -55,24 +55,51 @@ public final class FileType {
     private final String[] extensions;
     private final String name;
 
+    /**
+     * Creates a file type with a single extension.
+     *
+     * @param extension file extension (e.g. {@code ".gexf"})
+     * @param name      human-readable name of the file type
+     */
     public FileType(String extension, String name) {
         this.extensions = new String[] {extension};
         this.name = name;
     }
 
+    /**
+     * Creates a file type with multiple extensions.
+     *
+     * @param extensions file extensions (e.g. {@code {".gexf", ".xml"}})
+     * @param name       human-readable name of the file type
+     */
     public FileType(String[] extensions, String name) {
         this.extensions = extensions;
         this.name = name;
     }
 
+    /**
+     * Returns the first (primary) file extension for this file type.
+     *
+     * @return primary file extension
+     */
     public String getExtension() {
         return extensions[0];
     }
 
+    /**
+     * Returns all file extensions for this file type.
+     *
+     * @return array of file extensions
+     */
     public String[] getExtensions() {
         return extensions;
     }
 
+    /**
+     * Returns the human-readable name of this file type.
+     *
+     * @return file type name
+     */
     public String getName() {
         return name;
     }

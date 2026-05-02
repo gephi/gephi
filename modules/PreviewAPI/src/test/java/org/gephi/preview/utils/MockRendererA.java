@@ -37,12 +37,12 @@ public class MockRendererA implements Renderer {
 
     @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return false;
+        return item instanceof MockItem;
     }
 
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
-        return false;
+        return itemBuilder instanceof MockBuilderA;
     }
 
     @Override

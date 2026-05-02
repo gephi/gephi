@@ -231,9 +231,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Node newNode = createNode("", null, graph);
 
         //Set properties (position, size and color) using the selected node properties:
-        newNode.setX(selectedNode.x());
-        newNode.setY(selectedNode.y());
-        newNode.setZ(selectedNode.z());
+        newNode.setPosition(selectedNode.x(), selectedNode.y(), selectedNode.z());
 
         newNode.setSize(selectedNode.size());
 
@@ -241,6 +239,12 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         newNode.setG(selectedNode.g());
         newNode.setB(selectedNode.b());
         newNode.setAlpha(selectedNode.alpha());
+
+        newNode.getTextProperties().setR(selectedNode.getTextProperties().getR());
+        newNode.getTextProperties().setG(selectedNode.getTextProperties().getG());
+        newNode.getTextProperties().setB(selectedNode.getTextProperties().getB());
+        newNode.getTextProperties().setAlpha(selectedNode.getTextProperties().getAlpha());
+        newNode.getTextProperties().setSize(selectedNode.getTextProperties().getSize());
 
         //Merge attributes:        
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);

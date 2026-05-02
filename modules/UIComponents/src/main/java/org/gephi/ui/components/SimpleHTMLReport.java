@@ -244,7 +244,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.add(copyButton);
 
         saveButton.setIcon(
-            ImageUtilities.loadImageIcon("UIComponents/save.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("UIComponents/save.svg", false)); // NOI18N
         saveButton.setText(
             org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {

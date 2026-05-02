@@ -45,7 +45,7 @@ package org.gephi.datalab.plugin.manipulators.edges;
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
-import org.gephi.tools.api.EditWindowController;
+import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -65,8 +65,8 @@ public class OpenInEditEdgeWindow extends BasicEdgesManipulator {
 
     @Override
     public void execute() {
-        EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-        edc.openEditWindow();
+        AttributesUIController edc = Lookup.getDefault().lookup(AttributesUIController.class);
+        edc.openWindowAndRequestActive();
         edc.editEdges(edges);
     }
 
@@ -110,6 +110,6 @@ public class OpenInEditEdgeWindow extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.png", false);
+        return ImageUtilities.loadImageIcon("DataLaboratoryPlugin/edit.svg", false);
     }
 }

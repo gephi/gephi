@@ -43,9 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
-import java.beans.PropertyEditorSupport;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.gephi.preview.types.DependantOriginalColor;
 
 /**
@@ -60,14 +57,18 @@ import org.gephi.preview.types.DependantOriginalColor;
 public class BasicDependantOriginalColorPropertyEditor extends AbstractColorPropertyEditor {
 
     @Override
-    public String getAsText() {
+    public String getAsSerializableText() {
         DependantOriginalColor c = (DependantOriginalColor) getValue();
         if (c.getMode().equals(DependantOriginalColor.Mode.CUSTOM)) {
             return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
             return c.getMode().name().toLowerCase();
         }
+    }
 
+    @Override
+    public String getAsText() {
+        return getAsSerializableText();
     }
 
     @Override

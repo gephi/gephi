@@ -10,10 +10,10 @@ AppName=Gephi
 AppVerName=${gephi.menu.app.name}
 AppVersion=${project.version}
 AppPublisher=Gephi
-AppPublisherURL=http://gephi.org
-AppSupportURL=http://gephi.org
-AppUpdatesURL=http://gephi.org
-DefaultDirName={pf}\Gephi-${project.version}
+AppPublisherURL=https://gephi.org
+AppSupportURL=https://gephi.org
+AppUpdatesURL=https://gephi.org
+DefaultDirName={autopf}\Gephi-${project.version}
 DefaultGroupName=Gephi
 LicenseFile=COPYING.txt
 OutputDir=.
@@ -26,14 +26,14 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 UsePreviousAppDir=false
 UsePreviousGroup=false
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; Flags: checkedonce
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; Flags: checkedonce
 Name: "associategephi"; Description: "&Associate .gephi files"; Flags: checkedonce
 Name: "associategexf"; Description: "&Associate .gexf files"; Flags: checkedonce
 Name: "associategdf"; Description: "&Associate .gdf files"; Flags: unchecked
@@ -52,56 +52,40 @@ Source: "gephi\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createa
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Gephi"; Filename: "{app}\bin\gephi.exe"; AppUserModelID: "Gephi"; Check: not Is64BitInstallMode
-Name: "{userdesktop}\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"; Check: not Is64BitInstallMode
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: quicklaunchicon; AppUserModelID: "Gephi"; Check: not Is64BitInstallMode
-
-Name: "{group}\Gephi"; Filename: "{app}\bin\gephi64.exe"; AppUserModelID: "Gephi"; Check: Is64BitInstallMode
-Name: "{userdesktop}\Gephi"; Filename: "{app}\bin\gephi64.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"; Check: Is64BitInstallMode
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gephi"; Filename: "{app}\bin\gephi64.exe"; Tasks: quicklaunchicon; AppUserModelID: "Gephi"; Check: Is64BitInstallMode
+Name: "{group}\Gephi"; Filename: "{app}\bin\gephi64.exe"; AppUserModelID: "Gephi"
+Name: "{userdesktop}\Gephi"; Filename: "{app}\bin\gephi64.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"
 
 Name: "{group}\Startup settings"; Filename: "{app}\etc\gephi.conf"
 
 [Run]
-Filename: "{app}\bin\gephi.exe"; Description: "{cm:LaunchProgram,Gephi}"; Flags: nowait postinstall skipifsilent; Check: not Is64BitInstallMode
-Filename: "{app}\bin\gephi64.exe"; Description: "{cm:LaunchProgram,Gephi}"; Flags: nowait postinstall skipifsilent; Check: Is64BitInstallMode
+Filename: "{app}\bin\gephi64.exe"; Description: "{cm:LaunchProgram,Gephi}"; Flags: nowait postinstall skipifsilent
 
 [Registry]
 Root: HKA; Subkey: "Software\Classes\.gephi\OpenWithProgids"; ValueType: string; ValueName: "GephiProject"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associategephi
 Root: HKA; Subkey: "Software\Classes\GephiProject"; ValueType: string; ValueName: ""; ValueData: "Gephi Project File"; Flags: uninsdeletekey; Tasks: associategephi
 Root: HKA; Subkey: "Software\Classes\GephiProject\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\GEPHI.EXE,1"; Tasks: associategephi
-Root: HKA; Subkey: "Software\Classes\GephiProject\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associategephi; Check: not Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\GephiProject\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategephi; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gephi"; ValueData: ""; Tasks: associategephi; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi.exe\SupportedTypes"; ValueType: string; ValueName: ".gephi"; ValueData: ""; Tasks: associategephi; Check: not Is64BitInstallMode
+Root: HKA; Subkey: "Software\Classes\GephiProject\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategephi
+Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gephi"; ValueData: ""; Tasks: associategephi
 Root: HKA; Subkey: "Software\Classes\.gexf\OpenWithProgids"; ValueType: string; ValueName: "GexfGraphFile"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associategexf
 Root: HKA; Subkey: "Software\Classes\GexfGraphFile"; ValueType: string; ValueName: ""; ValueData: "GEXF Graph File"; Flags: uninsdeletekey; Tasks: associategexf
 Root: HKA; Subkey: "Software\Classes\GexfGraphFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\GEPHI.EXE,1"; Tasks: associategexf
-Root: HKA; Subkey: "Software\Classes\GexfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associategexf; Check: not Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\GexfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategexf; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gexf"; ValueData: ""; Tasks: associategexf; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi.exe\SupportedTypes"; ValueType: string; ValueName: ".gexf"; ValueData: ""; Tasks: associategexf; Check: not Is64BitInstallMode
+Root: HKA; Subkey: "Software\Classes\GexfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategexf
+Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gexf"; ValueData: ""; Tasks: associategexf
 Root: HKA; Subkey: "Software\Classes\.gdf\OpenWithProgids"; ValueType: string; ValueName: "GdfGraphFile"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associategdf
 Root: HKA; Subkey: "Software\Classes\GdfGraphFile"; ValueType: string; ValueName: ""; ValueData: "GDF Graph File"; Flags: uninsdeletekey; Tasks: associategdf
 Root: HKA; Subkey: "Software\Classes\GdfGraphFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\GEPHI.EXE,1"; Tasks: associategdf
-Root: HKA; Subkey: "Software\Classes\GdfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associategdf; Check: not Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\GdfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategdf; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gdf"; ValueData: ""; Tasks: associategdf; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi.exe\SupportedTypes"; ValueType: string; ValueName: ".gdf"; ValueData: ""; Tasks: associategdf; Check: not Is64BitInstallMode
+Root: HKA; Subkey: "Software\Classes\GdfGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategdf
+Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".gdf"; ValueData: ""; Tasks: associategdf
 Root: HKA; Subkey: "Software\Classes\.graphml\OpenWithProgids"; ValueType: string; ValueName: "GraphmlGraphFile"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associategraphml
 Root: HKA; Subkey: "Software\Classes\GraphmlGraphFile"; ValueType: string; ValueName: ""; ValueData: "GraphML Graph File"; Flags: uninsdeletekey; Tasks: associategraphml
 Root: HKA; Subkey: "Software\Classes\GraphmlGraphFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\GEPHI.EXE,1"; Tasks: associategraphml
-Root: HKA; Subkey: "Software\Classes\GraphmlGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associategraphml; Check: not Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\GraphmlGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategraphml; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".graphml"; ValueData: ""; Tasks: associategraphml; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi.exe\SupportedTypes"; ValueType: string; ValueName: ".graphml"; ValueData: ""; Tasks: associategraphml; Check: not Is64BitInstallMode
+Root: HKA; Subkey: "Software\Classes\GraphmlGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associategraphml
+Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".graphml"; ValueData: ""; Tasks: associategraphml
 Root: HKA; Subkey: "Software\Classes\.net\OpenWithProgids"; ValueType: string; ValueName: "PajekGraphFile"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associatenet
 Root: HKA; Subkey: "Software\Classes\PajekGraphFile"; ValueType: string; ValueName: ""; ValueData: "Pajek Graph File"; Flags: uninsdeletekey; Tasks: associatenet
 Root: HKA; Subkey: "Software\Classes\PajekGraphFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\GEPHI.EXE,1"; Tasks: associatenet
-Root: HKA; Subkey: "Software\Classes\PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associatenet; Check: not Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associatenet; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".net"; ValueData: ""; Tasks: associatenet; Check: Is64BitInstallMode
-Root: HKA; Subkey: "Software\Classes\Applications\gephi.exe\SupportedTypes"; ValueType: string; ValueName: ".net"; ValueData: ""; Tasks: associatenet; Check: not Is64BitInstallMode
+Root: HKA; Subkey: "Software\Classes\PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI64.EXE"" ""%1"""; Tasks: associatenet
+Root: HKA; Subkey: "Software\Classes\Applications\gephi64.exe\SupportedTypes"; ValueType: string; ValueName: ".net"; ValueData: ""; Tasks: associatenet
 
 
 [InstallDelete]

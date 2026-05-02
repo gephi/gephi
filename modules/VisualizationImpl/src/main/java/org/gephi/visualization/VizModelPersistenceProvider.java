@@ -73,11 +73,9 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
         if (vizModel == null) {
-            vizModel = new VizModel(workspace);
+            vizModel = new VizModel(Lookup.getDefault().lookup(VizController.class), workspace);
             workspace.add(vizModel);
         }
-        Lookup.getDefault().lookup(VizController.class)
-            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
         try {
             vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {

@@ -292,16 +292,57 @@ public interface ContainerLoader {
      */
     void setMetadata(MetadataDraft metadata);
 
-    //PARAMETERS SETTERS
+    /**
+     * Sets whether self-loops are allowed in this container.
+     * <p>
+     * Default is {@code true}.
+     *
+     * @param value true to allow self-loops, false otherwise
+     */
     void setAllowSelfLoop(boolean value);
 
+    /**
+     * Sets whether nodes are automatically created from edges when the source or target is not declared.
+     * <p>
+     * Default is {@code true}.
+     *
+     * @param value true to allow auto-node creation, false otherwise
+     */
     void setAllowAutoNode(boolean value);
 
+    /**
+     * Sets whether parallel edges (multiple edges between the same pair of nodes) are allowed.
+     * <p>
+     * Default is {@code true}.
+     *
+     * @param value true to allow parallel edges, false otherwise
+     */
     void setAllowParallelEdge(boolean value);
 
+    /**
+     * Sets whether auto-scaling is enabled.
+     * <p>
+     * When enabled, node positions are scaled to fit the default viewport after import. Default is {@code true}.
+     *
+     * @param autoscale true to enable auto-scaling, false otherwise
+     */
     void setAutoScale(boolean autoscale);
 
+    /**
+     * Sets whether node labels should be filled with the node id when no label is explicitly set.
+     * <p>
+     * Default is {@code false}.
+     *
+     * @param value true to fill labels with ids, false otherwise
+     */
     void setFillLabelWithId(boolean value);
 
+    /**
+     * Sets the strategy used to merge weights of parallel edges.
+     * <p>
+     * This setting only applies when parallel edges exist and are merged. Default is {@link EdgeMergeStrategy#SUM}.
+     *
+     * @param edgesMergeStrategy the merge strategy to use
+     */
     void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy);
 }

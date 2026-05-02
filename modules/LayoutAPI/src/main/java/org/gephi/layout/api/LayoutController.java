@@ -81,6 +81,12 @@ public interface LayoutController {
     void executeLayout();
 
     /**
+     * Executes a transformation. Unlike <code>executeLayout()</code>, this executes the layout synchronously and without
+     * cancellation support.
+     */
+    void executeLayout(Layout transformation);
+
+    /**
      * Executes the current layout for <code>numIterations</code> iterations.
      *
      * @param numIterations the number of iterations of the algorithm

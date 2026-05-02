@@ -145,67 +145,59 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
         customRadio = new javax.swing.JRadioButton();
         colorButton = new JColorButton(Color.BLACK, false, true);
 
-        jXHeader1.setDescription(org.openide.util.NbBundle
-            .getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.description")); // NOI18N
-        jXHeader1.setTitle(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.title")); // NOI18N
+        jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.description")); // NOI18N
+        jXHeader1.setTitle(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.jXHeader1.title")); // NOI18N
 
         buttonGroup1.add(originalRadio);
-        originalRadio.setText(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.originalRadio.text")); // NOI18N
+        originalRadio.setText(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.originalRadio.text")); // NOI18N
 
         buttonGroup1.add(mixedRadio);
-        mixedRadio.setText(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.mixedRadio.text")); // NOI18N
+        mixedRadio.setText(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.mixedRadio.text")); // NOI18N
 
         buttonGroup1.add(sourceRadio);
-        sourceRadio.setText(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.sourceRadio.text")); // NOI18N
+        sourceRadio.setText(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.sourceRadio.text")); // NOI18N
 
         buttonGroup1.add(targetRadio);
-        targetRadio.setText(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.targetRadio.text")); // NOI18N
+        targetRadio.setText(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.targetRadio.text")); // NOI18N
 
         buttonGroup1.add(customRadio);
-        customRadio.setText(
-            org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.customRadio.text")); // NOI18N
+        customRadio.setText(org.openide.util.NbBundle.getMessage(EdgeColorPanel.class, "EdgeColorPanel.customRadio.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(originalRadio)
-                        .addComponent(mixedRadio)
-                        .addComponent(sourceRadio)
-                        .addComponent(targetRadio)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(customRadio)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(colorButton)))
-                    .addContainerGap(323, Short.MAX_VALUE))
-                .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(originalRadio)
+                    .addComponent(mixedRadio)
+                    .addComponent(sourceRadio)
+                    .addComponent(targetRadio)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(customRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(colorButton)))
+                .addContainerGap(323, Short.MAX_VALUE))
+            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, 81,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(originalRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(mixedRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(sourceRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(targetRadio)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(customRadio)
-                        .addComponent(colorButton))
-                    .addContainerGap(7, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(originalRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(mixedRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sourceRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(targetRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(customRadio)
+                    .addComponent(colorButton))
+                .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 }

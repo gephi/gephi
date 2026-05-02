@@ -124,14 +124,20 @@ public class Combine implements Runnable {
             control.initWorker(w);
         }
 
-        //Write positions to nodes
+        //Write positions to nodes, normalizing to fill layoutSize
+        float maxAbsCoord = 0;
+        for (Node node : positions) {
+            maxAbsCoord = Math.max(maxAbsCoord, Math.abs(node.x));
+            maxAbsCoord = Math.max(maxAbsCoord, Math.abs(node.y));
+        }
+        float outputScale = maxAbsCoord > 0 ? (layout.getLayoutSize() / 2f) / maxAbsCoord : 1f;
         Graph graph = layout.getGraph();
         for (org.gephi.graph.api.Node n : graph.getNodes()) {
             if (n.getLayoutData() != null && n.getLayoutData() instanceof OpenOrdLayoutData) {
                 OpenOrdLayoutData layoutData = n.getLayoutData();
                 Node node = positions[layoutData.nodeId];
-                n.setX(node.x * 10f);
-                n.setY(node.y * 10f);
+                n.setX(node.x * outputScale);
+                n.setY(node.y * outputScale);
             }
         }
 

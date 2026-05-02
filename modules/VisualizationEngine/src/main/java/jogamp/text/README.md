@@ -1,0 +1,1 @@
+Copy of https://github.com/jzy3d/jogl-text-renderer/, which itself is a fork of JOGL's text rendering.

@@ -43,9 +43,10 @@
 package org.gephi.desktop.timeline;
 
 import java.awt.CardLayout;
-import java.awt.Image;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -64,7 +65,6 @@ import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.ui.components.CloseButton;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -79,20 +79,9 @@ import org.openide.windows.TopComponent;
  *
  * @author Julian Bilcke, Daniel Bernardes
  */
-//@ConvertAsProperties(dtd = "-//org.gephi.desktop.timeline//Timeline//EN",
-//autostore = false)
-//@TopComponent.Description(preferredID = "TimelineTopComponent",
-//iconBase = "org/gephi/desktop/timeline/resources/icon.png",
-//persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-//@TopComponent.Registration(mode = "timeline,ode", openAtStartup = false)
-//@ActionID(category = "Window", id = "org.gephi.desktop.timeline.TimelineTopComponent")
-//@ActionReference(path = "Menu/Window", position = 1200)
-//@TopComponent.OpenActionRegistration(displayName = "#CTL_TimelineTopComponent",
-//preferredID = "TimelineTopComponent")
 public final class TimelineTopComponent extends JPanel implements TimelineModelListener {
 
-    private final transient TimelineDrawer drawer;
-    private transient TimelineModel model;
+    private transient TimelineDrawer drawer;
     private final transient TimelineController controller;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
@@ -108,7 +97,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JToolBar innerToolbar;
     private javax.swing.JToggleButton playButton;
     private javax.swing.JButton settingsButton;
-    private transient javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar toolbarEnable;
     // End of variables declaration//GEN-END:variables
 
@@ -121,7 +109,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             controlPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             innerPanel.setBackground(UIManager.getColor("NbTabControl.editorTabBackground"));
         }
-        this.drawer = (TimelineDrawer) timelinePanel;
 
         //TopComponent
         setName(NbBundle.getMessage(TimelineTopComponent.class, "CTL_TimelineTopComponent"));
@@ -156,6 +143,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                TimelineModel model = controller.getModel();
                 if (model != null) {
                     controller.setEnabled(true);
                 }
@@ -166,57 +154,61 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Create popup
-                JPopupMenu menu = new JPopupMenu();
+                TimelineModel model = controller.getModel();
+                if (model != null) {
 
-                //Add columns
-                String selectedColumn = model.getChart() != null ? model.getChart().getColumn() : null;
+                    //Create popup
+                    JPopupMenu menu = new JPopupMenu();
 
-                //Dynamic columns
-                String[] columns = controller.getDynamicGraphColumns();
+                    //Add columns
+                    String selectedColumn = model.getChart() != null ? model.getChart().getColumn() : null;
 
-                for (final String col : columns) {
-                    boolean selected = (col == null ? selectedColumn == null : col.equals(selectedColumn));
-                    JRadioButtonMenuItem item = new JRadioButtonMenuItem(col, selected);
-                    item.addActionListener(new ActionListener() {
+                    //Dynamic columns
+                    String[] columns = controller.getDynamicGraphColumns();
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            controller.selectColumn(col);
-                        }
-                    });
-                    menu.add(item);
-                }
+                    for (final String col : columns) {
+                        boolean selected = (Objects.equals(col, selectedColumn));
+                        JRadioButtonMenuItem item = new JRadioButtonMenuItem(col, selected);
+                        item.addActionListener(new ActionListener() {
 
-                //No columns message
-                if (columns.length == 0) {
-                    menu.add("<html><i>" +
-                        NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") +
-                        "</i></html>");
-                }
-
-                //Separator
-                menu.add(new JSeparator());
-
-                //Disable
-                if (columns.length > 0) {
-                    JMenuItem disableItem = new JMenuItem(
-                        NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
-                    disableItem.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            controller.selectColumn(null);
-                        }
-                    });
-
-                    menu.add(disableItem);
-                    if (selectedColumn == null) {
-                        disableItem.setEnabled(false);
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                controller.selectColumn(col);
+                            }
+                        });
+                        menu.add(item);
                     }
-                }
 
-                menu.show(columnsButton, 0, -menu.getPreferredSize().height);
+                    //No columns message
+                    if (columns.length == 0) {
+                        menu.add("<html><i>" +
+                            NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") +
+                            "</i></html>");
+                    }
+
+                    //Separator
+                    menu.add(new JSeparator());
+
+                    //Disable
+                    if (columns.length > 0) {
+                        JMenuItem disableItem = new JMenuItem(
+                            NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
+                        disableItem.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                controller.selectColumn(null);
+                            }
+                        });
+
+                        menu.add(disableItem);
+                        if (selectedColumn == null) {
+                            disableItem.setEnabled(false);
+                        }
+                    }
+
+                    menu.show(columnsButton, 0, -menu.getPreferredSize().height);
+                }
             }
         });
 
@@ -224,84 +216,89 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Create popup
-                JPopupMenu menu = new JPopupMenu();
+                TimelineModel model = controller.getModel();
+                if (model != null) {
+                    //Create popup
+                    JPopupMenu menu = new JPopupMenu();
 
-                //Custom bounds
-                Icon customBoundsIcon =
-                    ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.png", false);
-                JMenuItem customBoundsItem = new JMenuItem(
-                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
-                    customBoundsIcon);
-                customBoundsItem.addActionListener(new ActionListener() {
+                    //Custom bounds
+                    Icon customBoundsIcon =
+                        ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.svg", false);
+                    JMenuItem customBoundsItem = new JMenuItem(
+                        NbBundle.getMessage(TimelineTopComponent.class,
+                            "TimelineTopComponent.settings.setCustomBounds"),
+                        customBoundsIcon);
+                    customBoundsItem.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        CustomBoundsDialog d = new CustomBoundsDialog();
-                        d.setup(model);
-                        ValidationPanel validationPanel = CustomBoundsDialog.createValidationPanel(d);
-                        String title = NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.title");
-                        final DialogDescriptor descriptor = new DialogDescriptor(validationPanel, title);
-                        validationPanel.addChangeListener(new ChangeListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            CustomBoundsDialog d = new CustomBoundsDialog();
+                            d.setup(model);
+                            ValidationPanel validationPanel = CustomBoundsDialog.createValidationPanel(d);
+                            String title = NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.title");
+                            final DialogDescriptor descriptor = new DialogDescriptor(validationPanel, title);
+                            validationPanel.addChangeListener(new ChangeListener() {
 
-                            @Override
-                            public void stateChanged(ChangeEvent e) {
-                                descriptor.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
+                                @Override
+                                public void stateChanged(ChangeEvent e) {
+                                    descriptor.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
+                                }
+                            });
+                            Object result = DialogDisplayer.getDefault().notify(descriptor);
+                            if (result == NotifyDescriptor.OK_OPTION) {
+                                d.unsetup();
                             }
-                        });
-                        Object result = DialogDisplayer.getDefault().notify(descriptor);
-                        if (result == NotifyDescriptor.OK_OPTION) {
-                            d.unsetup();
                         }
-                    }
-                });
-                menu.add(customBoundsItem);
+                    });
+                    menu.add(customBoundsItem);
 
-                //Animation
-                Icon animationIcon =
-                    ImageUtilities.loadImageIcon("DesktopTimeline/animation_settings.svg", false);
-                JMenuItem animationItem = new JMenuItem(
-                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setPlaySettings"),
-                    animationIcon);
-                animationItem.addActionListener(new ActionListener() {
+                    //Animation
+                    Icon animationIcon =
+                        ImageUtilities.loadImageIcon("DesktopTimeline/animation_settings.svg", false);
+                    JMenuItem animationItem = new JMenuItem(
+                        NbBundle.getMessage(TimelineTopComponent.class,
+                            "TimelineTopComponent.settings.setPlaySettings"),
+                        animationIcon);
+                    animationItem.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        PlaySettingsDialog d = new PlaySettingsDialog();
-                        d.setup(model);
-                        String title = NbBundle.getMessage(CustomBoundsDialog.class, "PlaySettingsDialog.title");
-                        final DialogDescriptor descriptor = new DialogDescriptor(d, title);
-                        Object result = DialogDisplayer.getDefault().notify(descriptor);
-                        if (result == NotifyDescriptor.OK_OPTION) {
-                            d.unsetup();
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            PlaySettingsDialog d = new PlaySettingsDialog();
+                            d.setup(model);
+                            String title = NbBundle.getMessage(CustomBoundsDialog.class, "PlaySettingsDialog.title");
+                            final DialogDescriptor descriptor = new DialogDescriptor(d, title);
+                            Object result = DialogDisplayer.getDefault().notify(descriptor);
+                            if (result == NotifyDescriptor.OK_OPTION) {
+                                d.unsetup();
+                            }
                         }
-                    }
-                });
-                menu.add(animationItem);
+                    });
+                    menu.add(animationItem);
 
-                //Date format
-                Icon dateFormatIcon =
-                    ImageUtilities.loadImageIcon("DesktopTimeline/time_format_small.svg", false);
-                JMenuItem dateFormatItem = new JMenuItem(
-                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setTimeFormat"),
-                    dateFormatIcon);
-                dateFormatItem.addActionListener(new ActionListener() {
+                    //Date format
+                    Icon dateFormatIcon =
+                        ImageUtilities.loadImageIcon("DesktopTimeline/time_format_small.svg", false);
+                    JMenuItem dateFormatItem = new JMenuItem(
+                        NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setTimeFormat"),
+                        dateFormatIcon);
+                    dateFormatItem.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        TimeFormatDialog d = new TimeFormatDialog();
-                        d.setup(model);
-                        String title = NbBundle.getMessage(TimeFormatDialog.class, "TimeFormatDialog.title");
-                        final DialogDescriptor descriptor = new DialogDescriptor(d, title);
-                        Object result = DialogDisplayer.getDefault().notify(descriptor);
-                        if (result == NotifyDescriptor.OK_OPTION) {
-                            d.unsetup();
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            TimeFormatDialog d = new TimeFormatDialog();
+                            d.setup(model);
+                            String title = NbBundle.getMessage(TimeFormatDialog.class, "TimeFormatDialog.title");
+                            final DialogDescriptor descriptor = new DialogDescriptor(d, title);
+                            Object result = DialogDisplayer.getDefault().notify(descriptor);
+                            if (result == NotifyDescriptor.OK_OPTION) {
+                                d.unsetup();
+                            }
                         }
-                    }
-                });
-                menu.add(dateFormatItem);
+                    });
+                    menu.add(dateFormatItem);
 
-                menu.show(settingsButton, 0, -menu.getPreferredSize().height);
+                    menu.show(settingsButton, 0, -menu.getPreferredSize().height);
+                }
             }
         });
 
@@ -309,6 +306,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                TimelineModel model = controller.getModel();
                 if (model != null) {
                     //Bounds not set? Cannot play
                     if (model.getMin() == model.getIntervalStart()
@@ -329,14 +327,27 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     }
 
     private void setup(TimelineModel model) {
-        this.model = model;
+        if (drawer != null) {
+            innerPanel.remove(drawer);
+            drawer = null;
+        }
         if (model != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
-                    drawer.setModel(TimelineTopComponent.this.model);
-                    enableTimeline(TimelineTopComponent.this.model);
+                    // Add Drawer
+                    drawer = new TimelineDrawer(controller, model);
+                    GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+                    gridBagConstraints.gridx = 2;
+                    gridBagConstraints.gridy = 0;
+                    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                    gridBagConstraints.weightx = 1.0;
+                    gridBagConstraints.weighty = 1.0;
+                    gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 0);
+                    innerPanel.add(drawer, gridBagConstraints);
+
+                    enableTimeline(model);
                 }
             });
         } else {
@@ -344,7 +355,10 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                 @Override
                 public void run() {
-                    drawer.setModel(TimelineTopComponent.this.model);
+                    if (drawer != null) {
+                        innerPanel.remove(drawer);
+                    }
+                    drawer = null;
                     enableTimeline(null);
                 }
             });
@@ -364,7 +378,9 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_STOP)) {
             setPlaying(false);
         }
-        drawer.consumeEvent(event);
+        if (drawer != null) {
+            drawer.consumeEvent(event);
+        }
     }
 
     private void enableTimeline(TimelineModel model) {
@@ -400,10 +416,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             @Override
             public void run() {
                 if (visible != TimelineTopComponent.this.isVisible()) {
-
                     TimelineTopComponent.this.setVisible(visible);
-                    // Not needed anymore
-                    // VizController.getInstance().getDrawable().reinitWindow();
                 }
             }
         });
@@ -431,7 +444,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         disableButon = new javax.swing.JButton();
         columnsButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JButton();
-        timelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
         closeButton = new CloseButton();
 
         setMaximumSize(new java.awt.Dimension(32767, 68));
@@ -536,14 +548,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         innerPanel.add(controlPanel, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 0);
-        innerPanel.add(timelinePanel, gridBagConstraints);
 
         containerPanel.add(innerPanel, "bottom");
 
@@ -564,16 +568,4 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         add(closeButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
-    }
 }

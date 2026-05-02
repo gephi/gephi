@@ -56,7 +56,7 @@ import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import org.gephi.desktop.datalab.tables.popup.NodesPopupAdapter;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.EditWindowController;
+import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.openide.util.Lookup;
 
 /**
@@ -76,7 +76,7 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!isRefreshingTable()) {
-                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    AttributesUIController edc = Lookup.getDefault().lookup(AttributesUIController.class);
                     if (edc != null && edc.isOpen()) {
                         if (table.getSelectedRow() != -1) {
                             edc.editNodes(getElementsFromSelectedRows().toArray(new Node[0]));

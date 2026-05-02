@@ -40,7 +40,7 @@ public class SearchFilterBuilder implements FilterBuilder {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("DesktopSearch/search.png", false);
+        return ImageUtilities.loadImageIcon("DesktopSearch/search.svg", false);
     }
 
     @Override

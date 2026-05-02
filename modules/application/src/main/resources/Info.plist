@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <plist version="1.0">
     <dict>
 
@@ -17,9 +17,6 @@
         <key>CFBundleShortVersionString</key>
         <string>${project.version}</string>
     
-        <key>CFBundleSignature</key>
-        <string>????</string>
-    
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
     
@@ -33,10 +30,10 @@
 	    <string>public.app-category.graphics-design</string>
         
         <key>LSMinimumSystemVersion</key>
-	    <string>10.9.0</string>
+	    <string>11.0</string>
         
         <key>NSHumanReadableCopyright</key>
-	    <string>Copyright 2008, 2022 Gephi</string>
+	    <string>Copyright 2008, 2026 Gephi</string>
     
         <key>NSHighResolutionCapable</key> 
         <true/>
@@ -52,6 +49,10 @@
                 <string>Gephi Project File</string>
                 <key>CFBundleTypeRole</key>
                 <string>Editor</string>
+                <key>LSItemContentTypes</key>
+                <array>
+                    <string>org.gephi.project</string>
+                </array>
             </dict>
             <dict>
                 <key>CFBundleTypeExtensions</key>
@@ -62,6 +63,52 @@
                 <string>GEXF Graph File</string>
                 <key>CFBundleTypeRole</key>
                 <string>Editor</string>
+                <key>LSItemContentTypes</key>
+                <array>
+                    <string>org.gexf.gexf</string>
+                </array>
+            </dict>
+        </array>
+
+        <key>UTExportedTypeDeclarations</key>
+        <array>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>org.gephi.project</string>
+                <key>UTTypeDescription</key>
+                <string>Gephi Project File</string>
+                <key>UTTypeConformsTo</key>
+                <array>
+                    <string>public.data</string>
+                </array>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array>
+                        <string>gephi</string>
+                    </array>
+                </dict>
+            </dict>
+        </array>
+
+        <key>UTImportedTypeDeclarations</key>
+        <array>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>org.gexf.gexf</string>
+                <key>UTTypeDescription</key>
+                <string>GEXF Graph File</string>
+                <key>UTTypeConformsTo</key>
+                <array>
+                    <string>public.xml</string>
+                </array>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array>
+                        <string>gexf</string>
+                    </array>
+                </dict>
             </dict>
         </array>
     </dict>

@@ -78,6 +78,19 @@ public class GephiWriterReaderTest {
         Assert.assertEquals(MockXMLPersistenceProvider.TXT, pp.getReadText());
     }
 
+    @Test
+    public void testWorkspaceMissingStatusAttribute() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<workspace name=\"Workspace 1\" id=\"1\">" +
+            "<metadata><title/><description/></metadata>" +
+            "</workspace>";
+        StringReader stringReader = new StringReader(xml);
+        XMLStreamReader reader = GephiFormat.newXMLReader(stringReader);
+        Workspace workspace = GephiReader.readWorkspace(reader, Utils.newProject());
+        Assert.assertNotNull(workspace);
+        Assert.assertTrue(workspace.isInvalid());
+    }
+
     // Utils
 
     private ProjectImpl writeAndReadProject(ProjectImpl project) throws Exception {

@@ -47,6 +47,8 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.Locale;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineController;
@@ -189,9 +191,35 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         group.add(maxTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
             new FormatValidator(), new TimeValidator(minTextField, true));
         group.add(startTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
-            new FormatValidator(), new TimeValidator(endTextField, false));
+            new FormatValidator(), new TimeValidator(endTextField, false),
+            new IntervalBoundsValidator(minTextField, false));
         group.add(endTextField, StringValidators.REQUIRE_NON_EMPTY_STRING,
-            new FormatValidator(), new TimeValidator(startTextField, true));
+            new FormatValidator(), new TimeValidator(startTextField, true),
+            new IntervalBoundsValidator(maxTextField, true));
+
+        // Trigger re-validation of all fields when any field changes, so that
+        // cross-field constraints (e.g. start < end) are properly re-evaluated
+        // even when only the paired field was edited.
+        DocumentListener revalidateListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                group.performValidation();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                group.performValidation();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                group.performValidation();
+            }
+        };
+        minTextField.getDocument().addDocumentListener(revalidateListener);
+        maxTextField.getDocument().addDocumentListener(revalidateListener);
+        startTextField.getDocument().addDocumentListener(revalidateListener);
+        endTextField.getDocument().addDocumentListener(revalidateListener);
     }
 
     /**
@@ -219,7 +247,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         titleHeader.setDescription(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
         titleHeader.setIcon(
-            ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.png", false)); // NOI18N
+            ImageUtilities.loadImageIcon("DesktopTimeline/custom_bounds.svg", false)); // NOI18N
         titleHeader.setTitle(
             NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
 
@@ -377,6 +405,56 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                     prblms.add(
                         NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
                 }
+            }
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
+        }
+    }
+
+    private class IntervalBoundsValidator implements Validator<String> {
+
+        private final JTextField boundField;
+        private final boolean upper;
+
+        /**
+         * Validates that the interval value does not exceed the custom bounds.
+         *
+         * @param boundField the min or max bounds text field to validate against
+         * @param upper      if true, validates value <= boundField (for end); if false, validates value >= boundField (for start)
+         */
+        public IntervalBoundsValidator(JTextField boundField, boolean upper) {
+            this.boundField = boundField;
+            this.upper = upper;
+        }
+
+        @Override
+        public void validate(Problems prblms, String string, String t) {
+            double thisValue;
+            double boundValue;
+            if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
+                try {
+                    thisValue = AttributeUtils.parseDateTime(t);
+                    boundValue = AttributeUtils.parseDateTime(boundField.getText());
+                } catch (Exception ex) {
+                    return; // Format errors are handled by FormatValidator
+                }
+            } else {
+                try {
+                    thisValue = Double.parseDouble(t);
+                    boundValue = Double.parseDouble(boundField.getText());
+                } catch (Exception e) {
+                    return; // Format errors are handled by FormatValidator
+                }
+            }
+            if (upper && thisValue > boundValue) {
+                prblms.add(NbBundle
+                    .getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.IntervalBoundsValidator.upper"));
+            } else if (!upper && thisValue < boundValue) {
+                prblms.add(NbBundle
+                    .getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.IntervalBoundsValidator.lower"));
             }
         }
 

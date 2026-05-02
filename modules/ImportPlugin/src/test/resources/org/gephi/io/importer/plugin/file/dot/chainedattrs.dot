@@ -1,0 +1,5 @@
+digraph test {
+    Skill_38d2a09ab424df40b347da44c3b7c192 [label="a"] [color="green"];
+    Skill_7bf98ed70a7d964b9b3771e26bc44124 [label="b"] [color="green"];
+    Skill_38d2a09ab424df40b347da44c3b7c192 -> Skill_7bf98ed70a7d964b9b3771e26bc44124 [label="edge_label"] [color="azure"];
+}

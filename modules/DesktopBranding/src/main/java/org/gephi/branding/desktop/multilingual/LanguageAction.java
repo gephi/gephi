@@ -114,7 +114,7 @@ public final class LanguageAction extends CallableSystemAction {
             if (lang.getCountry() != null) {
                 iconFile += "_" + lang.getCountry();
             }
-            iconFile += ".png";
+            iconFile += ".svg";
             Icon icon = ImageUtilities.loadImageIcon(iconFile, false);
             if (icon != null) {
                 menuItem.setIcon(icon);
@@ -211,7 +211,12 @@ public final class LanguageAction extends CallableSystemAction {
         RU_RU("ru", "Русский"),
         ZH_CN("zh", "CN", "中文"),
         JA_JA("ja", "日本語"),
-        RO_RO("ro", "Română");
+        RO_RO("ro", "Română"),
+        EL_GR("el", "GR", "Ελληνικά"),
+        HU_HU("hu", "HU", "Magyar"),
+        KO_KR("ko", "KR", "한국어"),
+        SV_SE("sv", "SE", "Svenska"),
+        UK_UA("uk", "UA", "Українська");
         private final String language;
         private String country = null;
         private final String name;

@@ -51,6 +51,8 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class Control {
 
+    private static final Logger LOGGER = Logger.getLogger("OpenOrd");
+
     //Settings
     private int STAGE;
     private int iterations;
@@ -108,7 +110,7 @@ public class Control {
         } else {
             realIterations = (int) (realParm * fullCompIters);
         }
-        Logger.getLogger("").info("Real iterations " + realIterations);
+        LOGGER.info("Real iterations " + realIterations);
 
         realFixed = realIterations > 0;
 
@@ -146,8 +148,7 @@ public class Control {
 
             if (iterations == 0) {
                 startTime = System.currentTimeMillis() / 1000;
-                Logger.getLogger("").info(
-                    "Entering liquid stage...");
+                LOGGER.info("Entering liquid stage...");
             }
 
             if (iterations < params.getLiquid().getIterationsTotal(totExpectedIterations)) {
@@ -160,15 +161,14 @@ public class Control {
                 initStage(params.getExpansion());
                 iterations = 0;
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Liquid stage completed in %d seconds, total energy = %f",
                     timeElapsed, totEnergy));
 
                 STAGE = 1;
                 startTime = System.currentTimeMillis() / 1000;
 
-                Logger.getLogger("").info(
-                    "Entering expansion stage...");
+                LOGGER.info("Entering expansion stage...");
             }
         }
 
@@ -194,7 +194,7 @@ public class Control {
                 long timeElapsed = (stopTime - startTime);
                 totalTime += timeElapsed;
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Expansion stage completed in %d seconds, total energy = %f",
                     timeElapsed, totEnergy));
 
@@ -204,8 +204,7 @@ public class Control {
                 iterations = 0;
                 startTime = System.currentTimeMillis() / 1000;
 
-                Logger.getLogger("").info(
-                    "Entering cool-down stage...");
+                LOGGER.info("Entering cool-down stage...");
             }
         } else if (STAGE == 2) {
 
@@ -236,7 +235,7 @@ public class Control {
                 minEdges = MIN;
                 //min_edges = 99; // In other words: no more cutting
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Cool-down stage completed in %d seconds, total energy = %f",
                     timeElapsed, totEnergy));
 
@@ -245,8 +244,7 @@ public class Control {
                 initStage(params.getCrunch());
                 startTime = System.currentTimeMillis() / 1000;
 
-                Logger.getLogger("").info(
-                    "Entering crunch stage...");
+                LOGGER.info("Entering crunch stage...");
             }
         } else if (STAGE == 3) {
 
@@ -262,15 +260,14 @@ public class Control {
                 minEdges = 99;
                 fineDensity = true;
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Crunch stage completed in %d seconds, total energy = %f",
                     timeElapsed, totEnergy));
 
                 STAGE = 5;
                 startTime = System.currentTimeMillis() / 1000;
 
-                Logger.getLogger("").info(
-                    "Entering simmer stage...");
+                LOGGER.info("Entering simmer stage...");
             }
         } else if (STAGE == 5) {
 
@@ -285,17 +282,19 @@ public class Control {
                 long timeElapsed = (stopTime - startTime);
                 totalTime += timeElapsed;
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Simmer stage completed in %d seconds, total energy = %f",
                     timeElapsed, totEnergy));
 
                 STAGE = 6;
 
-                Logger.getLogger("").info(String.format(
+                LOGGER.info(String.format(
                     "Layout completed in %d seconds with %d iterations",
                     totalTime, totIterations));
             }
-        } else return STAGE != 6;
+        } else {
+            return STAGE != 6;
+        }
 
         return true;
     }

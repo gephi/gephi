@@ -42,7 +42,6 @@
 
 package org.gephi.ui.appearance.plugin;
 
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueSizeTransformer;
@@ -58,20 +57,21 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner sizeSpinner;
     // End of variables declaration//GEN-END:variables
 
+    private ChangeListener sizeChangeListener = null;
+
     public UniqueSizeTransformerPanel() {
         initComponents();
-
-        sizeSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                transformer.setSize((Float) sizeSpinner.getValue());
-            }
-        });
     }
 
     public void setup(SimpleFunction function) {
         transformer = function.getTransformer();
+
+        if (sizeChangeListener != null) {
+            sizeSpinner.removeChangeListener(sizeChangeListener);
+        }
         sizeSpinner.setValue(transformer.getSize());
+        sizeChangeListener = (e -> transformer.setSize((Float) sizeSpinner.getValue()));
+        sizeSpinner.addChangeListener(sizeChangeListener);
     }
 
     /**

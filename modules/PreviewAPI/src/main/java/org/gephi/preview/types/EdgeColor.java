@@ -51,7 +51,7 @@ import java.awt.Color;
  * <li>TARGET: The target node's color</li>
  * <li>MIXED: An average of source and target color</li>
  * <li>CUSTOM: A custom color</li>
- * <li>ORIGINAL: The original edge color, if exists</li></ul>
+ * <li>ORIGINAL: The self edge color, if exists</li></ul>
  *
  * @author Mathieu Bastian
  */

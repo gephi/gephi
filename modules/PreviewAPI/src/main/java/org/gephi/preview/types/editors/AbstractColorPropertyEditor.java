@@ -7,6 +7,10 @@ import java.util.regex.Pattern;
 
 public abstract class AbstractColorPropertyEditor extends PropertyEditorSupport {
 
+    public String getAsSerializableText() {
+        return getAsText();
+    }
+
     protected String toText(String mode, Color color) {
         if (color.getAlpha() < 255) {
             return String.format(

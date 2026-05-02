@@ -113,12 +113,29 @@
             <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-options-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <!-- Exclude layer.xml from the default resource copying since it is handled separately
+             with filtering by the generate-autoupdate-urls execution below.
+             maven-resources-plugin 3.4.0+ regression (issue #453) broke the previous behavior
+             where overwrite=false (the default) would prevent the default resources goal from
+             overwriting the already-filtered layer.xml produced during generate-resources. -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>org/gephi/branding/desktop/layer.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <!-- Copy and filtering tasks -->
             <plugin>

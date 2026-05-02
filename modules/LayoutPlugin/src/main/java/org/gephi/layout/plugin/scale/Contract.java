@@ -65,7 +65,7 @@ public class Contract implements LayoutBuilder {
 
     @Override
     public ContractLayout buildLayout() {
-        return new ContractLayout(this, 0.8);
+        return new ContractLayout(this, 0.8f);
     }
 
     @Override

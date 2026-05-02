@@ -2,9 +2,9 @@ package org.gephi.preview.plugin.builders;
 
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceProvider;
 import org.openide.util.Lookup;
 
 public class WorkspaceHelper {
@@ -20,9 +20,8 @@ public class WorkspaceHelper {
         if (projectController.getCurrentProject() == null) {
             return null;
         }
-        WorkspaceProvider workspaceProvider =
-            projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
-        for (Workspace workspace : workspaceProvider.getWorkspaces()) {
+        Project project = projectController.getCurrentProject();
+        for (Workspace workspace : project.getWorkspaces()) {
             GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
             if (graphModel == graph.getModel()) {
                 return workspace;

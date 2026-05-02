@@ -144,6 +144,20 @@ public class LoadTask implements LongTask {
                         Progress.progress(progressTicket);
 
                         if (workspace != null) {
+                            // Read first the bytes ones
+                            for (WorkspacePersistenceProvider provider : providers) {
+                                if (provider instanceof WorkspaceBytesPersistenceProvider) {
+                                    readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace,
+                                        zip);
+                                    Progress.progress(progressTicket);
+                                }
+                            }
+
+                            // Init models, this is needed because when the workspace is created we don't init models
+                            // to make sure the GraphModel is loaded first
+                            workspace.initModels();
+
+                            // Then the XML ones
                             for (WorkspacePersistenceProvider provider : providers) {
                                 if (provider instanceof WorkspaceXMLPersistenceProvider) {
                                     try {
@@ -156,9 +170,6 @@ public class LoadTask implements LongTask {
                                                 provider.getIdentifier() + "'",
                                             e);
                                     }
-                                } else if (provider instanceof WorkspaceBytesPersistenceProvider) {
-                                    readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace,
-                                        zip);
                                 }
                                 Progress.progress(progressTicket);
                                 if (cancel) {
@@ -174,7 +185,7 @@ public class LoadTask implements LongTask {
                 Progress.switchToIndeterminate(progressTicket);
 
                 //Add project
-                if (!cancel) {
+                if (!cancel && project != null) {
 
                     //Set current workspace
                     for (Workspace workspace : project.getWorkspaces()) {

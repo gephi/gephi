@@ -43,7 +43,6 @@
 package org.gephi.preview.plugin.builders;
 
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeItem;
@@ -58,21 +57,19 @@ public class EdgeBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-
-        EdgeItem[] items = new EdgeItem[graph.getEdgeCount()];
-        int i = 0;
-        for (Edge e : graph.getEdges()) {
-            EdgeItem item = new EdgeItem(e);
-            item.setData(EdgeItem.WEIGHT, e.getWeight(graph.getView()));
-            item.setData(EdgeItem.DIRECTED, e.isDirected());
-            if (graph.isDirected(e)) {
-                item.setData(EdgeItem.MUTUAL, ((DirectedGraph) graph).getMutualEdge(e) != null);
+        return graph.getEdges().stream().map(
+            e -> {
+                EdgeItem item = new EdgeItem(e);
+                item.setData(EdgeItem.WEIGHT, e.getWeight(graph.getView()));
+                item.setData(EdgeItem.DIRECTED, e.isDirected());
+                if (graph.isDirected(e)) {
+                    item.setData(EdgeItem.MUTUAL, ((DirectedGraph) graph).getMutualEdge(e) != null);
+                }
+                item.setData(EdgeItem.SELF_LOOP, e.isSelfLoop());
+                item.setData(EdgeItem.COLOR, e.getColor());
+                return item;
             }
-            item.setData(EdgeItem.SELF_LOOP, e.isSelfLoop());
-            item.setData(EdgeItem.COLOR, e.alpha() == 0 ? null : e.getColor());
-            items[i++] = item;
-        }
-        return items;
+        ).toArray(EdgeItem[]::new);
     }
 
     @Override

@@ -69,16 +69,14 @@ public class PaletteManager {
 
     public static final String COLORS = "PaletteColors";
     private final static int RECENT_PALETTE_SIZE = 5;
-    protected static String DEFAULT_NODE_NAME = "prefs";
+    private static final String NODE_NAME = "recentpartitionpalettes";
     private static PaletteManager instance;
     private final List<Preset> presets;
     private final Collection<Palette> defaultPalettes;
     private final LinkedList<Palette> recentPalette;
     private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
-    protected String nodeName = null;
 
     private PaletteManager() {
-        nodeName = "recentpartitionpalettes";
         presets = loadPresets();
         defaultPalettes = loadDefaultPalettes();
         recentPalette = new LinkedList<>();
@@ -98,24 +96,25 @@ public class PaletteManager {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private static Collection<Palette> loadPalettes(String fileName) throws IOException {
-        LineNumberReader reader =
-            new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)));
-        String line;
         List<List<Color>> palettes = new ArrayList<>();
-        while ((line = reader.readLine()) != null) {
-            List<Color> palette = new ArrayList<>();
-            String[] split = line.split(",");
-            for (String colorStr : split) {
-                if (!colorStr.isEmpty()) {
-                    palette.add(parseHexColor(colorStr.trim()));
+        try (LineNumberReader reader =
+                 new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                List<Color> palette = new ArrayList<>();
+                String[] split = line.split(",");
+                for (String colorStr : split) {
+                    if (!colorStr.isEmpty()) {
+                        palette.add(parseHexColor(colorStr.trim()));
+                    }
                 }
-            }
-            if (!palette.isEmpty()) {
-                palettes.add(palette);
+                if (!palette.isEmpty()) {
+                    palettes.add(palette);
+                }
             }
         }
         List<Palette> result = new ArrayList<>();
@@ -192,6 +191,10 @@ public class PaletteManager {
                     cols[i] = DEFAULT_COLOR;
                 }
                 palettes.add(new Palette(cols));
+            } else {
+                // p.size() > colorCount: truncate to the requested size
+                Color[] cols = Arrays.copyOf(p.getColors(), colorCount);
+                palettes.add(new Palette(cols));
             }
         }
         Collections.reverse(palettes);
@@ -199,8 +202,11 @@ public class PaletteManager {
     }
 
     public void addRecentPalette(Palette palette) {
+        if (!recentPalette.isEmpty() && recentPalette.getFirst().equals(palette)) {
+            return;
+        }
         recentPalette.remove(palette);
-        if (recentPalette.size() == RECENT_PALETTE_SIZE) {
+        if (recentPalette.size() >= RECENT_PALETTE_SIZE) {
             recentPalette.removeLast();
         }
         recentPalette.addFirst(palette);
@@ -213,9 +219,8 @@ public class PaletteManager {
 
     private List<Preset> loadPresets() {
         List<Preset> presetList = new ArrayList<>();
-        try {
-            LineNumberReader reader = new LineNumberReader(
-                new InputStreamReader(PaletteManager.class.getResourceAsStream("palette_presets.csv")));
+        try (LineNumberReader reader = new LineNumberReader(
+            new InputStreamReader(PaletteManager.class.getResourceAsStream("palette_presets.csv")))) {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -250,8 +255,6 @@ public class PaletteManager {
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }
-            } else {
-                break;
             }
         }
     }
@@ -299,13 +302,6 @@ public class PaletteManager {
      * @return Preferences
      */
     protected final Preferences getPreferences() {
-        String name = DEFAULT_NODE_NAME;
-        if (nodeName != null) {
-            name = nodeName;
-        }
-
-        Preferences prefs = NbPreferences.forModule(this.getClass()).node("options").node(name);
-
-        return prefs;
+        return NbPreferences.forModule(this.getClass()).node("options").node(NODE_NAME);
     }
 }

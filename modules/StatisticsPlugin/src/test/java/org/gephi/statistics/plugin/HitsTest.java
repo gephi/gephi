@@ -528,6 +528,8 @@ public class HitsTest extends TestCase {
         h.execute(graphModel);
 
         Assert.assertTrue(graphModel.getNodeTable().hasColumn(Hits.HUB));
+        Assert.assertEquals(Double.class, graphModel.getNodeTable().getColumn(Hits.HUB).getTypeClass());
+        Assert.assertEquals(Double.class, graphModel.getNodeTable().getColumn(Hits.AUTHORITY).getTypeClass());
     }
 
     @Test
@@ -538,6 +540,8 @@ public class HitsTest extends TestCase {
 
         Hits h = new Hits();
         h.execute(graphModel);
+
+        Assert.assertEquals(Double.class, graphModel.getNodeTable().getColumn(Hits.HUB).getTypeClass());
     }
 
     private void assertEquals(double a, double b) {

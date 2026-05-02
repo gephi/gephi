@@ -62,12 +62,32 @@ import java.time.ZoneId;
  */
 public interface ContainerUnloader {
 
+    /**
+     * Returns all nodes in this container.
+     *
+     * @return an iterable of all node drafts
+     */
     Iterable<NodeDraft> getNodes();
 
+    /**
+     * Returns the number of nodes in this container.
+     *
+     * @return node count
+     */
     int getNodeCount();
 
+    /**
+     * Returns all edges in this container.
+     *
+     * @return an iterable of all edge drafts
+     */
     Iterable<EdgeDraft> getEdges();
 
+    /**
+     * Returns the number of edges in this container.
+     *
+     * @return edge count
+     */
     int getEdgeCount();
 
     /**
@@ -77,8 +97,20 @@ public interface ContainerUnloader {
      */
     int getMutualEdgeCount();
 
+    /**
+     * Returns true if a node column with the given key exists in this container.
+     *
+     * @param key node column identifier
+     * @return true if the column exists, false otherwise
+     */
     boolean hasNodeColumn(String key);
 
+    /**
+     * Returns true if an edge column with the given key exists in this container.
+     *
+     * @param key edge column identifier
+     * @return true if the column exists, false otherwise
+     */
     boolean hasEdgeColumn(String key);
 
     /**
@@ -104,40 +136,151 @@ public interface ContainerUnloader {
      */
     ColumnDraft getEdgeColumn(String key);
 
+    /**
+     * Returns all node columns in this container.
+     *
+     * @return an iterable of all node column drafts
+     */
     Iterable<ColumnDraft> getNodeColumns();
 
+    /**
+     * Returns all edge columns in this container.
+     *
+     * @return an iterable of all edge column drafts
+     */
     Iterable<ColumnDraft> getEdgeColumns();
 
+    /**
+     * Returns the default edge direction setting for this container.
+     *
+     * @return edge direction default
+     */
     EdgeDirectionDefault getEdgeDefault();
 
+    /**
+     * Returns the time format used for dynamic data in this container.
+     *
+     * @return time format
+     */
     TimeFormat getTimeFormat();
 
+    /**
+     * Returns the time representation used for dynamic data in this container, either {@code TIMESTAMP} or
+     * {@code INTERVAL}.
+     *
+     * @return time representation
+     */
     TimeRepresentation getTimeRepresentation();
 
+    /**
+     * Returns the time zone used to parse date and time values in this container.
+     *
+     * @return time zone
+     */
     ZoneId getTimeZone();
 
+    /**
+     * Returns the source of the data in this container (e.g. a file name), or {@code null} if not set.
+     *
+     * @return source or null
+     */
     String getSource();
 
+    /**
+     * Returns the class used for edge type labels, or {@code null} if the default (null label) is used.
+     *
+     * @return edge type label class or null
+     */
     Class getEdgeTypeLabelClass();
 
+    /**
+     * Returns the graph-level timestamp applied to all elements in this container, or {@code null} if not set.
+     *
+     * @return graph timestamp or null
+     */
     Double getTimestamp();
 
+    /**
+     * Returns the graph-level interval applied to all elements in this container, or {@code null} if not set.
+     *
+     * @return graph interval or null
+     */
     Interval getInterval();
 
+    /**
+     * Returns the element id type used by this container.
+     *
+     * @return element id type
+     */
     ElementIdType getElementIdType();
 
+    /**
+     * Returns the graph metadata in this container, or {@code null} if not set.
+     *
+     * @return metadata or null
+     */
     MetadataDraft getMetadata();
 
-    //PARAMETERS GETTERS
+    /**
+     * Returns whether self-loops are allowed in this container.
+     *
+     * @return true if self-loops are allowed, false otherwise
+     */
     boolean allowSelfLoop();
 
+    /**
+     * Returns whether nodes are automatically created from edges when the source or target node is not declared.
+     *
+     * @return true if auto-node creation is allowed, false otherwise
+     */
     boolean allowAutoNode();
 
+    /**
+     * Returns whether parallel edges (multiple edges between the same pair of nodes) are allowed.
+     *
+     * @return true if parallel edges are allowed, false otherwise
+     */
     boolean allowParallelEdges();
 
+    /**
+     * Returns whether auto-scaling is enabled for this container.
+     * <p>
+     * When enabled, node positions are scaled to fit the default viewport after import.
+     *
+     * @return true if auto-scaling is enabled, false otherwise
+     */
     boolean isAutoScale();
 
+    /**
+     * Returns whether node labels should be filled with the node id when no label is set.
+     *
+     * @return true if labels should be filled with ids, false otherwise
+     */
     boolean isFillLabelWithId();
 
+    /**
+     * Returns the strategy used for merging parallel edge weights.
+     *
+     * @return edge merge strategy
+     */
     EdgeMergeStrategy getEdgesMergeStrategy();
+
+    /**
+     * Returns true if this container contains a dynamic graph.
+     * <p>
+     * A dynamic graph has elements that appear or disappear over time.
+     *
+     * @return true if dynamic, false otherwise
+     */
+    boolean isDynamicGraph();
+
+    /**
+     * Returns true if this container contains elements that have dynamic
+     * attributes.
+     * <p>
+     * Dynamic attributes are attributes with different values over time.
+     *
+     * @return true if dynamic attributes, false otherwise
+     */
+    boolean hasDynamicAttributes();
 }

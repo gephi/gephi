@@ -53,13 +53,15 @@ import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
  */
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
-    private Throwable throwable;
+    private Report currentReport;
+    private final ReportController reportController = new ReportController();
     private final String MEMORY_ERROR;
 
     public ReporterHandler() {
@@ -90,17 +92,32 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         if (record.getThrown() == null) {
             return;
         }
-        throwable = record.getThrown();
-        if (throwable != null && throwable instanceof OutOfMemoryError) {
+        Throwable throwable = record.getThrown();
+        if (throwable instanceof OutOfMemoryError) {
             Handler[] handlers = Logger.getLogger("").getHandlers();
-            for (int i = 0; i < handlers.length; i++) {
-                Handler h = handlers[i];
+            for (Handler h : handlers) {
                 h.close();
             }
             NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
             LifecycleManager.getDefault().exit();
+            return;
         }
+
+        Report report = new Report();
+        report.setThrowable(throwable);
+        report.setSummary(createMessage(throwable));
+
+        boolean autoSend = NbPreferences.forModule(ReportController.class)
+            .getBoolean(ReportController.SEND_CRASH_REPORTS, ReportController.DEFAULT_SEND_CRASH_REPORTS);
+        if (autoSend) {
+            // Populate system info and capture to Sentry immediately, before the user even
+            // opens the dialog. The panel will only be used to attach optional user feedback.
+            reportController.populateSystemInfo(report);
+            reportController.captureExceptionToSentry(report);
+        }
+
+        currentReport = report;
     }
 
     @Override
@@ -109,7 +126,7 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
 
     @Override
     public void close() throws SecurityException {
-        throwable = null;
+        currentReport = null;
     }
 
     @Override
@@ -121,10 +138,9 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Report report = new Report();
-        report.setThrowable(throwable);
-        report.setSummary(createMessage(throwable));
-        ReportPanel panel = new ReportPanel(report);
-        panel.showDialog();
+        if (currentReport != null) {
+            ReportPanel panel = new ReportPanel(currentReport);
+            panel.showDialog();
+        }
     }
 }

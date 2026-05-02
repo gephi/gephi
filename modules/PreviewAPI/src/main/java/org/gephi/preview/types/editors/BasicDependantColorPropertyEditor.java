@@ -43,9 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
-import java.beans.PropertyEditorSupport;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.gephi.preview.types.DependantColor;
 
 /**
@@ -61,6 +58,11 @@ public class BasicDependantColorPropertyEditor extends AbstractColorPropertyEdit
 
     @Override
     public String getAsText() {
+        return getAsSerializableText();
+    }
+
+    @Override
+    public String getAsSerializableText() {
         DependantColor c = (DependantColor) getValue();
         if (c.getMode().equals(DependantColor.Mode.CUSTOM)) {
             return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
@@ -72,11 +74,13 @@ public class BasicDependantColorPropertyEditor extends AbstractColorPropertyEdit
     @Override
     public void setAsText(String s) {
         if (matchColorMode(s, DependantColor.Mode.CUSTOM.name().toLowerCase())) {
-             setValue(new DependantColor(toColor(s)));
+            setValue(new DependantColor(toColor(s)));
         } else if (matchColorMode(s, DependantColor.Mode.PARENT.name().toLowerCase())) {
             setValue(new DependantColor(DependantColor.Mode.PARENT));
         } else if (matchColorMode(s, DependantColor.Mode.DARKER.name().toLowerCase())) {
             setValue(new DependantColor(DependantColor.Mode.DARKER));
+        } else if (matchColorMode(s, DependantColor.Mode.LIGHTER.name().toLowerCase())) {
+            setValue(new DependantColor(DependantColor.Mode.LIGHTER));
         }
     }
 
