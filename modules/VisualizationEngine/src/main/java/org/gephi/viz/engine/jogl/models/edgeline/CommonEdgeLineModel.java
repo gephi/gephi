@@ -1,5 +1,13 @@
 package org.gephi.viz.engine.jogl.models.edgeline;
 
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
 public class CommonEdgeLineModel {
 
     public static final int POSITION_SOURCE_FLOATS = 2;
@@ -16,4 +24,23 @@ public class CommonEdgeLineModel {
         + SIZE_FLOATS
         + SOURCE_SIZE_FLOATS
         + TARGET_SIZE_FLOATS;
+
+    public static final int[] USED_ATTRIBUTE_LOCATIONS = {
+        SHADER_VERT_LOCATION,
+        SHADER_POSITION_LOCATION,
+        SHADER_POSITION_TARGET_LOCATION,
+        SHADER_SIZE_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SOURCE_SIZE_LOCATION,
+        SHADER_TARGET_SIZE_LOCATION
+    };
+
+    public static final int[] INSTANCED_ATTRIBUTE_LOCATIONS = {
+        SHADER_POSITION_LOCATION,
+        SHADER_POSITION_TARGET_LOCATION,
+        SHADER_SIZE_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SOURCE_SIZE_LOCATION,
+        SHADER_TARGET_SIZE_LOCATION
+    };
 }

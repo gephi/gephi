@@ -1,5 +1,10 @@
 package org.gephi.viz.engine.jogl.models.nodedisk;
 
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
 import org.gephi.viz.engine.util.gl.Constants;
 
 public final class CommonNodeDiskModel {
@@ -14,4 +19,17 @@ public final class CommonNodeDiskModel {
         = POSITION_FLOATS
         + COLOR_FLOATS
         + SIZE_FLOATS;
+
+    public static final int[] USED_ATTRIBUTE_LOCATIONS = {
+        SHADER_VERT_LOCATION,
+        SHADER_POSITION_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SIZE_LOCATION
+    };
+
+    public static final int[] INSTANCED_ATTRIBUTE_LOCATIONS = {
+        SHADER_POSITION_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SIZE_LOCATION
+    };
 }

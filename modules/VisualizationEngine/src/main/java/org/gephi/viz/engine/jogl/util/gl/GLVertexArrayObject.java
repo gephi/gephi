@@ -12,34 +12,35 @@ import org.gephi.viz.engine.util.gl.OpenGLOptions;
  *
  * @author Eduardo Ramos
  */
-public abstract class GLVertexArrayObject {
+public class GLVertexArrayObject {
+
+    @FunctionalInterface
+    public interface Configurer {
+        void configure(GL2ES2 gl);
+    }
 
     private final boolean vaoSupported;
+    private final Configurer configurer;
+    private final int[] attributeLocations;
+    private final int[] instancedAttributeLocations;
 
-    private int[] attributeLocations;
-    private int[] instancedAttributeLocations;
+    private boolean initialized;
     private int arrayId = -1;
     private final int[] previousArrayId = new int[1];
 
-    public GLVertexArrayObject(OpenGLOptions openGLOptions) {
-        vaoSupported = openGLOptions.isVAOSupported();
+    public GLVertexArrayObject(OpenGLOptions openGLOptions,
+                               int[] usedAttributeLocations,
+                               int[] instancedAttributeLocations,
+                               Configurer configurer) {
+        this.vaoSupported = openGLOptions.isVAOSupported();
+        this.attributeLocations =
+            usedAttributeLocations != null ? usedAttributeLocations.clone() : new int[0];
+        this.instancedAttributeLocations =
+            instancedAttributeLocations != null ? instancedAttributeLocations.clone() : new int[0];
+        this.configurer = configurer;
     }
 
     private void init(GL2ES2 gl) {
-        attributeLocations = getUsedAttributeLocations();
-        if (attributeLocations == null) {
-            attributeLocations = new int[0];
-        } else {
-            attributeLocations = attributeLocations.clone();
-        }
-
-        instancedAttributeLocations = getInstancedAttributeLocations();
-        if (instancedAttributeLocations == null) {
-            instancedAttributeLocations = new int[0];
-        } else {
-            instancedAttributeLocations = instancedAttributeLocations.clone();
-        }
-
         if (vaoSupported) {
             IntBuffer vertexArrayName = GLBuffers.newDirectIntBuffer(1);
 
@@ -56,10 +57,12 @@ public abstract class GLVertexArrayObject {
             configureAll(gl);
             unbind(gl);
         }
+
+        initialized = true;
     }
 
     public void use(GL2ES2 gl) {
-        if (attributeLocations == null) {
+        if (!initialized) {
             init(gl);
         }
 
@@ -79,7 +82,7 @@ public abstract class GLVertexArrayObject {
     }
 
     private void configureAll(GL2ES2 gl) {
-        configure(gl);
+        configurer.configure(gl);
         configureEnabledAttributes(gl);
     }
 
@@ -116,14 +119,7 @@ public abstract class GLVertexArrayObject {
             GLFunctions.glDeleteVertexArrays(gl, 1, vertexArrayName);
             arrayId = -1;
         }
-        attributeLocations = null;
-        instancedAttributeLocations = null;
+        initialized = false;
     }
-
-    protected abstract void configure(GL2ES2 gl);
-
-    protected abstract int[] getUsedAttributeLocations();
-
-    protected abstract int[] getInstancedAttributeLocations();
 
 }

@@ -1229,19 +1229,16 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         return Float.intBitsToFloat(colorInt);
     }
 
-    private UndirectedEdgesVAO undirectedEdgesVAO;
-    private UndirectedEdgesVAO undirectedEdgesVAOSecondary;
-    private DirectedEdgesVAO directedEdgesVAO;
-    private DirectedEdgesVAO directedEdgesVAOSecondary;
-    private SelfLoopEdgesVAO selfLoopEdgesVAO;
-    private SelfLoopEdgesVAO selfLoopEdgesVAOSecondary;
+    private GLVertexArrayObject undirectedEdgesVAO;
+    private GLVertexArrayObject undirectedEdgesVAOSecondary;
+    private GLVertexArrayObject directedEdgesVAO;
+    private GLVertexArrayObject directedEdgesVAOSecondary;
+    private GLVertexArrayObject selfLoopEdgesVAO;
+    private GLVertexArrayObject selfLoopEdgesVAOSecondary;
 
     public void setupSelfLoopVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAO == null) {
-            selfLoopEdgesVAO = new SelfLoopEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferSelfLoop
-            );
+            selfLoopEdgesVAO = createSelfLoopEdgesVAO(data.getOpenGLOptions(), attributesGLBufferSelfLoop);
         }
 
         selfLoopEdgesVAO.use(gl);
@@ -1249,10 +1246,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     public void setupSelfLoopVertexArrayAttributesSecondary(GL2ES2 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAOSecondary == null) {
-            selfLoopEdgesVAOSecondary = new SelfLoopEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferSelfLoopSecondary
-            );
+            selfLoopEdgesVAOSecondary =
+                createSelfLoopEdgesVAO(data.getOpenGLOptions(), attributesGLBufferSelfLoopSecondary);
         }
 
         selfLoopEdgesVAOSecondary.use(gl);
@@ -1260,10 +1255,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
-            undirectedEdgesVAO = new UndirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferUndirected
-            );
+            undirectedEdgesVAO = createUndirectedEdgesVAO(data.getOpenGLOptions(), attributesGLBufferUndirected);
         }
 
         undirectedEdgesVAO.use(gl);
@@ -1272,10 +1264,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl,
                                                               EdgeWorldData data) {
         if (undirectedEdgesVAOSecondary == null) {
-            undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferUndirectedSecondary
-            );
+            undirectedEdgesVAOSecondary =
+                createUndirectedEdgesVAO(data.getOpenGLOptions(), attributesGLBufferUndirectedSecondary);
         }
 
         undirectedEdgesVAOSecondary.use(gl);
@@ -1303,10 +1293,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
-            directedEdgesVAO = new DirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferDirected
-            );
+            directedEdgesVAO = createDirectedEdgesVAO(data.getOpenGLOptions(), attributesGLBufferDirected);
         }
 
         directedEdgesVAO.use(gl);
@@ -1315,10 +1302,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl,
                                                             EdgeWorldData data) {
         if (directedEdgesVAOSecondary == null) {
-            directedEdgesVAOSecondary = new DirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferDirectedSecondary
-            );
+            directedEdgesVAOSecondary =
+                createDirectedEdgesVAO(data.getOpenGLOptions(), attributesGLBufferDirectedSecondary);
         }
 
         directedEdgesVAOSecondary.use(gl);
@@ -1438,28 +1423,20 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         edgesCallback.reset();
     }
 
-    private class SelfLoopEdgesVAO extends GLVertexArrayObject {
-
-        private final GLBuffer attributesBuffer;
-
-        public SelfLoopEdgesVAO(OpenGLOptions openGLOptions,
-                                GLBuffer attributesBuffer) {
-            super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBufferSelfLoop.bind(gl);
-            {
+    private GLVertexArrayObject createSelfLoopEdgesVAO(OpenGLOptions openGLOptions,
+                                                       final GLBuffer attributesBuffer) {
+        return new GLVertexArrayObject(
+            openGLOptions,
+            CommonEdgeCircleSelfLoop.USED_ATTRIBUTE_LOCATIONS,
+            instanced ? CommonEdgeCircleSelfLoop.INSTANCED_ATTRIBUTE_LOCATIONS : null,
+            gl -> {
+                vertexGLBufferSelfLoop.bind(gl);
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeCircleSelfLoop.VERTEX_FLOATS, GL_FLOAT,
                     false,
                     0, 0);
-            }
-            vertexGLBufferSelfLoop.unbind(gl);
+                vertexGLBufferSelfLoop.unbind(gl);
 
-            this.attributesBuffer.bind(gl);
-            {
+                attributesBuffer.bind(gl);
                 int stride = ATTRIBS_STRIDE_SELFLOOP * Float.BYTES;
                 int offset = 0;
                 gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeCircleSelfLoop.POSITION_FLOATS,
@@ -1480,61 +1457,24 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 gl.glVertexAttribPointer(SHADER_SELFLOOP_NODE_SIZE_LOCATION,
                     CommonEdgeCircleSelfLoop.NODE_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
-
-
+                attributesBuffer.unbind(gl);
             }
-            this.attributesBuffer.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_SELFLOOP_NODE_SIZE_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_SELFLOOP_NODE_SIZE_LOCATION
-
-                };
-            } else {
-                return null;
-            }
-        }
-
+        );
     }
 
-    private class UndirectedEdgesVAO extends GLVertexArrayObject {
-
-        private final GLBuffer attributesBuffer;
-
-        public UndirectedEdgesVAO(OpenGLOptions openGLOptions,
-                                  GLBuffer attributesBuffer) {
-            super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBufferUndirected.bind(gl);
-            {
+    private GLVertexArrayObject createUndirectedEdgesVAO(OpenGLOptions openGLOptions,
+                                                         final GLBuffer attributesBuffer) {
+        return new GLVertexArrayObject(
+            openGLOptions,
+            CommonEdgeLineModel.USED_ATTRIBUTE_LOCATIONS,
+            instanced ? CommonEdgeLineModel.INSTANCED_ATTRIBUTE_LOCATIONS : null,
+            gl -> {
+                vertexGLBufferUndirected.bind(gl);
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineUndirected.VERTEX_FLOATS, GL_FLOAT, false,
                     0, 0);
-            }
-            vertexGLBufferUndirected.unbind(gl);
+                vertexGLBufferUndirected.unbind(gl);
 
-            attributesBuffer.bind(gl);
-            {
+                attributesBuffer.bind(gl);
                 final int stride = ATTRIBS_STRIDE * Float.BYTES;
                 int offset = 0;
                 gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeLineUndirected.POSITION_SOURCE_FLOATS,
@@ -1559,63 +1499,24 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, CommonEdgeLineUndirected.TARGET_SIZE_FLOATS,
                     GL_FLOAT, false, stride, offset);
+                attributesBuffer.unbind(gl);
             }
-            attributesBuffer.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_POSITION_TARGET_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SOURCE_SIZE_LOCATION,
-                SHADER_TARGET_SIZE_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_POSITION_TARGET_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SOURCE_SIZE_LOCATION,
-                    SHADER_TARGET_SIZE_LOCATION
-                };
-            } else {
-                return null;
-            }
-        }
-
+        );
     }
 
-    private class DirectedEdgesVAO extends GLVertexArrayObject {
-
-        private final GLBuffer attributesBuffer;
-
-        public DirectedEdgesVAO(OpenGLOptions openGLOptions,
-                                GLBuffer attributesBuffer) {
-            super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBufferDirected.bind(gl);
-            {
-
+    private GLVertexArrayObject createDirectedEdgesVAO(OpenGLOptions openGLOptions,
+                                                       final GLBuffer attributesBuffer) {
+        return new GLVertexArrayObject(
+            openGLOptions,
+            CommonEdgeLineModel.USED_ATTRIBUTE_LOCATIONS,
+            instanced ? CommonEdgeLineModel.INSTANCED_ATTRIBUTE_LOCATIONS : null,
+            gl -> {
+                vertexGLBufferDirected.bind(gl);
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineDirected.VERTEX_FLOATS, GL_FLOAT, false, 0,
                     0);
-            }
-            vertexGLBufferDirected.unbind(gl);
+                vertexGLBufferDirected.unbind(gl);
 
-            attributesBuffer.bind(gl);
-            {
+                attributesBuffer.bind(gl);
                 int stride = ATTRIBS_STRIDE * Float.BYTES;
                 int offset = 0;
                 gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeLineDirected.POSITION_SOURCE_FLOATS,
@@ -1640,38 +1541,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, CommonEdgeLineDirected.TARGET_SIZE_FLOATS,
                     GL_FLOAT, false, stride, offset);
+                attributesBuffer.unbind(gl);
             }
-            attributesBuffer.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_POSITION_TARGET_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SOURCE_SIZE_LOCATION,
-                SHADER_TARGET_SIZE_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_POSITION_TARGET_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SOURCE_SIZE_LOCATION,
-                    SHADER_TARGET_SIZE_LOCATION
-                };
-            } else {
-                return null;
-            }
-        }
+        );
     }
 
     public EdgesCallback getEdgesCallback() {

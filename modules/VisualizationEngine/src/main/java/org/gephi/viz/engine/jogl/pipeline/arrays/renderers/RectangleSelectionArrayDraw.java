@@ -28,7 +28,6 @@ import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.util.gl.Constants;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2f;
 
 public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget, VoidWorldData> {
@@ -44,7 +43,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private final int[] bufferName = new int[1];
     private ManagedDirectBuffer rectangleVertexDataBuffer;
     private GLBufferMutable vertexGLBuffer;
-    private SelectionRectangleVAO vao;
+    private GLVertexArrayObject vao;
 
     public RectangleSelectionArrayDraw(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         this.engine = engine;
@@ -85,8 +84,15 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
             GLBufferMutable.GL_BUFFER_USAGE_DYNAMIC_DRAW);
         vertexGLBuffer.unbind(gl);
 
-        vao = new SelectionRectangleVAO(
-            engine.getOpenGLOptions()
+        vao = new GLVertexArrayObject(
+            engine.getOpenGLOptions(),
+            new int[] {SHADER_VERT_LOCATION},
+            null,
+            gl2 -> {
+                vertexGLBuffer.bind(gl2);
+                gl2.glVertexAttribPointer(SHADER_VERT_LOCATION, VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
+                vertexGLBuffer.unbind(gl2);
+            }
         );
     }
 
@@ -235,31 +241,4 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
         return EnumSet.of(RenderingLayer.FRONT4);
     }
 
-    private class SelectionRectangleVAO extends GLVertexArrayObject {
-
-        public SelectionRectangleVAO(OpenGLOptions openGLOptions) {
-            super(openGLOptions);
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBuffer.bind(gl);
-            {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
-            }
-            vertexGLBuffer.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            return null;
-        }
-    }
 }

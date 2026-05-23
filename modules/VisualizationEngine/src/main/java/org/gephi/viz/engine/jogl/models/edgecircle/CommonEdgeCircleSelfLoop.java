@@ -1,5 +1,11 @@
 package org.gephi.viz.engine.jogl.models.edgecircle;
 
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SELFLOOP_NODE_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
+
 public final class CommonEdgeCircleSelfLoop {
     // Attributes 5
     // Index
@@ -19,4 +25,19 @@ public final class CommonEdgeCircleSelfLoop {
         + COLOR_FLOATS
         + SIZE_FLOATS
         + NODE_SIZE_FLOATS;
+
+    public static final int[] USED_ATTRIBUTE_LOCATIONS = {
+        SHADER_VERT_LOCATION,
+        SHADER_POSITION_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SIZE_LOCATION,
+        SHADER_SELFLOOP_NODE_SIZE_LOCATION
+    };
+
+    public static final int[] INSTANCED_ATTRIBUTE_LOCATIONS = {
+        SHADER_POSITION_LOCATION,
+        SHADER_COLOR_LOCATION,
+        SHADER_SIZE_LOCATION,
+        SHADER_SELFLOOP_NODE_SIZE_LOCATION
+    };
 }
