@@ -63,6 +63,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import org.openide.util.actions.CallableSystemAction;
 
@@ -197,6 +198,15 @@ public final class LanguageAction extends CallableSystemAction {
         writer.write(outputBuilder.toString());
         writer.close();
 
+        NbPreferences.forModule(LanguageAction.class)
+            .put("language", language.getLanguage());
+        if (language.getCountry() != null) {
+            NbPreferences.forModule(LanguageAction.class)
+                .put("country", language.getCountry());
+        } else {
+            NbPreferences.forModule(LanguageAction.class).remove("country");
+        }
+
         LifecycleManager.getDefault().exit();
     }
 
@@ -214,6 +224,7 @@ public final class LanguageAction extends CallableSystemAction {
         RO_RO("ro", "Română"),
         EL_GR("el", "GR", "Ελληνικά"),
         HU_HU("hu", "HU", "Magyar"),
+        HI_IN("hi", "IN", "हिन्दी"),
         KO_KR("ko", "KR", "한국어"),
         SV_SE("sv", "SE", "Svenska"),
         UK_UA("uk", "UA", "Українська");

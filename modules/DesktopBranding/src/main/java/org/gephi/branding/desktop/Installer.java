@@ -61,6 +61,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.Locale;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -112,6 +113,8 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
+        applyPersistedLanguage();
+
         //Init
         initGephi();
 
@@ -180,6 +183,24 @@ public class Installer extends ModuleInstall {
                 Logger.getLogger(Installer.class.getName())
                     .log(Level.WARNING, "Can't setup OpenFilesHandler", e);
             }
+        }
+    }
+
+    private void applyPersistedLanguage() {
+        java.util.prefs.Preferences prefs = NbPreferences.forModule(org.gephi.branding.desktop.multilingual.LanguageAction.class);
+        String language = prefs.get("language", "");
+        if (language == null || language.isBlank()) {
+            return;
+        }
+
+        String country = prefs.get("country", "");
+        System.setProperty("user.language", language);
+        if (country != null && !country.isBlank()) {
+            System.setProperty("user.country", country);
+            Locale.setDefault(new Locale(language, country));
+        } else {
+            System.clearProperty("user.country");
+            Locale.setDefault(new Locale(language));
         }
     }
 
