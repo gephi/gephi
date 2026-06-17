@@ -31,7 +31,7 @@ public class NodeRendererArrayDraw extends AbstractNodeRenderer {
 
     @Override
     public NodeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
-        nodeData.updateBuffers();
+        nodeData.updateBuffers(target.getDrawable().getGL());
         return nodeData.createWorldData(model, engine);
     }
 

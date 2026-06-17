@@ -36,7 +36,7 @@ public class NodesUpdaterInstancedRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void updateWorld(VizEngineModel model) {
-        nodeData.update(model.getRenderingOptions());
+        nodeData.update(model.getRenderingOptions(), model.getGraphIndex().getVisibleGraph());
     }
 
     @Override

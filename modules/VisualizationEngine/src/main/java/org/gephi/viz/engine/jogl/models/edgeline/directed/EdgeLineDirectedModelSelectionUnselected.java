@@ -1,19 +1,7 @@
 package org.gephi.viz.engine.jogl.models.edgeline.directed;
 
 import static org.gephi.viz.engine.jogl.models.edgeline.directed.CommonEdgeLineDirected.VERTEX_COUNT;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_COLOR;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_POSITION_TARGET;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SIZE;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_SOURCE_SIZE;
-import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_TARGET_SIZE;
 import static org.gephi.viz.engine.util.gl.Constants.ATTRIB_NAME_VERT;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BACKGROUND_COLOR;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_COLOR_LIGHTEN_FACTOR;
@@ -28,6 +16,7 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
 import com.jogamp.opengl.GL2ES2;
+import org.gephi.viz.engine.jogl.models.DataTextureModelSupport;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -51,27 +40,23 @@ public class EdgeLineDirectedModelSelectionUnselected {
     private static final String SHADERS_EDGE_LINE_SOURCE_FS = "edge-line-directed";
 
     public void initProgram(GL2ES2 gl) {
-        program = new GLShaderProgram(SHADERS_ROOT, SHADERS_EDGE_LINE_SOURCE_VS,
-            SHADERS_EDGE_LINE_SOURCE_FS)
-            .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
-            .addUniformName(UNIFORM_NAME_BACKGROUND_COLOR)
-            .addUniformName(UNIFORM_NAME_COLOR_LIGHTEN_FACTOR)
-            .addUniformName(UNIFORM_NAME_EDGE_SCALE_MIN)
-            .addUniformName(UNIFORM_NAME_EDGE_SCALE_MAX)
-            .addUniformName(UNIFORM_NAME_MIN_WEIGHT)
-            .addUniformName(UNIFORM_NAME_NODE_SCALE)
-            .addUniformName(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR)
-            .addUniformName(UNIFORM_NAME_EDGE_INSET)
-            .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
-            .addUniformName(UNIFORM_NAME_SELECTION_TIME)
-            .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_POSITION, SHADER_POSITION_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_POSITION_TARGET, SHADER_POSITION_TARGET_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_SIZE, SHADER_SIZE_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_COLOR, SHADER_COLOR_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_SOURCE_SIZE, SHADER_SOURCE_SIZE_LOCATION)
-            .addAttribLocation(ATTRIB_NAME_TARGET_SIZE, SHADER_TARGET_SIZE_LOCATION)
+        program = DataTextureModelSupport.addDataTextureUniforms(
+            new GLShaderProgram(SHADERS_ROOT, SHADERS_EDGE_LINE_SOURCE_VS, SHADERS_EDGE_LINE_SOURCE_FS)
+                .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
+                .addUniformName(UNIFORM_NAME_BACKGROUND_COLOR)
+                .addUniformName(UNIFORM_NAME_COLOR_LIGHTEN_FACTOR)
+                .addUniformName(UNIFORM_NAME_EDGE_SCALE_MIN)
+                .addUniformName(UNIFORM_NAME_EDGE_SCALE_MAX)
+                .addUniformName(UNIFORM_NAME_MIN_WEIGHT)
+                .addUniformName(UNIFORM_NAME_NODE_SCALE)
+                .addUniformName(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR)
+                .addUniformName(UNIFORM_NAME_EDGE_INSET)
+                .addUniformName(UNIFORM_NAME_GLOBAL_TIME)
+                .addUniformName(UNIFORM_NAME_SELECTION_TIME)
+                .addAttribLocation(ATTRIB_NAME_VERT, SHADER_VERT_LOCATION))
             .init(gl);
+
+        DataTextureModelSupport.initSamplers(gl, program);
     }
 
 
@@ -79,8 +64,9 @@ public class EdgeLineDirectedModelSelectionUnselected {
                            float maxWeight, float edgeRescaleMin, float edgeRescaleMax,
                            float[] backgroundColorFloats,
                            float colorLightenFactor, float nodeScale, float edgeInset,
-                           float globalTime, float selectionTime) {
+                           float globalTime, float selectionTime, int vertsPerElement) {
         program.use(gl);
+        DataTextureModelSupport.setVertsPerElement(gl, program, vertsPerElement);
         prepareProgramData(gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin,
             edgeRescaleMax, backgroundColorFloats,
             colorLightenFactor, nodeScale, edgeInset, globalTime, selectionTime);
@@ -117,6 +103,10 @@ public class EdgeLineDirectedModelSelectionUnselected {
             gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR),
                 maxWeight - minWeight);
         }
+    }
+
+    public GLShaderProgram getProgram() {
+        return program;
     }
 
     public void destroy(GL2ES2 gl) {

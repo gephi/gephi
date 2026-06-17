@@ -1,13 +1,12 @@
 package org.gephi.viz.engine.jogl.pipeline.arrays;
 
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_ELEMENT_INDEX_LOCATION;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
@@ -23,8 +22,8 @@ public class ArrayDrawNodeData extends AbstractNodeData {
 
     private static final int VERT_BUFFER = 0;
 
-    public ArrayDrawNodeData(final NodesCallback nodesCallback) {
-        super(nodesCallback, false, false);
+    public ArrayDrawNodeData(final NodesCallback nodesCallback, final NodeDataTextureStore nodeDataTextureStore) {
+        super(nodesCallback, nodeDataTextureStore, false, false);
     }
 
     public void drawArrays(GL2ES2 gl, RenderingLayer layer, NodeWorldData data,
@@ -52,6 +51,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
 
 
         final float zoom = data.getZoom();
+        final float nodeScale = data.getNodeScale();
         final float[] attrs = new float[ATTRIBS_STRIDE];
         int index = instancesOffset * ATTRIBS_STRIDE;
 
@@ -63,8 +63,12 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         for (int i = 0; i < instanceCount; i++) {
             attribs.get(attrs);
 
-            //Choose LOD:
-            final float size = attrs[3];
+            //The single attribute is the node store id used to fetch x/y/size/color from the node texture.
+            final float elementIndex = attrs[0];
+            final int storeId = (int) elementIndex;
+
+            //Choose LOD (size comes from the shared node data texture, like the shader does):
+            final float size = nodeDataTextureStore.getRawSize(storeId) * nodeScale;
             final float observedSize = size * zoom;
 
             final int circleVertexCount;
@@ -83,20 +87,8 @@ public class ArrayDrawNodeData extends AbstractNodeData {
                 firstVertex = firstVertex8;
             }
 
-            //Define instance attributes:
-            gl.glVertexAttrib2fv(SHADER_POSITION_LOCATION, attrs, 0);
-
-            //No vertexAttribArray, we have to unpack rgba manually:
-            final int argb = Float.floatToRawIntBits(attrs[2]);
-
-            final int a = ((argb >> 24) & 0xFF);
-            final int r = ((argb >> 16) & 0xFF);
-            final int g = ((argb >> 8) & 0xFF);
-            final int b = (argb & 0xFF);
-
-            gl.glVertexAttrib4f(SHADER_COLOR_LOCATION, b, g, r, a);
-
-            gl.glVertexAttrib1f(SHADER_SIZE_LOCATION, size);
+            //Define the per-draw element index as a constant generic vertex attribute:
+            gl.glVertexAttrib1f(SHADER_ELEMENT_INDEX_LOCATION, elementIndex);
 
             //Draw the instance:
             GLFunctions.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
@@ -106,7 +98,9 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         unsetupVertexArrayAttributes(gl);
     }
 
-    public void updateBuffers() {
+    public void updateBuffers(GL gl) {
+        // Upload the shared node data texture (sampled by node and edge shaders).
+        nodeDataTextureStore.upload(gl);
         instanceCounter.promoteCountToDraw();
     }
 

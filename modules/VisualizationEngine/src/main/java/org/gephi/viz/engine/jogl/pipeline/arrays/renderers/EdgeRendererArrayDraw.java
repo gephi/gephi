@@ -31,7 +31,7 @@ public class EdgeRendererArrayDraw extends AbstractEdgeRenderer {
 
     @Override
     public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
-        edgeData.updateBuffers();
+        edgeData.updateBuffers(target.getDrawable().getGL());
         return edgeData.createWorldData(model, engine);
     }
 

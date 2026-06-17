@@ -9,6 +9,7 @@ public class NodeWorldData implements WorldData {
     private final float[] backgroundColor;
     private final float maxNodeSize;
     private final float zoom;
+    private final float nodeScale;
     private final float lightenNonSelectedFactor;
     private final OpenGLOptions openGLOptions;
 
@@ -16,12 +17,14 @@ public class NodeWorldData implements WorldData {
                          float[] backgroundColor,
                          float maxNodeSize,
                          float zoom,
+                         float nodeScale,
                          float lightenNonSelectedFactor,
                          OpenGLOptions openGLOptions) {
         this.someSelection = someSelection;
         this.backgroundColor = backgroundColor;
         this.maxNodeSize = maxNodeSize;
         this.zoom = zoom;
+        this.nodeScale = nodeScale;
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
         this.openGLOptions = openGLOptions;
     }
@@ -36,6 +39,10 @@ public class NodeWorldData implements WorldData {
 
     public float getZoom() {
         return zoom;
+    }
+
+    public float getNodeScale() {
+        return nodeScale;
     }
 
     public float[] getBackgroundColor() {

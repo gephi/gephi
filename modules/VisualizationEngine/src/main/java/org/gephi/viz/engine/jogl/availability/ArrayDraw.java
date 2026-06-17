@@ -18,7 +18,9 @@ public class ArrayDraw {
             return false;
         }
 
-        return drawable.getGLProfile().isGL2ES2();
+        // Data is now stored in RGBA32F textures fetched in the vertex shader via texelFetch
+        // (GLSL 330), so the legacy GL2/GLES2 path is no longer supported.
+        return drawable.getGLProfile().isGL2ES3();
     }
 
 }

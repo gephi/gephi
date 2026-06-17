@@ -1,13 +1,12 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_INT;
+import static org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore.NODE_TEXTURE_UNIT;
 import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_TYPE_ARRAY;
 import static org.gephi.viz.engine.jogl.util.gl.GLBufferMutable.GL_BUFFER_USAGE_STATIC_DRAW;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
+import static org.gephi.viz.engine.util.gl.Constants.SHADER_ELEMENT_INDEX_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INTS_COUNT;
 
@@ -17,6 +16,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
@@ -58,7 +58,12 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected GLBuffer commandsGLBuffer;
     protected final NodesCallback nodesCallback;
 
-    protected static final int ATTRIBS_STRIDE = CommonNodeDiskModel.TOTAL_ATTRIBUTES_FLOATS;
+    // Shared node data texture (x, y, rawSize, colorBits) indexed by node store id. Filled from ALL
+    // nodes of the visible graph so that edges can resolve endpoints even if off-screen.
+    protected final NodeDataTextureStore nodeDataTextureStore;
+
+    // A single per-instance attribute: the node store id used to texelFetch the node data texture.
+    protected static final int ATTRIBS_STRIDE = 1;
 
     protected final NodeDiskModelNoSelection diskModelNoSelection;
     protected final NodeDiskModelSelectionSelected diskModelSelectionSelected;
@@ -91,12 +96,15 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected ManagedDirectBuffer commandsBuffer;
     private int[] commandsBufferBatch;
 
-    public AbstractNodeData(final NodesCallback nodesCallback, final boolean instancedRendering,
+    public AbstractNodeData(final NodesCallback nodesCallback,
+                            final NodeDataTextureStore nodeDataTextureStore,
+                            final boolean instancedRendering,
                             final boolean indirectCommands) {
         this.startedTime = System.currentTimeMillis();
         this.instancedRendering = instancedRendering;
         this.indirectCommands = indirectCommands;
         this.nodesCallback = nodesCallback;
+        this.nodeDataTextureStore = nodeDataTextureStore;
 
         diskModelNoSelection = new NodeDiskModelNoSelection();
         diskModelSelectionSelected = new NodeDiskModelSelectionSelected();
@@ -113,6 +121,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         diskModelNoSelection.initGLPrograms(gl);
         diskModelSelectionSelected.initGLPrograms(gl);
         diskModelSelectionUnselected.initGLPrograms(gl);
+        nodeDataTextureStore.init(gl);
         initBuffers(gl);
     }
 
@@ -165,6 +174,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         }
 
         final float[] backgroundColorFloats = data.getBackgroundColor();
+        final float nodeScale = data.getNodeScale();
+
+        // Bind the shared node data texture sampled (via texelFetch) by all node shaders.
+        nodeDataTextureStore.bind(gl, NODE_TEXTURE_UNIT);
+        gl.glActiveTexture(GL_TEXTURE0);
 
         final int instanceCount;
         // if the background is dark (luma <.5) the node border with lighten (color * (factor > 1)) otherwise it's darken (color * (factor < 1))
@@ -183,7 +197,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                 colorLightenFactor,
                 globalTime,
                 this.selectedTime,
-                nodeBorderColorFactor
+                nodeBorderColorFactor,
+                nodeScale
             );
 
             setupSecondaryVertexArrayAttributes(gl, data);
@@ -197,10 +212,11 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                     mvpFloats,
                     globalTime,
                     this.selectedTime,
-                    nodeBorderColorFactor
+                    nodeBorderColorFactor,
+                    nodeScale
                 );
             } else {
-                diskModelNoSelection.useProgram(gl, mvpFloats, nodeBorderColorFactor);
+                diskModelNoSelection.useProgram(gl, mvpFloats, nodeBorderColorFactor, nodeScale);
             }
 
             setupVertexArrayAttributes(gl, data);
@@ -215,13 +231,18 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             model.getRenderingOptions().getBackgroundColor(),
             maxNodeSize,
             currentZoom,
+            model.getRenderingOptions().getNodeScale(),
             model.getRenderingOptions().isLightenNonSelected() ?
                 model.getRenderingOptions().getLightenNonSelectedFactor() : 0f,
             engine.getOpenGLOptions()
         );
     }
 
-    public void update(GraphRenderingOptions renderingOptions) {
+    public void update(GraphRenderingOptions renderingOptions, Graph graph) {
+        // Always (re)build the shared node data texture from ALL nodes of the visible graph, even when
+        // nodes are not drawn, so that edges can still resolve their (possibly off-screen) endpoints.
+        nodeDataTextureStore.fillFromGraph(graph);
+
         if (!renderingOptions.isShowNodes()) {
             instanceCounter.clearCount();
             return;
@@ -370,20 +391,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     }
 
     protected void fillNodeAttributesData(final Node node, final int index) {
-        final float x = node.x();
-        final float y = node.y();
-        final float size = node.size() * currentNodeScale;
-        final int rgba = node.getRGBA();
-
-        //Position:
-        attributesBufferBatch[index] = x;
-        attributesBufferBatch[index + 1] = y;
-
-        //Color:
-        attributesBufferBatch[index + 2] = Float.intBitsToFloat(rgba);
-
-        //Size:
-        attributesBufferBatch[index + 3] = size;
+        // Per-instance attribute is just the node store id; the shader reads x/y/size/color from the
+        // node data texture via texelFetch.
+        attributesBufferBatch[index] = node.getStoreId();
     }
 
     protected void fillNodeCommandData(final Node node, final int index, final int instanceId) {
@@ -494,6 +504,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         diskModelSelectionSelected.destroy(gl.getGL2ES2());
         diskModelSelectionUnselected.destroy(gl.getGL2ES2());
 
+        // The node data texture is shared with the edge pipeline; the node pipeline owns its lifecycle.
+        nodeDataTextureStore.dispose(gl);
+
         nodesCallback.reset();
     }
 
@@ -522,23 +535,13 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
                 attributesBuffer.bind(gl);
                 {
                     final int stride = ATTRIBS_STRIDE * Float.BYTES;
-                    int offset = 0;
-
-                    gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonNodeDiskModel.POSITION_FLOATS,
-                        GL_FLOAT, false,
-                        stride, offset);
-                    offset += CommonNodeDiskModel.POSITION_FLOATS * Float.BYTES;
-
-                    gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, CommonNodeDiskModel.COLOR_FLOATS * Float.BYTES,
-                        GL_UNSIGNED_BYTE, false, stride, offset);
-                    offset += CommonNodeDiskModel.COLOR_FLOATS * Float.BYTES;
-
-                    gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, CommonNodeDiskModel.SIZE_FLOATS, GL_FLOAT,
-                        false, stride,
-                        offset);
+                    gl.glVertexAttribPointer(SHADER_ELEMENT_INDEX_LOCATION, ATTRIBS_STRIDE, GL_FLOAT, false,
+                        stride, 0);
                 }
                 attributesBuffer.unbind(gl);
             }
+            // Non-instanced (array-draw) path sets the element index as a constant generic vertex
+            // attribute per draw call (glVertexAttrib1f), so no array pointer is configured here.
         }
 
         @Override
@@ -546,9 +549,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
             if (instancedRendering) {
                 return new int[] {
                     SHADER_VERT_LOCATION,
-                    SHADER_POSITION_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SIZE_LOCATION
+                    SHADER_ELEMENT_INDEX_LOCATION
                 };
             } else {
                 return new int[] {
@@ -561,9 +562,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         protected int[] getInstancedAttributeLocations() {
             if (instancedRendering) {
                 return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SIZE_LOCATION
+                    SHADER_ELEMENT_INDEX_LOCATION
                 };
             } else {
                 return null;

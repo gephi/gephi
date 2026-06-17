@@ -8,6 +8,7 @@ import com.jogamp.opengl.GL4;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
@@ -27,8 +28,8 @@ public class IndirectNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
     private static final int INDIRECT_DRAW_BUFFER = 3;
 
-    public IndirectNodeData(NodesCallback nodesCallback) {
-        super(nodesCallback, true, true);
+    public IndirectNodeData(NodesCallback nodesCallback, NodeDataTextureStore nodeDataTextureStore) {
+        super(nodesCallback, nodeDataTextureStore, true, true);
     }
 
     public void drawIndirect(GL4 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
@@ -93,6 +94,9 @@ public class IndirectNodeData extends AbstractNodeData {
     }
 
     public void updateBuffers(final GL4 gl) {
+        // Upload the shared node data texture (sampled by node and edge shaders).
+        nodeDataTextureStore.upload(gl);
+
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 
         buf.limit(instanceCounter.unselectedCount * ATTRIBS_STRIDE);

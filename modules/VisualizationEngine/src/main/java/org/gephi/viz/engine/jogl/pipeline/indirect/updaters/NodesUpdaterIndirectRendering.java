@@ -36,7 +36,7 @@ public class NodesUpdaterIndirectRendering implements WorldUpdater<JOGLRendering
 
     @Override
     public void updateWorld(VizEngineModel model) {
-        nodeData.update(model.getRenderingOptions());
+        nodeData.update(model.getRenderingOptions(), model.getGraphIndex().getVisibleGraph());
     }
 
     @Override

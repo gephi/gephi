@@ -1,14 +1,9 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_COLOR_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_TARGET_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SELFLOOP_NODE_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_SOURCE_SIZE_LOCATION;
-import static org.gephi.viz.engine.util.gl.Constants.SHADER_TARGET_SIZE_LOCATION;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore.NODE_TEXTURE_UNIT;
+import static org.gephi.viz.engine.util.gl.Constants.ELEMENT_TEXTURE_UNIT;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
 import com.jogamp.newt.event.NEWTEvent;
@@ -21,11 +16,11 @@ import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
+import org.gephi.viz.engine.jogl.models.DataTextureModelSupport;
 import org.gephi.viz.engine.jogl.models.edgecircle.CommonEdgeCircleSelfLoop;
 import org.gephi.viz.engine.jogl.models.edgecircle.EdgeCircleSelfLoopNoSelection;
 import org.gephi.viz.engine.jogl.models.edgecircle.EdgeCircleSelfLoopSelectionSelected;
 import org.gephi.viz.engine.jogl.models.edgecircle.EdgeCircleSelfLoopSelectionUnselected;
-import org.gephi.viz.engine.jogl.models.edgeline.CommonEdgeLineModel;
 import org.gephi.viz.engine.jogl.models.edgeline.directed.CommonEdgeLineDirected;
 import org.gephi.viz.engine.jogl.models.edgeline.directed.EdgeLineDirectedModelNoSelection;
 import org.gephi.viz.engine.jogl.models.edgeline.directed.EdgeLineDirectedModelSelectionSelected;
@@ -36,9 +31,10 @@ import org.gephi.viz.engine.jogl.models.edgeline.undirected.EdgeLineUndirectedMo
 import org.gephi.viz.engine.jogl.models.edgeline.undirected.EdgeLineUndirectedModelSelectionUnselected;
 import org.gephi.viz.engine.jogl.models.mesh.EdgeLineMeshGenerator;
 import org.gephi.viz.engine.jogl.models.mesh.NodeDiskVertexMeshGenerator;
-import org.gephi.viz.engine.jogl.util.ManagedDirectBuffer;
 import org.gephi.viz.engine.jogl.util.Mesh;
 import org.gephi.viz.engine.jogl.util.gl.GLBuffer;
+import org.gephi.viz.engine.jogl.util.gl.GLDataTexture;
+import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.jogl.util.gl.GLVertexArrayObject;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.pipeline.common.InstanceCounter;
@@ -51,6 +47,22 @@ import org.gephi.viz.engine.util.structure.EdgesCallback;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
 /**
+ * Base class for the texture-backed edge pipelines.
+ * <p>
+ * Per-edge data is stored in {@code RGBA32F} "element" textures (one per category: undirected,
+ * directed, self-loop) and read by the vertex shaders via {@code texelFetch}. Each texture holds the
+ * category's edges ordered as {@code [unselected | selected]}. The texel layout is:
+ * <ul>
+ *   <li>line edges: {@code (sourceStoreId, targetStoreId, weight, colorBits)}</li>
+ *   <li>self-loops: {@code (nodeStoreId, weight, colorBits, _)}</li>
+ * </ul>
+ * Node positions/sizes are not duplicated in the edge texels; the shaders resolve them from the
+ * shared {@link NodeDataTextureStore node data texture} using the stored store ids.
+ * <p>
+ * The per-draw element index comes from {@code gl_InstanceID} (instanced) or
+ * {@code gl_VertexID / vertsPerElement} (array-draw), offset by {@code u_elementOffset} so a single
+ * texture can be drawn in ranges ({@code [unselected]} / {@code [selected]}) and, for array-draw, in
+ * vertex-buffer-sized batches.
  *
  * @author Eduardo Ramos
  */
@@ -83,42 +95,44 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     protected final Mesh undirectedEdgeMesh = EdgeLineMeshGenerator.undirectedMeshGenerator();
     protected final Mesh directedEdgeMesh = EdgeLineMeshGenerator.directedMeshGenerator();
     protected final Mesh selfLoopMesh = NodeDiskVertexMeshGenerator.generateFilledCircle(48);
-    // NOTE: Why secondary buffers and VAOs?
-    // Sadly, we cannot use glDrawArraysInstancedBaseInstance in MacOS and it will be never available
 
+    // Geometry buffers (static, just the repeated mesh). Created by the subclasses.
     protected GLBuffer vertexGLBufferUndirected;
     protected GLBuffer vertexGLBufferDirected;
-    protected GLBuffer attributesGLBufferDirected;
-    protected GLBuffer attributesGLBufferDirectedSecondary;
-    protected GLBuffer attributesGLBufferUndirected;
-    protected GLBuffer attributesGLBufferUndirectedSecondary;
-
-
-    final public static int ATTRIBS_STRIDE_SELFLOOP = CommonEdgeCircleSelfLoop.TOTAL_ATTRIBUTES_FLOATS;
     protected GLBuffer vertexGLBufferSelfLoop;
-    protected GLBuffer attributesGLBufferSelfLoop;
-    protected GLBuffer attributesGLBufferSelfLoopSecondary;
 
     protected final EdgesCallback edgesCallback;
     protected final NodesCallback nodesCallback;
 
-    protected static final int ATTRIBS_STRIDE = CommonEdgeLineModel.TOTAL_ATTRIBUTES_FLOATS;
+    // Shared node data texture (x, y, rawSize, colorBits) indexed by node store id; owned (filled,
+    // uploaded and disposed) by the active node pipeline. Edge shaders sample it via texelFetch to
+    // resolve their endpoints, so here we only bind it.
+    protected final NodeDataTextureStore nodeDataTextureStore;
 
+    // One RGBA texel per edge.
+    public static final int ELEMENT_TEXEL_FLOATS = 4;
+    protected static final int ATTRIBS_STRIDE = ELEMENT_TEXEL_FLOATS;
+    public static final int ATTRIBS_STRIDE_SELFLOOP = ELEMENT_TEXEL_FLOATS;
+
+    // Per-category element textures, each holding [unselected | selected].
+    protected final GLDataTexture undirectedElementTexture = new GLDataTexture(ELEMENT_TEXEL_FLOATS);
+    protected final GLDataTexture directedElementTexture = new GLDataTexture(ELEMENT_TEXEL_FLOATS);
+    protected final GLDataTexture selfLoopElementTexture = new GLDataTexture(ELEMENT_TEXEL_FLOATS);
 
     protected static final int VERTEX_COUNT_MAX =
         Math.max(CommonEdgeLineDirected.VERTEX_COUNT, CommonEdgeLineUndirected.VERTEX_COUNT);
 
     protected final boolean instanced;
-    protected final boolean usesSecondaryBuffer;
 
-    protected ManagedDirectBuffer attributesBuffer;
-    protected ManagedDirectBuffer selfLoopAttributesBuffer;
-
+    // Small staging arrays used while filling the element textures' CPU buffers.
     protected float[] attributesBufferBatch;
+    protected float[] selfLoopAttributesBufferBatch;
     protected static final int BATCH_EDGES_SIZE = 32768;
     protected static final int BATCH_SELFLOOP_EDGES_SIZE = 8192;
 
-    protected float[] selfLoopAttributesBufferBatch;
+    // Program currently set up for the category/pass being drawn, so subclasses can adjust the
+    // element offset uniform per batch.
+    protected GLShaderProgram activeProgram;
 
     // States
     protected boolean hideNonSelected;
@@ -129,13 +143,13 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     protected float edgeInSelectionColor;
     protected GraphRenderingOptions.EdgeColorMode edgeColorMode;
 
-    public AbstractEdgeData(final EdgesCallback edgesCallback, final NodesCallback nodesCallback, boolean instanced,
-                            boolean usesSecondaryBuffer) {
+    public AbstractEdgeData(final EdgesCallback edgesCallback, final NodesCallback nodesCallback,
+                            final NodeDataTextureStore nodeDataTextureStore, boolean instanced) {
         this.startedTime = System.currentTimeMillis();
         this.edgesCallback = edgesCallback;
         this.nodesCallback = nodesCallback;
+        this.nodeDataTextureStore = nodeDataTextureStore;
         this.instanced = instanced;
-        this.usesSecondaryBuffer = usesSecondaryBuffer;
     }
 
     public void init(GL2ES2 gl) {
@@ -151,16 +165,36 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         lineUndirectedModelSelectionSelected.initProgram(gl);
         lineUndirectedModelSelectionUnselected.initProgram(gl);
 
+        undirectedElementTexture.init(gl);
+        directedElementTexture.init(gl);
+        selfLoopElementTexture.init(gl);
+
         initBuffers(gl);
     }
 
     protected void initBuffers(GL gl) {
         attributesBufferBatch = new float[ATTRIBS_STRIDE * BATCH_EDGES_SIZE];
-        attributesBuffer = new ManagedDirectBuffer(GL_FLOAT, ATTRIBS_STRIDE * BATCH_EDGES_SIZE);
-
         selfLoopAttributesBufferBatch = new float[ATTRIBS_STRIDE_SELFLOOP * BATCH_SELFLOOP_EDGES_SIZE];
-        selfLoopAttributesBuffer =
-            new ManagedDirectBuffer(GL_FLOAT, ATTRIBS_STRIDE_SELFLOOP * BATCH_SELFLOOP_EDGES_SIZE);
+    }
+
+    /**
+     * Binds the shared node data texture and the given per-element edge texture to their texture
+     * units (the sampler uniforms were set to those units after each program link).
+     */
+    private void bindDataTextures(final GL2ES2 gl, final GLDataTexture elementTexture) {
+        nodeDataTextureStore.bind(gl, NODE_TEXTURE_UNIT);
+        elementTexture.bind(gl, ELEMENT_TEXTURE_UNIT);
+        gl.glActiveTexture(GL_TEXTURE0);
+    }
+
+    /**
+     * Updates the element offset uniform for the active program (used by array-draw to draw the
+     * element texture in vertex-buffer-sized batches).
+     */
+    protected void setElementOffset(final GL2ES2 gl, final int elementOffset) {
+        if (activeProgram != null) {
+            DataTextureModelSupport.setElementOffset(gl, activeProgram, elementOffset);
+        }
     }
 
     protected int setupShaderProgramForRenderingLayerSelfLoop(
@@ -183,76 +217,40 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         final float maxWeight = data.getMaxWeight();
         final float edgeRescaleMin = data.getEdgeRescaleMin();
         final float edgeRescaleMax = data.getEdgeRescaleMax();
+        final int vertsPerElement = instanced ? 0 : selfLoopMesh.vertexCount;
+
+        bindDataTextures(gl, selfLoopElementTexture);
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
             instanceCount = selfLoopCounter.unselectedCountToDraw;
 
             edgeCircleSelfLoopSelectionUnselected.useProgram(
-                gl,
-                mvpFloats,
-                backgroundColorFloats,
-                lightenNonSelectedFactor,
-                globalTime,
-                selectedTime,
-                edgeScale,
-                minWeight,
-                maxWeight,
-                edgeRescaleMin,
-                edgeRescaleMax,
-                nodeScale
+                gl, mvpFloats, backgroundColorFloats, lightenNonSelectedFactor, globalTime, selectedTime,
+                edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale, vertsPerElement
             );
-
-            if (usesSecondaryBuffer) {
-                setupSelfLoopVertexArrayAttributesSecondary(gl, data);
-            } else {
-                setupSelfLoopVertexArrayAttributes(gl, data);
-            }
+            activeProgram = edgeCircleSelfLoopSelectionUnselected.getProgram();
         } else {
             instanceCount = selfLoopCounter.selectedCountToDraw;
 
-            if (someSelection) {
-                if (data.isEdgeSelectionColor()) {
-                    edgeCircleSelfLoopNoSelection.useProgram(
-                        gl,
-                        mvpFloats,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale
-                    );
-                } else {
-                    edgeCircleSelfLoopSelectionSelected.useProgram(
-                        gl,
-                        mvpFloats,
-                        backgroundColorFloats,
-                        lightenNonSelectedFactor,
-                        globalTime,
-                        selectedTime,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale
-                    );
-                }
+            if (someSelection && !data.isEdgeSelectionColor()) {
+                edgeCircleSelfLoopSelectionSelected.useProgram(
+                    gl, mvpFloats, backgroundColorFloats, lightenNonSelectedFactor, globalTime, selectedTime,
+                    edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale, vertsPerElement
+                );
+                activeProgram = edgeCircleSelfLoopSelectionSelected.getProgram();
             } else {
                 edgeCircleSelfLoopNoSelection.useProgram(
-                    gl,
-                    mvpFloats,
-                    edgeScale,
-                    minWeight,
-                    maxWeight,
-                    edgeRescaleMin,
-                    edgeRescaleMax,
-                    nodeScale
+                    gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale,
+                    vertsPerElement
                 );
+                activeProgram = edgeCircleSelfLoopNoSelection.getProgram();
             }
-            setupSelfLoopVertexArrayAttributes(gl, data);
         }
+
+        setupSelfLoopVertexArrayAttributes(gl, data);
+        final int passBase = renderingUnselectedEdges ? 0 : selfLoopCounter.unselectedCountToDraw;
+        DataTextureModelSupport.setElementOffset(gl, activeProgram, passBase);
         return instanceCount;
     }
 
@@ -269,91 +267,45 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         final float[] backgroundColorFloats = data.getBackgroundColor();
         final float edgeScale = data.getEdgeScale();
         final float nodeScale = data.getNodeScale() * (1f - Constants.getEdgeInset());
-        float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
+        final float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
         final float minWeight = data.getMinWeight();
         final float maxWeight = data.getMaxWeight();
         final float edgeRescaleMin = data.getEdgeRescaleMin();
         final float edgeRescaleMax = data.getEdgeRescaleMax();
+        final int vertsPerElement = instanced ? 0 : CommonEdgeLineUndirected.VERTEX_COUNT;
+
+        bindDataTextures(gl, undirectedElementTexture);
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
             instanceCount = undirectedInstanceCounter.unselectedCountToDraw;
 
             lineUndirectedModelSelectionUnselected.useProgram(
-                gl,
-                mvpFloats,
-                edgeScale,
-                minWeight,
-                maxWeight,
-                edgeRescaleMin,
-                edgeRescaleMax,
-                backgroundColorFloats,
-                lightenNonSelectedFactor,
-                nodeScale,
-                globalTime,
-                selectedTime
+                gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax,
+                backgroundColorFloats, lightenNonSelectedFactor, nodeScale, globalTime, selectedTime, vertsPerElement
             );
-
-            if (usesSecondaryBuffer) {
-                setupUndirectedVertexArrayAttributesSecondary(gl, data);
-            } else {
-                setupUndirectedVertexArrayAttributes(gl, data);
-            }
+            activeProgram = lineUndirectedModelSelectionUnselected.getProgram();
         } else {
             instanceCount = undirectedInstanceCounter.selectedCountToDraw;
-            lineUndirectedModelNoSelection.useProgram(
-                gl,
-                mvpFloats,
-                edgeScale,
-                minWeight,
-                maxWeight,
-                edgeRescaleMin,
-                edgeRescaleMax,
-                nodeScale
-            );
 
-            if (someSelection) {
-                if (data.isEdgeSelectionColor()) {
-                    lineUndirectedModelNoSelection.useProgram(
-                        gl,
-                        mvpFloats,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale
-                    );
-                } else {
-                    lineUndirectedModelSelectionSelected.useProgram(
-                        gl,
-                        mvpFloats,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale,
-                        globalTime,
-                        selectedTime
-                    );
-                }
+            if (someSelection && !data.isEdgeSelectionColor()) {
+                lineUndirectedModelSelectionSelected.useProgram(
+                    gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale,
+                    globalTime, selectedTime, vertsPerElement
+                );
+                activeProgram = lineUndirectedModelSelectionSelected.getProgram();
             } else {
                 lineUndirectedModelNoSelection.useProgram(
-                    gl,
-                    mvpFloats,
-                    edgeScale,
-                    minWeight,
-                    maxWeight,
-                    edgeRescaleMin,
-                    edgeRescaleMax,
-                    nodeScale
+                    gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale,
+                    vertsPerElement
                 );
+                activeProgram = lineUndirectedModelNoSelection.getProgram();
             }
-
-            setupUndirectedVertexArrayAttributes(gl, data);
         }
 
+        setupUndirectedVertexArrayAttributes(gl, data);
+        final int passBase = renderingUnselectedEdges ? 0 : undirectedInstanceCounter.unselectedCountToDraw;
+        DataTextureModelSupport.setElementOffset(gl, activeProgram, passBase);
         return instanceCount;
     }
 
@@ -363,108 +315,54 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                                                               final float[] mvpFloats) {
         final boolean someSelection = data.hasSomeSelection();
         final boolean renderingUnselectedEdges = layer.getLevel() == 1;
-
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
         }
 
         final float[] backgroundColorFloats = data.getBackgroundColor();
-
         final float edgeScale = data.getEdgeScale();
         final float nodeScale = data.getNodeScale();
-        float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
+        final float lightenNonSelectedFactor = data.getLightenNonSelectedFactor();
         final float minWeight = data.getMinWeight();
         final float maxWeight = data.getMaxWeight();
         final float edgeRescaleMin = data.getEdgeRescaleMin();
         final float edgeRescaleMax = data.getEdgeRescaleMax();
-
         final float edgeInset = Constants.getEdgeInset();
+        final int vertsPerElement = instanced ? 0 : CommonEdgeLineDirected.VERTEX_COUNT;
+
+        bindDataTextures(gl, directedElementTexture);
 
         final int instanceCount;
         if (renderingUnselectedEdges) {
             instanceCount = directedInstanceCounter.unselectedCountToDraw;
-            lineDirectedModelSelectionUnselected.useProgram(
-                gl,
-                mvpFloats,
-                edgeScale,
-                minWeight,
-                maxWeight,
-                edgeRescaleMin,
-                edgeRescaleMax,
-                backgroundColorFloats,
-                lightenNonSelectedFactor,
-                nodeScale,
-                edgeInset,
-                globalTime,
-                selectedTime
-            );
 
-            if (usesSecondaryBuffer) {
-                setupDirectedVertexArrayAttributesSecondary(gl, data);
-            } else {
-                setupDirectedVertexArrayAttributes(gl, data);
-            }
+            lineDirectedModelSelectionUnselected.useProgram(
+                gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax,
+                backgroundColorFloats, lightenNonSelectedFactor, nodeScale, edgeInset, globalTime, selectedTime,
+                vertsPerElement
+            );
+            activeProgram = lineDirectedModelSelectionUnselected.getProgram();
         } else {
             instanceCount = directedInstanceCounter.selectedCountToDraw;
-            lineDirectedModelNoSelection.useProgram(
-                gl,
-                mvpFloats,
-                edgeScale,
-                minWeight,
-                maxWeight,
-                edgeRescaleMin,
-                edgeRescaleMax,
-                nodeScale,
-                edgeInset
-            );
 
-            if (someSelection) {
-                if (data.isEdgeSelectionColor()) {
-                    lineDirectedModelNoSelection.useProgram(
-                        gl,
-                        mvpFloats,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale,
-                        edgeInset
-
-                    );
-                } else {
-                    lineDirectedModelSelectionSelected.useProgram(
-                        gl,
-                        mvpFloats,
-                        edgeScale,
-                        minWeight,
-                        maxWeight,
-                        edgeRescaleMin,
-                        edgeRescaleMax,
-                        nodeScale,
-                        edgeInset,
-                        globalTime,
-                        selectedTime
-
-                    );
-                }
+            if (someSelection && !data.isEdgeSelectionColor()) {
+                lineDirectedModelSelectionSelected.useProgram(
+                    gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale,
+                    edgeInset, globalTime, selectedTime, vertsPerElement
+                );
+                activeProgram = lineDirectedModelSelectionSelected.getProgram();
             } else {
                 lineDirectedModelNoSelection.useProgram(
-                    gl,
-                    mvpFloats,
-                    edgeScale,
-                    minWeight,
-                    maxWeight,
-                    edgeRescaleMin,
-                    edgeRescaleMax,
-                    nodeScale,
-                    edgeInset
+                    gl, mvpFloats, edgeScale, minWeight, maxWeight, edgeRescaleMin, edgeRescaleMax, nodeScale,
+                    edgeInset, vertsPerElement
                 );
+                activeProgram = lineDirectedModelNoSelection.getProgram();
             }
-
-            setupDirectedVertexArrayAttributes(gl, data);
         }
 
+        setupDirectedVertexArrayAttributes(gl, data);
+        final int passBase = renderingUnselectedEdges ? 0 : directedInstanceCounter.unselectedCountToDraw;
+        DataTextureModelSupport.setElementOffset(gl, activeProgram, passBase);
         return instanceCount;
     }
 
@@ -486,8 +384,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             engine.getOpenGLOptions()
         );
     }
-
-    protected abstract void updateData(GraphSelection selection);
 
     public void update(GraphIndex graphIndex, GraphSelection selection, GraphRenderingOptions renderingOptions,
                        Rect2D viewBoundaries) {
@@ -523,15 +419,54 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         updateData(selection);
     }
 
-    protected int updateDirectedData(
-        final boolean isUndirected,
-        final int maxIndex,
-        final Edge[] visibleEdgesArray,
-        final float[] edgeWeightsArray,
-        final float[] attribs, int index
-    ) {
-        return updateDirectedData(isUndirected, maxIndex, visibleEdgesArray, edgeWeightsArray,
-            attribs, index, null);
+    /**
+     * Fills the element textures' CPU buffers (one per category, ordered {@code [unselected | selected]}),
+     * which {@link #updateBuffers(GL)} later uploads to the GPU. Shared by all edge pipelines.
+     */
+    protected void updateData(final GraphSelection selection) {
+        final int totalEdges = edgesCallback.getCount();
+        final Edge[] visibleEdgesArray = edgesCallback.getEdgesArray();
+        final float[] edgeWeightsArray = edgesCallback.getEdgeWeightsArray();
+        final int maxIndex = edgesCallback.getMaxIndex();
+        final boolean isDirected = edgesCallback.isDirected();
+        final boolean isUndirected = edgesCallback.isUndirected();
+        final boolean hasSelfLoop = edgesCallback.hasSelfLoop();
+
+        final int reserve = Math.max(totalEdges, 1);
+
+        if (hasSelfLoop) {
+            final FloatBuffer selfLoopBuffer = selfLoopElementTexture.beginFill(reserve);
+            updateSelfLoop(maxIndex, visibleEdgesArray, edgeWeightsArray, selfLoopAttributesBufferBatch, 0,
+                selfLoopBuffer);
+        } else {
+            selfLoopCounter.clearCount();
+        }
+
+        final FloatBuffer undirectedBuffer = undirectedElementTexture.beginFill(reserve);
+        updateUndirectedData(isDirected, maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
+            undirectedBuffer);
+
+        final FloatBuffer directedBuffer = directedElementTexture.beginFill(reserve);
+        updateDirectedData(isUndirected, maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
+            directedBuffer);
+    }
+
+    /**
+     * Uploads the filled element textures to the GPU and promotes the per-category counts. Shared by
+     * all edge pipelines. The shared node data texture is uploaded by the node pipeline.
+     */
+    public void updateBuffers(GL gl) {
+        undirectedElementTexture.upload(gl,
+            undirectedInstanceCounter.unselectedCount + undirectedInstanceCounter.selectedCount);
+        directedElementTexture.upload(gl,
+            directedInstanceCounter.unselectedCount + directedInstanceCounter.selectedCount);
+        if (edgesCallback.hasSelfLoop()) {
+            selfLoopElementTexture.upload(gl, selfLoopCounter.unselectedCount + selfLoopCounter.selectedCount);
+        }
+
+        undirectedInstanceCounter.promoteCountToDraw();
+        directedInstanceCounter.promoteCountToDraw();
+        selfLoopCounter.promoteCountToDraw();
     }
 
     protected int updateSelfLoop(final int maxIndex,
@@ -810,17 +745,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         final int maxIndex,
         final Edge[] visibleEdgesArray,
         final float[] edgeWeightsArray,
-        final float[] attribs, int index
-    ) {
-        return updateUndirectedData(isDirected, maxIndex, visibleEdgesArray, edgeWeightsArray, attribs,
-            index, null);
-    }
-
-    protected int updateUndirectedData(
-        final boolean isDirected,
-        final int maxIndex,
-        final Edge[] visibleEdgesArray,
-        final float[] edgeWeightsArray,
         final float[] attribs, int index, final FloatBuffer directBuffer
     ) {
         checkBufferIndexing(directBuffer, attribs, index);
@@ -976,38 +900,13 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
     }
 
-
-    protected void fillUndirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index,
-                                                        final float weight) {
-        final Node source = edge.getSource();
-        final Node target = edge.getTarget();
-
-        final float sourceX = source.x();
-        final float sourceY = source.y();
-        final float targetX = target.x();
-        final float targetY = target.y();
-
-        //Position:
-        buffer[index] = sourceX;
-        buffer[index + 1] = sourceY;
-
-        //Target position:
-        buffer[index + 2] = targetX;
-        buffer[index + 3] = targetY;
-
-        //Size (weight or constant):
-        buffer[index + 4] = weight;
-    }
-
+    //Line edge texel: (sourceStoreId, targetStoreId, weight, colorBits)
     protected void fillUndirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
                                                                     final int index, final float weight) {
-        fillUndirectedEdgeAttributesDataBase(buffer, edge, index, weight);
-
-        buffer[index + 5] = computeElementColor(edge);//Color
-
-        //Source and target size:
-        buffer[index + 6] = edge.getSource().size();
-        buffer[index + 7] = edge.getTarget().size();
+        buffer[index] = edge.getSource().getStoreId();
+        buffer[index + 1] = edge.getTarget().getStoreId();
+        buffer[index + 2] = weight;
+        buffer[index + 3] = computeElementColor(edge);
     }
 
     protected void fillUndirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
@@ -1015,7 +914,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
-        fillUndirectedEdgeAttributesDataBase(buffer, edge, index, weight);
+        buffer[index] = source.getStoreId();
+        buffer[index + 1] = target.getStoreId();
+        buffer[index + 2] = weight;
 
         //Color:
         if (selected) {
@@ -1024,69 +925,38 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 boolean targetSelected = nodesCallback.isSelected(target.getStoreId());
 
                 if (sourceSelected || targetSelected) {
-                    buffer[index + 5] = edgeBothSelectionColor;//Color — undirected has no in/out
+                    buffer[index + 3] = edgeBothSelectionColor;//Color — undirected has no in/out
                 } else {
-                    buffer[index + 5] = computeElementColor(edge);//Color
+                    buffer[index + 3] = computeElementColor(edge);//Color
                 }
             } else {
                 // When a node is selected, color the edge with the opposite node color
                 if (someSelection) {
                     if (nodesCallback.isSelected(source.getStoreId())) {
-                        buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
+                        buffer[index + 3] = Float.intBitsToFloat(target.getRGBA());
                     } else if (nodesCallback.isSelected(target.getStoreId())) {
-                        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
+                        buffer[index + 3] = Float.intBitsToFloat(source.getRGBA());
                     } else {
-                        buffer[index + 5] = computeElementColor(edge);//Color
+                        buffer[index + 3] = computeElementColor(edge);//Color
                     }
                 } else {
-                    buffer[index + 5] = computeElementColor(edge);//Color
+                    buffer[index + 3] = computeElementColor(edge);//Color
                 }
             }
         } else {
-            buffer[index + 5] = computeElementColor(edge);//Color
+            buffer[index + 3] = computeElementColor(edge);//Color
         }
-
-        //Source and target size:
-        buffer[index + 6] = edge.getSource().size();
-        buffer[index + 7] = edge.getTarget().size();
     }
 
-    protected void fillDirectedEdgeAttributesDataBase(final float[] buffer, final Edge edge, final int index,
-                                                      final float weight) {
-        final Node source = edge.getSource();
-        final Node target = edge.getTarget();
-
-        final float sourceX = source.x();
-        final float sourceY = source.y();
-        final float targetX = target.x();
-        final float targetY = target.y();
-
-        //Position:
-        buffer[index] = sourceX;
-        buffer[index + 1] = sourceY;
-
-        //Target position:
-        buffer[index + 2] = targetX;
-        buffer[index + 3] = targetY;
-
-        //Size (weight or constant):
-        buffer[index + 4] = weight;
-    }
-
+    //Self-loop texel: (nodeStoreId, weight, colorBits, _)
     protected void fillSelfLoopEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge,
                                                                final int index, final boolean selected,
                                                                final float weight) {
         final Node source = edge.getSource();
 
-        // Self loop for the moment are just circle like nodes so let's try to have same buffer
-        //
+        buffer[index] = source.getStoreId();
+        buffer[index + 1] = weight;
 
-        final float sourceX = source.x();
-        final float sourceY = source.y();
-
-        //Position:
-        buffer[index] = sourceX;
-        buffer[index + 1] = sourceY;
         //Color:
         if (selected) {
             if (someSelection && edgeSelectionColor) {
@@ -1106,48 +976,25 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             buffer[index + 2] = computeElementColor(edge);
         }
 
-        //Size (weight or constant):
-        buffer[index + 3] = weight;
-
-        //Source and target size, here it's used for an offset to be applied to the circle:
-        // so that it's not right under the node.
-        buffer[index + 4] = source.size();
+        buffer[index + 3] = 0f;//Padding
     }
 
     protected void fillSelfLoopEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
                                                                   final int index, final float weight) {
         final Node source = edge.getSource();
 
-        // Self loop for the moment are just circle like nodes so let's try to have same buffer
-        //
-
-        final float sourceX = source.x();
-        final float sourceY = source.y();
-
-        //Position:
-        buffer[index] = sourceX;
-        buffer[index + 1] = sourceY;
-        //Color:
+        buffer[index] = source.getStoreId();
+        buffer[index + 1] = weight;
         buffer[index + 2] = computeElementColor(edge);
-
-        //Size (weight or constant):
-        buffer[index + 3] = weight;
-
-        //Source and target size, here it's used for an offset to be applied to the circle:
-        // so that it's not right under the node.
-        buffer[index + 4] = source.size();
+        buffer[index + 3] = 0f;//Padding
     }
 
     protected void fillDirectedEdgeAttributesDataWithoutSelection(final float[] buffer, final Edge edge,
                                                                   final int index, final float weight) {
-        fillDirectedEdgeAttributesDataBase(buffer, edge, index, weight);
-
-        //Color:
-        buffer[index + 5] = computeElementColor(edge);//Color
-
-        //Source and target size:
-        buffer[index + 6] = edge.getSource().size();
-        buffer[index + 7] = edge.getTarget().size();
+        buffer[index] = edge.getSource().getStoreId();
+        buffer[index + 1] = edge.getTarget().getStoreId();
+        buffer[index + 2] = weight;
+        buffer[index + 3] = computeElementColor(edge);
     }
 
     protected void fillDirectedEdgeAttributesDataWithSelection(final float[] buffer, final Edge edge, final int index,
@@ -1155,7 +1002,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         final Node source = edge.getSource();
         final Node target = edge.getTarget();
 
-        fillDirectedEdgeAttributesDataBase(buffer, edge, index, weight);
+        buffer[index] = source.getStoreId();
+        buffer[index + 1] = target.getStoreId();
+        buffer[index + 2] = weight;
 
         //Color:
         if (selected) {
@@ -1164,35 +1013,31 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 boolean targetSelected = nodesCallback.isSelected(target.getStoreId());
 
                 if (sourceSelected && targetSelected) {
-                    buffer[index + 5] = edgeBothSelectionColor;//Color
+                    buffer[index + 3] = edgeBothSelectionColor;//Color
                 } else if (sourceSelected) {
-                    buffer[index + 5] = edgeOutSelectionColor;//Color
+                    buffer[index + 3] = edgeOutSelectionColor;//Color
                 } else if (targetSelected) {
-                    buffer[index + 5] = edgeInSelectionColor;//Color
+                    buffer[index + 3] = edgeInSelectionColor;//Color
                 } else {
-                    buffer[index + 5] = computeElementColor(edge);//Color
+                    buffer[index + 3] = computeElementColor(edge);//Color
                 }
             } else {
                 // When a node is selected, color the edge with the opposite node color
                 if (someSelection) {
                     if (nodesCallback.isSelected(source.getStoreId())) {
-                        buffer[index + 5] = Float.intBitsToFloat(target.getRGBA());
+                        buffer[index + 3] = Float.intBitsToFloat(target.getRGBA());
                     } else if (nodesCallback.isSelected(target.getStoreId())) {
-                        buffer[index + 5] = Float.intBitsToFloat(source.getRGBA());
+                        buffer[index + 3] = Float.intBitsToFloat(source.getRGBA());
                     } else {
-                        buffer[index + 5] = computeElementColor(edge);//Color
+                        buffer[index + 3] = computeElementColor(edge);//Color
                     }
                 } else {
-                    buffer[index + 5] = computeElementColor(edge);//Color
+                    buffer[index + 3] = computeElementColor(edge);//Color
                 }
             }
         } else {
-            buffer[index + 5] = computeElementColor(edge);//Color
+            buffer[index + 3] = computeElementColor(edge);//Color
         }
-
-        //Source and target size:
-        buffer[index + 6] = source.size();
-        buffer[index + 7] = target.size();
     }
 
     private float computeElementColor(final Edge edge) {
@@ -1230,64 +1075,36 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     }
 
     private UndirectedEdgesVAO undirectedEdgesVAO;
-    private UndirectedEdgesVAO undirectedEdgesVAOSecondary;
     private DirectedEdgesVAO directedEdgesVAO;
-    private DirectedEdgesVAO directedEdgesVAOSecondary;
     private SelfLoopEdgesVAO selfLoopEdgesVAO;
-    private SelfLoopEdgesVAO selfLoopEdgesVAOSecondary;
 
     public void setupSelfLoopVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAO == null) {
-            selfLoopEdgesVAO = new SelfLoopEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferSelfLoop
-            );
+            selfLoopEdgesVAO = new SelfLoopEdgesVAO(data.getOpenGLOptions());
         }
 
         selfLoopEdgesVAO.use(gl);
     }
 
-    public void setupSelfLoopVertexArrayAttributesSecondary(GL2ES2 gl, EdgeWorldData data) {
-        if (selfLoopEdgesVAOSecondary == null) {
-            selfLoopEdgesVAOSecondary = new SelfLoopEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferSelfLoopSecondary
-            );
-        }
-
-        selfLoopEdgesVAOSecondary.use(gl);
-    }
-
     public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
-            undirectedEdgesVAO = new UndirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferUndirected
-            );
+            undirectedEdgesVAO = new UndirectedEdgesVAO(data.getOpenGLOptions());
         }
 
         undirectedEdgesVAO.use(gl);
     }
 
-    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl,
-                                                              EdgeWorldData data) {
-        if (undirectedEdgesVAOSecondary == null) {
-            undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferUndirectedSecondary
-            );
+    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
+        if (directedEdgesVAO == null) {
+            directedEdgesVAO = new DirectedEdgesVAO(data.getOpenGLOptions());
         }
 
-        undirectedEdgesVAOSecondary.use(gl);
+        directedEdgesVAO.use(gl);
     }
 
     public void unsetupSelfLoopVertexArrayAttributes(GL2ES2 gl) {
         if (selfLoopEdgesVAO != null) {
             selfLoopEdgesVAO.stopUsing(gl);
-        }
-
-        if (selfLoopEdgesVAOSecondary != null) {
-            selfLoopEdgesVAOSecondary.stopUsing(gl);
         }
     }
 
@@ -1295,46 +1112,18 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (undirectedEdgesVAO != null) {
             undirectedEdgesVAO.stopUsing(gl);
         }
-
-        if (undirectedEdgesVAOSecondary != null) {
-            undirectedEdgesVAOSecondary.stopUsing(gl);
-        }
-    }
-
-    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
-        if (directedEdgesVAO == null) {
-            directedEdgesVAO = new DirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferDirected
-            );
-        }
-
-        directedEdgesVAO.use(gl);
-    }
-
-    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl,
-                                                            EdgeWorldData data) {
-        if (directedEdgesVAOSecondary == null) {
-            directedEdgesVAOSecondary = new DirectedEdgesVAO(
-                data.getOpenGLOptions(),
-                attributesGLBufferDirectedSecondary
-            );
-        }
-
-        directedEdgesVAOSecondary.use(gl);
     }
 
     public void unsetupDirectedVertexArrayAttributes(GL2ES2 gl) {
         if (directedEdgesVAO != null) {
             directedEdgesVAO.stopUsing(gl);
         }
-
-        if (directedEdgesVAOSecondary != null) {
-            directedEdgesVAOSecondary.stopUsing(gl);
-        }
     }
 
     public void dispose(GL gl) {
+        attributesBufferBatch = null;
+        selfLoopAttributesBufferBatch = null;
+
         if (vertexGLBufferUndirected != null) {
             vertexGLBufferUndirected.destroy(gl);
             vertexGLBufferUndirected = null;
@@ -1350,45 +1139,10 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             vertexGLBufferSelfLoop = null;
         }
 
-        if (attributesGLBufferDirected != null) {
-            attributesGLBufferDirected.destroy(gl);
-            attributesGLBufferDirected = null;
-        }
-
-        if (attributesGLBufferDirectedSecondary != null) {
-            attributesGLBufferDirectedSecondary.destroy(gl);
-            attributesGLBufferDirectedSecondary = null;
-        }
-
-        if (attributesGLBufferUndirected != null) {
-            attributesGLBufferUndirected.destroy(gl);
-            attributesGLBufferUndirected = null;
-        }
-
-        if (attributesGLBufferUndirectedSecondary != null) {
-            attributesGLBufferUndirectedSecondary.destroy(gl);
-            attributesGLBufferUndirectedSecondary = null;
-        }
-        if (attributesGLBufferSelfLoop != null) {
-            attributesGLBufferSelfLoop.destroy(gl);
-            attributesGLBufferSelfLoop = null;
-
-        }
-        if (attributesGLBufferSelfLoopSecondary != null) {
-            attributesGLBufferSelfLoopSecondary.destroy(gl);
-            attributesGLBufferSelfLoopSecondary = null;
-
-        }
-
-        if (attributesBuffer != null) {
-            attributesBuffer.destroy();
-            attributesBuffer = null;
-        }
-
-        if (selfLoopAttributesBuffer != null) {
-            selfLoopAttributesBuffer.destroy();
-            selfLoopAttributesBuffer = null;
-        }
+        // Per-element edge textures are owned by this pipeline (the node texture is not).
+        undirectedElementTexture.dispose(gl);
+        directedElementTexture.dispose(gl);
+        selfLoopElementTexture.dispose(gl);
 
         // Destroy and reset VAOs to prevent reuse after re-init
         if (undirectedEdgesVAO != null) {
@@ -1396,29 +1150,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             undirectedEdgesVAO = null;
         }
 
-        if (undirectedEdgesVAOSecondary != null) {
-            undirectedEdgesVAOSecondary.destroy(gl.getGL2ES2());
-            undirectedEdgesVAOSecondary = null;
-        }
-
         if (directedEdgesVAO != null) {
             directedEdgesVAO.destroy(gl.getGL2ES2());
             directedEdgesVAO = null;
         }
 
-        if (directedEdgesVAOSecondary != null) {
-            directedEdgesVAOSecondary.destroy(gl.getGL2ES2());
-            directedEdgesVAOSecondary = null;
-        }
-
         if (selfLoopEdgesVAO != null) {
             selfLoopEdgesVAO.destroy(gl.getGL2ES2());
             selfLoopEdgesVAO = null;
-        }
-
-        if (selfLoopEdgesVAOSecondary != null) {
-            selfLoopEdgesVAOSecondary.destroy(gl.getGL2ES2());
-            selfLoopEdgesVAOSecondary = null;
         }
 
         // Destroy shader programs
@@ -1430,7 +1169,6 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         lineDirectedModelSelectionSelected.destroy(gl.getGL2ES2());
         lineDirectedModelSelectionUnselected.destroy(gl.getGL2ES2());
 
-
         edgeCircleSelfLoopNoSelection.destroy(gl.getGL2ES2());
         edgeCircleSelfLoopSelectionSelected.destroy(gl.getGL2ES2());
         edgeCircleSelfLoopSelectionUnselected.destroy(gl.getGL2ES2());
@@ -1440,237 +1178,79 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     private class SelfLoopEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
-
-        public SelfLoopEdgesVAO(OpenGLOptions openGLOptions,
-                                GLBuffer attributesBuffer) {
+        public SelfLoopEdgesVAO(OpenGLOptions openGLOptions) {
             super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
         }
 
         @Override
         protected void configure(GL2ES2 gl) {
             vertexGLBufferSelfLoop.bind(gl);
-            {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeCircleSelfLoop.VERTEX_FLOATS, GL_FLOAT,
-                    false,
-                    0, 0);
-            }
+            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeCircleSelfLoop.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
             vertexGLBufferSelfLoop.unbind(gl);
-
-            this.attributesBuffer.bind(gl);
-            {
-                int stride = ATTRIBS_STRIDE_SELFLOOP * Float.BYTES;
-                int offset = 0;
-                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeCircleSelfLoop.POSITION_FLOATS,
-                    GL_FLOAT, false,
-                    stride, offset);
-                offset += CommonEdgeCircleSelfLoop.POSITION_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION,
-                    CommonEdgeCircleSelfLoop.COLOR_FLOATS * Float.BYTES,
-                    GL_UNSIGNED_BYTE,
-                    false, stride, offset);
-                offset += CommonEdgeCircleSelfLoop.COLOR_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, CommonEdgeCircleSelfLoop.SIZE_FLOATS, GL_FLOAT,
-                    false, stride,
-                    offset);
-                offset += CommonEdgeCircleSelfLoop.SIZE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SELFLOOP_NODE_SIZE_LOCATION,
-                    CommonEdgeCircleSelfLoop.NODE_SIZE_FLOATS, GL_FLOAT, false, stride, offset);
-
-
-            }
-            this.attributesBuffer.unbind(gl);
         }
 
         @Override
         protected int[] getUsedAttributeLocations() {
             return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_SELFLOOP_NODE_SIZE_LOCATION
+                SHADER_VERT_LOCATION
             };
         }
 
         @Override
         protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_SELFLOOP_NODE_SIZE_LOCATION
-
-                };
-            } else {
-                return null;
-            }
+            return null;
         }
-
     }
 
     private class UndirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
-
-        public UndirectedEdgesVAO(OpenGLOptions openGLOptions,
-                                  GLBuffer attributesBuffer) {
+        public UndirectedEdgesVAO(OpenGLOptions openGLOptions) {
             super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
         }
 
         @Override
         protected void configure(GL2ES2 gl) {
             vertexGLBufferUndirected.bind(gl);
-            {
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineUndirected.VERTEX_FLOATS, GL_FLOAT, false,
-                    0, 0);
-            }
+            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineUndirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
             vertexGLBufferUndirected.unbind(gl);
-
-            attributesBuffer.bind(gl);
-            {
-                final int stride = ATTRIBS_STRIDE * Float.BYTES;
-                int offset = 0;
-                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeLineUndirected.POSITION_SOURCE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineUndirected.POSITION_SOURCE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION,
-                    CommonEdgeLineUndirected.POSITION_TARGET_FLOATS, GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineUndirected.POSITION_TARGET_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, CommonEdgeLineUndirected.SIZE_FLOATS, GL_FLOAT, false,
-                    stride, offset);
-                offset += CommonEdgeLineUndirected.SIZE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, CommonEdgeLineUndirected.COLOR_FLOATS * Float.BYTES,
-                    GL_UNSIGNED_BYTE, false, stride, offset);
-                offset += CommonEdgeLineUndirected.COLOR_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, CommonEdgeLineUndirected.SOURCE_SIZE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineUndirected.SOURCE_SIZE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, CommonEdgeLineUndirected.TARGET_SIZE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-            }
-            attributesBuffer.unbind(gl);
         }
 
         @Override
         protected int[] getUsedAttributeLocations() {
             return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_POSITION_TARGET_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SOURCE_SIZE_LOCATION,
-                SHADER_TARGET_SIZE_LOCATION
+                SHADER_VERT_LOCATION
             };
         }
 
         @Override
         protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_POSITION_TARGET_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SOURCE_SIZE_LOCATION,
-                    SHADER_TARGET_SIZE_LOCATION
-                };
-            } else {
-                return null;
-            }
+            return null;
         }
-
     }
 
     private class DirectedEdgesVAO extends GLVertexArrayObject {
 
-        private final GLBuffer attributesBuffer;
-
-        public DirectedEdgesVAO(OpenGLOptions openGLOptions,
-                                GLBuffer attributesBuffer) {
+        public DirectedEdgesVAO(OpenGLOptions openGLOptions) {
             super(openGLOptions);
-            this.attributesBuffer = attributesBuffer;
         }
 
         @Override
         protected void configure(GL2ES2 gl) {
             vertexGLBufferDirected.bind(gl);
-            {
-
-                gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineDirected.VERTEX_FLOATS, GL_FLOAT, false, 0,
-                    0);
-            }
+            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineDirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
             vertexGLBufferDirected.unbind(gl);
-
-            attributesBuffer.bind(gl);
-            {
-                int stride = ATTRIBS_STRIDE * Float.BYTES;
-                int offset = 0;
-                gl.glVertexAttribPointer(SHADER_POSITION_LOCATION, CommonEdgeLineDirected.POSITION_SOURCE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineDirected.POSITION_SOURCE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_POSITION_TARGET_LOCATION, CommonEdgeLineDirected.POSITION_TARGET_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineDirected.POSITION_TARGET_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SIZE_LOCATION, CommonEdgeLineDirected.SIZE_FLOATS, GL_FLOAT, false,
-                    stride, offset);
-                offset += CommonEdgeLineDirected.SIZE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_COLOR_LOCATION, CommonEdgeLineDirected.COLOR_FLOATS * Float.BYTES,
-                    GL_UNSIGNED_BYTE, false, stride, offset);
-                offset += CommonEdgeLineDirected.COLOR_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_SOURCE_SIZE_LOCATION, CommonEdgeLineDirected.SOURCE_SIZE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-                offset += CommonEdgeLineDirected.SOURCE_SIZE_FLOATS * Float.BYTES;
-
-                gl.glVertexAttribPointer(SHADER_TARGET_SIZE_LOCATION, CommonEdgeLineDirected.TARGET_SIZE_FLOATS,
-                    GL_FLOAT, false, stride, offset);
-            }
-            attributesBuffer.unbind(gl);
         }
 
         @Override
         protected int[] getUsedAttributeLocations() {
             return new int[] {
-                SHADER_VERT_LOCATION,
-                SHADER_POSITION_LOCATION,
-                SHADER_POSITION_TARGET_LOCATION,
-                SHADER_SIZE_LOCATION,
-                SHADER_COLOR_LOCATION,
-                SHADER_SOURCE_SIZE_LOCATION,
-                SHADER_TARGET_SIZE_LOCATION
+                SHADER_VERT_LOCATION
             };
         }
 
         @Override
         protected int[] getInstancedAttributeLocations() {
-            if (instanced) {
-                return new int[] {
-                    SHADER_POSITION_LOCATION,
-                    SHADER_POSITION_TARGET_LOCATION,
-                    SHADER_SIZE_LOCATION,
-                    SHADER_COLOR_LOCATION,
-                    SHADER_SOURCE_SIZE_LOCATION,
-                    SHADER_TARGET_SIZE_LOCATION
-                };
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 

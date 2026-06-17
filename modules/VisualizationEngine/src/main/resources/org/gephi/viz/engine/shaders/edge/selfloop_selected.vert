@@ -2,11 +2,11 @@
 
 //#include "common.edge.vert.glsl"
 
+//#include "../common.datatexture.glsl"
+
+//#include "common.edge.index.glsl"
+
 in vec2 vert;
-in vec2 position;
-in vec4 elementColor;
-in float size;
-in float nodeSize;
 
 //#include "../common.animation.glsl"
 
@@ -17,6 +17,8 @@ uniform float weightDifferenceDivisor;
 uniform float edgeScaleMin;
 uniform float edgeScaleMax;
 uniform float nodeScale;
+uniform sampler2D u_elementTexture;
+uniform sampler2D u_nodeTexture;
 
 struct VertexData {
     vec4 color;
@@ -31,6 +33,14 @@ const float STROKE_MULTIPLIER = 1.3;
 void main() {
     vLocal = vert;
 
+    vec4 edgeData = texelFetch(u_elementTexture, dataTexelCoord(edgeElementIndex()), 0);
+    int nodeStoreId = int(edgeData.x);
+    float size = edgeData.y;//It's the weight
+
+    vec4 nodeData = texelFetch(u_nodeTexture, dataTexelCoord(nodeStoreId), 0);
+    vec2 position = nodeData.xy;
+    float nodeSize = nodeData.z;
+
     float thickness = edge_thickness(edgeScaleMin, edgeScaleMax, size, minWeight, weightDifferenceDivisor);
     float strokeWidth = thickness * STROKE_MULTIPLIER;
     float scaledNodeSize = nodeSize * nodeScale;
@@ -42,8 +52,7 @@ void main() {
     float innerRadius = max(0.0, 1.0 - strokeWidth / loopRadius);
     vertexData.innerRadiusSq = innerRadius * innerRadius;
 
-    //bgra -> rgba because Java color is argb big-endian
-    vec4 color = elementColor.bgra / 255.0;
+    vec4 color = unpackColor(edgeData.z);
 
     vertexData.color = color;
 }

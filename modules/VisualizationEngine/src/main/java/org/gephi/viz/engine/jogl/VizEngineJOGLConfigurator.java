@@ -21,6 +21,7 @@ import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.RectangleSelectionArr
 import org.gephi.viz.engine.jogl.pipeline.arrays.renderers.SimpleMouseSelectionArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.updaters.EdgesUpdaterArrayDrawRendering;
 import org.gephi.viz.engine.jogl.pipeline.arrays.updaters.NodesUpdaterArrayDrawRendering;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
 import org.gephi.viz.engine.jogl.pipeline.indirect.renderers.NodeRendererIndirect;
 import org.gephi.viz.engine.jogl.pipeline.indirect.updaters.NodesUpdaterIndirectRendering;
@@ -86,18 +87,23 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
         NodesCallback nodesCallback = new NodesCallback();
         EdgesCallback edgesCallback = new EdgesCallback();
 
-        setupIndirectRendering(nodesCallback, edgesCallback, engine);
-        setupInstancedRendering(nodesCallback, edgesCallback, engine);
-        setupVertexArrayRendering(nodesCallback, edgesCallback, engine);
+        // Single node data texture shared between the active node and edge pipelines: the node pipeline
+        // fills/uploads it (from all visible-graph nodes) and both node and edge shaders sample it.
+        final NodeDataTextureStore nodeDataTextureStore = new NodeDataTextureStore();
+
+        setupIndirectRendering(nodesCallback, edgesCallback, nodeDataTextureStore, engine);
+        setupInstancedRendering(nodesCallback, edgesCallback, nodeDataTextureStore, engine);
+        setupVertexArrayRendering(nodesCallback, edgesCallback, nodeDataTextureStore, engine);
 
         setupInputListeners(engine);
     }
 
     private void setupIndirectRendering(final NodesCallback nodesCallback,
                                         final EdgesCallback edgesCallback,
+                                        final NodeDataTextureStore nodeDataTextureStore,
                                         VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Only nodes supported, edges don't have a LOD to benefit from
-        final IndirectNodeData nodeData = new IndirectNodeData(nodesCallback);
+        final IndirectNodeData nodeData = new IndirectNodeData(nodesCallback, nodeDataTextureStore);
 
         engine.addRenderer(new NodeRendererIndirect(engine, nodeData));
         engine.addWorldUpdater(new NodesUpdaterIndirectRendering(engine, nodeData));
@@ -105,28 +111,31 @@ public class VizEngineJOGLConfigurator implements VizEngineConfigurator<JOGLRend
 
     private void setupInstancedRendering(final NodesCallback nodesCallback,
                                          final EdgesCallback edgesCallback,
+                                         final NodeDataTextureStore nodeDataTextureStore,
                                          VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes
-        final InstancedNodeData nodeData = new InstancedNodeData(nodesCallback);
+        final InstancedNodeData nodeData = new InstancedNodeData(nodesCallback, nodeDataTextureStore);
         engine.addRenderer(new NodeRendererInstanced(engine, nodeData));
         engine.addWorldUpdater(new NodesUpdaterInstancedRendering(engine, nodeData));
 
         //Edges
-        final InstancedEdgeData indirectEdgeData = new InstancedEdgeData(edgesCallback, nodesCallback);
+        final InstancedEdgeData indirectEdgeData =
+            new InstancedEdgeData(edgesCallback, nodesCallback, nodeDataTextureStore);
         engine.addRenderer(new EdgeRendererInstanced(engine, indirectEdgeData));
         engine.addWorldUpdater(new EdgesUpdaterInstancedRendering(engine, indirectEdgeData));
     }
 
     private void setupVertexArrayRendering(final NodesCallback nodesCallback,
                                            final EdgesCallback edgesCallback,
+                                           final NodeDataTextureStore nodeDataTextureStore,
                                            VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         //Nodes
-        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData(nodesCallback);
+        final ArrayDrawNodeData nodeData = new ArrayDrawNodeData(nodesCallback, nodeDataTextureStore);
         engine.addRenderer(new NodeRendererArrayDraw(engine, nodeData));
         engine.addWorldUpdater(new NodesUpdaterArrayDrawRendering(engine, nodeData));
 
         //Edges
-        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData(edgesCallback, nodesCallback);
+        final ArrayDrawEdgeData edgeData = new ArrayDrawEdgeData(edgesCallback, nodesCallback, nodeDataTextureStore);
         engine.addRenderer(new EdgeRendererArrayDraw(engine, edgeData));
         engine.addWorldUpdater(new EdgesUpdaterArrayDrawRendering(engine, edgeData));
 

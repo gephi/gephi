@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES3;
 import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
@@ -16,8 +17,8 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  */
 public class InstancedNodeData extends AbstractNodeData {
 
-    public InstancedNodeData(NodesCallback nodesCallback) {
-        super(nodesCallback, true, false);
+    public InstancedNodeData(NodesCallback nodesCallback, NodeDataTextureStore nodeDataTextureStore) {
+        super(nodesCallback, nodeDataTextureStore, true, false);
     }
 
     private final int[] bufferName = new int[3];
@@ -93,6 +94,9 @@ public class InstancedNodeData extends AbstractNodeData {
     }
 
     public void updateBuffers(GL gl) {
+        // Upload the shared node data texture (sampled by node and edge shaders).
+        nodeDataTextureStore.upload(gl);
+
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 
         buf.limit(instanceCounter.unselectedCount * ATTRIBS_STRIDE);
