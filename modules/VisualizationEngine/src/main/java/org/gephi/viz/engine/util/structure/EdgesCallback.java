@@ -30,6 +30,9 @@ public class EdgesCallback implements ElementsCallback<Edge> {
     private float minWeight = 0f;
     private float maxWeight = 1f;
     private Edge[] edgesArray = new Edge[0];
+    // Dense list of the visible edges (no nulls, [0, edgeCount)), built once in end() so downstream
+    // consumers iterate O(visible) instead of scanning the sparse store-id-indexed edgesArray.
+    private Edge[] compactEdgesArray = new Edge[0];
     private float[] edgeWeightsArray = new float[0];
     private GraphView graphView;
     private Column[] edgeLabelColumns;
@@ -111,14 +114,14 @@ public class EdgesCallback implements ElementsCallback<Edge> {
             maxWeight = maxValue != null ? maxValue.floatValue() : 1f;
         }
 
-        // Get actual edge weights
-        // And count non-null edges
+        // Get actual edge weights, count non-null edges and build the compact list in one scan.
+        compactEdgesArray = ensureEdgesArraySize(compactEdgesArray, maxIndex + 1);
         for (int i = 0; i <= maxIndex; i++) {
             Edge edge = edgesArray[i];
             if (edge != null) {
-                edgeCount++;
                 double weight = edge.getWeight(graph.getView());
                 edgeWeightsArray[i] = (float) weight;
+                compactEdgesArray[edgeCount++] = edge;
             }
         }
     }
@@ -126,6 +129,7 @@ public class EdgesCallback implements ElementsCallback<Edge> {
     @Override
     public void reset() {
         edgesArray = new Edge[0];
+        compactEdgesArray = new Edge[0];
         edgeWeightsArray = new float[0];
         maxIndex = 0;
         edgeCount = 0;
@@ -142,6 +146,14 @@ public class EdgesCallback implements ElementsCallback<Edge> {
 
     public Edge[] getEdgesArray() {
         return edgesArray;
+    }
+
+    /**
+     * Dense array of the visible edges, valid in {@code [0, getCount())} and with no nulls. Built in
+     * {@link #end(Graph)}; iterate this instead of {@link #getEdgesArray()} for O(visible) cost.
+     */
+    public Edge[] getCompactEdgesArray() {
+        return compactEdgesArray;
     }
 
     public float[] getEdgeWeightsArray() {

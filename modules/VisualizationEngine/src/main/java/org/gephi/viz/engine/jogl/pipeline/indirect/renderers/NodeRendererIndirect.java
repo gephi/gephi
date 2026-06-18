@@ -5,6 +5,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.IndirectDraw;
+import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.pipeline.indirect.IndirectNodeData;
@@ -41,6 +42,11 @@ public class NodeRendererIndirect extends AbstractNodeRenderer {
     public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
 
         nodeData.drawIndirect(target.getDrawable().getGL().getGL4(), layer, data, mvpFloats);
+    }
+
+    @Override
+    public AbstractNodeData getNodeData() {
+        return nodeData;
     }
 
     @Override

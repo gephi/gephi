@@ -1,8 +1,8 @@
 package org.gephi.viz.engine.jogl.pipeline.common;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_SAMPLE_ALPHA_TO_COVERAGE;
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
-import static org.gephi.viz.engine.jogl.pipeline.common.NodeDataTextureStore.NODE_TEXTURE_UNIT;
 import static org.gephi.viz.engine.util.gl.Constants.ELEMENT_TEXTURE_UNIT;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
@@ -94,7 +94,9 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     protected final Mesh undirectedEdgeMesh = EdgeLineMeshGenerator.undirectedMeshGenerator();
     protected final Mesh directedEdgeMesh = EdgeLineMeshGenerator.directedMeshGenerator();
-    protected final Mesh selfLoopMesh = NodeDiskVertexMeshGenerator.generateFilledCircle(48);
+    // Self-loops are drawn as a single quad; the ring is produced in the fragment shader with a
+    // signed distance function, matching the SDF disk used for nodes.
+    protected final Mesh selfLoopMesh = NodeDiskVertexMeshGenerator.generateQuad();
 
     // Geometry buffers (static, just the repeated mesh). Created by the subclasses.
     protected GLBuffer vertexGLBufferUndirected;
@@ -178,11 +180,11 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     }
 
     /**
-     * Binds the shared node data texture and the given per-element edge texture to their texture
-     * units (the sampler uniforms were set to those units after each program link).
+     * Binds the shared node data textures (position + style) and the given per-element edge texture
+     * to their texture units (the sampler uniforms were set to those units after each program link).
      */
     private void bindDataTextures(final GL2ES2 gl, final GLDataTexture elementTexture) {
-        nodeDataTextureStore.bind(gl, NODE_TEXTURE_UNIT);
+        nodeDataTextureStore.bind(gl);
         elementTexture.bind(gl, ELEMENT_TEXTURE_UNIT);
         gl.glActiveTexture(GL_TEXTURE0);
     }
@@ -208,6 +210,10 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (!someSelection && renderingUnselectedEdges) {
             return 0;
         }
+
+        // Antialiase the SDF ring rim. Like nodes, self-loops write coverage to the fragment alpha and
+        // rely on sample-alpha-to-coverage (MSAA). No-op on a non-multisampled framebuffer.
+        gl.glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
         final float[] backgroundColorFloats = data.getBackgroundColor();
         final float edgeScale = data.getEdgeScale();
@@ -425,9 +431,10 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
      */
     protected void updateData(final GraphSelection selection) {
         final int totalEdges = edgesCallback.getCount();
-        final Edge[] visibleEdgesArray = edgesCallback.getEdgesArray();
+        // Dense list of visible edges (no nulls); the per-category passes iterate it O(visible)
+        // instead of scanning the sparse store-id-indexed array up to maxEdgeStoreId.
+        final Edge[] visibleEdgesArray = edgesCallback.getCompactEdgesArray();
         final float[] edgeWeightsArray = edgesCallback.getEdgeWeightsArray();
-        final int maxIndex = edgesCallback.getMaxIndex();
         final boolean isDirected = edgesCallback.isDirected();
         final boolean isUndirected = edgesCallback.isUndirected();
         final boolean hasSelfLoop = edgesCallback.hasSelfLoop();
@@ -436,18 +443,18 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
         if (hasSelfLoop) {
             final FloatBuffer selfLoopBuffer = selfLoopElementTexture.beginFill(reserve);
-            updateSelfLoop(maxIndex, visibleEdgesArray, edgeWeightsArray, selfLoopAttributesBufferBatch, 0,
+            updateSelfLoop(totalEdges, visibleEdgesArray, edgeWeightsArray, selfLoopAttributesBufferBatch, 0,
                 selfLoopBuffer);
         } else {
             selfLoopCounter.clearCount();
         }
 
         final FloatBuffer undirectedBuffer = undirectedElementTexture.beginFill(reserve);
-        updateUndirectedData(isDirected, maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
+        updateUndirectedData(isDirected, totalEdges, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
             undirectedBuffer);
 
         final FloatBuffer directedBuffer = directedElementTexture.beginFill(reserve);
-        updateDirectedData(isUndirected, maxIndex, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
+        updateDirectedData(isUndirected, totalEdges, visibleEdgesArray, edgeWeightsArray, attributesBufferBatch, 0,
             directedBuffer);
     }
 
@@ -469,7 +476,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         selfLoopCounter.promoteCountToDraw();
     }
 
-    protected int updateSelfLoop(final int maxIndex,
+    protected int updateSelfLoop(final int count,
                                  final Edge[] visibleEdgesArray,
                                  final float[] edgeWeightsArray,
                                  final float[] attribs,
@@ -482,19 +489,17 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         if (someSelection) {
 
             if (hideNonSelected) {
-                for (int i = 0; i <= maxIndex; i++) {
+                for (int i = 0; i < count; i++) {
                     Edge e = visibleEdgesArray[i];
+                    final int sid = e.getStoreId();
 
-                    // Discard if source and target node are not the same
-                    if (e == null  // If edge is null
-                        || e.getSource() != e.getTarget() // or is not self loop
-                        || !edgesCallback.isSelected(i) // or is not selected
-                    ) {
+                    // Discard if not a self loop or not selected
+                    if (e.getSource() != e.getTarget() || !edgesCallback.isSelected(sid)) {
                         continue; // Filter out
                     }
 
                     selfLoopEdgeIndex++;
-                    final float weight = edgeWeightEnabled ? edgeWeightsArray[i] : 1f;
+                    final float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
 
 
                     fillSelfLoopEdgeAttributesDataWithSelection(attribs, e, index, true, weight);
@@ -508,19 +513,17 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
 
             } else {
-                for (int i = 0; i <= maxIndex; i++) {
+                for (int i = 0; i < count; i++) {
                     Edge e = visibleEdgesArray[i];
+                    final int sid = e.getStoreId();
 
-                    // Discard if source and target node are not the same
-                    if (e == null  // If edge is null
-                        || e.getSource() != e.getTarget() // or is not self loop
-                        || edgesCallback.isSelected(i) // or is selected
-                    ) {
+                    // Discard if not a self loop or is selected
+                    if (e.getSource() != e.getTarget() || edgesCallback.isSelected(sid)) {
                         continue; // Filter out
                     }
 
                     unselectedSelfLoopEdgeIndex++;
-                    final float weight = edgeWeightEnabled ? edgeWeightsArray[i] : 1f;
+                    final float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
 
                     fillSelfLoopEdgeAttributesDataWithSelection(attribs, e, index, false, weight);
                     index += ATTRIBS_STRIDE_SELFLOOP;
@@ -532,19 +535,17 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 }
 
-                for (int i = 0; i <= maxIndex; i++) {
+                for (int i = 0; i < count; i++) {
                     Edge e = visibleEdgesArray[i];
+                    final int sid = e.getStoreId();
 
-                    // Discard if source and target node are not the same
-                    if (e == null  // If edge is null
-                        || e.getSource() != e.getTarget() // or is not self loop
-                        || !edgesCallback.isSelected(i) // or is not selected
-                    ) {
+                    // Discard if not a self loop or not selected
+                    if (e.getSource() != e.getTarget() || !edgesCallback.isSelected(sid)) {
                         continue; // Filter out
                     }
 
                     selfLoopEdgeIndex++;
-                    final float weight = edgeWeightEnabled ? edgeWeightsArray[i] : 1f;
+                    final float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
 
 
                     fillSelfLoopEdgeAttributesDataWithSelection(attribs, e, index, true, weight);
@@ -560,16 +561,16 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             //Just all edges, no selection active:
             // Get Index of self loop edges
 
-            for (int i = 0; i <= maxIndex; i++) {
+            for (int i = 0; i < count; i++) {
                 Edge e = visibleEdgesArray[i];
 
                 // Discard if source and target node are not the same
-                if (e == null || e.getSource() != e.getTarget()) {
+                if (e.getSource() != e.getTarget()) {
                     continue;
                 }
 
                 selfLoopEdgeIndex++;
-                final float weight = edgeWeightEnabled ? edgeWeightsArray[i] : 1f;
+                final float weight = edgeWeightEnabled ? edgeWeightsArray[e.getStoreId()] : 1f;
 
 
                 fillSelfLoopEdgeAttributesDataWithoutSelection(attribs, e, index, weight);
@@ -597,7 +598,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     protected int updateDirectedData(
         final boolean isUndirected,
-        final int maxIndex,
+        final int count,
         final Edge[] visibleEdgesArray,
         final float[] edgeWeightsArray,
         final float[] attribs, int index, final FloatBuffer directBuffer
@@ -614,11 +615,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         int newEdgesCountSelected = 0;
         if (someSelection) {
             if (hideNonSelected) {
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -626,14 +624,15 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    final boolean selected = edgesCallback.isSelected(j);
+                    final int sid = edge.getStoreId();
+                    final boolean selected = edgesCallback.isSelected(sid);
                     if (!selected) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, selected, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -644,11 +643,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 }
             } else {
                 //First non-selected (bottom):
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -656,13 +652,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    if (edgesCallback.isSelected(j)) {
+                    final int sid = edge.getStoreId();
+                    if (edgesCallback.isSelected(sid)) {
                         continue;
                     }
 
                     newEdgesCountUnselected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, false, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -673,11 +670,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 }
 
                 //Then selected ones (up):
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -685,13 +679,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    if (!edgesCallback.isSelected(j)) {
+                    final int sid = edge.getStoreId();
+                    if (!edgesCallback.isSelected(sid)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillDirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -703,11 +698,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             }
         } else {
             //Just all edges, no selection active:
-            for (int j = 0; j <= maxIndex; j++) {
+            for (int j = 0; j < count; j++) {
                 final Edge edge = visibleEdgesArray[j];
-                if (edge == null) {
-                    continue;
-                }
                 if (edge.getSource() == edge.getTarget()) {
                     continue;
                 }
@@ -717,7 +709,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 newEdgesCountSelected++;
 
-                float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                float weight = edgeWeightEnabled ? edgeWeightsArray[edge.getStoreId()] : 1f;
                 fillDirectedEdgeAttributesDataWithoutSelection(attribs, edge, index, weight);
                 index += ATTRIBS_STRIDE;
 
@@ -742,7 +734,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     protected int updateUndirectedData(
         final boolean isDirected,
-        final int maxIndex,
+        final int count,
         final Edge[] visibleEdgesArray,
         final float[] edgeWeightsArray,
         final float[] attribs, int index, final FloatBuffer directBuffer
@@ -760,11 +752,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         //Undirected edges:
         if (someSelection) {
             if (hideNonSelected) {
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -772,13 +761,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    if (!edgesCallback.isSelected(j)) {
+                    final int sid = edge.getStoreId();
+                    if (!edgesCallback.isSelected(sid)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -789,11 +779,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 }
             } else {
                 //First non-selected (bottom):
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -801,13 +788,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    if (edgesCallback.isSelected(j)) {
+                    final int sid = edge.getStoreId();
+                    if (edgesCallback.isSelected(sid)) {
                         continue;
                     }
 
                     newEdgesCountUnselected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, false, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -818,11 +806,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                 }
 
                 //Then selected ones (up):
-                for (int j = 0; j <= maxIndex; j++) {
+                for (int j = 0; j < count; j++) {
                     final Edge edge = visibleEdgesArray[j];
-                    if (edge == null) {
-                        continue;
-                    }
                     if (edge.getSource() == edge.getTarget()) {
                         continue;
                     }
@@ -830,13 +815,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
                         continue;
                     }
 
-                    if (!edgesCallback.isSelected(j)) {
+                    final int sid = edge.getStoreId();
+                    if (!edgesCallback.isSelected(sid)) {
                         continue;
                     }
 
                     newEdgesCountSelected++;
 
-                    float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                    float weight = edgeWeightEnabled ? edgeWeightsArray[sid] : 1f;
                     fillUndirectedEdgeAttributesDataWithSelection(attribs, edge, index, true, weight);
                     index += ATTRIBS_STRIDE;
 
@@ -848,11 +834,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             }
         } else {
             //Just all edges, no selection active:
-            for (int j = 0; j <= maxIndex; j++) {
+            for (int j = 0; j < count; j++) {
                 final Edge edge = visibleEdgesArray[j];
-                if (edge == null) {
-                    continue;
-                }
                 if (edge.getSource() == edge.getTarget()) {
                     continue;
                 }
@@ -862,7 +845,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
                 newEdgesCountSelected++;
 
-                float weight = edgeWeightEnabled ? edgeWeightsArray[j] : 1f;
+                float weight = edgeWeightEnabled ? edgeWeightsArray[edge.getStoreId()] : 1f;
                 fillUndirectedEdgeAttributesDataWithoutSelection(attribs, edge, index, weight);
                 index += ATTRIBS_STRIDE;
 
@@ -1074,13 +1057,14 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         return Float.intBitsToFloat(colorInt);
     }
 
-    private UndirectedEdgesVAO undirectedEdgesVAO;
-    private DirectedEdgesVAO directedEdgesVAO;
-    private SelfLoopEdgesVAO selfLoopEdgesVAO;
+    private EdgeVAO undirectedEdgesVAO;
+    private EdgeVAO directedEdgesVAO;
+    private EdgeVAO selfLoopEdgesVAO;
 
     public void setupSelfLoopVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAO == null) {
-            selfLoopEdgesVAO = new SelfLoopEdgesVAO(data.getOpenGLOptions());
+            selfLoopEdgesVAO =
+                new EdgeVAO(data.getOpenGLOptions(), vertexGLBufferSelfLoop, CommonEdgeCircleSelfLoop.VERTEX_FLOATS);
         }
 
         selfLoopEdgesVAO.use(gl);
@@ -1088,7 +1072,8 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
-            undirectedEdgesVAO = new UndirectedEdgesVAO(data.getOpenGLOptions());
+            undirectedEdgesVAO =
+                new EdgeVAO(data.getOpenGLOptions(), vertexGLBufferUndirected, CommonEdgeLineUndirected.VERTEX_FLOATS);
         }
 
         undirectedEdgesVAO.use(gl);
@@ -1096,13 +1081,16 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
     public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
-            directedEdgesVAO = new DirectedEdgesVAO(data.getOpenGLOptions());
+            directedEdgesVAO =
+                new EdgeVAO(data.getOpenGLOptions(), vertexGLBufferDirected, CommonEdgeLineDirected.VERTEX_FLOATS);
         }
 
         directedEdgesVAO.use(gl);
     }
 
     public void unsetupSelfLoopVertexArrayAttributes(GL2ES2 gl) {
+        gl.glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
         if (selfLoopEdgesVAO != null) {
             selfLoopEdgesVAO.stopUsing(gl);
         }
@@ -1176,69 +1164,27 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         edgesCallback.reset();
     }
 
-    private class SelfLoopEdgesVAO extends GLVertexArrayObject {
+    /**
+     * Per-category vertex array object. All edge categories share the same single-attribute layout
+     * (just the static mesh {@code vert}); they only differ in the backing vertex buffer and the
+     * number of floats per vertex.
+     */
+    private final class EdgeVAO extends GLVertexArrayObject {
 
-        public SelfLoopEdgesVAO(OpenGLOptions openGLOptions) {
+        private final GLBuffer vertexBuffer;
+        private final int vertexFloats;
+
+        EdgeVAO(OpenGLOptions openGLOptions, GLBuffer vertexBuffer, int vertexFloats) {
             super(openGLOptions);
+            this.vertexBuffer = vertexBuffer;
+            this.vertexFloats = vertexFloats;
         }
 
         @Override
         protected void configure(GL2ES2 gl) {
-            vertexGLBufferSelfLoop.bind(gl);
-            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeCircleSelfLoop.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
-            vertexGLBufferSelfLoop.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            return null;
-        }
-    }
-
-    private class UndirectedEdgesVAO extends GLVertexArrayObject {
-
-        public UndirectedEdgesVAO(OpenGLOptions openGLOptions) {
-            super(openGLOptions);
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBufferUndirected.bind(gl);
-            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineUndirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
-            vertexGLBufferUndirected.unbind(gl);
-        }
-
-        @Override
-        protected int[] getUsedAttributeLocations() {
-            return new int[] {
-                SHADER_VERT_LOCATION
-            };
-        }
-
-        @Override
-        protected int[] getInstancedAttributeLocations() {
-            return null;
-        }
-    }
-
-    private class DirectedEdgesVAO extends GLVertexArrayObject {
-
-        public DirectedEdgesVAO(OpenGLOptions openGLOptions) {
-            super(openGLOptions);
-        }
-
-        @Override
-        protected void configure(GL2ES2 gl) {
-            vertexGLBufferDirected.bind(gl);
-            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineDirected.VERTEX_FLOATS, GL_FLOAT, false, 0, 0);
-            vertexGLBufferDirected.unbind(gl);
+            vertexBuffer.bind(gl);
+            gl.glVertexAttribPointer(SHADER_VERT_LOCATION, vertexFloats, GL_FLOAT, false, 0, 0);
+            vertexBuffer.unbind(gl);
         }
 
         @Override

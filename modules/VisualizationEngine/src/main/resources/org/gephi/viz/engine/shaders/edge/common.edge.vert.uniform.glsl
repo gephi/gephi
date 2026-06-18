@@ -7,7 +7,6 @@ uniform float edgeScaleMax;
 uniform float nodeScale;
 uniform float edgeInset;
 
-// Per-element edge data (sourceStoreId, targetStoreId, weight, colorBits) and the shared node data
-// texture (x, y, rawSize, colorBits) indexed by node store id.
+// Per-element edge data (sourceStoreId, targetStoreId, weight, colorBits). The shared node data is
+// read via fetchNodeData() (common.datatexture.glsl) from the split position/style textures.
 uniform sampler2D u_elementTexture;
-uniform sampler2D u_nodeTexture;

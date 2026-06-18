@@ -16,7 +16,7 @@ out vec2 vLocal;
 void main() {
     vLocal = vert;
 
-    vec4 nodeData = texelFetch(u_nodeTexture, dataTexelCoord(int(elementIndex)), 0);
+    vec4 nodeData = fetchNodeData(int(elementIndex));
     vec2 position = nodeData.xy;
     float size = nodeData.z * nodeScale;
 

@@ -9,6 +9,7 @@ import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.util.gl.DataUploadStats;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
 /**
@@ -27,18 +28,11 @@ public class InstancedNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER = 1;
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
 
-    public void drawInstanced(GL2ES3 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
+    public void drawInstanced(final GL2ES3 gl, final RenderingLayer layer, final NodeWorldData data,
+                              final float[] mvpFloats) {
         refreshTime();
 
-        drawInstancedInternal(gl, layer, data, mvpFloats);
-    }
-
-    private void drawInstancedInternal(final GL2ES3 gl,
-                                       final RenderingLayer layer,
-                                       final NodeWorldData data,
-                                       final float[] mvpFloats) {
-        final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
+        final int instanceCount = setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
             GLFunctions.stopUsingProgram(gl);
@@ -46,26 +40,9 @@ public class InstancedNodeData extends AbstractNodeData {
             return;
         }
 
-        final float maxObservedSize = data.getMaxNodeSize() * data.getZoom();
-        final int circleVertexCount;
-        final int firstVertex;
-        if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-            circleVertexCount = circleMesh64.vertexCount;
-            firstVertex = firstVertex64;
-        } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-            circleVertexCount = circleMesh32.vertexCount;
-            firstVertex = firstVertex32;
-        } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-            circleVertexCount = circleMesh16.vertexCount;
-            firstVertex = firstVertex16;
-        } else {
-            circleVertexCount = circleMesh8.vertexCount;
-            firstVertex = firstVertex8;
-        }
-
         GLFunctions.drawInstanced(
             gl,
-            firstVertex, circleVertexCount, instanceCount
+            0, nodeMesh.vertexCount, instanceCount
         );
         GLFunctions.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);
@@ -76,7 +53,7 @@ public class InstancedNodeData extends AbstractNodeData {
         super.initBuffers(gl);
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
-        initCirclesGLVertexBuffer(gl, bufferName[VERT_BUFFER]);
+        initNodeVertexGLBuffer(gl, bufferName[VERT_BUFFER]);
 
         //Initialize for batch nodes size:
         attributesGLBuffer = new GLBufferMutable(bufferName[ATTRIBS_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
@@ -96,6 +73,13 @@ public class InstancedNodeData extends AbstractNodeData {
     public void updateBuffers(GL gl) {
         // Upload the shared node data texture (sampled by node and edge shaders).
         nodeDataTextureStore.upload(gl);
+
+        // Skip re-uploading the per-instance store-id buffers when the visible set is unchanged.
+        if (!attributesUploadNeeded()) {
+            DataUploadStats.recordBufferUploadSkipped();
+            instanceCounter.promoteCountToDraw();
+            return;
+        }
 
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 

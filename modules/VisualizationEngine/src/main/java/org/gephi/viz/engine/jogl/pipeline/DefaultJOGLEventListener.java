@@ -44,13 +44,24 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     @Override
     public void frameEnd(VizEngineModel model) {
+        final JOGLRenderingTarget target = engine.getRenderingTarget();
+
+        // Apply the result of a GPU pick requested on a previous frame. This runs on the world-update
+        // thread (where the selection is otherwise mutated and read), avoiding a data race with the GL
+        // thread that produced it.
+        final JOGLRenderingTarget.NodePickResult pickResult = target.takePendingNodePick();
+        if (pickResult != null && isPointSelectionMode(model)) {
+            inputActionsProcessor.selectSingleNode(model, pickResult.getNode());
+        }
+
         if (lastMovedPosition != null) {
             //TODO: move to independent selection input listener
-            final Vector2f worldCoords =
-                engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
+            final int sx = lastMovedPosition.getX();
+            final int sy = lastMovedPosition.getY();
+            final Vector2f worldCoords = engine.screenCoordinatesToWorldCoordinates(sx, sy);
 
             if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
-                inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+                requestPointSelection(model, target, sx, sy, worldCoords);
             } else if (
                 model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
                     model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
@@ -58,13 +69,42 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
                 if (diameter <= 1) {
                     // Diameter is disabled
-                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+                    requestPointSelection(model, target, sx, sy, worldCoords);
                 } else {
                     inputActionsProcessor.selectNodesWithinRadius(model, worldCoords.x, worldCoords.y, diameter);
                 }
             }
         }
         this.model = null;
+    }
+
+    /**
+     * Selects the single node under the cursor: via GPU picking when available (resolved next frame),
+     * otherwise via the CPU spatial query as an immediate fallback.
+     */
+    private void requestPointSelection(VizEngineModel model, JOGLRenderingTarget target, int sx, int sy,
+                                       Vector2f worldCoords) {
+        if (target.isNodePickingEnabled()) {
+            target.requestNodePick(sx, sy);
+        } else {
+            inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+        }
+    }
+
+    /**
+     * Whether the current selection mode resolves a single node under the cursor (the case GPU picking
+     * handles), as opposed to brush-radius or rectangle selection.
+     */
+    private boolean isPointSelectionMode(VizEngineModel model) {
+        final GraphSelection.GraphSelectionMode mode = model.getGraphSelection().getMode();
+        if (mode == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
+            return true;
+        }
+        if (mode == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
+            mode == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
+            return model.getGraphSelection().getMouseSelectionEffectiveDiameter() <= 1;
+        }
+        return false;
     }
 
     @Override

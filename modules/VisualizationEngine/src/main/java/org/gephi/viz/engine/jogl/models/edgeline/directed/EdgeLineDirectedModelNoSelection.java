@@ -14,7 +14,6 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERE
 import com.jogamp.opengl.GL2ES2;
 import org.gephi.viz.engine.jogl.models.DataTextureModelSupport;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
-import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
 
 /**
@@ -58,28 +57,12 @@ public class EdgeLineDirectedModelNoSelection {
                            int vertsPerElement) {
         program.use(gl);
         DataTextureModelSupport.setVertsPerElement(gl, program, vertsPerElement);
-        prepareProgramData(gl, mvpFloats, edgeScale, minWeight, maxWeight, nodeScale, edgeRescaleMin, edgeRescaleMax,
-            edgeInset);
-    }
 
-
-    private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight,
-                                    float nodeScale, float edgeRescaleMin, float edgeRescaleMax, float edgeInset) {
         gl.glUniformMatrix4fv(program.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_NODE_SCALE), nodeScale);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_INSET), edgeInset);
-        if (NumberUtils.equalsEpsilon(minWeight, maxWeight, 1e-3f)) {
-            // All weights equal: rescaling is vacuous, fall back to raw weight × edgeScale
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MIN), scale);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MAX), scale);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_MIN_WEIGHT), minWeight);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR), 1);
-        } else {
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MIN), edgeRescaleMin * scale);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_EDGE_SCALE_MAX), edgeRescaleMax * scale);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_MIN_WEIGHT), minWeight);
-            gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR), maxWeight - minWeight);
-        }
+        DataTextureModelSupport.setWeightUniforms(gl, program, edgeScale, minWeight, maxWeight, edgeRescaleMin,
+            edgeRescaleMax);
     }
 
 

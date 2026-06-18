@@ -12,8 +12,12 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
@@ -25,6 +29,7 @@ import org.gephi.viz.engine.VizEngineFactory;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.VizEngineJOGLConfigurator;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.util.gl.DataUploadStats;
 import org.openide.util.Lookup;
 
 import javax.swing.*;
@@ -39,6 +44,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -173,13 +179,16 @@ public final class VizEngineDemo {
                         frame.dispose();
                         break;
                     case KeyEvent.VK_SPACE:
-                        toggleLayout(currentGraphModel);
+                        toggleLayout(currentGraphModel, engine);
                         break;
                     case KeyEvent.VK_RIGHT:
                         cycleToNextSample(samples, currentIndex, currentGraphModel, engine, frame);
                         break;
                     case KeyEvent.VK_L:
                         toggleNodeLabels(engine, currentGraphModel);
+                        break;
+                    case KeyEvent.VK_G:
+                        generateSyntheticGraph(engine, currentGraphModel, frame);
                         break;
                     default:
                         // ignored
@@ -195,7 +204,8 @@ public final class VizEngineDemo {
 
         System.out.println(WINDOW_TITLE + " started - SPACE: toggle Force Atlas 2 | "
                 + "RIGHT: next sample (" + samples.size() + " available) | "
-                + "L: toggle node labels | ESC: exit.");
+                + "L: toggle node labels | "
+                + "G: generate synthetic graph (-Dviz.demo.nodes=N -Dviz.demo.edges=M) | ESC: exit.");
     }
 
     /**
@@ -235,6 +245,8 @@ public final class VizEngineDemo {
         private final RenderingMetricsHud hud;
         private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
         private long lastFrameNanos = 0L;
+        private long lastStatsNanos = 0L;
+        private DataUploadStats.Snapshot lastStatsSnapshot = DataUploadStats.snapshot();
 
         FrameTimeRecorder(RenderingMetricsHud hud,
                           VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
@@ -258,6 +270,8 @@ public final class VizEngineDemo {
             }
             lastFrameNanos = now;
 
+            reportUploadStats(now);
+
             final FrameTimings t = engine.getLastFrameTimings();
             if (t == null || t == FrameTimings.EMPTY) {
                 return;
@@ -273,6 +287,46 @@ public final class VizEngineDemo {
         @Override
         public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         }
+
+        /**
+         * Once per second, prints the GPU data-transfer rates derived from the cumulative
+         * {@link DataUploadStats} counters. Idle/pan/zoom/select frames on a static graph should show
+         * 0 texture/buffer uploads and a rising "world updates skipped" count.
+         */
+        private void reportUploadStats(long now) {
+            if (lastStatsNanos == 0L) {
+                lastStatsNanos = now;
+                return;
+            }
+            final long elapsedNs = now - lastStatsNanos;
+            if (elapsedNs < 1_000_000_000L) {
+                return;
+            }
+            final DataUploadStats.Snapshot s = DataUploadStats.snapshot();
+            final DataUploadStats.Snapshot prev = lastStatsSnapshot;
+            final double seconds = elapsedNs / 1_000_000_000.0;
+
+            final long texUploads = s.textureUploads() - prev.textureUploads();
+            final long texSkipped = s.textureUploadsSkipped() - prev.textureUploadsSkipped();
+            final long texMiB = s.textureBytes() - prev.textureBytes();
+            final long bufUploads = s.bufferUploads() - prev.bufferUploads();
+            final long bufSkipped = s.bufferUploadsSkipped() - prev.bufferUploadsSkipped();
+            final long bufMiB = s.bufferBytes() - prev.bufferBytes();
+            final long worldRun = s.worldUpdates() - prev.worldUpdates();
+            final long worldSkip = s.worldUpdatesSkipped() - prev.worldUpdatesSkipped();
+
+            System.out.printf(
+                "[uploads/s] tex: %d (%.1f MiB), skipped %d | buf: %d (%.1f MiB), skipped %d | "
+                    + "world upd run %d / skipped %d%n",
+                Math.round(texUploads / seconds), texMiB / seconds / (1024 * 1024),
+                Math.round(texSkipped / seconds),
+                Math.round(bufUploads / seconds), bufMiB / seconds / (1024 * 1024),
+                Math.round(bufSkipped / seconds),
+                Math.round(worldRun / seconds), Math.round(worldSkip / seconds));
+
+            lastStatsSnapshot = s;
+            lastStatsNanos = now;
+        }
     }
 
     /**
@@ -283,7 +337,8 @@ public final class VizEngineDemo {
      * the new model on its next iteration via the same reference, but for
      * cleanliness we stop and restart on each toggle).
      */
-    private static void toggleLayout(final AtomicReference<GraphModel> currentGraphModel) {
+    private static void toggleLayout(final AtomicReference<GraphModel> currentGraphModel,
+                                     final VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
         if (layoutEnabled) {
             System.out.println("Stopping Force Atlas 2");
             layoutEnabled = false;
@@ -304,11 +359,92 @@ public final class VizEngineDemo {
             try {
                 while (layoutEnabled && forceAtlas2.canAlgo()) {
                     forceAtlas2.goAlgo();
+                    // Positions changed this iteration: tell the engine so it rebuilds/re-uploads.
+                    // Without this the engine's redundant-update skipping would freeze the layout.
+                    engine.markDataDirty();
                 }
             } finally {
                 forceAtlas2.endAlgo();
             }
         });
+    }
+
+    /**
+     * Replaces the current graph with a freshly generated random graph whose size is controlled by
+     * the {@code viz.demo.nodes} / {@code viz.demo.edges} system properties (defaults 200k / 400k).
+     * Useful to baseline and validate the large-graph upload optimizations.
+     */
+    private static void generateSyntheticGraph(final VizEngine<JOGLRenderingTarget, NEWTEvent> engine,
+                                               final AtomicReference<GraphModel> currentGraphModel,
+                                               final JFrame frame) {
+        if (!SAMPLE_SWAPPING.compareAndSet(false, true)) {
+            System.out.println("Graph swap already in progress, ignoring.");
+            return;
+        }
+        final int nodeCount = Integer.getInteger("viz.demo.nodes", 200_000);
+        final int edgeCount = Integer.getInteger("viz.demo.edges", 400_000);
+
+        SAMPLE_LOADER.submit(() -> {
+            try {
+                layoutEnabled = false;
+                System.out.println("Generating synthetic graph: " + nodeCount + " nodes, "
+                        + edgeCount + " edges...");
+                SwingUtilities.invokeLater(() -> frame.setTitle(WINDOW_TITLE + " - synthetic (generating...)"));
+
+                final long t0 = System.nanoTime();
+                final GraphModel newModel = buildSyntheticGraph(nodeCount, edgeCount);
+                final double ms = (System.nanoTime() - t0) / 1_000_000.0;
+                System.out.printf("Synthetic graph built in %.0f ms%n", ms);
+
+                engine.setGraphModel(newModel, null, null);
+                applyDefaultLabelColumn(engine, newModel);
+                currentGraphModel.set(newModel);
+
+                SwingUtilities.invokeLater(() -> frame.setTitle(WINDOW_TITLE + " - synthetic ("
+                        + nodeCount + " nodes / " + edgeCount + " edges)"));
+            } catch (RuntimeException e) {
+                System.err.println("Failed to generate synthetic graph: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                SAMPLE_SWAPPING.set(false);
+            }
+        });
+    }
+
+    private static GraphModel buildSyntheticGraph(int nodeCount, int edgeCount) {
+        final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        projectController.newProject();
+        final GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+
+        final Graph graph = graphModel.getGraph();
+        final GraphFactory factory = graphModel.factory();
+        final Random random = new Random(42);
+        final float spread = (float) (Math.sqrt(nodeCount) * 10f);
+
+        graph.writeLock();
+        try {
+            final Node[] nodes = new Node[nodeCount];
+            for (int i = 0; i < nodeCount; i++) {
+                final Node node = factory.newNode("n" + i);
+                node.setX((random.nextFloat() - 0.5f) * spread);
+                node.setY((random.nextFloat() - 0.5f) * spread);
+                node.setSize(1f + random.nextFloat() * 4f);
+                node.setColor(new java.awt.Color(random.nextInt(0x1000000)));
+                nodes[i] = node;
+                graph.addNode(node);
+            }
+            for (int i = 0; i < edgeCount && nodeCount > 1; i++) {
+                final Node source = nodes[random.nextInt(nodeCount)];
+                final Node target = nodes[random.nextInt(nodeCount)];
+                if (source == target || graph.getEdge(source, target) != null) {
+                    continue;
+                }
+                graph.addEdge(factory.newEdge(source, target, false));
+            }
+        } finally {
+            graph.writeUnlock();
+        }
+        return graphModel;
     }
 
     /**

@@ -10,6 +10,7 @@ import java.nio.Buffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.util.gl.DataUploadStats;
 
 /**
  *
@@ -94,6 +95,7 @@ public class GLBufferMutable implements GLBuffer {
         ensureCapacity(gl, neededBytesCapacity);
 
         gl.glBufferSubData(type, offsetBytes, sizeBytes, buffer);
+        DataUploadStats.recordBufferUpload(sizeBytes);
     }
 
     @Override

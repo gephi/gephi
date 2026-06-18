@@ -1,6 +1,7 @@
 package org.gephi.viz.engine.util.actions;
 
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
@@ -39,6 +40,19 @@ public class InputActionsProcessor {
             model.getGraphIndex().getNodesUnderPosition(worldCoords.x, worldCoords.y, nodeScale);
 
         selectNodes(model, iterable);
+    }
+
+    /**
+     * Selects a single node resolved by GPU picking (or clears the selection when {@code node} is
+     * {@code null}), applying the same neighbour/edge expansion as the position-based selection.
+     */
+    public void selectSingleNode(VizEngineModel model, Node node) {
+        final GraphRenderingOptions renderingOptions = model.getRenderingOptions();
+        final Graph graph = model.getGraphModel().getGraphVisible();
+        final GraphSelection selection = model.getGraphSelection();
+
+        selection.setSelectedNode(graph, node, renderingOptions.isAutoSelectNeighbours(),
+            renderingOptions.isShowEdges());
     }
 
     public void clearSelection(VizEngineModel model) {

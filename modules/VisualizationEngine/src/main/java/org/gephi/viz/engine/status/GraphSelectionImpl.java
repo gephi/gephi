@@ -143,6 +143,50 @@ public class GraphSelectionImpl implements GraphSelection {
     }
 
     @Override
+    public void setSelectedNode(Graph graph, Node node, boolean autoSelectNeighbours, boolean selectEdges) {
+        // Resets
+        nodes.clear();
+        nodesWithNeighbours.clear();
+        edges.clear();
+        nodesList.clear();
+
+        if (node == null) {
+            return;
+        }
+
+        final boolean selectNeighbours = autoSelectNeighbours &&
+            getMode() != GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION;
+
+        graph.readLock();
+        graph.getSpatialIndex().spatialIndexReadLock();
+        try {
+            if (!graph.contains(node)) {
+                return;
+            }
+
+            final int storeId = node.getStoreId();
+            nodes.set(storeId);
+            nodesList.add(node);
+            nodesWithNeighbours.set(storeId);
+            if (selectEdges || selectNeighbours) {
+                EdgeIterable edgeIterable = graph.getEdges(node);
+                for (Edge edge : edgeIterable) {
+                    edges.set(edge.getStoreId());
+                    if (selectNeighbours) {
+                        Node oppositeNode = graph.getOpposite(node, edge);
+                        if (oppositeNode != null && oppositeNode != node) {
+                            nodesWithNeighbours.set(oppositeNode.getStoreId());
+                        }
+                    }
+                }
+            }
+        } finally {
+            graph.getSpatialIndex().spatialIndexReadUnlock();
+            graph.readUnlock();
+        }
+    }
+
+    @Override
     public void setSelectedNodes(Node[] nodes) {
         this.nodes.clear();
         this.nodesWithNeighbours.clear();

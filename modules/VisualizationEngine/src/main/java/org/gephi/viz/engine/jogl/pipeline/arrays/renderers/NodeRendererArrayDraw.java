@@ -6,6 +6,7 @@ import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.ArrayDraw;
 import org.gephi.viz.engine.jogl.pipeline.arrays.ArrayDrawNodeData;
+import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
@@ -39,6 +40,11 @@ public class NodeRendererArrayDraw extends AbstractNodeRenderer {
     public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
 
         nodeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, data, mvpFloats);
+    }
+
+    @Override
+    public AbstractNodeData getNodeData() {
+        return nodeData;
     }
 
     @Override

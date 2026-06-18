@@ -15,7 +15,6 @@ uniform float edgeScaleMin;
 uniform float edgeScaleMax;
 uniform float nodeScale;
 uniform sampler2D u_elementTexture;
-uniform sampler2D u_nodeTexture;
 
 struct VertexData {
     vec4 color;
@@ -34,7 +33,7 @@ void main() {
     int nodeStoreId = int(edgeData.x);
     float size = edgeData.y;//It's the weight
 
-    vec4 nodeData = texelFetch(u_nodeTexture, dataTexelCoord(nodeStoreId), 0);
+    vec4 nodeData = fetchNodeData(nodeStoreId);
     vec2 position = nodeData.xy;
     float nodeSize = nodeData.z;
 

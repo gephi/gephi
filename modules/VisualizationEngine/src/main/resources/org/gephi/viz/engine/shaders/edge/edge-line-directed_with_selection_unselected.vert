@@ -25,8 +25,8 @@ void main() {
     int targetStoreId = int(edgeData.y);
     float size = edgeData.z;//It's the weight
 
-    vec4 sourceData = texelFetch(u_nodeTexture, dataTexelCoord(sourceStoreId), 0);
-    vec4 targetData = texelFetch(u_nodeTexture, dataTexelCoord(targetStoreId), 0);
+    vec4 sourceData = fetchNodeData(sourceStoreId);
+    vec4 targetData = fetchNodeData(targetStoreId);
     vec2 position = sourceData.xy;
     vec2 targetPosition = targetData.xy;
     float sourceSize = sourceData.z;

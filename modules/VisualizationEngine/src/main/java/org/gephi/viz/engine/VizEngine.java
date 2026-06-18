@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphObserver;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
 import org.gephi.viz.engine.spi.ElementsCallback;
@@ -37,8 +38,10 @@ import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphRenderingOptionsImpl;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.status.GraphSelectionImpl;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.TimeUtils;
+import org.gephi.viz.engine.util.gl.DataUploadStats;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -112,6 +115,23 @@ public class VizEngine<R extends RenderingTarget, I> {
     private boolean darkLaf = DEFAULT_DARK_LAF;
     private final int maxWorldUpdatesPerSecond = DEFAULT_MAX_WORLD_UPDATES_PER_SECOND;
 
+    // --- Redundant world-update skipping (opt-in via markDataDirty) ---
+    // While a graph is interacted with, the engine reschedules a full world update every throttle
+    // tick even when nothing changed, redoing O(N+E) CPU work and GPU uploads. Once a host opts in
+    // by calling markDataDirty(), the engine instead skips the update on frames where nothing
+    // relevant changed: graph structure (GraphObserver), selection, rendering options or view
+    // boundaries. Node geometry (x/y/size/color) has no cheap change signal in graphstore, so the
+    // host must call markDataDirty() whenever it mutates it (layout, manual move, appearance).
+    // Until the first markDataDirty() call the engine keeps its original always-update behaviour,
+    // so hosts that mutate the graph without notifying stay correct (uploads are still de-duplicated
+    // downstream by content hashing).
+    private volatile boolean hostManagesDirtiness = false;
+    private volatile boolean dataDirty = true;
+    private final Object graphObserverLock = new Object();
+    private GraphObserver graphObserver;
+    private GraphModel graphObserverModel;
+    private long lastWorldSignature = Long.MIN_VALUE;
+
     //CPU-side timings of the most recent display() call. Read by external
     //performance monitors; written only from the render thread. Disabled by
     //default so production callers don't pay the cost of the nanoTime calls
@@ -143,6 +163,15 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     public R getRenderingTarget() {
         return renderingTarget;
+    }
+
+    /**
+     * The renderers actually used to draw each frame (one per category, already filtered by
+     * availability and preference). Read-only; intended for rendering targets that need to reach a
+     * specific active renderer (e.g. for GPU picking).
+     */
+    public List<Renderer<R, ? extends WorldData>> getRenderersPipeline() {
+        return Collections.unmodifiableList(renderersPipeline);
     }
 
     public OpenGLOptions getOpenGLOptions() {
@@ -398,6 +427,10 @@ public class VizEngine<R extends RenderingTarget, I> {
             this.engineModel = new VizEngineModel(graphModel,
                 renderingOptions != null ? renderingOptions : new GraphRenderingOptionsImpl(darkLaf),
                 graphSelection);
+            // New model: drop the stale observer/signature and force a refresh on the next frame.
+            destroyGraphObserver();
+            lastWorldSignature = Long.MIN_VALUE;
+            dataDirty = true;
         }
 
         // Sync local translate from new model's pan
@@ -409,6 +442,9 @@ public class VizEngine<R extends RenderingTarget, I> {
         if (engineModel.getGraphModel() == graphModel) {
             this.engineModel = createEmptyModel();
             this.translate.set(0, 0);
+            destroyGraphObserver();
+            lastWorldSignature = Long.MIN_VALUE;
+            dataDirty = true;
             loadModelViewProjection();
         }
     }
@@ -492,6 +528,11 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Reset world update timing to allow immediate update on next init
         lastWorldUpdateMillis = 0;
+
+        // Drop the change observer; force a refresh if the pipeline is re-initialized.
+        destroyGraphObserver();
+        lastWorldSignature = Long.MIN_VALUE;
+        dataDirty = true;
     }
 
     public synchronized void destroy() {
@@ -531,6 +572,8 @@ public class VizEngine<R extends RenderingTarget, I> {
         renderersPipeline.forEach((renderer) -> {
             renderer.dispose(renderingTarget);
         });
+
+        destroyGraphObserver();
 
         this.isDestroyed = true;
     }
@@ -672,6 +715,14 @@ public class VizEngine<R extends RenderingTarget, I> {
                 return Collections.emptyList();
             }
         }
+
+        // Skip the whole update (CPU rebuild + GPU upload) when nothing relevant changed.
+        if (!shouldRunWorldUpdate()) {
+            DataUploadStats.recordWorldUpdateSkipped();
+            return Collections.emptyList();
+        }
+        DataUploadStats.recordWorldUpdate();
+
         processInputEvents(model);
 
         Rect2D viewBoundaries = getViewBoundaries();
@@ -727,6 +778,13 @@ public class VizEngine<R extends RenderingTarget, I> {
                     return;
                 }
             }
+
+            // Skip the whole update (CPU rebuild + GPU upload) when nothing relevant changed.
+            if (!shouldRunWorldUpdate()) {
+                DataUploadStats.recordWorldUpdateSkipped();
+                return;
+            }
+            DataUploadStats.recordWorldUpdate();
 
             // Associate local model to the future
             allUpdatersCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -840,6 +898,150 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     public void resumeUpdating() {
         updating = true;
+    }
+
+    /**
+     * Signals that the graph's node visual data (positions, sizes or colors) may have changed and
+     * the world data must be rebuilt and re-uploaded on the next frame.
+     * <p>
+     * Calling this method also opts this engine into <i>redundant world-update skipping</i>: from
+     * the first call on, the engine stops rescheduling a full world update on every frame and only
+     * does so when something relevant changed (graph structure, selection, rendering options, view
+     * boundaries) or when this method is called again. Hosts that run layouts, move nodes or apply
+     * appearance changes should call this whenever they mutate node geometry/color so the view does
+     * not freeze; structure/selection/option/view changes are detected automatically and do not
+     * require a call.
+     */
+    public void markDataDirty() {
+        this.hostManagesDirtiness = true;
+        this.dataDirty = true;
+    }
+
+    /**
+     * Decides whether a world update should run this tick. Always {@code true} until a host opts in
+     * via {@link #markDataDirty()}; afterwards, only when a relevant input changed since the last
+     * update. Has the side effect of consuming the change flags (graph observer, signature) when it
+     * returns {@code true}.
+     */
+    private boolean shouldRunWorldUpdate() {
+        if (!hostManagesDirtiness) {
+            return true;
+        }
+
+        boolean changed = dataDirty;
+
+        // hasGraphChanged() resets the observer, so it must be called every tick to not miss a change.
+        if (pollGraphChanged()) {
+            changed = true;
+        }
+
+        final long signature = computeWorldSignature();
+        if (signature != lastWorldSignature) {
+            changed = true;
+        }
+
+        if (changed) {
+            lastWorldSignature = signature;
+            dataDirty = false;
+        }
+        return changed;
+    }
+
+    /**
+     * Lazily (re)creates the graph observer for the current model and returns whether the graph
+     * structure changed since the last poll. Synchronized so the render-thread poll cannot race the
+     * lifecycle methods that drop the observer.
+     */
+    private boolean pollGraphChanged() {
+        synchronized (graphObserverLock) {
+            final GraphModel model = engineModel.getGraphModel();
+            if (model == null) {
+                return false;
+            }
+            if (graphObserver == null || graphObserverModel != model || graphObserver.isDestroyed()) {
+                destroyGraphObserverLocked();
+                graphObserver = model.createGraphObserver(model.getGraphVisible(), false);
+                graphObserverModel = model;
+            }
+            return graphObserver.hasGraphChanged();
+        }
+    }
+
+    private void destroyGraphObserver() {
+        synchronized (graphObserverLock) {
+            destroyGraphObserverLocked();
+        }
+    }
+
+    private void destroyGraphObserverLocked() {
+        if (graphObserver != null) {
+            if (!graphObserver.isDestroyed()) {
+                graphObserver.destroy();
+            }
+            graphObserver = null;
+            graphObserverModel = null;
+        }
+    }
+
+    /**
+     * Cheap 64-bit signature of everything (other than node geometry, see {@link #markDataDirty()})
+     * that affects the world data: view boundaries, selection and rendering options. A change in any
+     * of these flips the signature so the world update runs and re-uploads as needed.
+     */
+    private long computeWorldSignature() {
+        long h = 1125899906842597L;
+
+        final Rect2D vb = viewBoundaries;
+        if (vb != null) {
+            h = mix(h, Float.floatToIntBits(vb.minX));
+            h = mix(h, Float.floatToIntBits(vb.minY));
+            h = mix(h, Float.floatToIntBits(vb.maxX));
+            h = mix(h, Float.floatToIntBits(vb.maxY));
+        }
+
+        final GraphSelection selection = engineModel.getGraphSelection();
+        if (selection instanceof GraphSelectionImpl s) {
+            h = mix(h, s.getNodes().hashCode());
+            h = mix(h, s.getNodesWithNeighbours().hashCode());
+            h = mix(h, s.getEdges().hashCode());
+            h = mix(h, s.getMode() != null ? s.getMode().ordinal() : -1);
+        }
+
+        final GraphRenderingOptions o = engineModel.getRenderingOptions();
+        h = mix(h, o.isShowNodes() ? 1 : 0);
+        h = mix(h, o.isShowEdges() ? 1 : 0);
+        h = mix(h, o.isShowNodeLabels() ? 1 : 0);
+        h = mix(h, o.isShowEdgeLabels() ? 1 : 0);
+        h = mix(h, o.isHideNonSelectedNodeLabels() ? 1 : 0);
+        h = mix(h, o.isHideNonSelectedEdgeLabels() ? 1 : 0);
+        h = mix(h, o.isHideNonSelectedEdges() ? 1 : 0);
+        h = mix(h, o.isLightenNonSelected() ? 1 : 0);
+        h = mix(h, Float.floatToIntBits(o.getLightenNonSelectedFactor()));
+        h = mix(h, Float.floatToIntBits(o.getZoom()));
+        h = mix(h, Float.floatToIntBits(o.getNodeScale()));
+        h = mix(h, Float.floatToIntBits(o.getEdgeScale()));
+        h = mix(h, o.isEdgeWeightEnabled() ? 1 : 0);
+        h = mix(h, o.isEdgeRescaleWeightEnabled() ? 1 : 0);
+        h = mix(h, Float.floatToIntBits(o.getEdgeRescaleMin()));
+        h = mix(h, Float.floatToIntBits(o.getEdgeRescaleMax()));
+        h = mix(h, o.isEdgeSelectionColor() ? 1 : 0);
+        h = mix(h, o.getEdgeColorMode() != null ? o.getEdgeColorMode().ordinal() : -1);
+        h = mix(h, o.getEdgeBothSelectionColor().getRGB());
+        h = mix(h, o.getEdgeInSelectionColor().getRGB());
+        h = mix(h, o.getEdgeOutSelectionColor().getRGB());
+        final float[] bg = o.getBackgroundColor();
+        if (bg != null) {
+            for (float c : bg) {
+                h = mix(h, Float.floatToIntBits(c));
+            }
+        }
+        return h;
+    }
+
+    private static long mix(long h, int value) {
+        h ^= value & 0xFFFFFFFFL;
+        h *= 0x100000001b3L;
+        return h;
     }
 
     public Vector2f screenCoordinatesToWorldCoordinates(int x, int y) {

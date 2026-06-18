@@ -4,6 +4,28 @@ import org.gephi.viz.engine.jogl.util.Mesh;
 
 public class NodeDiskVertexMeshGenerator {
 
+    /**
+     * Generates a unit quad (two triangles) spanning {@code [-1, 1]} on both axes, centered at the
+     * origin. Nodes are rendered as this quad and the disk itself is produced in the fragment shader
+     * with a signed distance function, so a single resolution-independent quad replaces the previous
+     * per-size triangulated circle LODs.
+     */
+    public static Mesh generateQuad() {
+        final Mesh mesh = new Mesh();
+        mesh.vertexComponentSize = 2;
+        mesh.vertexCount = 6;
+        mesh.vertexData = new float[] {
+            -1f, -1f,
+            1f, -1f,
+            1f, 1f,
+
+            -1f, -1f,
+            1f, 1f,
+            -1f, 1f,
+        };
+        return mesh;
+    }
+
     public static Mesh generateFilledCircle(int triangleAmount) {
         final double twicePi = 2.0 * Math.PI;
 

@@ -26,19 +26,11 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         super(nodesCallback, nodeDataTextureStore, false, false);
     }
 
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, NodeWorldData data,
-                           float[] mvpFloats) {
+    public void drawArrays(final GL2ES2 gl, final RenderingLayer layer, final NodeWorldData data,
+                           final float[] mvpFloats) {
         refreshTime();
 
-        drawArraysInternal(gl, layer, data, mvpFloats);
-    }
-
-    public void drawArraysInternal(final GL2ES2 gl,
-                                   final RenderingLayer layer,
-                                   final NodeWorldData data,
-                                   final float[] mvpFloats) {
-        final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
+        final int instanceCount = setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
             GLFunctions.stopUsingProgram(gl);
@@ -49,9 +41,6 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         final boolean renderingUnselectedNodes = layer.getLevel() == 1;
         final int instancesOffset = renderingUnselectedNodes ? 0 : instanceCounter.unselectedCountToDraw;
 
-
-        final float zoom = data.getZoom();
-        final float nodeScale = data.getNodeScale();
         final float[] attrs = new float[ATTRIBS_STRIDE];
         int index = instancesOffset * ATTRIBS_STRIDE;
 
@@ -59,39 +48,19 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         //TODO: Maybe we can batch a few nodes at once though
         final FloatBuffer attribs = attributesBuffer.floatBuffer();
 
+        final int vertexCount = nodeMesh.vertexCount;
         attribs.position(index);
         for (int i = 0; i < instanceCount; i++) {
             attribs.get(attrs);
 
             //The single attribute is the node store id used to fetch x/y/size/color from the node texture.
             final float elementIndex = attrs[0];
-            final int storeId = (int) elementIndex;
-
-            //Choose LOD (size comes from the shared node data texture, like the shader does):
-            final float size = nodeDataTextureStore.getRawSize(storeId) * nodeScale;
-            final float observedSize = size * zoom;
-
-            final int circleVertexCount;
-            final int firstVertex;
-            if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-                circleVertexCount = circleMesh64.vertexCount;
-                firstVertex = firstVertex64;
-            } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-                circleVertexCount = circleMesh32.vertexCount;
-                firstVertex = firstVertex32;
-            } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-                circleVertexCount = circleMesh16.vertexCount;
-                firstVertex = firstVertex16;
-            } else {
-                circleVertexCount = circleMesh8.vertexCount;
-                firstVertex = firstVertex8;
-            }
 
             //Define the per-draw element index as a constant generic vertex attribute:
             gl.glVertexAttrib1f(SHADER_ELEMENT_INDEX_LOCATION, elementIndex);
 
-            //Draw the instance:
-            GLFunctions.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
+            //Draw the instance (single SDF quad, no LOD):
+            GLFunctions.drawArraysSingleInstance(gl, 0, vertexCount);
         }
 
         GLFunctions.stopUsingProgram(gl);
@@ -110,6 +79,6 @@ public class ArrayDrawNodeData extends AbstractNodeData {
 
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
-        initCirclesGLVertexBuffer(gl, bufferName[VERT_BUFFER]);
+        initNodeVertexGLBuffer(gl, bufferName[VERT_BUFFER]);
     }
 }

@@ -46,6 +46,13 @@ public interface GraphSelection {
 
     void setSelectedNodes(Graph graph, NodeIterable nodesIterable, boolean autoSelectNeighbours, boolean selectEdges);
 
+    /**
+     * Selects a single node (replacing any previous selection), optionally expanding to its neighbours
+     * and incident edges, mirroring {@link #setSelectedNodes(Graph, NodeIterable, boolean, boolean)}.
+     * Passing a {@code null} node clears the selection.
+     */
+    void setSelectedNode(Graph graph, Node node, boolean autoSelectNeighbours, boolean selectEdges);
+
     void setSelectedNodes(Node[] nodes);
 
     void clearSelectedNodes();

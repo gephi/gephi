@@ -55,8 +55,11 @@ public class Constants {
     public static final String UNIFORM_NAME_EDGE_INSET = "edgeInset";
     public static final String UNIFORM_NAME_DARKEN_FACTOR = "nodeBorderDarkenFactor";
 
-    // Data textures (RGBA32F) accessed via texelFetch:
-    public static final String UNIFORM_NAME_NODE_TEXTURE = "u_nodeTexture";
+    // Data textures (float) accessed via texelFetch. Node data is split into a streaming position
+    // texture (RG32F: x,y) and a rarely-changing style texture (RG32F: rawSize, colorBits) so that a
+    // running layout only re-uploads positions. Edge data stays a single RGBA32F element texture.
+    public static final String UNIFORM_NAME_NODE_POS_TEXTURE = "u_nodePosTexture";
+    public static final String UNIFORM_NAME_NODE_STYLE_TEXTURE = "u_nodeStyleTexture";
     public static final String UNIFORM_NAME_ELEMENT_TEXTURE = "u_elementTexture";
     public static final String UNIFORM_NAME_TEXTURE_WIDTH = "u_texWidth";
     // Edge index source: 0 => instanced (use gl_InstanceID), >0 => array-draw (use gl_VertexID / value).
@@ -67,7 +70,8 @@ public class Constants {
 
     // Texture units for the data textures (must match the sampler uniforms set after program link).
     public static final int ELEMENT_TEXTURE_UNIT = 0;
-    public static final int NODE_TEXTURE_UNIT = 1;
+    public static final int NODE_POS_TEXTURE_UNIT = 1;
+    public static final int NODE_STYLE_TEXTURE_UNIT = 2;
     //Rendering order:
     public static final int RENDERING_ORDER_LABELS = 200;
     public static final int RENDERING_ORDER_NODES = 100;

@@ -20,14 +20,19 @@ import java.awt.Frame;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
 import org.gephi.viz.engine.jogl.util.ScreenshotTaker;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.GLCapabilitiesSummary;
 import org.gephi.viz.engine.jogl.util.gl.capabilities.Profile;
+import org.gephi.viz.engine.spi.Renderer;
 import org.gephi.viz.engine.spi.RenderingTarget;
+import org.gephi.viz.engine.spi.WorldData;
 import org.gephi.viz.engine.util.TimeUtils;
 
 /**
@@ -58,6 +63,13 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
 
     // Screenshot
     private volatile ScreenshotRequest screenshotRequest;
+
+    // GPU node picking: a request is set from the input/world-update thread, serviced on the GL thread
+    // after the frame is rendered, and its result handed back to be applied on the world-update thread.
+    private volatile PickRequest pickRequest;
+    private final AtomicReference<NodePickResult> pendingPickResult = new AtomicReference<>();
+    private volatile boolean nodePickingEnabled = true;
+    private final float[] pickMvpFloats = new float[16];
 
     public JOGLRenderingTarget(GLAutoDrawable drawable) {
         this.drawable = drawable;
@@ -153,6 +165,10 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
 
         // Clear screenshot request
         screenshotRequest = null;
+
+        // Clear picking state
+        pickRequest = null;
+        pendingPickResult.set(null);
     }
 
 
@@ -186,6 +202,78 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
 
             screenshotRequest = null; // Resets
         }
+
+        // GPU node picking: service any pending request now that the frame (and the node data
+        // texture / per-node index buffers) is up to date.
+        final PickRequest pick = pickRequest;
+        if (pick != null) {
+            pickRequest = null;
+            serviceNodePick(drawable.getGL(), pick);
+        }
+    }
+
+    /**
+     * Requests resolving the node under the given screen position via GPU picking. Safe to call from
+     * any thread; the request is serviced on the GL thread and its result retrieved later with
+     * {@link #takePendingNodePick()}.
+     */
+    public void requestNodePick(int x, int y) {
+        if (nodePickingEnabled) {
+            this.pickRequest = new PickRequest(x, y);
+        }
+    }
+
+    /**
+     * Whether GPU node picking is currently enabled. Turns off automatically (falling back to CPU
+     * selection) if the offscreen framebuffer cannot be created or a picking pass fails.
+     */
+    public boolean isNodePickingEnabled() {
+        return nodePickingEnabled;
+    }
+
+    /**
+     * Retrieves and clears the latest completed pick result, or {@code null} if none is ready. A
+     * non-null result whose {@link NodePickResult#getNode()} is {@code null} means no node was under
+     * the cursor.
+     */
+    public NodePickResult takePendingNodePick() {
+        return pendingPickResult.getAndSet(null);
+    }
+
+    private void serviceNodePick(GL gl, PickRequest pick) {
+        final AbstractNodeRenderer nodeRenderer = findNodeRenderer();
+        if (nodeRenderer == null || !nodeRenderer.isPickingAvailable()) {
+            nodePickingEnabled = false;
+            return;
+        }
+
+        try {
+            engine.getModelViewProjectionMatrix().get(pickMvpFloats);
+            final float nodeScale = engine.getRenderingOptions().getNodeScale();
+            final Node picked = nodeRenderer.pickNode(
+                this, pick.x(), pick.y(), engine.getWidth(), engine.getHeight(), pickMvpFloats, nodeScale);
+
+            if (!nodeRenderer.isPickingAvailable()) {
+                // The framebuffer failed during the pass; fall back to CPU selection from now on.
+                nodePickingEnabled = false;
+                return;
+            }
+
+            pendingPickResult.set(new NodePickResult(picked));
+        } catch (Throwable t) {
+            Logger.getLogger(JOGLRenderingTarget.class.getSimpleName())
+                .log(Level.WARNING, "GPU node picking failed; falling back to CPU selection", t);
+            nodePickingEnabled = false;
+        }
+    }
+
+    private AbstractNodeRenderer findNodeRenderer() {
+        for (Renderer<JOGLRenderingTarget, ? extends WorldData> renderer : engine.getRenderersPipeline()) {
+            if (renderer instanceof AbstractNodeRenderer nodeRenderer) {
+                return nodeRenderer;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -404,5 +492,23 @@ public class JOGLRenderingTarget implements RenderingTarget, GLEventListener, co
         boolean transparentBackground,
         CompletableFuture<BufferedImage> future
     ) {
+    }
+
+    private record PickRequest(int x, int y) {
+    }
+
+    /**
+     * Result of a GPU node picking pass: the node under the cursor, or {@code null} if there was none.
+     */
+    public static final class NodePickResult {
+        private final Node node;
+
+        NodePickResult(Node node) {
+            this.node = node;
+        }
+
+        public Node getNode() {
+            return node;
+        }
     }
 }

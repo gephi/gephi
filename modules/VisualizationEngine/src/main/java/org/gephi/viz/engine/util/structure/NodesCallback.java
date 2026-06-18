@@ -23,6 +23,9 @@ import org.gephi.viz.engine.util.text.TextLabelBuilder;
 public class NodesCallback implements ElementsCallback<Node> {
 
     private Node[] nodesArray = new Node[0];
+    // Dense list of the visible nodes (no nulls, [0, nodeCount)), built once in end() so downstream
+    // consumers iterate O(visible) instead of scanning the sparse store-id-indexed nodesArray.
+    private Node[] compactNodesArray = new Node[0];
     private GraphView graphView;
     private Column[] nodeLabelColumns;
     private String[] nodesLabelsArray = new String[0];
@@ -98,13 +101,14 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     @Override
     public void end(Graph graph) {
-        // Count non-null nodes and track bounds
+        // Count non-null nodes, build the compact list and track bounds in a single scan.
         // This can't be done in accept as nodes can be duplicated and accept is called via multiple threads (parallel stream)
         nodeCount = 0;
+        compactNodesArray = ensureNodesArraySize(compactNodesArray, maxIndex + 1);
         for (int i = 0; i <= maxIndex; i++) {
             Node node = nodesArray[i];
             if (node != null) {
-                nodeCount++;
+                compactNodesArray[nodeCount++] = node;
                 // Track min/max positions for grid bounds
                 float x = node.x();
                 float y = node.y();
@@ -127,6 +131,7 @@ public class NodesCallback implements ElementsCallback<Node> {
     @Override
     public void reset() {
         nodesArray = new Node[0];
+        compactNodesArray = new Node[0];
         maxIndex = 0;
         maxNodeSize = 0f;
         nodeCount = 0;
@@ -145,6 +150,14 @@ public class NodesCallback implements ElementsCallback<Node> {
 
     public Node[] getNodesArray() {
         return nodesArray;
+    }
+
+    /**
+     * Dense array of the visible nodes, valid in {@code [0, getCount())} and with no nulls. Built in
+     * {@link #end(Graph)}; iterate this instead of {@link #getNodesArray()} for O(visible) cost.
+     */
+    public Node[] getCompactNodesArray() {
+        return compactNodesArray;
     }
 
     public int getMaxIndex() {

@@ -13,6 +13,7 @@ import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.util.gl.GLBufferMutable;
 import org.gephi.viz.engine.jogl.util.gl.GLFunctions;
 import org.gephi.viz.engine.pipeline.RenderingLayer;
+import org.gephi.viz.engine.util.gl.DataUploadStats;
 import org.gephi.viz.engine.util.structure.NodesCallback;
 
 /**
@@ -32,18 +33,11 @@ public class IndirectNodeData extends AbstractNodeData {
         super(nodesCallback, nodeDataTextureStore, true, true);
     }
 
-    public void drawIndirect(GL4 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
+    public void drawIndirect(final GL4 gl, final RenderingLayer layer, final NodeWorldData data,
+                             final float[] mvpFloats) {
         refreshTime();
 
-        drawIndirectInternal(gl, layer, data, mvpFloats);
-    }
-
-    private void drawIndirectInternal(final GL4 gl,
-                                      final RenderingLayer layer,
-                                      final NodeWorldData data,
-                                      final float[] mvpFloats) {
-        final int instanceCount =
-            setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
+        final int instanceCount = setupShaderProgramForRenderingLayer(gl, layer, data, mvpFloats);
 
         if (instanceCount <= 0) {
             GLFunctions.stopUsingProgram(gl);
@@ -69,7 +63,7 @@ public class IndirectNodeData extends AbstractNodeData {
 
         gl.glGenBuffers(bufferName.length, bufferName, 0);
 
-        initCirclesGLVertexBuffer(gl, bufferName[VERT_BUFFER]);
+        initNodeVertexGLBuffer(gl, bufferName[VERT_BUFFER]);
 
         //Initialize for batch nodes size:
         attributesGLBuffer = new GLBufferMutable(bufferName[ATTRIBS_BUFFER], GLBufferMutable.GL_BUFFER_TYPE_ARRAY);
@@ -96,6 +90,13 @@ public class IndirectNodeData extends AbstractNodeData {
     public void updateBuffers(final GL4 gl) {
         // Upload the shared node data texture (sampled by node and edge shaders).
         nodeDataTextureStore.upload(gl);
+
+        // Skip re-uploading the per-instance store-id and indirect-command buffers when unchanged.
+        if (!attributesUploadNeeded()) {
+            DataUploadStats.recordBufferUploadSkipped();
+            instanceCounter.promoteCountToDraw();
+            return;
+        }
 
         final FloatBuffer buf = attributesBuffer.floatBuffer();
 

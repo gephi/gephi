@@ -5,6 +5,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
 import org.gephi.viz.engine.jogl.availability.InstancedDraw;
+import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeRenderer;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
 import org.gephi.viz.engine.jogl.pipeline.instanced.InstancedNodeData;
@@ -39,6 +40,11 @@ public class NodeRendererInstanced extends AbstractNodeRenderer {
     public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
 
         nodeData.drawInstanced(target.getDrawable().getGL().getGL2ES3(), layer, data, mvpFloats);
+    }
+
+    @Override
+    public AbstractNodeData getNodeData() {
+        return nodeData;
     }
 
     @Override
