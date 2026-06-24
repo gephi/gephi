@@ -20,7 +20,12 @@ on:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    env:
+      MAVEN_OPTS: "-Djava.awt.headless=true"
     steps:
       - uses: actions/checkout@v7
       - name: Set up JDK 17
@@ -30,4 +35,4 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build project with Maven
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true verify -P enableCheckStyle
+        run: mvn -T 4 --batch-mode verify -P enableCheckStyle
