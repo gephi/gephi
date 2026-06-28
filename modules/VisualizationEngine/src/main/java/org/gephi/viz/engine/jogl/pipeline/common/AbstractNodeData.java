@@ -45,10 +45,6 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  */
 public abstract class AbstractNodeData extends AbstractSelectionData {
 
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_64 = 128;
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_32 = 16;
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_16 = 2;
-
     // NOTE: Why secondary buffers and VAOs?
     // Sadly, we cannot use glDrawArraysInstancedBaseInstance in MacOS and it will be never available
 
@@ -361,7 +357,6 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     protected void fillNodeCommandData(final Node node, final int index, final int instanceId) {
         //Indirect Draw:
-        //Choose LOD:
 
         commandsBufferBatch[index] = 6;//vertex count
         commandsBufferBatch[index + 1] = 1;//instance count

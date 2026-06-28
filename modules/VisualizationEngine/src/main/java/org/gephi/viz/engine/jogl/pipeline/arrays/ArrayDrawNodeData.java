@@ -63,7 +63,6 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         for (int i = 0; i < instanceCount; i++) {
             attribs.get(attrs);
 
-            //Choose LOD:
             final float size = attrs[3];
 
             //Define instance attributes:
