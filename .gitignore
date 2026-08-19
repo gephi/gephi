@@ -127,3 +127,6 @@ src/macosx-launcher/*.xcodeproj
 xcuserdata/
 projects.xml
 modules/application/.flattened-pom.xml
+translations/**
+.cursor
+.claude
