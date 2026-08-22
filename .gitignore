@@ -129,4 +129,8 @@ projects.xml
 modules/application/.flattened-pom.xml
 translations/**
 .cursor
-.claude
+.mcp.json
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills
+/reports/sentry-triage/
