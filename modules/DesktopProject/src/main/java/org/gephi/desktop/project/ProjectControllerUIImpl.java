@@ -130,7 +130,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 DialogDisplayer.getDefault().notify(msg);
             }
 
-            if (!(t instanceof LegacyGephiFormatException)) {
+            if (!(t instanceof LegacyGephiFormatException || t instanceof GephiFormatException)) {
                 Exceptions.printStackTrace(t);
             }
         });
@@ -178,7 +178,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
             DialogDisplayer.getDefault().notify(msg);
         }
 
-        if (!(t instanceof LegacyGephiFormatException)) {
+        if (!(t instanceof LegacyGephiFormatException || t instanceof GephiFormatException)) {
             Exceptions.printStackTrace(t);
         }
         updateTitleBar(project);
