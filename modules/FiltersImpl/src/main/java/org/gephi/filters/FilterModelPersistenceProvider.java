@@ -165,7 +165,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         try {
             writer.writeStartElement("parameter");
             writer.writeAttribute("index", String.valueOf(index));
-            writer.writeCharacters(serialization.toText(property.getValue(), property.getValueType()));
+            String text = serialization.toText(property.getValue(), property.getValueType());
+            writer.writeCharacters(text != null ? text : "");
             writer.writeEndElement();
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
