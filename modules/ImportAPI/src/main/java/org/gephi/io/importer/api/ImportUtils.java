@@ -784,7 +784,7 @@ public final class ImportUtils {
         try {
             return getTextReader(fileObject.getInputStream());
         } catch (IOException ex) {
-            throw new IOException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
+            throw new IOException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"), ex);
         }
     }
 
