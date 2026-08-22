@@ -287,7 +287,10 @@ public class NewtCanvasAWT extends java.awt.Canvas
     private final Runnable awtClearSelectedMenuPath = new Runnable() {
         @Override
         public void run() {
-            MenuSelectionManager.defaultManager().clearSelectedPath();
+            final MenuSelectionManager msm = MenuSelectionManager.defaultManager();
+            if (msm.getSelectedPath().length > 0) {
+                msm.clearSelectedPath();
+            }
         }
     };
     private final WindowListener clearAWTMenusOnNewtFocus = new WindowAdapter() {
