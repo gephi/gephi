@@ -134,3 +134,4 @@ translations/**
 !.claude/CLAUDE.md
 !.claude/skills
 /reports/sentry-triage/
+.codegraph

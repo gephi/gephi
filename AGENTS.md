@@ -8,6 +8,15 @@ Gephi is an open-source graph visualization platform built on the Apache NetBean
 codebase is a multi-module Maven project (`modules/*`) written in Java, with a Swing/OpenGL desktop
 UI. See `README.md` for the product-level description and `pom.xml` for the module list.
 
+For anything beyond a small fix, read these first:
+
+- `ARCHITECTURE.md` — module layout, API/SPI/Lookup conventions, controllers vs. models.
+- `CONTRIBUTING.md` — local dev setup, branch/PR workflow, release process.
+
+Both were compiled from a 2022 presentation, so cross-check version-specific claims (JDK version,
+module counts) against `pom.xml`/`README.md` if something looks off — treat them as directionally
+right but not necessarily current on numbers.
+
 ## Build and test
 
 Requires JDK 17.
@@ -50,7 +59,11 @@ in CI); rules live in `checkstyle.xml`, suppressions in `checkstyle-suppressions
 
 - Keep commits scoped to one logical change; this repo takes many small dependency-bump and
   fix PRs, so noisy unrelated diffs stand out.
-- Reference the GitHub issue number when a change fixes a reported bug.
+- PR title: `ISSUE_NUMBER DESCRIPTIVE_SUMMARY` (e.g. `#1299 Fix issue with edge weight`) — omit the
+  issue number only if none exists.
+- Fill in `.github/pull_request_template.md` (auto-populated when opening a PR on GitHub) — don't
+  strip its checklist. It covers tests, README/API-changelog/code-doc updates, and merging with
+  master first.
 - Don't add tests-skipping flags or checkstyle suppressions to get a build green — fix the
   underlying issue.
 
