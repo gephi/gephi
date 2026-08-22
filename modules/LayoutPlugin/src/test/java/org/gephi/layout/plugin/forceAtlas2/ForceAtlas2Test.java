@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Edge;
