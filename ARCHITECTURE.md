@@ -154,20 +154,20 @@ An importer SPI defines the operations an importer must provide, such as executi
 
 ### Available SPIs
 
-| SPI | Extension point |
-|---|---|
-| Import SPI | File, database, and wizard importers |
-| Layout SPI | Layout algorithms |
-| Statistics SPI | Other algorithms |
-| Tools SPI | Tools in the menu bar |
-| Project SPI | Persistence providers |
-| Export SPI | File exporters for graphs and graphics |
-| Filters SPI | Filters |
-| Preview SPI | Preview builders and renderers |
-| Generator SPI | Generators, similar to importers |
-| Data Laboratory SPI | Manipulators |
-| Appearance SPI | Transformers for ranking and partitioning |
-| Visualization SPI | Renderers for the new `VisualizationEngine` module (mid-migration from the legacy `VisualizationImpl` engine) |
+| SPI | Extension point                                                       |
+|---|-----------------------------------------------------------------------|
+| Import SPI | File, database, and wizard importers                                  |
+| Layout SPI | Layout algorithms                                                     |
+| Statistics SPI | Other algorithms                                                      |
+| Tools SPI | Tools in the menu bar                                                 |
+| Project SPI | Persistence providers                                                 |
+| Export SPI | File exporters for graphs and graphics                                |
+| Filters SPI | Filters                                                               |
+| Preview SPI | Preview builders and renderers                                        |
+| Generator SPI | Generators, similar to importers                                      |
+| Data Laboratory SPI | Manipulators                                                          |
+| Appearance SPI | Transformers for ranking and partitioning                             |
+| Visualization SPI | Renderers for the new `VisualizationEngine` module (work in progress) |
 
 The Project SPI’s persistence providers make `.gephi` project files extensible. Any module can add its own data to a `.gephi` file by implementing a persistence provider.
 
@@ -177,7 +177,7 @@ The available SPIs define the kinds of plugins that can be created: a plugin can
 
 Resources supplied with the architecture material:
 
-- API versus SPI: <https://netbeans.apache.org/wiki/DevFaqApiSpi.asciidoc>
+- API versus SPI: <https://netbeans.apache.org/wiki/main/netbeansdevelopperfaq/DevFaqApiSpi/>
 
 ## Lookup
 
@@ -225,7 +225,7 @@ A new layout, filter, renderer, or other extension is therefore added by:
 
 Resources supplied with the architecture material:
 
-- Lookup: <https://netbeans.apache.org/wiki/DevFaqLookup.asciidoc>
+- Lookup: <https://netbeans.apache.org/wiki/main/netbeansdevelopperfaq/DevFaqLookup/>
 
 ## API direction and compatibility
 
@@ -379,8 +379,6 @@ src/                  # Extra files, including the macOS launcher
 pom.xml               # Parent POM containing shared configuration
 ```
 
-Repository: <https://github.com/gephi/gephi>
-
 ### Application module
 
 The application module is different from the other modules. In NetBeans Platform terminology, the repository contains modules and an application. Gephi has one application module, the Gephi application, which depends on all the other modules and is built last.
@@ -392,22 +390,3 @@ The application module contains mostly configuration rather than code, including
 The root `src` folder contains extra files such as the macOS launcher and is not generally relevant to day-to-day development.
 
 The root `pom.xml` is the parent POM for the multi-module Maven repository. Shared configuration is kept there whenever possible, including dependency versions and build configuration. Every module declares this POM as its parent and inherits its configuration. Module-specific configuration may live in a module’s own POM, but this is uncommon.
-
-## Architecture resources included with the source material
-
-### NetBeans Platform
-
-- NetBeans APIs Documentation
-- Source code
-- FAQ
-- Documentation
-- Tutorials
-
-### Conventions and examples
-
-- Code Style
-- Localization
-- Documentation
-- Coding via examples
-- Plugins Bootcamp
-- Toolkit Demos
