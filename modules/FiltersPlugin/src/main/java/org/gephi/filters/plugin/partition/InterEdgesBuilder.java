@@ -44,6 +44,7 @@ package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.AppearanceController;
@@ -173,9 +174,7 @@ public class InterEdgesBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Edge edge) {
             Object srcValue = partition.getValue(edge.getSource(), graph);
             Object destValue = partition.getValue(edge.getTarget(), graph);
-            srcValue = srcValue == null ? NULL : srcValue;
-            destValue = destValue == null ? NULL : destValue;
-            return parts.contains(srcValue) && parts.contains(destValue) && srcValue.equals(destValue);
+            return parts.contains(srcValue) && parts.contains(destValue) && Objects.equals(srcValue, destValue);
         }
 
         @Override

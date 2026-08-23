@@ -74,8 +74,12 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
                 bos = new ByteArrayOutputStream();
                 oos = new ObjectOutputStream(bos);
                 oos.writeObject(val);
+                oos.flush();
+                return java.util.Base64.getEncoder().encodeToString(bos.toByteArray());
             } catch (Exception e) {
                 Exceptions.printStackTrace(e);
+                //Partially written bytes can't be read back, don't persist them
+                return null;
             } finally {
                 if (oos != null) {
                     try {
@@ -89,9 +93,6 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
                     } catch (IOException ex) {
                     }
                 }
-            }
-            if (bos != null) {
-                return java.util.Base64.getEncoder().encodeToString(bos.toByteArray());
             }
         }
         return "null";

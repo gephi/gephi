@@ -228,7 +228,6 @@ public class PartitionBuilder implements CategoryBuilder {
 
     public static abstract class PartitionFilter implements Filter {
 
-        protected static final Object NULL = new Object();
         protected Partition partition;
         protected final AppearanceModel appearanceModel;
         protected FilterProperty[] filterProperties;
@@ -255,7 +254,7 @@ public class PartitionBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Node node) {
             Object value = partition.getValue(node, graph);
             if (value == null) {
-                return parts.contains(NULL);
+                return parts.contains(null);
             } else if (flattenList && partition.getColumn().isArray()) {
                 return listContains(value);
             } else {
@@ -277,7 +276,7 @@ public class PartitionBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Edge edge) {
             Object value = partition.getValue(edge, graph);
             if (value == null) {
-                return parts.contains(NULL);
+                return parts.contains(null);
             } else if (flattenList && partition.getColumn().isArray()) {
                 return listContains(value);
             } else {
@@ -289,21 +288,13 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public void addPart(Object value) {
-            if (value == null) {
-                if (parts.add(NULL)) {
-                    getProperties()[1].setValue(parts);
-                }
-            } else if (parts.add(value)) {
+            if (parts.add(value)) {
                 getProperties()[1].setValue(parts);
             }
         }
 
         public void removePart(Object value) {
-            if (value == null) {
-                if (parts.remove(NULL)) {
-                    getProperties()[1].setValue(parts);
-                }
-            } else if (parts.remove(value)) {
+            if (parts.remove(value)) {
                 getProperties()[1].setValue(parts);
             }
         }
