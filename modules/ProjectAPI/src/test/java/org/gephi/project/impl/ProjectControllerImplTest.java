@@ -3,12 +3,15 @@ package org.gephi.project.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.io.utils.MockBytesPersistenceProviderFailWrite;
 import org.gephi.project.spi.Controller;
 import org.gephi.project.spi.Model;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,6 +37,12 @@ public class ProjectControllerImplTest {
 
     @Mock
     private WorkspaceListener workspaceListener;
+
+    @After
+    public void resetServices() {
+        // Services are registered globally, don't leak them into the next test
+        MockServices.setServices();
+    }
 
     @Test
     public void testInit() {
@@ -105,6 +114,32 @@ public class ProjectControllerImplTest {
         Assert.assertTrue(project.hasFile());
         Assert.assertSame(file, project.getFile());
         Mockito.verify(projectListener).saved(project);
+    }
+
+    /**
+     * Regression test: a save that fails must leave the project file unchanged, as the project isn't associated with
+     * a file that was never written.
+     */
+    @Test
+    public void testFailedSaveDoesNotSetFile() {
+        MockServices.setServices(MockBytesPersistenceProviderFailWrite.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addProjectListener(projectListener);
+        Project project = pc.newProject();
+        Assert.assertFalse(project.hasFile());
+
+        File file = new File(tempFolder.getRoot(), "failed.gephi");
+        try {
+            pc.saveProject(project, file);
+            Assert.fail("Expected the save to fail");
+        } catch (GephiFormatException expected) {
+        }
+
+        Assert.assertFalse("A failed save must not associate the project with the file", project.hasFile());
+        Assert.assertNull(project.getFile());
+        Assert.assertFalse(file.exists());
+        Mockito.verify(projectListener, Mockito.never()).saved(project);
     }
 
     @Test
