@@ -62,6 +62,7 @@ import org.openide.util.NbPreferences;
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private static final String PLATFORM_LOGGER_PREFIX = "org.netbeans.";
+    private static final String PROXY_AUTO_CONFIG_LOGGER = "org.netbeans.core.network.proxy.ProxyAutoConfig";
 
     private Report currentReport;
     private final ReportController reportController = new ReportController();
@@ -91,18 +92,27 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
     }
 
     /**
-     * NetBeans Platform code reports its own recoverable problems through
-     * java.util.logging at INFO or WARNING and then carries on with a fallback:
-     * an unreachable autoupdate catalog, a missing PAC script engine, an
-     * unreadable window-system config file, a cache file it could not delete.
-     * When it does consider a problem fatal it either logs at SEVERE or goes
-     * through Exceptions.printStackTrace(), which uses a level above SEVERE.
-     * Those records are not crashes and must not become crash reports.
+     * NetBeans Platform code reports problems it has already recovered from
+     * through java.util.logging below WARNING and then carries on with a
+     * fallback: an unreachable autoupdate catalog, an unreadable window-system
+     * config file, a cache file it could not delete. Those records are not
+     * crashes and must not become crash reports. A platform record at WARNING
+     * or above is still reported, because the platform does use WARNING for
+     * problems worth a maintainer's attention, such as a TopComponent whose
+     * settings file cannot be deserialized (PersistenceManager, line 591).
+     * ProxyAutoConfig is the one exception: it never logs above WARNING and
+     * every failure there ends with a working, possibly no-op, PAC evaluator.
      */
     static boolean isHandledPlatformDiagnostic(LogRecord record) {
         String loggerName = record.getLoggerName();
-        return loggerName != null && loggerName.startsWith(PLATFORM_LOGGER_PREFIX) &&
-            record.getLevel().intValue() < Level.SEVERE.intValue();
+        if (loggerName == null || !loggerName.startsWith(PLATFORM_LOGGER_PREFIX)) {
+            return false;
+        }
+        int level = record.getLevel().intValue();
+        if (PROXY_AUTO_CONFIG_LOGGER.equals(loggerName)) {
+            return level <= Level.WARNING.intValue();
+        }
+        return level < Level.WARNING.intValue();
     }
 
     @Override
@@ -112,13 +122,9 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         }
         Throwable throwable = record.getThrown();
         if (throwable instanceof OutOfMemoryError) {
-            Handler[] handlers = Logger.getLogger("").getHandlers();
-            for (Handler h : handlers) {
-                h.close();
-            }
-            NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
-            LifecycleManager.getDefault().exit();
+            //Checked before the platform filter so an OutOfMemoryError still
+            //stops Gephi whichever logger it was reported through
+            notifyOutOfMemory();
             return;
         }
         if (isHandledPlatformDiagnostic(record)) {
@@ -139,6 +145,20 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         }
 
         currentReport = report;
+    }
+
+    void notifyOutOfMemory() {
+        Handler[] handlers = Logger.getLogger("").getHandlers();
+        for (Handler h : handlers) {
+            h.close();
+        }
+        NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
+        DialogDisplayer.getDefault().notify(nd);
+        LifecycleManager.getDefault().exit();
+    }
+
+    Report getCurrentReport() {
+        return currentReport;
     }
 
     @Override

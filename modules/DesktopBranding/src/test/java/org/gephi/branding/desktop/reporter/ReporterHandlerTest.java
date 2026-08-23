@@ -89,6 +89,17 @@ public class ReporterHandlerTest {
     }
 
     @Test
+    public void testTopComponentDeserializationWarningIsStillReported() {
+        //PersistenceManager.getTopComponentPersistentForID() logs the failure to
+        //instantiate a TopComponent at WARNING on the same logger it uses at INFO
+        //when saving, then returns null. That null is what later surfaces as
+        //"Cannot find TopComponent with preferredID", so the WARNING is the only
+        //record that says why, and it has to keep reaching Sentry
+        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("org.netbeans.core.windows.persistence", Level.WARNING)));
+    }
+
+    @Test
     public void testGephiErrorsAreStillReported() {
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
             logRecord("org.gephi.desktop.project.ProjectControllerUIImpl", Level.WARNING)));
@@ -100,5 +111,39 @@ public class ReporterHandlerTest {
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
             logRecord("org.openide.util.Exceptions", UNKNOWN)));
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(logRecord(null, Level.WARNING)));
+    }
+
+    @Test
+    public void testFilteredRecordDoesNotBecomeAReport() {
+        ReporterHandler handler = new CountingOutOfMemoryHandler();
+
+        handler.publish(logRecord("org.netbeans.Stamps", Level.INFO));
+        Assert.assertNull(handler.getCurrentReport());
+
+        handler.publish(logRecord("org.gephi.project.io.LoadTask", Level.SEVERE));
+        Assert.assertNotNull(handler.getCurrentReport());
+    }
+
+    @Test
+    public void testOutOfMemoryIsHandledEvenFromAFilteredLogger() {
+        CountingOutOfMemoryHandler handler = new CountingOutOfMemoryHandler();
+
+        LogRecord record = logRecord("org.netbeans.Stamps", Level.INFO);
+        record.setThrown(new OutOfMemoryError("Java heap space"));
+        handler.publish(record);
+
+        Assert.assertEquals(1, handler.outOfMemoryCount);
+        Assert.assertNull(handler.getCurrentReport());
+    }
+
+    private static class CountingOutOfMemoryHandler extends ReporterHandler {
+
+        private int outOfMemoryCount;
+
+        @Override
+        void notifyOutOfMemory() {
+            //The real implementation closes every root logger handler and exits Gephi
+            outOfMemoryCount++;
+        }
     }
 }
