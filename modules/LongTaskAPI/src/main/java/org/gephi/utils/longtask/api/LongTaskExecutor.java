@@ -442,14 +442,20 @@ public final class LongTaskExecutor {
                 // that thread may complete the task (and make isRunning() false) while
                 // the listener hasn't been notified yet.
                 boolean claimed = task.claimFinish();
-                if (task.future != null) {
-                    task.future.cancel(interruptCancel);
-                }
-                if (task.progress != null) {
-                    task.progress.finish();
-                }
-                if (claimed) {
-                    finished(task, true);
+                try {
+                    if (task.future != null) {
+                        task.future.cancel(interruptCancel);
+                    }
+                    if (task.progress != null) {
+                        task.progress.finish();
+                    }
+                } finally {
+                    // The completion is claimed above, so it has to be performed here even
+                    // if the cancellation failed, otherwise no other thread can complete
+                    // the task anymore.
+                    if (claimed) {
+                        finished(task, true);
+                    }
                 }
 
                 if (!inBackground) {
