@@ -177,7 +177,12 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             importFiles(readers, importers, fileObjects, null);
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            String cause = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_file_open_failed", cause),
+                NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(msg);
+            Exceptions.printStackTrace(ex);
         }
     }
 
