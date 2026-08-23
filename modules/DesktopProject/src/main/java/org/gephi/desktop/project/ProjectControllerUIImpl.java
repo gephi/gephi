@@ -306,28 +306,17 @@ public class ProjectControllerUIImpl implements ProjectListener {
             chooser.setSelectedFile(file);
         }
 
-        try {
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    String failMsg = NbBundle.getMessage(
-                        ProjectControllerUIImpl.class,
-                        "SaveAsProject_SaveFailed", new Object[] {file.getPath()});
-                    JOptionPane.showMessageDialog(null, failMsg);
-                    return false;
-                }
-            } else {
-                String overwriteMsg = NbBundle.getMessage(
-                    ProjectControllerUIImpl.class,
-                    "SaveAsProject_Overwrite", new Object[] {file.getPath()});
-                if (JOptionPane.showConfirmDialog(chooser, overwriteMsg) != JOptionPane.OK_OPTION) {
-                    return false;
-                }
+        //Note: when the file doesn't exist yet it must not be created here. Pre-creating the
+        //destination would leave an empty .gephi file behind if the save is later interrupted,
+        //defeating the temporary-file-then-move strategy used when writing the project. Real
+        //write failures are reported by the save task itself.
+        if (file.exists()) {
+            String overwriteMsg = NbBundle.getMessage(
+                ProjectControllerUIImpl.class,
+                "SaveAsProject_Overwrite", new Object[] {file.getPath()});
+            if (JOptionPane.showConfirmDialog(chooser, overwriteMsg) != JOptionPane.OK_OPTION) {
+                return false;
             }
-        } catch (IOException ex) {
-            NotifyDescriptor.Message msg =
-                new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(msg);
-            return false;
         }
 
         return true;
