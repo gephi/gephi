@@ -154,6 +154,11 @@ public class EdgePencil implements Tool {
                     boolean directed = edgePencilPanel.isDirected;
                     Edge edge =
                         Lookup.getDefault().lookup(GraphElementsController.class).createEdge(sourceNode, n, directed);
+                    if (edge == null) {
+                        sourceNode = null;
+                        edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+                        return false;
+                    }
                     edge.setWeight(weight);
                     edge.setColor(color);
                     sourceNode = null;
