@@ -287,7 +287,13 @@ public class NewtCanvasAWT extends java.awt.Canvas
     private final Runnable awtClearSelectedMenuPath = new Runnable() {
         @Override
         public void run() {
-            MenuSelectionManager.defaultManager().clearSelectedPath();
+            try {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            } catch (final NullPointerException npe) {
+                // Benign JDK race: clearSelectedPath() can re-enter a JPopupMenu that is
+                // already mid-close (setVisible -> Popup.hide()) and find its internal
+                // Popup reference already null. The menu is closing either way.
+            }
         }
     };
     private final WindowListener clearAWTMenusOnNewtFocus = new WindowAdapter() {
