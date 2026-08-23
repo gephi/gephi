@@ -189,6 +189,10 @@ paragraph, plain prose.
 
 Short summary only: counts per tier, how many investigated, link to the report file and to the Sentry dashboard. Do not paste the whole report into chat if it's long — point to the file.
 
+### 8. Cleanup
+
+When the PRs are pushed to GitHub, local worktrees should be cleaned up.
+
 ## Writing style
 
 The report is read by humans deciding what to fix and by other agents deciding how to fix it. Write it like you're briefing a colleague, not like you're demonstrating thoroughness. Concretely:
