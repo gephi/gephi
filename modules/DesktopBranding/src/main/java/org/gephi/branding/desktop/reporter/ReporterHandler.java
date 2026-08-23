@@ -46,6 +46,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.Callable;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -59,6 +60,8 @@ import org.openide.util.NbPreferences;
  * @author Mathieu Bastian
  */
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
+
+    private static final String PLATFORM_LOGGER_PREFIX = "org.netbeans.";
 
     private Report currentReport;
     private final ReportController reportController = new ReportController();
@@ -87,6 +90,21 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         return message;
     }
 
+    /**
+     * NetBeans Platform code reports its own recoverable problems through
+     * java.util.logging at INFO or WARNING and then carries on with a fallback:
+     * an unreachable autoupdate catalog, a missing PAC script engine, an
+     * unreadable window-system config file, a cache file it could not delete.
+     * When it does consider a problem fatal it either logs at SEVERE or goes
+     * through Exceptions.printStackTrace(), which uses a level above SEVERE.
+     * Those records are not crashes and must not become crash reports.
+     */
+    static boolean isHandledPlatformDiagnostic(LogRecord record) {
+        String loggerName = record.getLoggerName();
+        return loggerName != null && loggerName.startsWith(PLATFORM_LOGGER_PREFIX) &&
+            record.getLevel().intValue() < Level.SEVERE.intValue();
+    }
+
     @Override
     public void publish(LogRecord record) {
         if (record.getThrown() == null) {
@@ -101,6 +119,9 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
             NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
             LifecycleManager.getDefault().exit();
+            return;
+        }
+        if (isHandledPlatformDiagnostic(record)) {
             return;
         }
 
