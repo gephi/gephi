@@ -357,7 +357,7 @@ public class Installer extends ModuleInstall {
                     NbPreferences.forModule(Installer.class)
                         .putBoolean("check_latest_version", !checkbox.isSelected());
                     if (option == JOptionPane.OK_OPTION) {
-                        Desktop.getDesktop().browse(new URI("http://gephi.org/users/download/"));
+                        Desktop.getDesktop().browse(new URI("https://gephi.org/desktop/"));
                     }
                 }
             } catch (Exception ex) {
