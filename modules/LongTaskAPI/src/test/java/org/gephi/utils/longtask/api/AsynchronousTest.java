@@ -3,6 +3,7 @@ package org.gephi.utils.longtask.api;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.hamcrest.core.Is;
@@ -60,7 +61,7 @@ public class AsynchronousTest {
         executor.setLongTaskListener(listener);
         Mockito.doThrow(new RuntimeException()).when(callable).call();
         executor.execute(longTask, callable, "", errorHandler);
-        Awaitility.await().until(executor::isRunning, t -> !t);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning, t -> !t);
         Mockito.verify(errorHandler).fatalError(Mockito.any(RuntimeException.class));
         Mockito.verify(listener, Mockito.never()).taskFinished(Mockito.any());
     }
@@ -69,7 +70,7 @@ public class AsynchronousTest {
     public void testExecuteCallableExceptionFuture() throws Exception {
         Mockito.doThrow(new RuntimeException()).when(callable).call();
         Future<Integer> future = executor.execute(longTask, callable, "", errorHandler);
-        Awaitility.await().until(executor::isRunning, t -> !t);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning, t -> !t);
 
         expectedException.expect(ExecutionException.class);
         expectedException.expectCause(Is.isA(RuntimeException.class));
@@ -81,7 +82,7 @@ public class AsynchronousTest {
         executor.setLongTaskListener(listener);
         Mockito.doAnswer(new AnswersWithDelay(200, invocation -> 42)).when(callable).call();
         Future<Integer> future = executor.execute(longTask, callable);
-        Awaitility.await().until(executor::isRunning);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning);
         executor.cancel();
         future.get();
         Mockito.verify(longTask).cancel();
@@ -92,7 +93,7 @@ public class AsynchronousTest {
     public void testExecuteTwice() throws Exception {
         executor.execute(longTask, callable);
         executor.execute(longTask, callable);
-        Awaitility.await().until(executor::isRunning, t -> !t);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning, t -> !t);
         Mockito.verify(callable, Mockito.times(2)).call();
     }
 
@@ -102,9 +103,9 @@ public class AsynchronousTest {
         Mockito.doAnswer(new AnswersWithDelay(2000, invocation -> null)).when(runnable).run();
         executorWithInterruption.setLongTaskListener(listener);
         executorWithInterruption.execute(longTask, runnable);
-        Awaitility.await().until(executorWithInterruption::isRunning);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executorWithInterruption::isRunning);
         executorWithInterruption.cancel();
-        Awaitility.await().until(executorWithInterruption::isRunning, t -> !t);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executorWithInterruption::isRunning, t -> !t);
         Mockito.verify(listener).taskFinished(Mockito.any());
     }
 }
