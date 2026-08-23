@@ -113,11 +113,7 @@ public class JColorButton extends JButton {
                 public void mouseClicked(MouseEvent e) {
 
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
-                            JColorButton.this.includeOpacity);
-                        if (newColor != null) {
-                            setColor(newColor);
-                        }
+                        showColorPicker();
                     }
                 }
             });
@@ -126,13 +122,23 @@ public class JColorButton extends JButton {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
-                        JColorButton.this.includeOpacity);
-                    if (newColor != null) {
-                        setColor(newColor);
-                    }
+                    showColorPicker();
                 }
             });
+        }
+    }
+
+    private void showColorPicker() {
+        Color newColor;
+        try {
+            newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, includeOpacity);
+        } catch (IllegalStateException e) {
+            //The bundled ColorPicker re-enters its own hex field document while Swing is still
+            //notifying its listeners, which AbstractDocument rejects. Treat it as a cancellation.
+            return;
+        }
+        if (newColor != null) {
+            setColor(newColor);
         }
     }
 

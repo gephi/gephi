@@ -222,7 +222,13 @@ public class GradientSlider extends MultiThumbSlider {
 
         boolean includeOpacity =
             MultiThumbSliderUI.getProperty(this, "GradientSlider.includeOpacity", "true").equals("true");
-        colors[i] = ColorPicker.showDialog(frame, colors[i], includeOpacity);
+        try {
+            colors[i] = ColorPicker.showDialog(frame, colors[i], includeOpacity);
+        } catch (IllegalStateException e) {
+            //The bundled ColorPicker re-enters its own hex field document while Swing is still
+            //notifying its listeners, which AbstractDocument rejects. Treat it as a cancellation.
+            return false;
+        }
         if (colors[i] != null) {
             setValues(getThumbPositions(), colors);
         }
