@@ -115,13 +115,11 @@ public class SaveTask implements LongTask {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
-        File writeFile = file;
+        //Always write to a temporary sibling file and only move it over the destination once the
+        //content is fully written. This guarantees the destination file is never truncated or left
+        //empty if the save is interrupted (crash, cancel, disk full, cloud-sync locking, ...).
+        final File writeFile = new File(file.getParent(), file.getName() + "_temp" + System.currentTimeMillis());
         try {
-            if (file.exists() && file.length() > 0) {
-                String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
-                writeFile = new File(file.getParent(), tempFileName);
-            }
-
             FileOutputStream outputStream = null;
             ZipOutputStream zipOut = null;
             BufferedOutputStream bos = null;
@@ -199,7 +197,7 @@ public class SaveTask implements LongTask {
             Progress.finish(progressTicket);
 
             //Rename file
-            if (!cancel && writeFile.exists() && file != writeFile) {
+            if (!cancel && writeFile.exists()) {
                 Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (Exception ex) {
@@ -208,7 +206,8 @@ public class SaveTask implements LongTask {
             }
             throw new GephiFormatException(SaveTask.class, ex);
         } finally {
-            if (writeFile != null && writeFile.exists() && writeFile != file) {
+            //Leftover temporary file, either because the save was cancelled or failed
+            if (writeFile.exists()) {
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
                 if (tempFileObject != null) {
                     try {
