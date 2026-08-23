@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.components;
 
-import com.bric.swing.ColorPicker;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -129,14 +128,7 @@ public class JColorButton extends JButton {
     }
 
     private void showColorPicker() {
-        Color newColor;
-        try {
-            newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, includeOpacity);
-        } catch (IllegalStateException e) {
-            //The bundled ColorPicker re-enters its own hex field document while Swing is still
-            //notifying its listeners, which AbstractDocument rejects. Treat it as a cancellation.
-            return;
-        }
+        Color newColor = ColorPickerUtils.showDialog(WindowManager.getDefault().getMainWindow(), color, includeOpacity);
         if (newColor != null) {
             setColor(newColor);
         }
