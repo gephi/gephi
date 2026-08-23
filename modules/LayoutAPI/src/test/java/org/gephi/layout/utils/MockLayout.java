@@ -12,10 +12,15 @@ import org.openide.util.Exceptions;
 
 public class MockLayout implements Layout {
 
+    public enum Mode {
+        FAST, SLOW
+    }
+
     private final MockLayoutBuilder builder;
     private double angle;
     private Column column;
     private double localProperty = 0.0;
+    private Mode mode;
 
     public MockLayout(MockLayoutBuilder builder) {
         this.builder = builder;
@@ -63,6 +68,12 @@ public class MockLayout implements Layout {
                 null,
                 "",
                 "getColumn", "setColumn", NodeColumnAllNumbersEditor.class));
+            properties.add(LayoutProperty.createProperty(
+                this, Mode.class,
+                "mode",
+                null,
+                "",
+                "getMode", "setMode"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -97,5 +108,13 @@ public class MockLayout implements Layout {
 
     public void setColumn(Column column) {
         this.column = column;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 }
