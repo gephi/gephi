@@ -1,5 +1,5 @@
 <!--
-For Work In Progress Pull Requests, please use the Draft PR feature, see https://github.blog/2019-02-14-introducing-draft-pull-requests/ for further details.
+For Work In Progress Pull Requests, please use the Draft PR feature.
 
 Please ensure your pull request title uses following pattern:
  - ISSUE (if exists) DESCRIPTIVE_SUMMARY_OF_CHANGES 
