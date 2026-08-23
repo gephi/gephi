@@ -63,6 +63,8 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -112,9 +114,14 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
             executor.setLongTaskListener(listener);
         }
         executor.setDefaultErrorHandler(t -> {
-            String message = NbBundle.getMessage(StatisticsControllerImpl.class,
-                "StatisticsControllerImpl.errorHandler.critical", builder.getName(), t.toString());
-            Exceptions.printStackTrace(Exceptions.attachLocalizedMessage(t, message));
+            Exceptions.printStackTrace(t);
+            String cause = t.getLocalizedMessage() != null ? t.getLocalizedMessage() : t.toString();
+            DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(NbBundle
+                .getMessage(StatisticsControllerImpl.class, "StatisticsControllerImpl.errorHandler.critical",
+                    builder.getName(), cause), NotifyDescriptor.ERROR_MESSAGE));
+            if (listener != null) {
+                listener.taskFinished(statistics instanceof LongTask ? (LongTask) statistics : null);
+            }
         });
 
         final StatisticsModelImpl model = getModel();

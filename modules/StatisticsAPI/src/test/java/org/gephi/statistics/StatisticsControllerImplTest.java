@@ -1,6 +1,9 @@
 package org.gephi.statistics;
 
+import java.awt.Dialog;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
@@ -13,13 +16,16 @@ import org.gephi.statistics.spi.StatisticsBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
-import org.openide.util.Exceptions;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 public class StatisticsControllerImplTest {
 
     @Test
     public void testExecuteFailingStatistics() throws Exception {
-        MockServices.setServices(MockStatisticsBuilder.class);
+        MockServices.setServices(MockStatisticsBuilder.class, MockDialogDisplayer.class);
+        MockDialogDisplayer.MESSAGES.clear();
 
         final StatisticsModelImpl model = new StatisticsModelImpl(new WorkspaceImpl(null, 0));
         StatisticsControllerImpl controller = new StatisticsControllerImpl() {
@@ -29,14 +35,12 @@ public class StatisticsControllerImplTest {
             }
         };
 
-        CountDownLatch reported = new CountDownLatch(1);
-        AtomicReference<Throwable> thrown = new AtomicReference<>();
+        AtomicReference<Throwable> logged = new AtomicReference<>();
         Handler handler = new Handler() {
             @Override
             public void publish(LogRecord record) {
                 if (record.getThrown() instanceof NumberFormatException) {
-                    thrown.set(record.getThrown());
-                    reported.countDown();
+                    logged.set(record.getThrown());
                 }
             }
 
@@ -49,19 +53,22 @@ public class StatisticsControllerImplTest {
             }
         };
 
+        CountDownLatch taskFinished = new CountDownLatch(1);
         Logger rootLogger = Logger.getLogger("");
         rootLogger.addHandler(handler);
         try {
-            controller.execute(new MockStatistics(), null);
-            Assert.assertTrue("The statistics failure isn't reported", reported.await(10, TimeUnit.SECONDS));
+            controller.execute(new MockStatistics(), task -> taskFinished.countDown());
+
+            String message = MockDialogDisplayer.MESSAGES.poll(10, TimeUnit.SECONDS);
+            Assert.assertNotNull("The statistics failure isn't reported to the user", message);
+            Assert.assertTrue("The reported failure doesn't name the statistics",
+                message.contains(MockStatisticsBuilder.NAME));
+            Assert.assertTrue("The listener isn't notified of the failure", taskFinished.await(10, TimeUnit.SECONDS));
         } finally {
             rootLogger.removeHandler(handler);
         }
 
-        String message = Exceptions.findLocalizedMessage(thrown.get());
-        Assert.assertNotNull("The reported failure has no message for the user", message);
-        Assert.assertTrue("The reported failure doesn't name the statistics",
-            message.contains(MockStatisticsBuilder.NAME));
+        Assert.assertNotNull("The statistics failure isn't logged", logged.get());
     }
 
     public static class MockStatistics implements Statistics {
@@ -94,6 +101,22 @@ public class StatisticsControllerImplTest {
         @Override
         public Class<? extends Statistics> getStatisticsClass() {
             return MockStatistics.class;
+        }
+    }
+
+    public static class MockDialogDisplayer extends DialogDisplayer {
+
+        static final BlockingQueue<String> MESSAGES = new LinkedBlockingQueue<>();
+
+        @Override
+        public Object notify(NotifyDescriptor descriptor) {
+            MESSAGES.add(String.valueOf(descriptor.getMessage()));
+            return NotifyDescriptor.CLOSED_OPTION;
+        }
+
+        @Override
+        public Dialog createDialog(DialogDescriptor descriptor) {
+            throw new UnsupportedOperationException();
         }
     }
 }
