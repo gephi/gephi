@@ -63,7 +63,9 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -104,11 +106,16 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
 
     @Override
     public void execute(final Statistics statistics, LongTaskListener listener) {
-        StatisticsBuilder builder = getBuilder(statistics.getClass());
+        final StatisticsBuilder builder = getBuilder(statistics.getClass());
         LongTaskExecutor executor = new LongTaskExecutor(true, "Statistics " + builder.getName(), 10);
         if (listener != null) {
             executor.setLongTaskListener(listener);
         }
+        executor.setDefaultErrorHandler(t -> {
+            String message = NbBundle.getMessage(StatisticsControllerImpl.class,
+                "StatisticsControllerImpl.errorHandler.critical", builder.getName(), t.toString());
+            Exceptions.printStackTrace(Exceptions.attachLocalizedMessage(t, message));
+        });
 
         final StatisticsModelImpl model = getModel();
         if (statistics instanceof DynamicStatistics) {
