@@ -60,6 +60,7 @@ import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
+import org.gephi.project.api.EmptyProjectFileException;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
@@ -130,7 +131,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 DialogDisplayer.getDefault().notify(msg);
             }
 
-            if (!(t instanceof LegacyGephiFormatException || t instanceof GephiFormatException)) {
+            if (!(t instanceof LegacyGephiFormatException || t instanceof EmptyProjectFileException)) {
                 Exceptions.printStackTrace(t);
             }
         });
