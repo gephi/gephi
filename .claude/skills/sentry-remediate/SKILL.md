@@ -203,8 +203,9 @@ A PR being open is not a PR being done. Poll with `gh pr checks <url>`, or `gh p
 
 - **Failure in a module or file you didn't touch**: almost certainly pre-existing flakiness, such as a randomized-algorithm test asserting exact floating-point equality. Confirm the failing test's file isn't in `filesChanged`, then `gh run rerun <runId> --failed` once. If it fails again the same way, stop and flag it to the user rather than retrying in a loop. A genuinely broken `master` is not this skill's job to fix.
 - **Failure touching a file you changed**: it's yours. Pull the log with `gh run view <runId> --log-failed`, reproduce locally with the scoped commands from step 2 including the checkstyle profile, fix, commit, push, re-poll.
+- **Failure on one platform only**: a real finding, not noise. CI runs a matrix, currently `ubuntu-latest`, `macos-latest`, and `windows-latest`, so a single red platform alongside two green ones usually means path separators, file locking, or line endings. Don't rerun it hoping it passes.
 
-A group counts as done only once its PR shows a green `build_and_test` check.
+A group counts as done only once **every** `build_and_test` check on its PR is green. There are three per PR, one per matrix platform, not one.
 
 ### 5. Clean up the worktrees
 
