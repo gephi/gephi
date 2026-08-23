@@ -143,6 +143,41 @@ public class SaveAndLoadTaskTest {
         assertNoTempFile();
     }
 
+    /**
+     * Regression test: when the final move of the temporary file over the destination fails (e.g. because the
+     * destination is locked by an antivirus or a cloud-sync client), the temporary file holds the only copy of the
+     * fully written project and must therefore be kept so it can be recovered.
+     */
+    @Test
+    public void testFailedMoveKeepsRecoverableTempFile() throws Exception {
+        WorkspaceImpl workspace = Utils.newWorkspace();
+
+        //Moving a file over a non-empty directory is guaranteed to fail on every platform
+        File destination = tempFolder.newFolder("destination.gephi");
+        Assert.assertTrue(new File(destination, "child.txt").createNewFile());
+
+        GephiFormatException exception = null;
+        try {
+            new SaveTask(workspace.getProject(), destination).run();
+            Assert.fail("Expected the save to fail");
+        } catch (GephiFormatException ex) {
+            exception = ex;
+        }
+
+        File tempFile = findTempFile();
+        Assert.assertNotNull("The temporary file must be kept when the move fails", tempFile);
+        Assert.assertTrue(tempFile.length() > 0);
+
+        String message = exception.getMessage();
+        Assert.assertNotNull(message);
+        Assert.assertTrue("The error should point at the recoverable file, was: " + message,
+            message.contains(tempFile.getAbsolutePath()));
+        Assert.assertTrue("The move failure should be kept as cause", exception.getCause() instanceof IOException);
+
+        //The kept file is a complete project which can be loaded back
+        Assert.assertNotNull(new LoadTask(tempFile).execute(null));
+    }
+
     @Test
     public void testCancelResaveKeepsExistingFileIntact() throws Exception {
         MockServices.setServices(MockXMLPersistenceProvider.class);
@@ -215,6 +250,15 @@ public class SaveAndLoadTaskTest {
             Assert.fail("Expected the save to fail");
         } catch (GephiFormatException expected) {
         }
+    }
+
+    private File findTempFile() {
+        for (File file : Objects.requireNonNull(tempFolder.getRoot().listFiles())) {
+            if (file.getName().contains("_temp")) {
+                return file;
+            }
+        }
+        return null;
     }
 
     private void assertNoTempFile() {

@@ -190,8 +190,9 @@ public class ProjectControllerImpl implements ProjectController {
             fireProjectEvent(ProjectListener::lock);
             SaveTask saveTask = new SaveTask(project, file);
             longTaskExecutor.execute(saveTask, () -> {
-                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 if (saveTask.run()) {
+                    //Only associate the project with the file once it has actually been written
+                    project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                     ((ProjectImpl) project).setLastOpened();
                     fireProjectEvent((pl) -> pl.saved(project));
                 } else {
