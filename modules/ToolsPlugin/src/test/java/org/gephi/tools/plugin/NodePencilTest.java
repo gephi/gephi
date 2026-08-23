@@ -56,9 +56,6 @@ public class NodePencilTest {
     @Test
     public void testMouseClickWithoutOpenProjectDoesNotThrow() throws Exception {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        if (projectController.hasCurrentProject()) {
-            projectController.closeCurrentProject();
-        }
         Assert.assertNull(projectController.getCurrentWorkspace());
 
         NodePencil nodePencil = new NodePencil();

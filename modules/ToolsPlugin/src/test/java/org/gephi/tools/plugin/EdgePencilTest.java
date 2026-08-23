@@ -62,27 +62,31 @@ public class EdgePencilTest {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.newProject();
 
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel graphModel = graphController.getGraphModel();
-        Graph graph = graphModel.getGraph();
+        try {
+            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+            GraphModel graphModel = graphController.getGraphModel();
+            Graph graph = graphModel.getGraph();
 
-        Node n1 = graphModel.factory().newNode();
-        Node n2 = graphModel.factory().newNode();
-        graph.addNode(n1);
-        graph.addNode(n2);
+            Node n1 = graphModel.factory().newNode();
+            Node n2 = graphModel.factory().newNode();
+            graph.addNode(n1);
+            graph.addNode(n2);
 
-        EdgePencil edgePencil = new EdgePencil();
-        Field panelField = EdgePencil.class.getDeclaredField("edgePencilPanel");
-        panelField.setAccessible(true);
-        panelField.set(edgePencil, new EdgePencilPanel());
+            EdgePencil edgePencil = new EdgePencil();
+            Field panelField = EdgePencil.class.getDeclaredField("edgePencilPanel");
+            panelField.setAccessible(true);
+            panelField.set(edgePencil, new EdgePencilPanel());
 
-        ToolEventListener[] listeners = edgePencil.getListeners();
-        NodeClickEventListener listener = (NodeClickEventListener) listeners[0];
+            ToolEventListener[] listeners = edgePencil.getListeners();
+            NodeClickEventListener listener = (NodeClickEventListener) listeners[0];
 
-        Assert.assertTrue(listener.clickNodes(new Node[] {n1}));
-        // Source node is removed from the graph before the edge is confirmed, so
-        // GraphElementsController#createEdge is expected to return null.
-        graph.removeNode(n1);
-        Assert.assertFalse(listener.clickNodes(new Node[] {n2}));
+            Assert.assertTrue(listener.clickNodes(new Node[] {n1}));
+            // Source node is removed from the graph before the edge is confirmed, so
+            // GraphElementsController#createEdge is expected to return null.
+            graph.removeNode(n1);
+            Assert.assertFalse(listener.clickNodes(new Node[] {n2}));
+        } finally {
+            projectController.closeCurrentProject();
+        }
     }
 }
