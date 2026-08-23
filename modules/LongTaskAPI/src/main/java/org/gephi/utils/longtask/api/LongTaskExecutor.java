@@ -51,6 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -75,7 +76,7 @@ public final class LongTaskExecutor {
     private final String name;
     private boolean interruptCancel;
     private ThreadPoolExecutor executor;
-    private RunningLongTask currentTask;
+    private volatile RunningLongTask currentTask;
     private Timer cancelTimer;
     private LongTaskListener listener;
     private LongTaskErrorHandler defaultErrorHandler;
@@ -272,13 +273,25 @@ public final class LongTaskExecutor {
         }
     }
 
-    private synchronized void finished(RunningLongTask runningLongTask) {
+    /**
+     * Completes the given task. Only the first caller which successfully
+     * claimed the completion (see <code>RunningLongTask.claimFinish()</code>)
+     * should call this method, so the listener is notified exactly once per task.
+     *
+     * @param runningLongTask the task which completed
+     * @param notifyListener  whether the listener should be notified, errors are
+     *                        reported to the error handler instead
+     */
+    private synchronized void finished(RunningLongTask runningLongTask, boolean notifyListener) {
         if (cancelTimer != null) {
             cancelTimer.cancel();
+            cancelTimer = null;
         }
         LongTask task = runningLongTask.task;
-        currentTask = null;
-        if (listener != null) {
+        if (currentTask == runningLongTask) {
+            currentTask = null;
+        }
+        if (notifyListener && listener != null) {
             listener.taskFinished(task);
         }
     }
@@ -292,6 +305,7 @@ public final class LongTaskExecutor {
         private final Runnable runnable;
         private final Callable<V> callable;
         private final LongTaskErrorHandler errorHandler;
+        private final AtomicBoolean finishClaimed = new AtomicBoolean();
         private Future<V> future;
         private ProgressTicket progress;
 
@@ -341,9 +355,9 @@ public final class LongTaskExecutor {
                     }
                 }
 
-                currentTask = null;
-
-                finished(this);
+                if (claimFinish()) {
+                    finished(this, true);
+                }
                 if (progress != null) {
                     progress.finish();
                 }
@@ -352,13 +366,22 @@ public final class LongTaskExecutor {
                 if (progress != null) {
                     progress.finish();
                 }
-                currentTask = null;
-                if (err != null) {
-                    err.fatalError(e);
-                } else if (defaultErrorHandler != null) {
-                    defaultErrorHandler.fatalError(e);
-                } else {
-                    Logger.getLogger("").log(Level.SEVERE, "", e);
+                try {
+                    if (err != null) {
+                        err.fatalError(e);
+                    } else if (defaultErrorHandler != null) {
+                        defaultErrorHandler.fatalError(e);
+                    } else {
+                        Logger.getLogger("").log(Level.SEVERE, "", e);
+                    }
+                } finally {
+                    // Failures are reported to the error handler, not to the listener, but
+                    // the task still has to be completed so the executor doesn't stay
+                    // 'running'. When the task has been interrupted by the cancel timer the
+                    // completion is already claimed by it and this is a no-op.
+                    if (claimFinish()) {
+                        finished(this, false);
+                    }
                 }
                 if (!inBackground) {
                     future = CompletableFuture.failedFuture(e);
@@ -378,6 +401,18 @@ public final class LongTaskExecutor {
                 return task.cancel();
             }
             return false;
+        }
+
+        /**
+         * Claims the completion of this task. Returns <code>true</code> for the
+         * first caller only, so that the task thread and the interrupt timer
+         * can't both complete the same task.
+         *
+         * @return <code>true</code> if the caller is responsible for completing
+         * this task, <code>false</code> if it has already been completed
+         */
+        private boolean claimFinish() {
+            return finishClaimed.compareAndSet(false, true);
         }
     }
 
@@ -403,17 +438,25 @@ public final class LongTaskExecutor {
         @Override
         public void run() {
             if (task != null) {
-                if (task.future != null) {
-                    task.future.cancel(interruptCancel);
+                // Claim the completion before interrupting the task thread, otherwise
+                // that thread may complete the task (and make isRunning() false) while
+                // the listener hasn't been notified yet.
+                boolean claimed = task.claimFinish();
+                try {
+                    if (task.future != null) {
+                        task.future.cancel(interruptCancel);
+                    }
+                    if (task.progress != null) {
+                        task.progress.finish();
+                    }
+                } finally {
+                    // The completion is claimed above, so it has to be performed here even
+                    // if the cancellation failed, otherwise no other thread can complete
+                    // the task anymore.
+                    if (claimed) {
+                        finished(task, true);
+                    }
                 }
-                if (cancelTimer != null) {
-                    cancelTimer.cancel();
-                }
-                cancelTimer = null;
-                if (task.progress != null) {
-                    task.progress.finish();
-                }
-                finished(task);
 
                 if (!inBackground) {
                     Logger.getLogger("").warning("Task from " + name + " did not respond to cancellation request. Interrupting thread.");

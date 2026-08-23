@@ -1,6 +1,7 @@
 package org.gephi.utils.longtask.api;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -80,10 +81,17 @@ public class AsynchronousTest {
     @Test
     public void testCancel() throws Exception {
         executor.setLongTaskListener(listener);
-        Mockito.doAnswer(new AnswersWithDelay(200, invocation -> 42)).when(callable).call();
+        // The task blocks until the test releases it, so it is guaranteed to be
+        // observed as running instead of depending on a fixed delay
+        CountDownLatch release = new CountDownLatch(1);
+        Mockito.doAnswer(invocation -> {
+            release.await();
+            return 42;
+        }).when(callable).call();
         Future<Integer> future = executor.execute(longTask, callable);
         Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning);
         executor.cancel();
+        release.countDown();
         future.get();
         Mockito.verify(longTask).cancel();
         Mockito.verify(listener).taskFinished(Mockito.any());
@@ -107,5 +115,25 @@ public class AsynchronousTest {
         executorWithInterruption.cancel();
         Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executorWithInterruption::isRunning, t -> !t);
         Mockito.verify(listener).taskFinished(Mockito.any());
+    }
+
+    @Test
+    public void testCancelRunnableIgnoresInterrupt() {
+        Mockito.when(longTask.cancel()).thenReturn(false);
+        Mockito.doAnswer(invocation -> {
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                // The task swallows the interruption and completes normally, so both the
+                // interrupt timer and the task thread reach the completion code
+            }
+            return null;
+        }).when(runnable).run();
+        executorWithInterruption.setLongTaskListener(listener);
+        executorWithInterruption.execute(longTask, runnable);
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executorWithInterruption::isRunning);
+        executorWithInterruption.cancel();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executorWithInterruption::isRunning, t -> !t);
+        Mockito.verify(listener, Mockito.after(500).times(1)).taskFinished(Mockito.any());
     }
 }
