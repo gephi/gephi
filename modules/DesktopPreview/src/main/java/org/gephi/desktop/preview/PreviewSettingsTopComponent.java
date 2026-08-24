@@ -204,13 +204,15 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         setup(null);
 
         PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
-        controller.addPropertyChangeListener(this);
-
         PreviewUIModel m = controller.getModel();
         if (m != null) {
             setup(m);
             enableRefreshButton();
         }
+
+        // Register only once fully constructed, since the controller may fire events from a
+        // background thread as soon as this listener is registered
+        controller.addPropertyChangeListener(this);
     }
 
     @Override

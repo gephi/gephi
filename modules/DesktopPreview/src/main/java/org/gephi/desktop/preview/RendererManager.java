@@ -106,9 +106,12 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         }
 
         previewController = Lookup.getDefault().lookup(PreviewController.class);
-        Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
         panel.setLayout(new MigLayout("insets 3", "[pref!]"));
         setup();
+
+        // Register only once fully constructed, since the controller may fire events from a
+        // background thread as soon as this listener is registered
+        Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
     }
 
     private void buildTooltip() {

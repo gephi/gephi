@@ -46,12 +46,12 @@ import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.SwingUtilities;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
@@ -97,13 +97,24 @@ import org.openide.windows.WindowManager;
     @ServiceProvider(service = Controller.class, position = 2000)})
 public class PreviewUIControllerImpl implements PreviewUIController, Controller<PreviewUIModelImpl> {
 
-    private final List<PropertyChangeListener> listeners = new ArrayList<>();
+    private final List<PropertyChangeListener> listeners = new CopyOnWriteArrayList<>();
     private final PresetUtils presetUtils = new PresetUtils();
     private final PreviewController previewController;
 
     public PreviewUIControllerImpl() {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
 
+        //Register editors
+        //Overriding default Preview API basic editors that don't support CustomEditor
+        PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
+        PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
+        PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);
+
+        // Overriding Netbeans font editor to support disabled state, #3105
+        PropertyEditorManager.registerEditor(Font.class, DisabledAwareFontEditor.class);
+
+        // Register only once fully constructed, since the controller may fire events from a
+        // background thread as soon as this listener is registered
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
@@ -124,12 +135,13 @@ public class PreviewUIControllerImpl implements PreviewUIController, Controller<
                         }
                     }
                 }
-                fireEvent(SELECT, model);
+                runAction(() -> fireEvent(SELECT, model));
             }
 
             @Override
             public void unselect(Workspace workspace) {
-                fireEvent(UNSELECT, getModel(workspace));
+                PreviewUIModelImpl model = getModel(workspace);
+                runAction(() -> fireEvent(UNSELECT, model));
             }
 
             @Override
@@ -138,18 +150,9 @@ public class PreviewUIControllerImpl implements PreviewUIController, Controller<
 
             @Override
             public void disable() {
-                fireEvent(SELECT, null);
+                runAction(() -> fireEvent(SELECT, null));
             }
         });
-
-        //Register editors
-        //Overriding default Preview API basic editors that don't support CustomEditor
-        PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
-        PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
-        PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);
-
-        // Overriding Netbeans font editor to support disabled state, #3105
-        PropertyEditorManager.registerEditor(Font.class, DisabledAwareFontEditor.class);
     }
 
     @Override
@@ -286,6 +289,14 @@ public class PreviewUIControllerImpl implements PreviewUIController, Controller<
         PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, null, data);
         for (PropertyChangeListener l : listeners) {
             l.propertyChange(event);
+        }
+    }
+
+    private void runAction(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        } else {
+            SwingUtilities.invokeLater(runnable);
         }
     }
 }

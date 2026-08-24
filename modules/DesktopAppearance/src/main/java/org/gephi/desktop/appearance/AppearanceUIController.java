@@ -49,6 +49,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import javax.swing.SwingUtilities;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
@@ -75,50 +76,13 @@ public class AppearanceUIController {
     protected final Map<String, Map<TransformerCategory, Set<TransformerUI>>> transformers;
     //Architecture
     protected final AppearanceController appearanceController;
-    private final CopyOnWriteArraySet<AppearanceUIModelListener> listeners;
+    private final CopyOnWriteArraySet<AppearanceUIModelListener> listeners = new CopyOnWriteArraySet<>();
     //Model
-    private AppearanceUIModel model;
+    private volatile AppearanceUIModel model;
 
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         appearanceController = Lookup.getDefault().lookup(AppearanceController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-            }
-
-            @Override
-            public void select(Workspace workspace) {
-                AppearanceUIModel oldModel = model;
-                model = workspace.getLookup().lookup(AppearanceUIModel.class);
-                if (model == null) {
-                    AppearanceModel appearanceModel = appearanceController.getModel(workspace);
-                    model = new AppearanceUIModel(appearanceModel);
-                    workspace.add(model);
-                }
-                model.select();
-
-                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-                if (model != null) {
-                    model.unselect();
-                }
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                AppearanceUIModel oldModel = model;
-                model = null;
-                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
-            }
-        });
 
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(AppearanceUIModel.class);
@@ -129,8 +93,6 @@ public class AppearanceUIController {
                 model.select();
             }
         }
-
-        listeners = new CopyOnWriteArraySet<>();
 
         transformers = new HashMap<>();
         for (String ec : ELEMENT_CLASSES) {
@@ -158,6 +120,42 @@ public class AppearanceUIController {
                 }
             }
         }
+
+        // Register only once fully constructed, since the controller may fire events from a
+        // background thread as soon as this listener is registered
+        pc.addWorkspaceListener(new WorkspaceListener() {
+            @Override
+            public void initialize(Workspace workspace) {
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+                AppearanceUIModel oldModel = model;
+                AppearanceUIModel newModel = getModel(workspace);
+                newModel.select();
+                model = newModel;
+
+                runAction(() -> firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, newModel));
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+                if (model != null) {
+                    model.unselect();
+                }
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+            }
+
+            @Override
+            public void disable() {
+                AppearanceUIModel oldModel = model;
+                model = null;
+                runAction(() -> firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, null));
+            }
+        });
     }
 
     public void transform(Function function) {
@@ -310,6 +308,14 @@ public class AppearanceUIController {
         AppearanceUIModelEvent event = new AppearanceUIModelEvent(this, propertyName, oldValue, newValue);
         for (AppearanceUIModelListener listener : listeners) {
             listener.propertyChange(event);
+        }
+    }
+
+    private void runAction(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        } else {
+            SwingUtilities.invokeLater(runnable);
         }
     }
 }
