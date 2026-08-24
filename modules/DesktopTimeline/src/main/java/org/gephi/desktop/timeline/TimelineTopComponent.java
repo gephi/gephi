@@ -326,16 +326,16 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         });
     }
 
-    private void setup(TimelineModel model) {
-        if (drawer != null) {
-            innerPanel.remove(drawer);
-            drawer = null;
-        }
-        if (model != null) {
-            SwingUtilities.invokeLater(new Runnable() {
+    private void setup(final TimelineModel model) {
+        runAction(new Runnable() {
 
-                @Override
-                public void run() {
+            @Override
+            public void run() {
+                if (drawer != null) {
+                    innerPanel.remove(drawer);
+                    drawer = null;
+                }
+                if (model != null) {
                     // Add Drawer
                     drawer = new TimelineDrawer(controller, model);
                     GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -348,21 +348,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                     innerPanel.add(drawer, gridBagConstraints);
 
                     enableTimeline(model);
-                }
-            });
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (drawer != null) {
-                        innerPanel.remove(drawer);
-                    }
-                    drawer = null;
+                } else {
                     enableTimeline(null);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -378,8 +368,25 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_STOP)) {
             setPlaying(false);
         }
-        if (drawer != null) {
-            drawer.consumeEvent(event);
+        runAction(() -> {
+            if (drawer != null) {
+                drawer.consumeEvent(event);
+            }
+        });
+    }
+
+    /**
+     * Runs the given action on the EDT, inline if already there, otherwise
+     * deferred via {@link SwingUtilities#invokeLater}. {@link org.gephi.project.api.WorkspaceListener}
+     * delivery (relayed here through {@link TimelineController}) can land on the EDT or on a
+     * background thread depending on the caller, so any code touching Swing state or the
+     * {@link #drawer} field must go through this helper.
+     */
+    private void runAction(Runnable action) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            action.run();
+        } else {
+            SwingUtilities.invokeLater(action);
         }
     }
 

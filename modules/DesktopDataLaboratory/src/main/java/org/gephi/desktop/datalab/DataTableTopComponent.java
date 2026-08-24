@@ -155,7 +155,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private volatile AvailableColumnsModel edgeAvailableColumnsModel;
     //Observers for auto-refreshing:
     private volatile boolean autoRefreshEnabled = false;
-    private DataTablesObservers dataTablesObservers;
+    private volatile DataTablesObservers dataTablesObservers;
     //Timer for the observers:
     private java.util.Timer observersTimer;
     //Table
@@ -341,8 +341,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                                         if (!autoRefreshEnabled) {
                                             return;
                                         }
-                                        if (dataTablesObservers != null) {
-                                            if (dataTablesObservers.hasChanges()) {
+                                        DataTablesObservers observers = dataTablesObservers;
+                                        if (observers != null) {
+                                            if (observers.hasChanges()) {
                                                 graphChanged();//Execute refresh
                                             }
                                         }
@@ -480,18 +481,39 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * @param refreshTableOnly True to refresh only table values, false to
      *                         refresh all UI including manipulators
      */
-    private void refreshOnce(boolean refreshTableOnly) {
-        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() ||
-            (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
-            refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
-            refreshOnceHelperThread.start();
-        } else {
-            refreshOnceHelperThread.eventAttended();
-        }
+    private void refreshOnce(final boolean refreshTableOnly) {
+        runAction(new Runnable() {
+
+            @Override
+            public void run() {
+                if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() ||
+                    (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
+                    refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
+                    refreshOnceHelperThread.start();
+                } else {
+                    refreshOnceHelperThread.eventAttended();
+                }
+            }
+        });
     }
 
     private void refreshAllOnce() {
         refreshOnce(false);
+    }
+
+    /**
+     * Runs the given action on the EDT, inline if already there, otherwise
+     * deferred via {@link SwingUtilities#invokeLater}. {@link WorkspaceListener}
+     * callbacks can fire on the EDT or on a background thread depending on the
+     * caller, so any code touching Swing state or the {@link #refreshOnceHelperThread}
+     * field must go through this helper.
+     */
+    private void runAction(Runnable action) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            action.run();
+        } else {
+            SwingUtilities.invokeLater(action);
+        }
     }
 
     /**
@@ -1599,11 +1621,17 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     Thread.sleep(CHECK_TIME_INTERVAL);
                 } while (moreEvents);
 
-                if (refreshTableOnly) {
-                    DataTableTopComponent.this.refreshTable();
-                } else {
-                    DataTableTopComponent.this.refreshAll();
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (refreshTableOnly) {
+                            DataTableTopComponent.this.refreshTable();
+                        } else {
+                            DataTableTopComponent.this.refreshAll();
+                        }
+                    }
+                });
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
