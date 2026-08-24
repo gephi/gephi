@@ -163,6 +163,7 @@
         <!-- Testing settings -->
         <gephi.mockito.version>5.12.0</gephi.mockito.version>
         <gephi.awaitility.version>4.2.1</gephi.awaitility.version>
+        <gephi.jmh.version>1.37</gephi.jmh.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         
@@ -791,6 +792,16 @@
                 <artifactId>io-importer-api</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${gephi.jmh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${gephi.jmh.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1425,6 +1436,7 @@
         <module>modules/ImportPluginUI</module>
         <module>modules/LayoutAPI</module>
         <module>modules/LayoutPlugin</module>
+        <module>modules/LayoutPluginBenchmark</module>
         <module>modules/MostRecentFilesAPI</module>
         <module>modules/PerspectiveAPI</module>
         <module>modules/PreviewAPI</module>
