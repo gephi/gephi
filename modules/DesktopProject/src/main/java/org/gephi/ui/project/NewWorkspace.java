@@ -47,7 +47,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.utils.TimeRepresentationWrapper;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
@@ -96,20 +95,26 @@ public class NewWorkspace extends javax.swing.JPanel {
         nameTextField.setText(prefix+" "+workspaceProvider.getNextWorkspaceId());
     }
 
-    public void unsetup() {
+    /**
+     * Returns the configuration the user selected and remembers it as the default for the next
+     * workspace. The workspace itself is created by the caller, off the Event Dispatch Thread.
+     *
+     * @return the configuration for the workspace to create
+     */
+    public Configuration unsetup() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Configuration.Builder defaultConfig = graphController.getDefaultConfigurationBuilder();
         TimeRepresentation selected = ((TimeRepresentationWrapper)timeRepresentationComboBox.getSelectedItem()).getTimeRepresentation();
 
-        Configuration configuration = defaultConfig.timeRepresentation(selected).build();
-
-        ProjectController controller = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = controller.newWorkspace(controller.getCurrentProject(), configuration);
-        controller.renameWorkspace(workspace, nameTextField.getText());
-
         // Save preference
         NbPreferences.forModule(NewWorkspace.class)
             .putInt(TIME_REPRESENTATION_SAVED_PREFERENCES, timeRepresentationComboBox.getSelectedIndex());
+
+        return defaultConfig.timeRepresentation(selected).build();
+    }
+
+    public String getWorkspaceName() {
+        return nameTextField.getText();
     }
 
     public static ValidationPanel createValidationPanel(NewWorkspace innerPanel) {

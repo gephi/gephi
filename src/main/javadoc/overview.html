@@ -19,6 +19,7 @@
         <h4>ProjectAPI</h4>
         <ul>
             <li>Addition of <code>newWorkspace()</code> and <code>openNewWorkspace()</code> methods in <code>ProjectController</code> with the option to pass objects that will be added to the <code>Workspace</code>'s lookup at creation time.</li>
+            <li>The threading contract of <code>WorkspaceListener</code> and <code>ProjectListener</code> is now specified: callbacks are invoked synchronously on the thread that performed the operation, and that thread is never the Event Dispatch Thread. Implementations must therefore defer any Swing work with <code>SwingUtilities.invokeLater()</code> and must never block - in particular never <code>invokeAndWait()</code>. Consequently, <code>ProjectController</code>'s mutating methods shouldn't be called from the Event Dispatch Thread and now log a warning when they are.</li>
         </ul>
         <h4>Graph API</h4>
         <ul>

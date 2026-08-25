@@ -56,6 +56,11 @@ import java.util.Collection;
  * At startup, no project is opened. To open a project, use {@link #openProject(java.io.File)} or create a new one with {@link #newProject()}.
  * <p>
  * A project contains one or more workspaces. A project can have only one workspace selected at a time. By default, a project starts with one workspace.
+ * <p>
+ * <b>Threading:</b> every method that mutates a project or a workspace blocks until the operation completes, and
+ * notifies the {@link ProjectListener} and {@link WorkspaceListener} instances synchronously, on the thread performing
+ * that operation. Such methods must therefore not be called from the Event Dispatch Thread.
+ * The read-only methods, such as {@link #getCurrentWorkspace()}, can be called from anywhere.
  *
  * @author Mathieu Bastian
  * @see Project
