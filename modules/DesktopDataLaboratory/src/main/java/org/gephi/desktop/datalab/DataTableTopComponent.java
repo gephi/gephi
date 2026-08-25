@@ -498,23 +498,29 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * **************Table related methods:****************
      */
     private void refreshAppliedFilter() {
-        int index = columnComboBox.getSelectedIndex();
-        if (index < 0) {
-            return;
-        }
-        if (isShowingNodesTable()) {
-            if (nodeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(UIManager.getColor("TextField.background"));
-            } else {
-                filterTextField.setBackground(INVALID_FILTER_COLOR);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                int index = columnComboBox.getSelectedIndex();
+                if (index < 0) {
+                    return;
+                }
+                if (isShowingNodesTable()) {
+                    if (nodeTable.setFilterPattern(filterTextField.getText(), index)) {
+                        filterTextField.setBackground(UIManager.getColor("TextField.background"));
+                    } else {
+                        filterTextField.setBackground(INVALID_FILTER_COLOR);
+                    }
+                } else if (isShowingEdgesTable()) {
+                    if (edgeTable.setFilterPattern(filterTextField.getText(), index)) {
+                        filterTextField.setBackground(UIManager.getColor("TextField.background"));
+                    } else {
+                        filterTextField.setBackground(INVALID_FILTER_COLOR);
+                    }
+                }
             }
-        } else if (isShowingEdgesTable()) {
-            if (edgeTable.setFilterPattern(filterTextField.getText(), index)) {
-                filterTextField.setBackground(UIManager.getColor("TextField.background"));
-            } else {
-                filterTextField.setBackground(INVALID_FILTER_COLOR);
-            }
-        }
+        });
     }
 
     private void refreshAvailableColumnsButton(AvailableColumnsModel availableColumnsModel, Table table) {
@@ -727,12 +733,30 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void refreshTable() {
-        bannerPanel.setVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                bannerPanel.setVisible(false);
+            }
+        });
         if (isShowingNodesTable()) {
-            nodesButton.setSelected(true);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    nodesButton.setSelected(true);
+                }
+            });
             initNodesView();
         } else if (isShowingEdgesTable()) {
-            edgesButton.setSelected(true);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    edgesButton.setSelected(true);
+                }
+            });
             initEdgesView();
         }
 

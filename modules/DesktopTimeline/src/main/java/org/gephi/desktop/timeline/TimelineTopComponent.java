@@ -327,15 +327,15 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     }
 
     private void setup(TimelineModel model) {
-        if (drawer != null) {
-            innerPanel.remove(drawer);
-            drawer = null;
-        }
-        if (model != null) {
-            SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
+            @Override
+            public void run() {
+                if (drawer != null) {
+                    innerPanel.remove(drawer);
+                    drawer = null;
+                }
+                if (model != null) {
                     // Add Drawer
                     drawer = new TimelineDrawer(controller, model);
                     GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -348,21 +348,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                     innerPanel.add(drawer, gridBagConstraints);
 
                     enableTimeline(model);
-                }
-            });
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (drawer != null) {
-                        innerPanel.remove(drawer);
-                    }
-                    drawer = null;
+                } else {
                     enableTimeline(null);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override

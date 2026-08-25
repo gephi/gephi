@@ -59,13 +59,13 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.spi.PreviewUI;
@@ -235,65 +235,70 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     }
 
     public void setup(PreviewUIModel previewModel) {
-        propertySheet.setNodes(new Node[] {new PreviewNode(propertySheet)});
-        PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-        if (previewModel != null) {
-            ratioSlider.setValue((int) (previewModel.getVisibilityRatio() * 100));
-        }
+        SwingUtilities.invokeLater(new Runnable() {
 
-        //Presets
-        if (previewModel == null) {
-            saveButton.setEnabled(false);
-            removeButton.setEnabled(false);
-            labelPreset.setEnabled(false);
-            presetComboBox.setEnabled(false);
-            presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {NO_SELECTION}));
-        } else {
-            saveButton.setEnabled(true);
-            labelPreset.setEnabled(true);
-            presetComboBox.setEnabled(true);
-            DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-            defaultPresetLimit = 0;
-            for (PreviewPreset preset : previewUIController.getDefaultPresets()) {
-                comboBoxModel.addElement(preset);
-                defaultPresetLimit++;
-            }
-            PreviewPreset[] userPresets = previewUIController.getUserPresets();
-            if (userPresets.length > 0) {
-                comboBoxModel.addElement(NO_SELECTION);
-                for (PreviewPreset preset : userPresets) {
-                    comboBoxModel.addElement(preset);
+            @Override
+            public void run() {
+                propertySheet.setNodes(new Node[] {new PreviewNode(propertySheet)});
+                PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                if (previewModel != null) {
+                    ratioSlider.setValue((int) (previewModel.getVisibilityRatio() * 100));
                 }
-            }
-            comboBoxModel.setSelectedItem(previewModel.getCurrentPreset());
-            presetComboBox.setModel(comboBoxModel);
-        }
 
-        //Refresh tabs
-        int tabCount = tabbedPane.getTabCount();
-        for (int i = 2; i < tabCount; i++) {//Start at 2, not removing settings and renderer manager tabs
-            tabbedPane.removeTabAt(i);
-        }
-        for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-            pui.unsetup();
-        }
-        if (previewModel != null) {
-            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-            PreviewModel pModel = previewController.getModel();
-            //Add new tabs
-            for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-                pui.setup(pModel);
-                JPanel pluginPanel = pui.getPanel();
-                if (UIUtils.isAquaLookAndFeel()) {
-                    pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-                }
-                if (pui.getIcon() != null) {
-                    tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
+                //Presets
+                if (previewModel == null) {
+                    saveButton.setEnabled(false);
+                    removeButton.setEnabled(false);
+                    labelPreset.setEnabled(false);
+                    presetComboBox.setEnabled(false);
+                    presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {NO_SELECTION}));
                 } else {
-                    tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
+                    saveButton.setEnabled(true);
+                    labelPreset.setEnabled(true);
+                    presetComboBox.setEnabled(true);
+                    DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+                    defaultPresetLimit = 0;
+                    for (PreviewPreset preset : previewUIController.getDefaultPresets()) {
+                        comboBoxModel.addElement(preset);
+                        defaultPresetLimit++;
+                    }
+                    PreviewPreset[] userPresets = previewUIController.getUserPresets();
+                    if (userPresets.length > 0) {
+                        comboBoxModel.addElement(NO_SELECTION);
+                        for (PreviewPreset preset : userPresets) {
+                            comboBoxModel.addElement(preset);
+                        }
+                    }
+                    comboBoxModel.setSelectedItem(previewModel.getCurrentPreset());
+                    presetComboBox.setModel(comboBoxModel);
+                }
+
+                //Refresh tabs
+                int tabCount = tabbedPane.getTabCount();
+                for (int i = 2; i < tabCount; i++) {//Start at 2, not removing settings and renderer manager tabs
+                    tabbedPane.removeTabAt(i);
+                }
+                for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+                    pui.unsetup();
+                }
+                if (previewModel != null) {
+                    PreviewModel pModel = previewModel.getPreviewModel();
+                    //Add new tabs
+                    for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+                        pui.setup(pModel);
+                        JPanel pluginPanel = pui.getPanel();
+                        if (UIUtils.isAquaLookAndFeel()) {
+                            pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                        }
+                        if (pui.getIcon() != null) {
+                            tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
+                        } else {
+                            tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     public void unsetup() {
@@ -320,12 +325,18 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
      * Enables the refresh button.
      */
     public void enableRefreshButton() {
-        refreshButton.setEnabled(true);
-        labelRatio.setEnabled(true);
-        ratioLabel.setEnabled(true);
-        ratioSlider.setEnabled(true);
-        labelExport.setEnabled(true);
-        svgExportButton.setEnabled(true);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                refreshButton.setEnabled(true);
+                labelRatio.setEnabled(true);
+                ratioLabel.setEnabled(true);
+                ratioSlider.setEnabled(true);
+                labelExport.setEnabled(true);
+                svgExportButton.setEnabled(true);
+            }
+        });
     }
 
     public void enableRemoveButtonIfNeeded() {
@@ -342,12 +353,18 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
      * Disables the refresh button.
      */
     public void disableRefreshButton() {
-        refreshButton.setEnabled(false);
-        labelRatio.setEnabled(false);
-        ratioLabel.setEnabled(false);
-        ratioSlider.setEnabled(false);
-        labelExport.setEnabled(false);
-        svgExportButton.setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                refreshButton.setEnabled(false);
+                labelRatio.setEnabled(false);
+                ratioLabel.setEnabled(false);
+                ratioSlider.setEnabled(false);
+                labelExport.setEnabled(false);
+                svgExportButton.setEnabled(false);
+            }
+        });
     }
 
     private boolean isDefaultPreset(PreviewPreset preset) {
