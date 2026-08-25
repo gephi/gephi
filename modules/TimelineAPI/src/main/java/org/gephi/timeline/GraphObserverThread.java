@@ -16,7 +16,7 @@ public class GraphObserverThread extends Thread {
 
     private final TimelineControllerImpl timelineController;
     private final TimelineModelImpl timelineModel;
-    private boolean stop;
+    private volatile boolean stop;
     private Interval interval;
 
     public GraphObserverThread(TimelineControllerImpl controller, TimelineModelImpl model) {

@@ -83,7 +83,7 @@ import org.openide.util.lookup.ServiceProviders;
 public class TimelineControllerImpl implements TimelineController, Controller<TimelineModelImpl> {
 
     private final List<TimelineModelListener> listeners;
-    private GraphObserverThread observerThread;
+    private volatile GraphObserverThread observerThread;
     private ScheduledExecutorService playExecutor;
 
     public TimelineControllerImpl() {
@@ -108,8 +108,9 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             @Override
             public void unselect(Workspace workspace) {
                 stopPlay();
-                if (observerThread != null) {
-                    observerThread.stopThread();
+                GraphObserverThread thread = observerThread;
+                if (thread != null) {
+                    thread.stopThread();
                     observerThread = null;
                 }
             }
@@ -121,8 +122,9 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             @Override
             public void disable() {
                 stopPlay();
-                if (observerThread != null) {
-                    observerThread.stopThread();
+                GraphObserverThread thread = observerThread;
+                if (thread != null) {
+                    thread.stopThread();
                     observerThread = null;
                 }
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, null, null));

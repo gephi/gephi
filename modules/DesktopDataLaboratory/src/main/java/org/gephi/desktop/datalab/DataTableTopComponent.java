@@ -155,7 +155,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private volatile AvailableColumnsModel edgeAvailableColumnsModel;
     //Observers for auto-refreshing:
     private volatile boolean autoRefreshEnabled = false;
-    private DataTablesObservers dataTablesObservers;
+    private volatile DataTablesObservers dataTablesObservers;
     //Timer for the observers:
     private java.util.Timer observersTimer;
     //Table
@@ -170,7 +170,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private final Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<>(DisplayTable.class);
     private final Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<>(DisplayTable.class);
     //Refresh executor
-    private RefreshOnceHelperThread refreshOnceHelperThread;
+    private volatile RefreshOnceHelperThread refreshOnceHelperThread;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
     private javax.swing.JButton availableColumnsButton;
@@ -276,8 +276,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void deactivateAll() {
-        if (dataTablesObservers != null) {
-            dataTablesObservers.destroy();
+        DataTablesObservers observers = dataTablesObservers;
+        if (observers != null) {
+            observers.destroy();
         }
 
         graphModel = null;
@@ -341,8 +342,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                                         if (!autoRefreshEnabled) {
                                             return;
                                         }
-                                        if (dataTablesObservers != null) {
-                                            if (dataTablesObservers.hasChanges()) {
+                                        DataTablesObservers observers = dataTablesObservers;
+                                        if (observers != null) {
+                                            if (observers.hasChanges()) {
                                                 graphChanged();//Execute refresh
                                             }
                                         }
@@ -480,13 +482,15 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * @param refreshTableOnly True to refresh only table values, false to
      *                         refresh all UI including manipulators
      */
-    private void refreshOnce(boolean refreshTableOnly) {
-        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() ||
-            (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
-            refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
-            refreshOnceHelperThread.start();
+    private synchronized void refreshOnce(boolean refreshTableOnly) {
+        RefreshOnceHelperThread helperThread = refreshOnceHelperThread;
+        if (helperThread == null || !helperThread.isAlive() ||
+            (helperThread.refreshTableOnly && !refreshTableOnly)) {
+            helperThread = new RefreshOnceHelperThread(refreshTableOnly);
+            refreshOnceHelperThread = helperThread;
+            helperThread.start();
         } else {
-            refreshOnceHelperThread.eventAttended();
+            helperThread.eventAttended();
         }
     }
 

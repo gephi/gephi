@@ -77,7 +77,7 @@ public class AppearanceUIController {
     protected final AppearanceController appearanceController;
     private final CopyOnWriteArraySet<AppearanceUIModelListener> listeners;
     //Model
-    private AppearanceUIModel model;
+    private volatile AppearanceUIModel model;
 
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -103,8 +103,9 @@ public class AppearanceUIController {
 
             @Override
             public void unselect(Workspace workspace) {
-                if (model != null) {
-                    model.unselect();
+                AppearanceUIModel m = model;
+                if (m != null) {
+                    m.unselect();
                 }
             }
 
@@ -161,10 +162,11 @@ public class AppearanceUIController {
     }
 
     public void transform(Function function) {
-        if (model != null && function != null) {
-            model.saveTransformerProperties();
+        AppearanceUIModel m = model;
+        if (m != null && function != null) {
+            m.saveTransformerProperties();
             appearanceController.transform(function);
-            TransformerUI selectedUI = model.getSelectedTransformerUI();
+            TransformerUI selectedUI = m.getSelectedTransformerUI();
             if (selectedUI != null) {
                 selectedUI.onApply(function);
             }
@@ -198,10 +200,11 @@ public class AppearanceUIController {
         if (!elementClass.equals(NODE_ELEMENT) && !elementClass.equals(EDGE_ELEMENT)) {
             throw new RuntimeException("Element class has to be " + NODE_ELEMENT + " or " + EDGE_ELEMENT);
         }
-        if (model != null) {
-            String oldValue = model.getSelectedElementClass();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            String oldValue = m.getSelectedElementClass();
             if (!oldValue.equals(elementClass)) {
-                model.setSelectedElementClass(elementClass);
+                m.setSelectedElementClass(elementClass);
 
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS, oldValue, elementClass);
             }
@@ -209,21 +212,23 @@ public class AppearanceUIController {
     }
 
     public void setSelectedCategory(TransformerCategory category) {
-        if (model != null) {
-            TransformerCategory oldValue = model.getSelectedCategory();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            TransformerCategory oldValue = m.getSelectedCategory();
             if (!oldValue.equals(category)) {
-                model.setSelectedCategory(category);
+                m.setSelectedCategory(category);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_CATEGORY, oldValue, category);
             }
         }
     }
 
     public void setSelectedTransformerUI(TransformerUI ui) {
-        if (model != null) {
-            TransformerUI oldValue = model.getSelectedTransformerUI();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            TransformerUI oldValue = m.getSelectedTransformerUI();
             if (!oldValue.equals(ui)) {
-                model.setAutoApply(false);
-                model.setSelectedTransformerUI(ui);
+                m.setAutoApply(false);
+                m.setSelectedTransformerUI(ui);
 
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI, oldValue, ui);
             }
@@ -231,27 +236,30 @@ public class AppearanceUIController {
     }
 
     public void setSelectedFunction(Function function) {
-        if (model != null) {
-            Function oldValue = model.getSelectedFunction();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            Function oldValue = m.getSelectedFunction();
             if ((oldValue == null && function != null) || (oldValue != null && function == null) ||
                 (function != null && oldValue != null && !oldValue.equals(function))) {
-                model.setAutoApply(false);
-                model.setSelectedFunction(function);
+                m.setAutoApply(false);
+                m.setSelectedFunction(function);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
             }
         }
     }
 
     public void setAutoApply(boolean autoApply) {
-        if (model != null) {
-            model.setAutoApply(autoApply);
+        AppearanceUIModel m = model;
+        if (m != null) {
+            m.setAutoApply(autoApply);
             firePropertyChangeEvent(AppearanceUIModelEvent.SET_AUTO_APPLY, !autoApply, autoApply);
         }
     }
 
     public void startAutoApply() {
-        if (model != null) {
-            AutoAppyTransformer aat = model.getAutoApplyTransformer();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            AutoAppyTransformer aat = m.getAutoApplyTransformer();
             if (aat != null) {
                 aat.start();
                 firePropertyChangeEvent(AppearanceUIModelEvent.START_STOP_AUTO_APPLY, false, true);
@@ -260,8 +268,9 @@ public class AppearanceUIController {
     }
 
     public void stopAutoApply() {
-        if (model != null) {
-            AutoAppyTransformer aat = model.getAutoApplyTransformer();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            AutoAppyTransformer aat = m.getAutoApplyTransformer();
             if (aat != null) {
                 aat.stop();
                 firePropertyChangeEvent(AppearanceUIModelEvent.START_STOP_AUTO_APPLY, true, false);
@@ -270,8 +279,9 @@ public class AppearanceUIController {
     }
 
     public void refreshColumnsList() {
-        if (model != null) {
-            Function function = model.getSelectedFunction();
+        AppearanceUIModel m = model;
+        if (m != null) {
+            Function function = m.getSelectedFunction();
             if (function != null && !function.isValid()) {
                 setSelectedFunction(null);
             }
