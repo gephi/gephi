@@ -114,6 +114,13 @@ public interface WorkspaceInformation {
 
     /**
      * Add change listener.
+     * <p>
+     * These events come from the same {@link ProjectController} operations as the
+     * {@link WorkspaceListener} callbacks and share their threading rules: the listener is invoked
+     * synchronously on the thread performing the operation, which is never the Event Dispatch Thread
+     * and isn't necessarily the same thread from one event to the next. Post user interface work with
+     * <code>SwingUtilities.invokeLater</code>, never with <code>invokeAndWait</code>, and don't block
+     * the calling thread.
      *
      * @param listener change listener
      */

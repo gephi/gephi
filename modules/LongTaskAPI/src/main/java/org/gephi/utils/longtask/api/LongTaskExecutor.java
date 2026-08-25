@@ -134,8 +134,8 @@ public final class LongTaskExecutor {
      *                               <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public synchronized void execute(LongTask task, final Runnable runnable, String taskName,
-                                     LongTaskErrorHandler errorHandler) {
+    public void execute(LongTask task, final Runnable runnable, String taskName,
+                        LongTaskErrorHandler errorHandler) {
         if (runnable == null || taskName == null) {
             throw new NullPointerException();
         }
@@ -158,8 +158,8 @@ public final class LongTaskExecutor {
      *                               <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public synchronized <V> Future<V> execute(LongTask task, final Callable<V> callable, String taskName,
-                                     LongTaskErrorHandler errorHandler) {
+    public <V> Future<V> execute(LongTask task, final Callable<V> callable, String taskName,
+                                 LongTaskErrorHandler errorHandler) {
         if (callable == null || taskName == null) {
             throw new NullPointerException();
         }
@@ -168,18 +168,16 @@ public final class LongTaskExecutor {
 
     private <V> Future<V> execute(RunningLongTask<V> runningLongtask) {
         if (inBackground) {
-            if (executor == null) {
-                this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-                    new NamedThreadFactory());
-            }
-            Future<V> result = executor.submit(runningLongtask);
-            runningLongtask.future = result;
-            return result;
-        } else {
-            currentTask = runningLongtask;
-            runningLongtask.call();
-            return runningLongtask.future;
+            return submit(runningLongtask);
         }
+        // The synchronous path runs the whole task body on the calling thread and must
+        // do so without holding this executor's monitor. cancel() is synchronized and
+        // is typically called from the EDT (the progress bar's Cancel button), so a
+        // monitor held here would block the EDT until the task completes and the cancel
+        // request would always arrive too late to be of any use.
+        currentTask = runningLongtask;
+        runningLongtask.call();
+        return runningLongtask.future;
     }
 
     /**
@@ -192,7 +190,7 @@ public final class LongTaskExecutor {
      * @throws NullPointerException  if <code>runnable</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public synchronized void execute(LongTask task, Runnable runnable) {
+    public void execute(LongTask task, Runnable runnable) {
         execute(task, runnable, "", null);
     }
 
@@ -206,8 +204,22 @@ public final class LongTaskExecutor {
      * @throws NullPointerException  if <code>callable</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public synchronized <V> Future<V> execute(LongTask task, Callable<V> callable) {
+    public <V> Future<V> execute(LongTask task, Callable<V> callable) {
         return execute(task, callable, "", null);
+    }
+
+    /**
+     * Submits the task to the background executor, creating it on first use.
+     * Synchronized so the lazy creation and the submission stay atomic.
+     */
+    private synchronized <V> Future<V> submit(RunningLongTask<V> runningLongtask) {
+        if (executor == null) {
+            this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                new NamedThreadFactory());
+        }
+        Future<V> result = executor.submit(runningLongtask);
+        runningLongtask.future = result;
+        return result;
     }
 
     /**

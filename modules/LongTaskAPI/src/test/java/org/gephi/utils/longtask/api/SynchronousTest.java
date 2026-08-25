@@ -1,8 +1,11 @@
 package org.gephi.utils.longtask.api;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.awaitility.Awaitility;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -110,6 +113,40 @@ public class SynchronousTest {
         expectedException.expect(ExecutionException.class);
         expectedException.expectCause(Is.isA(RuntimeException.class));
         res.get();
+    }
+
+    @Test(timeout = 30000)
+    public void testCancelNotBlockedByRunningTask() throws Exception {
+        final CountDownLatch taskStarted = new CountDownLatch(1);
+        final CountDownLatch cancelReturned = new CountDownLatch(1);
+        final AtomicBoolean cancelledWhileRunning = new AtomicBoolean();
+
+        // The task body only completes once cancel() has returned on the other thread,
+        // so the executor's monitor can't be held while the task is running.
+        Mockito.doAnswer(invocation -> {
+            taskStarted.countDown();
+            cancelledWhileRunning.set(cancelReturned.await(5, TimeUnit.SECONDS));
+            return null;
+        }).when(runnable).run();
+
+        Thread canceller = new Thread(() -> {
+            try {
+                if (taskStarted.await(10, TimeUnit.SECONDS)) {
+                    executor.cancel();
+                    cancelReturned.countDown();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }, "cancel-caller");
+        canceller.start();
+
+        executor.execute(longTask, runnable);
+        canceller.join();
+
+        Assert.assertTrue("cancel() must not wait for the running synchronous task",
+            cancelledWhileRunning.get());
+        Mockito.verify(longTask).cancel();
     }
 
     public static class MockProgressTicketProvider implements ProgressTicketProvider {
