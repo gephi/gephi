@@ -111,9 +111,17 @@ public class ProjectControllerUIImpl implements ProjectListener {
     private volatile Project lastSavedProject;
 
     public ProjectControllerUIImpl() {
+        this(Lookup.getDefault().lookup(ProjectController.class),
+            Lookup.getDefault().lookup(ImportControllerUI.class));
+    }
 
-        controller = Lookup.getDefault().lookup(ProjectController.class);
-        importControllerUI = Lookup.getDefault().lookup(ImportControllerUI.class);
+    /**
+     * Package-private seam for tests to drive this class with a mocked {@link ProjectController}
+     * instead of going through {@link Lookup}.
+     */
+    ProjectControllerUIImpl(ProjectController controller, ImportControllerUI importControllerUI) {
+        this.controller = controller;
+        this.importControllerUI = importControllerUI;
 
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
@@ -157,8 +165,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         unlockProjectActions();
         updateTitleBar(project);
 
-        //Persist projects so the last opened is refreshed
-        saveProjects();
+        //Persist projects so the last opened is refreshed, off the critical path (this callback
+        //runs while ProjectControllerImpl holds its monitor, and saveProjects() does blocking file I/O)
+        runInProjectIO(this::saveProjects);
     }
 
     @Override
@@ -194,8 +203,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         unlockProjectActions();
         updateTitleBar(project);
 
-        //Persist projects so the last opened is refreshed
-        saveProjects();
+        //Persist projects so the last opened is refreshed, off the critical path (this callback
+        //runs while ProjectControllerImpl holds its monitor, and saveProjects() does blocking file I/O)
+        runInProjectIO(this::saveProjects);
     }
 
     @Override
@@ -435,7 +445,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
      * @return <code>true</code> when the project has been closed and the operation that requested
      *     the close may continue
      */
-    private boolean closeCurrentProject(CloseDecision decision) {
+    boolean closeCurrentProject(CloseDecision decision) {
         if (decision.cancelled) {
             return false;
         }
@@ -938,9 +948,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
      * project has to be written to before being closed, <code>null</code> when it has to be closed
      * without being saved.
      */
-    private static final class CloseDecision {
+    static final class CloseDecision {
 
-        private static final CloseDecision CANCEL = new CloseDecision(null, true, null);
+        static final CloseDecision CANCEL = new CloseDecision(null, true, null);
 
         /**
          * Project the user answered about, <code>null</code> when there was nothing to answer for.
@@ -957,11 +967,11 @@ public class ProjectControllerUIImpl implements ProjectListener {
             this.saveFile = saveFile;
         }
 
-        private static CloseDecision close(Project project) {
+        static CloseDecision close(Project project) {
             return new CloseDecision(project, false, null);
         }
 
-        private static CloseDecision saveAndClose(Project project, File file) {
+        static CloseDecision saveAndClose(Project project, File file) {
             return new CloseDecision(project, false, file);
         }
     }

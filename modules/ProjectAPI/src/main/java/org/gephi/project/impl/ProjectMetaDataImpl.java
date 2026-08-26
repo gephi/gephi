@@ -50,10 +50,10 @@ import org.gephi.project.api.ProjectMetaData;
  */
 public class ProjectMetaDataImpl implements ProjectMetaData {
 
-    private String author;
-    private String title = "";
-    private String keywords = "";
-    private String description = "";
+    private volatile String author;
+    private volatile String title = "";
+    private volatile String keywords = "";
+    private volatile String description = "";
 
     public ProjectMetaDataImpl() {
         String username = System.getProperty("user.name");
@@ -127,10 +127,6 @@ public class ProjectMetaDataImpl implements ProjectMetaData {
 
     @Override
     public int hashCode() {
-        int result = author != null ? author.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (keywords != null ? keywords.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+        return Objects.hash(author, title, keywords, description);
     }
 }
