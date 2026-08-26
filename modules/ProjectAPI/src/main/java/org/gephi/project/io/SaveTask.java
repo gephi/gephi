@@ -79,7 +79,7 @@ public class SaveTask implements LongTask {
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
     private final File file;
     private final Project project;
-    private boolean cancel = false;
+    private volatile boolean cancel = false;
     private ProgressTicket progressTicket;
 
     public SaveTask(Project project, File file) {
