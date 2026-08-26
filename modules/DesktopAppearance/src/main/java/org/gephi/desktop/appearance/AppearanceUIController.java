@@ -82,44 +82,6 @@ public class AppearanceUIController {
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         appearanceController = Lookup.getDefault().lookup(AppearanceController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-            }
-
-            @Override
-            public void select(Workspace workspace) {
-                AppearanceUIModel oldModel = model;
-                model = workspace.getLookup().lookup(AppearanceUIModel.class);
-                if (model == null) {
-                    AppearanceModel appearanceModel = appearanceController.getModel(workspace);
-                    model = new AppearanceUIModel(appearanceModel);
-                    workspace.add(model);
-                }
-                model.select();
-
-                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-                AppearanceUIModel m = model;
-                if (m != null) {
-                    m.unselect();
-                }
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                AppearanceUIModel oldModel = model;
-                model = null;
-                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
-            }
-        });
 
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(AppearanceUIModel.class);
@@ -159,6 +121,47 @@ public class AppearanceUIController {
                 }
             }
         }
+
+        // Register only once fully constructed, since events can be delivered from a
+        // background thread as soon as this listener is registered
+        pc.addWorkspaceListener(new WorkspaceListener() {
+            @Override
+            public void initialize(Workspace workspace) {
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+                AppearanceUIModel oldModel = model;
+                model = workspace.getLookup().lookup(AppearanceUIModel.class);
+                if (model == null) {
+                    AppearanceModel appearanceModel = appearanceController.getModel(workspace);
+                    model = new AppearanceUIModel(appearanceModel);
+                    workspace.add(model);
+                }
+                model.select();
+
+                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+                AppearanceUIModel m = model;
+                if (m != null) {
+                    m.unselect();
+                }
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+            }
+
+            @Override
+            public void disable() {
+                AppearanceUIModel oldModel = model;
+                model = null;
+                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
+            }
+        });
     }
 
     public void transform(Function function) {
