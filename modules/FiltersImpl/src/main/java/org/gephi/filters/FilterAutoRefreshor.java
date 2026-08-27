@@ -54,21 +54,23 @@ public class FilterAutoRefreshor extends Thread {
     private static final int TIMER = 1000;
     private final GraphModel graphModel;
     private final FilterModelImpl filterModel;
-    private GraphObserver observer;
-    private boolean running = true;
+    private volatile GraphObserver observer;
+    private volatile boolean running = true;
 
     public FilterAutoRefreshor(FilterModelImpl filterModel, GraphModel graphModel) {
         super("Filter Auto-Refresh - " + filterModel.getWorkspace().toString());
         setDaemon(true);
         this.graphModel = graphModel;
         this.filterModel = filterModel;
+        start();
     }
 
     @Override
     public void run() {
         while (running) {
             try {
-                if (observer != null && observer.hasGraphChanged()) {
+                GraphObserver currentObserver = observer;
+                if (currentObserver != null && currentObserver.hasGraphChanged()) {
                     manualRefresh();
                 }
                 Thread.sleep(TIMER);
@@ -78,7 +80,7 @@ public class FilterAutoRefreshor extends Thread {
         }
     }
 
-    public void setEnable(boolean enable) {
+    public synchronized void setEnable(boolean enable) {
         if (enable) {
             if (observer == null) {
                 observer = graphModel.createGraphObserver(graphModel.getGraph(), false);
@@ -87,12 +89,9 @@ public class FilterAutoRefreshor extends Thread {
             observer.destroy();
             observer = null;
         }
-        if (!isAlive()) {
-            start();
-        }
     }
 
-    public void setRunning(boolean running) {
+    public synchronized void setRunning(boolean running) {
         this.running = running;
         if (!running) {
             if (observer != null && !observer.isDestroyed()) {
