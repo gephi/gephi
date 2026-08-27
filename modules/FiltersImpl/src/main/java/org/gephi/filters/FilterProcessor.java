@@ -250,8 +250,15 @@ public class FilterProcessor {
             } else if (previousRange != null &&
                 (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
                 //Opening projects
-                newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max,
-                    previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                if (previousRange.getLowerBound().getClass().equals(min.getClass()) &&
+                    previousRange.getUpperBound().getClass().equals(max.getClass())) {
+                    newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max,
+                        previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                } else {
+                    //The persisted bounds are a different Number type than the live values (e.g. a
+                    //project saved by an older Gephi version) - discard them instead of crashing
+                    newRange = new Range(min, max, min, max, values);
+                }
                 rangeFilter.getRangeProperty().setValue(newRange);
             } else {
                 //Collect some info
