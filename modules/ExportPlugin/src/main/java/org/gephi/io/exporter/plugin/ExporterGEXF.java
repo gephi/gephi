@@ -80,6 +80,7 @@ import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.VersionUtils;
+import org.gephi.utils.XmlUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -258,11 +259,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_TITLE);
-            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getTitle());
+            xmlWriter.writeCharacters(XmlUtils.stripInvalidXmlChars(workspace.getWorkspaceMetadata().getTitle()));
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
-            xmlWriter.writeCharacters(workspace.getWorkspaceMetadata().getDescription());
+            xmlWriter
+                .writeCharacters(XmlUtils.stripInvalidXmlChars(workspace.getWorkspaceMetadata().getDescription()));
             xmlWriter.writeEndElement();
 
             xmlWriter.writeEndElement();
@@ -305,7 +307,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeStartElement(ATTRIBUTE);
             xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
-            xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
+            xmlWriter.writeAttribute(ATTRIBUTE_TITLE, XmlUtils.stripInvalidXmlChars(col.getTitle()));
 
             if (col.isArray()) {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
@@ -325,7 +327,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 } else {
                     valString = col.getDefaultValue().toString();
                 }
-                xmlWriter.writeCharacters(valString);
+                xmlWriter.writeCharacters(XmlUtils.stripInvalidXmlChars(valString));
                 xmlWriter.writeEndElement();
             }
             xmlWriter.writeEndElement();
@@ -347,7 +349,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             String id = node.getId().toString();
             xmlWriter.writeAttribute(NODE_ID, id);
             if (node.getLabel() != null && !node.getLabel().isEmpty()) {
-                xmlWriter.writeAttribute(NODE_LABEL, node.getLabel());
+                xmlWriter.writeAttribute(NODE_LABEL, XmlUtils.stripInvalidXmlChars(node.getLabel()));
             }
 
             if (exportDynamic) {
@@ -383,7 +385,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         if(column.isNumber()) {
             return replaceInfinity(AttributeUtils.print(val));
         } else {
-            return AttributeUtils.print(val);
+            return XmlUtils.stripInvalidXmlChars(AttributeUtils.print(val));
         }
     }
 
@@ -594,7 +596,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             String label = edge.getLabel();
             if (label != null && !label.isEmpty()) {
-                xmlWriter.writeAttribute(EDGE_LABEL, label);
+                xmlWriter.writeAttribute(EDGE_LABEL, XmlUtils.stripInvalidXmlChars(label));
             }
 
             if (edge.getType() != 0) {
