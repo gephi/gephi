@@ -2,7 +2,9 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,6 +47,25 @@ public class GEXFTest {
         Assert.assertTrue(str.contains("<meta "));
         Assert.assertTrue(str.contains("<title>title</title>"));
         Assert.assertTrue(str.contains("<description>desc</description>"));
+    }
+
+    @Test
+    public void testInvalidXmlCharsAreStripped() throws IOException {
+        GraphGenerator graphGenerator = GraphGenerator.build().generateTinyGraph().addStringNodeColumn();
+        Graph graph = graphGenerator.getGraph();
+
+        Node node = graph.getNode(GraphGenerator.FIRST_NODE);
+        node.setLabel("foo\bbar");
+        node.setAttribute(GraphGenerator.STRING_COLUMN, "baz\0qux");
+        Edge edge = graph.getEdge(GraphGenerator.FIRST_EDGE);
+        edge.setLabel("edge\blabel");
+
+        String str = Utils.toString(createExporter(graphGenerator));
+        Assert.assertFalse(str.contains("\b"));
+        Assert.assertFalse(str.contains("\0"));
+        Assert.assertTrue(str.contains("label=\"foobar\""));
+        Assert.assertTrue(str.contains("value=\"bazqux\""));
+        Assert.assertTrue(str.contains("label=\"edgelabel\""));
     }
 
     private static ExporterGEXF createExporter(GraphGenerator graphGenerator) {
