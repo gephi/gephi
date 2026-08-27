@@ -102,6 +102,9 @@ public class NodesDragger implements Tool {
                 if (nodes != null && nodes.length > 0) {
                     for (int i = 0; i < nodes.length; i++) {
                         Node n = nodes[i];
+                        if (n.isFixed()) {
+                            continue;
+                        }
                         n.setX(initialX[i] + displacementXWorld);
                         n.setY(initialY[i] + displacementYWorld);
                     }
