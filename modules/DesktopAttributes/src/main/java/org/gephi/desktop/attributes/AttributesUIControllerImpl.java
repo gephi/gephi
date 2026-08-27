@@ -262,7 +262,7 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
         AttributesUIModelImpl model = getModel();
         if (model != null && !model.isEditMode()) {
             runAction(() -> {
-                if (model == getModel()) {
+                if (model == getModel() && !model.isEditMode()) {
                     setSelectedNodes(nodes);
                 }
             });
