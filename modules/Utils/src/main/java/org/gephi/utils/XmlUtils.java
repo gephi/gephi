@@ -51,39 +51,21 @@ public class XmlUtils {
     }
 
     /**
-     * Removes characters that are not allowed in XML 1.0 documents (e.g. control characters such as
-     * backspace) from the given string, so it can be safely written by an XML writer.
+     * Removes the null character (U+0000) from the given string.
+     * <p>
+     * XML forbids the null character even as a numeric character reference, in both XML 1.0 and XML 1.1,
+     * so it is the only character that cannot be preserved when writing XML text or attribute values and
+     * must be dropped rather than escaped. Every other control character can be written as-is by an XML
+     * 1.1 writer, which escapes it to a character reference automatically instead of rejecting it.
      *
      * @param str string to sanitize, can be null
-     * @return the sanitized string, or the original string if it was already valid, or null if the input was null
+     * @return the sanitized string, or the original string if it did not contain a null character, or null
+     * if the input was null
      */
     public static String stripInvalidXmlChars(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.indexOf(0) == -1) {
             return str;
         }
-        StringBuilder sb = null;
-        int len = str.length();
-        int i = 0;
-        while (i < len) {
-            int codePoint = str.codePointAt(i);
-            int charCount = Character.charCount(codePoint);
-            if (isValidXmlCodePoint(codePoint)) {
-                if (sb != null) {
-                    sb.appendCodePoint(codePoint);
-                }
-            } else if (sb == null) {
-                sb = new StringBuilder(len);
-                sb.append(str, 0, i);
-            }
-            i += charCount;
-        }
-        return sb != null ? sb.toString() : str;
-    }
-
-    private static boolean isValidXmlCodePoint(int c) {
-        return c == 0x9 || c == 0xA || c == 0xD
-            || (c >= 0x20 && c <= 0xD7FF)
-            || (c >= 0xE000 && c <= 0xFFFD)
-            || (c >= 0x10000 && c <= 0x10FFFF);
+        return str.replace("\0", "");
     }
 }

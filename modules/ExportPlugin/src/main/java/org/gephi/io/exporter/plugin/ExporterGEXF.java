@@ -186,7 +186,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
             xmlWriter = new IndentingXMLStreamWriter(xmlWriter);
 
-            xmlWriter.writeStartDocument("UTF-8", "1.0");
+            xmlWriter.writeStartDocument("UTF-8", "1.1");
             xmlWriter.setPrefix("", GEXF_NAMESPACE);
             xmlWriter.writeStartElement(GEXF_NAMESPACE, GEXF);
             xmlWriter.writeNamespace("", GEXF_NAMESPACE);
