@@ -265,7 +265,11 @@ public final class LongTaskExecutor {
 
     /**
      * Set the listener to this executor. Only a unique listener can be set to
-     * this executor. The listener is called when the task terminates normally.
+     * this executor. The listener's
+     * {@link LongTaskListener#taskFinished(LongTask)} is called when the task
+     * terminates normally and its
+     * {@link LongTaskListener#fatalError(Throwable)} when it terminates with an
+     * uncaught exception.
      *
      * @param listener a listener for this executor
      */
@@ -278,7 +282,13 @@ public final class LongTaskExecutor {
      * exceptions thrown during tasks execution.
      *
      * @param errorHandler the default error handler
+     * @deprecated implement {@link LongTaskListener#fatalError(Throwable)} and
+     * register the listener with {@link #setLongTaskListener(LongTaskListener)}
+     * instead, so a single listener receives both the successful and the failed
+     * outcome of a task. Default error handlers remain fully supported and are
+     * still invoked.
      */
+    @Deprecated
     public void setDefaultErrorHandler(LongTaskErrorHandler errorHandler) {
         if (errorHandler != null) {
             this.defaultErrorHandler = errorHandler;
@@ -288,11 +298,13 @@ public final class LongTaskExecutor {
     /**
      * Completes the given task. Only the first caller which successfully
      * claimed the completion (see <code>RunningLongTask.claimFinish()</code>)
-     * should call this method, so the listener is notified exactly once per task.
+     * should call this method, so a task is completed exactly once and the
+     * listener is notified exactly once for it.
      *
      * @param runningLongTask the task which completed
-     * @param notifyListener  whether the listener should be notified, errors are
-     *                        reported to the error handler instead
+     * @param notifyListener  whether <code>taskFinished()</code> should be called on
+     *                        the listener, failures are reported to the error handler
+     *                        and to the listener's <code>fatalError()</code> instead
      */
     private synchronized void finished(RunningLongTask runningLongTask, boolean notifyListener) {
         if (cancelTimer != null) {
@@ -387,12 +399,21 @@ public final class LongTaskExecutor {
                         Logger.getLogger("").log(Level.SEVERE, "", e);
                     }
                 } finally {
-                    // Failures are reported to the error handler, not to the listener, but
-                    // the task still has to be completed so the executor doesn't stay
-                    // 'running'. When the task has been interrupted by the cancel timer the
-                    // completion is already claimed by it and this is a no-op.
+                    // Failures are reported through the error handler and the listener's
+                    // fatalError(), not through the listener's taskFinished(), but the task
+                    // still has to be completed so the executor doesn't stay 'running'. When
+                    // the task has been interrupted by the cancel timer the completion is
+                    // already claimed by it and this whole block is a no-op: the timer has
+                    // then already notified the listener itself.
                     if (claimFinish()) {
                         finished(this, false);
+                        LongTaskListener lst = listener;
+                        if (lst != null) {
+                            // In addition to, and not instead of, the error handler above.
+                            // Called after finished() so a failing handler or listener can't
+                            // leave the executor 'running' forever
+                            lst.fatalError(e);
+                        }
                     }
                 }
                 if (!inBackground) {

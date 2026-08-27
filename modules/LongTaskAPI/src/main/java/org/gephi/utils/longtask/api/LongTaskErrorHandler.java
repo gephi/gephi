@@ -47,7 +47,13 @@ package org.gephi.utils.longtask.api;
  * asynchronous task execution.
  *
  * @author Mathieu Bastian
+ * @deprecated prefer {@link LongTaskListener#fatalError(Throwable)}, so a
+ * single listener registered on the executor receives both the successful and
+ * the failed outcome of a task. This interface remains fully functional, is
+ * still accepted by the <code>LongTaskExecutor.execute()</code> methods for
+ * per-task error handling, and is still invoked.
  */
+@Deprecated
 public interface LongTaskErrorHandler {
 
     void fatalError(Throwable t);
