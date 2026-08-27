@@ -67,6 +67,11 @@
             <li>Added <code>hasIssues()</code> to <code>Report</code> class to check if the report contains any issues.</li>
             <li>Added a new <code>ImportException</code> base class for known, user-facing import failures, along with an <code>EmptyFileException</code> subclass. Empty files are now detected centrally in <code>ImportController</code> and raised as <code>EmptyFileException</code> with a localized message, so UIs can present a clean error instead of the default unexpected-exception treatment.</li>
         </ul>
+        <h4>LongTask API</h4>
+        <ul>
+            <li>Added a <code>fatalError(Throwable)</code> default method to <code>LongTaskListener</code>. It is called when a task terminates with an uncaught exception, instead of <code>taskFinished()</code>, so that a single listener receives both outcomes. The default implementation does nothing, therefore existing listeners are unaffected.</li>
+            <li><code>LongTaskErrorHandler</code> and <code>LongTaskExecutor.setDefaultErrorHandler()</code> are deprecated in favor of <code>LongTaskListener.fatalError(Throwable)</code>. They remain fully functional and are still invoked, in addition to the listener.</li>
+        </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>
         <ul>
