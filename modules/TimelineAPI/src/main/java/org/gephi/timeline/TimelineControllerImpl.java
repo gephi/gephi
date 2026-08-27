@@ -232,6 +232,7 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
 
     private void applyIntervalFilter(TimelineModelImpl currentModel, FilterModel filterModel, double from, double to) {
         Query dynamicQuery = null;
+        Query dynamicRangeQuery = null;
         boolean selecting = false;
 
         if (filterModel.getCurrentQuery() != null) {
@@ -239,6 +240,7 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
             if (dynamicQueries.length > 0) {
                 dynamicQuery = query;
+                dynamicRangeQuery = dynamicQueries[0];
                 selecting = filterModel.isSelecting();
             }
         } else if (filterModel.getQueries().length == 1) {
@@ -246,13 +248,19 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
             if (dynamicQueries.length > 0) {
                 dynamicQuery = query;
+                dynamicRangeQuery = dynamicQueries[0];
             }
         }
 
         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
         if (Double.isInfinite(from) && Double.isInfinite(to)) {
             if (dynamicQuery != null) {
-                filterController.remove(dynamicQuery);
+                if (dynamicRangeQuery.getParent() != null) {
+                    //Dynamic Range is a subquery: only remove it, keep the rest of the query intact
+                    filterController.removeSubQuery(dynamicRangeQuery, dynamicRangeQuery.getParent());
+                } else {
+                    filterController.remove(dynamicQuery);
+                }
             }
         } else {
             if (dynamicQuery == null) {
@@ -262,12 +270,13 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
                     FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
                     if (fb.length > 0) {
                         dynamicQuery = filterController.createQuery(fb[0]);
+                        dynamicRangeQuery = dynamicQuery;
                         filterController.add(dynamicQuery);
                     }
                 }
             }
             if (dynamicQuery != null) {
-                dynamicQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
+                dynamicRangeQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
                 if (selecting) {
                     filterController.selectVisible(dynamicQuery);
                 } else {
