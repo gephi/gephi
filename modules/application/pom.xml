@@ -971,6 +971,9 @@
 
                                         <!-- Configure relative JRE path into gephi.conf -->
                                         <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}/${bundle.jre.name}&quot;"/>
+                                        <!-- nbm-maven-plugin ships this file mode 600; fix it so it's still
+                                             readable when unpacked as root and run as a regular user (#3219) -->
+                                        <chmod file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" perm="644"/>
                                         <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>
