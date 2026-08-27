@@ -44,6 +44,8 @@ package org.gephi.project.impl;
 
 import java.beans.PropertyEditorManager;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +54,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
@@ -73,6 +77,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ProjectController.class)
 public class ProjectControllerImpl implements ProjectController {
+
+    private static final Logger LOGGER = Logger.getLogger(ProjectControllerImpl.class.getName());
 
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
@@ -99,8 +105,34 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
+    /**
+     * Reports a mutating operation started from the Event Dispatch Thread. Such an operation blocks
+     * its caller until completion and notifies the listeners synchronously, so on the EDT it freezes
+     * the interface and hands the listeners a thread they are told never to expect.
+     * <p>
+     * The EDT is detected by thread name deliberately: <code>EventQueue.isDispatchThread()</code> and
+     * <code>SwingUtilities.isEventDispatchThread()</code> both go through
+     * <code>Toolkit.getDefaultToolkit()</code> and would initialize the AWT toolkit as a side effect.
+     * This module is AWT-free so that gephi-toolkit can use it headless, so please don't replace this
+     * check with the Swing one.
+     */
+    private void warnIfEventDispatchThread(String method) {
+        if (Thread.currentThread().getName().startsWith("AWT-EventQueue")) {
+            StringWriter callSite = new StringWriter();
+            PrintWriter writer = new PrintWriter(callSite);
+            new Throwable("call site").printStackTrace(writer);
+            writer.flush();
+            LOGGER.log(Level.WARNING, "ProjectController." + method
+                + "() was called from the Event Dispatch Thread. It blocks its caller until the operation completes"
+                + " and notifies the project and workspace listeners synchronously, so it freezes the interface."
+                + " Run it on a background thread instead; the desktop application has ProjectControllerUIImpl"
+                + " for that. This will become an error in a future release.\n" + callSite);
+        }
+    }
+
     @Override
     public ProjectImpl newProject() {
+        warnIfEventDispatchThread("newProject");
         return this.newProjectInternal();
     }
 
@@ -137,6 +169,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Project openProject(File file) {
+        warnIfEventDispatchThread("openProject");
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
             LoadTask loadTask = new LoadTask(file);
@@ -161,6 +194,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void openProject(Project project) {
+        warnIfEventDispatchThread("openProject");
         if (!projects.containsProject(project)) {
             throw new IllegalArgumentException(
                 "Project " + project.getUniqueIdentifier() + " does not belong to the list of active projects");
@@ -174,6 +208,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void saveProject(Project project) {
+        warnIfEventDispatchThread("saveProject");
         synchronized (this) {
             if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
                 File file = project.getLookup().lookup(ProjectInformationImpl.class).getFile();
@@ -186,12 +221,14 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void saveProject(Project project, File file) {
+        warnIfEventDispatchThread("saveProject");
         synchronized (this) {
             fireProjectEvent(ProjectListener::lock);
             SaveTask saveTask = new SaveTask(project, file);
             longTaskExecutor.execute(saveTask, () -> {
-                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                 if (saveTask.run()) {
+                    //Only associate the project with the file once it has actually been written
+                    project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
                     ((ProjectImpl) project).setLastOpened();
                     fireProjectEvent((pl) -> pl.saved(project));
                 } else {
@@ -203,6 +240,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void closeCurrentProject() {
+        warnIfEventDispatchThread("closeCurrentProject");
         synchronized (this) {
             if (projects.hasCurrentProject()) {
                 fireProjectEvent(ProjectListener::lock);
@@ -232,6 +270,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void removeProject(Project project) {
+        warnIfEventDispatchThread("removeProject");
         synchronized (this) {
             if (projects.getCurrentProject() == project) {
                 closeCurrentProject();
@@ -257,11 +296,13 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace newWorkspace(Project project) {
+        warnIfEventDispatchThread("newWorkspace");
         return newWorkspaceInternal(project);
     }
 
     @Override
     public Workspace newWorkspace(Project project, Object... objectsForLookup) {
+        warnIfEventDispatchThread("newWorkspace");
         return newWorkspaceInternal(project, objectsForLookup);
     }
 
@@ -278,6 +319,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void deleteWorkspace(Workspace workspace) {
+        warnIfEventDispatchThread("deleteWorkspace");
         synchronized (this) {
             Project project = workspace.getProject();
             WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
@@ -343,6 +385,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void closeCurrentWorkspace() {
+        warnIfEventDispatchThread("closeCurrentWorkspace");
         synchronized (this) {
             WorkspaceImpl workspace = getCurrentWorkspace();
             if (workspace != null) {
@@ -356,6 +399,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void openWorkspace(Workspace workspace) {
+        warnIfEventDispatchThread("openWorkspace");
         synchronized (this) {
             closeCurrentWorkspace();
             getCurrentProject().setCurrentWorkspace(workspace);
@@ -367,11 +411,13 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace openNewWorkspace() {
+        warnIfEventDispatchThread("openNewWorkspace");
         return openNewWorkspaceInternal();
     }
 
     @Override
     public Workspace openNewWorkspace(Object... objectsForLookup) {
+        warnIfEventDispatchThread("openNewWorkspace");
         return openNewWorkspaceInternal(objectsForLookup);
     }
 
@@ -393,6 +439,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
+        warnIfEventDispatchThread("duplicateWorkspace");
         synchronized (this) {
             DuplicateTask duplicateTask = new DuplicateTask(workspace);
             Future<WorkspaceImpl> res = longTaskExecutor.execute(duplicateTask, () -> {
@@ -418,6 +465,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void renameProject(Project project, final String name) {
+        warnIfEventDispatchThread("renameProject");
         synchronized (this) {
             project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
             fireProjectEvent((pl) -> pl.changed(project));
@@ -426,6 +474,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void renameWorkspace(Workspace workspace, String name) {
+        warnIfEventDispatchThread("renameWorkspace");
         synchronized (this) {
             workspace.getLookup().lookup(WorkspaceInformationImpl.class).setName(name);
         }
@@ -433,6 +482,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void setSource(Workspace workspace, String source) {
+        warnIfEventDispatchThread("setSource");
         synchronized (this) {
             workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
         }

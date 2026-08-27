@@ -357,7 +357,7 @@ public class Installer extends ModuleInstall {
                     NbPreferences.forModule(Installer.class)
                         .putBoolean("check_latest_version", !checkbox.isSelected());
                     if (option == JOptionPane.OK_OPTION) {
-                        Desktop.getDesktop().browse(new URI("http://gephi.org/users/download/"));
+                        Desktop.getDesktop().browse(new URI("https://gephi.org/desktop/"));
                     }
                 }
             } catch (Exception ex) {
@@ -381,11 +381,12 @@ public class Installer extends ModuleInstall {
         Logger.getLogger("").addHandler(new OutputHandler());
     }
 
-    private static class OutputHandler extends Handler {
+    static class OutputHandler extends Handler {
 
         private final InputOutput io;
         private final OutputWriter outputWriter;
         private final MsgFormatter formatter;
+        private final ThreadLocal<Boolean> publishing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
         public OutputHandler() {
             io = IOProvider.getDefault().getIO("Log", true);
@@ -401,6 +402,21 @@ public class Installer extends ModuleInstall {
                 return;
             }
 
+            if (publishing.get()) {
+                //Avoid infinite recursion when writing to the output document
+                //itself triggers a log record (e.g. NetBeans output window
+                //trimming its buffer)
+                return;
+            }
+            publishing.set(Boolean.TRUE);
+            try {
+                doPublish(record);
+            } finally {
+                publishing.set(Boolean.FALSE);
+            }
+        }
+
+        void doPublish(LogRecord record) {
             Color color = Color.BLACK;
             if (record.getLevel().equals(Level.WARNING)) {
                 color = Color.ORANGE;

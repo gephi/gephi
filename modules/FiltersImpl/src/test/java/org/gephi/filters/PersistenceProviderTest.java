@@ -7,6 +7,7 @@ import org.gephi.filters.plugin.graph.HasSelfLoopBuilder;
 import org.gephi.filters.plugin.operator.INTERSECTIONBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.graph.api.Column;
 import org.gephi.project.io.utils.GephiFormat;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -57,6 +58,17 @@ public class PersistenceProviderTest {
 
         FilterQueryImpl query = new FilterQueryImpl(null, egoFilter);
         query.setName("* Foo");
+        filterModel.addFirst(query);
+        GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
+    }
+
+    @Test
+    public void testEqualStringFilterWithoutPattern() throws Exception {
+        FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
+        Column column = filterModel.getGraphModel().getNodeTable().addColumn("country", String.class);
+        AttributeEqualBuilder.EqualStringFilter filter = new AttributeEqualBuilder.EqualStringFilter.Node(column);
+
+        FilterQueryImpl query = new FilterQueryImpl(null, filter);
         filterModel.addFirst(query);
         GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
     }

@@ -308,7 +308,8 @@ public class LayoutModelImpl implements LayoutModel, Model {
                 writer.writeAttribute("layout", entry.getKey().layoutClassName);
                 writer.writeAttribute("property", entry.getKey().name);
                 writer.writeAttribute("class", entry.getValue().getClass().getName());
-                writer.writeCharacters(Serialization.getValueAsText(entry.getValue()));
+                String text = Serialization.getValueAsText(entry.getValue());
+                writer.writeCharacters(text != null ? text : "");
                 writer.writeEndElement();
             }
         }

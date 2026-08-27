@@ -71,7 +71,7 @@ public final class LayoutTopComponent extends TopComponent {
 
     private final LayoutPanel layoutPanel;
     private final TransformationPanel transformationPanel;
-    private LayoutModel model;
+    private volatile LayoutModel model;
 
     public LayoutTopComponent() {
         initComponents();
@@ -100,8 +100,9 @@ public final class LayoutTopComponent extends TopComponent {
 
             @Override
             public void unselect(Workspace workspace) {
-                if (model != null) {
-                    model.removePropertyChangeListener(layoutPanel);
+                LayoutModel m = model;
+                if (m != null) {
+                    m.removePropertyChangeListener(layoutPanel);
                 }
             }
 

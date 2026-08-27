@@ -73,9 +73,9 @@ public final class FiltersTopComponent extends TopComponent {
     //Panel
     private final FiltersPanel panel;
     //Models
-    private FilterModel filterModel;
-    private WorkspaceColumnsObservers observers;
-    private FilterUIModel uiModel;
+    private volatile FilterModel filterModel;
+    private volatile WorkspaceColumnsObservers observers;
+    private volatile FilterUIModel uiModel;
     private java.util.Timer observersTimer;
 
     public FiltersTopComponent() {
@@ -103,8 +103,9 @@ public final class FiltersTopComponent extends TopComponent {
 
             @Override
             public void unselect(Workspace workspace) {
-                if (observers != null) {
-                    observers.destroy();
+                WorkspaceColumnsObservers o = observers;
+                if (o != null) {
+                    o.destroy();
                 }
             }
 
@@ -159,9 +160,10 @@ public final class FiltersTopComponent extends TopComponent {
 
                                     @Override
                                     public void run() {
-                                        if (observers != null) {
-                                            if (observers.hasChanges()) {
-                                                refreshModel();
+                                        WorkspaceColumnsObservers o = observers;
+                                        if (o != null) {
+                                            if (o.hasChanges()) {
+                                                SwingUtilities.invokeLater(() -> refreshModel());
                                             }
                                         }
                                     }

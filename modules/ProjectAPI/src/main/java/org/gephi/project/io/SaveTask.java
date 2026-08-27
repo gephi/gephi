@@ -79,7 +79,7 @@ public class SaveTask implements LongTask {
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
     private final File file;
     private final Project project;
-    private boolean cancel = false;
+    private volatile boolean cancel = false;
     private ProgressTicket progressTicket;
 
     public SaveTask(Project project, File file) {
@@ -115,20 +115,19 @@ public class SaveTask implements LongTask {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
-        File writeFile = file;
+        //Always write to a temporary sibling file and only move it over the destination once the
+        //content is fully written. This guarantees the destination file is never truncated or left
+        //empty if the save is interrupted (crash, cancel, disk full, cloud-sync locking, ...).
+        final File writeFile = new File(file.getParent(), file.getName() + "_temp" + System.currentTimeMillis());
+        boolean moveFailed = false;
         try {
-            if (file.exists() && file.length() > 0) {
-                String tempFileName = file.getName() + "_temp" + System.currentTimeMillis();
-                writeFile = new File(file.getParent(), tempFileName);
-            }
-
             FileOutputStream outputStream = null;
             ZipOutputStream zipOut = null;
             BufferedOutputStream bos = null;
             DataOutputStream dos = null;
             try {
                 //Stream
-                int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 9);
+                int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 3);
                 outputStream = new FileOutputStream(writeFile);
                 zipOut = new ZipOutputStream(outputStream);
                 zipOut.setLevel(zipLevel);
@@ -199,8 +198,22 @@ public class SaveTask implements LongTask {
             Progress.finish(progressTicket);
 
             //Rename file
-            if (!cancel && writeFile.exists() && file != writeFile) {
-                Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (!cancel) {
+                try {
+                    Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException moveEx) {
+                    //The project is entirely written, the temporary file is the only copy of it left and is
+                    //therefore preserved so the user can recover it manually
+                    moveFailed = true;
+                    if (writeFile.exists()) {
+                        GephiFormatException recoverable = new GephiFormatException(
+                            NbBundle.getMessage(SaveTask.class, "SaveTask.moveFailed", writeFile.getAbsolutePath(),
+                                moveEx.getLocalizedMessage()));
+                        recoverable.initCause(moveEx);
+                        throw recoverable;
+                    }
+                    throw moveEx;
+                }
             }
         } catch (Exception ex) {
             if (ex instanceof GephiFormatException) {
@@ -208,7 +221,9 @@ public class SaveTask implements LongTask {
             }
             throw new GephiFormatException(SaveTask.class, ex);
         } finally {
-            if (writeFile != null && writeFile.exists() && writeFile != file) {
+            //Leftover temporary file, either because the save was cancelled or failed. It's deliberately kept when
+            //the move itself failed, as it then holds the only copy of the fully written project.
+            if (!moveFailed && writeFile.exists()) {
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
                 if (tempFileObject != null) {
                     try {

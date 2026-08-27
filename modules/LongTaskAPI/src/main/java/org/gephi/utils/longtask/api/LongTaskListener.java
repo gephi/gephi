@@ -51,5 +51,28 @@ import org.gephi.utils.longtask.spi.LongTask;
  */
 public interface LongTaskListener {
 
+    /**
+     * Called when the task terminated normally, that is without throwing any
+     * uncaught exception. A task which failed is reported to
+     * {@link #fatalError(Throwable)} instead.
+     *
+     * @param task the task which terminated, can be <code>null</code> when the
+     *             task was executed without cancel and progress support
+     */
     void taskFinished(LongTask task);
+
+    /**
+     * Called when the task terminated with an uncaught exception, in place of
+     * {@link #taskFinished(LongTask)}. Exactly one of the two methods is called
+     * per task: a task which is completed by the executor's cancel timer is
+     * reported to {@link #taskFinished(LongTask)} even if it subsequently
+     * fails. The default implementation does nothing.
+     * <p>
+     * This complements, and doesn't replace, any {@link LongTaskErrorHandler}
+     * registered on the executor: when both are set, both are invoked.
+     *
+     * @param t the exception which terminated the task
+     */
+    default void fatalError(Throwable t) {
+    }
 }

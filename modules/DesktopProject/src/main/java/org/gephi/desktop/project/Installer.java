@@ -1,12 +1,10 @@
 package org.gephi.desktop.project;
 
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
-import org.openide.awt.Actions;
+import org.openide.LifecycleManager;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-import org.openide.windows.WindowManager;
 
 public class Installer extends ModuleInstall {
 
@@ -20,15 +18,24 @@ public class Installer extends ModuleInstall {
     public boolean closing() {
         ProjectControllerUIImpl projectControllerUI = Lookup.getDefault().lookup(ProjectControllerUIImpl.class);
 
-        if (Lookup.getDefault().lookup(ProjectController.class).getCurrentProject() == null) {
-            //Close directly if no project open
+        if (!Lookup.getDefault().lookup(ProjectController.class).hasCurrentProject()) {
+            //Close directly if no project open. This is also the second pass of the sequence below,
+            //the project having been closed in the meantime.
             projectControllerUI.saveProjects();
             return true;
         }
-        boolean res = projectControllerUI.closeCurrentProject();
-        if (res) {
+
+        //The user is asked here, on the Event Dispatch Thread, but the save and close run on the
+        //Project IO thread and this thread must not wait for them. This shutdown pass is therefore
+        //vetoed and exit() is triggered again once the project is effectively closed, which then
+        //takes the branch above. When the user cancels, or when the save fails, nothing more happens
+        //and the application stays open.
+        projectControllerUI.confirmAndCloseCurrentProject(() -> {
+            //Persisted here too, and not only on the second pass, so the project list survives a
+            //shutdown that another module ends up vetoing
             projectControllerUI.saveProjects();
-        }
-        return res;
+            SwingUtilities.invokeLater(() -> LifecycleManager.getDefault().exit());
+        });
+        return false;
     }
 }

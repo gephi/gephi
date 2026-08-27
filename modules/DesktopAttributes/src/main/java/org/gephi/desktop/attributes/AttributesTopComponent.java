@@ -50,9 +50,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
     private AttributesUIModelImpl model;
 
     public AttributesTopComponent() {
-        // Register
         controller = Lookup.getDefault().lookup(AttributesUIControllerImpl.class);
-        controller.addPropertyChangeListener(this);
 
         setName(NbBundle.getMessage(AttributesTopComponent.class, "CTL_AttributesTopComponent"));
 
@@ -101,6 +99,10 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         } else {
             unsetup();
         }
+
+        // Register only once fully constructed, since the controller may fire events from a
+        // background thread as soon as this listener is registered
+        controller.addPropertyChangeListener(this);
     }
 
     @Override
@@ -135,6 +137,10 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
     private void setup(AttributesUIModelImpl model) {
         this.model = model;
 
+        if (cardLayout == null || cardPanel == null || columnsButton == null) {
+            return;
+        }
+
         if (model.isEditMode()) {
             cardLayout.show(cardPanel, EDIT_CARD);
         } else {
@@ -145,6 +151,10 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
 
     private void unsetup() {
         this.model = null;
+
+        if (cardLayout == null || cardPanel == null || columnsButton == null) {
+            return;
+        }
 
         cardLayout.show(cardPanel, SELECTION_CARD);
         columnsButton.setEnabled(false);

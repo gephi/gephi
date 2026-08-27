@@ -44,12 +44,11 @@ package org.gephi.desktop.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -57,15 +56,19 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
+import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
+import org.gephi.project.api.EmptyProjectFileException;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectListener;
+import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceMetaData;
 import org.gephi.ui.project.NewWorkspace;
 import org.gephi.ui.project.ProjectList;
 import org.gephi.ui.project.ProjectPropertiesEditor;
@@ -102,22 +105,23 @@ public class ProjectControllerUIImpl implements ProjectListener {
     //Utilities
     private final LongTaskExecutor longTaskExecutor;
     //Actions
-    private boolean openProject = true;
-    private boolean newProject = true;
-    private boolean openFile = true;
-    private boolean saveProject = false;
-    private boolean saveAsProject = false;
-    private boolean projectProperties = false;
-    private boolean closeProject = false;
-    private boolean newWorkspace = false;
-    private boolean deleteWorkspace = false;
-    private boolean duplicateWorkspace = false;
-    private boolean renameWorkspace = false;
+    private volatile ActionsState actionsState = ActionsState.forProject(null);
+    //Last project the controller reported as saved. A save cancelled from the progress bar writes
+    //nothing and reports no failure, so this is the only way to tell it from a successful one.
+    private volatile Project lastSavedProject;
 
     public ProjectControllerUIImpl() {
+        this(Lookup.getDefault().lookup(ProjectController.class),
+            Lookup.getDefault().lookup(ImportControllerUI.class));
+    }
 
-        controller = Lookup.getDefault().lookup(ProjectController.class);
-        importControllerUI = Lookup.getDefault().lookup(ImportControllerUI.class);
+    /**
+     * Package-private seam for tests to drive this class with a mocked {@link ProjectController}
+     * instead of going through {@link Lookup}.
+     */
+    ProjectControllerUIImpl(ProjectController controller, ImportControllerUI importControllerUI) {
+        this.controller = controller;
+        this.importControllerUI = importControllerUI;
 
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
@@ -130,10 +134,12 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 DialogDisplayer.getDefault().notify(msg);
             }
 
-            if (!(t instanceof LegacyGephiFormatException)) {
+            if (!(t instanceof LegacyGephiFormatException || t instanceof EmptyProjectFileException)) {
                 Exceptions.printStackTrace(t);
             }
         });
+        //Safety net: a task may return early, or lock the actions without reaching the matching
+        //unlock, and the actions would stay disabled. Recomputing the state is idempotent.
         longTaskExecutor.setLongTaskListener(task -> unlockProjectActions());
     }
 
@@ -149,6 +155,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
 
     @Override
     public void saved(Project project) {
+        lastSavedProject = project;
         SwingUtilities.invokeLater(() -> {
             //Status line
             StatusDisplayer.getDefault().setStatusText(
@@ -158,8 +165,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         unlockProjectActions();
         updateTitleBar(project);
 
-        //Persist projects so the last opened is refreshed
-        saveProjects();
+        //Persist projects so the last opened is refreshed, off the critical path (this callback
+        //runs while ProjectControllerImpl holds its monitor, and saveProjects() does blocking file I/O)
+        runInProjectIO(this::saveProjects);
     }
 
     @Override
@@ -178,7 +186,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
             DialogDisplayer.getDefault().notify(msg);
         }
 
-        if (!(t instanceof LegacyGephiFormatException)) {
+        if (!(t instanceof LegacyGephiFormatException || t instanceof GephiFormatException)) {
             Exceptions.printStackTrace(t);
         }
         updateTitleBar(project);
@@ -195,8 +203,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         unlockProjectActions();
         updateTitleBar(project);
 
-        //Persist projects so the last opened is refreshed
-        saveProjects();
+        //Persist projects so the last opened is refreshed, off the critical path (this callback
+        //runs while ProjectControllerImpl holds its monitor, and saveProjects() does blocking file I/O)
+        runInProjectIO(this::saveProjects);
     }
 
     @Override
@@ -227,18 +236,39 @@ public class ProjectControllerUIImpl implements ProjectListener {
         });
     }
 
+    /**
+     * Runs <code>runnable</code> on the Project IO thread, so the project controller never mutates
+     * the model nor invokes its listeners on the Event Dispatch Thread. Returns as soon as the task
+     * is submitted.
+     * <p>
+     * All the callers are on the Event Dispatch Thread. The operations that continue on the Project
+     * IO thread, such as confirming and closing the current project, deliberately call their steps
+     * directly rather than coming back through here: the executor runs a single task at a time, so
+     * submitting from within a task would enqueue it behind the task it is part of.
+     *
+     * @param runnable the operation to perform on the Project IO thread
+     */
+    private void runInProjectIO(Runnable runnable) {
+        longTaskExecutor.execute(null, runnable);
+    }
+
     private Future<Void> saveProject(Project project, File file) {
-
-
-        return longTaskExecutor.execute(null,   new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                controller.saveProject(project, file);
-                return null;
-            }
+        return longTaskExecutor.execute(null, () -> {
+            controller.saveProject(project, file);
+            return null;
         });
     }
 
+    /**
+     * Saves the current project, asking for a destination when it has none yet.
+     * <p>
+     * The returned future completes on the Project IO thread. Never wait on it from the Event
+     * Dispatch Thread: the save notifies the project listeners synchronously, and one of them
+     * marshalling to the interface would deadlock. Use it only from a background thread, or ignore
+     * it and react to {@link #saved(org.gephi.project.api.Project)} instead.
+     *
+     * @return a future that completes once the save is done
+     */
     public Future<Void> saveProject() {
         Project project = controller.getCurrentProject();
         if (project.hasFile()) {
@@ -248,7 +278,30 @@ public class ProjectControllerUIImpl implements ProjectListener {
         }
     }
 
+    /**
+     * Asks for a destination and saves the current project to it.
+     * <p>
+     * Same caveat as {@link #saveProject()}: the returned future must not be waited on from the
+     * Event Dispatch Thread.
+     *
+     * @return a future that completes once the save is done, already completed when the user gave up
+     *     the destination
+     */
     public Future<Void> saveAsProject() {
+        File file = selectSaveAsFile();
+        if (file != null) {
+            return saveProject(controller.getCurrentProject(), file);
+        }
+        return CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Asks the user where the current project should be written. Runs on the calling thread, which
+     * has to be the Event Dispatch Thread.
+     *
+     * @return the destination file, or <code>null</code> if the user cancelled
+     */
+    private File selectSaveAsFile() {
         final String LAST_PATH = "SaveAsProject_Last_Path";
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
@@ -291,10 +344,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
             // Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
-            // Save file
-            return saveProject(controller.getCurrentProject(), file);
+            return file;
         }
-        return CompletableFuture.completedFuture(null);
+        return null;
     }
 
     private boolean canExport(JFileChooser chooser) {
@@ -305,63 +357,159 @@ public class ProjectControllerUIImpl implements ProjectListener {
             chooser.setSelectedFile(file);
         }
 
-        try {
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    String failMsg = NbBundle.getMessage(
-                        ProjectControllerUIImpl.class,
-                        "SaveAsProject_SaveFailed", new Object[] {file.getPath()});
-                    JOptionPane.showMessageDialog(null, failMsg);
-                    return false;
-                }
-            } else {
-                String overwriteMsg = NbBundle.getMessage(
-                    ProjectControllerUIImpl.class,
-                    "SaveAsProject_Overwrite", new Object[] {file.getPath()});
-                if (JOptionPane.showConfirmDialog(chooser, overwriteMsg) != JOptionPane.OK_OPTION) {
-                    return false;
-                }
+        //Note: when the file doesn't exist yet it must not be created here. Pre-creating the
+        //destination would leave an empty .gephi file behind if the save is later interrupted,
+        //defeating the temporary-file-then-move strategy used when writing the project. Real
+        //write failures are reported by the save task itself.
+        if (file.exists()) {
+            String overwriteMsg = NbBundle.getMessage(
+                ProjectControllerUIImpl.class,
+                "SaveAsProject_Overwrite", new Object[] {file.getPath()});
+            if (JOptionPane.showConfirmDialog(chooser, overwriteMsg) != JOptionPane.OK_OPTION) {
+                return false;
             }
-        } catch (IOException ex) {
-            NotifyDescriptor.Message msg =
-                new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(msg);
-            return false;
         }
 
         return true;
     }
 
-    public boolean closeCurrentProject() {
-        if (controller.getCurrentProject() != null) {
-            //Save ?
-            String messageBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_message");
-            String titleBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_title");
-            String saveBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_save");
-            String doNotSaveBundle =
-                NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_doNotSave");
-            String cancelBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_cancel");
-            NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
-                NotifyDescriptor.YES_NO_CANCEL_OPTION,
-                NotifyDescriptor.INFORMATION_MESSAGE,
-                new Object[] {saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
-            Object result = DialogDisplayer.getDefault().notify(msg);
-            if (result == saveBundle) {
-                Future<Void> saveTask = saveProject();
-                if(saveTask !=null){
-                    try {
-                        saveTask.get();
-                    } catch (InterruptedException | ExecutionException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            } else if (result == cancelBundle) {
+    /**
+     * Asks the user what to do with the current project before it gets closed, without touching the
+     * model. All the dialogs happen here, so the caller can perform the decision on the Project IO
+     * thread.
+     * <p>
+     * Blocks until the user answered. This is the only place where blocking is correct: a background
+     * thread waits for the user, never the interface for a background thread.
+     *
+     * @return the user's decision, never <code>null</code>
+     */
+    private CloseDecision confirmCloseCurrentProject() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return askCloseCurrentProject();
+        }
+        final CloseDecision[] decision = new CloseDecision[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> decision[0] = askCloseCurrentProject());
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return CloseDecision.CANCEL;
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex.getCause() != null ? ex.getCause() : ex);
+            return CloseDecision.CANCEL;
+        }
+        return decision[0];
+    }
+
+    /**
+     * Shows the close confirmation. Runs on the Event Dispatch Thread only.
+     */
+    private CloseDecision askCloseCurrentProject() {
+        Project project = controller.getCurrentProject();
+        if (project == null) {
+            return CloseDecision.close(null);
+        }
+
+        //Save ?
+        String messageBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_message");
+        String titleBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_title");
+        String saveBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_save");
+        String doNotSaveBundle =
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_doNotSave");
+        String cancelBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_cancel");
+        NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
+            NotifyDescriptor.YES_NO_CANCEL_OPTION,
+            NotifyDescriptor.INFORMATION_MESSAGE,
+            new Object[] {saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
+        Object result = DialogDisplayer.getDefault().notify(msg);
+        if (result == saveBundle) {
+            //The destination is asked for now, so the close itself needs no dialog
+            File file = project.hasFile() ? project.getFile() : selectSaveAsFile();
+            if (file == null) {
+                //Giving up the destination gives up the close, otherwise the project would be
+                //closed without being saved
+                return CloseDecision.CANCEL;
+            }
+            return CloseDecision.saveAndClose(project, file);
+        } else if (result == cancelBundle) {
+            return CloseDecision.CANCEL;
+        }
+        return CloseDecision.close(project);
+    }
+
+    /**
+     * Performs a decision taken by {@link #confirmCloseCurrentProject()}. Shows no dialog: when the
+     * project has to be saved, the save runs before the close on the calling thread, which has to be
+     * the Project IO thread.
+     *
+     * @param decision the user's decision
+     * @return <code>true</code> when the project has been closed and the operation that requested
+     *     the close may continue
+     */
+    boolean closeCurrentProject(CloseDecision decision) {
+        if (decision.cancelled) {
+            return false;
+        }
+        Project project = controller.getCurrentProject();
+        if (project == null) {
+            return true;
+        }
+        if (decision.project != null && decision.project != project) {
+            //The current project changed while the user was being asked, so neither the answer nor
+            //the destination it carries applies to what is open now
+            return false;
+        }
+        if (decision.saveFile != null) {
+            lastSavedProject = null;
+            try {
+                controller.saveProject(project, decision.saveFile);
+            } catch (RuntimeException ex) {
+                //The failure has already been reported to the user by the error() callback and
+                //closing now would throw away what couldn't be written
                 return false;
             }
-
-            controller.closeCurrentProject();
+            if (lastSavedProject != project) {
+                //The save was cancelled from the progress bar, which writes nothing and reports no
+                //failure. Closing now would throw the work away.
+                return false;
+            }
         }
+        controller.closeCurrentProject();
         return true;
+    }
+
+    /**
+     * Confirms and closes the current project, if any. Runs on the Project IO thread, the
+     * confirmation being marshalled to the Event Dispatch Thread.
+     *
+     * @return <code>true</code> when the operation that requested the close may continue
+     */
+    private boolean confirmAndCloseCurrentProject() {
+        if (!controller.hasCurrentProject()) {
+            return true;
+        }
+        return closeCurrentProject(confirmCloseCurrentProject());
+    }
+
+    /**
+     * Confirms closing the current project with the user and then closes it on the Project IO
+     * thread. Made for the shutdown sequence, which needs the user's answer before it can decide
+     * whether to proceed, while the close itself must not run on the Event Dispatch Thread.
+     * <p>
+     * Nothing happens when the user cancels.
+     *
+     * @param whenClosed executed on the Project IO thread once the project has been closed, not
+     *                   called if the user cancelled or if the close failed
+     */
+    public void confirmAndCloseCurrentProject(Runnable whenClosed) {
+        CloseDecision decision = confirmCloseCurrentProject();
+        if (decision.cancelled) {
+            return;
+        }
+        runInProjectIO(() -> {
+            if (closeCurrentProject(decision) && whenClosed != null) {
+                whenClosed.run();
+            }
+        });
     }
 
     public void openProject(Project project) {
@@ -373,108 +521,78 @@ public class ProjectControllerUIImpl implements ProjectListener {
             DialogDisplayer.getDefault().notify(msg);
             return;
         }
-        longTaskExecutor.execute(null, () -> {
-            if (controller.getCurrentProject() != null) {
-                if (!closeCurrentProject()) {
-                    return;
-                }
+        runInProjectIO(() -> {
+            if (!confirmAndCloseCurrentProject()) {
+                return;
             }
             controller.openProject(project);
         });
     }
 
     public void openProject(File file) {
-        longTaskExecutor.execute(null, () -> {
-            if (controller.getCurrentProject() != null) {
-                if (!closeCurrentProject()) {
-                    return;
-                }
+        runInProjectIO(() -> {
+            if (!confirmAndCloseCurrentProject()) {
+                return;
             }
             controller.openProject(file);
         });
     }
 
     public void removeProject(Project project) {
-        longTaskExecutor.execute(null, () -> {
-            if (controller.getCurrentProject() == project) {
-                if (!closeCurrentProject()) {
-                    return;
-                }
+        runInProjectIO(() -> {
+            if (controller.getCurrentProject() == project && !confirmAndCloseCurrentProject()) {
+                return;
             }
             controller.removeProject(project);
         });
     }
 
     public boolean canCloseProject() {
-        return closeProject;
+        return actionsState.closeProject;
     }
 
     public boolean canDeleteWorkspace() {
-        return deleteWorkspace;
+        return actionsState.deleteWorkspace;
     }
 
     public boolean canNewProject() {
-        return newProject;
+        return actionsState.newProject;
     }
 
     public boolean canNewWorkspace() {
-        return newWorkspace;
+        return actionsState.newWorkspace;
     }
 
     public boolean canDuplicateWorkspace() {
-        return duplicateWorkspace;
+        return actionsState.duplicateWorkspace;
     }
 
     public boolean canRenameWorkspace() {
-        return renameWorkspace;
+        return actionsState.renameWorkspace;
     }
 
     public boolean canOpenFile() {
-        return openFile;
+        return actionsState.openFile;
     }
 
     public boolean canSave() {
-        return saveProject;
+        return actionsState.saveProject;
     }
 
     public boolean canSaveAs() {
-        return saveAsProject;
+        return actionsState.saveAsProject;
     }
 
     public boolean canProjectProperties() {
-        return projectProperties;
+        return actionsState.projectProperties;
     }
 
     private void lockProjectActions() {
-        saveProject = false;
-        saveAsProject = false;
-        openProject = false;
-        closeProject = false;
-        newProject = false;
-        openFile = false;
-        newWorkspace = false;
-        deleteWorkspace = false;
-        duplicateWorkspace = false;
-        renameWorkspace = false;
-        projectProperties = false;
+        actionsState = ActionsState.LOCKED;
     }
 
     private void unlockProjectActions() {
-        if (controller.getCurrentProject() != null) {
-            saveProject = true;
-            saveAsProject = true;
-            closeProject = true;
-            newWorkspace = true;
-            projectProperties = true;
-            if (controller.getCurrentProject().hasCurrentWorkspace()) {
-                deleteWorkspace = true;
-                duplicateWorkspace = true;
-                renameWorkspace = true;
-            }
-        }
-        openProject = true;
-        newProject = true;
-        openFile = true;
+        actionsState = ActionsState.forProject(controller.getCurrentProject());
     }
 
     public void projectProperties() {
@@ -486,7 +604,23 @@ public class ProjectControllerUIImpl implements ProjectListener {
             NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title")) ;
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {
-            panel.save(project);
+            String name = panel.getProjectName();
+            String title = panel.getProjectTitle();
+            String author = panel.getProjectAuthor();
+            String keywords = panel.getProjectKeywords();
+            String description = panel.getProjectDescription();
+            runInProjectIO(() -> {
+                if (!name.isEmpty() && !name.equals(project.getName())) {
+                    controller.renameProject(project, name);
+                }
+                ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
+                if (metaData != null) {
+                    metaData.setTitle(title);
+                    metaData.setAuthor(author);
+                    metaData.setKeywords(keywords);
+                    metaData.setDescription(description);
+                }
+            });
         }
     }
 
@@ -500,7 +634,21 @@ public class ProjectControllerUIImpl implements ProjectListener {
             NbBundle.getMessage(ProjectControllerUIImpl.class, "WorkspaceProperties_dialog_title"));
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {
-            panel.unsetup(workspace);
+            String name = panel.getWorkspaceName();
+            String title = panel.getWorkspaceTitle();
+            String description = panel.getWorkspaceDescription();
+            runInProjectIO(() -> {
+                WorkspaceMetaData metaData = workspace.getWorkspaceMetadata();
+                if (!description.isEmpty() && !description.equals(metaData.getDescription())) {
+                    metaData.setDescription(description);
+                }
+                if (!name.isEmpty() && !name.equals(workspace.getName())) {
+                    controller.renameWorkspace(workspace, name);
+                }
+                if (!title.isEmpty() && !title.equals(metaData.getTitle())) {
+                    metaData.setTitle(title);
+                }
+            });
         }
     }
 
@@ -618,15 +766,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
 
             if (gephiFile != null) {
                 //Project
-                File finalGephiFile = gephiFile;
-                longTaskExecutor.execute(null, () -> {
-                    if (controller.getCurrentProject() != null) {
-                        if (!closeCurrentProject()) {
-                            return;
-                        }
-                    }
-                    controller.openProject(finalGephiFile);
-                });
+                openProject(gephiFile);
             } else {
                 //Import
                 importControllerUI.importFiles(fileObjects.toArray(new FileObject[0]));
@@ -638,19 +778,20 @@ public class ProjectControllerUIImpl implements ProjectListener {
         return controller.getCurrentProject();
     }
 
-    public Project newProject() {
-        if (closeCurrentProject()) {
-            return controller.newProject();
-        }
-        return null;
+    public void newProject() {
+        runInProjectIO(() -> {
+            if (confirmAndCloseCurrentProject()) {
+                controller.newProject();
+            }
+        });
     }
 
     public void closeProject() {
-        closeCurrentProject();
+        runInProjectIO(() -> confirmAndCloseCurrentProject());
     }
 
-    public Workspace newWorkspace() {
-        return controller.newWorkspace(controller.getCurrentProject());
+    public void newWorkspace() {
+        runInProjectIO(() -> controller.newWorkspace(controller.getCurrentProject()));
     }
 
     public void newWorkspaceWithSettings() {
@@ -662,8 +803,23 @@ public class ProjectControllerUIImpl implements ProjectListener {
                 NbBundle.getMessage(ProjectControllerUIImpl.class, "NewWorkspace_dialog_title"));
         Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == NotifyDescriptor.OK_OPTION) {
-            panel.unsetup();
+            Configuration configuration = panel.unsetup();
+            String name = panel.getWorkspaceName();
+            runInProjectIO(() -> {
+                Workspace workspace = controller.newWorkspace(controller.getCurrentProject(), configuration);
+                controller.renameWorkspace(workspace, name);
+            });
         }
+    }
+
+    /**
+     * Makes the given workspace the current one. Returns immediately when called from the Event
+     * Dispatch Thread, the workspace being opened on the Project IO thread.
+     *
+     * @param workspace the workspace to open
+     */
+    public void openWorkspace(Workspace workspace) {
+        runInProjectIO(() -> controller.openWorkspace(workspace));
     }
 
     public void deleteWorkspace() {
@@ -679,7 +835,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
             NotifyDescriptor.QUESTION_MESSAGE, null, null);
         Object retType = DialogDisplayer.getDefault().notify(dd);
         if (retType == NotifyDescriptor.YES_OPTION) {
-            controller.deleteWorkspace(workspace);
+            runInProjectIO(() -> controller.deleteWorkspace(workspace));
         }
     }
 
@@ -692,20 +848,22 @@ public class ProjectControllerUIImpl implements ProjectListener {
             NotifyDescriptor.QUESTION_MESSAGE, null, null);
         Object retType = DialogDisplayer.getDefault().notify(dd);
         if (retType == NotifyDescriptor.YES_OPTION) {
-            for (Workspace workspace : workspaces) {
-                controller.deleteWorkspace(workspace);
-            }
+            List<Workspace> toDelete = new ArrayList<>(workspaces);
+            runInProjectIO(() -> {
+                for (Workspace workspace : toDelete) {
+                    controller.deleteWorkspace(workspace);
+                }
+            });
         }
     }
 
     public void renameWorkspace(String name) {
-        controller.renameWorkspace(controller.getCurrentWorkspace(), name);
+        Workspace workspace = controller.getCurrentWorkspace();
+        runInProjectIO(() -> controller.renameWorkspace(workspace, name));
     }
 
     public void duplicateWorkspace() {
-        longTaskExecutor.execute(null, () -> {
-            controller.duplicateWorkspace(controller.getCurrentWorkspace());
-        });
+        runInProjectIO(() -> controller.duplicateWorkspace(controller.getCurrentWorkspace()));
     }
 
     private String getCurrentVersion() {
@@ -744,6 +902,77 @@ public class ProjectControllerUIImpl implements ProjectListener {
             } catch (IOException e) {
                 Exceptions.printStackTrace(e);
             }
+        }
+    }
+
+    /**
+     * Immutable snapshot of the actions currently enabled. The Project IO thread replaces the whole
+     * snapshot at once while the Event Dispatch Thread reads it from <code>Action.isEnabled()</code>,
+     * so the interface can't observe a half-applied enablement.
+     */
+    private static final class ActionsState {
+
+        private static final ActionsState LOCKED = new ActionsState(false, false, false);
+
+        private final boolean newProject;
+        private final boolean openFile;
+        private final boolean saveProject;
+        private final boolean saveAsProject;
+        private final boolean projectProperties;
+        private final boolean closeProject;
+        private final boolean newWorkspace;
+        private final boolean deleteWorkspace;
+        private final boolean duplicateWorkspace;
+        private final boolean renameWorkspace;
+
+        private ActionsState(boolean fileActions, boolean projectActions, boolean workspaceActions) {
+            this.newProject = fileActions;
+            this.openFile = fileActions;
+            this.saveProject = projectActions;
+            this.saveAsProject = projectActions;
+            this.projectProperties = projectActions;
+            this.closeProject = projectActions;
+            this.newWorkspace = projectActions;
+            this.deleteWorkspace = workspaceActions;
+            this.duplicateWorkspace = workspaceActions;
+            this.renameWorkspace = workspaceActions;
+        }
+
+        private static ActionsState forProject(Project project) {
+            return new ActionsState(true, project != null, project != null && project.hasCurrentWorkspace());
+        }
+    }
+
+    /**
+     * The user's answer to the close confirmation. <code>saveFile</code> is the destination the
+     * project has to be written to before being closed, <code>null</code> when it has to be closed
+     * without being saved.
+     */
+    static final class CloseDecision {
+
+        static final CloseDecision CANCEL = new CloseDecision(null, true, null);
+
+        /**
+         * Project the user answered about, <code>null</code> when there was nothing to answer for.
+         * The answer is acted upon later, on the Project IO thread, by which time another project
+         * may have become the current one.
+         */
+        private final Project project;
+        private final boolean cancelled;
+        private final File saveFile;
+
+        private CloseDecision(Project project, boolean cancelled, File saveFile) {
+            this.project = project;
+            this.cancelled = cancelled;
+            this.saveFile = saveFile;
+        }
+
+        static CloseDecision close(Project project) {
+            return new CloseDecision(project, false, null);
+        }
+
+        static CloseDecision saveAndClose(Project project, File file) {
+            return new CloseDecision(project, false, file);
         }
     }
 }

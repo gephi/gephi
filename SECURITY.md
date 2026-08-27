@@ -14,11 +14,12 @@ The only exception when it comes to **connecting to the web** is for crash repor
 
 We monitor security vulnerabilities in the dependencies we use, as well as within the core codebase. In case of a major vulnerability, we would release a new patch version of Gephi to address it.
 
-| Version | Supported          |
-|---------| ------------------ |
-| 0.11.1  | :white_check_mark: |
-| 0.10.1  | :white_check_mark: |
-| 0.9.7   | :x:                |
+| Version | Supported      |
+|---------| -------------- |
+| 0.11.2  | :white_check_mark: |
+| 0.11.1  | :x: |
+| 0.10.1  | :x: |
+| 0.9.7   | :x:            |
 
 ## Code security
 
@@ -34,7 +35,7 @@ Gephi had contributions from many individuals in many countries but the vast maj
 
 ## Release versions
 
-The artifacts produced via the Gephi repository are secured. Users can always trust us with the release binaries they download from [gephi.or](https://gephi.org) or [https://github.com/gephi/gephi/releases](https://github.com/gephi/gephi/releases). 
+The artifacts produced via the Gephi repository are secured. Users can always trust us with the release binaries they download from [gephi.org](https://gephi.org) or [https://github.com/gephi/gephi/releases](https://github.com/gephi/gephi/releases). 
 
 **These measures are in place to ensure Gephi artifacts are safe and can't be compromised:**
 - Only the members of the core Gephi team can approve contributions and trigger releases.

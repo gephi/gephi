@@ -3,13 +3,27 @@ package org.gephi.project.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.io.utils.MockBytesPersistenceProviderFailWrite;
 import org.gephi.project.spi.Controller;
 import org.gephi.project.spi.Model;
+import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.progress.ProgressTicketProvider;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.netbeans.junit.MockServices;
+import org.openide.util.Cancellable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectControllerImplTest {
@@ -34,6 +49,12 @@ public class ProjectControllerImplTest {
 
     @Mock
     private WorkspaceListener workspaceListener;
+
+    @After
+    public void resetServices() {
+        // Services are registered globally, don't leak them into the next test
+        MockServices.setServices();
+    }
 
     @Test
     public void testInit() {
@@ -105,6 +126,32 @@ public class ProjectControllerImplTest {
         Assert.assertTrue(project.hasFile());
         Assert.assertSame(file, project.getFile());
         Mockito.verify(projectListener).saved(project);
+    }
+
+    /**
+     * Regression test: a save that fails must leave the project file unchanged, as the project isn't associated with
+     * a file that was never written.
+     */
+    @Test
+    public void testFailedSaveDoesNotSetFile() {
+        MockServices.setServices(MockBytesPersistenceProviderFailWrite.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addProjectListener(projectListener);
+        Project project = pc.newProject();
+        Assert.assertFalse(project.hasFile());
+
+        File file = new File(tempFolder.getRoot(), "failed.gephi");
+        try {
+            pc.saveProject(project, file);
+            Assert.fail("Expected the save to fail");
+        } catch (GephiFormatException expected) {
+        }
+
+        Assert.assertFalse("A failed save must not associate the project with the file", project.hasFile());
+        Assert.assertNull(project.getFile());
+        Assert.assertFalse(file.exists());
+        Mockito.verify(projectListener, Mockito.never()).saved(project);
     }
 
     @Test
@@ -343,6 +390,96 @@ public class ProjectControllerImplTest {
         Assert.assertEquals(foo, workspace.getLookup().lookup(String.class));
     }
 
+    /**
+     * Mutating methods notify their listeners synchronously, so they must never run on the Event Dispatch Thread. The
+     * controller warns when they do, and stays silent otherwise.
+     */
+    @Test
+    public void testWarnsWhenMutatingFromEventDispatchThread() throws Exception {
+        String eventQueueThreadName = eventQueueThreadName();
+
+        // The controller detects the EDT by thread name so that it doesn't have to touch AWT, hence there is nothing
+        // to verify in an environment that names its event queue thread differently
+        Assume.assumeTrue("Unexpected event queue thread name: " + eventQueueThreadName,
+            eventQueueThreadName != null && eventQueueThreadName.startsWith("AWT-EventQueue"));
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        Project project = pc.newProject();
+
+        List<LogRecord> records = Collections.synchronizedList(new ArrayList<>());
+        Handler handler = new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                records.add(record);
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        Logger logger = Logger.getLogger(ProjectControllerImpl.class.getName());
+        boolean useParentHandlers = logger.getUseParentHandlers();
+        logger.addHandler(handler);
+        // The expected warning would otherwise be printed with its stack trace and read as a build failure
+        logger.setUseParentHandlers(false);
+        try {
+            pc.renameProject(project, "background");
+            Assert.assertTrue("A call from outside the event queue must not warn", records.isEmpty());
+
+            SwingUtilities.invokeAndWait(() -> pc.renameProject(project, "edt"));
+            Assert.assertEquals("A call from the event queue must warn once", 1, records.size());
+            LogRecord record = records.get(0);
+            Assert.assertEquals(Level.WARNING, record.getLevel());
+            Assert.assertTrue("The warning must name the offending method: " + record.getMessage(),
+                record.getMessage().contains("renameProject"));
+            Assert.assertTrue("The warning must include the call site", record.getMessage().contains("\tat "));
+            // A logged throwable would be turned into a crash report by the desktop application
+            Assert.assertNull("The warning must not carry a throwable", record.getThrown());
+        } finally {
+            logger.setUseParentHandlers(useParentHandlers);
+            logger.removeHandler(handler);
+        }
+    }
+
+    /**
+     * Returns the name of the event queue thread, or skips the test if this environment has no usable event queue.
+     */
+    private String eventQueueThreadName() {
+        String[] name = new String[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> name[0] = Thread.currentThread().getName());
+        } catch (Throwable t) {
+            Assume.assumeNoException("No usable event queue in this environment", t);
+        }
+        return name[0];
+    }
+
+    /**
+     * Regression test for the save-then-close flow in the desktop UI: it saves the project and only
+     * then closes it, so it has to be able to tell a cancelled save from a successful one. A cancel
+     * writes nothing and reports no failure, so the absence of <code>saved()</code> is the only
+     * signal available. Should this contract change, the UI would close the project and throw away
+     * whatever wasn't written.
+     */
+    @Test
+    public void testCancelledSaveWritesNothingAndDoesNotReportSaved() {
+        MockServices.setServices(CancellingProgressTicketProvider.class);
+
+        ProjectControllerImpl pc = new ProjectControllerImpl();
+        pc.addProjectListener(projectListener);
+        Project project = pc.newProject();
+
+        File file = new File(tempFolder.getRoot(), "cancelled.gephi");
+        pc.saveProject(project, file);
+
+        Assert.assertFalse("A cancelled save must not leave a file behind", file.exists());
+        Mockito.verify(projectListener, Mockito.never()).saved(project);
+    }
+
     public static class MockModel implements Model {
 
         private final Workspace workspace;
@@ -368,6 +505,88 @@ public class ProjectControllerImplTest {
         @Override
         public Class getModelClass() {
             return MockModel.class;
+        }
+    }
+
+    /**
+     * Hands out a ticket that cancels the running task the first time it reports progress, which is
+     * what the progress bar's Cancel button does.
+     */
+    public static class CancellingProgressTicketProvider implements ProgressTicketProvider {
+
+        @Override
+        public ProgressTicket createTicket(String taskName, Cancellable cancellable) {
+            return new CancellingProgressTicket(cancellable);
+        }
+    }
+
+    private static class CancellingProgressTicket implements ProgressTicket {
+
+        private final Cancellable cancellable;
+        private boolean cancelled;
+
+        CancellingProgressTicket(Cancellable cancellable) {
+            this.cancellable = cancellable;
+        }
+
+        private void cancelOnce() {
+            if (!cancelled && cancellable != null) {
+                cancelled = true;
+                cancellable.cancel();
+            }
+        }
+
+        @Override
+        public void finish() {
+        }
+
+        @Override
+        public void finish(String finishMessage) {
+        }
+
+        @Override
+        public void progress() {
+            cancelOnce();
+        }
+
+        @Override
+        public void progress(int workunit) {
+            cancelOnce();
+        }
+
+        @Override
+        public void progress(String message) {
+            cancelOnce();
+        }
+
+        @Override
+        public void progress(String message, int workunit) {
+            cancelOnce();
+        }
+
+        @Override
+        public String getDisplayName() {
+            return "";
+        }
+
+        @Override
+        public void setDisplayName(String newDisplayName) {
+        }
+
+        @Override
+        public void start() {
+        }
+
+        @Override
+        public void start(int workunits) {
+        }
+
+        @Override
+        public void switchToDeterminate(int workunits) {
+        }
+
+        @Override
+        public void switchToIndeterminate() {
         }
     }
 }

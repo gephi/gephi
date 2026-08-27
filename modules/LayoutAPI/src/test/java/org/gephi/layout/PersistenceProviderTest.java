@@ -1,5 +1,7 @@
 package org.gephi.layout;
 
+import java.io.StringWriter;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -62,5 +64,24 @@ public class PersistenceProviderTest {
         MockServices.setServices(MockLayoutBuilder.class);
 
         GephiFormat.testXMLPersistenceProvider(new LayoutModelPersistenceProvider(), layoutModel.getWorkspace());
+    }
+
+    @Test
+    public void testLayoutPropertyWithoutRegisteredEditor() throws Exception {
+        // Mode has no PropertyEditor registered, so Serialization.getValueAsText() returns null for it.
+        LayoutModelImpl layoutModel = Utils.newLayoutModel();
+        MockLayout layout = new MockLayoutBuilder().buildLayout();
+        layout.setMode(MockLayout.Mode.FAST);
+        layoutModel.saveProperties(layout);
+
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter writer = GephiFormat.newXMLWriter(stringWriter);
+        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartElement("layoutmodel");
+        layoutModel.writeXML(writer);
+        writer.writeEndElement();
+        writer.writeEndDocument();
+        writer.close();
+        stringWriter.close();
     }
 }

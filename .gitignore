@@ -127,3 +127,11 @@ src/macosx-launcher/*.xcodeproj
 xcuserdata/
 projects.xml
 modules/application/.flattened-pom.xml
+translations/**
+.cursor
+.mcp.json
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills
+/reports/sentry-triage/
+.codegraph

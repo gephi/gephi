@@ -100,6 +100,9 @@ public class NodePencil implements Tool {
                 size = nodePencilPanel.getNodeSize();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
+                if (gm == null) {
+                    return false;
+                }
                 Graph graph = gm.getGraph();
                 Node node = gm.factory().newNode();
                 node.setX(position3d[0]);

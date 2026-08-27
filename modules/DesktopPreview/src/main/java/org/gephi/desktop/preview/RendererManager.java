@@ -56,6 +56,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.desktop.preview.api.PreviewUIController;
@@ -135,7 +136,13 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT) ||
             evt.getPropertyName().equals(PreviewUIController.UNSELECT)) {
-            setup();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    setup();
+                }
+            });
         }
     }
 
