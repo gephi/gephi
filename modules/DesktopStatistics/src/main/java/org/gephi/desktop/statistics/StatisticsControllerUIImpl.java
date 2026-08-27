@@ -46,10 +46,14 @@ import java.util.ArrayList;
 import org.gephi.desktop.statistics.api.StatisticsControllerUI;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -109,57 +113,63 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
     @Override
     public void execute(final Statistics statistics) {
-        StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
-        final StatisticsUI[] uis = getUI(statistics);
-
-        for (StatisticsUI s : uis) {
-            s.setup(statistics);
-        }
-        if (model == null) {
-            return;
-        }
-        model.setRunning(statistics, true);
-
-        controller.execute(statistics, new LongTaskListener() {
-
-            @Override
-            public void taskFinished(LongTask task) {
-                model.setRunning(statistics, false);
-                for (StatisticsUI s : uis) {
-                    model.addResult(s);
-                    s.unsetup();
-                }
-            }
-        });
+        execute(statistics, null);
     }
 
     @Override
     public void execute(final Statistics statistics, final LongTaskListener listener) {
-        StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
+        final StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         final StatisticsUI[] uis = getUI(statistics);
 
         for (StatisticsUI s : uis) {
             s.setup(statistics);
         }
-        if (model == null) {
+        //Capture the model, the execution outcome is reported from a background
+        //thread and the current workspace may have changed in the meantime
+        final StatisticsModelUIImpl uiModel = model;
+        if (uiModel == null) {
             return;
         }
-        model.setRunning(statistics, true);
+        uiModel.setRunning(statistics, true);
 
         controller.execute(statistics, new LongTaskListener() {
 
             @Override
             public void taskFinished(LongTask task) {
-                model.setRunning(statistics, false);
+                uiModel.setRunning(statistics, false);
                 for (StatisticsUI s : uis) {
-                    model.addResult(s);
+                    uiModel.addResult(s);
                     s.unsetup();
                 }
                 if (listener != null) {
                     listener.taskFinished(statistics instanceof LongTask ? (LongTask) statistics : null);
                 }
             }
+
+            @Override
+            public void fatalError(Throwable t) {
+                //No result to collect from a failed execution, but the running state
+                //has to be cleared or the front-end stays stuck on 'Cancel'
+                uiModel.setRunning(statistics, false);
+                for (StatisticsUI s : uis) {
+                    s.unsetup();
+                }
+                notifyExecutionError(controller, statistics, t);
+                if (listener != null) {
+                    listener.fatalError(t);
+                }
+            }
         });
+    }
+
+    private static void notifyExecutionError(StatisticsController controller, Statistics statistics, Throwable t) {
+        StatisticsBuilder builder = controller.getBuilder(statistics.getClass());
+        String name = builder != null ? builder.getName() : statistics.getClass().getSimpleName();
+        String localizedMessage = t.getLocalizedMessage();
+        String error = localizedMessage != null && !localizedMessage.isEmpty() ? localizedMessage : t.toString();
+        DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(
+            NbBundle.getMessage(StatisticsControllerUIImpl.class, "StatisticsControllerUIImpl.executionError", name,
+                error), NotifyDescriptor.ERROR_MESSAGE));
     }
 
     public StatisticsUI[] getUI(Statistics statistics) {
