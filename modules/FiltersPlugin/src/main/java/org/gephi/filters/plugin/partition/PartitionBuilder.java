@@ -359,7 +359,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public void setParts(Set<Object> parts) {
-            this.parts = parts;
+            this.parts = parts != null ? parts : new HashSet<>();
         }
 
         public Column getColumn() {
