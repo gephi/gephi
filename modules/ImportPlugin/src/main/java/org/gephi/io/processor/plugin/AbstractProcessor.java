@@ -45,7 +45,9 @@ package org.gephi.io.processor.plugin;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Configuration;
@@ -86,6 +88,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
 
     private final Set<Column> columnsTypeMismatchAlreadyWarned = new HashSet<>();
     private final Object2IntOpenHashMap<Edge> edgeCountForAverage = new Object2IntOpenHashMap<>();
+    private final Map<Edge, Object2IntOpenHashMap<Object>> dynamicWeightCountForAverage = new HashMap<>();
     protected ProgressTicket progressTicket;
     protected Workspace workspace;
     protected ContainerUnloader[] containers;
@@ -99,6 +102,7 @@ public abstract class AbstractProcessor implements Processor, LongTask {
         progressTicket = null;
         columnsTypeMismatchAlreadyWarned.clear();
         edgeCountForAverage.clear();
+        dynamicWeightCountForAverage.clear();
     }
 
     protected int calculateWorkUnits() {
@@ -388,8 +392,18 @@ public abstract class AbstractProcessor implements Processor, LongTask {
                     Object[] vals1 = valMap.toValuesArray();
 
                     for (int i = 0; i < keys1.length; i++) {
+                        Object key = keys1[i];
+                        double newVal = ((Number) vals1[i]).doubleValue();
+
                         try {
-                            newMap.put(keys1[i], ((Number) vals1[i]).doubleValue());
+                            if (newMap.contains(key)) {
+                                //Same timestamp/interval already set by a previously merged edge:
+                                //apply the edges merge strategy instead of silently overwriting it.
+                                double existingVal = ((Number) newMap.get(key, 0d)).doubleValue();
+                                newMap.put(key, mergeDynamicWeightValue(edge, key, existingVal, newVal));
+                            } else {
+                                newMap.put(key, newVal);
+                            }
                         } catch (IllegalArgumentException e) {
                             //Overlapping intervals, ignore
                         }
@@ -429,6 +443,28 @@ public abstract class AbstractProcessor implements Processor, LongTask {
             }
 
             edge.setWeight(result);
+        }
+    }
+
+    private double mergeDynamicWeightValue(Edge edge, Object key, double existingVal, double newVal) {
+        switch (containers[0].getEdgesMergeStrategy()) {
+            case AVG:
+                Object2IntOpenHashMap<Object> counts =
+                    dynamicWeightCountForAverage.computeIfAbsent(edge, e -> new Object2IntOpenHashMap<>());
+                counts.addTo(key, 1);
+                int keyCount = counts.getInt(key);
+                return (existingVal * keyCount + newVal) / (keyCount + 1);
+            case MAX:
+                return Math.max(existingVal, newVal);
+            case MIN:
+                return Math.min(existingVal, newVal);
+            case SUM:
+                return existingVal + newVal;
+            case FIRST:
+                return existingVal;
+            case LAST:
+            default:
+                return newVal;
         }
     }
 
