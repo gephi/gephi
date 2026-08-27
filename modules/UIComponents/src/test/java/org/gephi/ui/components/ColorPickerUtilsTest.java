@@ -60,6 +60,32 @@ public class ColorPickerUtilsTest {
     }
 
     @Test
+    public void testTypingInTheMiddleOfAFullFieldOvertypesTheTail() throws Exception {
+        PlainDocument document = hexDocument();
+        document.replace(0, document.getLength(), "FF0000", null);
+        document.insertString(3, "9", null);
+        Assert.assertEquals("FF0900", document.getText(0, document.getLength()));
+    }
+
+    @Test
+    public void testTypingAtTheEndOfAFullFieldIsANoOp() throws Exception {
+        PlainDocument document = hexDocument();
+        document.replace(0, document.getLength(), "FF0000", null);
+        document.insertString(document.getLength(), "9", null);
+        Assert.assertEquals("FF0000", document.getText(0, document.getLength()));
+    }
+
+    @Test
+    public void testReplacingASelectionOvertypesTheTailWhenTheResultWouldOverflow() throws Exception {
+        PlainDocument document = hexDocument();
+        document.replace(0, document.getLength(), "FF0000", null);
+        // Selecting the middle "00" and typing "999" grows the field by one character, which
+        // must come from evicting the last character rather than truncating "999" itself.
+        document.replace(3, 2, "999", null);
+        Assert.assertEquals("FF0999", document.getText(0, document.getLength()));
+    }
+
+    @Test
     public void testDocumentOnlyEverHoldsCanonicalHex() throws Exception {
         String[] pasted =
             {"#00FF00", "1a2b3c", "rgb(12, 34, 56)", "hello world", "", "0x112233", "#ABCDEF",

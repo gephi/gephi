@@ -144,22 +144,43 @@ public final class ColorPickerUtils {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
             throws BadLocationException {
-            super.insertString(fb, offset, toHexDigits(string, fb.getDocument().getLength()), attr);
+            overtypeInsert(fb, offset, 0, string, attr);
         }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
             throws BadLocationException {
-            super.replace(fb, offset, length, toHexDigits(text, fb.getDocument().getLength() - length), attrs);
+            overtypeInsert(fb, offset, length, text, attrs);
         }
 
-        private static String toHexDigits(String text, int keptLength) {
-            if (text == null) {
-                return null;
+        /**
+         * Inserts the hex digits found in {@code text} at {@code offset}, after removing
+         * {@code removedLength} characters there (the selection being replaced, if any). Whatever
+         * does not fit in the six-digit field afterwards is dropped from the far end of the field
+         * rather than from what was just typed or pasted, so editing mid-field overtypes like a
+         * fixed-width field instead of silently doing nothing once the field is already full.
+         */
+        private void overtypeInsert(FilterBypass fb, int offset, int removedLength, String text,
+            AttributeSet attrs) throws BadLocationException {
+            int docLength = fb.getDocument().getLength();
+            int budget = HEX_LENGTH - offset;
+            String insertDigits = toHexDigits(text, budget);
+            int tailStart = offset + removedLength;
+            int tailLength = docLength - tailStart;
+            int tailBudget = budget - insertDigits.length();
+            int tailCharsToRemove = tailLength - Math.min(tailLength, tailBudget);
+            if (tailCharsToRemove > 0) {
+                fb.remove(docLength - tailCharsToRemove, tailCharsToRemove);
             }
-            int room = HEX_LENGTH - keptLength;
-            StringBuilder hexDigits = new StringBuilder(Math.max(room, 0));
-            for (int i = 0; i < text.length() && hexDigits.length() < room; i++) {
+            super.replace(fb, offset, removedLength, insertDigits, attrs);
+        }
+
+        private static String toHexDigits(String text, int maxLength) {
+            if (text == null) {
+                return "";
+            }
+            StringBuilder hexDigits = new StringBuilder(Math.max(maxLength, 0));
+            for (int i = 0; i < text.length() && hexDigits.length() < maxLength; i++) {
                 char c = Character.toUpperCase(text.charAt(i));
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')) {
                     hexDigits.append(c);
