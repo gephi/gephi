@@ -56,11 +56,6 @@
             <artifactId>org-netbeans-core-startup</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId><!-- Needed for XML 1.1 output (control character escaping) -->
-            <version>${gephi.woodstox.version}</version>
-        </dependency>
 
         <!-- Tests -->
         <dependency>
@@ -73,6 +68,15 @@
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
             <version>2.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Used in tests to exercise the same strict XMLStreamWriter (Woodstox) that the desktop app
+             resolves at runtime (via ImportPlugin's Apache POI dependency), since the JDK's bundled
+             StAX implementation does not validate characters the way Woodstox does. -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>${gephi.woodstox.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

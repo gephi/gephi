@@ -161,6 +161,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportMeta = true;
     private boolean includeNullAttValues = false;
     private NormalizationHelper normalization;
+    private boolean strippedInvalidCharacters = false;
 
     @Override
     public boolean execute() {
@@ -179,6 +180,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
         Progress.switchToDeterminate(progress, graph.getNodeCount() + graph.getEdgeCount());
 
+        strippedInvalidCharacters = false;
+
         try {
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
@@ -186,7 +189,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
             xmlWriter = new IndentingXMLStreamWriter(xmlWriter);
 
-            xmlWriter.writeStartDocument("UTF-8", "1.1");
+            xmlWriter.writeStartDocument("UTF-8", "1.0");
             xmlWriter.setPrefix("", GEXF_NAMESPACE);
             xmlWriter.writeStartElement(GEXF_NAMESPACE, GEXF);
             xmlWriter.writeNamespace("", GEXF_NAMESPACE);
@@ -205,6 +208,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeEndDocument();
             xmlWriter.close();
 
+            if (strippedInvalidCharacters) {
+                Logger.getLogger(ExporterGEXF.class.getName()).log(Level.WARNING,
+                    "Some labels or attribute values contained characters not allowed in XML "
+                        + "(e.g. control characters) and were removed from the exported file.");
+            }
         } catch (Exception e) {
             Logger.getLogger(ExporterGEXF.class.getName()).log(Level.SEVERE, null, e);
         } finally {
@@ -259,12 +267,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_TITLE);
-            xmlWriter.writeCharacters(XmlUtils.stripInvalidXmlChars(workspace.getWorkspaceMetadata().getTitle()));
+            xmlWriter.writeCharacters(sanitize(workspace.getWorkspaceMetadata().getTitle()));
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
             xmlWriter
-                .writeCharacters(XmlUtils.stripInvalidXmlChars(workspace.getWorkspaceMetadata().getDescription()));
+                .writeCharacters(sanitize(workspace.getWorkspaceMetadata().getDescription()));
             xmlWriter.writeEndElement();
 
             xmlWriter.writeEndElement();
@@ -307,7 +315,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             xmlWriter.writeStartElement(ATTRIBUTE);
             xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
-            xmlWriter.writeAttribute(ATTRIBUTE_TITLE, XmlUtils.stripInvalidXmlChars(col.getTitle()));
+            xmlWriter.writeAttribute(ATTRIBUTE_TITLE, sanitize(col.getTitle()));
 
             if (col.isArray()) {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
@@ -327,7 +335,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 } else {
                     valString = col.getDefaultValue().toString();
                 }
-                xmlWriter.writeCharacters(XmlUtils.stripInvalidXmlChars(valString));
+                xmlWriter.writeCharacters(sanitize(valString));
                 xmlWriter.writeEndElement();
             }
             xmlWriter.writeEndElement();
@@ -349,7 +357,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             String id = node.getId().toString();
             xmlWriter.writeAttribute(NODE_ID, id);
             if (node.getLabel() != null && !node.getLabel().isEmpty()) {
-                xmlWriter.writeAttribute(NODE_LABEL, XmlUtils.stripInvalidXmlChars(node.getLabel()));
+                xmlWriter.writeAttribute(NODE_LABEL, sanitize(node.getLabel()));
             }
 
             if (exportDynamic) {
@@ -385,7 +393,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         if(column.isNumber()) {
             return replaceInfinity(AttributeUtils.print(val));
         } else {
-            return XmlUtils.stripInvalidXmlChars(AttributeUtils.print(val));
+            return sanitize(AttributeUtils.print(val));
         }
     }
 
@@ -596,7 +604,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             String label = edge.getLabel();
             if (label != null && !label.isEmpty()) {
-                xmlWriter.writeAttribute(EDGE_LABEL, XmlUtils.stripInvalidXmlChars(label));
+                xmlWriter.writeAttribute(EDGE_LABEL, sanitize(label));
             }
 
             if (edge.getType() != 0) {
@@ -651,6 +659,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     private static String replaceInfinity(String str) {
         return str.replace("-Infinity", "-INF").replace("Infinity", "INF");
+    }
+
+    private String sanitize(String str) {
+        String result = XmlUtils.stripInvalidXmlChars(str);
+        if (result != str) {
+            strippedInvalidCharacters = true;
+        }
+        return result;
     }
 
     @Override
