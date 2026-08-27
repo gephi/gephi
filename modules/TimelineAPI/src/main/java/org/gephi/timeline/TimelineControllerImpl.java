@@ -83,6 +83,7 @@ import org.openide.util.lookup.ServiceProviders;
 public class TimelineControllerImpl implements TimelineController, Controller<TimelineModelImpl> {
 
     private final List<TimelineModelListener> listeners;
+    private final Object observerLock = new Object();
     private volatile GraphObserverThread observerThread;
     private ScheduledExecutorService playExecutor;
 
@@ -160,34 +161,36 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
         }
     }
 
-    protected boolean setMinMax(double min, double max) {
-        TimelineModelImpl currentModel = getModel();
-        if (currentModel == null) {
-            return false;
-        }
-        double[] prevCustomBounds = new double[2];
-        if (!currentModel.updateMinMax(min, max, prevCustomBounds)) {
-            return false;
-        }
-        if (currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, currentModel, new double[] {min, max}));
-
-            if (currentModel.getCustomMax() != max || currentModel.getCustomMin() != min) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
-                    new double[] {min, max}));
+    protected boolean setMinMax(GraphObserverThread caller, double min, double max) {
+        synchronized (observerLock) {
+            if (caller != observerThread) {
+                return false;
             }
+            TimelineModelImpl currentModel = caller.getTimelineModel();
+            double[] prevCustomBounds = new double[2];
+            if (!currentModel.updateMinMax(min, max, prevCustomBounds)) {
+                return false;
+            }
+            if (currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, currentModel, new double[] {min, max}));
+
+                if (currentModel.getCustomMax() != max || currentModel.getCustomMin() != min) {
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
+                        new double[] {min, max}));
+                }
+            }
+            if ((Double.isInfinite(prevCustomBounds[1]) || Double.isInfinite(prevCustomBounds[0])) &&
+                currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, true));
+            } else if (!Double.isInfinite(prevCustomBounds[1]) && !Double.isInfinite(prevCustomBounds[0]) &&
+                !currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, false));
+            }
+            return true;
         }
-        if ((Double.isInfinite(prevCustomBounds[1]) || Double.isInfinite(prevCustomBounds[0])) &&
-            currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, true));
-        } else if (!Double.isInfinite(prevCustomBounds[1]) && !Double.isInfinite(prevCustomBounds[0]) &&
-            !currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, false));
-        }
-        return true;
     }
 
     @Override
