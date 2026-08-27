@@ -61,6 +61,7 @@ import javax.swing.UIManager;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.ComponentUI;
+import org.gephi.ui.components.ColorPickerUtils;
 
 /**
  * This component lets the user manipulate the colors in a gradient.
@@ -222,7 +223,7 @@ public class GradientSlider extends MultiThumbSlider {
 
         boolean includeOpacity =
             MultiThumbSliderUI.getProperty(this, "GradientSlider.includeOpacity", "true").equals("true");
-        colors[i] = ColorPicker.showDialog(frame, colors[i], includeOpacity);
+        colors[i] = ColorPickerUtils.showDialog(frame, colors[i], includeOpacity);
         if (colors[i] != null) {
             setValues(getThumbPositions(), colors);
         }
