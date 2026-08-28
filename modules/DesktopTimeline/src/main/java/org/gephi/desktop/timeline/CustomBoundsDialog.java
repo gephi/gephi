@@ -423,7 +423,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
          * Validates that the interval value does not exceed the custom bounds.
          *
          * @param boundField the min or max bounds text field to validate against
-         * @param upper      if true, validates value <= boundField (for end); if false, validates value >= boundField (for start)
+         * @param upper      if true, validates value {@code <=} boundField (for end); if false, validates value {@code >=} boundField (for start)
          */
         public IntervalBoundsValidator(JTextField boundField, boolean upper) {
             this.boundField = boundField;

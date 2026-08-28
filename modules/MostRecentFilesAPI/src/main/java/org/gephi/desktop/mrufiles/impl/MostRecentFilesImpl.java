@@ -136,14 +136,18 @@ public class MostRecentFilesImpl implements MostRecentFiles {
     }
 
     /**
-     * {@inheritDoc}
+     * Adds a listener notified when the MRU file list changes.
+     *
+     * @param listener the listener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         listenerList.add(PropertyChangeListener.class, listener);
     }
 
     /**
-     * {@inheritDoc}
+     * Removes a listener previously added with {@link #addPropertyChangeListener(PropertyChangeListener)}.
+     *
+     * @param listener the listener to remove
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         listenerList.remove(PropertyChangeListener.class, listener);
