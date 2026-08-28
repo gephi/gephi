@@ -49,7 +49,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @author Mathieu Jacomy & Tiago Peixoto
+ * @author Mathieu Jacomy &amp; Tiago Peixoto
  */
 @ServiceProvider(service = StatisticsBuilder.class)
 public class StatisticalInferenceBuilder implements StatisticsBuilder {

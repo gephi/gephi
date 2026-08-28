@@ -50,7 +50,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  * Rendering target to PDF format.
  * <p>
  * This target is used by renderers objects to render a graph to PDF and uses
- * the <a href=https://pdfbox.apache.org/">PDFBox</a> Java library.
+ * the <a href="https://pdfbox.apache.org/">PDFBox</a> Java library.
  * <p>
  * The target give access to the <code>PDPageContentStream</code> object from PDFBox to
  * draw items.
