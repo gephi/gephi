@@ -7,8 +7,11 @@ import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -18,9 +21,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.UIUtils;
@@ -75,6 +83,9 @@ public class VizEngineGraphCanvasManager {
         final Screen screen = NewtFactory.createScreen(display, 0);
 
         this.glWindow = GLWindow.create(screen, caps);
+
+        // Check for unsupported OpenGL before the engine registers its listener
+        glWindow.addGLEventListener(new OpenGLVersionChecker());
 
         if (VizConfig.isEngineOpenGLDebug()) {
             glWindow.setContextCreationFlags(GLContext.CTX_OPTION_DEBUG);
@@ -245,6 +256,55 @@ public class VizEngineGraphCanvasManager {
             throw new RuntimeException("Interrupted while waiting for EDT task", ex);
         } catch (InvocationTargetException ex) {
             throw new RuntimeException("EDT task failed", ex.getCause());
+        }
+    }
+
+    private static class OpenGLVersionChecker implements GLEventListener {
+
+        private static final AtomicBoolean WARNED = new AtomicBoolean(false);
+
+        @Override
+        public void init(GLAutoDrawable drawable) {
+            final GL gl = drawable.getGL();
+            final String renderer = gl.glGetString(GL.GL_RENDERER);
+            final String version = gl.glGetString(GL.GL_VERSION);
+
+            // OpenGL version string starts with "major.minor"
+            boolean tooOld = false;
+            if (version != null && !version.isEmpty()) {
+                try {
+                    int major = Character.getNumericValue(version.charAt(0));
+                    tooOld = major < 2;
+                } catch (Exception ignored) {
+                }
+            }
+            final boolean isGdiGeneric = renderer != null && renderer.contains("GDI Generic");
+
+            if ((tooOld || isGdiGeneric) && WARNED.compareAndSet(false, true)) {
+                final String rendererStr = renderer != null ? renderer : "unknown";
+                final String versionStr = version != null ? version : "unknown";
+                Logger.getLogger(VizEngineGraphCanvasManager.class.getName()).log(
+                    Level.WARNING, "Unsupported OpenGL: renderer={0}, version={1}",
+                    new Object[] {rendererStr, versionStr});
+                SwingUtilities.invokeLater(() -> {
+                    String msg = NbBundle.getMessage(VizEngineGraphCanvasManager.class,
+                        "VizEngineGraphCanvasManager.opengl.unsupported.message", rendererStr, versionStr);
+                    NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
+                    DialogDisplayer.getDefault().notify(nd);
+                });
+            }
+        }
+
+        @Override
+        public void dispose(GLAutoDrawable drawable) {
+        }
+
+        @Override
+        public void display(GLAutoDrawable drawable) {
+        }
+
+        @Override
+        public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         }
     }
 }

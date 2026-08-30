@@ -26,12 +26,12 @@ public class EdgesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void init(JOGLRenderingTarget target) {
-        edgeData.init(target.getDrawable().getGL().getGL2ES2());
+        edgeData.init(target.getDrawable().getGL().getGL3ES3());
     }
 
     @Override
     public void dispose(JOGLRenderingTarget target) {
-        edgeData.dispose(target.getDrawable().getGL().getGL2ES2());
+        edgeData.dispose(target.getDrawable().getGL().getGL3ES3());
     }
 
     @Override

@@ -42,6 +42,7 @@
 
 package org.gephi.io.importer.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Database;
+import org.gephi.io.importer.api.EmptyFileException;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.ImportUtils;
@@ -145,6 +147,7 @@ public class ImportControllerImpl implements ImportController {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
             fileObject = ImportUtils.getArchivedFile(fileObject);   //Unzip and return content file
+            checkFileNotEmpty(fileObject);
             file = FileUtil.toFile(fileObject);
             FileImporterBuilder builder = getMatchingImporter(fileObject);
             if (fileObject != null && builder != null) {
@@ -160,6 +163,7 @@ public class ImportControllerImpl implements ImportController {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
             fileObject = ImportUtils.getArchivedFile(fileObject);   //Unzip and return content file
+            checkFileNotEmpty(fileObject);
             file = FileUtil.toFile(fileObject);
             if (fileObject != null) {
                 Container c = importFile(fileObject.getInputStream(), importer, file);
@@ -169,12 +173,38 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    private static void checkFileNotEmpty(FileObject fileObject) {
+        if (fileObject != null && fileObject.getSize() == 0) {
+            throw new EmptyFileException(fileObject.getNameExt());
+        }
+    }
+
+    private static Reader checkReaderNotEmpty(Reader reader, File file) {
+        // Wrap so we can peek the first character without consuming the stream.
+        BufferedReader bufferedReader =
+            reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+        try {
+            bufferedReader.mark(1);
+            if (bufferedReader.read() == -1) {
+                throw new EmptyFileException(file != null ? file.getName() : null);
+            }
+            bufferedReader.reset();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return bufferedReader;
+    }
+
     @Override
     public Container importFile(Reader reader, FileImporter importer) {
         return importFile(reader, importer, null);
     }
 
     public Container importFile(Reader reader, FileImporter importer, File file) {
+        // Detect empty input early so importers don't have to handle this case themselves
+        // and so the desktop UI can surface a friendly EmptyFileException.
+        reader = checkReaderNotEmpty(reader, file);
+
         //Create Container
         final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 

@@ -4,11 +4,11 @@ import static com.jogamp.opengl.GL.GL_EXTENSIONS;
 import static com.jogamp.opengl.GL.GL_RENDERER;
 import static com.jogamp.opengl.GL.GL_VENDOR;
 import static com.jogamp.opengl.GL.GL_VERSION;
-import static com.jogamp.opengl.GL2ES2.GL_SHADING_LANGUAGE_VERSION;
-import static com.jogamp.opengl.GL2ES3.GL_CONTEXT_FLAGS;
-import static com.jogamp.opengl.GL2ES3.GL_MAJOR_VERSION;
-import static com.jogamp.opengl.GL2ES3.GL_MINOR_VERSION;
-import static com.jogamp.opengl.GL2ES3.GL_NUM_EXTENSIONS;
+import static com.jogamp.opengl.GL3ES3.GL_CONTEXT_FLAGS;
+import static com.jogamp.opengl.GL3ES3.GL_MAJOR_VERSION;
+import static com.jogamp.opengl.GL3ES3.GL_MINOR_VERSION;
+import static com.jogamp.opengl.GL3ES3.GL_NUM_EXTENSIONS;
+import static com.jogamp.opengl.GL3ES3.GL_SHADING_LANGUAGE_VERSION;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.util.GLBuffers;
@@ -70,12 +70,12 @@ public final class GLCapabilitiesSummary {
 
         final List<String> extensionsList = new ArrayList<>();
 
-        if (gl.isGL2ES3()) {
+        if (gl.isGL3ES3()) {
             gl.glGetIntegerv(GL_NUM_EXTENSIONS, data);
             version.NUM_EXTENSIONS = data.get(0);
 
             for (int i = 0; i < version.NUM_EXTENSIONS; i++) {
-                String extension = GLFunctions.glGetStringi(gl.getGL2ES3(), GL_EXTENSIONS, i);
+                String extension = GLFunctions.glGetStringi(gl.getGL3ES3(), GL_EXTENSIONS, i);
                 extensionsList.add(extension.trim());
             }
         } else {

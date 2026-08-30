@@ -59,8 +59,6 @@ import org.gephi.desktop.preview.propertyeditors.DependantColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.DependantOriginalColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.DisabledAwareFontEditor;
 import org.gephi.desktop.preview.propertyeditors.EdgeColorPropertyEditor;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
@@ -78,61 +76,60 @@ import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.spi.Controller;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 import org.openide.windows.WindowManager;
 
 /**
  * Controller implementation of the preview UI.
  *
+ * <p>Implements the {@link Controller} SPI so that a {@link PreviewUIModelImpl} is created in
+ * every workspace's lookup automatically by {@code WorkspaceImpl.initModels()}. This keeps the
+ * controller stateless and side-effect free at construction time, which avoids EDT stalls during
+ * lazy lookup of the singleton (see GEPHI-5KZ).
+ *
  * @author Jérémy Subtil, Mathieu Bastian
  */
-@ServiceProvider(service = PreviewUIController.class)
-public class PreviewUIControllerImpl implements PreviewUIController {
+@ServiceProviders({
+    @ServiceProvider(service = PreviewUIController.class),
+    @ServiceProvider(service = Controller.class, position = 2000)})
+public class PreviewUIControllerImpl implements PreviewUIController, Controller<PreviewUIModelImpl> {
 
-    private final List<PropertyChangeListener> listeners;
-    private final PreviewController previewController;
-    private final GraphController graphController;
+    private final List<PropertyChangeListener> listeners = new ArrayList<>();
     private final PresetUtils presetUtils = new PresetUtils();
-    private PreviewUIModelImpl model = null;
-    private GraphModel graphModel = null;
+    private final PreviewController previewController;
 
     public PreviewUIControllerImpl() {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
-        listeners = new ArrayList<>();
+
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        graphController = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                PreviewModel previewModel = previewController.getModel(workspace);
-                if (workspace.getLookup().lookup(PreviewUIModelImpl.class) == null) {
-                    workspace.add(new PreviewUIModelImpl(previewModel, PreviewUIControllerImpl.this));
-                }
                 enableRefresh();
             }
 
             @Override
             public void select(Workspace workspace) {
-                graphModel = graphController.getGraphModel(workspace);
-
-                PreviewModel previewModel = previewController.getModel(workspace);
-                model = workspace.getLookup().lookup(PreviewUIModelImpl.class);
-                if (model == null) {
-                    model = new PreviewUIModelImpl(previewModel, PreviewUIControllerImpl.this);
-                    workspace.add(model);
+                PreviewUIModelImpl model = getModel(workspace);
+                if (model != null) {
+                    PreviewModel previewModel = model.getPreviewModel();
+                    if (previewModel != null) {
+                        Float visibilityRatio =
+                            previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+                        if (visibilityRatio != null) {
+                            model.setVisibilityRatio(visibilityRatio);
+                        }
+                    }
                 }
-                Float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
-                model.setVisibilityRatio(visibilityRatio);
                 fireEvent(SELECT, model);
             }
 
             @Override
             public void unselect(Workspace workspace) {
-                if (graphModel != null) {
-                    graphModel = null;
-                }
-                fireEvent(UNSELECT, model);
+                fireEvent(UNSELECT, getModel(workspace));
             }
 
             @Override
@@ -141,27 +138,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
             @Override
             public void disable() {
-                if (graphModel != null) {
-                    graphModel = null;
-                }
                 fireEvent(SELECT, null);
-                model = null;
             }
         });
-        if (pc.getCurrentWorkspace() != null) {
-            model = pc.getCurrentWorkspace().getLookup().lookup(PreviewUIModelImpl.class);
-            if (model == null) {
-                PreviewModel previewModel = previewController.getModel(pc.getCurrentWorkspace());
-                model = new PreviewUIModelImpl(previewModel, this);
-                pc.getCurrentWorkspace().add(model);
-            }
-            Float visibilityRatio =
-                previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
-            if (visibilityRatio != null) {
-                model.setVisibilityRatio(visibilityRatio);
-            }
-            graphModel = graphController.getGraphModel(pc.getCurrentWorkspace());
-        }
 
         //Register editors
         //Overriding default Preview API basic editors that don't support CustomEditor
@@ -173,27 +152,40 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         PropertyEditorManager.registerEditor(Font.class, DisabledAwareFontEditor.class);
     }
 
+    @Override
+    public PreviewUIModelImpl newModel(Workspace workspace) {
+        return new PreviewUIModelImpl(workspace, this);
+    }
+
+    @Override
+    public Class<PreviewUIModelImpl> getModelClass() {
+        return PreviewUIModelImpl.class;
+    }
+
+    @Override
+    public PreviewUIModelImpl getModel() {
+        return Controller.super.getModel();
+    }
+
     /**
      * Refreshes the preview applet.
      */
     @Override
     public void refreshPreview() {
+        final PreviewUIModelImpl model = getModel();
         if (model != null) {
-            Thread refreshThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    model.setRefreshing(true);
-                    fireEvent(REFRESHING, true);
+            Thread refreshThread = new Thread(() -> {
+                model.setRefreshing(true);
+                fireEvent(REFRESHING, true);
 
-                    previewController.getModel().getProperties()
-                        .putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
-                    previewController.refreshPreview();
+                previewController.getModel().getProperties()
+                    .putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
+                previewController.refreshPreview();
 
-                    fireEvent(REFRESHED, model);
+                fireEvent(REFRESHED, model);
 
-                    model.setRefreshing(false);
-                    fireEvent(REFRESHING, false);
-                }
+                model.setRefreshing(false);
+                fireEvent(REFRESHING, false);
             }, "Refresh Preview");
             refreshThread.start();
         }
@@ -203,28 +195,21 @@ public class PreviewUIControllerImpl implements PreviewUIController {
      * Enables the preview refresh action.
      */
     private void enableRefresh() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault()
-                    .findTopComponent("PreviewSettingsTopComponent");
-                if (pstc != null) {
-                    pstc.enableRefreshButton();
-                }
+        SwingUtilities.invokeLater(() -> {
+            PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault()
+                .findTopComponent("PreviewSettingsTopComponent");
+            if (pstc != null) {
+                pstc.enableRefreshButton();
             }
         });
     }
 
     @Override
     public void setVisibilityRatio(float visibilityRatio) {
+        PreviewUIModelImpl model = getModel();
         if (model != null) {
             model.setVisibilityRatio(visibilityRatio);
         }
-    }
-
-    @Override
-    public PreviewUIModel getModel() {
-        return model;
     }
 
     @Override
@@ -242,10 +227,13 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
     @Override
     public void setCurrentPreset(PreviewPreset preset) {
+        PreviewUIModelImpl model = getModel();
         if (model != null) {
             model.setCurrentPreset(preset);
             PreviewModel previewModel = previewController.getModel();
-            previewModel.getProperties().applyPreset(preset);
+            if (previewModel != null) {
+                previewModel.getProperties().applyPreset(preset);
+            }
         }
     }
 
@@ -266,6 +254,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
     @Override
     public void savePreset(String name) {
+        PreviewUIModelImpl model = getModel();
         if (model != null) {
             PreviewModel previewModel = previewController.getModel();
             Map<String, Object> map = new HashMap<>();

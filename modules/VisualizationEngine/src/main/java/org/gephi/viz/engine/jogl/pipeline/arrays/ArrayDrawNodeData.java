@@ -5,7 +5,7 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_POSITION_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.SHADER_SIZE_LOCATION;
 
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
@@ -27,14 +27,14 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         super(nodesCallback, false, false);
     }
 
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, NodeWorldData data,
+    public void drawArrays(GL3ES3 gl, RenderingLayer layer, NodeWorldData data,
                            float[] mvpFloats) {
         refreshTime();
 
         drawArraysInternal(gl, layer, data, mvpFloats);
     }
 
-    public void drawArraysInternal(final GL2ES2 gl,
+    public void drawArraysInternal(final GL3ES3 gl,
                                    final RenderingLayer layer,
                                    final NodeWorldData data,
                                    final float[] mvpFloats) {

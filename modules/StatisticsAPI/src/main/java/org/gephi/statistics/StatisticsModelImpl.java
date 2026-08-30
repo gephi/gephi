@@ -195,7 +195,9 @@ public class StatisticsModelImpl implements StatisticsModel {
                 File file = new File(filename);
                 try {
                     BufferedImage image = ImageIO.read(file);
-                    ImageIO.write(image, "PNG", out);
+                    if (image != null) {
+                        ImageIO.write(image, "PNG", out);
+                    }
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }

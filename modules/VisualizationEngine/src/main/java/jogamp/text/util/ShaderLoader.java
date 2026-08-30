@@ -28,7 +28,7 @@
 
 package jogamp.text.util;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
@@ -66,8 +66,8 @@ public final class ShaderLoader {
      * @param shader OpenGL handle to a shader
      * @return True if shader was compiled without errors
      */
-    private static boolean isShaderCompiled(/*@Nonnull*/ final GL2ES2 gl, final int shader) {
-        return ShaderUtil.isShaderStatusValid(gl, shader, GL2ES2.GL_COMPILE_STATUS, null);
+    private static boolean isShaderCompiled(/*@Nonnull*/ final GL3ES3 gl, final int shader) {
+        return ShaderUtil.isShaderStatusValid(gl, shader, GL3ES3.GL_COMPILE_STATUS, null);
     }
 
     /**
@@ -77,8 +77,8 @@ public final class ShaderLoader {
      * @param program OpenGL handle to a shader program
      * @return True if program was linked successfully
      */
-    private static boolean isProgramLinked(/*@Nonnull*/ final GL2ES2 gl, final int program) {
-        return ShaderUtil.isProgramStatusValid(gl, program, GL2ES2.GL_LINK_STATUS);
+    private static boolean isProgramLinked(/*@Nonnull*/ final GL3ES3 gl, final int program) {
+        return ShaderUtil.isProgramStatusValid(gl, program, GL3ES3.GL_LINK_STATUS);
     }
 
     /**
@@ -93,7 +93,7 @@ public final class ShaderLoader {
      * @throws GLException              if program did not compile or link successfully
      */
     /*@Nonnegative*/
-    public static int loadProgram(/*@Nonnull*/ final GL2ES2 gl,
+    public static int loadProgram(/*@Nonnull*/ final GL3ES3 gl,
         /*@Nonnull*/ final String vss,
         /*@Nonnull*/ final String fss) {
 
@@ -104,8 +104,8 @@ public final class ShaderLoader {
         Check.argument(!fss.isEmpty(), "Fragment shader source cannot be empty");
 
         // Create the shaders
-        final int vs = loadShader(gl, vss, GL2ES2.GL_VERTEX_SHADER);
-        final int fs = loadShader(gl, fss, GL2ES2.GL_FRAGMENT_SHADER);
+        final int vs = loadShader(gl, vss, GL3ES3.GL_VERTEX_SHADER);
+        final int fs = loadShader(gl, fss, GL3ES3.GL_FRAGMENT_SHADER);
 
         // Create a program and attach the shaders
         final int program = gl.glCreateProgram();
@@ -140,7 +140,7 @@ public final class ShaderLoader {
      * @throws GLException if a GLSL-capable context is not active or could not compile shader
      */
     /*@Nonnegative*/
-    private static int loadShader(/*@Nonnull*/ final GL2ES2 gl,
+    private static int loadShader(/*@Nonnull*/ final GL3ES3 gl,
         /*@Nonnull*/ final String source,
                                                final int type) {
 

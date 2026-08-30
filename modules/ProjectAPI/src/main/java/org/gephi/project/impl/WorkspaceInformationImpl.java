@@ -44,8 +44,8 @@ package org.gephi.project.impl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.gephi.project.api.WorkspaceInformation;
 
 /**
@@ -54,7 +54,9 @@ import org.gephi.project.api.WorkspaceInformation;
 public class WorkspaceInformationImpl implements WorkspaceInformation {
 
     //Lookup
-    private final transient List<PropertyChangeListener> listeners = new ArrayList<>();
+    //Copy-on-write: the events are fired from the thread performing the project operation while the
+    //listeners are typically registered from the Event Dispatch Thread
+    private final transient List<PropertyChangeListener> listeners = new CopyOnWriteArrayList<>();
     private String name;
     private Status status = Status.CLOSED;
     private String source;

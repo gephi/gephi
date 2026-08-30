@@ -204,8 +204,15 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
-            this.model = (PreviewUIModel) evt.getNewValue();
-            initTarget(model);
+            final PreviewUIModel newModel = (PreviewUIModel) evt.getNewValue();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    model = newModel;
+                    initTarget(model);
+                }
+            });
         } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHED)) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override

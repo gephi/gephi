@@ -74,6 +74,9 @@ public class GephiReader {
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
+                    if (projectName == null || projectName.trim().isEmpty()) {
+                        projectName = "Untitled";
+                    }
                     String projectId = reader.getAttributeValue(null, "id");
                     if (projectId == null) {
                         // Before 0.10 version we didn't have unique project ids

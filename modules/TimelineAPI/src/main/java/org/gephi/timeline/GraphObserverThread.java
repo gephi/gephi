@@ -16,7 +16,7 @@ public class GraphObserverThread extends Thread {
 
     private final TimelineControllerImpl timelineController;
     private final TimelineModelImpl timelineModel;
-    private boolean stop;
+    private volatile boolean stop;
     private Interval interval;
 
     public GraphObserverThread(TimelineControllerImpl controller, TimelineModelImpl model) {
@@ -32,7 +32,7 @@ public class GraphObserverThread extends Thread {
             Interval bounds = graphModel.getTimeBounds();
             if (!bounds.equals(interval)) {
                 interval = bounds;
-                timelineController.setMinMax(interval.getLow(), interval.getHigh());
+                timelineController.setMinMax(this, interval.getLow(), interval.getHigh());
             }
             try {
                 Thread.sleep(1000);
@@ -44,6 +44,11 @@ public class GraphObserverThread extends Thread {
 
     public void stopThread() {
         stop = true;
+        interrupt();
+    }
+
+    TimelineModelImpl getTimelineModel() {
+        return timelineModel;
     }
 
 }

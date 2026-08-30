@@ -44,6 +44,8 @@ package org.gephi.filters;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -163,7 +165,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         try {
             writer.writeStartElement("parameter");
             writer.writeAttribute("index", String.valueOf(index));
-            writer.writeCharacters(serialization.toText(property.getValue(), property.getValueType()));
+            String text = serialization.toText(property.getValue(), property.getValueType());
+            writer.writeCharacters(text != null ? text : "");
             writer.writeEndElement();
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -304,7 +307,16 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                     String name = reader.getLocalName();
                     if ("parameter".equalsIgnoreCase(name)) {
                         int index = Integer.parseInt(reader.getAttributeValue(null, "index"));
-                        property = query.getFilter().getProperties()[index];
+                        FilterProperty[] properties = query.getFilter().getProperties();
+                        if (index < 0 || index >= properties.length) {
+                            Logger.getLogger(FilterModelPersistenceProvider.class.getName()).log(
+                                Level.WARNING,
+                                "Skipping filter parameter at index {0}: out of bounds for filter ''{1}'' with {2} properties",
+                                new Object[]{index, query.getFilter().getClass().getName(), properties.length});
+                            property = null;
+                        } else {
+                            property = properties[index];
+                        }
                         textBuffer.setLength(0);
                     }
                 } else if (eventType.equals(XMLStreamReader.CHARACTERS) && property != null) {

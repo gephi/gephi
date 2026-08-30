@@ -1,7 +1,7 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
-import static com.jogamp.opengl.GL2ES2.GL_DEBUG_SEVERITY_LOW;
-import static com.jogamp.opengl.GL2ES2.GL_DEBUG_SEVERITY_NOTIFICATION;
+import static com.jogamp.opengl.GL3ES3.GL_DEBUG_SEVERITY_LOW;
+import static com.jogamp.opengl.GL3ES3.GL_DEBUG_SEVERITY_NOTIFICATION;
 
 import com.jogamp.opengl.GLDebugListener;
 import com.jogamp.opengl.GLDebugMessage;

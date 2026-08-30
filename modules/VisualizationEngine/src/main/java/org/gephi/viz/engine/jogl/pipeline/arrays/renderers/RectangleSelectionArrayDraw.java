@@ -12,7 +12,7 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
 import com.jogamp.newt.event.NEWTEvent;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
 import org.gephi.viz.engine.VizEngine;
@@ -33,8 +33,6 @@ import org.joml.Vector2f;
 
 public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget, VoidWorldData> {
     private final VizEngine<JOGLRenderingTarget, NEWTEvent> engine;
-
-    final float[] mvpFloats = new float[16];
 
     private static final int VERT_BUFFER = 0;
 
@@ -67,7 +65,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
     @Override
     public void init(JOGLRenderingTarget target) {
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+        final GL3ES3 gl = target.getDrawable().getGL().getGL3ES3();
 
         shaderProgram = new GLShaderProgram(SHADERS_ROOT, "rectangleSelection", "rectangleSelection")
             .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
@@ -92,7 +90,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
 
     @Override
     public void dispose(JOGLRenderingTarget target) {
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+        final GL3ES3 gl = target.getDrawable().getGL().getGL3ES3();
 
         if (shaderProgram != null) {
             shaderProgram.destroy(gl);
@@ -123,8 +121,8 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private boolean render = false;
 
     @Override
-    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+    public VoidWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
+        final GL3ES3 gl = target.getDrawable().getGL().getGL3ES3();
 
         final GraphSelection graphSelection = model.getGraphSelection();
         backgroundIsDark = model.getRenderingOptions().isBackgroundColorDark();
@@ -188,12 +186,11 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
     private final byte[] booleanData = new byte[1];
 
     @Override
-    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
-        final GL2ES2 gl = target.getDrawable().getGL().getGL2ES2();
+    public void render(VoidWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
+        final GL3ES3 gl = target.getDrawable().getGL().getGL3ES3();
 
         if (render) {
             shaderProgram.use(gl);
-            engine.getModelViewProjectionMatrixFloats(mvpFloats);
 
             gl.glUniformMatrix4fv(shaderProgram.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false,
                 mvpFloats, 0);
@@ -242,7 +239,7 @@ public class RectangleSelectionArrayDraw implements Renderer<JOGLRenderingTarget
         }
 
         @Override
-        protected void configure(GL2ES2 gl) {
+        protected void configure(GL3ES3 gl) {
             vertexGLBuffer.bind(gl);
             {
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, VERTEX_FLOATS, GL_FLOAT, false, 0, 0);

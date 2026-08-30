@@ -7,14 +7,124 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.11.0-SNAPSHOT</version>
+        <version>0.11.3-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
+    <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.11.3-SNAPSHOT</version>
     <name>gephi-app</name>
+    <description>Gephi - The Open Graph Viz Platform</description>
+    <url>https://gephi.org</url>
+
+    <licenses>
+        <license>
+            <name>CDDL 1.0</name>
+            <url>https://www.opensource.org/licenses/CDDL-1.0</url>
+            <comments>CDDL License 1.0</comments>
+        </license>
+        <license>
+            <name>GPL v3</name>
+            <url>https://www.opensource.org/licenses/GPL-3.0</url>
+            <comments>GPL v3 License</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/gephi/gephi.git</connection>
+        <developerConnection>scm:git:git@github.com:gephi/gephi.git</developerConnection>
+        <url>https://github.com/gephi/gephi</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>mbastian</id>
+            <name>Mathieu Bastian</name>
+            <email>mathieu.bastian@gephi.org</email>
+        </developer>
+        <developer>
+            <id>eduramiba</id>
+            <name>Eduardo Ramos</name>
+            <email>eduardo.ramos@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jacomyma</id>
+            <name>Mathieu Jacomy</name>
+            <email>mathieu.jacomy@gephi.org</email>
+        </developer>
+        <developer>
+            <id>sheymann</id>
+            <name>Sébastien Heymann</name>
+            <email>sebastien.heymann@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jbilcke</id>
+            <name>Julian Bilcke</name>
+            <email>julian.bilcke@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jersub</id>
+            <name>Jeremy Subtil</name>
+            <email>jeremy.subtil@gephi.org</email>
+        </developer>
+        <developer>
+            <id>cbartosiak</id>
+            <name>Cezary Bartosiak</name>
+            <email>cezary.bartosiak@gephi.org</email>
+        </developer>
+        <developer>
+            <id>megaterik</id>
+            <name>Taras Klaskovsky</name>
+            <email>taras.klaskovsky@gephi.org</email>
+        </developer>
+        <developer>
+            <id>vojtech-bardiovsky</id>
+            <name>Vojtech Bardiovsky</name>
+            <email>vojtech.bardiovsky@gephi.org</email>
+        </developer>
+        <developer>
+            <id>luizribeiro</id>
+            <name>Luiz Ribeiro</name>
+            <email>luiz.ribeiro@gephi.org</email>
+        </developer>
+        <developer>
+            <id>baiacu</id>
+            <name>Helder Suzuki</name>
+            <email>helder.suzuki@gephi.org</email>
+        </developer>
+        <developer>
+            <id>daniel-bernardes</id>
+            <name>Daniel Bernades</name>
+            <email>daniel.bernades@gephi.org</email>
+        </developer>
+        <developer>
+            <id>taynaud</id>
+            <name>Thomas Aynaud</name>
+            <email>thomas.aynaud@gephi.org</email>
+        </developer>
+        <developer>
+            <id>panisson</id>
+            <name>André Panisson</name>
+            <email>andre.panission@gephi.org</email>
+        </developer>
+        <developer>
+            <id>annaalkh</id>
+            <name>Anna Kharitonova</name>
+            <email>anna.kharitonova@gephi.org</email>
+        </developer>
+        <developer>
+            <id>binarycrayon</id>
+            <name>Yudi Xue</name>
+            <email>yudi.xue@gephi.org</email>
+        </developer>
+        <developer>
+            <id>totetmatt</id>
+            <name>Matthieu Totet</name>
+            <email>mattieu.totet@gephi.org</email>
+        </developer>
+    </developers>
     
     <properties>
         <jarGoalPhase>package</jarGoalPhase>
@@ -515,6 +625,35 @@
                     <allowIncompleteProjects>true</allowIncompleteProjects>
                 </configuration>
             </plugin>
+
+            <!-- Flatten the POM before deployment so that dependency versions inherited from
+                 dependencyManagement are resolved inline. This is required because the application
+                 module is deployed in a separate Maven invocation (bundle job) where the parent POM
+                 is not part of the same Sonatype Central bundle, making it unresolvable by the validator. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <flattenMode>oss</flattenMode>
+                    <updatePomFile>true</updatePomFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -734,20 +873,34 @@
                                             <arg value="${gephi.codesign.identity}" />
                                         </exec>
 
-                                        <!-- Create application folder and add Applications dynamic link -->
-                                        <mkdir dir="${project.build.directory}/${gephi.app.title}"/>
-                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app" todir="${project.build.directory}/${gephi.app.title}/" />
-                                        <symlink link="${project.build.directory}/${gephi.app.title}/Applications" resource="/Applications" failonerror="false" />
-
-                                        <!-- Create DMG (Mac OS X) -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
-                                            <arg value="create"/>
-                                            <arg value="-noanyowners"/>
-                                            <arg value="-imagekey"/>
-                                            <arg value="zlib-level=9"/>
-                                            <arg value="-srcfolder"/>
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
+                                        <!-- Create DMG (Mac OS X) using create-dmg for background image and icon layout -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="create-dmg" failonerror="true">
+                                            <arg value="--volname"/>
+                                            <arg value="${gephi.app.title}"/>
+                                            <arg value="--background"/>
+                                            <arg value="${basedir}/src/main/app-resources/dmg-background.tiff"/>
+                                            <arg value="--window-pos"/>
+                                            <arg value="200"/>
+                                            <arg value="120"/>
+                                            <arg value="--window-size"/>
+                                            <arg value="600"/>
+                                            <arg value="400"/>
+                                            <arg value="--icon-size"/>
+                                            <arg value="120"/>
+                                            <arg value="--icon"/>
+                                            <arg value="${gephi.appbundle.name}.app"/>
+                                            <arg value="150"/>
+                                            <arg value="200"/>
+                                            <arg value="--app-drop-link"/>
+                                            <arg value="450"/>
+                                            <arg value="200"/>
+                                            <arg value="--hide-extension"/>
+                                            <arg value="${gephi.appbundle.name}.app"/>
+                                            <arg value="--format"/>
+                                            <arg value="UDZO"/>
+                                            <arg value="--no-internet-enable"/>
                                             <arg value="${project.artifactId}-${project.version}-${gephi.bundle.arch}.dmg"/>
+                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app"/>
                                         </exec>
 
                                         <!-- Codesign dmg -->
@@ -818,6 +971,9 @@
 
                                         <!-- Configure relative JRE path into gephi.conf -->
                                         <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-${gephi.bundle.arch}/${bundle.jre.name}&quot;"/>
+                                        <!-- nbm-maven-plugin ships this file mode 600; fix it so it's still
+                                             readable when unpacked as root and run as a regular user (#3219) -->
+                                        <chmod file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" perm="644"/>
                                         <chmod file="${project.build.directory}/${brandingToken}/jre-${gephi.bundle.arch}/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>

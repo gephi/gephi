@@ -44,6 +44,16 @@ package org.gephi.project.api;
 
 /**
  * Workspace event listener.
+ * <p>
+ * <b>Threading:</b> all the methods below are invoked synchronously, on the thread that is performing
+ * the project operation. That thread is never the Event Dispatch Thread, and two callbacks may well
+ * arrive on two different threads, so any state shared with other threads must be volatile, atomic or
+ * otherwise guarded.
+ * <p>
+ * Implementations must post any user interface work with <code>SwingUtilities.invokeLater</code> and
+ * return promptly: they run inside the operation and delay it. In particular they must never call
+ * <code>SwingUtilities.invokeAndWait</code>, or wait on the Event Dispatch Thread in any other way,
+ * as that deadlocks whenever the EDT is itself waiting for the operation.
  *
  * @author Mathieu Bastian
  */
@@ -51,6 +61,9 @@ public interface WorkspaceListener {
 
     /**
      * Notify a workspace has been created.
+     * <p>
+     * This is where a module typically creates its model for the workspace, so it is called before
+     * any other callback for that workspace and must complete before the workspace is usable.
      *
      * @param workspace the workspace that was created
      */
@@ -58,6 +71,9 @@ public interface WorkspaceListener {
 
     /**
      * Notify a workspace has become the selected workspace.
+     * <p>
+     * Refreshing the interface to match the new selection has to be deferred to the Event Dispatch
+     * Thread.
      *
      * @param workspace the workspace that was made current workspace
      */

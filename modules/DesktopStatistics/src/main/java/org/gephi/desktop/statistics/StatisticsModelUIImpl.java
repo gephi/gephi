@@ -129,7 +129,7 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
     @Override
     public Statistics getRunning(StatisticsUI statisticsUI) {
         for (Statistics s : runningList.toArray(new Statistics[0])) {
-            if (statisticsUI.getStatisticsClass().equals(s)) {
+            if (statisticsUI.getStatisticsClass().equals(s.getClass())) {
                 return s;
             }
         }

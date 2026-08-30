@@ -53,7 +53,7 @@ Source: "gephi\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createa
 
 [Icons]
 Name: "{group}\Gephi"; Filename: "{app}\bin\gephi64.exe"; AppUserModelID: "Gephi"
-Name: "{userdesktop}\Gephi"; Filename: "{app}\bin\gephi64.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"
+Name: "{autodesktop}\Gephi"; Filename: "{app}\bin\gephi64.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"
 
 Name: "{group}\Startup settings"; Filename: "{app}\etc\gephi.conf"
 

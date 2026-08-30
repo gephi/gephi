@@ -4,7 +4,7 @@ import static com.jogamp.opengl.GL.GL_FLOAT;
 import static org.gephi.viz.engine.pipeline.RenderingLayer.BACK1;
 
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
@@ -48,7 +48,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         super(edgesCallback, nodesCallback, false, false);
     }
 
-    public void drawArrays(GL2ES2 gl, RenderingLayer layer, EdgeWorldData data, float[] mvpFloats) {
+    public void drawArrays(GL3ES3 gl, RenderingLayer layer, EdgeWorldData data, float[] mvpFloats) {
         refreshTime();
         if (edgesCallback.hasSelfLoop()) {
             drawSelfLoop(gl, data, layer, mvpFloats);
@@ -58,7 +58,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
 
     }
 
-    private void drawSelfLoop(GL2ES2 gl, EdgeWorldData data,
+    private void drawSelfLoop(GL3ES3 gl, EdgeWorldData data,
                               RenderingLayer layer, float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerSelfLoop(gl, layer, data, mvpFloats);
 
@@ -106,7 +106,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         unsetupSelfLoopVertexArrayAttributes(gl);
     }
 
-    private void drawUndirected(GL2ES2 gl, EdgeWorldData data,
+    private void drawUndirected(GL3ES3 gl, EdgeWorldData data,
                                 RenderingLayer layer, float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerUndirected(gl, layer, data, mvpFloats);
 
@@ -153,7 +153,7 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
         unsetupUndirectedVertexArrayAttributes(gl);
     }
 
-    private void drawDirected(GL2ES2 gl, EdgeWorldData data,
+    private void drawDirected(GL3ES3 gl, EdgeWorldData data,
                               RenderingLayer layer, float[] mvpFloats) {
         final int instanceCount = setupShaderProgramForRenderingLayerDirected(gl, layer, data, mvpFloats);
 

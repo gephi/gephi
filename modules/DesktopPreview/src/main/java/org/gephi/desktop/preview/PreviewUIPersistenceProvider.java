@@ -4,8 +4,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.desktop.preview.api.PreviewUIController;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
@@ -30,14 +28,12 @@ public class PreviewUIPersistenceProvider implements WorkspaceXMLPersistenceProv
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         PreviewUIModelImpl model = workspace.getLookup().lookup(PreviewUIModelImpl.class);
-        PreviewModel previewModel = workspace.getLookup().lookup(PreviewModel.class);
-        if (previewModel == null) {
-            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-            previewModel = previewController.getModel(workspace);
-        }
         if (model == null) {
+            // The model is normally created by WorkspaceImpl.initModels() via the Controller SPI.
+            // This branch only triggers if the workspace was constructed without initializing
+            // models; create one defensively so legacy/edge-case load paths still work.
             PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-            model = new PreviewUIModelImpl(previewModel, previewUIController);
+            model = new PreviewUIModelImpl(workspace, previewUIController);
             workspace.add(model);
         }
         try {

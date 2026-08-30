@@ -212,24 +212,29 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Table table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         Node[] nodes = searchOptions.getNodesToSearch();
         Node row;
-        Column column;
         Object value;
 
         TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
         ZoneId timeZone = table.getGraph().getModel().getTimeZone();
+
+        // Use toArray() to get a compact, gap-free snapshot of active columns.
+        // Column indices in the store may not be contiguous after deletions, so
+        // countColumns() cannot safely be used as an upper bound for index-based access.
+        Column[] columns = table.toArray();
 
         for (; rowIndex < nodes.length; rowIndex++) {
             if (!gec.isNodeInGraph(nodes[rowIndex])) {
                 continue;//Make sure node is still in graph when continuing a search
             }
             row = nodes[rowIndex];
-            for (; columnIndex < table.countColumns(); columnIndex++) {
-                if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
-                    column = table.getColumn(columnIndex);
+            for (; columnIndex < columns.length; columnIndex++) {
+                Column column = columns[columnIndex];
+                if (searchAllColumns || columnsToSearch.contains(column.getIndex())) {
                     value = row.getAttribute(column);
                     result = matchRegex(value, searchOptions, rowIndex, columnIndex, timeFormat, timeZone);
                     if (result != null) {
                         result.setFoundNode(nodes[rowIndex]);
+                        result.setFoundColumnIndex(column.getIndex());
                         return result;
                     }
                 }
@@ -249,24 +254,29 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Table table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         Edge[] edges = searchOptions.getEdgesToSearch();
         Edge row;
-        Column column;
         Object value;
 
         TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
         ZoneId timeZone = table.getGraph().getModel().getTimeZone();
+
+        // Use toArray() to get a compact, gap-free snapshot of active columns.
+        // Column indices in the store may not be contiguous after deletions, so
+        // countColumns() cannot safely be used as an upper bound for index-based access.
+        Column[] columns = table.toArray();
 
         for (; rowIndex < edges.length; rowIndex++) {
             if (!gec.isEdgeInGraph(edges[rowIndex])) {
                 continue;//Make sure edge is still in graph when continuing a search
             }
             row = edges[rowIndex];
-            for (; columnIndex < table.countColumns(); columnIndex++) {
-                if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
-                    column = table.getColumn(columnIndex);
+            for (; columnIndex < columns.length; columnIndex++) {
+                Column column = columns[columnIndex];
+                if (searchAllColumns || columnsToSearch.contains(column.getIndex())) {
                     value = row.getAttribute(column);
                     result = matchRegex(value, searchOptions, rowIndex, columnIndex, timeFormat, timeZone);
                     if (result != null) {
                         result.setFoundEdge(edges[rowIndex]);
+                        result.setFoundColumnIndex(column.getIndex());
                         return result;
                     }
                 }

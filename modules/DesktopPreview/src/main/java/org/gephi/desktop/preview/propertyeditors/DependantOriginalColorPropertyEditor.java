@@ -44,6 +44,7 @@ package org.gephi.desktop.preview.propertyeditors;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.Locale;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
 import org.gephi.preview.types.editors.BasicDependantOriginalColorPropertyEditor;
@@ -61,7 +62,7 @@ public class DependantOriginalColorPropertyEditor extends BasicDependantOriginal
             String localizedCustom = NbBundle.getMessage(DependantOriginalColorPropertyEditor.class, "DependantOriginalColorPropertyEditor.custom.text");
             return toText(localizedCustom, c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
-            return NbBundle.getMessage(DependantOriginalColorPropertyEditor.class, "DependantOriginalColorPropertyEditor."+c.getMode().name().toLowerCase()+".text");
+            return NbBundle.getMessage(DependantOriginalColorPropertyEditor.class, "DependantOriginalColorPropertyEditor."+c.getMode().name().toLowerCase(Locale.ROOT)+".text");
         }
     }
 

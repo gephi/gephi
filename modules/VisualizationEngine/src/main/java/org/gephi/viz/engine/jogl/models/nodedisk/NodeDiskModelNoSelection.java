@@ -12,7 +12,7 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_BORDER_SIZE;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_DARKEN_FACTOR;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PROJECTION;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.gl.Constants;
 
@@ -27,7 +27,7 @@ public class NodeDiskModelNoSelection {
     private static final String SHADERS_NODE_CIRCLE_SOURCE_VS = "node";
     private static final String SHADERS_NODE_CIRCLE_SOURCE_FS = "node";
 
-    public void initGLPrograms(GL2ES2 gl) {
+    public void initGLPrograms(GL3ES3 gl) {
         program = new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_VS, SHADERS_NODE_CIRCLE_SOURCE_FS)
             .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
             .addUniformName(UNIFORM_NAME_BORDER_SIZE)
@@ -39,7 +39,7 @@ public class NodeDiskModelNoSelection {
             .init(gl);
     }
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, float nodeBorderColorFactor) {
+    public void useProgram(GL3ES3 gl, float[] mvpFloats, float nodeBorderColorFactor) {
         //Circle:
         program.use(gl);
         gl.glUniformMatrix4fv(program.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
@@ -49,7 +49,7 @@ public class NodeDiskModelNoSelection {
             nodeBorderColorFactor);
     }
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (program != null) {
             program.destroy(gl);
             program = null;

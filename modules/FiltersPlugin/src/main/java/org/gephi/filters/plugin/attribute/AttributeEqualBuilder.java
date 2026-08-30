@@ -143,7 +143,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
     public static abstract class EqualStringFilter<K extends Element> extends AbstractAttributeFilter<K> {
 
-        private String pattern;
+        private String pattern = "";
         private boolean useRegex;
         private Pattern regex;
 

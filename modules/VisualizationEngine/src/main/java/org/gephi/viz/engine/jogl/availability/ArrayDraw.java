@@ -18,7 +18,7 @@ public class ArrayDraw {
             return false;
         }
 
-        return drawable.getGLProfile().isGL2ES2();
+        return drawable.getGLProfile().isGL3ES3();
     }
 
 }

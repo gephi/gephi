@@ -1,9 +1,9 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
-import static com.jogamp.opengl.GL2ES2.GL_FRAGMENT_SHADER;
-import static com.jogamp.opengl.GL2ES2.GL_VERTEX_SHADER;
+import static com.jogamp.opengl.GL3ES3.GL_FRAGMENT_SHADER;
+import static com.jogamp.opengl.GL3ES3.GL_VERTEX_SHADER;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.glsl.ShaderCode;
 import com.jogamp.opengl.util.glsl.ShaderProgram;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class GLShaderProgram {
         return this;
     }
 
-    public GLShaderProgram init(GL2ES2 gl) {
+    public GLShaderProgram init(GL3ES3 gl) {
         if (initDone) {
             throw new IllegalStateException("Already initialized");
         }
@@ -136,7 +136,7 @@ public class GLShaderProgram {
         return loc;
     }
 
-    public void use(GL2ES2 gl) {
+    public void use(GL3ES3 gl) {
         if (!isInitialized()) {
             throw new IllegalStateException("Initialize the program first!");
         }
@@ -144,11 +144,11 @@ public class GLShaderProgram {
         gl.glUseProgram(id);
     }
 
-    public void stopUsing(GL2ES2 gl) {
+    public void stopUsing(GL3ES3 gl) {
         gl.glUseProgram(0);
     }
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (id != -1) {
             gl.glDeleteProgram(id);
             id = -1;

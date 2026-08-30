@@ -30,16 +30,13 @@ public class EdgeRendererInstanced extends AbstractEdgeRenderer {
     }
 
     @Override
-    public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
         edgeData.updateBuffers(target.getDrawable().getGL());
         return edgeData.createWorldData(model, engine);
     }
 
-    private final float[] mvpFloats = new float[16];
-
     @Override
-    public void render(EdgeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
-        engine.getModelViewProjectionMatrixFloats(mvpFloats);
+    public void render(EdgeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
         edgeData.drawInstanced(
             target.getDrawable().getGL().getGL3ES3(),
             layer,

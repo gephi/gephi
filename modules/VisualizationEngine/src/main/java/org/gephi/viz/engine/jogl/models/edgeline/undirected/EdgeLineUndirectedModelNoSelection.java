@@ -22,7 +22,7 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PRO
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_NODE_SCALE;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -45,7 +45,7 @@ public class EdgeLineUndirectedModelNoSelection {
     private static final String SHADERS_EDGE_LINE_SOURCE_VS = "edge-line-undirected";
     private static final String SHADERS_EDGE_LINE_SOURCE_FS = "edge-line-undirected";
 
-    public void initProgram(GL2ES2 gl) {
+    public void initProgram(GL3ES3 gl) {
         program = new GLShaderProgram(SHADERS_ROOT, SHADERS_EDGE_LINE_SOURCE_VS, SHADERS_EDGE_LINE_SOURCE_FS)
             .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
             .addUniformName(UNIFORM_NAME_EDGE_SCALE_MIN)
@@ -64,7 +64,7 @@ public class EdgeLineUndirectedModelNoSelection {
 
     }
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
+    public void useProgram(GL3ES3 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
                            float edgeRescaleMin, float edgeRescaleMax, float nodeScale) {
         //Line:
         program.use(gl);
@@ -72,7 +72,7 @@ public class EdgeLineUndirectedModelNoSelection {
     }
 
 
-    private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight,
+    private void prepareProgramData(GL3ES3 gl, float[] mvpFloats, float scale, float minWeight, float maxWeight,
                                     float nodeScale, float edgeRescaleMin, float edgeRescaleMax) {
         gl.glUniformMatrix4fv(program.getUniformLocation(UNIFORM_NAME_MODEL_VIEW_PROJECTION), 1, false, mvpFloats, 0);
         gl.glUniform1f(program.getUniformLocation(UNIFORM_NAME_NODE_SCALE), nodeScale);
@@ -90,7 +90,7 @@ public class EdgeLineUndirectedModelNoSelection {
         }
     }
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (program != null) {
             program.destroy(gl);
             program = null;

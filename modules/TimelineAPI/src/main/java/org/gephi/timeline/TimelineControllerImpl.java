@@ -83,7 +83,8 @@ import org.openide.util.lookup.ServiceProviders;
 public class TimelineControllerImpl implements TimelineController, Controller<TimelineModelImpl> {
 
     private final List<TimelineModelListener> listeners;
-    private GraphObserverThread observerThread;
+    private final Object observerLock = new Object();
+    private volatile GraphObserverThread observerThread;
     private ScheduledExecutorService playExecutor;
 
     public TimelineControllerImpl() {
@@ -108,8 +109,9 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             @Override
             public void unselect(Workspace workspace) {
                 stopPlay();
-                if (observerThread != null) {
-                    observerThread.stopThread();
+                GraphObserverThread thread = observerThread;
+                if (thread != null) {
+                    thread.stopThread();
                     observerThread = null;
                 }
             }
@@ -121,8 +123,9 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             @Override
             public void disable() {
                 stopPlay();
-                if (observerThread != null) {
-                    observerThread.stopThread();
+                GraphObserverThread thread = observerThread;
+                if (thread != null) {
+                    thread.stopThread();
                     observerThread = null;
                 }
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, null, null));
@@ -158,34 +161,36 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
         }
     }
 
-    protected boolean setMinMax(double min, double max) {
-        TimelineModelImpl currentModel = getModel();
-        if (currentModel == null) {
-            return false;
-        }
-        double[] prevCustomBounds = new double[2];
-        if (!currentModel.updateMinMax(min, max, prevCustomBounds)) {
-            return false;
-        }
-        if (currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, currentModel, new double[] {min, max}));
-
-            if (currentModel.getCustomMax() != max || currentModel.getCustomMin() != min) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
-                    new double[] {min, max}));
+    protected boolean setMinMax(GraphObserverThread caller, double min, double max) {
+        synchronized (observerLock) {
+            if (caller != observerThread) {
+                return false;
             }
+            TimelineModelImpl currentModel = caller.getTimelineModel();
+            double[] prevCustomBounds = new double[2];
+            if (!currentModel.updateMinMax(min, max, prevCustomBounds)) {
+                return false;
+            }
+            if (currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, currentModel, new double[] {min, max}));
+
+                if (currentModel.getCustomMax() != max || currentModel.getCustomMin() != min) {
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, currentModel,
+                        new double[] {min, max}));
+                }
+            }
+            if ((Double.isInfinite(prevCustomBounds[1]) || Double.isInfinite(prevCustomBounds[0])) &&
+                currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, true));
+            } else if (!Double.isInfinite(prevCustomBounds[1]) && !Double.isInfinite(prevCustomBounds[0]) &&
+                !currentModel.hasValidBounds()) {
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, false));
+            }
+            return true;
         }
-        if ((Double.isInfinite(prevCustomBounds[1]) || Double.isInfinite(prevCustomBounds[0])) &&
-            currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, true));
-        } else if (!Double.isInfinite(prevCustomBounds[1]) && !Double.isInfinite(prevCustomBounds[0]) &&
-            !currentModel.hasValidBounds()) {
-            fireTimelineModelEvent(
-                new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, currentModel, false));
-        }
-        return true;
     }
 
     @Override
@@ -227,6 +232,7 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
 
     private void applyIntervalFilter(TimelineModelImpl currentModel, FilterModel filterModel, double from, double to) {
         Query dynamicQuery = null;
+        Query dynamicRangeQuery = null;
         boolean selecting = false;
 
         if (filterModel.getCurrentQuery() != null) {
@@ -234,6 +240,7 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
             if (dynamicQueries.length > 0) {
                 dynamicQuery = query;
+                dynamicRangeQuery = dynamicQueries[0];
                 selecting = filterModel.isSelecting();
             }
         } else if (filterModel.getQueries().length == 1) {
@@ -241,13 +248,19 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
             if (dynamicQueries.length > 0) {
                 dynamicQuery = query;
+                dynamicRangeQuery = dynamicQueries[0];
             }
         }
 
         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
         if (Double.isInfinite(from) && Double.isInfinite(to)) {
             if (dynamicQuery != null) {
-                filterController.remove(dynamicQuery);
+                if (dynamicRangeQuery.getParent() != null) {
+                    //Dynamic Range is a subquery: only remove it, keep the rest of the query intact
+                    filterController.removeSubQuery(dynamicRangeQuery, dynamicRangeQuery.getParent());
+                } else {
+                    filterController.remove(dynamicQuery);
+                }
             }
         } else {
             if (dynamicQuery == null) {
@@ -257,12 +270,13 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
                     FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
                     if (fb.length > 0) {
                         dynamicQuery = filterController.createQuery(fb[0]);
+                        dynamicRangeQuery = dynamicQuery;
                         filterController.add(dynamicQuery);
                     }
                 }
             }
             if (dynamicQuery != null) {
-                dynamicQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
+                dynamicRangeQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
                 if (selecting) {
                     filterController.selectVisible(dynamicQuery);
                 } else {

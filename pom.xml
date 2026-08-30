@@ -4,7 +4,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi-parent</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.11.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>gephi</name>
@@ -121,6 +121,11 @@
             <name>Yudi Xue</name>
             <email>yudi.xue@gephi.org</email>
         </developer>
+        <developer>
+            <id>totetmatt</id>
+            <name>Matthieu Totet</name>
+            <email>mattieu.totet@gephi.org</email>
+        </developer>
     </developers>
 
     <!-- Properties -->
@@ -137,7 +142,7 @@
         <netbeans.version>RELEASE290</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.8.5</graphstore.version>
+        <graphstore.version>0.8.7</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -218,13 +223,13 @@
 
         <gephi.maven-assembly-plugin.version>3.7.1</gephi.maven-assembly-plugin.version>
 
-        <gephi.maven-clean-plugin.version>3.3.2</gephi.maven-clean-plugin.version>
+        <gephi.maven-clean-plugin.version>3.5.0</gephi.maven-clean-plugin.version>
 
         <gephi.maven-compiler-plugin.version>3.13.0</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>3.6.1</gephi.maven-dependency-plugin.version>
 
-        <gephi.maven-deploy-plugin.version>3.1.2</gephi.maven-deploy-plugin.version>
+        <gephi.maven-deploy-plugin.version>3.1.4</gephi.maven-deploy-plugin.version>
 
         <gephi.maven-enforcer-plugin.version>3.5.0</gephi.maven-enforcer-plugin.version>
 
@@ -232,15 +237,13 @@
 
         <gephi.maven-install-plugin.version>3.1.4</gephi.maven-install-plugin.version>
 
-        <gephi.maven-jar-plugin.version>3.4.1</gephi.maven-jar-plugin.version>
+        <gephi.maven-jar-plugin.version>3.5.0</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.7.0</gephi.maven-javadoc-plugin.version>
+        <gephi.maven-javadoc-plugin.version>3.12.0</gephi.maven-javadoc-plugin.version>
 
         <gephi.maven-license-plugin.version>2.4.0</gephi.maven-license-plugin.version>
-
-        <gephi.maven-release-plugin.version>3.0.1</gephi.maven-release-plugin.version>
 
         <gephi.maven-resources-plugin.version>3.5.0</gephi.maven-resources-plugin.version>
 
@@ -269,6 +272,8 @@
         <gephi.checkstyle.version>10.17.0</gephi.checkstyle.version>
 
         <gephi.jcp-maven-plugin.version>7.1.2</gephi.jcp-maven-plugin.version>
+
+        <gephi.flatten-maven-plugin.version>1.7.3</gephi.flatten-maven-plugin.version>
     </properties>
     
     <!-- Repositories -->
@@ -854,11 +859,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${gephi.maven-release-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${gephi.maven-gpg-plugin.version}</version>
                 </plugin>
@@ -948,6 +948,11 @@
                     <groupId>com.igormaznitsa</groupId>
                     <artifactId>jcp</artifactId>
                     <version>${gephi.jcp-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${gephi.flatten-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1440,6 +1445,7 @@
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/VisualizationEngine</module>
+        <module>modules/VizEngineDemo</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>

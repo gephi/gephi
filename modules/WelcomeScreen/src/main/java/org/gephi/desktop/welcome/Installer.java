@@ -65,7 +65,8 @@ public class Installer extends ModuleInstall {
                     JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
                         component.getName(), false);
                     dialog.getContentPane().add(component);
-                    dialog.setBounds(212, 237, 679, 378);
+                    dialog.setSize(679, 420);
+                    dialog.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                     dialog.setVisible(true);
                 }
             });

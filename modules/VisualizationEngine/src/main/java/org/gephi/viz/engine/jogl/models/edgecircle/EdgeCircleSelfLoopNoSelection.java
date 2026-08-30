@@ -17,7 +17,7 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_MODEL_VIEW_PRO
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_NODE_SCALE;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -31,7 +31,7 @@ public class EdgeCircleSelfLoopNoSelection {
     private static final String SHADERS_NODE_CIRCLE_SOURCE_VS = "selfloop";
     private static final String SHADERS_NODE_CIRCLE_SOURCE_FS = "selfloop";
 
-    public void initGLProgram(GL2ES2 gl) {
+    public void initGLProgram(GL3ES3 gl) {
         program = new GLShaderProgram(SHADERS_ROOT, SHADERS_NODE_CIRCLE_SOURCE_VS, SHADERS_NODE_CIRCLE_SOURCE_FS)
             .addUniformName(UNIFORM_NAME_MODEL_VIEW_PROJECTION)
             .addUniformName(UNIFORM_NAME_EDGE_SCALE_MIN)
@@ -47,7 +47,7 @@ public class EdgeCircleSelfLoopNoSelection {
             .init(gl);
     }
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
+    public void useProgram(GL3ES3 gl, float[] mvpFloats, float edgeScale, float minWeight, float maxWeight,
                            float edgeRescaleMin, float edgeRescaleMax, float nodeScale) {
         program.use(gl);
 
@@ -67,7 +67,7 @@ public class EdgeCircleSelfLoopNoSelection {
         }
     }
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (program != null) {
             program.destroy(gl);
             program = null;

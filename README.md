@@ -1,7 +1,7 @@
 # Gephi - The Open Graph Viz Platform
 
 [![build](https://github.com/gephi/gephi/actions/workflows/build.yml/badge.svg)](https://github.com/gephi/gephi/actions/workflows/build.yml)
-[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.10.1/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.10.1)
+[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.11.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/total.svg)](https://github.com/gephi/gephi/releases/)
 [![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
 
@@ -33,17 +33,17 @@ If you run into any trouble or have questions consult our [discussions](https://
 
 ### Development builds
 
-Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.0-SNAPSHOT
+Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.2-SNAPSHOT
 
-- [gephi-0.11.0-SNAPSHOT-windows-x64.exe](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.171923-100-windows-x64.exe) (Windows)
+- [gephi-0.11.2-SNAPSHOT-windows-x64.exe](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.150210-9-windows-x64.exe) (Windows)
 
-- [gephi-0.11.0-SNAPSHOT-macos-x64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.172355-101-macos-x64.dmg) (Mac OS X)
+- [gephi-0.11.2-SNAPSHOT-macos-x64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.150534-10-macos-x64.dmg) (Mac OS X)
 
-- [gephi-0.11.0-SNAPSHOT-macos-aarch64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.173808-103-macos-aarch64.dmg) (Mac OS X Silicon)
+- [gephi-0.11.2-SNAPSHOT-macos-aarch64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.152025-12-macos-aarch64.dmg) (Mac OS X Silicon)
 
-- [gephi-0.11.0-SNAPSHOT-linux-aarch64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.173559-102-linux-aarch64.tar.gz) (Linux aarch64)
+- [gephi-0.11.2-SNAPSHOT-linux-aarch64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.151835-11-linux-aarch64.tar.gz) (Linux aarch64)
 
-- [gephi-0.11.0-SNAPSHOT-linux-x64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.0-SNAPSHOT/gephi-0.11.0-20260501.171637-99-linux-x64.tar.gz) (Linux)
+- [gephi-0.11.2-SNAPSHOT-linux-x64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.145838-8-linux-x64.tar.gz) (Linux)
 
 ## Developer Introduction
 

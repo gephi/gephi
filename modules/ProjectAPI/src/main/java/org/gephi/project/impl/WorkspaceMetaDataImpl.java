@@ -4,8 +4,8 @@ import org.gephi.project.api.WorkspaceMetaData;
 
 public class WorkspaceMetaDataImpl implements WorkspaceMetaData {
 
-    private String description = "";
-    private String title = "";
+    private volatile String description = "";
+    private volatile String title = "";
 
     @Override
     public String getDescription() {

@@ -44,6 +44,7 @@ package org.gephi.desktop.preview.propertyeditors;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.Locale;
 import org.gephi.preview.types.EdgeColor;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
 import org.openide.util.NbBundle;
@@ -60,7 +61,7 @@ public class EdgeColorPropertyEditor extends BasicEdgeColorPropertyEditor {
             String localizedCustom = NbBundle.getMessage(EdgeColorPropertyEditor.class, "EdgeColorPropertyEditor.custom.text");
             return toText(localizedCustom, c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
-            return NbBundle.getMessage(EdgeColorPropertyEditor.class, "EdgeColorPropertyEditor."+c.getMode().name().toLowerCase()+".text");
+            return NbBundle.getMessage(EdgeColorPropertyEditor.class, "EdgeColorPropertyEditor."+c.getMode().name().toLowerCase(Locale.ROOT)+".text");
         }
     }
 

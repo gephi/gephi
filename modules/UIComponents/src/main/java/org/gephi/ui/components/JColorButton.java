@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.components;
 
-import com.bric.swing.ColorPicker;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -113,11 +112,7 @@ public class JColorButton extends JButton {
                 public void mouseClicked(MouseEvent e) {
 
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
-                            JColorButton.this.includeOpacity);
-                        if (newColor != null) {
-                            setColor(newColor);
-                        }
+                        showColorPicker();
                     }
                 }
             });
@@ -126,13 +121,16 @@ public class JColorButton extends JButton {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
-                        JColorButton.this.includeOpacity);
-                    if (newColor != null) {
-                        setColor(newColor);
-                    }
+                    showColorPicker();
                 }
             });
+        }
+    }
+
+    private void showColorPicker() {
+        Color newColor = ColorPickerUtils.showDialog(WindowManager.getDefault().getMainWindow(), color, includeOpacity);
+        if (newColor != null) {
+            setColor(newColor);
         }
     }
 

@@ -30,8 +30,14 @@
 // for Bug 1478 (macOS AWT/NEWT/AppKit deadlock during attach).
 // See: https://jogamp.org/bugzilla/show_bug.cgi?id=1478
 //
-// Changes: added runOnNewtEDTAndWaitOnAWTEDT() and modified attachNewtChild() to use AWT
-// SecondaryLoop on macOS, preventing the EDT from blocking while waiting for the NEWT EDT.
+// Changes: added runOffAWTEDTAndPumpEvents() plus runOnNewtEDTAndWaitOnAWTEDT(), and modified
+// attachNewtChild() to use an AWT SecondaryLoop on macOS, preventing the EDT from blocking while
+// waiting for the NEWT EDT.
+//
+// Changes: addNotify() takes its initial surface lock off the AWT EDT through the same
+// SecondaryLoop mechanism, see lockSurfaceInitially(). That lock creates the native window via
+// OSXUtil.RunOnMainThread and deadlocks against any AppKit accessibility query that is waiting
+// on the AWT EDT (gephi#3222).
 //
 // Note: detachNewtChild() intentionally keeps the original synchronous behavior. Using
 // SecondaryLoop there causes re-entrant layout events during removeNotify() that trigger
@@ -148,6 +154,14 @@ public class NewtCanvasAWT extends java.awt.Canvas
      * Safeguard for AWTWindowClosingProtocol and 'removeNotify()' on other thread than AWT-EDT.
      */
     private volatile boolean componentAdded = false;
+
+    /**
+     * Set while {@link #addNotify()} performs its initial surface lock off the AWT EDT, see
+     * {@link #lockSurfaceInitially()}. While set, the AWT EDT keeps dispatching events and may
+     * re-enter this component, which must not attach the NEWT child before {@link #addNotify()}
+     * has completed.
+     */
+    private volatile boolean initialSurfaceLockPending = false;
 
     private final AWTWindowClosingProtocol awtWindowClosingProtocol =
         new AWTWindowClosingProtocol(this, new Runnable() {
@@ -287,7 +301,13 @@ public class NewtCanvasAWT extends java.awt.Canvas
     private final Runnable awtClearSelectedMenuPath = new Runnable() {
         @Override
         public void run() {
-            MenuSelectionManager.defaultManager().clearSelectedPath();
+            try {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            } catch (final NullPointerException npe) {
+                // Benign JDK race: clearSelectedPath() can re-enter a JPopupMenu that is
+                // already mid-close (setVisible -> Popup.hide()) and find its internal
+                // Popup reference already null. The menu is closing either way.
+            }
         }
     };
     private final WindowListener clearAWTMenusOnNewtFocus = new WindowAdapter() {
@@ -689,13 +709,8 @@ public class NewtCanvasAWT extends java.awt.Canvas
                 }
                 jawtWindow = NewtFactoryAWT.getNativeWindow(NewtCanvasAWT.this, awtConfig);
                 jawtWindow.setShallUseOffscreenLayer(shallUseOffscreenLayer);
-                // enforce initial lock on AWT-EDT, allowing acquisition of pixel-scale
-                jawtWindow.lockSurface();
-                try {
-                    // attachNewtChild sets surface scale!
-                } finally {
-                    jawtWindow.unlockSurface();
-                }
+                // enforce initial lock, allowing acquisition of pixel-scale
+                lockSurfaceInitially();
                 awtWindowClosingProtocol.addClosingListener();
                 componentAdded = true; // Bug 910
                 if (DEBUG) {
@@ -1052,6 +1067,9 @@ public class NewtCanvasAWT extends java.awt.Canvas
         if (null == newtChild || null == jawtWindow) {
             return false;
         }
+        if (initialSurfaceLockPending) {
+            return false; // addNotify() has not completed yet, see lockSurfaceInitially()
+        }
         if (0 >= getWidth() || 0 >= getHeight()) {
             return false;
         }
@@ -1126,6 +1144,82 @@ public class NewtCanvasAWT extends java.awt.Canvas
     }
 
     /**
+     * Dispatches a task to a thread other than the AWT EDT, without waiting for its completion.
+     */
+    private interface OffAWTEDTDispatcher {
+        void dispatch(final Runnable task);
+    }
+
+    /**
+     * @return true if the current thread is the AWT EDT on macOS, i.e. a thread on which blocking
+     * for another toolkit's thread risks a deadlock, otherwise false.
+     */
+    private static boolean isAWTEDTBlockingUnsafe() {
+        return EventQueue.isDispatchThread() && Platform.OSType.MACOS == Platform.getOSType();
+    }
+
+    /**
+     * Dispatches {@code task} off the AWT EDT via {@code dispatcher} and waits for its completion
+     * while the AWT EDT keeps dispatching events, using an AWT {@link SecondaryLoop}.
+     * <p>
+     * On macOS, blocking the AWT EDT while waiting for another thread deadlocks whenever that
+     * thread's progress depends on the AWT EDT. AppKit reaches the AWT EDT through
+     * {@code LWCToolkit.invokeAndWait()}, which runs the main run loop in a private mode that does
+     * not execute the blocks JOGL posts via {@code OSXUtil.RunOnMainThread()}. Keeping the AWT EDT
+     * dispatching lets those requests complete, so the wait can be satisfied (Bug 1478).
+     * </p>
+     *
+     * @return true if {@code task} was dispatched and has completed, false if no
+     * {@link SecondaryLoop} was available and nothing was run.
+     */
+    private final boolean runOffAWTEDTAndPumpEvents(final Runnable task,
+                                                    final OffAWTEDTDispatcher dispatcher,
+                                                    final String dbgTag) {
+        final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
+        if (null == loop) {
+            return false;
+        }
+
+        final AtomicReference<Throwable> throwableRef = new AtomicReference<Throwable>();
+        final Runnable task0 = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (DEBUG) {
+                        System.err.println("NewtCanvasAWT." + dbgTag + ".offTask.0 @ " + currentThreadName());
+                    }
+                    task.run();
+                } catch (final Throwable t) {
+                    throwableRef.set(t);
+                } finally {
+                    if (DEBUG) {
+                        System.err.println("NewtCanvasAWT." + dbgTag + ".offTask.X @ " + currentThreadName());
+                    }
+                    loop.exit();
+                }
+            }
+        };
+
+        if (DEBUG) {
+            System.err.println("NewtCanvasAWT." + dbgTag + ".awtWait.0 @ " + currentThreadName());
+        }
+        dispatcher.dispatch(task0);
+        loop.enter();
+        if (DEBUG) {
+            System.err.println("NewtCanvasAWT." + dbgTag + ".awtWait.X @ " + currentThreadName());
+        }
+
+        final Throwable throwable = throwableRef.get();
+        if (null != throwable) {
+            if (throwable instanceof RuntimeException) {
+                throw (RuntimeException) throwable;
+            }
+            throw new RuntimeException(throwable);
+        }
+        return true;
+    }
+
+    /**
      * Runs {@code task} on NEWT's EDT while keeping the AWT EDT responsive.
      * <p>
      * On macOS, synchronous cross-toolkit operations can deadlock when the AWT EDT waits
@@ -1137,55 +1231,75 @@ public class NewtCanvasAWT extends java.awt.Canvas
      * </p>
      */
     private final void runOnNewtEDTAndWaitOnAWTEDT(final Runnable task, final String dbgTag) {
-        if (EventQueue.isDispatchThread() &&
-            Platform.OSType.MACOS == Platform.getOSType() &&
-            null != jawtWindow) {
-            final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
-            if (null == loop) {
-                task.run();
+        if (isAWTEDTBlockingUnsafe() && null != jawtWindow) {
+            final boolean done = runOffAWTEDTAndPumpEvents(task, new OffAWTEDTDispatcher() {
+                @Override
+                public void dispatch(final Runnable task0) {
+                    newtChild.runOnEDTIfAvail(false /* wait */, task0);
+                }
+            }, dbgTag);
+            if (done) {
                 return;
             }
-
-            final AtomicReference<Throwable> throwableRef = new AtomicReference<Throwable>();
-            final Runnable task0 = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (DEBUG) {
-                            System.err.println("NewtCanvasAWT." + dbgTag + ".newtTask.0 @ " + currentThreadName());
-                        }
-                        task.run();
-                    } catch (final Throwable t) {
-                        throwableRef.set(t);
-                    } finally {
-                        if (DEBUG) {
-                            System.err.println("NewtCanvasAWT." + dbgTag + ".newtTask.X @ " + currentThreadName());
-                        }
-                        loop.exit();
-                    }
-                }
-            };
-
-            if (DEBUG) {
-                System.err.println("NewtCanvasAWT." + dbgTag + ".awtWait.0 @ " + currentThreadName());
-            }
-            newtChild.runOnEDTIfAvail(false /* wait */, task0);
-            loop.enter();
-            if (DEBUG) {
-                System.err.println("NewtCanvasAWT." + dbgTag + ".awtWait.X @ " + currentThreadName());
-            }
-
-            final Throwable throwable = throwableRef.get();
-            if (null != throwable) {
-                if (throwable instanceof RuntimeException) {
-                    throw (RuntimeException) throwable;
-                }
-                throw new RuntimeException(throwable);
-            }
-            return;
         }
 
         task.run();
+    }
+
+    /**
+     * Performs {@link #addNotify()}'s initial {@link NativeSurface#lockSurface() surface lock}, which
+     * creates the native surface and makes the AWT pixel-scale available to NEWT.
+     * <p>
+     * On macOS this lock reaches {@code OSXUtil.RunOnMainThread()} and blocks until AppKit's main
+     * thread has created the native window. Performing it directly on the AWT EDT deadlocks
+     * whenever AppKit is concurrently waiting on the AWT EDT, which any accessibility client can
+     * cause via {@code CAccessibility.getFocusOwner()}: neither thread can then make progress, and
+     * because the wait spans two runtime-managed threads rather than Java locks, deadlock
+     * detection does not report it (gephi#3222, an occurrence of Bug 1478 outside
+     * {@link #attachNewtChild()}).
+     * </p>
+     * <p>
+     * The lock is therefore taken off the AWT EDT, which keeps dispatching events meanwhile, so
+     * AppKit's request is served and the native window creation can complete. Every other platform
+     * keeps the original behavior of locking on the AWT EDT.
+     * </p>
+     */
+    private final void lockSurfaceInitially() {
+        final Runnable lockUnlock = new Runnable() {
+            @Override
+            public void run() {
+                jawtWindow.lockSurface();
+                try {
+                    // attachNewtChild sets surface scale!
+                } finally {
+                    jawtWindow.unlockSurface();
+                }
+            }
+        };
+
+        if (isAWTEDTBlockingUnsafe()) {
+            // The AWT EDT dispatches events while waiting, so it may re-enter this component
+            // before addNotify() has returned. validateComponent() must not attach the NEWT child
+            // in that window, as attaching locks the very surface this task holds.
+            initialSurfaceLockPending = true;
+            try {
+                final boolean done = runOffAWTEDTAndPumpEvents(lockUnlock, new OffAWTEDTDispatcher() {
+                    @Override
+                    public void dispatch(final Runnable task0) {
+                        final Thread thread = new Thread(task0, "NewtCanvasAWT-InitialSurfaceLock");
+                        thread.setDaemon(true);
+                        thread.start();
+                    }
+                }, "addNotify");
+                if (done) {
+                    return;
+                }
+            } finally {
+                initialSurfaceLockPending = false;
+            }
+        }
+
+        lockUnlock.run();
     }
 
     private final void attachNewtChild() {

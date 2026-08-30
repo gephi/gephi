@@ -25,7 +25,7 @@ import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_NODE_SCALE;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_SELECTION_TIME;
 import static org.gephi.viz.engine.util.gl.Constants.UNIFORM_NAME_WEIGHT_DIFFERENCE_DIVISOR;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import org.gephi.viz.engine.jogl.util.gl.GLShaderProgram;
 import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.gl.Constants;
@@ -51,7 +51,7 @@ public class EdgeLineDirectedModelSelectionSelected {
     private static final String SHADERS_EDGE_LINE_SOURCE_FS = "edge-line-directed";
 
 
-    public void initProgram(GL2ES2 gl) {
+    public void initProgram(GL3ES3 gl) {
         program =
             new GLShaderProgram(SHADERS_ROOT, SHADERS_EDGE_LINE_SOURCE_VS,
                 SHADERS_EDGE_LINE_SOURCE_FS)
@@ -76,7 +76,7 @@ public class EdgeLineDirectedModelSelectionSelected {
     }
 
 
-    public void useProgram(GL2ES2 gl, float[] mvpFloats, float edgeScale, float minWeight,
+    public void useProgram(GL3ES3 gl, float[] mvpFloats, float edgeScale, float minWeight,
                            float maxWeight, float edgeResclaleMin, float edgeRescaleMax,
                            float nodeScale, float edgeInset, float globalTime,
                            float selectionTime) {
@@ -87,7 +87,7 @@ public class EdgeLineDirectedModelSelectionSelected {
     }
 
 
-    private void prepareProgramData(GL2ES2 gl, float[] mvpFloats, float scale, float minWeight,
+    private void prepareProgramData(GL3ES3 gl, float[] mvpFloats, float scale, float minWeight,
                                     float maxWeight, float nodeScale, float edgeRescaleMin,
                                     float edgeRescaleMax, float edgeInset,
                                     float globalTime, float selectionTime) {
@@ -115,7 +115,7 @@ public class EdgeLineDirectedModelSelectionSelected {
     }
 
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (program != null) {
             program.destroy(gl);
             program = null;

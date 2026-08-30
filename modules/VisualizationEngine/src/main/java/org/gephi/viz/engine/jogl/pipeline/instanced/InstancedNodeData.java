@@ -1,7 +1,7 @@
 package org.gephi.viz.engine.jogl.pipeline.instanced;
 
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.GL3ES3;
 import java.nio.FloatBuffer;
 import org.gephi.viz.engine.jogl.pipeline.common.AbstractNodeData;
 import org.gephi.viz.engine.jogl.pipeline.common.NodeWorldData;
@@ -26,13 +26,13 @@ public class InstancedNodeData extends AbstractNodeData {
     private static final int ATTRIBS_BUFFER = 1;
     private static final int ATTRIBS_BUFFER_SECONDARY = 2;
 
-    public void drawInstanced(GL2ES3 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
+    public void drawInstanced(GL3ES3 gl, RenderingLayer layer, NodeWorldData data, float[] mvpFloats) {
         refreshTime();
 
         drawInstancedInternal(gl, layer, data, mvpFloats);
     }
 
-    private void drawInstancedInternal(final GL2ES3 gl,
+    private void drawInstancedInternal(final GL3ES3 gl,
                                        final RenderingLayer layer,
                                        final NodeWorldData data,
                                        final float[] mvpFloats) {

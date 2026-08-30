@@ -13,7 +13,7 @@ import static org.gephi.viz.engine.util.gl.Constants.SHADER_VERT_LOCATION;
 
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import java.nio.FloatBuffer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -138,7 +138,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         this.usesSecondaryBuffer = usesSecondaryBuffer;
     }
 
-    public void init(GL2ES2 gl) {
+    public void init(GL3ES3 gl) {
         edgeCircleSelfLoopNoSelection.initGLProgram(gl);
         edgeCircleSelfLoopSelectionUnselected.initGLProgram(gl);
         edgeCircleSelfLoopSelectionSelected.initGLProgram(gl);
@@ -164,7 +164,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     }
 
     protected int setupShaderProgramForRenderingLayerSelfLoop(
-        final GL2ES2 gl,
+        final GL3ES3 gl,
         final RenderingLayer layer,
         final EdgeWorldData data,
         final float[] mvpFloats
@@ -256,7 +256,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         return instanceCount;
     }
 
-    protected int setupShaderProgramForRenderingLayerUndirected(final GL2ES2 gl,
+    protected int setupShaderProgramForRenderingLayerUndirected(final GL3ES3 gl,
                                                                 final RenderingLayer layer,
                                                                 final EdgeWorldData data,
                                                                 final float[] mvpFloats) {
@@ -357,7 +357,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         return instanceCount;
     }
 
-    protected int setupShaderProgramForRenderingLayerDirected(final GL2ES2 gl,
+    protected int setupShaderProgramForRenderingLayerDirected(final GL3ES3 gl,
                                                               final RenderingLayer layer,
                                                               final EdgeWorldData data,
                                                               final float[] mvpFloats) {
@@ -1236,7 +1236,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     private SelfLoopEdgesVAO selfLoopEdgesVAO;
     private SelfLoopEdgesVAO selfLoopEdgesVAOSecondary;
 
-    public void setupSelfLoopVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
+    public void setupSelfLoopVertexArrayAttributes(GL3ES3 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAO == null) {
             selfLoopEdgesVAO = new SelfLoopEdgesVAO(
                 data.getOpenGLOptions(),
@@ -1247,7 +1247,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         selfLoopEdgesVAO.use(gl);
     }
 
-    public void setupSelfLoopVertexArrayAttributesSecondary(GL2ES2 gl, EdgeWorldData data) {
+    public void setupSelfLoopVertexArrayAttributesSecondary(GL3ES3 gl, EdgeWorldData data) {
         if (selfLoopEdgesVAOSecondary == null) {
             selfLoopEdgesVAOSecondary = new SelfLoopEdgesVAO(
                 data.getOpenGLOptions(),
@@ -1258,7 +1258,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         selfLoopEdgesVAOSecondary.use(gl);
     }
 
-    public void setupUndirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
+    public void setupUndirectedVertexArrayAttributes(GL3ES3 gl, EdgeWorldData data) {
         if (undirectedEdgesVAO == null) {
             undirectedEdgesVAO = new UndirectedEdgesVAO(
                 data.getOpenGLOptions(),
@@ -1269,7 +1269,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         undirectedEdgesVAO.use(gl);
     }
 
-    public void setupUndirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+    public void setupUndirectedVertexArrayAttributesSecondary(GL3ES3 gl,
                                                               EdgeWorldData data) {
         if (undirectedEdgesVAOSecondary == null) {
             undirectedEdgesVAOSecondary = new UndirectedEdgesVAO(
@@ -1281,7 +1281,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         undirectedEdgesVAOSecondary.use(gl);
     }
 
-    public void unsetupSelfLoopVertexArrayAttributes(GL2ES2 gl) {
+    public void unsetupSelfLoopVertexArrayAttributes(GL3ES3 gl) {
         if (selfLoopEdgesVAO != null) {
             selfLoopEdgesVAO.stopUsing(gl);
         }
@@ -1291,7 +1291,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
     }
 
-    public void unsetupUndirectedVertexArrayAttributes(GL2ES2 gl) {
+    public void unsetupUndirectedVertexArrayAttributes(GL3ES3 gl) {
         if (undirectedEdgesVAO != null) {
             undirectedEdgesVAO.stopUsing(gl);
         }
@@ -1301,7 +1301,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
     }
 
-    public void setupDirectedVertexArrayAttributes(GL2ES2 gl, EdgeWorldData data) {
+    public void setupDirectedVertexArrayAttributes(GL3ES3 gl, EdgeWorldData data) {
         if (directedEdgesVAO == null) {
             directedEdgesVAO = new DirectedEdgesVAO(
                 data.getOpenGLOptions(),
@@ -1312,7 +1312,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         directedEdgesVAO.use(gl);
     }
 
-    public void setupDirectedVertexArrayAttributesSecondary(GL2ES2 gl,
+    public void setupDirectedVertexArrayAttributesSecondary(GL3ES3 gl,
                                                             EdgeWorldData data) {
         if (directedEdgesVAOSecondary == null) {
             directedEdgesVAOSecondary = new DirectedEdgesVAO(
@@ -1324,7 +1324,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         directedEdgesVAOSecondary.use(gl);
     }
 
-    public void unsetupDirectedVertexArrayAttributes(GL2ES2 gl) {
+    public void unsetupDirectedVertexArrayAttributes(GL3ES3 gl) {
         if (directedEdgesVAO != null) {
             directedEdgesVAO.stopUsing(gl);
         }
@@ -1392,48 +1392,48 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
 
         // Destroy and reset VAOs to prevent reuse after re-init
         if (undirectedEdgesVAO != null) {
-            undirectedEdgesVAO.destroy(gl.getGL2ES2());
+            undirectedEdgesVAO.destroy(gl.getGL3ES3());
             undirectedEdgesVAO = null;
         }
 
         if (undirectedEdgesVAOSecondary != null) {
-            undirectedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            undirectedEdgesVAOSecondary.destroy(gl.getGL3ES3());
             undirectedEdgesVAOSecondary = null;
         }
 
         if (directedEdgesVAO != null) {
-            directedEdgesVAO.destroy(gl.getGL2ES2());
+            directedEdgesVAO.destroy(gl.getGL3ES3());
             directedEdgesVAO = null;
         }
 
         if (directedEdgesVAOSecondary != null) {
-            directedEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            directedEdgesVAOSecondary.destroy(gl.getGL3ES3());
             directedEdgesVAOSecondary = null;
         }
 
         if (selfLoopEdgesVAO != null) {
-            selfLoopEdgesVAO.destroy(gl.getGL2ES2());
+            selfLoopEdgesVAO.destroy(gl.getGL3ES3());
             selfLoopEdgesVAO = null;
         }
 
         if (selfLoopEdgesVAOSecondary != null) {
-            selfLoopEdgesVAOSecondary.destroy(gl.getGL2ES2());
+            selfLoopEdgesVAOSecondary.destroy(gl.getGL3ES3());
             selfLoopEdgesVAOSecondary = null;
         }
 
         // Destroy shader programs
-        lineUndirectedModelSelectionSelected.destroy(gl.getGL2ES2());
-        lineUndirectedModelSelectionUnselected.destroy(gl.getGL2ES2());
-        lineUndirectedModelNoSelection.destroy(gl.getGL2ES2());
+        lineUndirectedModelSelectionSelected.destroy(gl.getGL3ES3());
+        lineUndirectedModelSelectionUnselected.destroy(gl.getGL3ES3());
+        lineUndirectedModelNoSelection.destroy(gl.getGL3ES3());
 
-        lineDirectedModelNoSelection.destroy(gl.getGL2ES2());
-        lineDirectedModelSelectionSelected.destroy(gl.getGL2ES2());
-        lineDirectedModelSelectionUnselected.destroy(gl.getGL2ES2());
+        lineDirectedModelNoSelection.destroy(gl.getGL3ES3());
+        lineDirectedModelSelectionSelected.destroy(gl.getGL3ES3());
+        lineDirectedModelSelectionUnselected.destroy(gl.getGL3ES3());
 
 
-        edgeCircleSelfLoopNoSelection.destroy(gl.getGL2ES2());
-        edgeCircleSelfLoopSelectionSelected.destroy(gl.getGL2ES2());
-        edgeCircleSelfLoopSelectionUnselected.destroy(gl.getGL2ES2());
+        edgeCircleSelfLoopNoSelection.destroy(gl.getGL3ES3());
+        edgeCircleSelfLoopSelectionSelected.destroy(gl.getGL3ES3());
+        edgeCircleSelfLoopSelectionUnselected.destroy(gl.getGL3ES3());
 
         edgesCallback.reset();
     }
@@ -1449,7 +1449,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
 
         @Override
-        protected void configure(GL2ES2 gl) {
+        protected void configure(GL3ES3 gl) {
             vertexGLBufferSelfLoop.bind(gl);
             {
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeCircleSelfLoop.VERTEX_FLOATS, GL_FLOAT,
@@ -1525,7 +1525,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
 
         @Override
-        protected void configure(GL2ES2 gl) {
+        protected void configure(GL3ES3 gl) {
             vertexGLBufferUndirected.bind(gl);
             {
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonEdgeLineUndirected.VERTEX_FLOATS, GL_FLOAT, false,
@@ -1605,7 +1605,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
         }
 
         @Override
-        protected void configure(GL2ES2 gl) {
+        protected void configure(GL3ES3 gl) {
             vertexGLBufferDirected.bind(gl);
             {
 

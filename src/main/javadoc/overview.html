@@ -19,6 +19,7 @@
         <h4>ProjectAPI</h4>
         <ul>
             <li>Addition of <code>newWorkspace()</code> and <code>openNewWorkspace()</code> methods in <code>ProjectController</code> with the option to pass objects that will be added to the <code>Workspace</code>'s lookup at creation time.</li>
+            <li>The threading contract of <code>WorkspaceListener</code> and <code>ProjectListener</code> is now specified: callbacks are invoked synchronously on the thread that performed the operation, and that thread is never the Event Dispatch Thread. Implementations must therefore defer any Swing work with <code>SwingUtilities.invokeLater()</code> and must never block - in particular never <code>invokeAndWait()</code>. Consequently, <code>ProjectController</code>'s mutating methods shouldn't be called from the Event Dispatch Thread and now log a warning when they are.</li>
         </ul>
         <h4>Graph API</h4>
         <ul>
@@ -64,6 +65,12 @@
         <ul>
             <li>Processors function in <code>ImportController</code> now return a <code>Workspace</code> to clarify which worspaces graph data has been pushed to, given that providing a workspace to <code>process()</code> functions isn't required (and sometimes not even allowed, depending on the processor).</li>
             <li>Added <code>hasIssues()</code> to <code>Report</code> class to check if the report contains any issues.</li>
+            <li>Added a new <code>ImportException</code> base class for known, user-facing import failures, along with an <code>EmptyFileException</code> subclass. Empty files are now detected centrally in <code>ImportController</code> and raised as <code>EmptyFileException</code> with a localized message, so UIs can present a clean error instead of the default unexpected-exception treatment.</li>
+        </ul>
+        <h4>LongTask API</h4>
+        <ul>
+            <li>Added a <code>fatalError(Throwable)</code> default method to <code>LongTaskListener</code>. It is called when a task terminates with an uncaught exception, instead of <code>taskFinished()</code>, so that a single listener receives both outcomes. The default implementation does nothing, therefore existing listeners are unaffected.</li>
+            <li><code>LongTaskErrorHandler</code> and <code>LongTaskExecutor.setDefaultErrorHandler()</code> are deprecated in favor of <code>LongTaskListener.fatalError(Throwable)</code>. They remain fully functional and are still invoked, in addition to the listener.</li>
         </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>

@@ -43,6 +43,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
+import java.util.Locale;
 import org.gephi.preview.types.DependantOriginalColor;
 
 /**
@@ -62,7 +63,7 @@ public class BasicDependantOriginalColorPropertyEditor extends AbstractColorProp
         if (c.getMode().equals(DependantOriginalColor.Mode.CUSTOM)) {
             return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
-            return c.getMode().name().toLowerCase();
+            return c.getMode().name().toLowerCase(Locale.ROOT);
         }
     }
 
@@ -74,11 +75,11 @@ public class BasicDependantOriginalColorPropertyEditor extends AbstractColorProp
     @Override
     public void setAsText(String s) {
 
-        if (matchColorMode(s, DependantOriginalColor.Mode.CUSTOM.name().toLowerCase())) {
+        if (matchColorMode(s, DependantOriginalColor.Mode.CUSTOM.name().toLowerCase(Locale.ROOT))) {
             setValue(new DependantOriginalColor(toColor(s)));
-        } else if (matchColorMode(s, DependantOriginalColor.Mode.ORIGINAL.name().toLowerCase())) {
+        } else if (matchColorMode(s, DependantOriginalColor.Mode.ORIGINAL.name().toLowerCase(Locale.ROOT))) {
             setValue(new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
-        } else if (matchColorMode(s, DependantOriginalColor.Mode.PARENT.name().toLowerCase())) {
+        } else if (matchColorMode(s, DependantOriginalColor.Mode.PARENT.name().toLowerCase(Locale.ROOT))) {
             setValue(new DependantOriginalColor(DependantOriginalColor.Mode.PARENT));
         }
     }

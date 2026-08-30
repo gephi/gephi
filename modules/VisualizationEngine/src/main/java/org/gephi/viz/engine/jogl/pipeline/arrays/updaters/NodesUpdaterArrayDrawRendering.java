@@ -26,12 +26,12 @@ public class NodesUpdaterArrayDrawRendering implements WorldUpdater<JOGLRenderin
 
     @Override
     public void init(JOGLRenderingTarget target) {
-        nodeData.init(target.getDrawable().getGL().getGL2ES2());
+        nodeData.init(target.getDrawable().getGL().getGL3ES3());
     }
 
     @Override
     public void dispose(JOGLRenderingTarget target) {
-        nodeData.dispose(target.getDrawable().getGL().getGL2ES2());
+        nodeData.dispose(target.getDrawable().getGL().getGL3ES3());
     }
 
     @Override

@@ -89,7 +89,10 @@ public class ReportController {
     public static final String TRACK_USAGE = "track_usage";
     public static final boolean DEFAULT_TRACK_USAGE = false;
 
-    public static final String DO_NOT_REMIND_ANALYTICS = "do_not_remind_analytics";
+    public static final String DISABLE_ALL_TRACKING = "disable_all_tracking";
+
+    /** Set to true once the user has interacted with the consent popup (any button, including close). */
+    public static final String ANALYTICS_CONSENT_SHOWN = "analytics_consent_shown";
 
     public void sendReport(final Report report) {
         boolean autoSend = NbPreferences.forModule(ReportController.class)

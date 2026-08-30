@@ -54,29 +54,37 @@ import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.Model;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
  */
-public class PreviewUIModelImpl implements PreviewUIModel {
+public class PreviewUIModelImpl implements PreviewUIModel, Model {
 
     public static final String DEFAULT_PRESET_CLASS = "PreviewOptions.defaultPresetClass";
     public static final String DEFAULT_PRESET_NAME = "PreviewOptions.defaultPresetName";
 
-    private final PreviewModel previewModel;
+    private final Workspace workspace;
     private final PreviewUIController controller;
     //Data
     private float visibilityRatio = 1f;
     private PreviewPreset currentPreset;
     private boolean refreshing;
 
-    public PreviewUIModelImpl(PreviewModel model, PreviewUIController controller) {
-        previewModel = model;
+    public PreviewUIModelImpl(Workspace workspace, PreviewUIController controller) {
+        this.workspace = workspace;
         this.controller = controller;
         currentPreset = resolveDefaultPreset();
-        model.getProperties().applyPreset(currentPreset);
+        // PreviewModel is owned by PreviewController and may not yet be present in the workspace
+        // lookup (depends on Controller iteration order in WorkspaceImpl.initModels). Apply the
+        // default preset only if it is already there; otherwise the preset will be applied lazily
+        // via setCurrentPreset or when the user/persistence triggers a refresh.
+        PreviewModel previewModel = getPreviewModel();
+        if (previewModel != null) {
+            previewModel.getProperties().applyPreset(currentPreset);
+        }
     }
 
     private PreviewPreset resolveDefaultPreset() {
@@ -105,12 +113,12 @@ public class PreviewUIModelImpl implements PreviewUIModel {
 
     @Override
     public PreviewModel getPreviewModel() {
-        return previewModel;
+        return workspace.getLookup().lookup(PreviewModel.class);
     }
 
     @Override
     public Workspace getWorkspace() {
-        return previewModel.getWorkspace();
+        return workspace;
     }
 
     @Override

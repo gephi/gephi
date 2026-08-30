@@ -477,7 +477,7 @@ public class ForceAtlas2 implements Layout {
                         double factor = 0.1 * speed / (1f + Math.sqrt(speed * swinging));
 
                         double df = Math.sqrt(Math.pow(nLayout.dx, 2) + Math.pow(nLayout.dy, 2));
-                        factor = Math.min(factor * df, 10.) / df;
+                        factor = df == 0 ? 0 : Math.min(factor * df, 10.) / df;
 
                         double x = n.x() + nLayout.dx * factor;
                         double y = n.y() + nLayout.dy * factor;

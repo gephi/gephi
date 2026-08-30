@@ -20,7 +20,7 @@ public class InstancedDraw {
             return false;
         }
 
-        return drawable.getGLProfile().isGL2ES3()
+        return drawable.getGLProfile().isGL3ES3()
             && engine.getOpenGLOptions().isInstancingSupported();
     }
 }

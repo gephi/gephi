@@ -1,12 +1,10 @@
 package org.gephi.ui.project;
 
-import org.gephi.desktop.project.ProjectControllerUIImpl;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceMetaData;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
-import org.openide.util.Lookup;
 
 public class WorkspacePropertiesEditor extends javax.swing.JPanel {
 
@@ -37,19 +35,16 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
         nameTextField.setText(workspace.getName());
     }
 
-    public void unsetup(Workspace workspace) {
-        WorkspaceMetaData info = workspace.getWorkspaceMetadata();
-        if (!descriptionTextArea.getText().isEmpty() && !descriptionTextArea.getText().equals(info.getDescription())) {
-            info.setDescription(descriptionTextArea.getText());
-        }
+    public String getWorkspaceName() {
+        return nameTextField.getText();
+    }
 
-        if (!nameTextField.getText().isEmpty() && !nameTextField.getText().equals(workspace.getName())) {
-            Lookup.getDefault().lookup(ProjectControllerUIImpl.class).renameWorkspace(nameTextField.getText());
-        }
+    public String getWorkspaceTitle() {
+        return titleTextField.getText();
+    }
 
-        if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(info.getTitle())) {
-            info.setTitle(titleTextField.getText());
-        }
+    public String getWorkspaceDescription() {
+        return descriptionTextArea.getText();
     }
 
     /**

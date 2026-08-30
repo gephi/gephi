@@ -30,18 +30,15 @@ public class NodeRendererArrayDraw extends AbstractNodeRenderer {
     }
 
     @Override
-    public NodeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public NodeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
         nodeData.updateBuffers();
         return nodeData.createWorldData(model, engine);
     }
 
-    private final float[] mvpFloats = new float[16];
-
     @Override
-    public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
-        engine.getModelViewProjectionMatrixFloats(mvpFloats);
+    public void render(NodeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
 
-        nodeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, data, mvpFloats);
+        nodeData.drawArrays(target.getDrawable().getGL().getGL3ES3(), layer, data, mvpFloats);
     }
 
     @Override

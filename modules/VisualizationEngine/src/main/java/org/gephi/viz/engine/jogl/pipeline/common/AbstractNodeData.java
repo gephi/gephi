@@ -13,7 +13,7 @@ import static org.gephi.viz.engine.util.gl.GLConstants.INDIRECT_DRAW_COMMAND_INT
 
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -109,7 +109,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         firstVertex8 = circleMesh64.vertexCount + circleMesh32.vertexCount + circleMesh16.vertexCount;
     }
 
-    public void init(GL2ES2 gl) {
+    public void init(GL3ES3 gl) {
         diskModelNoSelection.initGLPrograms(gl);
         diskModelSelectionSelected.initGLPrograms(gl);
         diskModelSelectionUnselected.initGLPrograms(gl);
@@ -153,7 +153,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         vertexGLBuffer.unbind(gl);
     }
 
-    protected int setupShaderProgramForRenderingLayer(final GL2ES2 gl,
+    protected int setupShaderProgramForRenderingLayer(final GL3ES3 gl,
                                                       final RenderingLayer layer,
                                                       final NodeWorldData data,
                                                       final float[] mvpFloats) {
@@ -416,7 +416,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     private NodesVAO nodesVAO;
     private NodesVAO nodesVAOSecondary;
 
-    public void setupVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
+    public void setupVertexArrayAttributes(GL3ES3 gl, NodeWorldData data) {
         if (nodesVAO == null) {
             nodesVAO = new NodesVAO(data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBuffer
@@ -426,7 +426,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         nodesVAO.use(gl);
     }
 
-    public void setupSecondaryVertexArrayAttributes(GL2ES2 gl, NodeWorldData data) {
+    public void setupSecondaryVertexArrayAttributes(GL3ES3 gl, NodeWorldData data) {
         if (nodesVAOSecondary == null) {
             nodesVAOSecondary = new NodesVAO(data.getOpenGLOptions(),
                 vertexGLBuffer, attributesGLBufferSecondary
@@ -436,7 +436,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         nodesVAOSecondary.use(gl);
     }
 
-    public void unsetupVertexArrayAttributes(GL2ES2 gl) {
+    public void unsetupVertexArrayAttributes(GL3ES3 gl) {
         if (nodesVAO != null) {
             nodesVAO.stopUsing(gl);
         }
@@ -480,19 +480,19 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
         // Destroy and reset VAOs to prevent reuse after re-init
         if (nodesVAO != null) {
-            nodesVAO.destroy(gl.getGL2ES2());
+            nodesVAO.destroy(gl.getGL3ES3());
             nodesVAO = null;
         }
 
         if (nodesVAOSecondary != null) {
-            nodesVAOSecondary.destroy(gl.getGL2ES2());
+            nodesVAOSecondary.destroy(gl.getGL3ES3());
             nodesVAOSecondary = null;
         }
 
         // Destroy shader programs
-        diskModelNoSelection.destroy(gl.getGL2ES2());
-        diskModelSelectionSelected.destroy(gl.getGL2ES2());
-        diskModelSelectionUnselected.destroy(gl.getGL2ES2());
+        diskModelNoSelection.destroy(gl.getGL3ES3());
+        diskModelSelectionSelected.destroy(gl.getGL3ES3());
+        diskModelSelectionUnselected.destroy(gl.getGL3ES3());
 
         nodesCallback.reset();
     }
@@ -510,7 +510,7 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         }
 
         @Override
-        protected void configure(GL2ES2 gl) {
+        protected void configure(GL3ES3 gl) {
             vertexBuffer.bind(gl);
             {
                 gl.glVertexAttribPointer(SHADER_VERT_LOCATION, CommonNodeDiskModel.VERTEX_FLOATS, GL_FLOAT, false,

@@ -42,8 +42,8 @@
 
 package org.gephi.desktop.attributes;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import javax.swing.SwingUtilities;
 import org.gephi.desktop.attributes.api.AttributesUIController;
 import org.gephi.graph.api.Edge;
@@ -68,7 +68,7 @@ import org.openide.windows.WindowManager;
     @ServiceProvider(service = Controller.class)})
 public class AttributesUIControllerImpl implements AttributesUIController, Controller<AttributesUIModelImpl> {
 
-    private final Set<AttributesUIModelListener> listeners = new HashSet<>();
+    private final Set<AttributesUIModelListener> listeners = new CopyOnWriteArraySet<>();
 
     public AttributesUIControllerImpl() {
 
@@ -81,14 +81,14 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
             @Override
             public void select(Workspace workspace) {
                 AttributesUIModelImpl model = getModel(workspace);
-                firePropertyChangeEvent(AttributesUIModelEvent.MODEL, null, model);
+                runAction(() -> firePropertyChangeEvent(AttributesUIModelEvent.MODEL, null, model));
             }
 
             @Override
             public void unselect(Workspace workspace) {
                 AttributesUIModelImpl model = getModel(workspace);
                 model.resetSelection();
-                firePropertyChangeEvent(AttributesUIModelEvent.MODEL, null, null);
+                runAction(() -> firePropertyChangeEvent(AttributesUIModelEvent.MODEL, null, null));
             }
 
             @Override
@@ -126,6 +126,9 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
 
     private void setEditMode(boolean editMode) {
         AttributesUIModelImpl model = getModel();
+        if (model == null) {
+            return;
+        }
         if (model.isEditMode() != editMode) {
             model.setEditMode(editMode);
             if (editMode) {
@@ -259,7 +262,7 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
         AttributesUIModelImpl model = getModel();
         if (model != null && !model.isEditMode()) {
             runAction(() -> {
-                if (model == getModel()) {
+                if (model == getModel() && !model.isEditMode()) {
                     setSelectedNodes(nodes);
                 }
             });

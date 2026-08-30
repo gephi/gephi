@@ -43,6 +43,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
+import java.util.Locale;
 import org.gephi.preview.types.EdgeColor;
 
 /**
@@ -62,7 +63,7 @@ public class BasicEdgeColorPropertyEditor extends AbstractColorPropertyEditor {
         if (c.getMode().equals(EdgeColor.Mode.CUSTOM)) {
             return toText(c.getMode().name(), c.getCustomColor() == null ? Color.BLACK : c.getCustomColor());
         } else {
-            return c.getMode().name().toLowerCase();
+            return c.getMode().name().toLowerCase(Locale.ROOT);
         }
     }
 
@@ -73,15 +74,15 @@ public class BasicEdgeColorPropertyEditor extends AbstractColorPropertyEditor {
 
     @Override
     public void setAsText(String s) {
-        if (matchColorMode(s, EdgeColor.Mode.CUSTOM.name().toLowerCase())) {
+        if (matchColorMode(s, EdgeColor.Mode.CUSTOM.name().toLowerCase(Locale.ROOT))) {
             setValue(new EdgeColor(toColor(s)));
-        } else if (matchColorMode(s, EdgeColor.Mode.MIXED.name().toLowerCase())) {
+        } else if (matchColorMode(s, EdgeColor.Mode.MIXED.name().toLowerCase(Locale.ROOT))) {
             setValue(new EdgeColor(EdgeColor.Mode.MIXED));
-        } else if (matchColorMode(s, EdgeColor.Mode.ORIGINAL.name().toLowerCase())) {
+        } else if (matchColorMode(s, EdgeColor.Mode.ORIGINAL.name().toLowerCase(Locale.ROOT))) {
             setValue(new EdgeColor(EdgeColor.Mode.ORIGINAL));
-        } else if (matchColorMode(s, EdgeColor.Mode.SOURCE.name().toLowerCase())) {
+        } else if (matchColorMode(s, EdgeColor.Mode.SOURCE.name().toLowerCase(Locale.ROOT))) {
             setValue(new EdgeColor(EdgeColor.Mode.SOURCE));
-        } else if (matchColorMode(s, EdgeColor.Mode.TARGET.name().toLowerCase())) {
+        } else if (matchColorMode(s, EdgeColor.Mode.TARGET.name().toLowerCase(Locale.ROOT))) {
             setValue(new EdgeColor(EdgeColor.Mode.TARGET));
         }
     }

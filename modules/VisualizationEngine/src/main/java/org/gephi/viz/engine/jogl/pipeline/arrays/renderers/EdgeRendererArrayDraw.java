@@ -30,18 +30,14 @@ public class EdgeRendererArrayDraw extends AbstractEdgeRenderer {
     }
 
     @Override
-    public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target) {
+    public EdgeWorldData worldUpdated(VizEngineModel model, JOGLRenderingTarget target, float[] mvpFloats) {
         edgeData.updateBuffers();
         return edgeData.createWorldData(model, engine);
     }
 
-    private final float[] mvpFloats = new float[16];
-
     @Override
-    public void render(EdgeWorldData data, JOGLRenderingTarget target, RenderingLayer layer) {
-        engine.getModelViewProjectionMatrixFloats(mvpFloats);
-
-        edgeData.drawArrays(target.getDrawable().getGL().getGL2ES2(), layer, data, mvpFloats);
+    public void render(EdgeWorldData data, JOGLRenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
+        edgeData.drawArrays(target.getDrawable().getGL().getGL3ES3(), layer, data, mvpFloats);
     }
 
     @Override

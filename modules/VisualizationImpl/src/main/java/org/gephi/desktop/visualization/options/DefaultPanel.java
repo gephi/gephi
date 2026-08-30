@@ -45,6 +45,7 @@ package org.gephi.desktop.visualization.options;
 import com.connectina.swing.fontchooser.JFontChooser;
 import java.awt.Component;
 import java.awt.Font;
+import java.util.Locale;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -196,7 +197,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                 if (value instanceof LabelColorMode mode) {
                     String prefix = forEdges ? "EdgeLabelColorMode." : "NodeLabelColorMode.";
                     label.setText(NbBundle.getMessage(EdgeSettingsPanel.class,
-                        prefix + mode.name().toLowerCase() + ".name"));
+                        prefix + mode.name().toLowerCase(Locale.ROOT) + ".name"));
                     label.setIcon(
                         ImageUtilities.loadIcon("VisualizationImpl/LabelColorMode_" + mode.name() + ".svg"));
                 }
@@ -214,7 +215,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                     (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof LabelSizeMode mode) {
                     label.setText(NbBundle.getMessage(EdgeSettingsPanel.class,
-                        "LabelSizeMode." + mode.name().toLowerCase() + ".name"));
+                        "LabelSizeMode." + mode.name().toLowerCase(Locale.ROOT) + ".name"));
                     label.setIcon(
                         ImageUtilities.loadIcon("VisualizationImpl/LabelSizeMode_" + mode.name() + ".svg"));
                 }
@@ -232,7 +233,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                     (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof EdgeColorMode mode) {
                     label.setText(NbBundle.getMessage(EdgeSettingsPanel.class,
-                        "EdgeColorMode." + mode.name().toLowerCase() + ".name"));
+                        "EdgeColorMode." + mode.name().toLowerCase(Locale.ROOT) + ".name"));
                     label.setIcon(
                         ImageUtilities.loadIcon("VisualizationImpl/EdgeColorMode_" + mode.name() + ".svg"));
                 }

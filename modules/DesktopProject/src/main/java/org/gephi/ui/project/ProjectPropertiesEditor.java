@@ -43,13 +43,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.ui.project;
 
 import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
-import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
@@ -111,22 +109,24 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
         }
     }
 
-    public void save(Project project) {
-        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
-        if (info != null) {
-            if (!nameTextField.getText().isEmpty() && !nameTextField.getText().equals(info.getName())) {
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                pc.renameProject(project, nameTextField.getText());
-            }
-        }
-        ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
-        if (metaData != null) {
-            metaData.setTitle(titleTextField.getText());
+    public String getProjectName() {
+        return nameTextField.getText();
+    }
 
-            metaData.setAuthor(authorTextField.getText());
-            metaData.setKeywords(keywordsTextField.getText());
-            metaData.setDescription(descriptionTextArea.getText());
-        }
+    public String getProjectTitle() {
+        return titleTextField.getText();
+    }
+
+    public String getProjectAuthor() {
+        return authorTextField.getText();
+    }
+
+    public String getProjectKeywords() {
+        return keywordsTextField.getText();
+    }
+
+    public String getProjectDescription() {
+        return descriptionTextArea.getText();
     }
 
     /**

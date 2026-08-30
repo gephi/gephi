@@ -62,6 +62,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.gephi.project.api.EmptyProjectFileException;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Workspace;
@@ -115,6 +116,9 @@ public class LoadTask implements LongTask {
             try {
                 if (!file.exists()) {
                     throw new FileNotFoundException("File " + file.getPath() + " not found");
+                }
+                if (file.length() == 0) {
+                    throw new EmptyProjectFileException(file.getName());
                 }
                 zip = new ZipFile(file);
 

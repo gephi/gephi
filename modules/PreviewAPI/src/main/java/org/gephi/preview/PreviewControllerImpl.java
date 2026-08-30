@@ -77,7 +77,7 @@ import org.openide.util.lookup.ServiceProviders;
  */
 @ServiceProviders({
     @ServiceProvider(service = PreviewController.class),
-    @ServiceProvider(service = Controller.class)})
+    @ServiceProvider(service = Controller.class, position = 1000)})
 public class PreviewControllerImpl implements PreviewController, Controller<PreviewModelImpl> {
 
     //Registered renderers

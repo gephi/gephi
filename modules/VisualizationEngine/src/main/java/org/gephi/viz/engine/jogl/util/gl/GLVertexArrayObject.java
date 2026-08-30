@@ -1,8 +1,8 @@
 package org.gephi.viz.engine.jogl.util.gl;
 
-import static com.jogamp.opengl.GL2ES3.GL_VERTEX_ARRAY_BINDING;
+import static com.jogamp.opengl.GL3ES3.GL_VERTEX_ARRAY_BINDING;
 
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.util.GLBuffers;
 import java.nio.IntBuffer;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
@@ -25,7 +25,7 @@ public abstract class GLVertexArrayObject {
         vaoSupported = openGLOptions.isVAOSupported();
     }
 
-    private void init(GL2ES2 gl) {
+    private void init(GL3ES3 gl) {
         attributeLocations = getUsedAttributeLocations();
         if (attributeLocations == null) {
             attributeLocations = new int[0];
@@ -58,7 +58,7 @@ public abstract class GLVertexArrayObject {
         }
     }
 
-    public void use(GL2ES2 gl) {
+    public void use(GL3ES3 gl) {
         if (attributeLocations == null) {
             init(gl);
         }
@@ -70,7 +70,7 @@ public abstract class GLVertexArrayObject {
         }
     }
 
-    public void stopUsing(GL2ES2 gl) {
+    public void stopUsing(GL3ES3 gl) {
         if (vaoSupported) {
             unbind(gl);
         } else {
@@ -78,20 +78,20 @@ public abstract class GLVertexArrayObject {
         }
     }
 
-    private void configureAll(GL2ES2 gl) {
+    private void configureAll(GL3ES3 gl) {
         configure(gl);
         configureEnabledAttributes(gl);
     }
 
-    private void bind(GL2ES2 gl) {
+    private void bind(GL3ES3 gl) {
         GLFunctions.glBindVertexArray(gl, arrayId);
     }
 
-    private void unbind(GL2ES2 gl) {
+    private void unbind(GL3ES3 gl) {
         GLFunctions.glUnbindVertexArray(gl, previousArrayId[0]);
     }
 
-    private void configureEnabledAttributes(GL2ES2 gl) {
+    private void configureEnabledAttributes(GL3ES3 gl) {
         for (int attributeLocation : attributeLocations) {
             gl.glEnableVertexAttribArray(attributeLocation);
         }
@@ -100,7 +100,7 @@ public abstract class GLVertexArrayObject {
         }
     }
 
-    private void unconfigureEnabledAttributes(GL2ES2 gl) {
+    private void unconfigureEnabledAttributes(GL3ES3 gl) {
         for (int attributeLocation : attributeLocations) {
             gl.glDisableVertexAttribArray(attributeLocation);
         }
@@ -109,7 +109,7 @@ public abstract class GLVertexArrayObject {
         }
     }
 
-    public void destroy(GL2ES2 gl) {
+    public void destroy(GL3ES3 gl) {
         if (vaoSupported && arrayId != -1) {
             IntBuffer vertexArrayName = GLBuffers.newDirectIntBuffer(1);
             vertexArrayName.put(0, arrayId);
@@ -120,7 +120,7 @@ public abstract class GLVertexArrayObject {
         instancedAttributeLocations = null;
     }
 
-    protected abstract void configure(GL2ES2 gl);
+    protected abstract void configure(GL3ES3 gl);
 
     protected abstract int[] getUsedAttributeLocations();
 

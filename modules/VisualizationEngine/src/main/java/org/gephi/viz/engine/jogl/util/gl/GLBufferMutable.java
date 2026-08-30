@@ -4,7 +4,6 @@ import static org.gephi.viz.engine.util.ArrayUtils.getNextPowerOf2;
 import static org.gephi.viz.engine.util.gl.Buffers.bufferElementBytes;
 
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3ES3;
 import java.nio.Buffer;
 import java.util.logging.Level;
@@ -21,7 +20,7 @@ public class GLBufferMutable implements GLBuffer {
     public static final int GL_BUFFER_TYPE_ELEMENT_INDICES = GL.GL_ELEMENT_ARRAY_BUFFER;
     public static final int GL_BUFFER_TYPE_DRAW_INDIRECT = GL3ES3.GL_DRAW_INDIRECT_BUFFER;
     public static final int GL_BUFFER_USAGE_STATIC_DRAW = GL.GL_STATIC_DRAW;
-    public static final int GL_BUFFER_USAGE_STREAM_DRAW = GL2ES2.GL_STREAM_DRAW;
+    public static final int GL_BUFFER_USAGE_STREAM_DRAW = GL3ES3.GL_STREAM_DRAW;
     public static final int GL_BUFFER_USAGE_DYNAMIC_DRAW = GL.GL_DYNAMIC_DRAW;
 
     private final int id;

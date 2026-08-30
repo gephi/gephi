@@ -71,7 +71,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- * @author Mathieu Jacomy & Tiago Peixoto
+ * @author Mathieu Jacomy &amp; Tiago Peixoto
  */
 
 public class StatisticalInferenceClustering implements Statistics, LongTask {
