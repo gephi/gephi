@@ -62,9 +62,11 @@ public class DynamicGraph implements Generator {
 
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
+    protected volatile boolean cancel = false;
 
     @Override
     public void generate(ContainerLoader container) {
+        cancel = false;
         Random random = new Random();
         final double start = 2000.0;
         final double end = 2015.0;
@@ -73,7 +75,7 @@ public class DynamicGraph implements Generator {
         container.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
+        for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft("n" + i);
             container.addNode(nodeDraft);
 
@@ -91,9 +93,9 @@ public class DynamicGraph implements Generator {
         if (wiringProbability > 0) {
             ColumnDraft edgeWeightCol = container.addEdgeColumn("weight", Double.class, true);
 
-            for (int i = 0; i < numberOfNodes - 1; i++) {
+            for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
                 NodeDraft node1 = nodeArray[i];
-                for (int j = i + 1; j < numberOfNodes; j++) {
+                for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
                     NodeDraft node2 = nodeArray[j];
                     if (random.nextDouble() < wiringProbability) {
                         EdgeDraft edgeDraft = container.factory().newEdgeDraft();
@@ -128,6 +130,7 @@ public class DynamicGraph implements Generator {
 
     @Override
     public boolean cancel() {
+        cancel = true;
         return true;
     }
 

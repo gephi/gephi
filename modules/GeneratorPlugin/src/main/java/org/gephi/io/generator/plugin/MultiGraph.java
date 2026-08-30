@@ -61,12 +61,14 @@ public class MultiGraph implements Generator {
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
     protected int numberOfEdgeTypes = 3;
+    protected volatile boolean cancel = false;
 
     @Override
     public void generate(ContainerLoader container) {
+        cancel = false;
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
+        for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft("n" + i);
             container.addNode(nodeDraft);
 
@@ -81,9 +83,9 @@ public class MultiGraph implements Generator {
         Random random = new Random();
 
         if (wiringProbability > 0) {
-            for (int i = 0; i < numberOfNodes - 1; i++) {
+            for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
                 NodeDraft node1 = nodeArray[i];
-                for (int j = i + 1; j < numberOfNodes; j++) {
+                for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
                     NodeDraft node2 = nodeArray[j];
                     if (random.nextDouble() < wiringProbability) {
                         if (random.nextDouble() < 0.3) {
@@ -131,6 +133,7 @@ public class MultiGraph implements Generator {
 
     @Override
     public boolean cancel() {
+        cancel = true;
         return true;
     }
 

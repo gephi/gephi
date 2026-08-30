@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.desktop.generate;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JPanel;
 import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
@@ -53,6 +54,8 @@ import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -109,13 +112,32 @@ public class DesktopGeneratorController implements GeneratorController {
             }
         };
 
+        //Tracks whether cancel() was requested, so a cancelled run doesn't still
+        //create and populate a workspace with the partial graph.
+        final AtomicBoolean cancelled = new AtomicBoolean(false);
+        LongTask cancellableTask = new LongTask() {
+
+            @Override
+            public boolean cancel() {
+                cancelled.set(true);
+                return generator.cancel();
+            }
+
+            @Override
+            public void setProgressTicket(ProgressTicket progressTicket) {
+                generator.setProgressTicket(progressTicket);
+            }
+        };
+
         //Execute
-        executor.execute(generator, new Runnable() {
+        executor.execute(cancellableTask, new Runnable() {
 
             @Override
             public void run() {
                 generator.generate(container.getLoader());
-                finishGenerate(container);
+                if (!cancelled.get()) {
+                    finishGenerate(container);
+                }
             }
         }, taskname, errorHandler);
     }
