@@ -136,6 +136,10 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
         return null;
     }
 
+    public Statistics[] getRunning() {
+        return runningList.toArray(new Statistics[0]);
+    }
+
     public void setVisible(StatisticsUI statisticsUI, boolean visible) {
         if (visible) {
             if (invisibleList.remove(statisticsUI)) {
