@@ -63,10 +63,11 @@ public class RandomGraph implements Generator {
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
     protected ProgressTicket progress;
-    protected boolean cancel = false;
+    protected volatile boolean cancel = false;
 
     @Override
     public void generate(ContainerLoader container) {
+        cancel = false;
 
         int max = numberOfNodes;
         if (wiringProbability > 0) {
