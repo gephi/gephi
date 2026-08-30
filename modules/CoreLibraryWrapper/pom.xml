@@ -24,7 +24,7 @@
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
         <gephi.pdfbox.version>3.0.7</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
-        <gephi.gson.version>2.13.2</gephi.gson.version>
+        <gephi.gson.version>2.14.0</gephi.gson.version>
     </properties>
 
     <dependencies>
