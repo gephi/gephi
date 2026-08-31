@@ -91,13 +91,14 @@ public class EdgePencil implements Tool {
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                Boolean directedOrMixed = isDirectedOrMixed(workspace);
-                SwingUtilities.invokeLater(() -> updatePanel(directedOrMixed));
+                //No-op: a workspace that becomes current also fires select(), which updates the panel.
+                //Workspaces created without being opened (e.g. "New Workspace") never become current.
             }
 
             @Override
             public void select(Workspace workspace) {
-                Boolean directedOrMixed = isDirectedOrMixed(workspace);
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+                Boolean directedOrMixed = isDirectedOrMixed(graphModel);
                 SwingUtilities.invokeLater(() -> updatePanel(directedOrMixed));
             }
 
@@ -117,7 +118,7 @@ public class EdgePencil implements Tool {
 
     private void updatePanel() {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        updatePanel(graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null);
+        updatePanel(isDirectedOrMixed(graphModel));
     }
 
     private void updatePanel(Boolean directedOrMixed) {
@@ -130,8 +131,7 @@ public class EdgePencil implements Tool {
         }
     }
 
-    private static Boolean isDirectedOrMixed(Workspace workspace) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+    private static Boolean isDirectedOrMixed(GraphModel graphModel) {
         return graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null;
     }
 
