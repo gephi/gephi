@@ -50,6 +50,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -90,12 +91,14 @@ public class EdgePencil implements Tool {
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                SwingUtilities.invokeLater(() -> updatePanel());
+                Boolean directedOrMixed = isDirectedOrMixed(workspace);
+                SwingUtilities.invokeLater(() -> updatePanel(directedOrMixed));
             }
 
             @Override
             public void select(Workspace workspace) {
-                SwingUtilities.invokeLater(() -> updatePanel());
+                Boolean directedOrMixed = isDirectedOrMixed(workspace);
+                SwingUtilities.invokeLater(() -> updatePanel(directedOrMixed));
             }
 
             @Override
@@ -113,14 +116,23 @@ public class EdgePencil implements Tool {
     }
 
     private void updatePanel() {
+        updatePanel(isDirectedOrMixed(null));
+    }
+
+    private void updatePanel(Boolean directedOrMixed) {
         if (edgePencilPanel != null) {
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            if (gc.getGraphModel() != null) {
-                edgePencilPanel.setType(gc.getGraphModel().isDirected() || gc.getGraphModel().isMixed());
+            if (directedOrMixed != null) {
+                edgePencilPanel.setType(directedOrMixed);
             }
             sourceNode = null;
             edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
         }
+    }
+
+    private static Boolean isDirectedOrMixed(Workspace workspace) {
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        GraphModel graphModel = workspace != null ? gc.getGraphModel(workspace) : gc.getGraphModel();
+        return graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null;
     }
 
     @Override
