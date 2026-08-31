@@ -52,6 +52,25 @@ public class StatisticsModelUIImplTest {
         Assert.assertFalse(model.isRunning(otherUi));
     }
 
+    @Test
+    public void testGetRunningReturnsAllRunningStatistics() {
+        StatisticsModelUIImpl model = new StatisticsModelUIImpl(null);
+        Statistics statistics1 = new StubStatistics();
+        Statistics statistics2 = new OtherStatistics();
+
+        model.setRunning(statistics1, true);
+        model.setRunning(statistics2, true);
+
+        Assert.assertArrayEquals(new Statistics[] {statistics1, statistics2}, model.getRunning());
+    }
+
+    @Test
+    public void testGetRunningIsEmptyWhenNothingRunning() {
+        StatisticsModelUIImpl model = new StatisticsModelUIImpl(null);
+
+        Assert.assertArrayEquals(new Statistics[0], model.getRunning());
+    }
+
     public static class StubStatistics implements Statistics {
 
         @Override

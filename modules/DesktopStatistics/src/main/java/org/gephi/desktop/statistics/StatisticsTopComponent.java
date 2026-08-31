@@ -54,7 +54,9 @@ import org.gephi.desktop.statistics.api.StatisticsControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.statistics.spi.Statistics;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -122,6 +124,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
 
             @Override
             public void close(Workspace workspace) {
+                cancelRunningStatistics(workspace);
             }
 
             @Override
@@ -155,6 +158,17 @@ public final class StatisticsTopComponent extends TopComponent implements Change
                 }
             }
         });
+    }
+
+    private void cancelRunningStatistics(Workspace workspace) {
+        StatisticsModelUIImpl m = workspace.getLookup().lookup(StatisticsModelUIImpl.class);
+        if (m != null) {
+            for (Statistics statistics : m.getRunning()) {
+                if (statistics instanceof LongTask) {
+                    ((LongTask) statistics).cancel();
+                }
+            }
+        }
     }
 
     private void refreshModel(StatisticsModelUIImpl model) {
