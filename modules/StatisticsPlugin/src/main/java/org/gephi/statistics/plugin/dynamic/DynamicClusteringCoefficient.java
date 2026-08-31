@@ -276,11 +276,6 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     }
 
     @Override
-    public boolean isCancelled() {
-        return cancel;
-    }
-
-    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }

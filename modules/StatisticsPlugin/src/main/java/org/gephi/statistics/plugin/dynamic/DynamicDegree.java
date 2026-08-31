@@ -297,11 +297,6 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     }
 
     @Override
-    public boolean isCancelled() {
-        return cancel;
-    }
-
-    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }
