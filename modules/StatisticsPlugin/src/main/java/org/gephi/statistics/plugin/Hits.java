@@ -73,7 +73,7 @@ public class Hits implements Statistics, LongTask {
 
     public static final String AUTHORITY = "authority";
     public static final String HUB = "hub";
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private ProgressTicket progress;
     private double[] authority;
     private double[] hubs;

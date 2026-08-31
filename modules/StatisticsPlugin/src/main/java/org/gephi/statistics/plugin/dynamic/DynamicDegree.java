@@ -87,7 +87,7 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     private Interval bounds;
     private boolean isDirected;
     private boolean averageOnly;
-    private boolean cancel = false;
+    private volatile boolean cancel = false;
     //Cols
     private Column dynamicInDegreeColumn;
     private Column dynamicOutDegreeColumn;

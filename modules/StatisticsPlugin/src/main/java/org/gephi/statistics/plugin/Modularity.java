@@ -75,7 +75,7 @@ public class Modularity implements Statistics, LongTask {
 
     public static final String MODULARITY_CLASS = "modularity_class";
     private ProgressTicket progress;
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private CommunityStructure structure;
     private double modularity;
     private double modularityResolution;
@@ -149,9 +149,16 @@ public class Modularity implements Statistics, LongTask {
             structure = new Modularity.CommunityStructure(graph);
             int[] comStructure = new int[graph.getNodeCount()];
 
+            if (isCanceled) {
+                return;
+            }
+
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
                 HashMap<String, Double> computedModularityMetrics =
                     computeModularity(graph, structure, comStructure, resolution, isRandomized, useWeight);
+                if (isCanceled) {
+                    return;
+                }
                 modularity = computedModularityMetrics.get("modularity");
                 modularityResolution = computedModularityMetrics.get("modularityResolution");
             } else {
@@ -172,7 +179,6 @@ public class Modularity implements Statistics, LongTask {
                                                         int[] comStructure,
                                                         double currentResolution, boolean randomized,
                                                         boolean weighted) {
-        isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();
 

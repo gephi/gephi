@@ -207,7 +207,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     /**
      * Indicates statistics should stop processing/
      */
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     /**
      * Keeps track of Progress made.
      */
@@ -249,9 +249,15 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         if (isDirected) {
             avgClusteringCoeff = bruteForce(graph);
+            if (isCanceled) {
+                return;
+            }
         } else {
             initStartValues(graph);
             resultValues = computeTriangles(graph, network, triangles, nodeClustering, isDirected);
+            if (isCanceled) {
+                return;
+            }
             totalTriangles = resultValues.get("triangles").intValue();
             avgClusteringCoeff = resultValues.get("clusteringCoefficient");
 
@@ -287,6 +293,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         initStartValues(graph);
         HashMap<String, Double> resultValues = computeTriangles(graph, network, triangles,
             nodeClustering, isDirected);
+        if (isCanceled) {
+            return;
+        }
         totalTriangles = resultValues.get("triangles").intValue();
         avgClusteringCoeff = resultValues.get("clusteringCoefficient");
     }
@@ -451,11 +460,19 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         for (int j = 0; j < N; j++) {
             currentNetwork[j].setID(j);
             Progress.progress(progress, ++currentProgress);
+
+            if (isCanceled) {
+                return currentProgress;
+            }
         }
 
         for (int j = 0; j < N; j++) {
             Arrays.sort(currentNetwork[j].getArray(), new Renumbering());
             Progress.progress(progress, ++currentProgress);
+
+            if (isCanceled) {
+                return currentProgress;
+            }
         }
         return currentProgress;
     }
@@ -554,11 +571,19 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
             ProgressCount = processNetwork(currentNetwork, ProgressCount);
 
+            if (isCanceled) {
+                return resultValues;
+            }
+
             int k = (int) Math.sqrt(n);
 
             for (int v = 0; v < k && v < n; v++) {
                 newVertex(currentNetwork, currentTriangles, v, n);
                 Progress.progress(progress, ++ProgressCount);
+
+                if (isCanceled) {
+                    return resultValues;
+                }
             }
 
             /* remaining links */

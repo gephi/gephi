@@ -77,7 +77,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     /**
      *
      */
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private boolean isDirected;
 
     public EigenvectorCentrality() {

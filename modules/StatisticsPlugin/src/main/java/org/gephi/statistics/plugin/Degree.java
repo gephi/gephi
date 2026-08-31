@@ -73,7 +73,7 @@ public class Degree implements Statistics, LongTask {
     /**
      * Remembers if the Cancel function has been called.
      */
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     /**
      * Keep track of the work done.
      */

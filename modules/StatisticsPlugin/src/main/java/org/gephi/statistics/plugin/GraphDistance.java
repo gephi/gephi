@@ -122,7 +122,7 @@ public class GraphDistance implements Statistics, LongTask {
     /**
      *
      */
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private boolean isNormalized;
 
     /**

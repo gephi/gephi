@@ -831,5 +831,32 @@ public class StatisticalInferenceTest extends TestCase {
         StatisticalInferenceClustering h = new StatisticalInferenceClustering();
         h.execute(graphModel);
     }
+
+    @Test
+    public void testCancelStatisticalInference() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+
+        StatisticalInferenceClustering si = new StatisticalInferenceClustering();
+        si.setProgressTicket(new CallbackProgressTicket(si::cancel));
+
+        si.execute(graph);
+
+        assertEquals(0.0, si.getDescriptionLength(), 0.0);
+    }
+
+    @Test
+    public void testCancelIsNotResetByComputePartition() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+
+        StatisticalInferenceClustering si = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure =
+            si.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
+
+        si.cancel();
+        HashMap<String, Double> values = si.computePartition(graph, theStructure, comStructure, false);
+
+        assertTrue(values.isEmpty());
+    }
 }
 

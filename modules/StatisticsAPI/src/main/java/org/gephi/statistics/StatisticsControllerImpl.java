@@ -245,7 +245,7 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
 
         private final LongTask longTask;
         private ProgressTicket progressTicket;
-        private boolean cancel = false;
+        private volatile boolean cancel = false;
 
         public DynamicLongTask(DynamicStatistics statistics) {
             if (statistics instanceof LongTask) {

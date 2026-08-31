@@ -78,7 +78,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     public static final String STAT_INF_CLASS = "stat_inf_class";
     private final boolean useWeight = false;
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private StatisticalInferenceClustering.CommunityStructure structure;
     private ProgressTicket progress;
     private double descriptionLength;
@@ -120,9 +120,16 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             structure = new StatisticalInferenceClustering.CommunityStructure(graph);
             int[] comStructure = new int[graph.getNodeCount()];
 
+            if (isCanceled) {
+                return;
+            }
+
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
                 HashMap<String, Double> computedStatInfMetrics =
                     computePartition(graph, structure, comStructure, useWeight);
+                if (isCanceled) {
+                    return;
+                }
                 descriptionLength = computedStatInfMetrics.getOrDefault("descriptionLength", 0.0);
             } else {
                 descriptionLength = 0;
@@ -138,7 +145,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                                                        StatisticalInferenceClustering.CommunityStructure theStructure,
                                                        int[] comStructure,
                                                        boolean weighted) {
-        isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();
 

@@ -491,4 +491,18 @@ public class ClusteringCoefficientTest extends TestCase {
         ClusteringCoefficient cc = new ClusteringCoefficient();
         cc.execute(graphModel);
     }
+
+    @Test
+    public void testCancelClusteringCoefficient() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(10);
+        Graph graph = graphModel.getGraph();
+
+        ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
+        cc.setProgressTicket(new CallbackProgressTicket(cc::cancel));
+
+        cc.execute(graph);
+
+        assertEquals(0.0, cc.getAverageClusteringCoefficient(), 0.0);
+    }
 }
