@@ -56,6 +56,7 @@ public class ContextRefreshThread extends TimerTask {
     private final Timer timer;
     private final GraphModel graphModel;
     private final Runnable listener;
+    private volatile boolean cancelled;
     private int previousVersion = -1;
 
     public ContextRefreshThread(GraphModel graphModel, Runnable listener) {
@@ -69,6 +70,9 @@ public class ContextRefreshThread extends TimerTask {
 
     @Override
     public void run() {
+        if (cancelled) {
+            return;
+        }
         Graph graph = graphModel.getGraphVisible();
         int graphVersion = graph.getVersion();
         if (graphVersion != previousVersion) {
@@ -78,6 +82,7 @@ public class ContextRefreshThread extends TimerTask {
     }
 
     public void shutdown() {
+        cancelled = true;
         timer.cancel();
     }
 }
