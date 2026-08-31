@@ -87,7 +87,7 @@ public class ContextPanel extends javax.swing.JPanel {
         this.model = model;
         setEnable(model != null);
         if (this.model != null) {
-            consumerThread = new ContextRefreshThread(model, new RefreshRunnable());
+            consumerThread = new ContextRefreshThread(model, new RefreshRunnable(model));
         }
     }
 
@@ -207,23 +207,35 @@ public class ContextPanel extends javax.swing.JPanel {
 
     private class RefreshRunnable implements Runnable {
 
+        private final GraphModel model;
         private int[] data = new int[] {-1, -1, -1, -1, -1};
+
+        private RefreshRunnable(GraphModel model) {
+            this.model = model;
+        }
 
         @Override
         public void run() {
             Graph visibleGraph = model.getGraphVisible();
             Graph fullGraph = model.getGraph();
 
+            final int nodesFull;
+            final int nodesVisible;
+            final int edgesFull;
+            final int edgesVisible;
+            final GraphType graphType;
             fullGraph.readLock();
-            final int nodesFull = fullGraph.getNodeCount();
-            final int nodesVisible = visibleGraph.getNodeCount();
-            final int edgesFull = fullGraph.getEdgeCount();
-            final int edgesVisible = visibleGraph.getEdgeCount();
-            final GraphType graphType =
-                model.isDirected() ? GraphType.DIRECTED :
-                    model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
-
-            fullGraph.readUnlock();
+            try {
+                nodesFull = fullGraph.getNodeCount();
+                nodesVisible = visibleGraph.getNodeCount();
+                edgesFull = fullGraph.getEdgeCount();
+                edgesVisible = visibleGraph.getEdgeCount();
+                graphType =
+                    model.isDirected() ? GraphType.DIRECTED :
+                        model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
+            } finally {
+                fullGraph.readUnlock();
+            }
 
             int[] newData =
                 new int[] {nodesFull, nodesVisible, edgesFull, edgesVisible, graphType.ordinal()};
