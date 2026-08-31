@@ -49,23 +49,27 @@ public class TableObserverExecutor implements Runnable {
 
     @Override
     public void run() {
-        synchronized (this) {
-            try {
+        try {
+            boolean changed;
+            synchronized (this) {
                 String selectedElementClass = model.selectedElementClass;
                 if (nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
-                    if (nodeTableObserver.hasTableChanged()) {
-                        Lookup.getDefault().lookup(AppearanceUIController.class).refreshColumnsList();
-                    }
+                    changed = nodeTableObserver.hasTableChanged();
                 } else if (edgeTableObserver != null &&
                     selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
-                    if (edgeTableObserver.hasTableChanged()) {
-                        Lookup.getDefault().lookup(AppearanceUIController.class).refreshColumnsList();
-                    }
+                    changed = edgeTableObserver.hasTableChanged();
+                } else {
+                    changed = false;
                 }
-            } catch (Exception e) {
-                Logger.getLogger(TableObserverExecutor.class.getName())
-                    .log(Level.SEVERE, "Error while refreshing appearance's column list", e);
             }
+            // Fire the refresh outside the lock: it fans out to UI listeners and must not
+            // hold up stop(), which destroys the observers under the same monitor.
+            if (changed) {
+                Lookup.getDefault().lookup(AppearanceUIController.class).refreshColumnsList();
+            }
+        } catch (Exception e) {
+            Logger.getLogger(TableObserverExecutor.class.getName())
+                .log(Level.SEVERE, "Error while refreshing appearance's column list", e);
         }
     }
 
