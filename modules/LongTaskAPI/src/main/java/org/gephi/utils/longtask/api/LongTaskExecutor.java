@@ -306,17 +306,26 @@ public final class LongTaskExecutor {
      *                        the listener, failures are reported to the error handler
      *                        and to the listener's <code>fatalError()</code> instead
      */
-    private synchronized void finished(RunningLongTask runningLongTask, boolean notifyListener) {
-        if (cancelTimer != null) {
-            cancelTimer.cancel();
-            cancelTimer = null;
+    private void finished(RunningLongTask runningLongTask, boolean notifyListener) {
+        LongTaskListener listenerToNotify = null;
+        synchronized (this) {
+            if (cancelTimer != null) {
+                cancelTimer.cancel();
+                cancelTimer = null;
+            }
+            if (currentTask == runningLongTask) {
+                currentTask = null;
+            }
+            if (notifyListener && listener != null) {
+                listenerToNotify = listener;
+            }
         }
-        LongTask task = runningLongTask.task;
-        if (currentTask == runningLongTask) {
-            currentTask = null;
-        }
-        if (notifyListener && listener != null) {
-            listener.taskFinished(task);
+        // Notified outside the monitor: the listener can run arbitrary code (e.g. Swing
+        // updates triggered synchronously from a background thread), and holding the lock
+        // here would block other threads calling synchronized methods on this executor,
+        // such as cancel() from the EDT's Stop button, for as long as that code takes.
+        if (listenerToNotify != null) {
+            listenerToNotify.taskFinished(runningLongTask.task);
         }
     }
 

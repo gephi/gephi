@@ -65,6 +65,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
@@ -292,12 +293,16 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        // LayoutModelImpl.setRunning() can be invoked from the layout LongTaskExecutor's
+        // background thread when a task completes, so this callback isn't guaranteed to run
+        // on the EDT. Push the Swing updates back to the EDT rather than mutating components
+        // from whichever thread fired the property change.
         if (evt.getPropertyName().equals(LayoutModel.SELECTED_LAYOUT)) {
-            refreshModel();
+            SwingUtilities.invokeLater(this::refreshModel);
         } else if (evt.getPropertyName().equals(LayoutModel.RUNNING)) {
-            refreshModel();
+            SwingUtilities.invokeLater(this::refreshModel);
         } else if (evt.getPropertyName().equals(LayoutModel.DEFAULTS_APPLIED)) {
-            loadDefaultProperties();
+            SwingUtilities.invokeLater(this::loadDefaultProperties);
         }
     }
 
