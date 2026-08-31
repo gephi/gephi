@@ -116,7 +116,8 @@ public class EdgePencil implements Tool {
     }
 
     private void updatePanel() {
-        updatePanel(isDirectedOrMixed(null));
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        updatePanel(graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null);
     }
 
     private void updatePanel(Boolean directedOrMixed) {
@@ -130,8 +131,7 @@ public class EdgePencil implements Tool {
     }
 
     private static Boolean isDirectedOrMixed(Workspace workspace) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel graphModel = workspace != null ? gc.getGraphModel(workspace) : gc.getGraphModel();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         return graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null;
     }
 
