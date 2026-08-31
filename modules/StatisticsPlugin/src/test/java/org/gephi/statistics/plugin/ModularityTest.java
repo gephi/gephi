@@ -299,4 +299,33 @@ public class ModularityTest extends TestCase {
         Modularity h = new Modularity();
         h.execute(graphModel);
     }
+
+    @Test
+    public void testCancelModularity() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(10);
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+
+        Modularity mod = new Modularity();
+        mod.setProgressTicket(new CallbackProgressTicket(mod::cancel));
+
+        mod.execute(graph);
+
+        assertEquals(0.0, mod.getModularity(), 0.0);
+    }
+
+    @Test
+    public void testCancelIsNotResetByComputeModularity() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(10);
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+
+        Modularity mod = new Modularity();
+        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
+
+        mod.cancel();
+        HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
+            1., true, false);
+
+        assertTrue(modularityValues.isEmpty());
+    }
 }

@@ -85,7 +85,7 @@ public class PageRank implements Statistics, LongTask {
     /**
      *
      */
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     /**
      *
      */

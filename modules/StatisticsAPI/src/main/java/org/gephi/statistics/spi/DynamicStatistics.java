@@ -130,4 +130,15 @@ public interface DynamicStatistics extends Statistics {
      * @param bounds the min and max bounds
      */
     void setBounds(Interval bounds);
+
+    /**
+     * Returns whether this statistics has been cancelled. Implementations which also implement
+     * <code>LongTask</code> should override this method and return their own cancellation flag so the execution
+     * loop can be interrupted between two ticks when the statistics itself is cancelled.
+     *
+     * @return <code>true</code> if the statistics has been cancelled, <code>false</code> otherwise
+     */
+    default boolean isCancelled() {
+        return false;
+    }
 }

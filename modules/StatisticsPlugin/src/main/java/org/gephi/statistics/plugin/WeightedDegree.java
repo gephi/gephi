@@ -73,7 +73,7 @@ public class WeightedDegree implements Statistics, LongTask {
     public static final String WINDEGREE = "weighted indegree";
     public static final String WOUTDEGREE = "weighted outdegree";
     private boolean isDirected; // only set inside this class
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private ProgressTicket progress;
     private double avgWDegree;
     private Map<Double, Integer> degreeDist;

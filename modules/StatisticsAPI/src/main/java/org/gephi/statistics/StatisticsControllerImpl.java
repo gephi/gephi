@@ -243,11 +243,13 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
 
     private static class DynamicLongTask implements LongTask {
 
+        private final DynamicStatistics statistics;
         private final LongTask longTask;
         private ProgressTicket progressTicket;
-        private boolean cancel = false;
+        private volatile boolean cancel = false;
 
         public DynamicLongTask(DynamicStatistics statistics) {
+            this.statistics = statistics;
             if (statistics instanceof LongTask) {
                 this.longTask = (LongTask) statistics;
             } else {
@@ -278,7 +280,8 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
         }
 
         public boolean isCancelled() {
-            return cancel;
+            //The statistics may also have been cancelled directly, without going through this wrapper
+            return cancel || statistics.isCancelled();
         }
     }
 }

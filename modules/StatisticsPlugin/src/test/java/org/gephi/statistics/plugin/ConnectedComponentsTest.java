@@ -44,7 +44,11 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.TestCase;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
@@ -508,5 +512,88 @@ public class ConnectedComponentsTest extends TestCase {
 
         ConnectedComponents cc = new ConnectedComponents();
         cc.execute(graphModel);
+    }
+
+    @Test
+    public void testCancelDirectedConnectedComponents() {
+        GraphModel graphModel = GraphGenerator.generateCompleteDirectedGraph(20);
+
+        ConnectedComponents c = new ConnectedComponents();
+        c.setDirected(true);
+        c.setProgressTicket(new CallbackProgressTicket(c::cancel));
+
+        c.execute(graphModel);
+
+        assertEquals(0, c.getConnectedComponentsCount());
+        assertEquals(0, c.getComponentsSize().length);
+    }
+
+    @Test
+    public void testCancelIsHonoredByTarjans() {
+        GraphModel graphModel = GraphGenerator.generateCompleteDirectedGraph(20);
+        DirectedGraph graph = graphModel.getDirectedGraph();
+
+        ConnectedComponents c = new ConnectedComponents();
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+
+        c.cancel();
+        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indices);
+
+        assertTrue(components.isEmpty());
+    }
+
+    @Test
+    public void testCancelIsNotResetByWeaklyConnected() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(20);
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        Column column = graphModel.getNodeTable().addColumn(ConnectedComponents.WEAKLY, Integer.class);
+
+        ConnectedComponents c = new ConnectedComponents();
+        c.cancel();
+        c.weaklyConnected(graph, column);
+
+        assertEquals(0, c.getConnectedComponentsCount());
+    }
+
+    @Test
+    public void testCancelDirectedConnectedComponentsFromAnotherThread() throws Exception {
+        GraphModel graphModel = GraphGenerator.generateCompleteDirectedGraph(50);
+
+        final ConnectedComponents c = new ConnectedComponents();
+        c.setDirected(true);
+
+        //Block the algorithm on its first progress notification, so the cancel below always happens mid-run
+        final CountDownLatch started = new CountDownLatch(1);
+        final CountDownLatch cancelled = new CountDownLatch(1);
+        c.setProgressTicket(new CallbackProgressTicket(() -> {
+            started.countDown();
+            try {
+                cancelled.await(30, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }));
+
+        final AtomicReference<Throwable> failure = new AtomicReference<>();
+        Thread worker = new Thread(() -> {
+            try {
+                c.execute(graphModel);
+            } catch (Throwable t) {
+                failure.set(t);
+            }
+        });
+        worker.start();
+
+        assertTrue(started.await(30, TimeUnit.SECONDS));
+        c.cancel();
+        cancelled.countDown();
+
+        worker.join(30000);
+
+        assertFalse(worker.isAlive());
+        if (failure.get() != null) {
+            throw new AssertionError("Cancelling the statistics threw", failure.get());
+        }
+        assertEquals(0, c.getConnectedComponentsCount());
     }
 }

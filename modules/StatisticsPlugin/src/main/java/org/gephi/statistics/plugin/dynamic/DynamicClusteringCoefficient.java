@@ -85,7 +85,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     private Interval bounds;
     private boolean isDirected;
     private boolean averageOnly;
-    private boolean cancel = false;
+    private volatile boolean cancel = false;
     private ClusteringCoefficient clusteringCoefficientStat;
     //Cols
     private Column dynamicCoefficientColumn;
@@ -273,6 +273,11 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     public boolean cancel() {
         cancel = true;
         return true;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancel;
     }
 
     @Override

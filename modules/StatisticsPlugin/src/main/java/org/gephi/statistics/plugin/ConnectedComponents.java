@@ -79,7 +79,7 @@ public class ConnectedComponents implements Statistics, LongTask {
     int count;
     private boolean isDirected;
     private ProgressTicket progress;
-    private boolean isCanceled;
+    private volatile boolean isCanceled;
     private int componentCount;
     private int stronglyCount;
     private int[] componentsSize;
@@ -116,8 +116,6 @@ public class ConnectedComponents implements Statistics, LongTask {
     }
 
     public void weaklyConnected(UndirectedGraph graph, Column componentCol) {
-        isCanceled = false;
-
         HashMap<Node, Integer> indices = createIndicesMap(graph);
 
         LinkedList<LinkedList<Node>> components = computeWeaklyConnectedComponents(graph, indices);
@@ -268,6 +266,10 @@ public class ConnectedComponents implements Statistics, LongTask {
         int[] low_index = new int[N];
 
         while (true) {
+
+            if (isCanceled) {
+                return new LinkedList<>();
+            }
             //The search Q
             LinkedList<Node> S = new LinkedList<>();
             //The component-list
@@ -304,6 +306,11 @@ public class ConnectedComponents implements Statistics, LongTask {
         S.addFirst(f);
         EdgeIterable edgeIter = graph.getOutEdges(f);
         for (Edge e : edgeIter) {
+
+            if (isCanceled) {
+                edgeIter.doBreak();
+                return components;
+            }
             Node u = graph.getOpposite(f, e);
             int x = indices.get(u);
             if (index[x] == 0) {
@@ -312,6 +319,9 @@ public class ConnectedComponents implements Statistics, LongTask {
             } else if (S.contains(u)) {
                 low_index[id] = Math.min(low_index[id], index[x]);
             }
+        }
+        if (isCanceled) {
+            return components;
         }
         LinkedList<Node> currentComponent = new LinkedList<>();
         if (low_index[id] == index[id]) {
