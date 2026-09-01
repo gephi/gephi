@@ -57,8 +57,8 @@ public class EgoPanel extends javax.swing.JPanel {
 
     private EgoFilter egoFilter;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox considerNonDirectEdgesCheckBox;
-    private javax.swing.JTextField depthTextField;
+    private javax.swing.JCheckBox considerNonDirectEdges;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JLabel labelDepth;
     private javax.swing.JLabel labelMode;
     private javax.swing.JLabel labelNodeId;
@@ -168,91 +168,82 @@ public class EgoPanel extends javax.swing.JPanel {
         nodeIdTextField = new javax.swing.JTextField();
         labelDepth = new javax.swing.JLabel();
         withSelfCheckbox = new javax.swing.JCheckBox();
-        depthTextField = new javax.swing.JTextField();
         modeComboBox = new javax.swing.JComboBox<>();
-        considerNonDirectEdgesCheckBox = new javax.swing.JCheckBox();
+        considerNonDirectEdges = new javax.swing.JCheckBox();
         labelMode = new javax.swing.JLabel();
+        jSpinner1 = new javax.swing.JSpinner();
 
-        labelNodeId.setText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelNodeId.text")); // NOI18N
+        labelNodeId.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelNodeId.text")); // NOI18N
 
-        nodeIdTextField.setText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.text")); // NOI18N
-        nodeIdTextField.setToolTipText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.toolTipText")); // NOI18N
+        nodeIdTextField.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.text")); // NOI18N
+        nodeIdTextField.setToolTipText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.toolTipText")); // NOI18N
 
         labelDepth.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelDepth.text")); // NOI18N
 
+        withSelfCheckbox.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.withSelfCheckbox.text")); // NOI18N
+
+        modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "predecessors", "successors", "neighbors" }));
+        modeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modeComboBoxActionPerformed(evt);
+            }
+        });
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/mycompany/guidesign/Bundle"); // NOI18N
+        considerNonDirectEdges.setText(bundle.getString("EgoPanel.considerNonDirectEdges.text")); // NOI18N
+        considerNonDirectEdges.setMaximumSize(new java.awt.Dimension(251, 22));
+        considerNonDirectEdges.setMinimumSize(new java.awt.Dimension(251, 22));
+
         labelMode.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelMode.text")); // NOI18N
-
-        withSelfCheckbox.setText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.withSelfCheckbox.text")); // NOI18N
-
-        considerNonDirectEdgesCheckBox.setText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.considerNonDirectEdges.text")); // NOI18N
-
-        depthTextField.setToolTipText(
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.depthTextField.toolTipText")); // NOI18N
-
-        modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption0.text"),
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption1.text"),
-                org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.modeComboBoxOption2.text")}));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                .addComponent(labelNodeId, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                .addComponent(labelDepth, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                        .addComponent(labelMode, javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(modeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(nodeIdTextField, javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
-                                                        .addComponent(depthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1,
-                                                                Short.MAX_VALUE)))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(withSelfCheckbox)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(considerNonDirectEdgesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(120, 120, 120))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(labelNodeId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(labelDepth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(labelMode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(modeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nodeIdTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSpinner1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(withSelfCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(considerNonDirectEdges, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(120, 120, 120))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(labelNodeId)
-                                        .addComponent(nodeIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(6, 6, 6)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(depthTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(labelDepth))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(labelMode))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(withSelfCheckbox)
-                                        .addComponent(considerNonDirectEdgesCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelNodeId)
+                    .addComponent(nodeIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labelDepth)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelMode))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(withSelfCheckbox)
+                    .addComponent(considerNonDirectEdges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void modeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_modeComboBoxActionPerformed
 }
