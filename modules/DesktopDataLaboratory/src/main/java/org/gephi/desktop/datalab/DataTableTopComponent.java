@@ -276,11 +276,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void deactivateAll() {
-        DataTablesObservers observers = dataTablesObservers;
-        if (observers != null) {
-            observers.destroy();
-        }
-
         graphModel = null;
         dataTablesModel = null;
         dataTablesObservers = null;
@@ -318,6 +313,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void close(Workspace workspace) {
+                //Graph observer destruction needs the graph write lock, so it must not happen on unselect:
+                //a long-running task on this workspace could be holding a read lock at that time. Destroying
+                //observers here instead, once the workspace is actually going away, avoids that contention.
+                DataTablesObservers observers = workspace.getLookup().lookup(DataTablesObservers.class);
+                if (observers != null) {
+                    observers.destroy();
+                }
             }
 
             @Override
