@@ -50,7 +50,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,11 +66,11 @@ import javax.swing.tree.TreePath;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.ui.components.BusyUtils;
+import org.gephi.ui.utils.UIUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -100,19 +99,13 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public ProcessorIssuesReportPanel() {
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    initComponents();
-                    initIcons();
-                }
-            });
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        UIUtils.runInEventDispatchThreadAndWait(new Runnable() {
+            @Override
+            public void run() {
+                initComponents();
+                initIcons();
+            }
+        });
 
         fillingThreads = new ThreadGroup("Report Panel Issues");
 
