@@ -50,6 +50,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -90,12 +91,15 @@ public class EdgePencil implements Tool {
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                SwingUtilities.invokeLater(() -> updatePanel());
+                //No-op: a workspace that becomes current also fires select(), which updates the panel.
+                //Workspaces created without being opened (e.g. "New Workspace") never become current.
             }
 
             @Override
             public void select(Workspace workspace) {
-                SwingUtilities.invokeLater(() -> updatePanel());
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+                Boolean directedOrMixed = isDirectedOrMixed(graphModel);
+                SwingUtilities.invokeLater(() -> updatePanel(directedOrMixed));
             }
 
             @Override
@@ -113,14 +117,22 @@ public class EdgePencil implements Tool {
     }
 
     private void updatePanel() {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        updatePanel(isDirectedOrMixed(graphModel));
+    }
+
+    private void updatePanel(Boolean directedOrMixed) {
         if (edgePencilPanel != null) {
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            if (gc.getGraphModel() != null) {
-                edgePencilPanel.setType(gc.getGraphModel().isDirected() || gc.getGraphModel().isMixed());
+            if (directedOrMixed != null) {
+                edgePencilPanel.setType(directedOrMixed);
             }
             sourceNode = null;
             edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
         }
+    }
+
+    private static Boolean isDirectedOrMixed(GraphModel graphModel) {
+        return graphModel != null ? graphModel.isDirected() || graphModel.isMixed() : null;
     }
 
     @Override
