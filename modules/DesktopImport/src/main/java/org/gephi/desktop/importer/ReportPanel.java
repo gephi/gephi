@@ -54,7 +54,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -83,11 +82,11 @@ import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.ui.components.BusyUtils;
+import org.gephi.ui.utils.UIUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -155,22 +154,16 @@ public class ReportPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public ReportPanel() {
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    initComponents();
-                    initIcons();
-                    initProcessors();
-                    initMoreOptionsPanel();
-                    initMergeStrategyCombo();
-                }
-            });
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        UIUtils.runInEventDispatchThreadAndWait(new Runnable() {
+            @Override
+            public void run() {
+                initComponents();
+                initIcons();
+                initProcessors();
+                initMoreOptionsPanel();
+                initMergeStrategyCombo();
+            }
+        });
 
         fillingThreads = new ThreadGroup("Report Panel Issues");
 
