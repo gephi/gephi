@@ -80,7 +80,7 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
                 Configuration config = createConfiguration(containers[0]);
 
                 workspace = pc.openNewWorkspace(config);
-            } else {
+            } else if (pc.hasCurrentProject()) {
                 pc.openWorkspace(workspace);
             }
 

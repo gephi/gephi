@@ -70,19 +70,19 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
     @Override
     public Workspace[] process() {
         try {
-
-
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (workspace == null) {
                 workspace = pc.getCurrentWorkspace();
-            }
 
-            if (workspace == null) {
-                // Get config
-                Configuration config = createConfiguration(containers[0]);
+                if (workspace == null) {
+                    // Get config
+                    Configuration config = createConfiguration(containers[0]);
 
-                workspace = pc.openNewWorkspace(config);
-            } else {
+                    workspace = pc.openNewWorkspace(config);
+                } else {
+                    pc.openWorkspace(workspace);
+                }
+            } else if (pc.hasCurrentProject()) {
                 pc.openWorkspace(workspace);
             }
 

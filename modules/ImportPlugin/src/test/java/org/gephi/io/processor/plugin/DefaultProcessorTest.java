@@ -51,6 +51,22 @@ public class DefaultProcessorTest {
         Assert.assertEquals("bar", workspaceMetaData.getTitle());
     }
 
+    @Test
+    public void testSourceSetsSourceAndRenamesSuppliedWorkspace() {
+        ImportContainerImpl importContainer = new ImportContainerImpl();
+        importContainer.addNode(new NodeDraftImpl(importContainer, "1", 1));
+        importContainer.setSource("some-file.gexf");
+
+        Workspace workspace = new WorkspaceImpl(null, 1);
+        DefaultProcessor defaultProcessor = new DefaultProcessor();
+        defaultProcessor.setContainers(new ImportContainerImpl[] {importContainer});
+        defaultProcessor.setWorkspace(workspace);
+        defaultProcessor.process();
+
+        Assert.assertEquals("some-file.gexf", workspace.getSource());
+        Assert.assertEquals("some-file", workspace.getName());
+    }
+
     @Test(expected = ProcessorConfigurationException.class)
     public void testConfigurationMismatchThrows() {
         // Workspace will be initialized with default INTERVAL time representation
