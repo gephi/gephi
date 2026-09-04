@@ -1243,6 +1243,10 @@
                             <autoPublish>false</autoPublish>
                             <deploymentName>${project.version}</deploymentName>
                             <ignorePublishedComponents>true</ignorePublishedComponents>
+                            <!-- Internal demo module only, never publish it to Maven Central -->
+                            <excludeArtifacts>
+                                <excludeArtifact>viz-engine-demo</excludeArtifact>
+                            </excludeArtifacts>
                         </configuration>
                     </plugin>
                 </plugins>
