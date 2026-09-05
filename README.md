@@ -1,9 +1,14 @@
 # Gephi - The Open Graph Viz Platform
 
 [![build](https://github.com/gephi/gephi/actions/workflows/build.yml/badge.svg)](https://github.com/gephi/gephi/actions/workflows/build.yml)
-[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.11.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/total.svg)](https://github.com/gephi/gephi/releases/)
 [![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
+[![Downloads](https://img.shields.io/opencollective/backers/gephi)](https://opencollective.com/gephi)
+
+[![Release](https://img.shields.io/github/v/release/gephi/gephi)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
+[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.11.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
+	
+
 
 [Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech, German, Romanian, Greek, Hungarian, Korean, Swedish and Ukrainian.
 
