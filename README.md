@@ -33,17 +33,17 @@ If you run into any trouble or have questions consult our [discussions](https://
 
 ### Development builds
 
-Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.2-SNAPSHOT
+Development builds are [generated regularly](https://github.com/gephi/gephi/actions/workflows/release.yml?query=is%3Asuccess++). Current version is 0.11.3-SNAPSHOT
 
-- [gephi-0.11.2-SNAPSHOT-windows-x64.exe](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.150210-9-windows-x64.exe) (Windows)
+- [gephi-0.11.3-20260904.210622-15-windows-x64.exe](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.3-SNAPSHOT/gephi-0.11.3-20260904.210622-15-windows-x64.exe) (Windows)
 
-- [gephi-0.11.2-SNAPSHOT-macos-x64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.150534-10-macos-x64.dmg) (Mac OS X)
+- [gephi-0.11.3-20260904.211008-16-macos-x64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.3-SNAPSHOT/gephi-0.11.3-20260904.211008-16-macos-x64.dmg) (Mac OS X)
 
-- [gephi-0.11.2-SNAPSHOT-macos-aarch64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.152025-12-macos-aarch64.dmg) (Mac OS X Silicon)
+- [gephi-0.11.3-20260904.212451-18-macos-aarch64.dmg](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.3-SNAPSHOT/gephi-0.11.3-20260904.212451-18-macos-aarch64.dmg) (Mac OS X Silicon)
 
-- [gephi-0.11.2-SNAPSHOT-linux-aarch64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.151835-11-linux-aarch64.tar.gz) (Linux aarch64)
+- [gephi-0.11.3-20260904.212054-17-linux-aarch64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.3-SNAPSHOT/gephi-0.11.3-20260904.212054-17-linux-aarch64.tar.gz) (Linux aarch64)
 
-- [gephi-0.11.2-SNAPSHOT-linux-x64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.2-SNAPSHOT/gephi-0.11.2-20260509.145838-8-linux-x64.tar.gz) (Linux)
+- [gephi-0.11.3-20260904.210427-14-linux-x64.tar.gz](https://central.sonatype.com/repository/maven-snapshots/org/gephi/gephi/0.11.3-SNAPSHOT/gephi-0.11.3-20260904.210427-14-linux-x64.tar.gz) (Linux)
 
 ## Developer Introduction
 
