@@ -98,7 +98,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private javax.swing.JPanel southPanel;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JSplitPane splitPane;
-    private javax.swing.JToggleButton stopButton;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 
@@ -142,33 +141,18 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 controller.selectVisible(null);
                 controller.filterVisible(null);
                 ((FiltersExplorer) libraryTree).setup(manager, filterModel, uiModel);
-                stopButton.setVisible(false);
-                filterButton.setVisible(true);
             }
         });
         filterButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //selectButton.setSelected(false);
-                if (uiModel.getSelectedQuery() != null) {
-                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.filterVisible(uiModel.getSelectedRoot());
-                    stopButton.setSelected(false);
-                    stopButton.setVisible(true);
-                    filterButton.setVisible(false);
-                }
-            }
-        });
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                controller.filterVisible(null);
-                controller.selectVisible(null);
-                stopButton.setVisible(false);
-                filterButton.setSelected(true);
-                filterButton.setVisible(true);
+                if (controller.getModel().isFiltering()) {
+                    controller.filterVisible(null);
+                } else if (uiModel.getSelectedQuery() != null) {
+                    controller.filterVisible(uiModel.getSelectedRoot());
+                }
             }
         });
         selectButton.addActionListener(new ActionListener() {
@@ -290,20 +274,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             @Override
             public void run() {
                 if (filterModel != null) {
-                    if (filterModel.isFiltering()) {
-                        stopButton.setVisible(true);
-                        stopButton.setSelected(false);
-                        filterButton.setVisible(false);
-                    } else {
-                        stopButton.setVisible(false);
-                        filterButton.setSelected(false);
-                        filterButton.setVisible(true);
-                    }
-
+                    filterButton.setSelected(filterModel.isFiltering());
                     selectButton.setSelected(filterModel.isSelecting());
                 } else {
-                    stopButton.setVisible(false);
-                    filterButton.setVisible(true);
                     filterButton.setSelected(false);
                     selectButton.setSelected(false);
                 }
@@ -315,7 +288,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() instanceof FilterUIModel) {
-            if (uiModel.getSelectedQuery() != null && stopButton.isVisible()) {
+            if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
                 controller.filterVisible(uiModel.getSelectedRoot());
             } else if (uiModel.getSelectedQuery() != null && selectButton.isSelected()) {
@@ -380,7 +353,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         buttonsPanel = new javax.swing.JPanel();
         selectButton = new javax.swing.JToggleButton();
         filterButton = new javax.swing.JToggleButton();
-        stopButton = new javax.swing.JToggleButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -490,12 +462,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.filterButton.text")); // NOI18N
         filterButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         buttonsPanel.add(filterButton);
-
-        stopButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/stop.svg", false)); // NOI18N
-        stopButton.setText(
-            org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.stopButton.text")); // NOI18N
-        stopButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
-        buttonsPanel.add(stopButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
