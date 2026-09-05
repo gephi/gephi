@@ -259,8 +259,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             && currentThread.getInitialQuery() == query) {
             return;
         }
-        model.setFiltering(query != null);
-        model.setCurrentQuery(query);
+        model.setFilterState(query != null, false, query);
 
         if (currentThread != null) {
             currentThread.setRunning(false);
@@ -299,8 +298,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             && currentThread.getInitialQuery() == query) {
             return;
         }
-        model.setSelecting(query != null);
-        model.setCurrentQuery(query);
+        model.setFilterState(false, query != null, query);
 
         if (currentThread != null) {
             currentThread.setRunning(false);

@@ -186,22 +186,33 @@ public class FilterModelImpl implements FilterModel, Model {
         return currentQuery != null && filtering;
     }
 
-    public void setFiltering(boolean filtering) {
-        this.filtering = filtering;
-        if (filtering) {
-            this.selecting = false;
-        }
-    }
-
     @Override
     public boolean isSelecting() {
         return currentQuery != null && selecting;
     }
 
-    public void setSelecting(boolean selecting) {
+    /**
+     * Atomically updates the filtering/selecting flags together with the current query, firing a single
+     * change event if any of them actually changed. Doing this in one step (rather than setting the flags
+     * and the current query separately) avoids notifying listeners with a transiently inconsistent state
+     * (e.g. the new filtering/selecting flag paired with the previous current query).
+     */
+    void setFilterState(boolean filtering, boolean selecting, Query currentQuery) {
+        if (filtering) {
+            selecting = false;
+        } else if (selecting) {
+            filtering = false;
+        }
+        if (currentQuery != null) {
+            currentQuery = ((AbstractQueryImpl) currentQuery).getRoot();
+        }
+        boolean changed =
+            this.filtering != filtering || this.selecting != selecting || this.currentQuery != currentQuery;
+        this.filtering = filtering;
         this.selecting = selecting;
-        if (selecting) {
-            this.filtering = false;
+        this.currentQuery = currentQuery;
+        if (changed) {
+            fireChangeEvent();
         }
     }
 
