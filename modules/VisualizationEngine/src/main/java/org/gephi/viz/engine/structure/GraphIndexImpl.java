@@ -117,8 +117,13 @@ public class GraphIndexImpl implements GraphIndex {
         final float searchExpansion = getScaledNodeSearchExpansion(nodeScale);
         return getVisibleGraph().getSpatialIndex().getNodesInArea(
             getCircleRect2D(centerX, centerY, radius + searchExpansion),
-            node -> Intersectionf.testCircleCircle(centerX, centerY, radius, node.x(), node.y(),
-                node.size() * nodeScale));
+            node -> {
+                final float nodeSize = node.size() * nodeScale;
+
+                // testCircleCircle takes radii pre-squared, like testPointCircle/testAarCircle below.
+                return Intersectionf.testCircleCircle(centerX, centerY, radius * radius, node.x(), node.y(),
+                    nodeSize * nodeSize);
+            });
     }
 
     @Override
