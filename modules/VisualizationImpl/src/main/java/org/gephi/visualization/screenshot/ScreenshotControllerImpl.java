@@ -43,8 +43,14 @@
 package org.gephi.visualization.screenshot;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.gephi.desktop.visualization.screenshot.ScreenshotSettingsPanel;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ScreenshotController;
 import org.openide.DialogDescriptor;
@@ -99,6 +105,51 @@ public class ScreenshotControllerImpl implements ScreenshotController {
                         NbBundle.getMessage(ScreenshotControllerImpl.class, "ScreenshotMaker.progress.message"), null);
             });
 
+    }
+
+    @Override
+    public Future<File> takeScreenshot(int scaleFactor, boolean transparentBackground, File file) {
+        return vizController.getModel().getEngine().<Future<File>>map(engine -> {
+            ScreenshotToFileTask task = new ScreenshotToFileTask(engine, scaleFactor, transparentBackground, file);
+            Future<File> future = executor.execute(task, task,
+                NbBundle.getMessage(ScreenshotControllerImpl.class, "ScreenshotMaker.progress.message"), null);
+            return cancellable(future, task);
+        }).orElseGet(() -> CompletableFuture.failedFuture(new IllegalStateException("No rendering engine available")));
+    }
+
+    /**
+     * Wraps a future so cancelling it also triggers the task's cooperative cancellation, instead of only
+     * interrupting the executor thread (which the tiled screenshot render loop does not check).
+     */
+    private static <V> Future<V> cancellable(Future<V> future, LongTask task) {
+        return new Future<V>() {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                task.cancel();
+                return future.cancel(mayInterruptIfRunning);
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return future.isCancelled();
+            }
+
+            @Override
+            public boolean isDone() {
+                return future.isDone();
+            }
+
+            @Override
+            public V get() throws InterruptedException, ExecutionException {
+                return future.get();
+            }
+
+            @Override
+            public V get(long timeout, TimeUnit unit)
+                throws InterruptedException, ExecutionException, TimeoutException {
+                return future.get(timeout, unit);
+            }
+        };
     }
 
     public int getSurfaceWidth() {
