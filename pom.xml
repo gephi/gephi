@@ -251,7 +251,7 @@
 
         <gephi.maven-source-plugin.version>3.3.1</gephi.maven-source-plugin.version>
 
-        <gephi.maven-surefire-plugin.version>3.2.5</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>3.6.0</gephi.maven-surefire-plugin.version>
 
         <gephi.build-helper-maven-plugin.version>3.6.1</gephi.build-helper-maven-plugin.version>
 
