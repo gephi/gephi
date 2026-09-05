@@ -29,10 +29,9 @@ import org.junit.Test;
 import org.openide.util.Lookup;
 
 /**
- * Regression tests for {@link FilterControllerImpl#exportToNewWorkspace(Query)}, which
- * used to read the source filtered view (copyNodes/hasEdge) with no lock at all while
- * mutating the destination graph, racing against a concurrent filter pass replacing the
- * exact same view.
+ * {@link FilterControllerImpl#exportToNewWorkspace(Query)} must produce a correct copy
+ * of the filtered subgraph even while a concurrent filter pass is replacing the source
+ * view it reads from.
  */
 public class ExportToNewWorkspaceTest {
 
@@ -117,10 +116,10 @@ public class ExportToNewWorkspaceTest {
     }
 
     /**
-     * Stress test exercising the locking fix: repeatedly re-runs the model's live
-     * FilterThread for the query that exportToNewWorkspace treats as "current" (so the
-     * export reuses the model's cached GraphView), forcing many destroyView() calls on
-     * that exact view concurrently with the export reading it.
+     * Repeatedly re-runs the model's live FilterThread for the query that
+     * exportToNewWorkspace treats as "current" (so the export reuses the model's cached
+     * GraphView), forcing many destroyView() calls on that exact view concurrently with
+     * the export reading it.
      */
     @Test
     public void testConcurrentFilterChurnDoesNotCorruptExport() throws Exception {

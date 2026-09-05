@@ -15,10 +15,9 @@ import org.junit.Test;
 public class FilterThreadTest {
 
     /**
-     * Regression test for a lost-wakeup race in {@link FilterThread#run()}: the
-     * condition check and the wait() used to happen in separate synchronized
-     * blocks, so a setRootQuery()/setRunning() notify() landing in the gap between
-     * them was lost forever, hanging the thread in wait() indefinitely.
+     * A {@link FilterThread} must keep making progress when setRootQuery() is called
+     * concurrently from many threads - a notify() landing at the wrong moment must
+     * never leave it parked in wait() forever.
      */
     @Test
     public void testConcurrentSetRootQueryDoesNotHang() throws Exception {
@@ -69,10 +68,9 @@ public class FilterThreadTest {
             throw new AssertionError("Concurrent setRootQuery() calls threw", failure.get());
         }
 
-        //If the race reproduces, the last hammered query is left sitting unconsumed and
-        //the thread is stuck in wait() forever - no further setRootQuery() is issued here,
-        //so recovery must come entirely from the hammering above. Bound the wait so a
-        //regression fails fast instead of hanging the build.
+        //No further setRootQuery() call is made here: the last one issued by the
+        //hammering above must, on its own, eventually be consumed and processed.
+        //Bounded so a hang fails the test instead of the build.
         await().atMost(10, TimeUnit.SECONDS)
             .until(() -> filterThread.getRootQuery() == null && completions.get() > before);
 

@@ -9,9 +9,8 @@ import static org.junit.Assert.assertEquals;
 public class FilterModelImplTest {
 
     /**
-     * Regression test: setCurrentResult() used to be the only mutator in this class
-     * that never fired the model's ChangeListener, so listeners had no way to know
-     * when an async filter/select operation actually finished (only that it started).
+     * setCurrentResult() must fire the model's ChangeListener whenever the result
+     * actually changes, so listeners can tell when a filter/select pass finishes.
      */
     @Test
     public void testSetCurrentResultFiresChangeEvent() {
