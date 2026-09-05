@@ -30,8 +30,7 @@ public class FilterThreadTest {
         });
 
         FilterQueryImpl query = new FilterQueryImpl(null, new GiantComponentBuilder.GiantComponentFilter());
-        filterModel.setFiltering(true);
-        filterModel.setCurrentQuery(query);
+        filterModel.setFilterState(true, false, query);
 
         FilterThread filterThread = new FilterThread(filterModel, query);
         filterThread.setRootQuery(query);
