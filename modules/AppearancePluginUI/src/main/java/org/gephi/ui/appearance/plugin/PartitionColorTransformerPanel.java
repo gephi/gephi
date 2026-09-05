@@ -114,9 +114,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         Partition partition = function.getPartition();
         Graph graph = function.getGraph();
 
+        graph.readLock();
         try {
-            graph.readLock();
-
             boolean ignoreNull = !function.getModel().isTransformNullValues();
             values = function.isValid() ? partition.getSortedValues(function.getGraph()) : Collections.EMPTY_LIST;
 

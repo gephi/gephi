@@ -115,10 +115,9 @@ public class OpenOrdLayout implements Layout, LongTask {
         //Get graph
         graph = graphModel.getUndirectedGraphVisible();
         graph.readLock();
-        boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
-        Interval interval = graph.getView().getTimeInterval();
-
         try {
+            boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
+            Interval interval = graph.getView().getTimeInterval();
             int numNodes = graph.getNodeCount();
 
             //Prepare data structure - nodes and neighbors map
