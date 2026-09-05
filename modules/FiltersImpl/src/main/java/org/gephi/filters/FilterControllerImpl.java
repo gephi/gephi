@@ -370,20 +370,19 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     @Override
     public void exportToNewWorkspace(Query query) {
         FilterModelImpl model = getModel();
-        Graph result;
-        if (model.getCurrentQuery() == query) {
-            GraphView view = model.getCurrentResult();
-            if (view == null) {
-                return;
-            }
-            result = model.getGraphModel().getGraph(view);
-        } else {
+
+        //A fresh, private view (query isn't the model's current one) can be computed
+        //up front - nothing else references it, so nothing can race it. The model's
+        //cached current-result view, on the other hand, is shared and can be destroyed
+        //by a concurrent filter pass, so it's deliberately NOT fetched here: see below.
+        Graph precomputedResult = null;
+        if (model.getCurrentQuery() != query) {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
-            result = processor.process((AbstractQueryImpl) query, graphModel);
+            precomputedResult = processor.process((AbstractQueryImpl) query, graphModel);
         }
 
-        final Graph graphView = result;
+        final Graph fixedResult = precomputedResult;
         new Thread(new Runnable() {
 
             @Override
@@ -396,24 +395,53 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                     ticket = progressProvider.createTicket(msg, null);
                 }
                 Progress.start(ticket);
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject(), graphView.getModel().getConfiguration().copy());
-                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(newWorkspace);
-                graphModel.bridge().copyNodes(graphView.getNodes().toArray());
-                Graph graph = graphModel.getGraph();
-                List<Edge> edgesToRemove = new ArrayList<>();
-                for (Edge edge : graph.getEdges()) {
-                    if (!graphView.hasEdge(edge.getId())) {
-                        edgesToRemove.add(edge);
-                    }
-                }
-                if (!edgesToRemove.isEmpty()) {
-                    graph.removeAllEdges(edgesToRemove);
-                }
+                try {
+                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                    Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject(),
+                        model.getGraphModel().getConfiguration().copy());
+                    GraphModel graphModel =
+                        Lookup.getDefault().lookup(GraphController.class).getGraphModel(newWorkspace);
+                    Graph graph = graphModel.getGraph();
 
-                Progress.finish(ticket);
-                String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
-                //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
+                    //Fetched as late as possible, immediately before locking it: any work
+                    //done between reading the model's cached result and locking it is a
+                    //window for a concurrent filter pass to destroy this exact view.
+                    Graph graphView = fixedResult;
+                    if (graphView == null) {
+                        GraphView view = model.getCurrentResult();
+                        if (view == null) {
+                            return;
+                        }
+                        graphView = model.getGraphModel().getGraph(view);
+                    }
+
+                    graphView.readLock();
+                    try {
+                        graph.writeLock();
+                        try {
+                            graphModel.bridge().copyNodes(graphView.getNodes().toArray());
+                            List<Edge> edgesToRemove = new ArrayList<>();
+                            for (Edge edge : graph.getEdges()) {
+                                if (!graphView.hasEdge(edge.getId())) {
+                                    edgesToRemove.add(edge);
+                                }
+                            }
+                            if (!edgesToRemove.isEmpty()) {
+                                graph.removeAllEdges(edgesToRemove);
+                            }
+                        } finally {
+                            graph.writeUnlock();
+                            graph.readUnlockAll();
+                        }
+                    } finally {
+                        graphView.readUnlockAll();
+                    }
+
+                    String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
+                    //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
+                } finally {
+                    Progress.finish(ticket);
+                }
             }
         }, "Export filter to workspace").start();
     }
