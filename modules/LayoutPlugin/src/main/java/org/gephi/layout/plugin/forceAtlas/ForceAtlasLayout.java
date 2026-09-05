@@ -121,10 +121,9 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-        boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
-        Interval interval = graph.getView().getTimeInterval();
-
         try {
+            boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
+            Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 
