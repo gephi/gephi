@@ -124,10 +124,13 @@ Read the current `### Development builds` section of `README.md`. If the "Curren
 
 ### 6. Apply the edit in an isolated worktree, commit, and open a PR
 
+Run these from the `gephi/gephi` checkout you're already in (find it with `git rev-parse --show-toplevel` if unsure — don't hardcode a path):
+
 ```bash
-git -C /Users/mathieu.bastian/githome/gephi/gephi fetch origin
+REPO=$(git rev-parse --show-toplevel)
+git -C "$REPO" fetch origin
 WORKTREE=$(mktemp -d)
-git -C /Users/mathieu.bastian/githome/gephi/gephi worktree add "$WORKTREE" origin/master -b chore/update-dev-links-<version-no-snapshot>
+git -C "$REPO" worktree add "$WORKTREE" origin/master -b chore/update-dev-links-<version-no-snapshot>
 ```
 
 In `$WORKTREE/README.md`, update just the `### Development builds` block: the "Current version is X" sentence and the 5 bullet links, in the existing order and format, nothing else in the file.
@@ -180,7 +183,7 @@ EOF
 )"
 ```
 
-Then clean up the worktree: `git -C /Users/mathieu.bastian/githome/gephi/gephi worktree remove "$WORKTREE"`.
+Then clean up the worktree: `git -C "$REPO" worktree remove "$WORKTREE"`.
 
 **Stop here. Never merge the PR.**
 
