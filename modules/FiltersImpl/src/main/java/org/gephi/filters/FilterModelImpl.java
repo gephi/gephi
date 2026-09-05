@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterLibrary;
@@ -83,7 +84,7 @@ public class FilterModelImpl implements FilterModel, Model {
         this.workspace = workspace;
         filterLibraryImpl = new FilterLibraryImpl(workspace);
         queries = new LinkedList<>();
-        listeners = new ArrayList<>();
+        listeners = new CopyOnWriteArrayList<>();
         autoRefresh = true;
 
         graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
@@ -291,7 +292,10 @@ public class FilterModelImpl implements FilterModel, Model {
     }
 
     public void setCurrentResult(GraphView currentResult) {
-        this.currentResult = currentResult;
+        if (this.currentResult != currentResult) {
+            this.currentResult = currentResult;
+            fireChangeEvent();
+        }
         if (currentResult != null && autoRefresh) {
             autoRefreshor.setEnable(true);
         } else if (currentResult == null && autoRefresh) {

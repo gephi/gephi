@@ -70,7 +70,7 @@ public class FilterThread extends Thread {
     private final Object lock = new Object();
     private final boolean filtering;
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
-    private boolean running = true;
+    private volatile boolean running = true;
 
     public FilterThread(FilterModelImpl model, AbstractQueryImpl initialQuery) {
         super("Filter Thread - " + model.getWorkspace().toString());
@@ -96,13 +96,13 @@ public class FilterThread extends Thread {
 
         while (running) {
             AbstractQueryImpl q;
-            while ((q = rootQuery.getAndSet(null)) == null && running) {
-                try {
-                    synchronized (this.lock) {
+            synchronized (this.lock) {
+                while ((q = rootQuery.getAndSet(null)) == null && running) {
+                    try {
                         lock.wait();
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
             }
             if (!running) {
