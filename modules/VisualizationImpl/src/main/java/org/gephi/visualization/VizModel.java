@@ -1015,6 +1015,18 @@ public class VizModel implements VisualizationModel {
     }
 
     /**
+     * The old {@code nodesizefactor}/{@code edgesizefactor} values could legally be {@code 0} (or
+     * negative), but the current label scale must be strictly positive, so fall back to the
+     * default rather than propagating an invalid value into {@link GraphRenderingOptionsImpl}.
+     */
+    private static float sanitizeLegacyLabelScale(float legacyValue, float defaultValue) {
+        if (legacyValue <= 0f || Float.isNaN(legacyValue) || Float.isInfinite(legacyValue)) {
+            return defaultValue;
+        }
+        return legacyValue;
+    }
+
+    /**
      * Reads the legacy {@code <textmodel>} element written by Gephi 0.10 and earlier, mapping its
      * content onto the equivalent fields of the current model.
      */
@@ -1096,9 +1108,11 @@ public class VizModel implements VisualizationModel {
                     // nodesizefactor and edgesizefactor used text content in old format
                     if (!reader.isWhiteSpace()) {
                         if (readNodeSizeFactor) {
-                            setNodeLabelScale(Float.parseFloat(reader.getText()));
+                            setNodeLabelScale(sanitizeLegacyLabelScale(
+                                Float.parseFloat(reader.getText()), VizConfig.getDefaultNodeLabelScale()));
                         } else if (readEdgeSizeFactor) {
-                            setEdgeLabelScale(Float.parseFloat(reader.getText()));
+                            setEdgeLabelScale(sanitizeLegacyLabelScale(
+                                Float.parseFloat(reader.getText()), VizConfig.getDefaultEdgeLabelScale()));
                         }
                     }
                     break;

@@ -238,6 +238,40 @@ public class PersistenceProviderTest {
     }
 
     @Test
+    public void testLegacyTextModelZeroSizeFactorFallsBackToDefault() throws Exception {
+        // Old files (e.g. Gephi 0.9/0.10) could store a 0 nodesizefactor/edgesizefactor, which is
+        // not a valid label scale in the current model (must be > 0). Reading it must not throw
+        // and should fall back to the default scale instead.
+        String legacyXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<vizmodel>"
+            + "<textmodel>"
+            + "<shownodelabels enable=\"true\"/>"
+            + "<showedgelabels enable=\"true\"/>"
+            + "<selectedOnly value=\"false\"/>"
+            + "<nodefont name=\"Arial\" size=\"32\" style=\"1\"/>"
+            + "<edgefont name=\"Arial\" size=\"32\" style=\"1\"/>"
+            + "<nodesizefactor>0.0</nodesizefactor>"
+            + "<edgesizefactor>0.5</edgesizefactor>"
+            + "<colormode class=\"TextColorMode\"/>"
+            + "<sizemode class=\"ScaledSizeMode\"/>"
+            + "<nodecolumns><column id=\"label\"/></nodecolumns>"
+            + "<edgecolumns></edgecolumns>"
+            + "</textmodel>"
+            + "</vizmodel>";
+
+         VizModel model = vizController.getModel(GraphGenerator.build().generateTinyGraph().getWorkspace());
+        StringReader stringReader = new StringReader(legacyXml);
+        XMLStreamReader xmlReader = GephiFormat.newXMLReader(stringReader);
+        new VizModelPersistenceProvider().readXML(xmlReader, model.getWorkspace());
+        xmlReader.close();
+
+        Assert.assertEquals(VizConfig.getDefaultNodeLabelScale(), model.getNodeLabelScale(), 0.0001f);
+        Assert.assertEquals(0.5f, model.getEdgeLabelScale(), 0.0001f);
+        // Must not throw when building rendering options from the sanitized model.
+        model.toGraphRenderingOptions();
+    }
+
+    @Test
     public void testDefaultLabelColumnsRoundTrip() throws Exception {
          VizModel model = vizController.getModel(GraphGenerator.build().generateTinyGraph().getWorkspace());
         // Default label column ("label") must survive the round-trip.
