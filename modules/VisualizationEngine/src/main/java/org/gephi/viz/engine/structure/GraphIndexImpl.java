@@ -47,34 +47,48 @@ public class GraphIndexImpl implements GraphIndex {
     @Override
     public void getVisibleNodes(ElementsCallback<Node> callback, GraphRenderingOptions graphRenderingOptions,
                                 Rect2D viewBoundaries) {
-        graphModel.getGraph().readLock();
-        final Graph visibleGraph = getVisibleGraph();
-        callback.start(visibleGraph, graphRenderingOptions, graphSelection);
+        final Graph graph = graphModel.getGraph();
+        graph.readLock();
+        try {
+            final Graph visibleGraph = getVisibleGraph();
+            callback.start(visibleGraph, graphRenderingOptions, graphSelection);
 
-        SpatialIndex spatialIndex = visibleGraph.getSpatialIndex();
-        spatialIndex.spatialIndexReadLock();
-        spatialIndex.getApproximateNodesInArea(viewBoundaries).parallelStream().forEach(
-            callback);
-        spatialIndex.spatialIndexReadUnlock();
+            SpatialIndex spatialIndex = visibleGraph.getSpatialIndex();
+            spatialIndex.spatialIndexReadLock();
+            try {
+                spatialIndex.getApproximateNodesInArea(viewBoundaries).parallelStream().forEach(
+                    callback);
+            } finally {
+                spatialIndex.spatialIndexReadUnlock();
+            }
 
-        callback.end(visibleGraph);
-        graphModel.getGraph().readUnlock();
+            callback.end(visibleGraph);
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override
     public void getVisibleEdges(ElementsCallback<Edge> callback, GraphRenderingOptions graphRenderingOptions,
                                 Rect2D viewBoundaries) {
-        graphModel.getGraph().readLock();
-        final Graph visibleGraph = getVisibleGraph();
-        callback.start(visibleGraph, graphRenderingOptions, graphSelection);
-        SpatialIndex spatialIndex = visibleGraph.getSpatialIndex();
-        spatialIndex.spatialIndexReadLock();
-        spatialIndex.getApproximateEdgesInArea(viewBoundaries).parallelStream().forEach(
-            callback);
-        spatialIndex.spatialIndexReadUnlock();
+        final Graph graph = graphModel.getGraph();
+        graph.readLock();
+        try {
+            final Graph visibleGraph = getVisibleGraph();
+            callback.start(visibleGraph, graphRenderingOptions, graphSelection);
+            SpatialIndex spatialIndex = visibleGraph.getSpatialIndex();
+            spatialIndex.spatialIndexReadLock();
+            try {
+                spatialIndex.getApproximateEdgesInArea(viewBoundaries).parallelStream().forEach(
+                    callback);
+            } finally {
+                spatialIndex.spatialIndexReadUnlock();
+            }
 
-        callback.end(visibleGraph);
-        graphModel.getGraph().readUnlock();
+            callback.end(visibleGraph);
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override

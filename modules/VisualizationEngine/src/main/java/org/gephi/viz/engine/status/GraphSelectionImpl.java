@@ -119,27 +119,33 @@ public class GraphSelectionImpl implements GraphSelection {
             getMode() != GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION;
 
         graph.readLock();
-        graph.getSpatialIndex().spatialIndexReadLock();
-        nodesIterable.stream().forEach(node -> {
-            int storeId = node.getStoreId();
-            nodes.set(storeId);
-            nodesList.add(node);
-            nodesWithNeighbours.set(storeId);
-            if (selectEdges || selectNeighbours) {
-                EdgeIterable edgeIterable = graph.getEdges(node);
-                for (Edge edge : edgeIterable) {
-                    edges.set(edge.getStoreId());
-                    if (selectNeighbours) {
-                        Node oppositeNode = graph.getOpposite(node, edge);
-                        if (oppositeNode != null && oppositeNode != node) {
-                            nodesWithNeighbours.set(oppositeNode.getStoreId());
+        try {
+            graph.getSpatialIndex().spatialIndexReadLock();
+            try {
+                nodesIterable.stream().forEach(node -> {
+                    int storeId = node.getStoreId();
+                    nodes.set(storeId);
+                    nodesList.add(node);
+                    nodesWithNeighbours.set(storeId);
+                    if (selectEdges || selectNeighbours) {
+                        EdgeIterable edgeIterable = graph.getEdges(node);
+                        for (Edge edge : edgeIterable) {
+                            edges.set(edge.getStoreId());
+                            if (selectNeighbours) {
+                                Node oppositeNode = graph.getOpposite(node, edge);
+                                if (oppositeNode != null && oppositeNode != node) {
+                                    nodesWithNeighbours.set(oppositeNode.getStoreId());
+                                }
+                            }
                         }
                     }
-                }
+                });
+            } finally {
+                graph.getSpatialIndex().spatialIndexReadUnlock();
             }
-        });
-        graph.getSpatialIndex().spatialIndexReadUnlock();
-        graph.readUnlock();
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override
