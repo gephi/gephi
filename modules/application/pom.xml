@@ -7,14 +7,14 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.11.3-SNAPSHOT</version>
+        <version>0.11.3</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-    <version>0.11.3-SNAPSHOT</version>
+    <version>0.11.3</version>
     <name>gephi-app</name>
     <description>Gephi - The Open Graph Viz Platform</description>
     <url>https://gephi.org</url>
