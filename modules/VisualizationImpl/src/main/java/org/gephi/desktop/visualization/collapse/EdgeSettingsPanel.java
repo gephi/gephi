@@ -94,6 +94,8 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
     private javax.swing.JCheckBox useEdgeWeightCheckbox;
     // End of variables declaration//GEN-END:variables
 
+    private VisualizationModel currentModel;
+
     /**
      * Creates new form EdgeSettingsPanel
      */
@@ -148,12 +150,12 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
 
         showEdgesCheckbox.addItemListener(e -> {
             vizController.setShowEdges(showEdgesCheckbox.isSelected());
-            setEnable(true, null);
+            setEnable(true, currentModel);
         });
         selectionColorCheckbox.addItemListener(
             e -> {
                 vizController.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
-                setEnable(true, null);
+                setEnable(true, currentModel);
             });
         edgeInSelectionColorChooser.addActionListener(
             ae -> vizController.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor()));
@@ -172,7 +174,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
         });
         useEdgeWeightCheckbox.addItemListener(e -> {
             vizController.setUseEdgeWeight(useEdgeWeightCheckbox.isSelected());
-            setEnable(true, null);
+            setEnable(true, currentModel);
         });
         rescaleEdgeWeightCheckbox.addItemListener(
             e -> vizController.setRescaleEdgeWeight(rescaleEdgeWeightCheckbox.isSelected()));
@@ -210,6 +212,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
     }
 
     public void setup(VisualizationModel model) {
+        currentModel = model;
         if (model == null) {
             setEnable(false, null);
             return;
@@ -220,6 +223,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
     }
 
     public void unsetup(VisualizationModel model) {
+        currentModel = null;
         vizController.removePropertyChangeListener(this);
     }
 

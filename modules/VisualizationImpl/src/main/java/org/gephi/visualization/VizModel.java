@@ -539,7 +539,7 @@ public class VizModel implements VisualizationModel {
         if (oldValue != edgeRescaleWeightEnabled) {
             this.edgeRescaleWeightEnabled = edgeRescaleWeightEnabled;
             getRenderingOptions().ifPresent(options -> options.setEdgeRescaleWeightEnabled(edgeRescaleWeightEnabled));
-            firePropertyChange("edgeRescaleWeightEnabled", oldValue, edgeRescaleWeightEnabled);
+            firePropertyChange("rescaleEdgeWeight", oldValue, edgeRescaleWeightEnabled);
         }
     }
 
