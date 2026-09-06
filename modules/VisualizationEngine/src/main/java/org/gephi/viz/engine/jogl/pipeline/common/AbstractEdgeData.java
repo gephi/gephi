@@ -469,16 +469,15 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
     }
 
     public EdgeWorldData createWorldData(VizEngineModel model, VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
+        final boolean rescaleWeight = edgeWeightEnabled && model.getRenderingOptions().isEdgeRescaleWeightEnabled();
         return new EdgeWorldData(
             model.getRenderingOptions().getBackgroundColor(),
             someSelection,
             edgeSelectionColor,
             edgeWeightEnabled ? edgesCallback.getMinWeight() : 0f,
             edgeWeightEnabled ? edgesCallback.getMaxWeight() : 1f,
-            model.getRenderingOptions().isEdgeRescaleWeightEnabled() ? model.getRenderingOptions().getEdgeRescaleMin() :
-                1f,
-            model.getRenderingOptions().isEdgeRescaleWeightEnabled() ? model.getRenderingOptions().getEdgeRescaleMax() :
-                1f,
+            rescaleWeight ? model.getRenderingOptions().getEdgeRescaleMin() : 1f,
+            rescaleWeight ? model.getRenderingOptions().getEdgeRescaleMax() : 1f,
             model.getRenderingOptions().getNodeScale(),
             model.getRenderingOptions().getEdgeScale(),
             model.getRenderingOptions().isLightenNonSelected() ?
