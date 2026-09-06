@@ -110,6 +110,32 @@ public class StatisticsControllerUIImplTest {
         Assert.assertTrue("The statistics UI wasn't unsetup", TestStatisticsUI.isUnsetup());
     }
 
+    @Test
+    public void testConcurrentRunOfSameStatisticsIsRejected() throws InterruptedException {
+        CountDownLatch releaseFirstRun = new CountDownLatch(1);
+        RecordingListener firstListener = new RecordingListener();
+        RecordingListener secondListener = new RecordingListener();
+
+        controllerUI.execute(new TestStatistics(false, releaseFirstRun), firstListener);
+        controllerUI.execute(new TestStatistics(false), secondListener);
+
+        NotifyDescriptor descriptor = CapturingDialogDisplayer.awaitMessage();
+        Assert.assertNotNull("No dialog was shown for the rejected concurrent execution", descriptor);
+        Assert.assertEquals(NotifyDescriptor.WARNING_MESSAGE, descriptor.getMessageType());
+        String message = String.valueOf(descriptor.getMessage());
+        Assert.assertTrue("Message doesn't name the busy algorithm: " + message, message.contains(BUILDER_NAME));
+
+        Assert.assertTrue("The rejected run's listener should not have been notified",
+            secondListener.getCalls().isEmpty());
+        Assert.assertTrue("The first run should still be reported as running", model.isRunning(statisticsUI()));
+
+        releaseFirstRun.countDown();
+        Assert.assertTrue("The first listener was never notified", firstListener.await());
+        Assert.assertEquals(List.of("taskFinished"), firstListener.getCalls());
+        Assert.assertFalse("The statistics is still reported as running after completion",
+            model.isRunning(statisticsUI()));
+    }
+
     private StatisticsUI statisticsUI() {
         StatisticsUI[] uis = controllerUI.getUI(new TestStatistics(false));
         Assert.assertEquals("The test StatisticsUI isn't registered in Lookup", 1, uis.length);
@@ -145,13 +171,27 @@ public class StatisticsControllerUIImplTest {
     public static class TestStatistics implements Statistics {
 
         private final boolean fail;
+        private final CountDownLatch blockUntil;
 
         public TestStatistics(boolean fail) {
+            this(fail, null);
+        }
+
+        public TestStatistics(boolean fail, CountDownLatch blockUntil) {
             this.fail = fail;
+            this.blockUntil = blockUntil;
         }
 
         @Override
         public void execute(GraphModel graphModel) {
+            if (blockUntil != null) {
+                try {
+                    Assert.assertTrue("Test setup issue: blockUntil was never released",
+                        blockUntil.await(TIMEOUT_SECONDS, TimeUnit.SECONDS));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             if (fail) {
                 throw new IllegalStateException(FAILURE_MESSAGE);
             }
