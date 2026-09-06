@@ -203,11 +203,14 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 return;
             }
 
+            //Capture the model, the execution outcome is reported from a background
+            //thread and the current workspace may have changed in the meantime
+            final StatisticsModelUI runModel = currentModel;
             LongTaskListener listener = new LongTaskListener() {
 
                 @Override
                 public void taskFinished(LongTask task) {
-                    showReport();
+                    showReport(runModel);
                 }
             };
             JPanel settingsPanel = statisticsUI.getSettingsPanel();
@@ -249,7 +252,14 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void showReport() {
-        final String report = currentModel.getReport(statisticsUI.getStatisticsClass());
+        showReport(currentModel);
+    }
+
+    private void showReport(StatisticsModelUI model) {
+        if (model == null) {
+            return;
+        }
+        final String report = model.getReport(statisticsUI.getStatisticsClass());
         if (report != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
