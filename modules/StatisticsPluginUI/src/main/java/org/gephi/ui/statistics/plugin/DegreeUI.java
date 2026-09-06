@@ -85,6 +85,12 @@ public class DegreeUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((Degree) statistics).getAverageDegree());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "InOutDegreeUI.name");
     }

@@ -98,6 +98,11 @@ public class PageRankUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        return null;
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "PageRankUI.name");
     }

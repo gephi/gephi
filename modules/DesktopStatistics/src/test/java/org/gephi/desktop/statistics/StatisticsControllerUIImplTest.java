@@ -27,7 +27,9 @@ import org.openide.util.Lookup;
 
 /**
  * Checks that a statistics algorithm which throws is reported to the user with the name of the
- * failing algorithm and doesn't leave the front-end stuck in the running state.
+ * failing algorithm and doesn't leave the front-end stuck in the running state, and that running
+ * the same statistics class concurrently in more than one workspace doesn't cross-contaminate or
+ * crash (StatisticsUI implementations are singletons shared by all workspaces).
  */
 public class StatisticsControllerUIImplTest {
 
@@ -111,29 +113,34 @@ public class StatisticsControllerUIImplTest {
     }
 
     @Test
-    public void testConcurrentRunOfSameStatisticsIsRejected() throws InterruptedException {
+    public void testConcurrentRunsDoNotCrossContaminateResults() throws InterruptedException {
         CountDownLatch releaseFirstRun = new CountDownLatch(1);
         RecordingListener firstListener = new RecordingListener();
         RecordingListener secondListener = new RecordingListener();
 
-        controllerUI.execute(new TestStatistics(false, releaseFirstRun), firstListener);
-        controllerUI.execute(new TestStatistics(false), secondListener);
+        TestStatistics first = new TestStatistics(false, "10", releaseFirstRun);
+        TestStatistics second = new TestStatistics(false, "20", null);
 
-        NotifyDescriptor descriptor = CapturingDialogDisplayer.awaitMessage();
-        Assert.assertNotNull("No dialog was shown for the rejected concurrent execution", descriptor);
-        Assert.assertEquals(NotifyDescriptor.WARNING_MESSAGE, descriptor.getMessageType());
-        String message = String.valueOf(descriptor.getMessage());
-        Assert.assertTrue("Message doesn't name the busy algorithm: " + message, message.contains(BUILDER_NAME));
+        // Simulates a second workspace starting the same statistics class while the first is
+        // still running: setup() is called again on the shared StatisticsUI singleton before
+        // the first run's taskFinished (and its addResult/getValue call) has happened.
+        controllerUI.execute(first, firstListener);
+        controllerUI.execute(second, secondListener);
 
-        Assert.assertTrue("The rejected run's listener should not have been notified",
-            secondListener.getCalls().isEmpty());
-        Assert.assertTrue("The first run should still be reported as running", model.isRunning(statisticsUI()));
+        Assert.assertTrue("The second run's listener was never notified", secondListener.await());
+        Assert.assertEquals(List.of("taskFinished"), secondListener.getCalls());
+        Assert.assertEquals("20", model.getResult(statisticsUI()));
 
         releaseFirstRun.countDown();
-        Assert.assertTrue("The first listener was never notified", firstListener.await());
+
+        Assert.assertTrue(
+            "The first run's listener was never notified (a getValue() reading state left over "
+                + "by the second run's setup()/unsetup() would NPE or hang here instead)",
+            firstListener.await());
         Assert.assertEquals(List.of("taskFinished"), firstListener.getCalls());
-        Assert.assertFalse("The statistics is still reported as running after completion",
-            model.isRunning(statisticsUI()));
+        Assert.assertEquals("The result must come from the just-finished Statistics instance, "
+                + "not from whatever another workspace's run last passed to setup()",
+            "10", model.getResult(statisticsUI()));
     }
 
     private StatisticsUI statisticsUI() {
@@ -171,14 +178,16 @@ public class StatisticsControllerUIImplTest {
     public static class TestStatistics implements Statistics {
 
         private final boolean fail;
+        private final String resultValue;
         private final CountDownLatch blockUntil;
 
         public TestStatistics(boolean fail) {
-            this(fail, null);
+            this(fail, RESULT_VALUE, null);
         }
 
-        public TestStatistics(boolean fail, CountDownLatch blockUntil) {
+        public TestStatistics(boolean fail, String resultValue, CountDownLatch blockUntil) {
             this.fail = fail;
+            this.resultValue = resultValue;
             this.blockUntil = blockUntil;
         }
 
@@ -200,6 +209,10 @@ public class StatisticsControllerUIImplTest {
         @Override
         public String getReport() {
             return REPORT;
+        }
+
+        String getResultValue() {
+            return resultValue;
         }
     }
 
@@ -255,7 +268,14 @@ public class StatisticsControllerUIImplTest {
 
         @Override
         public String getValue() {
-            return RESULT_VALUE;
+            //Deprecated overload: intentionally unimplemented so this test fails loudly if
+            //production code ever falls back to it instead of getValue(Statistics)
+            throw new UnsupportedOperationException("getValue(Statistics) should be used instead");
+        }
+
+        @Override
+        public String getValue(Statistics statistics) {
+            return ((TestStatistics) statistics).getResultValue();
         }
 
         @Override

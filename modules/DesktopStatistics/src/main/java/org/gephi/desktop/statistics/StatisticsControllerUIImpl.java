@@ -43,9 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.statistics;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 import org.gephi.desktop.statistics.api.StatisticsControllerUI;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.spi.Statistics;
@@ -67,11 +64,6 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
     //    private final DynamicModelListener dynamicModelListener;
     private StatisticsModelUIImpl model;
-    //StatisticsUI implementations are singletons shared by all workspaces and stash the
-    //running Statistics instance in a field between setup() and unsetup(), so two
-    //workspaces running the same statistics class concurrently would corrupt each
-    //other's state. Serialize per statistics class instead of allowing that overlap.
-    private final Map<Class<? extends Statistics>, Semaphore> executionLocks = new ConcurrentHashMap<>();
 
     public StatisticsControllerUIImpl() {
 //        dynamicModelListener = new DynamicModelListener() {
@@ -129,77 +121,45 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         final StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         final StatisticsUI[] uis = getUI(statistics);
 
+        for (StatisticsUI s : uis) {
+            s.setup(statistics);
+        }
         //Capture the model, the execution outcome is reported from a background
         //thread and the current workspace may have changed in the meantime
         final StatisticsModelUIImpl uiModel = model;
         if (uiModel == null) {
             return;
         }
+        uiModel.setRunning(statistics, true);
 
-        //Only one workspace at a time may drive a given statistics class through the
-        //shared StatisticsUI singletons (see executionLocks javadoc above)
-        final Semaphore lock = executionLocks.computeIfAbsent(statistics.getClass(), c -> new Semaphore(1));
-        if (!lock.tryAcquire()) {
-            notifyAlreadyRunning(controller, statistics);
-            return;
-        }
+        controller.execute(statistics, new LongTaskListener() {
 
-        try {
-            for (StatisticsUI s : uis) {
-                s.setup(statistics);
+            @Override
+            public void taskFinished(LongTask task) {
+                uiModel.setRunning(statistics, false);
+                for (StatisticsUI s : uis) {
+                    uiModel.addResult(s, statistics);
+                    s.unsetup();
+                }
+                if (listener != null) {
+                    listener.taskFinished(statistics instanceof LongTask ? (LongTask) statistics : null);
+                }
             }
-            uiModel.setRunning(statistics, true);
 
-            controller.execute(statistics, new LongTaskListener() {
-
-                @Override
-                public void taskFinished(LongTask task) {
-                    try {
-                        uiModel.setRunning(statistics, false);
-                        for (StatisticsUI s : uis) {
-                            uiModel.addResult(s);
-                            s.unsetup();
-                        }
-                    } finally {
-                        lock.release();
-                    }
-                    if (listener != null) {
-                        listener.taskFinished(statistics instanceof LongTask ? (LongTask) statistics : null);
-                    }
+            @Override
+            public void fatalError(Throwable t) {
+                //No result to collect from a failed execution, but the running state
+                //has to be cleared or the front-end stays stuck on 'Cancel'
+                uiModel.setRunning(statistics, false);
+                for (StatisticsUI s : uis) {
+                    s.unsetup();
                 }
-
-                @Override
-                public void fatalError(Throwable t) {
-                    //No result to collect from a failed execution, but the running state
-                    //has to be cleared or the front-end stays stuck on 'Cancel'
-                    try {
-                        uiModel.setRunning(statistics, false);
-                        for (StatisticsUI s : uis) {
-                            s.unsetup();
-                        }
-                    } finally {
-                        lock.release();
-                    }
-                    notifyExecutionError(controller, statistics, t);
-                    if (listener != null) {
-                        listener.fatalError(t);
-                    }
+                notifyExecutionError(controller, statistics, t);
+                if (listener != null) {
+                    listener.fatalError(t);
                 }
-            });
-        } catch (RuntimeException e) {
-            //The background listener above is only reachable once controller.execute()
-            //has scheduled the task; any failure before that would otherwise leak the lock
-            lock.release();
-            throw e;
-        }
-    }
-
-    private static void notifyAlreadyRunning(StatisticsController controller, Statistics statistics) {
-        StatisticsBuilder builder = controller.getBuilder(statistics.getClass());
-        String name = builder != null ? builder.getName() : statistics.getClass().getSimpleName();
-        DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(
-            NbBundle.getMessage(StatisticsControllerUIImpl.class, "StatisticsControllerUIImpl.alreadyRunning", name),
-            NotifyDescriptor.WARNING_MESSAGE));
+            }
+        });
     }
 
     private static void notifyExecutionError(StatisticsController controller, Statistics statistics, Throwable t) {

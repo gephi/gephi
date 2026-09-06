@@ -97,6 +97,11 @@ public class DynamicDegreeUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        return "";
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicDegreeUI.name");
     }

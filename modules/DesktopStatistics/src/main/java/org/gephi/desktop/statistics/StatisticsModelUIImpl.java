@@ -80,11 +80,12 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
         listeners = new ArrayList<>();
     }
 
-    public void addResult(StatisticsUI ui) {
-        if (resultMap.containsKey(ui) && ui.getValue() == null) {
+    public void addResult(StatisticsUI ui, Statistics statistics) {
+        String value = ui.getValue(statistics);
+        if (resultMap.containsKey(ui) && value == null) {
             resultMap.remove(ui);
         } else {
-            resultMap.put(ui, ui.getValue());
+            resultMap.put(ui, value);
         }
         fireChangeEvent();
     }

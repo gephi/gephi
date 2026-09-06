@@ -94,6 +94,12 @@ public class ClusteringCoefficientUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((ClusteringCoefficient) statistics).getAverageClusteringCoefficient());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "ClusteringCoefficientUI.name");
     }

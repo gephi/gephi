@@ -93,6 +93,12 @@ public class DiameterUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((GraphDistance) statistics).getDiameter());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DiameterUI.name");
     }
