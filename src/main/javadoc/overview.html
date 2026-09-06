@@ -72,6 +72,10 @@
             <li>Added a <code>fatalError(Throwable)</code> default method to <code>LongTaskListener</code>. It is called when a task terminates with an uncaught exception, instead of <code>taskFinished()</code>, so that a single listener receives both outcomes. The default implementation does nothing, therefore existing listeners are unaffected.</li>
             <li><code>LongTaskErrorHandler</code> and <code>LongTaskExecutor.setDefaultErrorHandler()</code> are deprecated in favor of <code>LongTaskListener.fatalError(Throwable)</code>. They remain fully functional and are still invoked, in addition to the listener.</li>
         </ul>
+        <h4>Statistics API</h4>
+        <ul>
+            <li>Added a <code>getValue(Statistics)</code> default method to <code>StatisticsUI</code>, superseding the no-argument <code>getValue()</code> which is now deprecated. Implementations of <code>StatisticsUI</code> are singletons shared by every workspace, so a result computed from state stashed by <code>setup(Statistics)</code> is unsafe when the same statistics class runs concurrently in more than one workspace. The default implementation of <code>getValue(Statistics)</code> falls back to the deprecated <code>getValue()</code>, so existing implementations keep compiling and working unchanged until migrated.</li>
+        </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>
         <ul>
