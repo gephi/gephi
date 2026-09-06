@@ -106,8 +106,27 @@ public interface StatisticsUI {
      * Returns this statistics result as a String, if exists
      *
      * @return this statistics' result string
+     * @deprecated Relies on whatever <code>Statistics</code> instance the last {@link #setup(Statistics)}
+     * call stashed, which is unsafe if the same statistics class is executed concurrently in more than
+     * one workspace, since implementations of this interface are singletons shared by the whole
+     * application. Implement {@link #getValue(Statistics)} instead.
      */
+    @Deprecated
     String getValue();
+
+    /**
+     * Returns this statistics result as a String for the given, just-executed statistics
+     * instance, if it exists.
+     * <p>
+     * The default implementation falls back to the deprecated {@link #getValue()} for
+     * implementations that predate this method.
+     *
+     * @param statistics the statistics instance that was just executed
+     * @return this statistics' result string
+     */
+    default String getValue(Statistics statistics) {
+        return getValue();
+    }
 
     /**
      * Returns this statistics display name

@@ -82,6 +82,12 @@ public class StatisticalInferenceClusteringUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((StatisticalInferenceClustering) statistics).getDescriptionLength());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "StatisticalInferenceClusteringUI.name");
     }

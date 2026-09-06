@@ -85,6 +85,12 @@ public class WeightedDegreeUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((WeightedDegree) statistics).getAverageDegree());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "WeightedDegreeUI.name");
     }

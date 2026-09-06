@@ -93,6 +93,12 @@ public class PathLengthUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((GraphDistance) statistics).getPathLength());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "PathLengthUI.name");
     }

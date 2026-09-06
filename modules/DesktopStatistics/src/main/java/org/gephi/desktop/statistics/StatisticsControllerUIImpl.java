@@ -138,7 +138,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
             public void taskFinished(LongTask task) {
                 uiModel.setRunning(statistics, false);
                 for (StatisticsUI s : uis) {
-                    uiModel.addResult(s);
+                    uiModel.addResult(s, statistics);
                     s.unsetup();
                 }
                 if (listener != null) {

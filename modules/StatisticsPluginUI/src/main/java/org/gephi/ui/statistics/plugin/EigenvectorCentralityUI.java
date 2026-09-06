@@ -97,6 +97,11 @@ public class EigenvectorCentralityUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        return null;
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "EigenvectorCentralityUI.name");
     }

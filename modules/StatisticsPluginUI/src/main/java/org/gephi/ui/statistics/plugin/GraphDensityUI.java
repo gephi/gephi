@@ -91,6 +91,12 @@ public class GraphDensityUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((GraphDensity) statistics).getDensity());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "GraphDensityUI.name");
     }

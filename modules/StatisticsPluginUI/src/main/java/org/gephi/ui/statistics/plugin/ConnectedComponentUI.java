@@ -94,6 +94,12 @@ public class ConnectedComponentUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        DecimalFormat df = new DecimalFormat("###.###");
+        return "" + df.format(((ConnectedComponents) statistics).getConnectedComponentsCount());
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "ConnectedComponentUI.name");
     }

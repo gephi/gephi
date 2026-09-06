@@ -92,6 +92,11 @@ public class DynamicNbEdgesUI implements StatisticsUI {
     }
 
     @Override
+    public String getValue(Statistics statistics) {
+        return "";
+    }
+
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicNbEdgesUI.name");
     }
