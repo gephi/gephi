@@ -163,8 +163,9 @@ public class StatisticsModelImpl implements StatisticsModel {
                     String fileName = "image" + i + ".png";
                     File file = tempDir.createFile(fileName);
 
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(imageBytes);
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
+                        fos.write(imageBytes);
+                    }
 
                     String path = "file:" + file.getAbsolutePath();
                     builder.append(path);
