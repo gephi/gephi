@@ -5,8 +5,8 @@
 [![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
 [![Downloads](https://img.shields.io/opencollective/backers/gephi)](https://opencollective.com/gephi)
 
-[![Release](https://img.shields.io/github/v/release/gephi/gephi)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
-[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.11.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.11.2)
+[![Release](https://img.shields.io/github/v/release/gephi/gephi)](https://github.com/gephi/gephi/releases/tag/v0.11.3)
+[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.11.3/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.11.3)
 	
 
 

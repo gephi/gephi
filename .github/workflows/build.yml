@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches-ignore:
-      - 0.11.3
+      - 0.11.4
       - weblate**
 
 jobs:
