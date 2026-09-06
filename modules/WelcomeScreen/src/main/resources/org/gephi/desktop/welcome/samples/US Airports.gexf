@@ -1321,7 +1321,7 @@
         <viz:position x="-858.14594" y="-242.61609"/>
         <viz:color r="233" g="241" b="230"/>
       </node>
-      <node id="119" label="Louis Armstrong New OrlÃ©ans International Airport">
+      <node id="119" label="Louis Armstrong New Orléans International Airport">
         <attvalues>
           <attvalue for="code" value="MSY"/>
           <attvalue for="city" value="New Orleans"/>
