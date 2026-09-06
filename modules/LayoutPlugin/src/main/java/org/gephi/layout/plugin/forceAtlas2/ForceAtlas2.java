@@ -45,6 +45,7 @@ package org.gephi.layout.plugin.forceAtlas2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -69,6 +70,12 @@ import org.openide.util.NbBundle;
  */
 public class ForceAtlas2 implements Layout {
 
+    private static final int TASKS_PER_THREAD = 8;
+    private static final double JITTER_TOLERANCE_COEFFICIENT = 0.05;
+    private static final double MAX_JITTER_TOLERANCE = 10d;
+    private static final double MIN_SPEED_EFFICIENCY = 0.05;
+    private static final double MAX_SPEED = 1_000d;
+    private static final double MAX_SPEED_RISE = 0.5;
     private final ForceAtlas2Builder layoutBuilder;
     double outboundAttCompensation = 1;
     private GraphModel graphModel;
@@ -111,19 +118,7 @@ public class ForceAtlas2 implements Layout {
         try {
             Node[] nodes = graph.getNodes().toArray();
 
-            // Initialise layout data
-            for (Node n : nodes) {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
-                    ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
-                    n.setLayoutData(nLayout);
-                }
-                ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                nLayout.mass = 1 + graph.getDegree(n);
-                nLayout.old_dx = 0;
-                nLayout.old_dy = 0;
-                nLayout.dx = 0;
-                nLayout.dy = 0;
-            }
+            initializeLayoutData(nodes, true);
 
             pool = Executors.newFixedThreadPool(threadCount);
             currentThreadCount = threadCount;
@@ -143,6 +138,23 @@ public class ForceAtlas2 implements Layout {
         return w;
     }
 
+    private void initializeLayoutData(Node[] nodes, boolean resetDisplacements) {
+        for (Node node : nodes) {
+            ForceAtlas2LayoutData nodeLayout;
+            if (node.getLayoutData() instanceof ForceAtlas2LayoutData existingLayout) {
+                nodeLayout = existingLayout;
+            } else {
+                nodeLayout = new ForceAtlas2LayoutData();
+                node.setLayoutData(nodeLayout);
+            }
+            nodeLayout.mass = 1 + graph.getDegree(node);
+            nodeLayout.oldDx = resetDisplacements ? 0d : nodeLayout.dx;
+            nodeLayout.oldDy = resetDisplacements ? 0d : nodeLayout.dy;
+            nodeLayout.dx = 0d;
+            nodeLayout.dy = 0d;
+        }
+    }
+
 
     @Override
     public void goAlgo() {
@@ -158,19 +170,7 @@ public class ForceAtlas2 implements Layout {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 
-            // Initialise layout data
-            for (Node n : nodes) {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
-                    ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
-                    n.setLayoutData(nLayout);
-                }
-                ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                nLayout.mass = 1 + graph.getDegree(n);
-                nLayout.old_dx = nLayout.dx;
-                nLayout.old_dy = nLayout.dy;
-                nLayout.dx = 0;
-                nLayout.dy = 0;
-            }
+            initializeLayoutData(nodes, false);
 
             // If Barnes Hut active, initialize root region
             if (isBarnesHutOptimize()) {
@@ -189,89 +189,94 @@ public class ForceAtlas2 implements Layout {
             }
 
             // Repulsion (and gravity)
-            // NB: Muti-threaded
-            RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(isAdjustSizes(), getScalingRatio());
+            // NB: Multi-threaded
+            RepulsionForce repulsionForce = ForceFactory.INSTANCE.buildRepulsion(isAdjustSizes(), getScalingRatio());
 
-            int taskCount = 8 *
+            int taskCount = TASKS_PER_THREAD *
                 currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
             // We make more tasks than threads because some tasks may need more time to compute.
-            ArrayList<Future> threads = new ArrayList();
+            List<Future<?>> tasks = new ArrayList<>();
             for (int t = taskCount; t > 0; t--) {
                 int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
                 int to = (int) Math.floor(nodes.length * t / taskCount);
-                Future future = pool.submit(
+                Future<?> task = pool.submit(
                     new NodesThread(nodes, from, to, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(),
-                        (isStrongGravityMode()) ? (ForceFactory.builder.getStrongGravity(getScalingRatio())) :
-                            (Repulsion), getScalingRatio(), rootRegion, Repulsion));
-                threads.add(future);
+                        isStrongGravityMode() ? ForceFactory.INSTANCE.getStrongGravity(getScalingRatio())
+                            : repulsionForce,
+                        getScalingRatio(), rootRegion, repulsionForce));
+                tasks.add(task);
             }
-            for (Future future : threads) {
+            for (Future<?> task : tasks) {
                 try {
-                    future.get();
-                } catch (Exception e) {
+                    task.get();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Unable to layout " + getClass().getSimpleName() + ".", e);
+                } catch (ExecutionException e) {
                     throw new RuntimeException("Unable to layout " + this.getClass().getSimpleName() + ".", e);
                 }
             }
 
             // Attraction
-            AttractionForce Attraction = ForceFactory.builder
+            AttractionForce attractionForce = ForceFactory.INSTANCE
                 .buildAttraction(isLinLogMode(), isOutboundAttractionDistribution(), isAdjustSizes(),
-                    1 * ((isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)));
+                    isOutboundAttractionDistribution() ? outboundAttCompensation : 1d);
             if (getEdgeWeightInfluence() == 0) {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), 1);
+                    attractionForce.apply(e.getSource(), e.getTarget(), 1d);
                 }
             } else if (getEdgeWeightInfluence() == 1) {
                 if (isNormalizeEdgeWeights()) {
-                    Double w;
-                    Double edgeWeightMin = Double.MAX_VALUE;
-                    Double edgeWeightMax = Double.MIN_VALUE;
+                    double weight;
+                    double edgeWeightMin = Double.POSITIVE_INFINITY;
+                    double edgeWeightMax = Double.NEGATIVE_INFINITY;
                     for (Edge e : edges) {
-                        w = getEdgeWeight(e, isDynamicWeight, interval);
-                        edgeWeightMin = Math.min(w, edgeWeightMin);
-                        edgeWeightMax = Math.max(w, edgeWeightMax);
+                        weight = getEdgeWeight(e, isDynamicWeight, interval);
+                        edgeWeightMin = Math.min(weight, edgeWeightMin);
+                        edgeWeightMax = Math.max(weight, edgeWeightMax);
                     }
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
-                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
+                            weight = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
                                 (edgeWeightMax - edgeWeightMin);
-                            Attraction.apply(e.getSource(), e.getTarget(), w);
+                            attractionForce.apply(e.getSource(), e.getTarget(), weight);
                         }
                     } else {
                         for (Edge e : edges) {
-                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+                            attractionForce.apply(e.getSource(), e.getTarget(), 1d);
                         }
                     }
                 } else {
                     for (Edge e : edges) {
-                        Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
+                        attractionForce.apply(e.getSource(), e.getTarget(),
+                            getEdgeWeight(e, isDynamicWeight, interval));
                     }
                 }
             } else {
                 if (isNormalizeEdgeWeights()) {
-                    Double w;
-                    Double edgeWeightMin = Double.MAX_VALUE;
-                    Double edgeWeightMax = Double.MIN_VALUE;
+                    double weight;
+                    double edgeWeightMin = Double.POSITIVE_INFINITY;
+                    double edgeWeightMax = Double.NEGATIVE_INFINITY;
                     for (Edge e : edges) {
-                        w = getEdgeWeight(e, isDynamicWeight, interval);
-                        edgeWeightMin = Math.min(w, edgeWeightMin);
-                        edgeWeightMax = Math.max(w, edgeWeightMax);
+                        weight = getEdgeWeight(e, isDynamicWeight, interval);
+                        edgeWeightMin = Math.min(weight, edgeWeightMin);
+                        edgeWeightMax = Math.max(weight, edgeWeightMax);
                     }
                     if (edgeWeightMin < edgeWeightMax) {
                         for (Edge e : edges) {
-                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
+                            weight = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) /
                                 (edgeWeightMax - edgeWeightMin);
-                            Attraction.apply(e.getSource(), e.getTarget(),
-                                Math.pow(w, getEdgeWeightInfluence()));
+                            attractionForce.apply(e.getSource(), e.getTarget(),
+                                Math.pow(weight, getEdgeWeightInfluence()));
                         }
                     } else {
                         for (Edge e : edges) {
-                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+                            attractionForce.apply(e.getSource(), e.getTarget(), 1d);
                         }
                     }
                 } else {
                     for (Edge e : edges) {
-                        Attraction.apply(e.getSource(), e.getTarget(),
+                        attractionForce.apply(e.getSource(), e.getTarget(),
                             Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
                     }
                 }
@@ -280,32 +285,31 @@ public class ForceAtlas2 implements Layout {
             // Auto adjust speed
             double totalSwinging = 0d;  // How much irregular movement
             double totalEffectiveTraction = 0d;  // Hom much useful movement
-            for (Node n : nodes) {
-                ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                if (!n.isFixed()) {
+            for (Node node : nodes) {
+                ForceAtlas2LayoutData nodeLayout = node.getLayoutData();
+                if (!node.isFixed()) {
                     double swinging =
-                        Math.sqrt(Math.pow(nLayout.old_dx - nLayout.dx, 2) + Math.pow(nLayout.old_dy - nLayout.dy, 2));
-                    totalSwinging += nLayout.mass *
+                        Math.hypot(nodeLayout.oldDx - nodeLayout.dx, nodeLayout.oldDy - nodeLayout.dy);
+                    totalSwinging += nodeLayout.mass *
                         swinging;   // If the node has a burst change of direction, then it's not converging.
-                    totalEffectiveTraction += nLayout.mass * 0.5 *
-                        Math.sqrt(Math.pow(nLayout.old_dx + nLayout.dx, 2) + Math.pow(nLayout.old_dy + nLayout.dy, 2));
+                    totalEffectiveTraction += nodeLayout.mass * 0.5 *
+                        Math.hypot(nodeLayout.oldDx + nodeLayout.dx, nodeLayout.oldDy + nodeLayout.dy);
                 }
             }
             // We want that swingingMovement < tolerance * convergenceMovement
 
             // Optimize jitter tolerance
             // The 'right' jitter tolerance for this network. Bigger networks need more tolerance. Denser networks need less tolerance. Totally empiric.
-            double estimatedOptimalJitterTolerance = 0.05 * Math.sqrt(nodes.length);
+            double estimatedOptimalJitterTolerance = JITTER_TOLERANCE_COEFFICIENT * Math.sqrt(nodes.length);
             double minJT = Math.sqrt(estimatedOptimalJitterTolerance);
-            double maxJT = 10;
+            double maxJT = MAX_JITTER_TOLERANCE;
             double jt = jitterTolerance * Math.max(minJT,
-                Math.min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction / Math.pow(nodes.length, 2)));
-
-            double minSpeedEfficiency = 0.05;
+                Math.min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction /
+                    ((double) nodes.length * nodes.length)));
 
             // Protection against erratic behavior
             if (totalSwinging / totalEffectiveTraction > 2.0) {
-                if (speedEfficiency > minSpeedEfficiency) {
+                if (speedEfficiency > MIN_SPEED_EFFICIENCY) {
                     speedEfficiency *= 0.5;
                 }
                 jt = Math.max(jt, jitterTolerance);
@@ -316,59 +320,55 @@ public class ForceAtlas2 implements Layout {
             // Speed efficiency is how the speed really corresponds to the swinging vs. convergence tradeoff
             // We adjust it slowly and carefully
             if (totalSwinging > jt * totalEffectiveTraction) {
-                if (speedEfficiency > minSpeedEfficiency) {
+                if (speedEfficiency > MIN_SPEED_EFFICIENCY) {
                     speedEfficiency *= 0.7;
                 }
-            } else if (speed < 1000) {
+            } else if (speed < MAX_SPEED) {
                 speedEfficiency *= 1.3;
             }
 
             // But the speed shoudn't rise too much too quickly, since it would make the convergence drop dramatically.
-            double maxRise = 0.5;   // Max rise: 50%
-            speed = speed + Math.min(targetSpeed - speed, maxRise * speed);
+            speed += Math.min(targetSpeed - speed, MAX_SPEED_RISE * speed);
 
             // Apply forces
             if (isAdjustSizes()) {
                 // If nodes overlap prevention is active, it's not possible to trust the swinging mesure.
-                for (Node n : nodes) {
-                    ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                    if (!n.isFixed()) {
+                for (Node node : nodes) {
+                    ForceAtlas2LayoutData nodeLayout = node.getLayoutData();
+                    if (!node.isFixed()) {
 
                         // Adaptive auto-speed: the speed of each node is lowered
                         // when the node swings.
-                        double swinging = nLayout.mass * Math.sqrt(
-                            (nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) +
-                                (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
+                        double swinging = nodeLayout.mass * Math.hypot(
+                            nodeLayout.oldDx - nodeLayout.dx, nodeLayout.oldDy - nodeLayout.dy);
                         double factor = 0.1 * speed / (1f + Math.sqrt(speed * swinging));
 
-                        double df = Math.sqrt(Math.pow(nLayout.dx, 2) + Math.pow(nLayout.dy, 2));
+                        double df = Math.hypot(nodeLayout.dx, nodeLayout.dy);
                         factor = df == 0 ? 0 : Math.min(factor * df, 10.) / df;
 
-                        double x = n.x() + nLayout.dx * factor;
-                        double y = n.y() + nLayout.dy * factor;
+                        double x = node.x() + nodeLayout.dx * factor;
+                        double y = node.y() + nodeLayout.dy * factor;
 
-                        n.setX((float) x);
-                        n.setY((float) y);
+                        node.setX((float) x);
+                        node.setY((float) y);
                     }
                 }
             } else {
-                for (Node n : nodes) {
-                    ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                    if (!n.isFixed()) {
+                for (Node node : nodes) {
+                    ForceAtlas2LayoutData nodeLayout = node.getLayoutData();
+                    if (!node.isFixed()) {
 
                         // Adaptive auto-speed: the speed of each node is lowered
                         // when the node swings.
-                        double swinging = nLayout.mass * Math.sqrt(
-                            (nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) +
-                                (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
-                        //double factor = speed / (1f + Math.sqrt(speed * swinging));
+                        double swinging = nodeLayout.mass * Math.hypot(
+                            nodeLayout.oldDx - nodeLayout.dx, nodeLayout.oldDy - nodeLayout.dy);
                         double factor = speed / (1f + Math.sqrt(speed * swinging));
 
-                        double x = n.x() + nLayout.dx * factor;
-                        double y = n.y() + nLayout.dy * factor;
+                        double x = node.x() + nodeLayout.dx * factor;
+                        double y = node.y() + nodeLayout.dy * factor;
 
-                        n.setX((float) x);
-                        n.setY((float) y);
+                        node.setX((float) x);
+                        node.setY((float) y);
                     }
                 }
             }
