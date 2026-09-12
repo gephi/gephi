@@ -45,26 +45,10 @@ public class InstancedNodeData extends AbstractNodeData {
             return;
         }
 
-        final float maxObservedSize = data.getMaxNodeSize() * data.getZoom();
-        final int circleVertexCount;
-        final int firstVertex;
-        if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-            circleVertexCount = circleMesh64.vertexCount;
-            firstVertex = firstVertex64;
-        } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-            circleVertexCount = circleMesh32.vertexCount;
-            firstVertex = firstVertex32;
-        } else if (maxObservedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-            circleVertexCount = circleMesh16.vertexCount;
-            firstVertex = firstVertex16;
-        } else {
-            circleVertexCount = circleMesh8.vertexCount;
-            firstVertex = firstVertex8;
-        }
 
         GLFunctions.drawInstanced(
             gl,
-            firstVertex, circleVertexCount, instanceCount
+            0, 6, instanceCount
         );
         GLFunctions.stopUsingProgram(gl);
         unsetupVertexArrayAttributes(gl);

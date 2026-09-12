@@ -63,25 +63,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
         for (int i = 0; i < instanceCount; i++) {
             attribs.get(attrs);
 
-            //Choose LOD:
             final float size = attrs[3];
-            final float observedSize = size * zoom;
-
-            final int circleVertexCount;
-            final int firstVertex;
-            if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-                circleVertexCount = circleMesh64.vertexCount;
-                firstVertex = firstVertex64;
-            } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-                circleVertexCount = circleMesh32.vertexCount;
-                firstVertex = firstVertex32;
-            } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-                circleVertexCount = circleMesh16.vertexCount;
-                firstVertex = firstVertex16;
-            } else {
-                circleVertexCount = circleMesh8.vertexCount;
-                firstVertex = firstVertex8;
-            }
 
             //Define instance attributes:
             gl.glVertexAttrib2fv(SHADER_POSITION_LOCATION, attrs, 0);
@@ -99,7 +81,7 @@ public class ArrayDrawNodeData extends AbstractNodeData {
             gl.glVertexAttrib1f(SHADER_SIZE_LOCATION, size);
 
             //Draw the instance:
-            GLFunctions.drawArraysSingleInstance(gl, firstVertex, circleVertexCount);
+            GLFunctions.drawArraysSingleInstance(gl, 0, 6);
         }
 
         GLFunctions.stopUsingProgram(gl);
