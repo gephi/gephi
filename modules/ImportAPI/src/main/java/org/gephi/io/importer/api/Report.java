@@ -45,10 +45,13 @@ package org.gephi.io.importer.api;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -339,7 +342,8 @@ public final class Report {
         private final BufferedWriter writer;
 
         public Writer(File file) throws IOException {
-            FileWriter fileWriter = new FileWriter(file, true);
+            OutputStreamWriter fileWriter =
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8);
             writer = new BufferedWriter(fileWriter);
         }
 
@@ -349,13 +353,37 @@ public final class Report {
                 writer.append(level.toString());
             }
             writer.append(";");
-            writer.append(entry.message);
+            writer.append(escape(entry.message));
             writer.append("\n");
         }
 
         public void close() throws IOException {
             writer.flush();
             writer.close();
+        }
+
+        private static String escape(String message) {
+            StringBuilder sb = new StringBuilder(message.length());
+            for (int i = 0; i < message.length(); i++) {
+                char c = message.charAt(i);
+                switch (c) {
+                    case '\\':
+                        sb.append("\\\\");
+                        break;
+                    case ';':
+                        sb.append("\\;");
+                        break;
+                    case '\n':
+                        sb.append("\\n");
+                        break;
+                    case '\r':
+                        sb.append("\\r");
+                        break;
+                    default:
+                        sb.append(c);
+                }
+            }
+            return sb.toString();
         }
     }
 
@@ -369,7 +397,7 @@ public final class Report {
         private boolean closed;
 
         public Reader(File file) throws IOException {
-            FileReader fileReader = new FileReader(file);
+            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             reader = new LineNumberReader(fileReader);
         }
 
@@ -397,14 +425,14 @@ public final class Report {
         @Override
         public ReportEntry next() {
             if (pointer.startsWith(";")) {
-                return new ReportEntry(pointer.substring(1));
+                return new ReportEntry(unescape(pointer.substring(1)));
             } else {
                 int index = pointer.indexOf(";");
                 if (index == -1) {
-                    return new ReportEntry(pointer);
+                    return new ReportEntry(unescape(pointer));
                 } else {
                     String levelStr = pointer.substring(0, index);
-                    String message = pointer.substring(index + 1);
+                    String message = unescape(pointer.substring(index + 1));
                     return new ReportEntry(new Issue(message, Level.valueOf(levelStr)));
                 }
             }
@@ -423,6 +451,35 @@ public final class Report {
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
+        }
+
+        private static String unescape(String message) {
+            StringBuilder sb = new StringBuilder(message.length());
+            for (int i = 0; i < message.length(); i++) {
+                char c = message.charAt(i);
+                if (c == '\\' && i + 1 < message.length()) {
+                    char next = message.charAt(++i);
+                    switch (next) {
+                        case 'n':
+                            sb.append('\n');
+                            break;
+                        case 'r':
+                            sb.append('\r');
+                            break;
+                        case ';':
+                            sb.append(';');
+                            break;
+                        case '\\':
+                            sb.append('\\');
+                            break;
+                        default:
+                            sb.append(next);
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+            return sb.toString();
         }
     }
 
