@@ -45,10 +45,13 @@ package org.gephi.io.importer.api;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -339,7 +342,8 @@ public final class Report {
         private final BufferedWriter writer;
 
         public Writer(File file) throws IOException {
-            FileWriter fileWriter = new FileWriter(file, true);
+            OutputStreamWriter fileWriter =
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8);
             writer = new BufferedWriter(fileWriter);
         }
 
@@ -393,7 +397,7 @@ public final class Report {
         private boolean closed;
 
         public Reader(File file) throws IOException {
-            FileReader fileReader = new FileReader(file);
+            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             reader = new LineNumberReader(fileReader);
         }
 
