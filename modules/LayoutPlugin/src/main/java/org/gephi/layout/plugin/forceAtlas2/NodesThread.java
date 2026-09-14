@@ -43,7 +43,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
-import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
+import org.gephi.layout.plugin.forceAtlas2.force.gravity.IGravity;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionNode;
+import org.gephi.layout.plugin.forceAtlas2.force.repulsion.IRepulsionRegion;
 
 /**
  * @author Mathieu Jacomy
@@ -54,49 +56,45 @@ public class NodesThread implements Runnable {
     private final int from;
     private final int to;
     private final Region rootRegion;
-    private final boolean barnesHutOptimize;
-    private final RepulsionForce Repulsion;
-    private final double barnesHutTheta;
-    private final double gravity;
-    private final RepulsionForce GravityForce;
-    private final double scaling;
+    private final IGravity GravityForce;
+    private final ForceAtlas2.ForceAtlas2Params params;
+    private final IRepulsionNode repulsionNode;
+    private final IRepulsionRegion repulsionRegion;
 
-    public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
-                       RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {
+
+    public NodesThread(Node[] nodes, int from, int to, ForceAtlas2.ForceAtlas2Params params, Region rootRegion,
+                       IGravity GravityForce, IRepulsionNode repulsionNode, IRepulsionRegion repulsionRegion) {
         this.nodes = nodes;
         this.from = from;
         this.to = to;
         this.rootRegion = rootRegion;
-        this.barnesHutOptimize = barnesHutOptimize;
-        this.Repulsion = Repulsion;
-        this.barnesHutTheta = barnesHutTheta;
-        this.gravity = gravity;
+        this.params = params;
+        this.repulsionNode = repulsionNode;
+        this.repulsionRegion = repulsionRegion;
         this.GravityForce = GravityForce;
-        this.scaling = scaling;
+
     }
 
     @Override
     public void run() {
         // Repulsion
-        if (barnesHutOptimize) {
+        if (params.barnesHutOptimize) {
             for (int nIndex = from; nIndex < to; nIndex++) {
                 Node n = nodes[nIndex];
-                rootRegion.applyForce(n, Repulsion, barnesHutTheta);
+                rootRegion.applyForce(n, this.repulsionNode, this.repulsionRegion, params.barnesHutTheta);
+                GravityForce.accept(n, params.gravity / params.scalingRatio);
             }
         } else {
             for (int n1Index = from; n1Index < to; n1Index++) {
                 Node n1 = nodes[n1Index];
                 for (int n2Index = 0; n2Index < n1Index; n2Index++) {
                     Node n2 = nodes[n2Index];
-                    Repulsion.apply(n1, n2);
+                    repulsionNode.accept(n1, n2);
                 }
+                GravityForce.accept(n1, params.gravity / params.scalingRatio);
             }
         }
 
-        // Gravity
-        for (int nIndex = from; nIndex < to; nIndex++) {
-            Node n = nodes[nIndex];
-            GravityForce.apply(n, gravity / scaling);
-        }
+
     }
 }
