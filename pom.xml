@@ -255,7 +255,7 @@
 
         <gephi.build-helper-maven-plugin.version>3.6.1</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>14.3</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>14.5</gephi.nbm-maven-plugin.version>
         
         <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
