@@ -166,7 +166,7 @@ public class ImporterGML implements FileImporter, LongTask {
     }
 
     private boolean parseGraph(ArrayList list) {
-        if ((list.size() & 1) != 0) {
+        if (!isValidPropertyList(list)) {
             return false;
         }
         Progress.switchToDeterminate(progressTicket, list.size());
@@ -176,8 +176,14 @@ public class ImporterGML implements FileImporter, LongTask {
             Object key = list.get(i);
             Object value = list.get(i + 1);
             if ("node".equals(key)) {
+                if (!(value instanceof ArrayList)) {
+                    return false;
+                }
                 ret = parseNode((ArrayList) value);
             } else if ("edge".equals(key)) {
+                if (!(value instanceof ArrayList)) {
+                    return false;
+                }
                 ret = parseEdge((ArrayList) value);
             } else if ("directed".equals(key)) {
                 if (value instanceof Number) {
@@ -201,6 +207,22 @@ public class ImporterGML implements FileImporter, LongTask {
             Progress.progress(progressTicket);
         }
         return ret;
+    }
+
+    private boolean isValidPropertyList(ArrayList list) {
+        if ((list.size() & 1) != 0) {
+            return false;
+        }
+        for (int i = 0; i < list.size(); i += 2) {
+            if (!(list.get(i) instanceof String)) {
+                return false;
+            }
+            Object value = list.get(i + 1);
+            if (value instanceof ArrayList && !isValidPropertyList((ArrayList) value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean parseNode(ArrayList list) {
