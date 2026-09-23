@@ -52,9 +52,9 @@ import org.gephi.graph.spi.LayoutData;
 public class ForceAtlas2LayoutData implements LayoutData {
     //Data
 
-    public double dx = 0;
-    public double dy = 0;
-    public double old_dx = 0;
-    public double old_dy = 0;
-    public double mass = 1;
+    public double dx;
+    public double dy;
+    public double oldDx;
+    public double oldDy;
+    public double mass = 1d;
 }
