@@ -154,6 +154,22 @@ public class ExporterTest {
     }
 
     @Test
+    public void testPNGExporterTooLarge() {
+        // GEPHI-65R: width * height overflowing Integer.MAX_VALUE used to crash with
+        // NegativeArraySizeException instead of failing cleanly.
+        PNGExporter pngExporter = new PNGExporter();
+        pngExporter.setWidth(50000);
+        pngExporter.setHeight(50000);
+
+        try {
+            pngExporter.execute();
+            Assert.fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException ex) {
+            // Expected
+        }
+    }
+
+    @Test
     public void testSVGExporter() throws IOException {
         Workspace workspace = createCondensedNodeGraph();
         
