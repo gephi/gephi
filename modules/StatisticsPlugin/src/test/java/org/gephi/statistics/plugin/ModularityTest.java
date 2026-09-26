@@ -42,7 +42,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.statistics.plugin;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import junit.framework.TestCase;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
@@ -327,5 +331,42 @@ public class ModularityTest extends TestCase {
             1., true, false);
 
         assertTrue(modularityValues.isEmpty());
+    }
+
+    /**
+     * Regression test for #1630: modularity must terminate. On this five-node graph a node can be
+     * tied between its own community and a neighbouring one; when ties were allowed to move a node,
+     * about 2% of node orders swapped nodes back and forth forever. Every order must now finish.
+     */
+    @Test
+    public void testModularityTerminatesWhenCommunitiesTie() throws InterruptedException {
+        int[][] edges = {{0, 1}, {0, 2}, {0, 3}, {2, 4}, {1, 4}, {3, 4}, {2, 3}};
+        for (int order = 0; order < 1000; order++) {
+            GraphModel graphModel = GraphModel.Factory.newInstance();
+            UndirectedGraph graph = graphModel.getUndirectedGraph();
+            List<Integer> nodeOrder = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                nodeOrder.add(i);
+            }
+            Collections.shuffle(nodeOrder, new Random(order));
+            Node[] nodes = new Node[5];
+            for (int i : nodeOrder) {
+                nodes[i] = graphModel.factory().newNode(String.valueOf(i));
+                graph.addNode(nodes[i]);
+            }
+            for (int[] e : edges) {
+                graph.addEdge(graphModel.factory().newEdge(nodes[e[0]], nodes[e[1]], false));
+            }
+
+            Modularity mod = new Modularity();
+            Thread run = new Thread(() -> mod.execute(graph));
+            run.setDaemon(true);
+            run.start();
+            run.join(10_000);
+            if (run.isAlive()) {
+                mod.cancel();
+                fail("Modularity did not terminate for node order " + order);
+            }
+        }
     }
 }
