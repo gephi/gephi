@@ -42,11 +42,15 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.exporter.preview;
 
+import javax.swing.text.JTextComponent;
 import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.lib.validation.ValidationClient;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
+import org.openide.util.NbBundle;
 
 public class UIExporterPNGPanel extends javax.swing.JPanel implements ValidationClient {
 
@@ -200,10 +204,38 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     @Override
     public void validate(ValidationGroup group) {
         group.add(widthTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
-            StringValidators.numberRange(1, Integer.MAX_VALUE));
+            StringValidators.numberRange(1, Integer.MAX_VALUE), new MaxPixelCountValidator(heightTextField));
         group.add(heightTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
-            StringValidators.numberRange(1, Integer.MAX_VALUE));
+            StringValidators.numberRange(1, Integer.MAX_VALUE), new MaxPixelCountValidator(widthTextField));
         group.add(marginTextField, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER,
             StringValidators.numberRange(0, 100));
+    }
+
+    private static class MaxPixelCountValidator implements Validator<String> {
+
+        private final JTextComponent otherDimensionField;
+
+        MaxPixelCountValidator(JTextComponent otherDimensionField) {
+            this.otherDimensionField = otherDimensionField;
+        }
+
+        @Override
+        public Class<String> modelType() {
+            return String.class;
+        }
+
+        @Override
+        public void validate(Problems problems, String compName, String model) {
+            try {
+                long dimension = Long.parseLong(model);
+                long otherDimension = Long.parseLong(otherDimensionField.getText());
+                if (dimension * otherDimension > PNGExporter.MAX_PIXEL_COUNT) {
+                    problems.add(NbBundle.getMessage(getClass(), "UIExporterPNGPanel.error.tooLarge",
+                        PNGExporter.MAX_PIXEL_COUNT));
+                }
+            } catch (NumberFormatException ex) {
+                // The individual numberRange/REQUIRE_VALID_INTEGER validators already report this.
+            }
+        }
     }
 }

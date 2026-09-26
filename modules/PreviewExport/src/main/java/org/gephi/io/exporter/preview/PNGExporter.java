@@ -60,11 +60,18 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
 public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
+
+    /**
+     * BufferedImage backs its pixels with an int[] array, so width * height cannot exceed
+     * Integer.MAX_VALUE without overflowing into a negative size and crashing the allocation.
+     */
+    public static final long MAX_PIXEL_COUNT = Integer.MAX_VALUE;
 
     private ProgressTicket progress;
     private boolean cancel = false;
@@ -79,6 +86,12 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
 
     @Override
     public boolean execute() {
+        long pixelCount = (long) width * (long) height;
+        if (pixelCount > MAX_PIXEL_COUNT) {
+            throw new IllegalArgumentException(
+                NbBundle.getMessage(PNGExporter.class, "PNGExporter.error.tooLarge", width, height, MAX_PIXEL_COUNT));
+        }
+
         Progress.start(progress);
 
         PreviewController ctrl
