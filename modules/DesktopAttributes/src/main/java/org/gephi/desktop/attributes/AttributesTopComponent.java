@@ -119,6 +119,9 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
                 setup((AttributesUIModelImpl) evt.getNewValue());
             }
         } else if (evt.getPropertyName().equals(AttributesUIModelEvent.EDIT_MODE)) {
+            if (model == null) {
+                return;
+            }
             setup(this.model);
         }
     }
@@ -161,6 +164,9 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
     }
 
     private void showColumnsPopup(MouseEvent e) {
+        if (model == null) {
+            return;
+        }
         List<Column> columns = model.getEligibleColumns();
 
         JPopupMenu popup = new JPopupMenu();
