@@ -15,7 +15,7 @@
     <name>ExportPlugin</name>
 
     <properties>
-        <gephi.woodstox.version>6.4.0</gephi.woodstox.version>
+        <gephi.woodstox.version>7.2.2</gephi.woodstox.version>
     </properties>
 
     <dependencies>
