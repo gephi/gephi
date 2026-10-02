@@ -964,6 +964,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Creates the buttons that call the AttributeColumnManipulators.
      */
     private void prepareColumnManipulatorsButtons() {
+        if (graphModel == null) {
+            return;
+        }
+
         Table table;
         Column[] columns;
         if (isShowingNodesTable()) {
