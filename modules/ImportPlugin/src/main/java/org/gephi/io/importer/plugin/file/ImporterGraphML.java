@@ -450,10 +450,15 @@ public class ImporterGraphML implements FileImporter, LongTask {
             edge = container.factory().newEdgeDraft();
         }
 
-        NodeDraft nodeSource = container.getNode(source);
-        NodeDraft nodeTarget = container.getNode(target);
-        edge.setSource(nodeSource);
-        edge.setTarget(nodeTarget);
+        boolean validEndpoints = true;
+        if (source.isEmpty() || target.isEmpty()) {
+            validEndpoints = false;
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_edgeendpoint",
+                id.isEmpty() ? "?" : id, source, target), Issue.Level.SEVERE));
+        } else {
+            edge.setSource(container.getNode(source));
+            edge.setTarget(container.getNode(target));
+        }
         if (type != null && !type.isEmpty()) {
             //Edge labels not retained on graphml export https://github.com/gephi/gephi/issues/1516
             edge.setType(type);
@@ -496,7 +501,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     break;
             }
         }
-        container.addEdge(edge);
+        if (validEndpoints) {
+            container.addEdge(edge);
+        }
     }
 
     private void readEdgeAttValue(XMLStreamReader reader, EdgeDraft edge) throws Exception {

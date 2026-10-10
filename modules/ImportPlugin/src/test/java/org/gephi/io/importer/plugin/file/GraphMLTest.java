@@ -49,4 +49,15 @@ public class GraphMLTest {
             Assert.assertTrue(e.getMessage(), e.getMessage().contains("line 6"));
         }
     }
+
+    @Test
+    public void testEmptyEdgeEndpoint() {
+        ImporterGraphML importer = new ImporterGraphML();
+        importer.setReader(Utils.getReader("emptyedgeendpoint.graphml"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        Utils.assertSameEdges(Utils.toEdgesArray(container), "n0 -> n1");
+    }
 }
