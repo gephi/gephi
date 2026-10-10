@@ -32,4 +32,15 @@ public class GraphMLTest {
         Utils.assertSameLabels(Utils.toNodesArray(container), "foo", "bar");
         Utils.assertSameLabels(Utils.toEdgesArray(container), "foobar");
     }
+
+    @Test
+    public void testEmptyEdgeEndpoint() {
+        ImporterGraphML importer = new ImporterGraphML();
+        importer.setReader(Utils.getReader("emptyedgeendpoint.graphml"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        Utils.assertSameEdges(Utils.toEdgesArray(container), "n0 -> n1");
+    }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" version="1.3">
+    <graph defaultedgetype="directed">
+        <nodes>
+            <node id="n0"/>
+            <node id="n1"/>
+        </nodes>
+        <edges>
+            <edge id="e0" source="n0" target="n1"/>
+            <edge id="e1" source="n0" target=""/>
+            <edge id="e2" source="" target="n1"/>
+        </edges>
+    </graph>
+</gexf>
