@@ -143,6 +143,10 @@ public class EdtWatchdogTest {
         t.start();
         try {
             Assert.assertTrue(started.await(5, TimeUnit.SECONDS));
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while (t.getState() != Thread.State.WAITING && System.nanoTime() < deadline) {
+                Thread.sleep(5);
+            }
             String dump = EdtWatchdog.threadDump(null);
             Assert.assertTrue(dump.contains("\"Loading <path>.gexf\""));
             Assert.assertFalse(dump.contains("jane"));
