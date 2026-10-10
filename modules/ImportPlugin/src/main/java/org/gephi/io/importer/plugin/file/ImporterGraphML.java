@@ -93,6 +93,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     private static final String ATTRIBUTE_TYPE = "attr.type";
     private static final String ATTRIBUTE_DEFAULT = "default";
     private static final String ATTRIBUTE_FOR = "for";
+    private static final String ATTRIBUTE_YFILES_TYPE = "yfiles.type";
     private static final String ATTVALUE = "data";
     private static final String ATTVALUE_FOR = "key";
     private static final String DESC = "desc";
@@ -609,6 +610,10 @@ public class ImporterGraphML implements FileImporter, LongTask {
             title = id;
         }
 
+        if (reader.getAttributeValue(null, ATTRIBUTE_YFILES_TYPE) != null) {
+            return;
+        }
+
         boolean property = false;
         if (!id.isEmpty()) {
             //Properties
@@ -654,6 +659,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     new Issue(
                         NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_graphattributes", title),
                         Issue.Level.WARNING));
+            } else if (forStr.equalsIgnoreCase("graphml") || forStr.equalsIgnoreCase("port")) {
+                return;
             } else if (forStr.isEmpty() || !(forStr.equalsIgnoreCase("node") || forStr.equalsIgnoreCase("edge") ||
                 forStr.equalsIgnoreCase("all"))) {
                 report.logIssue(
