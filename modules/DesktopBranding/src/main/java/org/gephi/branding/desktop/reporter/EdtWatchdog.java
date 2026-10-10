@@ -24,11 +24,13 @@ import org.openide.util.NbPreferences;
 
 /**
  * Detects a frozen Swing event dispatch thread and reports it to Sentry. A hang or deadlock never
- * throws, so without this nothing reaches Sentry and the session counts as crash-free.
+ * throws, so without this nothing reaches Sentry. Hangs are reported as handled errors, since an
+ * unresponsive EDT can recover, and therefore don't make the session count as crashed.
  * <p>
  * A daemon thread posts a no-op to the EDT every {@link #INTERVAL_MS}. If one is still pending
  * after {@link #THRESHOLD_MS}, one event is captured with the EDT stack, a thread dump and any
- * deadlock. Nothing more is reported until the EDT runs a probe again. Time during which the
+ * deadlock. Nothing more is reported until the EDT runs a probe again, and at most
+ * {@link #MAX_REPORTS_PER_SESSION} hangs are reported per session. Time during which the
  * watchdog itself did not run (machine asleep, process suspended) is not counted.
  * <p>
  * Sent automatically only when the user opted in to automatic crash reports, as
@@ -230,7 +232,11 @@ public final class EdtWatchdog {
     }
 
     /**
-     * @param edt the event dispatch thread, or {@code null} if no probe has run on it yet
+     * Captures a Sentry event for an unresponsive EDT.
+     *
+     * @param probedEdt the event dispatch thread as last seen by a probe, or {@code null} if no
+     *                  probe has run on it yet, in which case it is looked up by name
+     * @param hungForMs how long the EDT has been unresponsive, in milliseconds
      */
     static void captureHang(Thread probedEdt, long hungForMs) {
         Thread edt = probedEdt != null ? probedEdt : findEdt();
@@ -284,8 +290,8 @@ public final class EdtWatchdog {
     }
 
     /**
-     * Full thread dump, deadlocked threads first, with paths removed from thread and lock names.
-     * Unlike {@link ThreadInfo#toString()}, stacks are not truncated.
+     * Full thread dump, deadlocked threads first, scrubbed of file paths with
+     * {@link SentryScrubber#scrub}. Unlike {@link ThreadInfo#toString()}, stacks are not truncated.
      */
     static String threadDump(long[] deadlocked) {
         ThreadMXBean mx = ManagementFactory.getThreadMXBean();

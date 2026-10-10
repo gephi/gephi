@@ -306,6 +306,8 @@ public class Installer extends ModuleInstall {
     /**
      * Best-effort end time of the previous run: NetBeans rotates messages.log to messages.log.1
      * at startup, so its last-modified time is roughly when the previous run last logged.
+     *
+     * @return that time, or {@code null} (meaning "now") if it is unavailable or implausible
      */
     private static Date getLastSeenTimestamp(Date sessionStarted) {
         String userDir = System.getProperty("netbeans.user");
