@@ -80,6 +80,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReportController;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
+import org.gephi.branding.desktop.reporter.SentryScrubber;
 import org.netbeans.api.options.OptionsDisplayer;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.NbBundle;
@@ -203,6 +204,7 @@ public class Installer extends ModuleInstall {
             // manual report submitted by the user.
             options.setEnableUncaughtExceptionHandler(false);
             options.setEnableDeduplication(false);
+            options.setBeforeSend(SentryScrubber::beforeSend);
         });
         boolean disableAll = NbPreferences.forModule(ReportController.class)
             .getBoolean(ReportController.DISABLE_ALL_TRACKING, false);
