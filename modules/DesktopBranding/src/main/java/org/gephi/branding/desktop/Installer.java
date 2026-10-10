@@ -58,7 +58,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.module.ModuleDescriptor;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -117,9 +116,20 @@ public class Installer extends ModuleInstall {
     protected static boolean isNewVersion(String latest, String current) {
         String gephiVersionTst = current.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z -]", "");
         latest = latest.replaceAll("[a-zA-Z -]", "");
-        int res = ModuleDescriptor.Version.parse(gephiVersionTst)
-            .compareTo(ModuleDescriptor.Version.parse(latest));
-        return res < 0;
+        int[] currentParts = majorMinor(gephiVersionTst);
+        int[] latestParts = majorMinor(latest);
+        if (currentParts[0] != latestParts[0]) {
+            return currentParts[0] < latestParts[0];
+        }
+        return currentParts[1] < latestParts[1];
+    }
+
+    private static int[] majorMinor(String version) {
+        String[] parts = version.trim().split("\\.");
+        return new int[] {
+            Integer.parseInt(parts[0]),
+            parts.length > 1 ? Integer.parseInt(parts[1]) : 0
+        };
     }
 
     @Override
