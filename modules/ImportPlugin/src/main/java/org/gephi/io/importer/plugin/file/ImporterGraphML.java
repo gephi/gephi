@@ -176,6 +176,14 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     }
                 }
             }
+        } catch (XMLStreamException e) {
+            Location location = e.getLocation();
+            if (location != null) {
+                throw new RuntimeException("Invalid XML at line " + location.getLineNumber() + ", column " +
+                    location.getColumnNumber() + ": " + e.getMessage() +
+                    " (control characters such as ESC are not allowed in XML and must be removed from the file)", e);
+            }
+            throw new RuntimeException(e);
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
