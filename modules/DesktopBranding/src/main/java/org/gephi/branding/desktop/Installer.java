@@ -44,18 +44,27 @@ package org.gephi.branding.desktop;
 
 import io.sentry.Sentry;
 import io.sentry.SentryLevel;
+import io.sentry.SentryOptions;
+import io.sentry.Session;
+import io.sentry.cache.EnvelopeCache;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.module.ModuleDescriptor;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -78,6 +87,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import org.gephi.branding.desktop.reporter.EdtWatchdog;
 import org.gephi.branding.desktop.reporter.ReportController;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.branding.desktop.reporter.SentryScrubber;
@@ -102,6 +112,7 @@ public class Installer extends ModuleInstall {
         "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.us.sentry.io/85815";
     private static final String LATEST_GEPHI_VERSION_URL =
         "https://raw.githubusercontent.com/gephi/gephi/gh-pages/latest";
+    private static final String ABNORMAL_EXIT_MECHANISM = "unclean_exit";
 
     protected static boolean isNewVersion(String latest, String current) {
         String gephiVersionTst = current.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z -]", "");
@@ -126,6 +137,9 @@ public class Installer extends ModuleInstall {
         if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {
             Logger.getLogger("").addHandler(new ReporterHandler());
         }
+
+        //EDT hang watchdog
+        WindowManager.getDefault().invokeWhenUIReady(EdtWatchdog::install);
 
         //Memory Starvation Manager
         if (System.getProperty("org.gephiMemoryStarvationManager.enabled", "true").equals("true")) {
@@ -163,6 +177,7 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void close() {
+        EdtWatchdog.uninstall();
         closeSession();
     }
 
@@ -185,6 +200,8 @@ public class Installer extends ModuleInstall {
     }
 
     private void initSession() {
+        boolean disableAll = NbPreferences.forModule(ReportController.class)
+            .getBoolean(ReportController.DISABLE_ALL_TRACKING, false);
         Sentry.init(options -> {
             String gephiVersion = System.getProperty("netbeans.productversion");
             if (!gephiVersion.contains("SNAPSHOT")) {
@@ -205,9 +222,14 @@ public class Installer extends ModuleInstall {
             options.setEnableUncaughtExceptionHandler(false);
             options.setEnableDeduplication(false);
             options.setBeforeSend(SentryScrubber::beforeSend);
+            // Persist the current session to disk so a session that was never ended (force-quit,
+            // kill after a deadlock, JVM crash) can be reported on the next launch.
+            String cacheDir = getSentryCacheDir();
+            if (cacheDir != null) {
+                options.setCacheDirPath(cacheDir);
+                finalizeUncleanPreviousSession(options, disableAll);
+            }
         });
-        boolean disableAll = NbPreferences.forModule(ReportController.class)
-            .getBoolean(ReportController.DISABLE_ALL_TRACKING, false);
         if (!disableAll) {
             try {
                 Sentry.startSession();
@@ -226,6 +248,76 @@ public class Installer extends ModuleInstall {
                 }
             }
         }
+    }
+
+    private static String getSentryCacheDir() {
+        String userDir = System.getProperty("netbeans.user");
+        if (userDir == null || userDir.isEmpty()) {
+            return null;
+        }
+        File cacheDir = new File(userDir, "var" + File.separator + "cache" + File.separator + "sentry");
+        if ((!cacheDir.isDirectory() && !cacheDir.mkdirs()) || !cacheDir.canWrite()) {
+            Logger.getLogger(Installer.class.getName())
+                .log(Level.INFO, "Sentry cache dir not writable: {0}", cacheDir);
+            return null;
+        }
+        return cacheDir.getAbsolutePath();
+    }
+
+    /**
+     * On the desktop JVM, Sentry's PreviousSessionFinalizer ends a leftover session as "exited"
+     * (i.e. healthy). Only Android's ANR hint marks it abnormal. If the previous run left its
+     * session file behind (no clean {@link #closeSession()}), mark it abnormal here, before
+     * Sentry.init() moves it to previous_session.json and the finalizer sends it as-is.
+     */
+    private static void finalizeUncleanPreviousSession(SentryOptions options, boolean disableAll) {
+        // Resolved after setDsn(), so it includes the DSN hash sub-directory used by the SDK
+        String cacheDirPath = options.getCacheDirPath();
+        if (cacheDirPath == null) {
+            return;
+        }
+        File sessionFile = EnvelopeCache.getCurrentSessionFile(cacheDirPath);
+        if (!sessionFile.isFile()) {
+            return;
+        }
+        if (disableAll) {
+            sessionFile.delete();
+            return;
+        }
+        try {
+            Session session;
+            try (Reader reader = Files.newBufferedReader(sessionFile.toPath(), StandardCharsets.UTF_8)) {
+                session = options.getSerializer().deserialize(reader, Session.class);
+            }
+            if (session == null || session.getStatus() != Session.State.Ok) {
+                return;
+            }
+            session.update(Session.State.Abnormal, null, false, ABNORMAL_EXIT_MECHANISM);
+            session.end(getLastSeenTimestamp(session.getStarted()));
+            try (Writer writer = Files.newBufferedWriter(sessionFile.toPath(), StandardCharsets.UTF_8)) {
+                options.getSerializer().serialize(session, writer);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(Installer.class.getName())
+                .log(Level.INFO, "Can't finalize previous Sentry session", e);
+        }
+    }
+
+    /**
+     * Best-effort end time of the previous run: NetBeans rotates messages.log to messages.log.1
+     * at startup, so its last-modified time is roughly when the previous run last logged.
+     */
+    private static Date getLastSeenTimestamp(Date sessionStarted) {
+        String userDir = System.getProperty("netbeans.user");
+        if (userDir == null || sessionStarted == null) {
+            return null;
+        }
+        File previousLog = new File(userDir, "var" + File.separator + "log" + File.separator + "messages.log.1");
+        long lastModified = previousLog.lastModified();
+        if (lastModified > sessionStarted.getTime() && lastModified <= System.currentTimeMillis()) {
+            return new Date(lastModified);
+        }
+        return null;
     }
 
     private void showAnalyticsConsentNotification() {
