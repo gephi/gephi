@@ -265,10 +265,10 @@ public class Installer extends ModuleInstall {
     }
 
     /**
-     * On the desktop JVM, Sentry's PreviousSessionFinalizer ends a leftover session as "exited"
-     * (i.e. healthy). Only Android's ANR hint marks it abnormal. If the previous run left its
-     * session file behind (no clean {@link #closeSession()}), mark it abnormal here, before
-     * Sentry.init() moves it to previous_session.json and the finalizer sends it as-is.
+     * Sentry's PreviousSessionFinalizer ends a leftover session as "exited" (i.e. healthy). If the
+     * previous run left its session file behind (no clean {@link #closeSession()}), mark it
+     * abnormal here, before Sentry.init() moves it to previous_session.json and the finalizer
+     * sends it as-is.
      */
     private static void finalizeUncleanPreviousSession(SentryOptions options, boolean disableAll) {
         // Resolved after setDsn(), so it includes the DSN hash sub-directory used by the SDK
