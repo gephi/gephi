@@ -53,8 +53,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -71,15 +76,23 @@ import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Graph;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * @author Mathieu Bastian
  */
 public class PartitionPanel extends javax.swing.JPanel {
 
-    private PartitionFilter filter;
+    private static final RequestProcessor RP = new RequestProcessor("PartitionPanel", 1);
+    private final RequestProcessor.Task refreshTask = RP.create(this::load);
+    private final RequestProcessor.Task selectAllTask = RP.create(this::selectAllParts);
+    private final AtomicReference<Request> request = new AtomicReference<>();
+    private int requestId;
+    private volatile boolean selectAllRequested;
+    private volatile PartitionFilter filter;
     private JPopupMenu popupMenu;
     private JMenuItem flattenItem;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -189,26 +202,90 @@ public class PartitionPanel extends javax.swing.JPanel {
     }
 
     private void refresh(Partition partition, PartitionFilter filter) {
-        final DefaultListModel model = new DefaultListModel();
-        Set<Object> currentParts = filter.getParts();
+        boolean flatten = filter.isFlattenList() && filter.getColumn().isArray();
+        request.set(new Request(++requestId, partition, filter, filter.getGraph(), flatten));
+        refreshTask.schedule(0);
+    }
 
-        if (filter.isFlattenList() && filter.getColumn().isArray()) {
-            int i = 0;
-            for (Object p : filter.getFlattenParts()) {
-                PartWrapper pw = new PartWrapper(p, 0, new Color(0xDDDDDD));
-                pw.setFlattened(true);
-                pw.setEnabled(currentParts.contains(p));
-                model.add(i++, pw);
-            }
-        } else {
-            int i = 0;
-            for (Object p : partition.getSortedValues(filter.getGraph())) {
-                PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
-                pw.setEnabled(currentParts.contains(p));
-                model.add(i++, pw);
-            }
+    //Partition values and counts can take the graph lock (columns without index, edge types), keep them off the EDT
+    private void load() {
+        final Request r = request.getAndSet(null);
+        if (r == null) {
+            return;
         }
-        list.setModel(model);
+        final Object[] parts;
+        final float[] percentages;
+        try {
+            if (r.flatten) {
+                parts = r.filter.getFlattenParts().toArray();
+                percentages = new float[parts.length];
+            } else {
+                //getSortedValues() would count again at each comparison
+                List<Map.Entry<Object, Integer>> counts = new ArrayList<>();
+                for (Object p : r.partition.getValues(r.graph)) {
+                    counts.add(new AbstractMap.SimpleImmutableEntry<>(p, r.partition.count(p, r.graph)));
+                }
+                counts.sort((c1, c2) -> Integer.compare(c2.getValue(), c1.getValue()));
+                int total = r.partition.getElementCount(r.graph);
+                parts = new Object[counts.size()];
+                percentages = new float[parts.length];
+                for (int i = 0; i < parts.length; i++) {
+                    int count = counts.get(i).getValue();
+                    parts[i] = counts.get(i).getKey();
+                    percentages[i] = 100f * ((float) count / total);
+                }
+            }
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (r.id != requestId) {
+                    return;
+                }
+                final DefaultListModel model = new DefaultListModel();
+                Set<Object> currentParts = r.filter.getParts();
+
+                for (int i = 0; i < parts.length; i++) {
+                    PartWrapper pw;
+                    if (r.flatten) {
+                        pw = new PartWrapper(parts[i], 0, new Color(0xDDDDDD));
+                        pw.setFlattened(true);
+                    } else {
+                        pw = new PartWrapper(parts[i], percentages[i], r.partition.getColor(parts[i]));
+                    }
+                    pw.setEnabled(currentParts.contains(parts[i]));
+                    model.add(i, pw);
+                }
+                list.setModel(model);
+            }
+        });
+    }
+
+    private void selectAllParts() {
+        final PartitionFilter f = filter;
+        try {
+            f.selectAll();
+            if (!selectAllRequested) {
+                //Unselect all was clicked while waiting for the lock, it comes last
+                f.unselectAll();
+            }
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (f == filter) {
+                    refresh(f.getPartition(), f);
+                }
+            }
+        });
     }
 
     private void createPopup() {
@@ -229,8 +306,8 @@ public class PartitionPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                filter.selectAll();
-                refresh(filter.getPartition(), filter);
+                selectAllRequested = true;
+                selectAllTask.schedule(0);
             }
         });
         popupMenu.add(selectItem);
@@ -240,7 +317,13 @@ public class PartitionPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                selectAllRequested = false;
                 filter.unselectAll();
+                //The list is rebuilt asynchronously, meanwhile it must not show stale checked items
+                for (int i = 0; i < list.getModel().getSize(); i++) {
+                    ((PartWrapper) list.getModel().getElementAt(i)).setEnabled(false);
+                }
+                list.repaint();
                 refresh(filter.getPartition(), filter);
             }
         });
@@ -254,6 +337,8 @@ public class PartitionPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 FilterProperty flattenList = filter.getProperties()[2];
                 flattenList.setValue(!(Boolean)flattenList.getValue());
+                //The old items have the wrong shape for the new mode, they must not be clickable until the rebuild
+                list.setModel(new DefaultListModel());
                 refresh(filter.getPartition(), filter);
             }
         });
@@ -283,6 +368,23 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private static class Request {
+
+        private final int id;
+        private final Partition partition;
+        private final PartitionFilter filter;
+        private final Graph graph;
+        private final boolean flatten;
+
+        public Request(int id, Partition partition, PartitionFilter filter, Graph graph, boolean flatten) {
+            this.id = id;
+            this.partition = partition;
+            this.filter = filter;
+            this.graph = graph;
+            this.flatten = flatten;
+        }
+    }
 
     private static class PartWrapper {
 

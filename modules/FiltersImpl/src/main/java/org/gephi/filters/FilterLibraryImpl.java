@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.filters;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -82,7 +82,7 @@ public class FilterLibraryImpl implements FilterLibrary {
             content.add(catBuilder);
         }
 
-        buildersMap = new HashMap<>();
+        buildersMap = new ConcurrentHashMap<>();
     }
 
     private void buildBuildersMap() {
