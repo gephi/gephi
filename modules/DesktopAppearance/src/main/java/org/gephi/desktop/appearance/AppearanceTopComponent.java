@@ -52,6 +52,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -67,9 +68,11 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.appearance//Appearance//EN",
@@ -85,6 +88,7 @@ import org.openide.windows.TopComponent;
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
 
     //Const
+    private static final RequestProcessor RP = new RequestProcessor("AppearanceTopComponent", 1);
     private final String NO_SELECTION =
         NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     private transient final AppearanceToolbar toolbar;
@@ -95,7 +99,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private transient JToggleButton listButton;
     private transient ItemListener attributeListener;
     private transient SplineEditor splineEditor;
-    private transient AppearanceUIModel model;
+    private transient volatile AppearanceUIModel model;
+    private final transient RequestProcessor.Task comboTask = RP.create(this::loadCombo);
+    private final transient AtomicInteger comboGeneration = new AtomicInteger();
+    // Model to list the functions of, captured on the calling thread; null when the selected transformer has no list
+    private transient volatile AppearanceUIModel comboModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JComboBox attibuteBox;
@@ -142,11 +150,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS)
             || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
             refreshCenterPanel();
-            refreshCombo();
+            refreshCombo(true);
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_FUNCTION)) {
             refreshCenterPanel();
-            refreshCombo();
+            refreshCombo(false);
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_AUTO_APPLY)) {
             refreshControls();
@@ -155,7 +163,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_LOCAL_SCALE)) {
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.ATTRIBUTE_LIST)) {
-            refreshCombo();
+            refreshCombo(false);
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.REFRESH_FUNCTION)) {
             refreshCenterPanel();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_TRANSFORM_NULL_VALUES)) {
@@ -182,7 +190,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         this.model = model;
         refreshEnable();
         refreshCenterPanel();
-        refreshCombo();
+        refreshCombo(true);
         refreshControls();
 
         //South visible
@@ -257,24 +265,51 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         });
     }
 
-    private void refreshCombo() {
+    // clear: the current list is not valid for the new selection, so never show it while the new one is loading
+    private void refreshCombo(boolean clear) {
         final AppearanceUIModel currentModel = model;
-        if (currentModel != null && currentModel.getSelectedTransformerUI() != null &&
-            currentModel.isAttributeTransformerUI(currentModel.getSelectedTransformerUI())) {
-
-
-            final List<Function> rows = new ArrayList<>(currentModel.getFunctions());
-
-            Collections.sort(rows, (o1, o2) -> {
-                if (o1.isAttribute() && !o2.isAttribute()) {
-                    return 1;
-                } else if (!o1.isAttribute() && o2.isAttribute()) {
-                    return -1;
-                }
-                return o1.toString().compareTo(o2.toString());
-            });
-
+        final TransformerUI ui = currentModel != null ? currentModel.getSelectedTransformerUI() : null;
+        comboModel = ui != null && currentModel.isAttributeTransformerUI(ui) ? currentModel : null;
+        //Incremented first so a pending apply of the old list is dropped, the clear then precedes any later apply
+        comboGeneration.incrementAndGet();
+        if (clear) {
             SwingUtilities.invokeLater(() -> {
+                attibuteBox.removeItemListener(attributeListener);
+                attibuteBox.setModel(new DefaultComboBoxModel());
+            });
+        }
+        comboTask.schedule(0);
+    }
+
+    // Off the EDT: listing the functions reads the graph, which long-running statistics can lock for minutes
+    private void loadCombo() {
+        final int generation = comboGeneration.get();
+        final AppearanceUIModel currentModel = comboModel;
+        List<Function> loaded = null;
+        if (currentModel != null) {
+            try {
+                loaded = new ArrayList<>(currentModel.getFunctions());
+
+                Collections.sort(loaded, (o1, o2) -> {
+                    if (o1.isAttribute() && !o2.isAttribute()) {
+                        return 1;
+                    } else if (!o1.isAttribute() && o2.isAttribute()) {
+                        return -1;
+                    }
+                    return o1.toString().compareTo(o2.toString());
+                });
+            } catch (RuntimeException ex) {
+                Exceptions.printStackTrace(ex);
+                loaded = null;
+            }
+        }
+
+        final List<Function> rows = loaded;
+        if (rows != null) {
+            SwingUtilities.invokeLater(() -> {
+                if (generation != comboGeneration.get()) {
+                    return;
+                }
                 final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 
                 //Ranking
@@ -312,7 +347,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             });
         } else {
             SwingUtilities.invokeLater(() -> {
-                attibuteBox.setModel(new DefaultComboBoxModel());
+                if (generation == comboGeneration.get()) {
+                    attibuteBox.setModel(new DefaultComboBoxModel());
+                }
             });
         }
     }

@@ -63,6 +63,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -81,7 +82,9 @@ import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * @author Mathieu Bastian
@@ -89,9 +92,14 @@ import org.openide.util.NbBundle;
 public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     private static final int PALETTE_DISPLAY_LIMIT = 15;
+    private static final RequestProcessor RP = new RequestProcessor("PartitionColorTransformerPanel", 1);
     private final PalettePopupButton palettePopupButton;
+    private final RequestProcessor.Task setupTask = RP.create(this::loadValues);
+    private volatile PartitionFunction setupFunction;
     private PartitionFunction function;
-    private Collection<Object> values;
+    private Collection<Object> values = Collections.emptyList();
+    private int partitionSize;
+    private boolean ignoreNull;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JScrollPane centerScrollPane;
@@ -108,96 +116,131 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(PartitionFunction function) {
-        this.function = function;
+        setupFunction = function;
+        setupTask.schedule(0);
+    }
+
+    // Off the EDT: long-running statistics can hold the graph lock for minutes, the table keeps its content meanwhile
+    private void loadValues() {
+        try {
+            readValues(setupFunction);
+        } catch (RuntimeException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private void readValues(final PartitionFunction loadedFunction) {
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
-        Partition partition = function.getPartition();
-        Graph graph = function.getGraph();
+        Partition partition = loadedFunction.getPartition();
+        Graph graph = loadedFunction.getGraph();
+        final boolean loadedIgnoreNull = !loadedFunction.getModel().isTransformNullValues();
+        final Collection<Object> loadedValues;
+        final int size;
+        final List<Object[]> rows = new ArrayList<>();
 
         graph.readLock();
         try {
-            boolean ignoreNull = !function.getModel().isTransformNullValues();
-            values = function.isValid() ? partition.getSortedValues(function.getGraph()) : Collections.EMPTY_LIST;
+            boolean valid = loadedFunction.isValid();
+            loadedValues = valid ? partition.getSortedValues(graph) : Collections.EMPTY_LIST;
+            size = valid ? partition.size(graph) : 0;
 
-            int valuesSize = 0;
             int nullElements = 0;
-            List<Object> nullColors = new ArrayList<>();
-            for (Object val : values) {
-                if (!ignoreNull || val != null) {
-                    Color c = partition.getColor(val);
-                    if (c.equals(Partition.DEFAULT_COLOR)) {
-                        nullColors.add(val);
-                    }
-                    valuesSize++;
-                } else {
+            for (Object value : loadedValues) {
+                if (loadedIgnoreNull && value == null) {
                     // Will be used firther for the percentage calculation
-                    nullElements = function.getPartition().count(null, function.getGraph());
+                    nullElements = partition.count(null, graph);
                 }
             }
 
-            int valuesWithColors = valuesSize - nullColors.size();
-            if (!nullColors.isEmpty() && valuesWithColors < 8) {
-                Color[] cls = PaletteGenerator.generatePalette(Math.min(8, valuesSize), 5, new Random(42L));
-                int i = 0;
-                for (Object val : nullColors) {
-                    int index = valuesWithColors + i++;
-                    if (index < cls.length) {
-                        partition.setColor(val, cls[index]);
-                    }
-                }
-            }
-
-            //Model
-            String[] columnNames = new String[] {"Color", "Partition", "Percentage"};
-            DefaultTableModel model = new DefaultTableModel(columnNames, valuesSize) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return column == 0;
-                }
-            };
-            table.setModel(model);
-
-            String countMsg = NbBundle
-                .getMessage(PartitionColorTransformerPanel.class,
-                    "PartitionColorTransformerPanel.tooltip.elementsCount");
-
-            TableColumn partCol = table.getColumnModel().getColumn(1);
-            partCol.setCellRenderer(new TextRenderer(null));
-
-            TableColumn percCol = table.getColumnModel().getColumn(2);
-            percCol.setCellRenderer(new TextRenderer(countMsg));
-            percCol.setPreferredWidth(60);
-            percCol.setMaxWidth(60);
-
-            TableColumn colorCol = table.getColumnModel().getColumn(0);
-            colorCol.setCellEditor(new ColorChooserEditor());
-            colorCol.setCellRenderer(new ColorChooserRenderer());
-            colorCol.setPreferredWidth(16);
-            colorCol.setMaxWidth(16);
-
-            int j = 0;
-            for (Object value : values) {
-                if (!ignoreNull || value != null) {
+            for (Object value : loadedValues) {
+                if (!loadedIgnoreNull || value != null) {
                     String displayName = value == null ? "null" :
                         value.getClass().isArray() ? AttributeUtils.printArray(value) : value.toString();
                     int count = partition.count(value, graph);
                     float percentage = (float) count / (partition.getElementCount(graph) - nullElements);
-                    model.setValueAt(value, j, 0);
-                    model.setValueAt(displayName, j, 1);
                     String percCount = count + "_(" + formatter.format(percentage) + ")";
-                    model.setValueAt(percCount, j, 2);
-                    j++;
+                    rows.add(new Object[] {value, displayName, percCount});
                 }
             }
         } finally {
             graph.readUnlock();
+        }
+
+        SwingUtilities.invokeLater(() -> applyValues(loadedFunction, loadedValues, size, loadedIgnoreNull, rows));
+    }
+
+    private void applyValues(PartitionFunction loadedFunction, Collection<Object> loadedValues, int size,
+                             boolean loadedIgnoreNull, List<Object[]> rows) {
+        if (loadedFunction != setupFunction) {
+            return;
+        }
+        function = loadedFunction;
+        values = loadedValues;
+        partitionSize = size;
+        ignoreNull = loadedIgnoreNull;
+        Partition partition = loadedFunction.getPartition();
+
+        int valuesSize = rows.size();
+        List<Object> nullColors = new ArrayList<>();
+        for (Object[] row : rows) {
+            Color c = partition.getColor(row[0]);
+            if (c.equals(Partition.DEFAULT_COLOR)) {
+                nullColors.add(row[0]);
+            }
+        }
+
+        int valuesWithColors = valuesSize - nullColors.size();
+        if (!nullColors.isEmpty() && valuesWithColors < 8) {
+            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, valuesSize), 5, new Random(42L));
+            int i = 0;
+            for (Object val : nullColors) {
+                int index = valuesWithColors + i++;
+                if (index < cls.length) {
+                    partition.setColor(val, cls[index]);
+                }
+            }
+        }
+
+        //Model
+        String[] columnNames = new String[] {"Color", "Partition", "Percentage"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, valuesSize) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+        table.setModel(model);
+
+        String countMsg = NbBundle
+            .getMessage(PartitionColorTransformerPanel.class,
+                "PartitionColorTransformerPanel.tooltip.elementsCount");
+
+        TableColumn partCol = table.getColumnModel().getColumn(1);
+        partCol.setCellRenderer(new TextRenderer(null));
+
+        TableColumn percCol = table.getColumnModel().getColumn(2);
+        percCol.setCellRenderer(new TextRenderer(countMsg));
+        percCol.setPreferredWidth(60);
+        percCol.setMaxWidth(60);
+
+        TableColumn colorCol = table.getColumnModel().getColumn(0);
+        colorCol.setCellEditor(new ColorChooserEditor());
+        colorCol.setCellRenderer(new ColorChooserRenderer());
+        colorCol.setPreferredWidth(16);
+        colorCol.setMaxWidth(16);
+
+        for (int j = 0; j < valuesSize; j++) {
+            Object[] row = rows.get(j);
+            model.setValueAt(row[0], j, 0);
+            model.setValueAt(row[1], j, 1);
+            model.setValueAt(row[2], j, 2);
         }
     }
 
     private void applyPalette(Palette palette) {
         Color[] colors = palette.getColors();
         int i = 0;
-        boolean ignoreNull = !function.getModel().isTransformNullValues();
         for (Object value : values) {
             if (!ignoreNull || value != null) {
                 Color col = colors[i++];
@@ -209,8 +252,10 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     }
 
     void saveCurrentPaletteAsRecent() {
+        if (function == null) {
+            return;
+        }
         List<Color> colors = new ArrayList<>();
-        boolean ignoreNull = !function.getModel().isTransformNullValues();
         for (Object value : values) {
             if (!ignoreNull || value != null) {
                 Color c = function.getPartition().getColor(value);
@@ -402,8 +447,10 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int size = function.getPartition().size(function.getGraph());
-                    JPopupMenu menu = createPopup(size);
+                    if (function == null) {
+                        return;
+                    }
+                    JPopupMenu menu = createPopup(partitionSize);
                     menu.show(PalettePopupButton.this, 0, getHeight());
                 }
             });
