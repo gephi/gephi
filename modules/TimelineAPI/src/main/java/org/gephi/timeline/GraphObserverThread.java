@@ -6,7 +6,8 @@
 
 package org.gephi.timeline;
 
-import org.gephi.graph.api.GraphModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.Interval;
 
 /**
@@ -14,6 +15,7 @@ import org.gephi.graph.api.Interval;
  */
 public class GraphObserverThread extends Thread {
 
+    private static final Logger LOGGER = Logger.getLogger(GraphObserverThread.class.getName());
     private final TimelineControllerImpl timelineController;
     private final TimelineModelImpl timelineModel;
     private volatile boolean stop;
@@ -22,23 +24,37 @@ public class GraphObserverThread extends Thread {
     public GraphObserverThread(TimelineControllerImpl controller, TimelineModelImpl model) {
         this.timelineModel = model;
         this.timelineController = controller;
-        this.interval = model.getGraphModel().getTimeBounds();
+        this.interval = model.getTimeBounds();
     }
 
     @Override
     public void run() {
         while (!stop) {
-            GraphModel graphModel = timelineModel.getGraphModel();
-            Interval bounds = graphModel.getTimeBounds();
-            if (!bounds.equals(interval)) {
-                interval = bounds;
-                timelineController.setMinMax(this, interval.getLow(), interval.getHigh());
+            try {
+                poll();
+            } catch (RuntimeException ex) {
+                //Keep polling, this thread is what keeps the bounds cache fresh
+                LOGGER.log(Level.WARNING, "Failed to observe the time bounds", ex);
             }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
 
             }
+        }
+    }
+
+    void poll() {
+        Interval bounds = timelineModel.getGraphModel().getTimeBounds();
+        if (stop) {
+            //Stopped while waiting for the graph lock, do not publish a stale result
+            return;
+        }
+        //Cached before the events are fired so the listeners always read the new bounds
+        timelineModel.setTimeBounds(bounds);
+        if (!bounds.equals(interval)) {
+            interval = bounds;
+            timelineController.setMinMax(this, interval.getLow(), interval.getHigh());
         }
     }
 

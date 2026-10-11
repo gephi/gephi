@@ -73,14 +73,18 @@ public class TimelineModelImpl implements TimelineModel, Model {
     //MinMax
     private double previousMin;
     private double previousMax;
+    //Last observed time bounds, so that UI threads never wait for the graph lock
+    private volatile Interval timeBounds;
     //
     private Interval interval;
 
     public TimelineModelImpl(Workspace workspace) {
         this.workspace = workspace;
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.customMin = graphModel.getTimeBounds().getLow();
-        this.customMax = graphModel.getTimeBounds().getHigh();
+        Interval bounds = graphModel.getTimeBounds();
+        this.timeBounds = bounds;
+        this.customMin = bounds.getLow();
+        this.customMax = bounds.getHigh();
         this.previousMin = customMin;
         this.previousMax = customMax;
         playDelay = 100;
@@ -109,12 +113,12 @@ public class TimelineModelImpl implements TimelineModel, Model {
 
     @Override
     public double getMin() {
-        return graphModel.getTimeBounds().getLow();
+        return timeBounds.getLow();
     }
 
     @Override
     public double getMax() {
-        return graphModel.getTimeBounds().getHigh();
+        return timeBounds.getHigh();
     }
 
     double getPreviousMin() {
@@ -182,7 +186,7 @@ public class TimelineModelImpl implements TimelineModel, Model {
 
     @Override
     public boolean hasCustomBounds() {
-        Interval tm = graphModel.getTimeBounds();
+        Interval tm = timeBounds;
         return customMax != tm.getHigh() || customMin != tm.getLow();
     }
 
@@ -230,8 +234,27 @@ public class TimelineModelImpl implements TimelineModel, Model {
 
     @Override
     public boolean hasValidBounds() {
-        Interval i = graphModel.getTimeBounds();
+        Interval i = timeBounds;
         return !Double.isInfinite(i.getLow()) && !Double.isInfinite(i.getHigh());
+    }
+
+    /**
+     * Returns the last observed time bounds. Never takes the graph lock.
+     */
+    Interval getTimeBounds() {
+        return timeBounds;
+    }
+
+    void setTimeBounds(Interval bounds) {
+        timeBounds = bounds;
+    }
+
+    /**
+     * Reads the time bounds from the graph model and caches them. This takes the graph read lock, so it must never
+     * be called from the Event Dispatch Thread.
+     */
+    void refreshTimeBounds() {
+        timeBounds = graphModel.getTimeBounds();
     }
 
     public GraphModel getGraphModel() {

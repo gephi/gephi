@@ -101,6 +101,8 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
             @Override
             public void select(Workspace workspace) {
                 TimelineModelImpl model = workspace.getLookup().lookup(TimelineModelImpl.class);
+                //The model may predate its data: refresh the cache the MODEL listeners read on the EDT
+                model.refreshTimeBounds();
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null));
                 observerThread = new GraphObserverThread(TimelineControllerImpl.this, model);
                 observerThread.start();
