@@ -520,7 +520,8 @@ public class ForceAtlas2 implements Layout {
         int nodesCount = 0;
 
         if (graphModel != null) {
-            nodesCount = graphModel.getGraphVisible().getNodeCount();
+            // Lock-free, unlike getGraphVisible(): can be called on the EDT
+            nodesCount = graphModel.getUndirectedGraphVisible().getNodeCount();
         }
 
         // Tuning
