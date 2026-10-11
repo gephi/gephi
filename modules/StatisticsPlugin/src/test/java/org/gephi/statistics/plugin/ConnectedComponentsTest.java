@@ -54,6 +54,9 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.api.LongTaskListener;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -595,5 +598,44 @@ public class ConnectedComponentsTest extends TestCase {
             throw new AssertionError("Cancelling the statistics threw", failure.get());
         }
         assertEquals(0, c.getConnectedComponentsCount());
+    }
+
+    @Test
+    public void testDeepDirectedPathGraphTarjansDoesNotStackOverflow() throws Exception {
+        // Regression test for GEPHI-6FN: tarjans() recurses once per node along the DFS
+        // chain, so a long directed path used to overflow the stack of the background
+        // thread that LongTaskExecutor runs statistics on in production.
+        int depth = 300_000;
+        GraphModel graphModel = GraphGenerator.generatePathDirectedGraph(depth);
+        DirectedGraph graph = graphModel.getDirectedGraph();
+
+        final ConnectedComponents c = new ConnectedComponents();
+        final HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        final AtomicReference<LinkedList<LinkedList<Node>>> result = new AtomicReference<>();
+        final AtomicReference<Throwable> failure = new AtomicReference<>();
+        final CountDownLatch done = new CountDownLatch(1);
+
+        //Mirrors how StatisticsControllerImpl runs statistics: a background LongTaskExecutor
+        LongTaskExecutor executor = new LongTaskExecutor(true, "ConnectedComponentsStackOverflowTest");
+        executor.setLongTaskListener(new LongTaskListener() {
+
+            @Override
+            public void taskFinished(LongTask task) {
+                done.countDown();
+            }
+
+            @Override
+            public void fatalError(Throwable t) {
+                failure.set(t);
+                done.countDown();
+            }
+        });
+        executor.execute(c, () -> result.set(c.top_tarjans(graph, indices)), "test", null);
+
+        assertTrue(done.await(60, TimeUnit.SECONDS));
+        if (failure.get() != null) {
+            throw new AssertionError("Strongly connected components computation failed", failure.get());
+        }
+        assertEquals(depth, result.get().size());
     }
 }

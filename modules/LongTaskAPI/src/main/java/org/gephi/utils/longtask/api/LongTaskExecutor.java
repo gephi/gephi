@@ -71,6 +71,14 @@ import org.openide.util.Lookup;
  */
 public final class LongTaskExecutor {
 
+    /**
+     * Stack size given to the background worker thread, well above the JVM's default
+     * (typically 512KB-1MB). Long tasks can include deep recursive algorithms (e.g. graph
+     * traversals whose recursion depth follows the longest path in the graph) for which the
+     * default stack is not always enough to avoid a StackOverflowError.
+     */
+    private static final long WORKER_STACK_SIZE = 512L * 1024 * 1024;
+
     private final boolean inBackground;
     private final long interruptDelay;
     private final String name;
@@ -465,7 +473,7 @@ public final class LongTaskExecutor {
 
         @Override
         public Thread newThread(Runnable r) {
-            return new Thread(r, name);
+            return new Thread(null, r, name, WORKER_STACK_SIZE);
         }
     }
 
