@@ -152,7 +152,8 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
     }
 
     public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns(GraphModel graphModel,
-                                                                            DataTablesModel dataTablesModel);
+                                                                            DataTablesModel dataTablesModel,
+                                                                            boolean multiGraph);
 
     private void prepareCellEditors() {
         for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
@@ -257,11 +258,14 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         return filterPattern;
     }
 
-    public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel) {
+    /**
+     * Runs on the EDT, so the graph state (time bounds, multigraph flag) comes precomputed from a worker thread.
+     */
+    public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel,
+                             Interval timeBounds, boolean multiGraph) {
         this.graphModel = graphModel;
 
         showingColumns = cols;
-        Interval timeBounds = graphModel.getTimeBounds();
         double min = timeBounds != null ? timeBounds.getLow() : 0;
         double max = timeBounds != null ? timeBounds.getHigh() : 0;
 
@@ -272,7 +276,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
             selectedElements = getElementsFromSelectedRows();
         }
         ArrayList<ElementDataColumn<T>> columns = new ArrayList<>();
-        columns.addAll(getFakeDataColumns(graphModel, dataTablesModel));
+        columns.addAll(getFakeDataColumns(graphModel, dataTablesModel, multiGraph));
 
         for (Column c : cols) {
             columns.add(new AttributeDataColumn<T>(attributeColumnsController, c));
