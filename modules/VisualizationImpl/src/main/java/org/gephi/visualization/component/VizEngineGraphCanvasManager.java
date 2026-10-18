@@ -174,6 +174,10 @@ public class VizEngineGraphCanvasManager {
 
         runOnEdtAndWait(() -> {
             glCanvas = new NewtCanvasAWT(glWindow);
+            glCanvas.getAccessibleContext().setAccessibleName(
+                NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleName"));
+            glCanvas.getAccessibleContext().setAccessibleDescription(
+                NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleDescription"));
 
             component.add(glCanvas, BorderLayout.CENTER);
 
@@ -241,6 +245,15 @@ public class VizEngineGraphCanvasManager {
 
     public synchronized boolean isInitialized() {
         return initialized;
+    }
+
+    /**
+     * Gives the keyboard focus to the graph canvas, where keys pan and zoom the graph.
+     *
+     * @return true if the canvas exists and focus is likely to be granted
+     */
+    public synchronized boolean requestCanvasFocus() {
+        return glCanvas != null && glCanvas.requestFocusInWindow();
     }
 
     private static void runOnEdtAndWait(final Runnable runnable) {

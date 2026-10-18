@@ -302,6 +302,11 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
+    public boolean requestFocusInWindow() {
+        return controller.getCanvasManager().requestCanvasFocus() || super.requestFocusInWindow();
+    }
+
+    @Override
     protected void componentActivated() {
         super.componentActivated();
         // TODO, not supported yet
