@@ -62,6 +62,7 @@ public final class WelcomeAction implements ActionListener {
                     Window window = SwingUtilities.getWindowAncestor(component);
                     if (window != null) {
                         window.toFront();
+                        window.requestFocus();
                         return;
                     }
                 }
