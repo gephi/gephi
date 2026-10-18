@@ -82,6 +82,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
      */
     public BooleanLogicOperationsUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

@@ -69,6 +69,7 @@ public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI 
      */
     public SetNodesSizeUI() {
         initComponents();
+        sizeLabel.setLabelFor(sizeText);
         sizeText.setDocument(new FloatJTextFieldFilter());
     }
 

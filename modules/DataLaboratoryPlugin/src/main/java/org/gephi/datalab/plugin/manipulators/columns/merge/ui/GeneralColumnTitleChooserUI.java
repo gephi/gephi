@@ -76,6 +76,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
      */
     public GeneralColumnTitleChooserUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

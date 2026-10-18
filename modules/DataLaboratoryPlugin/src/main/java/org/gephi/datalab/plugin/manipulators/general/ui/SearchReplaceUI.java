@@ -110,6 +110,9 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
      */
     public SearchReplaceUI() {
         initComponents();
+        searchLabel.setLabelFor(searchText);
+        replaceLabel.setLabelFor(replaceText);
+        columnsToSearchLabel.setLabelFor(columnsToSearchComboBox);
 
         searchReplaceController = Lookup.getDefault().lookup(SearchReplaceController.class);
         dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
