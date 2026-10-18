@@ -48,6 +48,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
@@ -104,6 +106,10 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
             public void run() {
                 initComponents();
                 initIcons();
+                reportEditor.getAccessibleContext().setAccessibleName(NbBundle.getMessage(
+                    ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.reportEditor.accessibleName"));
+                reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
+                reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
             }
         });
 
@@ -230,7 +236,6 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
             "ProcessorIssuesReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
         reportEditor.setEditable(false);
-        reportEditor.setFocusable(false);
         tab2ScrollPane.setViewportView(reportEditor);
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ProcessorIssuesReportPanel.class,
