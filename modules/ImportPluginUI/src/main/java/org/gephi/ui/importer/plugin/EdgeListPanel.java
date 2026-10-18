@@ -118,6 +118,16 @@ public class EdgeListPanel extends javax.swing.JPanel {
     public EdgeListPanel() {
         databaseManager = new EdgeListDatabaseManager();
         initComponents();
+        configurationLabel.setLabelFor(configurationCombo);
+        configNameLabel.setLabelFor(configNameTextField);
+        driverLabel.setLabelFor(driverComboBox);
+        hostLabel.setLabelFor(hostTextField);
+        portLabel.setLabelFor(portTextField);
+        dbLabel.setLabelFor(dbTextField);
+        userLabel.setLabelFor(userTextField);
+        pwdLabel.setLabelFor(pwdTextField);
+        nodeQueryLabel.setLabelFor(nodeQueryTextField);
+        edgeQueryLabel.setLabelFor(edgeQueryTextField);
         jXHeader1.setPreferredSize(new Dimension(100, 100));
 
         driverComboBox.addItemListener(new ItemListener() {

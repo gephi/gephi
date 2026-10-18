@@ -72,6 +72,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
      */
     public UIExporterGMLPanel() {
         initComponents();
+        spacesLabel.setLabelFor(spacesTextField);
     }
 
     public static ValidationPanel createValidationPanel(UIExporterGMLPanel innerPanel) {
