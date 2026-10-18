@@ -2,6 +2,7 @@ package org.gephi.visualization.component;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
 import org.junit.Assert;
@@ -17,10 +18,29 @@ public class VizEngineGraphCanvasManagerLockTest {
 
     @Test(timeout = 60000)
     public void testRequestCanvasFocusDoesNotBlockTheEdtWhileInitWaitsForIt() throws Exception {
+        assertDoesNotBlockTheEdt(VizEngineGraphCanvasManager::requestCanvasFocus);
+    }
+
+    @Test(timeout = 60000)
+    public void testIsCanvasShowingDoesNotBlockTheEdtWhileInitWaitsForIt() throws Exception {
+        assertDoesNotBlockTheEdt(VizEngineGraphCanvasManager::isCanvasShowing);
+    }
+
+    @Test(timeout = 60000)
+    public void testGetEngineDoesNotBlockTheEdtWhileInitWaitsForIt() throws Exception {
+        assertDoesNotBlockTheEdt(VizEngineGraphCanvasManager::getEngine);
+    }
+
+    @Test(timeout = 60000)
+    public void testGetSurfaceScaleDoesNotBlockTheEdtWhileInitWaitsForIt() throws Exception {
+        assertDoesNotBlockTheEdt(VizEngineGraphCanvasManager::getSurfaceScale);
+    }
+
+    private static void assertDoesNotBlockTheEdt(Consumer<VizEngineGraphCanvasManager> edtCall) throws Exception {
         final VizEngineGraphCanvasManager manager =
             new VizEngineGraphCanvasManager(Mockito.mock(VizController.class));
         final CountDownLatch monitorHeld = new CountDownLatch(1);
-        final CountDownLatch focusRequestQueued = new CountDownLatch(1);
+        final CountDownLatch edtCallQueued = new CountDownLatch(1);
         final CountDownLatch initDone = new CountDownLatch(1);
 
         // Like init(): holds the monitor on a worker thread, then waits for the EDT
@@ -28,7 +48,7 @@ public class VizEngineGraphCanvasManagerLockTest {
             synchronized (manager) {
                 monitorHeld.countDown();
                 try {
-                    focusRequestQueued.await();
+                    edtCallQueued.await();
                     SwingUtilities.invokeAndWait(() -> {
                     });
                     initDone.countDown();
@@ -41,10 +61,10 @@ public class VizEngineGraphCanvasManagerLockTest {
         try {
             Assert.assertTrue(monitorHeld.await(10, TimeUnit.SECONDS));
 
-            // Like TopComponentFocus when the Graph window is activated: the EDT is asked for the focus before it
-            // can serve the request that init() waits for
-            SwingUtilities.invokeLater(manager::requestCanvasFocus);
-            focusRequestQueued.countDown();
+            // Like TopComponentFocus when the Graph window is activated: the EDT is asked first, before it can serve
+            // the request that init() waits for
+            SwingUtilities.invokeLater(() -> edtCall.accept(manager));
+            edtCallQueued.countDown();
 
             Assert.assertTrue("The EDT is blocked on the manager monitor held by init()",
                 initDone.await(15, TimeUnit.SECONDS));
