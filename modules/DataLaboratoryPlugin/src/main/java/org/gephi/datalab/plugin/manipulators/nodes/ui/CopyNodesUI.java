@@ -69,6 +69,7 @@ public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
      */
     public CopyNodesUI() {
         initComponents();
+        descriptionLabel.setLabelFor(copiesSpinner);
         copiesSpinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));//Min: 1, Max:500
         JFormattedTextField spinnerText = ((JSpinner.DefaultEditor) copiesSpinner.getEditor()).getTextField();
         spinnerText.setEditable(false);//Not editable with keyboard

@@ -90,6 +90,8 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
      */
     public ConvertColumnToDynamicTimestampsUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        timestampLabel.setLabelFor(timestampText);
 
         timestampText.setText(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class)
             .get(TIMESTAMP_PREFERENCE, DEFAULT_TIMESTAMP));

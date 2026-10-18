@@ -82,6 +82,8 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
      */
     public DuplicateColumnUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        typeLabel.setLabelFor(typeComboBox);
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
