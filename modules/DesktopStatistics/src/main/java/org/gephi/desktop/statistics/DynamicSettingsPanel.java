@@ -101,6 +101,10 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     public DynamicSettingsPanel() {
         initComponents();
+        windowTimeUnitCombo.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.windowTimeUnitCombo.accessibleName"));
+        tickTimeUnitCombo.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.tickTimeUnitCombo.accessibleName"));
         jLabel1.setLabelFor(windowTextField);
         jLabel2.setLabelFor(tickTextField);
 
