@@ -991,7 +991,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         AttributeColumnsManipulator[] manipulators = dlh.getAttributeColumnsManipulators();
 
         JCommandButtonStrip currentButtonGroup =
-            new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+            new AccessibleCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
         currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
         Integer lastManipulatorType = null;
         for (AttributeColumnsManipulator acm : manipulators) {
@@ -1000,7 +1000,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             }
             if (lastManipulatorType != acm.getType()) {
                 columnManipulatorsPanel.add(currentButtonGroup);
-                currentButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+                currentButtonGroup = new AccessibleCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
                 currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
             }
             lastManipulatorType = acm.getType();
@@ -1023,10 +1023,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                                                  final AttributeColumnsManipulator acm) {
         JCommandButton manipulatorButton;
         if (acm.getIcon() != null) {
-            manipulatorButton = new JCommandButton(acm.getName(),
+            manipulatorButton = new AccessibleCommandButton(acm.getName(),
                 ImageWrapperResizableIcon.getIcon(acm.getIcon(), new Dimension(16, 16)));
         } else {
-            manipulatorButton = new JCommandButton(acm.getName());
+            manipulatorButton = new AccessibleCommandButton(acm.getName());
         }
         manipulatorButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
         manipulatorButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
@@ -1035,6 +1035,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 //            manipulatorButton.setPopupRichTooltip(new RichTooltip(
 //                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
 //                acm.getDescription()));
+            manipulatorButton.getAccessibleContext().setAccessibleDescription(acm.getDescription());
         }
 
         final ArrayList<Column> availableColumns = new ArrayList<>();
@@ -1081,9 +1082,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Create the special Add new column button.
      */
     private void prepareAddColumnButton() {
-        JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        JCommandButtonStrip strip = new AccessibleCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
         strip.setDisplayState(CommandButtonDisplayState.BIG);
-        JCommandButton button = new JCommandButton(
+        JCommandButton button = new AccessibleCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"),
             ImageWrapperResizableIcon
                 .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/table-insert-column.svg", false),
@@ -1115,9 +1116,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Create the special merge columns button.
      */
     private void prepareMergeColumnsButton() {
-        JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        JCommandButtonStrip strip = new AccessibleCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
         strip.setDisplayState(CommandButtonDisplayState.BIG);
-        JCommandButton button = new JCommandButton(
+        JCommandButton button = new AccessibleCommandButton(
             NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"),
             ImageWrapperResizableIcon
                 .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/merge.svg", false),
@@ -1229,7 +1230,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         //Add plugin general actions as a drop down list:
         final PluginGeneralActionsManipulator[] plugins = dlh.getPluginGeneralActionsManipulators();
         if (plugins != null && plugins.length > 0) {
-            JCommandButton pluginsButton = new JCommandButton(NbBundle
+            JCommandButton pluginsButton = new AccessibleCommandButton(NbBundle
                 .getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"),
                 ImageWrapperResizableIcon
                     .getIcon(ImageUtilities.loadImage("DesktopDataLaboratory/puzzle--arrow.svg", false),
@@ -1274,7 +1275,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * @return JCommandButton for the manipulator
      */
     private JCommandButton preparePluginGeneralActionsButton(final PluginGeneralActionsManipulator m) {
-        JCommandButton button = new JCommandButton(m.getName(), m.getIcon() != null ?
+        JCommandButton button = new AccessibleCommandButton(m.getName(), m.getIcon() != null ?
             ImageWrapperResizableIcon.getIcon(ImageUtilities.icon2Image(m.getIcon()), new Dimension(16, 16)) :
             null);//Convert icon to Image if it is not null
         button.setDisplayState(CommandButtonDisplayState.BIG);
@@ -1284,6 +1285,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 //            button.setPopupRichTooltip(new RichTooltip(
 //                NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"),
 //                m.getDescription()));
+            button.getAccessibleContext().setAccessibleDescription(m.getDescription());
         }
         if (m.canExecute()) {
             button.addActionListener(new ActionListener() {
