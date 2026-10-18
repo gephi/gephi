@@ -61,6 +61,10 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         initComponents();
         filterButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(SearchDialog.class, "SearchDialog.filterButton.accessibleName")); // NOI18N
         filterButton.getAccessibleContext().setAccessibleDescription(filterButton.getToolTipText());
+        searchField.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(SearchDialog.class, "SearchDialog.title"));
+        resultsList.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(SearchDialog.class, "SearchDialog.resultsList.accessibleName"));
         setup();
     }
 

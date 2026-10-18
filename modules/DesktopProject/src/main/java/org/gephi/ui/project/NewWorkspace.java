@@ -69,6 +69,8 @@ public class NewWorkspace extends javax.swing.JPanel {
      */
     public NewWorkspace() {
         initComponents();
+        labelName.setLabelFor(nameTextField);
+        labelTimeRepresentation.setLabelFor(timeRepresentationComboBox);
 
         for (TimeRepresentation tr : TimeRepresentation.values()) {
             timeRepresentationComboBox.addItem(new TimeRepresentationWrapper(tr));

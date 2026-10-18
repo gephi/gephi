@@ -99,6 +99,9 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
      */
     public NodeLabelsSettingsPanel() {
         initComponents();
+        labelNodeColor.setLabelFor(nodeColorCombo);
+        labelNodeScale.setLabelFor(nodeSizeSlider);
+        labelNodeSize.setLabelFor(nodeSizeCombo);
 
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 

@@ -134,6 +134,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         enableAutoButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.accessibleName")); // NOI18N
         enableAutoButton.getAccessibleContext().setAccessibleDescription(enableAutoButton.getToolTipText());
         initControls();
+        attibuteBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.attributeBox.accessibleName"));
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));

@@ -74,6 +74,8 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
 
     public PlaySettingsDialog() {
         initComponents();
+        labelDelay.setLabelFor(delaySpinner);
+        labelStepSize.setLabelFor(stepSizeSpinner);
     }
 
     public void setup(TimelineModel model) {
