@@ -53,7 +53,7 @@ import org.gephi.viz.engine.util.gl.OpenGLOptions;
 public class VizEngineGraphCanvasManager {
     private final VizController vizController;
     private GLWindow glWindow;
-    private NewtCanvasAWT glCanvas;
+    private volatile NewtCanvasAWT glCanvas;
     private FocusRingPanel focusRingPanel;
     private WindowListener focusRingListener;
     private FocusListener focusRingAwtListener;
@@ -307,11 +307,15 @@ public class VizEngineGraphCanvasManager {
 
     /**
      * Gives the keyboard focus to the graph canvas, where keys pan and zoom the graph.
+     * <p>
+     * Not synchronized on purpose: it is called from the EDT, for instance when the graph window is activated at
+     * startup, while {@link #init} holds the monitor and waits for the EDT.
      *
      * @return true if the canvas exists and focus is likely to be granted
      */
-    public synchronized boolean requestCanvasFocus() {
-        return glCanvas != null && glCanvas.requestFocusInWindow();
+    public boolean requestCanvasFocus() {
+        final NewtCanvasAWT canvas = glCanvas;
+        return canvas != null && canvas.requestFocusInWindow();
     }
 
     /**
