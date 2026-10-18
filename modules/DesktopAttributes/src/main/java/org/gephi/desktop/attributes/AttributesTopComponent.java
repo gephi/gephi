@@ -2,8 +2,6 @@ package org.gephi.desktop.attributes;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.JButton;
@@ -81,13 +79,8 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
             NbBundle.getMessage(AttributesTopComponent.class, "AttributesTopComponent.columnsButton.text"));
         columnsButton.setToolTipText(
             NbBundle.getMessage(AttributesTopComponent.class, "AttributesTopComponent.columnsButton.tooltip"));
-        columnsButton.setFocusable(false);
-        columnsButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showColumnsPopup(e);
-            }
-        });
+        columnsButton.setRequestFocusEnabled(false);
+        columnsButton.addActionListener(e -> showColumnsPopup());
         toolbar.add(columnsButton);
 
         add(toolbar, BorderLayout.SOUTH);
@@ -163,7 +156,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         columnsButton.setEnabled(false);
     }
 
-    private void showColumnsPopup(MouseEvent e) {
+    private void showColumnsPopup() {
         if (model == null) {
             return;
         }

@@ -386,25 +386,25 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         southToolbar.setRollover(true);
 
         org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
-        backgroundButton.setFocusable(false);
+        backgroundButton.setRequestFocusEnabled(false);
         southToolbar.add(backgroundButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
-        resetZoomButton.setFocusable(false);
+        resetZoomButton.setRequestFocusEnabled(false);
         resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(resetZoomButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(minusButton, "-"); // NOI18N
         minusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
-        minusButton.setFocusable(false);
+        minusButton.setRequestFocusEnabled(false);
         minusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         minusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(minusButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(plusButton, "+"); // NOI18N
         plusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
-        plusButton.setFocusable(false);
+        plusButton.setRequestFocusEnabled(false);
         plusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         plusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(plusButton);
@@ -413,7 +413,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         globalCanvasSizeButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/globalCanvasSize.svg", false)
         );
         globalCanvasSizeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.globalCanvasSizeButton.toolTipText")); // NOI18N
-        globalCanvasSizeButton.setFocusable(false);
+        globalCanvasSizeButton.setRequestFocusEnabled(false);
         globalCanvasSizeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         globalCanvasSizeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(globalCanvasSizeButton);

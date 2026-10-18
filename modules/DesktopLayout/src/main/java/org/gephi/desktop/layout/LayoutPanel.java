@@ -502,7 +502,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         presetsButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/preset.svg", false)); // NOI18N
         presetsButton.setText(
             org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
-        presetsButton.setFocusable(false);
+        presetsButton.setRequestFocusEnabled(false);
         presetsButton.setIconTextGap(4);
         layoutToolbar.add(presetsButton);
 

@@ -257,7 +257,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         colorSwatchButton.setIcon(
             ImageUtilities.loadImageIcon("AppearancePluginUI/color-swatch.svg", false)); // NOI18N
-        colorSwatchButton.setFocusable(false);
+        colorSwatchButton.setRequestFocusEnabled(false);
         colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         colorSwatchButton.setIconTextGap(0);
         colorSwatchButton.setMargin(new java.awt.Insets(0, 0, 0, 0));

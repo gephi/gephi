@@ -608,21 +608,21 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         rankingLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/funnel.svg", false)); // NOI18N
         rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
-        rankingLocalScaleButton.setFocusable(false);
+        rankingLocalScaleButton.setRequestFocusEnabled(false);
         controlToolbar.add(rankingLocalScaleButton);
 
         partitionLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/funnel.svg", false)); // NOI18N
         partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
-        partitionLocalScaleButton.setFocusable(false);
+        partitionLocalScaleButton.setRequestFocusEnabled(false);
         controlToolbar.add(partitionLocalScaleButton);
 
         transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.svg", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
-        transformNullValuesButton.setFocusable(false);
+        transformNullValuesButton.setRequestFocusEnabled(false);
         controlToolbar.add(transformNullValuesButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
@@ -630,7 +630,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         splineButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
         splineButton.setFocusPainted(false);
-        splineButton.setFocusable(false);
+        splineButton.setRequestFocusEnabled(false);
         splineButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         splineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         controlToolbar.add(splineButton);
@@ -666,7 +666,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.stopAutoApplyButton.text")); // NOI18N
         stopAutoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class,
             "AppearanceTopComponent.stopAutoApplyButton.toolTipText")); // NOI18N
-        stopAutoApplyButton.setFocusable(false);
+        stopAutoApplyButton.setRequestFocusEnabled(false);
         stopAutoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         stopAutoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
         stopAutoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -684,7 +684,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         enableAutoButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/chain.svg", false)); // NOI18N
         enableAutoButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.toolTipText")); // NOI18N
-        enableAutoButton.setFocusable(false);
+        enableAutoButton.setRequestFocusEnabled(false);
         enableAutoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         enableAutoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         autoApplyToolbar.add(Box.createHorizontalGlue());
@@ -702,7 +702,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
         autoApplyButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.toolTipText")); // NOI18N
-        autoApplyButton.setFocusable(false);
+        autoApplyButton.setRequestFocusEnabled(false);
         autoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         autoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
         autoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

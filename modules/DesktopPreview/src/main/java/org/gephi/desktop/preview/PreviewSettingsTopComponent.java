@@ -441,7 +441,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         removeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.removeButton.toolTipText")); // NOI18N
         removeButton.setEnabled(false);
-        removeButton.setFocusable(false);
+        removeButton.setRequestFocusEnabled(false);
         removeButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -457,7 +457,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.saveButton.toolTipText")); // NOI18N
         saveButton.setEnabled(false);
-        saveButton.setFocusable(false);
+        saveButton.setRequestFocusEnabled(false);
         saveButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -571,7 +571,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         svgExportButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.svgExportButton.toolTipText")); // NOI18N
         svgExportButton.setEnabled(false);
-        svgExportButton.setFocusable(false);
+        svgExportButton.setRequestFocusEnabled(false);
         svgExportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         svgExportButton.setMargin(new java.awt.Insets(2, 8, 2, 8));
         svgExportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
