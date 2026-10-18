@@ -48,6 +48,7 @@ import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.VizController;
+import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.util.actions.InputActionsProcessor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -64,15 +65,22 @@ abstract class GraphViewAction extends AbstractAction {
     abstract void perform(VizController controller);
 
     static void zoomAroundCenter(VizController controller, double zoomQuantity) {
-        controller.getEngine().ifPresent(engine -> new InputActionsProcessor(engine)
+        controller.getEngine().filter(GraphViewAction::hasSize).ifPresent(engine -> new InputActionsProcessor(engine)
             .processZoomEvent(zoomQuantity, engine.getWidth() / 2, engine.getHeight() / 2));
+    }
+
+    /**
+     * The engine has no size until its first reshape, and zooming around the centre of nothing gives NaN.
+     */
+    private static boolean hasSize(VizEngine<?, ?> engine) {
+        return engine.getWidth() > 0 && engine.getHeight() > 0;
     }
 
     @Override
     public boolean isEnabled() {
         final VizController controller = Lookup.getDefault().lookup(VizController.class);
         return controller != null
-            && controller.getEngine().isPresent()
+            && controller.getEngine().filter(GraphViewAction::hasSize).isPresent()
             && controller.getCanvasManager().isCanvasShowing()
             && Lookup.getDefault().lookup(ProjectController.class).hasCurrentProject();
     }

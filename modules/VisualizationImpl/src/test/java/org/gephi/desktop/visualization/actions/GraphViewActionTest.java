@@ -1,8 +1,10 @@
 package org.gephi.desktop.visualization.actions;
 
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.AdditionalMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +41,20 @@ public class GraphViewActionTest {
 
         new ZoomOut().perform(controller);
         verify(engine).setZoom(eq(2f / 1.331f, 1e-4f));
+    }
+
+    @Test
+    public void testZoomDoesNothingBeforeTheEngineHasASize() {
+        final VizEngine<JOGLRenderingTarget, NEWTEvent> engine = mockEngine(2f);
+        when(engine.getWidth()).thenReturn(0);
+        when(engine.getHeight()).thenReturn(0);
+        final VizController controller = mockController(engine);
+
+        new ZoomIn().perform(controller);
+        new ZoomOut().perform(controller);
+
+        verify(engine, never()).setZoom(anyFloat());
+        verify(engine, never()).screenCoordinatesToWorldCoordinates(anyInt(), anyInt());
     }
 
     @Test
