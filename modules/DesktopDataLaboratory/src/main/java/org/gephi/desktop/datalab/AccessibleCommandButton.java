@@ -118,29 +118,26 @@ class AccessibleCommandButton extends JCommandButton implements Accessible {
 
         @Override
         public AccessibleAction getAccessibleAction() {
-            return this;
+            // Popup-only buttons open a Flamingo popup that assistive technology cannot reach, so they offer no action
+            return getCommandButtonKind().hasAction() ? this : null;
         }
 
         @Override
         public int getAccessibleActionCount() {
-            return 1;
+            return getCommandButtonKind().hasAction() ? 1 : 0;
         }
 
         @Override
         public String getAccessibleActionDescription(int i) {
-            return i == 0 ? AccessibleAction.CLICK : null;
+            return i == 0 && getCommandButtonKind().hasAction() ? AccessibleAction.CLICK : null;
         }
 
         @Override
         public boolean doAccessibleAction(int i) {
-            if (i != 0 || !isEnabled()) {
+            if (i != 0 || !isEnabled() || !getCommandButtonKind().hasAction()) {
                 return false;
             }
-            if (getCommandButtonKind().hasAction()) {
-                doActionClick();
-            } else {
-                doPopupClick();
-            }
+            doActionClick();
             return true;
         }
     }
