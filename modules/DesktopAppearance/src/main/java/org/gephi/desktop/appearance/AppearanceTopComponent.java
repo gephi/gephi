@@ -126,6 +126,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         initComponents();
         initControls();
+        attibuteBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.attributeBox.accessibleName"));
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));

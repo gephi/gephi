@@ -82,6 +82,9 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
     public PaletteGeneratorPanel() {
         initComponents();
         labelPreset.setLabelFor(presetCombo);
+        colorTable.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.colorTable.accessibleName"));
+        limitColorSpinner.getAccessibleContext().setAccessibleName(limitColorsCheckbox.getText());
 
         //Preset Model
         DefaultComboBoxModel model = new DefaultComboBoxModel();
