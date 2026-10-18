@@ -1309,7 +1309,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     public void eventDispatched(AWTEvent event) {
         KeyEvent evt = (KeyEvent) event;
 
-        if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0) {
+        if (evt.getID() == KeyEvent.KEY_RELEASED &&
+            (evt.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK |
+                KeyEvent.META_DOWN_MASK)) == KeyEvent.CTRL_DOWN_MASK) {
             DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
             if (evt.getKeyCode() ==
                 KeyEvent.VK_F) {//Call Search replace with 'F' without general actions key mappings support:
