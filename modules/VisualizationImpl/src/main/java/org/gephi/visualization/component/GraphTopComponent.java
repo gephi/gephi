@@ -74,6 +74,7 @@ import org.gephi.visualization.VizModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -85,7 +86,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
-@ActionReference(path = "Menu/Window", position = 500)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 500),
+    @ActionReference(path = "Shortcuts", name = "DS-G")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
     preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {

@@ -100,6 +100,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.Actions;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
@@ -127,7 +128,10 @@ import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"datalab"})
 @ActionID(category = "Window", id = "org.gephi.desktop.datalab.DataTableTopComponent")
-@ActionReference(path = "Menu/Window", position = 300)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 300),
+    @ActionReference(path = "Shortcuts", name = "DS-D")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_DataTableTopComponent",
     preferredID = "DataTableTopComponent")
 public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener {
@@ -1305,7 +1309,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     public void eventDispatched(AWTEvent event) {
         KeyEvent evt = (KeyEvent) event;
 
-        if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0) {
+        if (evt.getID() == KeyEvent.KEY_RELEASED &&
+            (evt.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK |
+                KeyEvent.META_DOWN_MASK)) == KeyEvent.CTRL_DOWN_MASK) {
             DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
             if (evt.getKeyCode() ==
                 KeyEvent.VK_F) {//Call Search replace with 'F' without general actions key mappings support:

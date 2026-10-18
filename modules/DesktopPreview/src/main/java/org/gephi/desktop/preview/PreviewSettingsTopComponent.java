@@ -75,6 +75,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.Actions;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
@@ -94,7 +95,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewSettingsTopComponent")
-@ActionReference(path = "Menu/Window", position = 1000)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1000),
+    @ActionReference(path = "Shortcuts", name = "DS-R")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewSettingsTopComponent",
     preferredID = "PreviewSettingsTopComponent")
 public final class PreviewSettingsTopComponent extends TopComponent implements PropertyChangeListener {

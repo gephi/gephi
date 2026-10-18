@@ -16,6 +16,7 @@ import org.gephi.graph.api.Column;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -28,7 +29,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = false, roles = {"overview", "datalab"}, position = 20)
 @ActionID(category = "Window", id = "org.gephi.desktop.attributes.AttributesTopComponent")
-@ActionReference(path = "Menu/Window", position = 1500)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1500),
+    @ActionReference(path = "Shortcuts", name = "DS-B")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_AttributesTopComponent",
     preferredID = "AttributesTopComponent")
 public final class AttributesTopComponent extends TopComponent implements AttributesUIModelListener {
