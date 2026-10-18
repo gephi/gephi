@@ -86,6 +86,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
      */
     public HeatMapPanel(Color[] gradientColors, float[] gradientPositions, boolean dontPaintUnreachable) {
         initComponents();
+        labelMode.setLabelFor(modeComboBox);
 
         //Slider
         slider = new GradientSlider(GradientSlider.HORIZONTAL, gradientPositions, gradientColors);

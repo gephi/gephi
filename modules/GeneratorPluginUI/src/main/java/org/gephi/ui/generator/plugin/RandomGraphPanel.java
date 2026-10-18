@@ -59,6 +59,8 @@ public class RandomGraphPanel extends javax.swing.JPanel {
      */
     public RandomGraphPanel() {
         initComponents();
+        nodeLabel.setLabelFor(nodeField);
+        edgeLabel.setLabelFor(edgeField);
     }
 
     public static ValidationPanel createValidationPanel(RandomGraphPanel innerPanel) {

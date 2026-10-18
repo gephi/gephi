@@ -68,6 +68,8 @@ public class EgoPanel extends javax.swing.JPanel {
      */
     public EgoPanel() {
         initComponents();
+        labelNodeId.setLabelFor(nodeIdTextField);
+        labelDepth.setLabelFor(depthComboBox);
 
         okButton.addActionListener(new ActionListener() {
 

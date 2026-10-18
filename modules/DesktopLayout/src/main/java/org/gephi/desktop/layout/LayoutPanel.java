@@ -105,6 +105,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
         initComponents();
+        layoutCombobox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.layoutCombobox.accessibleName"));
         layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
     }
