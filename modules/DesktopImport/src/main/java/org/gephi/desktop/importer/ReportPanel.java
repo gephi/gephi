@@ -164,6 +164,8 @@ public class ReportPanel extends javax.swing.JPanel {
                 labelParallelEdgesMergeStrategy.setLabelFor(edgesMergeStrategyCombo);
                 reportEditor.getAccessibleContext().setAccessibleName(
                     NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleName"));
+                reportEditor.getAccessibleContext().setAccessibleDescription(
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleDescription"));
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
                 initIcons();
@@ -425,6 +427,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     @Override
                     public void run() {
                         reportEditor.setText(str);
+                        reportEditor.setCaretPosition(0);
                     }
                 });
             }

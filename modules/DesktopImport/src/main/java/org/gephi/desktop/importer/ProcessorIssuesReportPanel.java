@@ -108,6 +108,8 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                 initIcons();
                 reportEditor.getAccessibleContext().setAccessibleName(NbBundle.getMessage(
                     ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.reportEditor.accessibleName"));
+                reportEditor.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(
+                    ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.reportEditor.accessibleDescription"));
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
             }
@@ -204,6 +206,7 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                     @Override
                     public void run() {
                         reportEditor.setText(str);
+                        reportEditor.setCaretPosition(0);
                     }
                 });
             }
