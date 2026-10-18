@@ -3,6 +3,7 @@ package org.gephi.ui.components;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 import org.junit.Assert;
@@ -43,11 +44,17 @@ public class ComponentsAccessibilityTest {
     }
 
     @Test
-    public void testGradientSliderNameCanBeSetByCaller() {
+    public void testGradientSliderIsReachableFromParent() {
+        JPanel parent = new JPanel();
         GradientSlider slider = new GradientSlider(GradientSlider.HORIZONTAL);
         slider.getAccessibleContext().setAccessibleName("Element color");
+        parent.add(slider);
 
-        Assert.assertEquals("Element color", slider.getAccessibleContext().getAccessibleName());
+        AccessibleContext parentContext = parent.getAccessibleContext();
+        Assert.assertEquals(1, parentContext.getAccessibleChildrenCount());
+        AccessibleContext child = parentContext.getAccessibleChild(0).getAccessibleContext();
+        Assert.assertEquals(AccessibleRole.SLIDER, child.getAccessibleRole());
+        Assert.assertEquals("Element color", child.getAccessibleName());
     }
 
     @Test

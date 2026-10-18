@@ -5,6 +5,7 @@ import java.awt.Container;
 import javax.swing.JList;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openide.util.NbBundle;
 
 public class SplineControlPanelAccessibilityTest {
 
@@ -28,7 +29,7 @@ public class SplineControlPanelAccessibilityTest {
         JList list = findList(new SplineControlPanel(null));
 
         Assert.assertNotNull(list);
-        Assert.assertEquals("Templates", list.getAccessibleContext().getAccessibleName());
+        Assert.assertEquals(NbBundle.getMessage(SplineEditor.class, "splineEditor_templates"), list.getAccessibleContext().getAccessibleName());
 
         Component first = list.getCellRenderer().getListCellRendererComponent(list, list.getModel().getElementAt(0), 0, false, false);
         Assert.assertEquals("Control points 0.00, 0.00 and 1.00, 1.00",
