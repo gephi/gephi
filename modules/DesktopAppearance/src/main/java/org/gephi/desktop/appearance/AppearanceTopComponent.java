@@ -88,7 +88,7 @@ import org.openide.windows.TopComponent;
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
 
     //Const
-    private static final RequestProcessor RP = new RequestProcessor("AppearanceTopComponent", 1);
+    private static final RequestProcessor RP = new RequestProcessor("AppearanceTopComponent");
     private final String NO_SELECTION =
         NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     private transient final AppearanceToolbar toolbar;
@@ -281,7 +281,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         comboTask.schedule(0);
     }
 
-    // Off the EDT: listing the functions reads the graph, which long-running statistics can lock for minutes
+    // Off the EDT as it uses a graph lock under the hood
     private void loadCombo() {
         final int generation = comboGeneration.get();
         final AppearanceUIModel currentModel = comboModel;

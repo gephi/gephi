@@ -39,7 +39,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
 
     private static final String SELECTION_CARD = "selection";
     private static final String EDIT_CARD = "edit";
-    private static final RequestProcessor RP = new RequestProcessor("AttributesTopComponent", 1);
+    private static final RequestProcessor RP = new RequestProcessor("AttributesTopComponent");
 
     private final CardLayout cardLayout;
     private final JPanel cardPanel;

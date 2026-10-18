@@ -92,7 +92,7 @@ import org.openide.util.RequestProcessor;
 public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     private static final int PALETTE_DISPLAY_LIMIT = 15;
-    private static final RequestProcessor RP = new RequestProcessor("PartitionColorTransformerPanel", 1);
+    private static final RequestProcessor RP = new RequestProcessor("PartitionColorTransformerPanel");
     private final PalettePopupButton palettePopupButton;
     private final RequestProcessor.Task setupTask = RP.create(this::loadValues);
     private volatile PartitionFunction setupFunction;
@@ -120,7 +120,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         setupTask.schedule(0);
     }
 
-    // Off the EDT: long-running statistics can hold the graph lock for minutes, the table keeps its content meanwhile
+    // Off the EDT as it's using a graph lock under the hood
     private void loadValues() {
         try {
             readValues(setupFunction);
@@ -148,7 +148,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             int nullElements = 0;
             for (Object value : loadedValues) {
                 if (loadedIgnoreNull && value == null) {
-                    // Will be used firther for the percentage calculation
+                    // Will be used further for the percentage calculation
                     nullElements = partition.count(null, graph);
                 }
             }
