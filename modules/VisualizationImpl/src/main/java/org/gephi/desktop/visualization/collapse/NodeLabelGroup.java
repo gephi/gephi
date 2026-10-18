@@ -42,6 +42,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         showLabelsButton = new JToggleButton();
 
         showLabelsButton.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.showLabels"));
+        showLabelsButton.getAccessibleContext().setAccessibleName(showLabelsButton.getToolTipText());
         showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showNodeLabels.svg", false));
         showLabelsButton.addActionListener(e -> vizController.setShowNodeLabels(showLabelsButton.isSelected()));
 
@@ -50,6 +51,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.svg", false));
         attributesButton
             .setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.attributes"));
+        attributesButton.getAccessibleContext().setAccessibleName(attributesButton.getToolTipText());
         attributesButton.addActionListener(e -> {
             VisualizationModel model = vizController.getModel();
             LabelAttributesPanel panel = new LabelAttributesPanel(model, false);
@@ -75,6 +77,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelColorMode.svg", false));
         labelColorModeButton
             .setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.colorMode"));
+        labelColorModeButton.getAccessibleContext().setAccessibleName(labelColorModeButton.getToolTipText());
 
         // Size Mode
         labelSizeModeButton = new JPopupButton();
@@ -89,10 +92,12 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelSizeMode.svg", false));
         labelSizeModeButton
             .setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.sizeMode"));
+        labelSizeModeButton.getAccessibleContext().setAccessibleName(labelSizeModeButton.getToolTipText());
 
         // Fit to node size
         fitToNodeSizeButton = new JToggleButton();
         fitToNodeSizeButton.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Labels.fitToNodeSize"));
+        fitToNodeSizeButton.getAccessibleContext().setAccessibleName(fitToNodeSizeButton.getToolTipText());
         fitToNodeSizeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/fitToNodeSize.svg", false));
         fitToNodeSizeButton.addActionListener(
             e -> vizController.setNodeLabelFitToNodeSize(fitToNodeSizeButton.isSelected()));
@@ -100,6 +105,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         // Avoid overlap
         avoidOverlapButton = new JToggleButton();
         avoidOverlapButton.setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.avoidOverlap"));
+        avoidOverlapButton.getAccessibleContext().setAccessibleName(avoidOverlapButton.getToolTipText());
         avoidOverlapButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/avoidOverlap.svg", false));
         avoidOverlapButton.addActionListener(
             e -> vizController.setAvoidNodeLabelOverlap(avoidOverlapButton.isSelected()));
@@ -107,6 +113,7 @@ public class NodeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         //Font size - maps [1, 100] to [NODE_LABEL_SCALE_MIN, NODE_LABEL_SCALE_MAX]
         fontSizeSlider = new JSlider(1, 100, 1);
         fontSizeSlider.setToolTipText(NbBundle.getMessage(NodeLabelGroup.class, "VizToolbar.Labels.fontScale"));
+        fontSizeSlider.getAccessibleContext().setAccessibleName(fontSizeSlider.getToolTipText());
         fontSizeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

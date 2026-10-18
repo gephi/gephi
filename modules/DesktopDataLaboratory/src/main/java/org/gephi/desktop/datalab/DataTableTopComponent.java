@@ -207,6 +207,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         initComponents();
+        availableColumnsButton.getAccessibleContext().setAccessibleName(availableColumnsButton.getToolTipText());
         if (UIUtils.isAquaLookAndFeel()) {
             columnManipulatorsPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }

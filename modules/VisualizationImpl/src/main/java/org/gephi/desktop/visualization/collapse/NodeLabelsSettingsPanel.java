@@ -220,6 +220,7 @@ public class NodeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
         fitToNodeSizeToggleButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/fitToNodeSize.svg", false));
         fitToNodeSizeToggleButton.setToolTipText(NbBundle.getMessage(NodeLabelsSettingsPanel.class,
             "NodeLabelsSettingsPanel.fitToNodeSizeToggleButton.toolTipText"));
+        fitToNodeSizeToggleButton.getAccessibleContext().setAccessibleName(fitToNodeSizeToggleButton.getToolTipText());
 
         // Avoid overlap
         avoidOverlap.addActionListener(e -> vizController.setAvoidNodeLabelOverlap(avoidOverlap.isSelected()));

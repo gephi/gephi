@@ -103,6 +103,12 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
     public FiltersPanel() {
         initComponents();
+        exportColumnButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.accessibleName")); // NOI18N
+        exportColumnButton.getAccessibleContext().setAccessibleDescription(exportColumnButton.getToolTipText());
+        exportWorkspaceButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.accessibleName")); // NOI18N
+        exportWorkspaceButton.getAccessibleContext().setAccessibleDescription(exportWorkspaceButton.getToolTipText());
+        exportLabelVisible.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportLabelVisible.accessibleName")); // NOI18N
+        exportLabelVisible.getAccessibleContext().setAccessibleDescription(exportLabelVisible.getToolTipText());
         //Toolbar
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
         toolbar.setBorder(b);
@@ -114,6 +120,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         resetLabelVisibleButton = new javax.swing.JButton();
         resetLabelVisibleButton.setIcon(ImageUtilities.loadImageIcon("DesktopFilters/resetLabelVisible.svg", false));
         resetLabelVisibleButton.setToolTipText(NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.resetLabelVisible.toolTipText"));
+        resetLabelVisibleButton.getAccessibleContext().setAccessibleName(resetLabelVisibleButton.getToolTipText());
         resetLabelVisibleButton.setFocusable(false);
         resetLabelVisibleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetLabelVisibleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

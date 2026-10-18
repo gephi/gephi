@@ -118,6 +118,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     public EdgeListPanel() {
         databaseManager = new EdgeListDatabaseManager();
         initComponents();
+        removeConfigurationButton.getAccessibleContext().setAccessibleName(removeConfigurationButton.getToolTipText());
         jXHeader1.setPreferredSize(new Dimension(100, 100));
 
         driverComboBox.addItemListener(new ItemListener() {

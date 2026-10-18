@@ -147,7 +147,12 @@ public class Installer extends ModuleInstall {
                 String tooltip = button.getToolTipText();
                 if ((text == null || text.isBlank()) && tooltip != null && !tooltip.isBlank()
                     && button.getAccessibleContext().getAccessibleName() == null) {
-                    button.getAccessibleContext().setAccessibleName(tooltip);
+                    if (tooltip.regionMatches(true, 0, "<html>", 0, 6)) {
+                        tooltip = tooltip.replaceAll("<[^>]*>", " ").replaceAll("\\s+", " ").trim();
+                    }
+                    if (!tooltip.isEmpty()) {
+                        button.getAccessibleContext().setAccessibleName(tooltip);
+                    }
                 }
             }
         }, java.awt.AWTEvent.HIERARCHY_EVENT_MASK);

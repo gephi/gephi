@@ -315,6 +315,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                         JToggleButton btn = new JToggleButton(icon);
 
                         btn.setToolTipText(c.getDisplayName());
+                        btn.getAccessibleContext().setAccessibleName(c.getDisplayName());
                         btn.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -410,6 +411,8 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 //                        JToggleButton btn = new JToggleButton(decoratedIcon);
                             JToggleButton btn = new JToggleButton(icon);
                             btn.setToolTipText(entry.getValue().getDescription());
+                            btn.getAccessibleContext().setAccessibleName(entry.getKey());
+                            btn.getAccessibleContext().setAccessibleDescription(entry.getValue().getDescription());
                             btn.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
