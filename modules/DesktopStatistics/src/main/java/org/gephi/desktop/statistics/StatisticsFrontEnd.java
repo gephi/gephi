@@ -99,6 +99,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
+        reportButton.getAccessibleContext().setAccessibleName(reportButton.getToolTipText());
         RUN = NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runStatus.run");
         CANCEL = NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runStatus.cancel");
         initUI(ui);

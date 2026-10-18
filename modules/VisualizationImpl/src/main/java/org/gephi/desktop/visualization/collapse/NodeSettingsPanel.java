@@ -67,6 +67,7 @@ public class NodeSettingsPanel extends javax.swing.JPanel implements Visualizati
      */
     public NodeSettingsPanel() {
         initComponents();
+        labelScale.setLabelFor(scaleSlider);
 
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 

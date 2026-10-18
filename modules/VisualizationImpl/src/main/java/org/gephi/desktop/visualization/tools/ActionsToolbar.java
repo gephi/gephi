@@ -79,6 +79,7 @@ public class ActionsToolbar extends JToolBar {
         //Center on graph
         final JButton centerOnGraphButton = new JButton();
         centerOnGraphButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnGraph"));
+        centerOnGraphButton.getAccessibleContext().setAccessibleName(centerOnGraphButton.getToolTipText());
         centerOnGraphButton.setIcon(
             ImageUtilities.loadImageIcon("VisualizationImpl/centerOnGraph.svg", false));
         centerOnGraphButton.addActionListener(new ActionListener() {
@@ -92,6 +93,7 @@ public class ActionsToolbar extends JToolBar {
         //Center on zero
         final JButton centerOnZeroButton = new JButton();
         centerOnZeroButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.centerOnZero"));
+        centerOnZeroButton.getAccessibleContext().setAccessibleName(centerOnZeroButton.getToolTipText());
         centerOnZeroButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/centerOnZero.svg", false));
         centerOnZeroButton.addActionListener(new ActionListener() {
 

@@ -120,6 +120,15 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         controller.addListener(this);
         setup(controller.getModel());
 
+        //Accessible names
+        columnsButton.setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.columnsButton.toolTipText"));
+        columnsButton.getAccessibleContext().setAccessibleName(columnsButton.getToolTipText());
+        settingsButton.setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settingsButton.toolTipText"));
+        settingsButton.getAccessibleContext().setAccessibleName(settingsButton.getToolTipText());
+        playButton.getAccessibleContext().setAccessibleName(playButton.getToolTipText());
+        disableButon.getAccessibleContext().setAccessibleName(disableButon.getToolTipText());
+        closeButton.getAccessibleContext().setAccessibleName(closeButton.getToolTipText());
+
         //Close button
         closeButton.addActionListener(new ActionListener() {
 

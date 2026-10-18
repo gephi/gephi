@@ -63,6 +63,8 @@ public class ModularityPanel extends javax.swing.JPanel {
 
     public ModularityPanel() {
         initComponents();
+        jLabel1.setLabelFor(resolutionTextField);
+        labelInitialModularityClassIndex.setLabelFor(initialModularityClassIndexTextField);
     }
 
     public boolean isRandomize() {

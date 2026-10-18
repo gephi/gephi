@@ -125,7 +125,17 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         toolbar = new AppearanceToolbar(controller);
 
         initComponents();
+        rankingLocalScaleButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.rankingLocalScaleButton.accessibleName")); // NOI18N
+        rankingLocalScaleButton.getAccessibleContext().setAccessibleDescription(rankingLocalScaleButton.getToolTipText());
+        partitionLocalScaleButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.accessibleName")); // NOI18N
+        partitionLocalScaleButton.getAccessibleContext().setAccessibleDescription(partitionLocalScaleButton.getToolTipText());
+        transformNullValuesButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.transformNullValuesButton.accessibleName")); // NOI18N
+        transformNullValuesButton.getAccessibleContext().setAccessibleDescription(transformNullValuesButton.getToolTipText());
+        enableAutoButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.accessibleName")); // NOI18N
+        enableAutoButton.getAccessibleContext().setAccessibleDescription(enableAutoButton.getToolTipText());
         initControls();
+        attibuteBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.attributeBox.accessibleName"));
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));

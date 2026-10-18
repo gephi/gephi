@@ -207,6 +207,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         initComponents();
+        labelFilter.setLabelFor(filterTextField);
+        availableColumnsButton.getAccessibleContext().setAccessibleName(availableColumnsButton.getToolTipText());
         if (UIUtils.isAquaLookAndFeel()) {
             columnManipulatorsPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
@@ -224,6 +226,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         //Init tables
         nodeTable = new NodesDataTable();
         edgeTable = new EdgesDataTable();
+        nodeTable.getTable().getAccessibleContext().setAccessibleName(nodesButton.getText());
+        edgeTable.getTable().getAccessibleContext().setAccessibleName(edgesButton.getText());
+        columnComboBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.columnComboBox.accessibleName"));
 
         nodeTable.setDrawSparklines(useSparklines);
         nodeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);

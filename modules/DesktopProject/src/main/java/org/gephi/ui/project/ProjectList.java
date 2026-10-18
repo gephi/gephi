@@ -20,6 +20,8 @@ public class ProjectList extends javax.swing.JPanel {
      */
     public ProjectList() {
         initComponents();
+        projectList.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(ProjectList.class, "ProjectList.projectList.accessibleName"));
 
         openProjectButton.setEnabled(false);
         removeProjectButton.setEnabled(false);

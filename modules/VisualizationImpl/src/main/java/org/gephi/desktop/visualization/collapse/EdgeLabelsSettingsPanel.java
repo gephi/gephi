@@ -97,6 +97,9 @@ public class EdgeLabelsSettingsPanel extends javax.swing.JPanel implements Visua
      */
     public EdgeLabelsSettingsPanel() {
         initComponents();
+        labelEdgeColor.setLabelFor(edgeColorCombo);
+        labelEdgeScale.setLabelFor(edgeSizeSlider);
+        labelEdgeSize.setLabelFor(edgeSizeCombo);
 
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 

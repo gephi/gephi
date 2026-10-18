@@ -78,6 +78,7 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
      */
     public GeneralChooseColumnsAndRowUI(String rowDescription, String columnsDescription) {
         initComponents();
+        rowDescriptionLabel.setLabelFor(rowComboBox);
         rowDescriptionLabel.setText(rowDescription);
         columnsDescriptionLabel.setText(columnsDescription);
     }

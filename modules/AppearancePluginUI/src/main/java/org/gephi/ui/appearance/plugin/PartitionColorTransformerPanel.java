@@ -100,6 +100,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     public PartitionColorTransformerPanel() {
         initComponents();
+        table.getAccessibleContext().setAccessibleName(NbBundle.getMessage(PartitionColorTransformerPanel.class,
+            "PartitionColorTransformerPanel.table.accessibleName"));
         palettePopupButton = new PalettePopupButton();
     }
 

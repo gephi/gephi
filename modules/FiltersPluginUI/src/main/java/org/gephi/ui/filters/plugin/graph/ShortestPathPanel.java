@@ -64,6 +64,8 @@ public class ShortestPathPanel extends javax.swing.JPanel {
      */
     public ShortestPathPanel() {
         initComponents();
+        labelNodeId1.setLabelFor(nodeIdTextField);
+        labelNodeId2.setLabelFor(nodeIdTextField2);
 
         okButton1.addActionListener(e -> shortestPathFilter.getProperties()[0].setValue(nodeIdTextField.getText()));
 

@@ -114,6 +114,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     public PreviewTopComponent() {
         initComponents();
+        globalCanvasSizeButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.globalCanvasSizeButton.accessibleName")); // NOI18N
+        globalCanvasSizeButton.getAccessibleContext().setAccessibleDescription(globalCanvasSizeButton.getToolTipText());
+        minusButton.getAccessibleContext().setAccessibleName(minusButton.getToolTipText());
+        plusButton.getAccessibleContext().setAccessibleName(plusButton.getToolTipText());
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
 
         if (UIUtils.isAquaLookAndFeel()) {

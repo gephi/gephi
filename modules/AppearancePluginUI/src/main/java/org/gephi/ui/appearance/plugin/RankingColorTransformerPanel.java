@@ -80,6 +80,8 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
     public RankingColorTransformerPanel() {
         initComponents();
+        colorSwatchButton.setToolTipText(NbBundle.getMessage(RankingColorTransformerPanel.class, "RankingColorTransformerPanel.colorSwatchButton.toolTipText")); // NOI18N
+        colorSwatchButton.getAccessibleContext().setAccessibleName(colorSwatchButton.getToolTipText());
         this.recentPalettes = new RecentPalettes();
 
         //Init slider

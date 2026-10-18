@@ -64,6 +64,7 @@ public class CollapsePanel extends javax.swing.JPanel {
      */
     public CollapsePanel() {
         initComponents();
+        extendButton.getAccessibleContext().setAccessibleName(extendButton.getToolTipText());
     }
 
     public void init(JComponent topBar, final JComponent extendedPanel, boolean extended) {
