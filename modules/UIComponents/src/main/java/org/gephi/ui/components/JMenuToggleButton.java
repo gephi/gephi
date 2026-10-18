@@ -69,7 +69,7 @@ class JMenuToggleButton extends JToggleButton {
         setIcon(regIcon);
         setRolloverIcon(lineIcon);
         setRolloverSelectedIcon(lineIcon);
-        setFocusable(false);
+        setRequestFocusEnabled(false);
 
         addMouseMotionListener(new MouseMotionAdapter() {
 
