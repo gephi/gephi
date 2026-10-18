@@ -76,6 +76,8 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.HierarchyEvent;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -132,6 +134,25 @@ public class Installer extends ModuleInstall {
         };
     }
 
+    /**
+     * Icon-only buttons have no accessible name, which makes them unannounced by screen readers. Use their tooltip
+     * as accessible name when they become visible.
+     */
+    private static void installIconButtonAccessibleNames() {
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            if (event instanceof HierarchyEvent he
+                && (he.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0
+                && he.getComponent() instanceof AbstractButton button && button.isShowing()) {
+                String text = button.getText();
+                String tooltip = button.getToolTipText();
+                if ((text == null || text.isBlank()) && tooltip != null && !tooltip.isBlank()
+                    && button.getAccessibleContext().getAccessibleName() == null) {
+                    button.getAccessibleContext().setAccessibleName(tooltip);
+                }
+            }
+        }, java.awt.AWTEvent.HIERARCHY_EVENT_MASK);
+    }
+
     @Override
     public void restored() {
         //Init
@@ -142,6 +163,13 @@ public class Installer extends ModuleInstall {
 
         //GTK Slider issue #529913
         UIManager.put("Slider.paintValue", Boolean.FALSE);
+
+        //Keyboard and screen reader access to toolbar buttons
+        UIManager.put("ToolBar.focusableButtons", Boolean.TRUE);
+        UIManager.put("ToolBar.arrowKeysOnlyNavigation", Boolean.TRUE);
+        installIconButtonAccessibleNames();
+        ToolbarFocusIndicator.install();
+        TopComponentFocus.install();
 
         //Handler
         if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {

@@ -87,7 +87,6 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
             new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/mouse.svg", false));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(e -> visualizationController.setDirectMouseSelection());
-        mouseButton.setFocusPainted(false);
         add(mouseButton);
 
         Icon icon = ImageUtilities.loadImageIcon("VisualizationImpl/rectangle.svg", false);
@@ -96,7 +95,6 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
         rectangleButton
             .setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
         rectangleButton.addActionListener(e -> visualizationController.setRectangleSelection());
-        rectangleButton.setFocusPainted(false);
         add(rectangleButton);
 
         panButton =
@@ -107,7 +105,6 @@ public class SelectionToolbar extends JToolBar implements VisualizationPropertyC
                 visualizationController.disableSelection();
             }
         });
-        panButton.setFocusPainted(false);
         add(panButton);
         addSeparator();
 

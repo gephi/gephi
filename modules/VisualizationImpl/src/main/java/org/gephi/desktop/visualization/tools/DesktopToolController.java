@@ -192,7 +192,6 @@ public class DesktopToolController implements ToolController {
             } else {
                 btn = new JToggleButton(ImageUtilities.loadImageIcon("VisualizationImpl/tool.svg", false));
             }
-            btn.setFocusPainted(false);
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
             btn.addActionListener(new ActionListener() {
 

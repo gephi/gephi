@@ -264,7 +264,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             for (final String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
 
                 JToggleButton btn = new JToggleButton();
-                btn.setFocusPainted(false);
                 String btnLabel = elmtType;
                 try {
                     btnLabel = NbBundle.getMessage(AppearanceToolbar.class, "AppearanceToolbar." + elmtType + ".label");
@@ -323,7 +322,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                             }
                         });
                         btn.setName(c.getDisplayName());
-                        btn.setFocusPainted(false);
                         buttonGroup.add(btn);
                         add(btn);
                     }
@@ -421,7 +419,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                             fixAquaSelectedState(btn);
                             btn.setName(entry.getKey());
                             btn.setText(entry.getKey());
-                            btn.setFocusPainted(false);
                             buttonGroup.add(btn);
                             add(btn);
                         }
