@@ -165,6 +165,8 @@ final class AppearancePanel extends JPanel {
         elementColorGradientPanel = new JPanel(new BorderLayout());
         elementColorGradientPanel.setOpaque(false);
         elementColorGradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
+        elementColorGradientSlider.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearancePanel.class, "AppearancePanel.elementColorTitle.title"));
         elementColorGradientPanel.add(elementColorGradientSlider, BorderLayout.CENTER);
 
         // --- Label color ---
@@ -176,6 +178,8 @@ final class AppearancePanel extends JPanel {
         labelColorGradientPanel = new JPanel(new BorderLayout());
         labelColorGradientPanel.setOpaque(false);
         labelColorGradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
+        labelColorGradientSlider.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearancePanel.class, "AppearancePanel.labelColorTitle.title"));
         labelColorGradientPanel.add(labelColorGradientSlider, BorderLayout.CENTER);
 
         // --- Interpolation ---
