@@ -110,6 +110,8 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                     ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.reportEditor.accessibleName"));
                 reportEditor.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(
                     ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.reportEditor.accessibleDescription"));
+                issuesOutline.getAccessibleContext().setAccessibleName(NbBundle.getMessage(
+                    ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.issuesOutline.accessibleName"));
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
             }

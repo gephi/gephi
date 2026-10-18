@@ -166,6 +166,8 @@ public class ReportPanel extends javax.swing.JPanel {
                     NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleName"));
                 reportEditor.getAccessibleContext().setAccessibleDescription(
                     NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleDescription"));
+                issuesOutline.getAccessibleContext().setAccessibleName(
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.issuesOutline.accessibleName"));
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
                 reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
                 initIcons();
