@@ -87,6 +87,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         //Init slider
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
+        labelColor.setLabelFor(gradientSlider);
 
         //Color Swatch
         colorSwatchButton.addActionListener(new ActionListener() {

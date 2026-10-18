@@ -44,6 +44,8 @@ package org.gephi.ui.components.gradientslider;
 
 import java.util.List;
 import java.util.Vector;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -247,6 +249,19 @@ public abstract class MultiThumbSlider extends JComponent {
                 Exceptions.printStackTrace(t);
             }
         }
+    }
+
+    @Override
+    public AccessibleContext getAccessibleContext() {
+        if (accessibleContext == null) {
+            accessibleContext = new AccessibleJComponent() {
+                @Override
+                public AccessibleRole getAccessibleRole() {
+                    return AccessibleRole.SLIDER;
+                }
+            };
+        }
+        return accessibleContext;
     }
 
     /**
