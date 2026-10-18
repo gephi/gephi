@@ -225,7 +225,6 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
 
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleName("\n"); // NOI18N
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
-        spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
 
     private void exportNotRecognizedCheckBoxActionPerformed(

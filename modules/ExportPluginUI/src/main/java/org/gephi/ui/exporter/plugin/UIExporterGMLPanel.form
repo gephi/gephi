@@ -156,9 +156,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="spacesTextField">
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Indentation"/>
-      </AccessibilityProperties>
     </Component>
   </SubComponents>
 </Form>
