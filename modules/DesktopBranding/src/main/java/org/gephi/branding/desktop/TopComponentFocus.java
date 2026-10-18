@@ -1,7 +1,9 @@
 package org.gephi.branding.desktop;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
+import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.SwingUtilities;
@@ -9,7 +11,8 @@ import org.openide.windows.TopComponent;
 
 /**
  * NetBeans top components are not focusable, so activating one (for instance with Ctrl+Tab) leaves the keyboard focus
- * in the previously active one. Move the focus to the first focusable Swing component of the activated top component.
+ * in the previously active one. Move the focus to the first focusable Swing component of the activated top component,
+ * unless the activation comes from a mouse click, where the clicked component takes the focus itself.
  */
 final class TopComponentFocus {
 
@@ -26,7 +29,8 @@ final class TopComponentFocus {
     static void install() {
         TopComponent.getRegistry().addPropertyChangeListener(evt -> {
             if (TopComponent.Registry.PROP_ACTIVATED.equals(evt.getPropertyName())
-                && evt.getNewValue() instanceof TopComponent tc) {
+                && evt.getNewValue() instanceof TopComponent tc
+                && !(EventQueue.getCurrentEvent() instanceof MouseEvent)) {
                 SwingUtilities.invokeLater(() -> focus(tc));
             }
         });
@@ -40,9 +44,12 @@ final class TopComponentFocus {
         if (owner != null && SwingUtilities.isDescendingFrom(owner, tc)) {
             return;
         }
-        Component first = POLICY.getFirstComponent(tc);
-        if (first != null) {
+        if (POLICY.getFirstComponent(tc) instanceof JComponent first) {
+            // Toolbar buttons opt out of mouse focus requests, but must take focus here
+            boolean requestFocusEnabled = first.isRequestFocusEnabled();
+            first.setRequestFocusEnabled(true);
             first.requestFocusInWindow();
+            first.setRequestFocusEnabled(requestFocusEnabled);
         }
     }
 }

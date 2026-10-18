@@ -85,6 +85,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -135,18 +136,23 @@ public class Installer extends ModuleInstall {
     }
 
     /**
-     * Icon-only buttons have no accessible name, which makes them unannounced by screen readers. Use their tooltip
-     * as accessible name when they become visible.
+     * Toolbar buttons stay reachable with the keyboard but don't take focus on mouse clicks. Icon-only buttons have no
+     * accessible name, which makes them unannounced by screen readers, so use their tooltip as accessible name when
+     * they become visible.
      */
-    private static void installIconButtonAccessibleNames() {
+    private static void installButtonDefaults() {
         Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
             if (event instanceof HierarchyEvent he
                 && (he.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0
                 && he.getComponent() instanceof AbstractButton button && button.isShowing()) {
+                if (button.getParent() instanceof JToolBar) {
+                    button.setRequestFocusEnabled(false);
+                }
                 String text = button.getText();
                 String tooltip = button.getToolTipText();
+                String name = button.getAccessibleContext().getAccessibleName();
                 if ((text == null || text.isBlank()) && tooltip != null && !tooltip.isBlank()
-                    && button.getAccessibleContext().getAccessibleName() == null) {
+                    && (name == null || name.isBlank())) {
                     if (tooltip.regionMatches(true, 0, "<html>", 0, 6)) {
                         tooltip = tooltip.replaceAll("<[^>]*>", " ").replaceAll("\\s+", " ").trim();
                     }
@@ -172,8 +178,7 @@ public class Installer extends ModuleInstall {
         //Keyboard and screen reader access to toolbar buttons
         UIManager.put("ToolBar.focusableButtons", Boolean.TRUE);
         UIManager.put("ToolBar.arrowKeysOnlyNavigation", Boolean.TRUE);
-        installIconButtonAccessibleNames();
-        ToolbarFocusIndicator.install();
+        installButtonDefaults();
         TopComponentFocus.install();
 
         //Handler

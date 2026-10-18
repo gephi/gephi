@@ -207,6 +207,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         initComponents();
+        labelFilter.setLabelFor(filterTextField);
         availableColumnsButton.getAccessibleContext().setAccessibleName(availableColumnsButton.getToolTipText());
         if (UIUtils.isAquaLookAndFeel()) {
             columnManipulatorsPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
@@ -1438,7 +1439,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         filterTextField.setMaximumSize(new java.awt.Dimension(1000, 30));
         filterTextField.setPreferredSize(new java.awt.Dimension(150, 20));
         controlToolbar.add(filterTextField);
-        labelFilter.setLabelFor(filterTextField);
 
         columnComboBox.setMaximumSize(new java.awt.Dimension(2000, 20));
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
