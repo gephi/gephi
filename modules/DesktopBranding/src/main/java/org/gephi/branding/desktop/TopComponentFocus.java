@@ -44,6 +44,10 @@ final class TopComponentFocus {
         if (owner != null && SwingUtilities.isDescendingFrom(owner, tc)) {
             return;
         }
+        if (tc.requestFocusInWindow()) {
+            // The top component knows its preferred component
+            return;
+        }
         if (POLICY.getFirstComponent(tc) instanceof JComponent first) {
             // Toolbar buttons opt out of mouse focus requests, but must take focus here
             boolean requestFocusEnabled = first.isRequestFocusEnabled();
