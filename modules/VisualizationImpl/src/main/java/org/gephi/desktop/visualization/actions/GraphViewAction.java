@@ -73,6 +73,7 @@ abstract class GraphViewAction extends AbstractAction {
         final VizController controller = Lookup.getDefault().lookup(VizController.class);
         return controller != null
             && controller.getEngine().isPresent()
+            && controller.getCanvasManager().isCanvasShowing()
             && Lookup.getDefault().lookup(ProjectController.class).hasCurrentProject();
     }
 

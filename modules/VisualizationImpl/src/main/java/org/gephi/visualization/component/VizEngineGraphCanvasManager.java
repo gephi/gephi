@@ -256,6 +256,18 @@ public class VizEngineGraphCanvasManager {
         return glCanvas != null && glCanvas.requestFocusInWindow();
     }
 
+    /**
+     * Returns whether the graph canvas is currently on screen, which is not the case when the graph window is
+     * hidden or closed. Not synchronized on purpose, as it is called from the EDT while {@link #init} may be
+     * waiting for the EDT.
+     *
+     * @return true if the canvas exists and is showing
+     */
+    public boolean isCanvasShowing() {
+        final NewtCanvasAWT canvas = glCanvas;
+        return canvas != null && canvas.isShowing();
+    }
+
     private static void runOnEdtAndWait(final Runnable runnable) {
         if (EventQueue.isDispatchThread()) {
             runnable.run();
