@@ -34,11 +34,37 @@ public class FocusRingPanelTest {
         panel.setFocused(true);
 
         UIManager.put("Component.accentColor", new Color(0, 0, 255));
-        panel.updateUI();
-        Assert.assertTrue(panel.getBorder() instanceof LineBorder);
-        Color ring = ((LineBorder) panel.getBorder()).getLineColor();
-        UIManager.put("Component.accentColor", null);
-        Assert.assertEquals(new Color(0, 0, 255), ring);
+        try {
+            panel.updateUI();
+            Assert.assertTrue(panel.getBorder() instanceof LineBorder);
+            Color ring = ((LineBorder) panel.getBorder()).getLineColor();
+            Assert.assertEquals(new Color(0, 0, 255), ring);
+        } finally {
+            UIManager.put("Component.accentColor", null);
+        }
+    }
+
+    @Test
+    public void testFocusColorOnMidGreyBackground() {
+        UIManager.put("Component.accentColor", new Color(0x26, 0x75, 0xBF));
+        try {
+            for (int grey = 0x80; grey <= 0xD0; grey += 0x08) {
+                Color background = new Color(grey, grey, grey);
+                Assert.assertTrue("background " + Integer.toHexString(grey),
+                    contrast(FocusRingPanel.focusColor(background), background) >= 3.0);
+            }
+        } finally {
+            UIManager.put("Component.accentColor", null);
+        }
+    }
+
+    @Test
+    public void testCanvasFocusedNeedsAwtFocusWhenEventsPassThrough() {
+        Assert.assertTrue(VizEngineGraphCanvasManager.isCanvasFocused(true, false, false));
+        Assert.assertTrue(VizEngineGraphCanvasManager.isCanvasFocused(true, true, true));
+        Assert.assertFalse(VizEngineGraphCanvasManager.isCanvasFocused(true, true, false));
+        Assert.assertFalse(VizEngineGraphCanvasManager.isCanvasFocused(false, false, true));
+        Assert.assertFalse(VizEngineGraphCanvasManager.isCanvasFocused(false, true, true));
     }
 
     @Test

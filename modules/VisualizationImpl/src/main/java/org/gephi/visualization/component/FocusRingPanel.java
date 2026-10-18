@@ -99,16 +99,18 @@ class FocusRingPanel extends JPanel {
      * Theme accent colour, pushed towards black or white until it stands out from the background.
      */
     static Color focusColor(Color background) {
-        Color color = firstColor("Component.accentColor", "Component.focusedBorderColor", "Component.focusColor");
-        if (color == null) {
-            color = FALLBACK_COLOR;
+        Color accent = firstColor("Component.accentColor", "Component.focusedBorderColor", "Component.focusColor");
+        if (accent == null) {
+            accent = FALLBACK_COLOR;
         }
         if (background == null) {
-            return color;
+            return accent;
         }
-        final Color target = luminance(background) < 0.5 ? Color.WHITE : Color.BLACK;
+        final Color target =
+            contrast(Color.WHITE, background) >= contrast(Color.BLACK, background) ? Color.WHITE : Color.BLACK;
+        Color color = accent;
         for (int step = 1; contrast(color, background) < MIN_CONTRAST && step <= 10; step++) {
-            color = blend(color, target, step / 10.0);
+            color = blend(accent, target, step / 10.0);
         }
         return color;
     }
