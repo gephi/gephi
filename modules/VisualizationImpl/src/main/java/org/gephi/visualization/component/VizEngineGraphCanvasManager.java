@@ -174,6 +174,10 @@ public class VizEngineGraphCanvasManager {
 
         runOnEdtAndWait(() -> {
             glCanvas = new NewtCanvasAWT(glWindow);
+            glCanvas.getAccessibleContext().setAccessibleName(
+                NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleName"));
+            glCanvas.getAccessibleContext().setAccessibleDescription(
+                NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleDescription"));
 
             component.add(glCanvas, BorderLayout.CENTER);
 
