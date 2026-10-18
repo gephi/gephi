@@ -67,6 +67,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
      */
     public MouseSelectionPopupPanel() {
         initComponents();
+        labelDiameter.setLabelFor(diameterSlider);
 
         diameterSlider.addChangeListener(new ChangeListener() {
 

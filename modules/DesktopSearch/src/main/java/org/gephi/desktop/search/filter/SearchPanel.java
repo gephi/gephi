@@ -8,6 +8,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
     public SearchPanel() {
         initComponents();
+        searchInLabel.setLabelFor(typeCombo);
 
         // Combo
         DefaultComboBoxModel<SearchCategory> comboBoxModel = new DefaultComboBoxModel<>();

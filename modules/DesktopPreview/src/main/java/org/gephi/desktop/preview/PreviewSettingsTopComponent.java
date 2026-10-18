@@ -127,6 +127,8 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
     public PreviewSettingsTopComponent() {
         initComponents();
+        labelPreset.setLabelFor(presetComboBox);
+        labelRatio.setLabelFor(ratioSlider);
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
 
         if (UIUtils.isAquaLookAndFeel()) {

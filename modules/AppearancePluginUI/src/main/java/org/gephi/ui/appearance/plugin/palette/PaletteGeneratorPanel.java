@@ -81,6 +81,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
 
     public PaletteGeneratorPanel() {
         initComponents();
+        labelPreset.setLabelFor(presetCombo);
 
         //Preset Model
         DefaultComboBoxModel model = new DefaultComboBoxModel();
