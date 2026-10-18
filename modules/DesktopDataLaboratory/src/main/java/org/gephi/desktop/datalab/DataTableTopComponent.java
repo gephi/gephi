@@ -1381,7 +1381,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         elementGroup.add(nodesButton);
         org.openide.awt.Mnemonics.setLocalizedText(nodesButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.nodesButton.text")); // NOI18N
-        nodesButton.setFocusable(false);
+        nodesButton.setRequestFocusEnabled(false);
         nodesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nodesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         nodesButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1395,7 +1395,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         elementGroup.add(edgesButton);
         org.openide.awt.Mnemonics.setLocalizedText(edgesButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.edgesButton.text")); // NOI18N
-        edgesButton.setFocusable(false);
+        edgesButton.setRequestFocusEnabled(false);
         edgesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         edgesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         edgesButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1411,7 +1411,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         configurationButton.setIcon(ImageUtilities.loadImageIcon("DesktopDataLaboratory/gear-small.svg", false)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
-        configurationButton.setFocusable(false);
+        configurationButton.setRequestFocusEnabled(false);
         configurationButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         configurationButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         configurationButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1449,7 +1449,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             .getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.text")); // NOI18N
         availableColumnsButton.setToolTipText(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class,
             "DataTableTopComponent.availableColumnsButton.toolTipText")); // NOI18N
-        availableColumnsButton.setFocusable(false);
+        availableColumnsButton.setRequestFocusEnabled(false);
         availableColumnsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         availableColumnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         availableColumnsButton.addActionListener(new java.awt.event.ActionListener() {
