@@ -80,7 +80,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         uiModel.getCategories().forEach(category -> {
             JToggleButton toggleButton = new JToggleButton();
             toggleButton.setText(category.getDisplayName());
-            toggleButton.setFocusable(false);
+            toggleButton.setRequestFocusEnabled(false);
             toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
             toggleButton.putClientProperty("JButton.buttonType", "square");
@@ -442,7 +442,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         );
         filterButton.setToolTipText(org.openide.util.NbBundle.getMessage(SearchDialog.class,
             "SearchDialog.filterButton.toolTipText")); // NOI18N
-        filterButton.setFocusable(false);
+        filterButton.setRequestFocusEnabled(false);
         filterButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         filterButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         optionToolbar.add(filterButton);
@@ -455,7 +455,7 @@ public class SearchDialog extends javax.swing.JPanel implements SearchListener {
         org.openide.awt.Mnemonics.setLocalizedText(allCategoriesButton,
             org.openide.util.NbBundle.getMessage(SearchDialog.class,
                 "SearchDialog.allCategoriesButton.text")); // NOI18N
-        allCategoriesButton.setFocusable(false);
+        allCategoriesButton.setRequestFocusEnabled(false);
         allCategoriesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         allCategoriesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         categoryToolbar.add(allCategoriesButton);

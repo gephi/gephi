@@ -223,7 +223,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle
             .getMessage(StatisticsTopComponent.class, "StatisticsTopComponent.settingsButton.text")); // NOI18N
-        settingsButton.setFocusable(false);
+        settingsButton.setRequestFocusEnabled(false);
         settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(settingsButton);
