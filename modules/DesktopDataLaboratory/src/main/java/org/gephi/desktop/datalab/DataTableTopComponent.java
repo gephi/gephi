@@ -224,6 +224,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         //Init tables
         nodeTable = new NodesDataTable();
         edgeTable = new EdgesDataTable();
+        nodeTable.getTable().getAccessibleContext().setAccessibleName(nodesButton.getText());
+        edgeTable.getTable().getAccessibleContext().setAccessibleName(edgesButton.getText());
+        columnComboBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.columnComboBox.accessibleName"));
 
         nodeTable.setDrawSparklines(useSparklines);
         nodeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);

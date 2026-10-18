@@ -159,6 +159,10 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
             panel.add(columnLabel);
             if (i < columns.length - 1) {
                 operationSelectors[i] = prepareOperationSelector();
+                operationSelectors[i].getAccessibleContext().setAccessibleName(
+                    org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class,
+                        "BooleanLogicOperationsUI.operation.accessibleName", columns[i].getTitle(),
+                        columns[i + 1].getTitle()));
                 panel.add(operationSelectors[i]);
             }
         }
