@@ -6,6 +6,9 @@ import com.jogamp.newt.Screen;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
+import com.jogamp.newt.event.WindowAdapter;
+import com.jogamp.newt.event.WindowEvent;
+import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -48,6 +51,8 @@ public class VizEngineGraphCanvasManager {
     private final VizController vizController;
     private GLWindow glWindow;
     private NewtCanvasAWT glCanvas;
+    private FocusRingPanel focusRingPanel;
+    private WindowListener focusRingListener;
 
     // Engine
     private transient VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
@@ -179,7 +184,23 @@ public class VizEngineGraphCanvasManager {
             glCanvas.getAccessibleContext().setAccessibleDescription(
                 NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleDescription"));
 
-            component.add(glCanvas, BorderLayout.CENTER);
+            // The canvas holds native focus, which AWT does not report, so NEWT focus events drive the ring
+            final FocusRingPanel panel = new FocusRingPanel(glCanvas);
+            focusRingListener = new WindowAdapter() {
+                @Override
+                public void windowGainedFocus(WindowEvent e) {
+                    SwingUtilities.invokeLater(() -> panel.setFocused(true));
+                }
+
+                @Override
+                public void windowLostFocus(WindowEvent e) {
+                    SwingUtilities.invokeLater(() -> panel.setFocused(false));
+                }
+            };
+            glWindow.addWindowListener(focusRingListener);
+            focusRingPanel = panel;
+
+            component.add(panel, BorderLayout.CENTER);
 
             component.revalidate();
             component.repaint();
@@ -224,13 +245,20 @@ public class VizEngineGraphCanvasManager {
     }
 
     public synchronized void destroy(JComponent component) {
-        if (glCanvas != null) {
-            final NewtCanvasAWT canvasToRemove = glCanvas;
+        if (glWindow != null && focusRingListener != null) {
+            glWindow.removeWindowListener(focusRingListener);
+            focusRingListener = null;
+        }
+
+        if (focusRingPanel != null) {
+            final FocusRingPanel panelToRemove = focusRingPanel;
             runOnEdtAndWait(() -> {
-                component.remove(canvasToRemove);
+                panelToRemove.setFocused(false);
+                component.remove(panelToRemove);
                 component.revalidate();
                 component.repaint();
             });
+            focusRingPanel = null;
         }
 
         if (glWindow != null) {
