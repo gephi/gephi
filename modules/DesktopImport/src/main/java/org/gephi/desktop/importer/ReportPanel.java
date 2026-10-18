@@ -158,6 +158,8 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void run() {
                 initComponents();
+                labelGraphType.setLabelFor(graphTypeCombo);
+                labelParallelEdgesMergeStrategy.setLabelFor(edgesMergeStrategyCombo);
                 initIcons();
                 initProcessors();
                 initMoreOptionsPanel();
