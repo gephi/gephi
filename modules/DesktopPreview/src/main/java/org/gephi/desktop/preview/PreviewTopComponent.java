@@ -72,6 +72,7 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -87,7 +88,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewTopComponent")
-@ActionReference(path = "Menu/Window", position = 900)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 900),
+    @ActionReference(path = "Shortcuts", name = "DS-P")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewTopComponent",
     preferredID = "PreviewTopComponent")
 public final class PreviewTopComponent extends TopComponent implements PropertyChangeListener {
