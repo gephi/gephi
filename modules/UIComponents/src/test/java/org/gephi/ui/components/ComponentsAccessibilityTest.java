@@ -1,15 +1,33 @@
 package org.gephi.ui.components;
 
+import java.awt.Component;
+import java.util.Locale;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.gephi.ui.components.gradientslider.GradientSlider;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ComponentsAccessibilityTest {
+
+    private Locale defaultLocale;
+
+    @Before
+    public void useEnglish() {
+        // The expected names are the English ones, translators may add the keys later
+        defaultLocale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
+    }
+
+    @After
+    public void restoreLocale() {
+        Locale.setDefault(defaultLocale);
+    }
 
     @Test
     public void testRangeSliderPanelNamesItsControls() {
@@ -18,7 +36,7 @@ public class ComponentsAccessibilityTest {
         Assert.assertEquals("Range slider", panel.getSlider().getAccessibleContext().getAccessibleName());
         JTextField minimum = null;
         JTextField maximum = null;
-        for (java.awt.Component c : panel.getComponents()) {
+        for (Component c : panel.getComponents()) {
             if (c instanceof JTextField) {
                 String name = ((JTextField) c).getAccessibleContext().getAccessibleName();
                 if ("Range minimum".equals(name)) {
