@@ -63,6 +63,7 @@ public class HitsPanel extends javax.swing.JPanel {
 
     public HitsPanel() {
         initComponents();
+        labelEpsilon.setLabelFor(epsilonTextField);
 
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);

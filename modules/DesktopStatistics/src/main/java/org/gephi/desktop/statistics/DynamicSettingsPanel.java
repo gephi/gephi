@@ -101,6 +101,8 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     public DynamicSettingsPanel() {
         initComponents();
+        jLabel1.setLabelFor(windowTextField);
+        jLabel2.setLabelFor(tickTextField);
 
         //Load timeunit's combo
         windowTimeUnitCombo.setModel(getTimeUnitModel());

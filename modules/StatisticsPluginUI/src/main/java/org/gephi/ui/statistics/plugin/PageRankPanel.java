@@ -66,6 +66,8 @@ public class PageRankPanel extends javax.swing.JPanel {
 
     public PageRankPanel() {
         initComponents();
+        labelP.setLabelFor(probTextField);
+        labelE.setLabelFor(epsilonTextField);
 
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);

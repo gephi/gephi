@@ -63,6 +63,7 @@ public class NeighborsPanel extends javax.swing.JPanel {
      */
     public NeighborsPanel() {
         initComponents();
+        labelDepth.setLabelFor(depthComboBox);
 
         depthComboBox.addItemListener(new ItemListener() {
 

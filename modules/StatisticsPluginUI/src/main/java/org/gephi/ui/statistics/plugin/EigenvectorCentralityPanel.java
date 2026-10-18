@@ -65,6 +65,7 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
      */
     public EigenvectorCentralityPanel() {
         initComponents();
+        jLabel1.setLabelFor(iterationTextField);
 
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);

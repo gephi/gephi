@@ -85,6 +85,7 @@ final class LayoutOptionsPanel extends JPanel {
 
         Mnemonics.setLocalizedText(labelDefaultLayout,
             NbBundle.getMessage(LayoutOptionsPanel.class, "LayoutOptionsPanel.labelDefaultLayout.text"));
+        labelDefaultLayout.setLabelFor(defaultLayoutCombobox);
 
         populateLayoutCombobox();
         defaultLayoutCombobox.addActionListener(e -> controller.changed());
