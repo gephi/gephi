@@ -123,7 +123,7 @@ public class CollapsePanel extends javax.swing.JPanel {
         extendButton.setAlignmentY(0.0F);
         extendButton.setBorderPainted(false);
         extendButton.setContentAreaFilled(false);
-        extendButton.setFocusable(false);
+        extendButton.setRequestFocusEnabled(false);
         buttonPanel.add(extendButton);
 
         add(buttonPanel, java.awt.BorderLayout.EAST);
