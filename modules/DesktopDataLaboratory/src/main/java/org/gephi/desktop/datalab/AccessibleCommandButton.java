@@ -42,44 +42,36 @@
 
 package org.gephi.desktop.datalab;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.FocusEvent;
 import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
-import javax.swing.UIManager;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 
 /**
  * Flamingo command buttons have no accessible context, which hides them from assistive technologies, and their UI
- * delegate does not paint keyboard focus. This subclass adds both.
+ * delegate does not paint keyboard focus. This subclass adds both. The button stays reachable with Tab but does not
+ * take focus on mouse click, like the other toolbar buttons.
  */
 class AccessibleCommandButton extends JCommandButton implements Accessible {
 
     AccessibleCommandButton(String text) {
         super(text);
+        setRequestFocusEnabled(false);
     }
 
     AccessibleCommandButton(String text, ResizableIcon icon) {
         super(text, icon);
+        setRequestFocusEnabled(false);
     }
 
     @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
-            accessibleContext = new AccessibleJComponent() {
-                @Override
-                public String getAccessibleName() {
-                    String name = super.getAccessibleName();
-                    return name != null ? name : getText();
-                }
-
-                @Override
-                public AccessibleRole getAccessibleRole() {
-                    return AccessibleRole.PUSH_BUTTON;
-                }
-            };
+            accessibleContext = new AccessibleCommandButtonContext();
         }
         return accessibleContext;
     }
@@ -88,9 +80,68 @@ class AccessibleCommandButton extends JCommandButton implements Accessible {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (hasFocus() && isEnabled()) {
-            Color focusColor = UIManager.getColor("Component.focusColor");
-            g.setColor(focusColor != null ? focusColor : getForeground());
+            g.setColor(getForeground());
             g.drawRect(1, 1, getWidth() - 3, getHeight() - 3);
+        }
+    }
+
+    @Override
+    protected void processFocusEvent(FocusEvent e) {
+        super.processFocusEvent(e);
+        // Flamingo only repaints on focus gain, which would leave a stale ring behind
+        repaint();
+    }
+
+    private class AccessibleCommandButtonContext extends AccessibleJComponent implements AccessibleAction {
+
+        @Override
+        public String getAccessibleName() {
+            String name = super.getAccessibleName();
+            return name != null ? name : getText();
+        }
+
+        @Override
+        public AccessibleRole getAccessibleRole() {
+            return AccessibleRole.PUSH_BUTTON;
+        }
+
+        @Override
+        public int getAccessibleChildrenCount() {
+            // Hide Flamingo's internal renderer pane, which holds an unnamed button
+            return 0;
+        }
+
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            return null;
+        }
+
+        @Override
+        public AccessibleAction getAccessibleAction() {
+            return this;
+        }
+
+        @Override
+        public int getAccessibleActionCount() {
+            return 1;
+        }
+
+        @Override
+        public String getAccessibleActionDescription(int i) {
+            return i == 0 ? AccessibleAction.CLICK : null;
+        }
+
+        @Override
+        public boolean doAccessibleAction(int i) {
+            if (i != 0 || !isEnabled()) {
+                return false;
+            }
+            if (getCommandButtonKind().hasAction()) {
+                doActionClick();
+            } else {
+                doPopupClick();
+            }
+            return true;
         }
     }
 }
