@@ -67,6 +67,7 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -79,7 +80,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"}, position = 10)
 @ActionID(category = "Window", id = "org.gephi.desktop.appearance.AppearanceTopComponent")
-@ActionReference(path = "Menu/Window", position = 1100)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1100),
+    @ActionReference(path = "Shortcuts", name = "DS-A")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_AppearanceAction",
     preferredID = "AppearanceTopComponent")
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {

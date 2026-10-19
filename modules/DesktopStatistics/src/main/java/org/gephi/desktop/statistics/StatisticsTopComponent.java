@@ -63,6 +63,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -78,7 +79,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.statistics.StatisticsTopComponent")
-@ActionReference(path = "Menu/Window", position = 1200)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1200),
+    @ActionReference(path = "Shortcuts", name = "DS-I")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_StatisticsTopComponent",
     preferredID = "StatisticsTopComponent")
 public final class StatisticsTopComponent extends TopComponent implements ChangeListener {

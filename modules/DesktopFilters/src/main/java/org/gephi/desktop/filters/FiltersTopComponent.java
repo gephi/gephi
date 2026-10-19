@@ -52,6 +52,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -64,7 +65,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.filters.FiltersTopComponent")
-@ActionReference(path = "Menu/Window", position = 400)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 400),
+    @ActionReference(path = "Shortcuts", name = "DS-F")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_FiltersTopComponent",
     preferredID = "FiltersTopComponent")
 public final class FiltersTopComponent extends TopComponent {

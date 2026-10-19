@@ -91,6 +91,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         //Slider
         slider = new GradientSlider(GradientSlider.HORIZONTAL, gradientPositions, gradientColors);
         slider.putClientProperty("GradientSlider.includeOpacity", "false");
+        labelGradient.setLabelFor(slider);
         gradientPanel.add(slider);
 
         //Paint
@@ -121,6 +122,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
         //Palette combo
         paletteComboBox = new PaletteComboBox(PaletteUtils.getSequencialPalettes());
+        labelPalette.setLabelFor(paletteComboBox);
         palettePanel.add(paletteComboBox);
         palettePanel.add(invertPaletteCheckbox);
 

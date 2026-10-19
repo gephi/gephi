@@ -52,6 +52,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
@@ -160,6 +162,14 @@ public class ReportPanel extends javax.swing.JPanel {
                 initComponents();
                 labelGraphType.setLabelFor(graphTypeCombo);
                 labelParallelEdgesMergeStrategy.setLabelFor(edgesMergeStrategyCombo);
+                reportEditor.getAccessibleContext().setAccessibleName(
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleName"));
+                reportEditor.getAccessibleContext().setAccessibleDescription(
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.reportEditor.accessibleDescription"));
+                issuesOutline.getAccessibleContext().setAccessibleName(
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.issuesOutline.accessibleName"));
+                reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "none");
+                reportEditor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
                 initIcons();
                 initProcessors();
                 initMoreOptionsPanel();
@@ -419,6 +429,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     @Override
                     public void run() {
                         reportEditor.setText(str);
+                        reportEditor.setCaretPosition(0);
                     }
                 });
             }
@@ -641,7 +652,6 @@ public class ReportPanel extends javax.swing.JPanel {
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
         reportEditor.setEditable(false);
-        reportEditor.setFocusable(false);
         tab2ScrollPane.setViewportView(reportEditor);
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"), tab2ScrollPane); // NOI18N

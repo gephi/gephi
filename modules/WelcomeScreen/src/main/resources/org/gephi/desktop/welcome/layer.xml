@@ -20,4 +20,9 @@
             </file>
         </folder>
     </folder>
+    <folder name="Shortcuts">
+        <file name="DS-H.shadow">
+            <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-welcome-WelcomeAction.instance"/>
+        </file>
+    </folder>
 </filesystem>

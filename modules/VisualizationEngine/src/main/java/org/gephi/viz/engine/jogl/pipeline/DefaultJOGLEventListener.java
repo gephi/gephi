@@ -28,7 +28,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
     // Keyboard navigation: pan distance in screen pixels and zoom in mouse wheel units for each key press
     private static final int KEY_PAN_STEP = 40;
-    private static final double KEY_ZOOM_STEP = 3;
+    public static final double KEY_ZOOM_STEP = 3;
     private boolean mouseRightButtonPressed = false;
     private boolean mouseLeftButtonPressed = false;
     private MouseEvent lastMovedPosition = null;
