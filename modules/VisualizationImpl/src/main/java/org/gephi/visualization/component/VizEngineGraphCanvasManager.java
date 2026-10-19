@@ -6,9 +6,6 @@ import com.jogamp.newt.Screen;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
-import com.jogamp.newt.event.WindowAdapter;
-import com.jogamp.newt.event.WindowEvent;
-import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -18,9 +15,6 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,9 +48,6 @@ public class VizEngineGraphCanvasManager {
     private final VizController vizController;
     private GLWindow glWindow;
     private volatile NewtCanvasAWT glCanvas;
-    private FocusRingPanel focusRingPanel;
-    private WindowListener focusRingListener;
-    private FocusListener focusRingAwtListener;
 
     // Engine
     private transient VizEngine<JOGLRenderingTarget, NEWTEvent> engine = null;
@@ -188,41 +179,7 @@ public class VizEngineGraphCanvasManager {
             glCanvas.getAccessibleContext().setAccessibleDescription(
                 NbBundle.getMessage(VizEngineGraphCanvasManager.class, "VizEngineGraphCanvasManager.canvas.accessibleDescription"));
 
-            // Onscreen, the canvas holds native focus, which AWT does not report, so NEWT focus events drive the ring.
-            // Offscreen (macOS), NEWT focus can differ from the AWT focus that receives the keys, so AWT focus is
-            // also required there. Either event re-reads the current state, as they arrive on different threads.
-            final FocusRingPanel panel = new FocusRingPanel(glCanvas);
-            final GLWindow window = glWindow;
-            final NewtCanvasAWT canvas = glCanvas;
-            final Runnable refreshFocusRing = () -> SwingUtilities.invokeLater(() -> panel.setFocused(
-                isCanvasFocused(window.hasFocus(), canvas.isAWTEventPassThrough(), canvas.isFocusOwner())));
-            focusRingListener = new WindowAdapter() {
-                @Override
-                public void windowGainedFocus(WindowEvent e) {
-                    refreshFocusRing.run();
-                }
-
-                @Override
-                public void windowLostFocus(WindowEvent e) {
-                    refreshFocusRing.run();
-                }
-            };
-            focusRingAwtListener = new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    refreshFocusRing.run();
-                }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    refreshFocusRing.run();
-                }
-            };
-            window.addWindowListener(focusRingListener);
-            canvas.addFocusListener(focusRingAwtListener);
-            focusRingPanel = panel;
-
-            component.add(panel, BorderLayout.CENTER);
+            component.add(glCanvas, BorderLayout.CENTER);
 
             component.revalidate();
             component.repaint();
@@ -231,10 +188,6 @@ public class VizEngineGraphCanvasManager {
         engine.start();
 
         return engine;
-    }
-
-    static boolean isCanvasFocused(boolean newtFocus, boolean awtEventPassThrough, boolean awtFocusOwner) {
-        return newtFocus && (!awtEventPassThrough || awtFocusOwner);
     }
 
     public synchronized VizModel loadWorkspace(Workspace workspace) {
@@ -271,24 +224,13 @@ public class VizEngineGraphCanvasManager {
     }
 
     public synchronized void destroy(JComponent component) {
-        if (glWindow != null && focusRingListener != null) {
-            glWindow.removeWindowListener(focusRingListener);
-            focusRingListener = null;
-        }
-        if (glCanvas != null && focusRingAwtListener != null) {
-            glCanvas.removeFocusListener(focusRingAwtListener);
-            focusRingAwtListener = null;
-        }
-
-        if (focusRingPanel != null) {
-            final FocusRingPanel panelToRemove = focusRingPanel;
+        if (glCanvas != null) {
+            final NewtCanvasAWT canvasToRemove = glCanvas;
             runOnEdtAndWait(() -> {
-                panelToRemove.setFocused(false);
-                component.remove(panelToRemove);
+                component.remove(canvasToRemove);
                 component.revalidate();
                 component.repaint();
             });
-            focusRingPanel = null;
         }
 
         if (glWindow != null) {
@@ -316,18 +258,6 @@ public class VizEngineGraphCanvasManager {
     public boolean requestCanvasFocus() {
         final NewtCanvasAWT canvas = glCanvas;
         return canvas != null && canvas.requestFocusInWindow();
-    }
-
-    /**
-     * Returns whether the graph canvas is currently on screen, which is not the case when the graph window is
-     * hidden or closed. Not synchronized on purpose, as it is called from the EDT while {@link #init} may be
-     * waiting for the EDT.
-     *
-     * @return true if the canvas exists and is showing
-     */
-    public boolean isCanvasShowing() {
-        final NewtCanvasAWT canvas = glCanvas;
-        return canvas != null && canvas.isShowing();
     }
 
     private static void runOnEdtAndWait(final Runnable runnable) {
