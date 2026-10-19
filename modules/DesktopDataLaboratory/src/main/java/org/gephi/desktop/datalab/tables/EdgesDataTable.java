@@ -204,7 +204,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
         propertiesColumns.add(SOURCE_COLUMN);
         propertiesColumns.add(TARGET_COLUMN);
         propertiesColumns.add(TYPE_COLUMN);
-        if (graphModel.isMultiGraph()) {
+        if (graphModel.getEdgeTypeCount() > 1) {
             propertiesColumns.add(KIND_COLUMN);
         }
 
