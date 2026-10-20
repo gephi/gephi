@@ -71,6 +71,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
 
     public EqualNumberPanel() {
         initComponents();
+        labelValue.setLabelFor(valueSpinner);
     }
 
     @Override

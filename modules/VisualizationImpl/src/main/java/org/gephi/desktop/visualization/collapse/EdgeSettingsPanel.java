@@ -101,6 +101,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel implements Visualizati
      */
     public EdgeSettingsPanel() {
         initComponents();
+        edgeColor.setLabelFor(edgeColorCombo);
+        labelScale.setLabelFor(scaleSlider);
+        edgeWeightEstimatorLabel.setLabelFor(edgeWeightEstimatorCombo);
 
         vizController = Lookup.getDefault().lookup(VisualizationController.class);
 

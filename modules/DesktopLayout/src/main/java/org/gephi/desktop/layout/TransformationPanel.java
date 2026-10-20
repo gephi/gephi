@@ -51,6 +51,14 @@ public class TransformationPanel extends javax.swing.JPanel {
 
     public TransformationPanel() {
         initComponents();
+        buttonMirrorY.getAccessibleContext().setAccessibleName(buttonMirrorY.getToolTipText());
+        buttonMirrorX.getAccessibleContext().setAccessibleName(buttonMirrorX.getToolTipText());
+        buttonRotateLeft45deg.getAccessibleContext().setAccessibleName(buttonRotateLeft45deg.getToolTipText());
+        buttonRotateLeft1deg.getAccessibleContext().setAccessibleName(buttonRotateLeft1deg.getToolTipText());
+        buttonRotateRight1deg.getAccessibleContext().setAccessibleName(buttonRotateRight1deg.getToolTipText());
+        buttonRotateRight45deg.getAccessibleContext().setAccessibleName(buttonRotateRight45deg.getToolTipText());
+        buttonExpand.getAccessibleContext().setAccessibleName(buttonExpand.getToolTipText());
+        buttonReduce.getAccessibleContext().setAccessibleName(buttonReduce.getToolTipText());
         transformationUIController = new TransformationUIController();
     }
 

@@ -73,6 +73,7 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
      */
     public LinkNodesUI() {
         initComponents();
+        sourceNodeLabel.setLabelFor(sourceNodeComboBox);
     }
 
     @Override

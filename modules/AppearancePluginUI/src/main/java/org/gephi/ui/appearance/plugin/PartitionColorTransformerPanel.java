@@ -108,6 +108,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     public PartitionColorTransformerPanel() {
         initComponents();
+        table.getAccessibleContext().setAccessibleName(NbBundle.getMessage(PartitionColorTransformerPanel.class,
+            "PartitionColorTransformerPanel.table.accessibleName"));
         palettePopupButton = new PalettePopupButton();
     }
 
@@ -441,7 +443,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             setText(NbBundle
                 .getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.paletteButton"));
             setFocusPainted(false);
-            setFocusable(false);
+            setRequestFocusEnabled(false);
             paletteManager = PaletteManager.getInstance();
 
             addActionListener(new ActionListener() {

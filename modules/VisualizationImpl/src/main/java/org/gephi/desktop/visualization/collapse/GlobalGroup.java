@@ -35,6 +35,7 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
         backgroundColorButton.setDarkColor(VizConfig.DEFAULT_DARK_BACKGROUND_COLOR);
         backgroundColorButton
             .setToolTipText(NbBundle.getMessage(GlobalGroup.class, "VizToolbar.Global.background"));
+        backgroundColorButton.getAccessibleContext().setAccessibleName(backgroundColorButton.getToolTipText());
         backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, evt -> {
             vizController.setBackgroundColor(backgroundColorButton.getColor());
         });
@@ -55,6 +56,7 @@ public class GlobalGroup implements CollapseGroup, VisualizationPropertyChangeLi
             screenshotPopup);
         screenshotButton
             .setToolTipText(NbBundle.getMessage(GlobalGroup.class, "VizToolbar.Global.screenshot"));
+        screenshotButton.getAccessibleContext().setAccessibleName(screenshotButton.getToolTipText());
         screenshotButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

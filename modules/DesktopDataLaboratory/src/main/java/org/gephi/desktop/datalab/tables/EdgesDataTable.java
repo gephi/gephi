@@ -218,13 +218,13 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
     @Override
     public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel,
                                                                       DataTablesModel dataTablesModel,
-                                                                      boolean multiGraph) {
+                                                                      boolean multipleEdgeTypes) {
         ArrayList<PropertyDataColumn<Edge>> propertiesColumns = new ArrayList<>();
 
         propertiesColumns.add(SOURCE_COLUMN);
         propertiesColumns.add(TARGET_COLUMN);
         propertiesColumns.add(TYPE_COLUMN);
-        if (multiGraph) {
+        if (multipleEdgeTypes) {
             propertiesColumns.add(KIND_COLUMN);
         }
 

@@ -54,6 +54,7 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -67,7 +68,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "contextmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.clustering.ContextTopComponent")
-@ActionReference(path = "Menu/Window", position = 200)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 200),
+    @ActionReference(path = "Shortcuts", name = "DS-C")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_ContextTopComponent",
     preferredID = "ContextTopComponent")
 public final class ContextTopComponent extends TopComponent {

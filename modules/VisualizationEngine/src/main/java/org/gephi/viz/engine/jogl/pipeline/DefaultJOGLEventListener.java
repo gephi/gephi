@@ -26,6 +26,9 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     private static final short MOUSE_LEFT_BUTTON = MouseEvent.BUTTON1;
     private static final short MOUSE_WHEEL_BUTTON = MouseEvent.BUTTON2;
     private static final short MOUSE_RIGHT_BUTTON = MouseEvent.BUTTON3;
+    // Keyboard navigation: pan distance in screen pixels and zoom in mouse wheel units for each key press
+    private static final int KEY_PAN_STEP = 40;
+    public static final double KEY_ZOOM_STEP = 3;
     private boolean mouseRightButtonPressed = false;
     private boolean mouseLeftButtonPressed = false;
     private MouseEvent lastMovedPosition = null;
@@ -117,8 +120,8 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     }
 
     private boolean processEvent(NEWTEvent event) {
-        if (event instanceof KeyEvent) {
-            return false;
+        if (event instanceof KeyEvent keyEvent) {
+            return processKeyEvent(keyEvent);
         } else if (event instanceof MouseEvent mouseEvent) {
             switch (event.getEventType()) {
                 case MouseEvent.EVENT_MOUSE_CLICKED:
@@ -283,6 +286,43 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
         }
 
         return false;
+    }
+
+    private boolean processKeyEvent(KeyEvent e) {
+        if (e.getEventType() != KeyEvent.EVENT_KEY_PRESSED || e.isControlDown() || e.isAltDown() || e.isMetaDown()) {
+            return false;
+        }
+
+        final int screenCenterX = engine.getWidth() / 2;
+        final int screenCenterY = engine.getHeight() / 2;
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_LEFT:
+                inputActionsProcessor.processCameraMoveEvent(KEY_PAN_STEP, 0);
+                return true;
+            case KeyEvent.VK_RIGHT:
+                inputActionsProcessor.processCameraMoveEvent(-KEY_PAN_STEP, 0);
+                return true;
+            case KeyEvent.VK_UP:
+                inputActionsProcessor.processCameraMoveEvent(0, KEY_PAN_STEP);
+                return true;
+            case KeyEvent.VK_DOWN:
+                inputActionsProcessor.processCameraMoveEvent(0, -KEY_PAN_STEP);
+                return true;
+            case KeyEvent.VK_PLUS:
+            case KeyEvent.VK_EQUALS:
+            case KeyEvent.VK_ADD:
+                inputActionsProcessor.processZoomEvent(KEY_ZOOM_STEP, screenCenterX, screenCenterY);
+                return true;
+            case KeyEvent.VK_MINUS:
+            case KeyEvent.VK_SUBTRACT:
+                inputActionsProcessor.processZoomEvent(-KEY_ZOOM_STEP, screenCenterX, screenCenterY);
+                return true;
+            case KeyEvent.VK_HOME:
+                inputActionsProcessor.processCenterOnGraphEvent();
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean mouseWheelMoved(MouseEvent e) {

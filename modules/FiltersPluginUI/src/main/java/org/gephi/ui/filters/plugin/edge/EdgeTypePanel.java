@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.filters.plugin.edge.EdgeTypeBuilder;
 import org.gephi.filters.plugin.edge.EdgeTypeBuilder.EdgeTypeFilter;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -36,6 +37,8 @@ public class EdgeTypePanel extends javax.swing.JPanel {
      */
     public EdgeTypePanel() {
         initComponents();
+        comboBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(EdgeTypePanel.class, "EdgeTypePanel.comboBox.accessibleName"));
 
         comboBox.addItemListener(new ItemListener() {
 

@@ -94,6 +94,9 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
      */
     public ConvertColumnToDynamicUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        intervalStartLabel.setLabelFor(intervalStartText);
+        intervalEndLabel.setLabelFor(intervalEndText);
 
         intervalStartText.setText(NbPreferences.forModule(ConvertColumnToDynamicUI.class)
             .get(INTERVAL_START_PREFERENCE, DEFAULT_INTERVAL_START));

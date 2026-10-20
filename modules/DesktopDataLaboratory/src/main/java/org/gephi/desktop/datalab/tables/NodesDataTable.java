@@ -113,7 +113,7 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
     @Override
     public List<? extends ElementDataColumn<Node>> getFakeDataColumns(GraphModel graphModel,
                                                                       DataTablesModel dataTablesModel,
-                                                                      boolean multiGraph) {
+                                                                      boolean multipleEdgeTypes) {
         return propertiesColumns;
     }
 }

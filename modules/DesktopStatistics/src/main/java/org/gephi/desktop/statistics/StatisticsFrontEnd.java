@@ -99,6 +99,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
+        reportButton.getAccessibleContext().setAccessibleName(reportButton.getToolTipText());
         RUN = NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runStatus.run");
         CANCEL = NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runStatus.cancel");
         initUI(ui);
@@ -325,7 +326,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
         runButton.setText(org.openide.util.NbBundle
             .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runButton.text")); // NOI18N
-        runButton.setFocusable(false);
+        runButton.setRequestFocusEnabled(false);
         runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         runButton.setMargin(new java.awt.Insets(1, 2, 1, 2));
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -334,7 +335,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         reportButton.setIcon(ImageUtilities.loadImageIcon("DesktopStatistics/report.svg", false)); // NOI18N
         reportButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
-        reportButton.setFocusable(false);
+        reportButton.setRequestFocusEnabled(false);
         reportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         reportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(reportButton);

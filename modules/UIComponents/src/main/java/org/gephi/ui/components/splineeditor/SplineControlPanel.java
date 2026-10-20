@@ -188,6 +188,8 @@ class SplineControlPanel extends JPanel {
 
         JList list = new JList(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.getAccessibleContext()
+            .setAccessibleName(NbBundle.getMessage(SplineEditor.class, "splineEditor_templates"));
         list.setCellRenderer(new TemplateCellRenderer());
         list.addListSelectionListener(new TemplateSelectionHandler());
 
@@ -304,6 +306,7 @@ class SplineControlPanel extends JPanel {
                                                       boolean isSelected, boolean cellHasFocus) {
             Template template = (Template) value;
             this.setIcon(template.getImageIcon());
+            this.getAccessibleContext().setAccessibleName(template.getAccessibleName());
             this.isSelected = isSelected;
             return this;
         }
@@ -335,6 +338,13 @@ class SplineControlPanel extends JPanel {
 
         public Point2D getControl2() {
             return control2;
+        }
+
+        public String getAccessibleName() {
+            NumberFormat formatter = getNumberFormatter();
+            return NbBundle.getMessage(SplineEditor.class, "splineEditor_templateName",
+                formatter.format(control1.getX()), formatter.format(control1.getY()),
+                formatter.format(control2.getX()), formatter.format(control2.getY()));
         }
 
         public ImageIcon getImageIcon() {

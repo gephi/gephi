@@ -82,6 +82,9 @@ public class ReportPanel extends javax.swing.JPanel {
         this.document = reportController.buildReportDocument(report);
 
         initComponents();
+        jLabel1.setLabelFor(summaryTextField);
+        jLabel2.setLabelFor(problemArea);
+        labelGitHubUsername.setLabelFor(githubUsernameTextField);
         setup();
 
         viewDataButton.addActionListener(new ActionListener() {

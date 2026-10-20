@@ -2,8 +2,6 @@ package org.gephi.desktop.attributes;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.JButton;
@@ -19,6 +17,7 @@ import org.gephi.graph.api.Column;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -32,7 +31,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = false, roles = {"overview", "datalab"}, position = 20)
 @ActionID(category = "Window", id = "org.gephi.desktop.attributes.AttributesTopComponent")
-@ActionReference(path = "Menu/Window", position = 1500)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1500),
+    @ActionReference(path = "Shortcuts", name = "DS-B")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_AttributesTopComponent",
     preferredID = "AttributesTopComponent")
 public final class AttributesTopComponent extends TopComponent implements AttributesUIModelListener {
@@ -86,13 +88,8 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
             NbBundle.getMessage(AttributesTopComponent.class, "AttributesTopComponent.columnsButton.text"));
         columnsButton.setToolTipText(
             NbBundle.getMessage(AttributesTopComponent.class, "AttributesTopComponent.columnsButton.tooltip"));
-        columnsButton.setFocusable(false);
-        columnsButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showColumnsPopup(e);
-            }
-        });
+        columnsButton.setRequestFocusEnabled(false);
+        columnsButton.addActionListener(e -> showColumnsPopup());
         toolbar.add(columnsButton);
 
         add(toolbar, BorderLayout.SOUTH);
@@ -181,7 +178,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         columnsButton.setEnabled(false);
     }
 
-    private void showColumnsPopup(MouseEvent e) {
+    private void showColumnsPopup() {
         if (model == null) {
             return;
         }

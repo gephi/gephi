@@ -114,6 +114,7 @@ public final class WizardVisualPanel2 extends JPanel {
     private void createTimeRepresentationComboBox(JPanel settingsPanel) {
         JLabel timeRepresentationLabel = new JLabel(getMessage("WizardVisualPanel2.timeRepresentationLabel.text"));
 
+        timeRepresentationLabel.setLabelFor(timeRepresentationComboBox);
         settingsPanel.add(timeRepresentationLabel, "wrap");
         settingsPanel.add(timeRepresentationComboBox, "wrap 15px");
     }
@@ -154,6 +155,7 @@ public final class WizardVisualPanel2 extends JPanel {
                     settingsPanel.add(columnCheckBox, "wrap");
 
                     columnsComboBoxes.add(columnComboBox);
+                    columnComboBox.getAccessibleContext().setAccessibleName(header);
                     fillComboBoxWithColumnTypes(header, columnComboBox);
                     settingsPanel.add(columnComboBox, "wrap 15px");
                 }

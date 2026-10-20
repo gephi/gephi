@@ -98,6 +98,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel
      */
     public GeneralNumberListStatisticsReportUI(Number[] numbers, String dataName, String dialogTitle) {
         initComponents();
+        divisionsLabel.setLabelFor(divisionsComboBox);
         this.numbers = numbers;
         this.dataName = dataName;
         this.dialogTitle = dialogTitle;

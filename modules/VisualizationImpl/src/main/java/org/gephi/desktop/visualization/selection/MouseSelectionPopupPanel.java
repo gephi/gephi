@@ -67,6 +67,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
      */
     public MouseSelectionPopupPanel() {
         initComponents();
+        labelDiameter.setLabelFor(diameterSlider);
 
         diameterSlider.addChangeListener(new ChangeListener() {
 
@@ -149,7 +150,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
         diameterSlider.setMaximum(1000);
         diameterSlider.setMinimum(1);
         diameterSlider.setValue(1);
-        diameterSlider.setFocusable(false);
+        diameterSlider.setRequestFocusEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -174,7 +175,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
         proportionnalZoomCheckbox.setText(org.openide.util.NbBundle.getMessage(MouseSelectionPopupPanel.class,
             "MouseSelectionPopupPanel.proportionnalZoomCheckbox.text")); // NOI18N
-        proportionnalZoomCheckbox.setFocusable(false);
+        proportionnalZoomCheckbox.setRequestFocusEnabled(false);
         proportionnalZoomCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

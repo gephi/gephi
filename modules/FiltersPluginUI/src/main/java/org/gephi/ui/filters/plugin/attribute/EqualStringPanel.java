@@ -70,6 +70,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
 
     public EqualStringPanel() {
         initComponents();
+        labelPattern.setLabelFor(textField);
 
         okButton.addActionListener(this);
     }

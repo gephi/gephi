@@ -63,6 +63,7 @@ public class NodePencilPanel extends javax.swing.JPanel {
      */
     public NodePencilPanel() {
         initComponents();
+        labelSize.setLabelFor(sizeSpinner);
     }
 
     public void setStatus(String status) {

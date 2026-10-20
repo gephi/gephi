@@ -61,6 +61,8 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
 
     public KCorePanel() {
         initComponents();
+        degreeSpinner.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(KCorePanel.class, "KCorePanel.degreeSpinner.accessibleName"));
     }
 
     @Override

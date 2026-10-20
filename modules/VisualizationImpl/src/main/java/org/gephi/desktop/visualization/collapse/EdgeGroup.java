@@ -42,6 +42,7 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         //Show edges
         showEdgeButton = new JToggleButton();
         showEdgeButton.setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.showEdges"));
+        showEdgeButton.getAccessibleContext().setAccessibleName(showEdgeButton.getToolTipText());
         showEdgeButton.setIcon(
             ImageUtilities.loadImageIcon("VisualizationImpl/showEdges.svg", false));
         showEdgeButton.addActionListener(new ActionListener() {
@@ -64,11 +65,13 @@ public class EdgeGroup implements CollapseGroup, VisualizationPropertyChangeList
         edgeColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/edgeColorMode.svg", false));
         edgeColorModeButton
             .setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.colorMode"));
+        edgeColorModeButton.getAccessibleContext().setAccessibleName(edgeColorModeButton.getToolTipText());
 
         //EdgeScale slider - logarithmic [0, 100] → [EDGE_SCALE_MIN, EDGE_SCALE_MAX],
         // centred (slider=50) at the default value (geometric mean of MIN and MAX).
         edgeScaleSlider = new JSlider(0, 100, 0);
         edgeScaleSlider.setToolTipText(NbBundle.getMessage(EdgeGroup.class, "VizToolbar.Edges.edgeScale"));
+        edgeScaleSlider.getAccessibleContext().setAccessibleName(edgeScaleSlider.getToolTipText());
         edgeScaleSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

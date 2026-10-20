@@ -99,6 +99,9 @@ public class MergeColumnsUI extends javax.swing.JPanel {
      */
     public MergeColumnsUI() {
         initComponents();
+        availableColumnsLabel.setLabelFor(availableColumnsList);
+        columnsToMergeLabel.setLabelFor(columnsToMergeList);
+        availableStrategiesLabel.setLabelFor(availableStrategiesComboBox);
         infoLabel.addMouseListener(new MouseAdapter() {
 
             RichTooltip richTooltip;

@@ -86,6 +86,10 @@ public class ImporterVnaUI implements ImporterUI {
         panel = new JPanel(new GridBagLayout());
         comboBox = new JComboBox(EdgeWidthFunction.Function.values());
         textField = new JTextField("1", 5);
+        comboBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(getClass(), "ImporterVnaUI.comboBox.accessibleName"));
+        textField.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(getClass(), "ImporterVnaUI.textField.accessibleName"));
         messageLabel = new JLabel(MESSAGE_LINEAR);
 
         comboBox.addActionListener(new ActionListener() {

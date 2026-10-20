@@ -198,7 +198,9 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
                 }
                 strategyComboBox.refresh();
 
-                strategiesPanel.add(new JLabel(columns[i].getTitle() + ": "), "wrap");
+                JLabel columnLabel = new JLabel(columns[i].getTitle() + ": ");
+                columnLabel.setLabelFor(strategyComboBox);
+                strategiesPanel.add(columnLabel, "wrap");
 
                 strategiesPanel.add(infoLabel, "split 3");
                 strategiesPanel.add(strategiesConfigurationButtons[i]);
@@ -235,7 +237,9 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         for (Column column : columns) {
             baseColumnComboBox.addItem(column.getTitle());
         }
-        settingsPanel.add(new JLabel(getMessage("MergeNodeDuplicatesUI.baseColumnText")), "split 2");
+        JLabel baseColumnLabel = new JLabel(getMessage("MergeNodeDuplicatesUI.baseColumnText"));
+        baseColumnLabel.setLabelFor(baseColumnComboBox);
+        settingsPanel.add(baseColumnLabel, "split 2");
         settingsPanel.add(baseColumnComboBox, "growx, wrap");
         caseSensitiveCheckBox =
             new JCheckBox(getMessage("MergeNodeDuplicatesUI.caseSensitiveText"), manipulator.isCaseSensitive());

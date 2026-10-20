@@ -75,6 +75,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.Actions;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
@@ -94,7 +95,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewSettingsTopComponent")
-@ActionReference(path = "Menu/Window", position = 1000)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1000),
+    @ActionReference(path = "Shortcuts", name = "DS-R")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewSettingsTopComponent",
     preferredID = "PreviewSettingsTopComponent")
 public final class PreviewSettingsTopComponent extends TopComponent implements PropertyChangeListener {
@@ -127,6 +131,10 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
     public PreviewSettingsTopComponent() {
         initComponents();
+        removeButton.getAccessibleContext().setAccessibleName(removeButton.getToolTipText());
+        saveButton.getAccessibleContext().setAccessibleName(saveButton.getToolTipText());
+        labelPreset.setLabelFor(presetComboBox);
+        labelRatio.setLabelFor(ratioSlider);
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
 
         if (UIUtils.isAquaLookAndFeel()) {
@@ -437,7 +445,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         removeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.removeButton.toolTipText")); // NOI18N
         removeButton.setEnabled(false);
-        removeButton.setFocusable(false);
+        removeButton.setRequestFocusEnabled(false);
         removeButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -453,7 +461,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.saveButton.toolTipText")); // NOI18N
         saveButton.setEnabled(false);
-        saveButton.setFocusable(false);
+        saveButton.setRequestFocusEnabled(false);
         saveButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -567,7 +575,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         svgExportButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class,
             "PreviewSettingsTopComponent.svgExportButton.toolTipText")); // NOI18N
         svgExportButton.setEnabled(false);
-        svgExportButton.setFocusable(false);
+        svgExportButton.setRequestFocusEnabled(false);
         svgExportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         svgExportButton.setMargin(new java.awt.Insets(2, 8, 2, 8));
         svgExportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
