@@ -50,8 +50,8 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
     private final JButton columnsButton;
 
     private final AttributesUIControllerImpl controller;
-    // The model's graph flags need the graph read lock, so they are refreshed here instead of on the EDT
-    private final RequestProcessor.Task graphFlagsTask = RP.create(this::refreshGraphFlags);
+    // The model's dynamic flag needs the graph read lock, so it is refreshed here instead of on the EDT
+    private final RequestProcessor.Task dynamicTask = RP.create(this::refreshDynamic);
 
     // Model
     private volatile AttributesUIModelImpl model;
@@ -135,17 +135,17 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         if (model.isEditMode()) {
             editPanel.refreshSelected(model);
         } else {
-            graphFlagsTask.schedule(0);
+            dynamicTask.schedule(0);
             selectionPanel.refreshSelectedNodes(model);
         }
     }
 
-    private void refreshGraphFlags() {
-        AttributesUIModelImpl flagsModel = model;
-        if (flagsModel != null && flagsModel.refreshGraphFlags()) {
+    private void refreshDynamic() {
+        AttributesUIModelImpl dynamicModel = model;
+        if (dynamicModel != null && dynamicModel.refreshDynamic()) {
             SwingUtilities.invokeLater(() -> {
-                if (model == flagsModel && !flagsModel.isEditMode() && flagsModel.getSelectedNodes() != null) {
-                    selectionPanel.refreshSelectedNodes(flagsModel);
+                if (model == dynamicModel && !dynamicModel.isEditMode() && dynamicModel.getSelectedNodes() != null) {
+                    selectionPanel.refreshSelectedNodes(dynamicModel);
                 }
             });
         }
@@ -164,7 +164,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
             cardLayout.show(cardPanel, SELECTION_CARD);
         }
         columnsButton.setEnabled(true);
-        graphFlagsTask.schedule(0);
+        dynamicTask.schedule(0);
     }
 
     private void unsetup() {
@@ -182,7 +182,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         if (model == null) {
             return;
         }
-        graphFlagsTask.schedule(0);
+        dynamicTask.schedule(0);
         List<Column> columns = model.getEligibleColumns();
 
         JPopupMenu popup = new JPopupMenu();

@@ -21,8 +21,8 @@ import org.openide.util.Lookup;
 
 /**
  * The eligible columns are read on the EDT and must not depend on the graph lock: a long running reader plus a
- * queued writer would otherwise block every new reader, including the EDT. The graph flags they depend on are cached
- * and refreshed off the EDT through {@link AttributesUIModelImpl#refreshGraphFlags()}.
+ * queued writer would otherwise block every new reader, including the EDT. The dynamic flag they depend on is cached
+ * and refreshed off the EDT through {@link AttributesUIModelImpl#refreshDynamic()}.
  */
 public class AttributesUIModelImplGraphLockTest {
 
@@ -84,7 +84,7 @@ public class AttributesUIModelImplGraphLockTest {
             }
             Assert.assertEquals(Thread.State.WAITING, writer.getState());
 
-            // Old behavior called graphModel.isDirected()/isDynamic() here, which take a read lock queued behind the writer
+            // Reading graphModel.isDynamic() here would take a read lock queued behind the writer
             Future<Integer> nodeCols = executor.submit(() -> model.getEligibleNodeColumns().size());
             Future<Integer> edgeCols = executor.submit(() -> model.getEligibleEdgeColumns().size());
             Future<Integer> cols = executor.submit(() -> model.getEligibleColumns().size());
@@ -100,19 +100,19 @@ public class AttributesUIModelImplGraphLockTest {
     }
 
     @Test
-    public void testRefreshGraphFlagsUpdatesEligibleColumns() {
+    public void testRefreshDynamicUpdatesEligibleColumns() {
         Column inDegree = graphModel.defaultColumns().inDegree();
         Column outDegree = graphModel.defaultColumns().outDegree();
         Column nodeTimeSet = graphModel.defaultColumns().nodeTimeSet();
 
-        // Cached defaults: directed, not dynamic
+        // Cached default: not dynamic
         List<Column> initial = model.getEligibleNodeColumns();
         Assert.assertTrue(initial.contains(inDegree));
         Assert.assertTrue(initial.contains(outDegree));
         Assert.assertFalse(initial.contains(nodeTimeSet));
-        Assert.assertFalse(model.refreshGraphFlags());
+        Assert.assertFalse(model.refreshDynamic());
 
-        // An undirected edge makes the graph not directed
+        // An undirected edge makes the graph not directed, which is read live
         Graph graph = graphModel.getGraph();
         Node n1 = graphModel.factory().newNode("n1");
         Node n2 = graphModel.factory().newNode("n2");
@@ -121,21 +121,18 @@ public class AttributesUIModelImplGraphLockTest {
         graph.addEdge(graphModel.factory().newEdge(n1, n2, 0, 1.0, false));
         Assert.assertFalse(graphModel.isDirected());
 
-        // Columns keep reflecting the cached flags until refreshed
-        Assert.assertTrue(model.getEligibleNodeColumns().contains(inDegree));
-        Assert.assertTrue(model.refreshGraphFlags());
         List<Column> undirected = model.getEligibleNodeColumns();
         Assert.assertFalse(undirected.contains(inDegree));
         Assert.assertFalse(undirected.contains(outDegree));
         Assert.assertTrue(undirected.contains(graphModel.defaultColumns().degree()));
-        Assert.assertFalse(model.refreshGraphFlags());
+        Assert.assertFalse(model.refreshDynamic());
 
-        // A timestamp makes the graph dynamic
+        // A timestamp makes the graph dynamic, which the columns only follow once refreshed
         n1.addTimestamp(1.0);
         Assert.assertTrue(graphModel.isDynamic());
         Assert.assertFalse(model.getEligibleNodeColumns().contains(nodeTimeSet));
-        Assert.assertTrue(model.refreshGraphFlags());
+        Assert.assertTrue(model.refreshDynamic());
         Assert.assertTrue(model.getEligibleNodeColumns().contains(nodeTimeSet));
-        Assert.assertFalse(model.refreshGraphFlags());
+        Assert.assertFalse(model.refreshDynamic());
     }
 }

@@ -33,7 +33,6 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
     private boolean includeProperties = AttributesPreferences.isIncludeProperties();
     private Node[] selectedNodes = null;
     private Edge[] selectedEdges = null;
-    private volatile boolean directed = true;
     private volatile boolean dynamic = false;
 
     public AttributesUIModelImpl(Workspace workspace) {
@@ -63,16 +62,14 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
     }
 
     /**
-     * Refreshes the cached graph flags used to list the eligible columns. The graph model needs the graph read lock
+     * Refreshes the cached dynamic flag used to list the eligible columns. The graph model needs the graph read lock
      * to answer, so this may wait for it and must never be called from the EDT.
      *
-     * @return true if a flag changed
+     * @return true if the flag changed
      */
-    boolean refreshGraphFlags() {
-        boolean newDirected = graphModel.isDirected();
+    boolean refreshDynamic() {
         boolean newDynamic = graphModel.isDynamic();
-        boolean changed = newDirected != directed || newDynamic != dynamic;
-        directed = newDirected;
+        boolean changed = newDynamic != dynamic;
         dynamic = newDynamic;
         return changed;
     }
@@ -86,7 +83,7 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
 
     public List<Column> getEligibleNodeColumns() {
         Table nodeTable = graphModel.getNodeTable();
-        final boolean directed = this.directed;
+        final boolean directed = graphModel.isDirected();
         final boolean dynamic = this.dynamic;
         final Column nodeTimesetCol = graphModel.defaultColumns().nodeTimeSet();
         final Column nodeDegreeCol = graphModel.defaultColumns().degree();
