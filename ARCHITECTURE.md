@@ -71,7 +71,7 @@ The NetBeans Platform is open source, has a community around it, and is used as 
 ### Build, testing, and automation
 
 - Maven
-- JUnit
+- JUnit, with unit tests in each module and integration tests across modules in the `application` module (see [CONTRIBUTING.md](CONTRIBUTING.md#integration-tests))
 - GitHub Actions
 
 ## Main APIs

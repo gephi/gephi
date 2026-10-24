@@ -56,6 +56,27 @@ Rebuilding the changed module writes or overwrites its local JAR in the Maven lo
 
 When uncertain, rebuild the entire repository with `mvn -T 4 clean install`. This is slower but ensures everything is current.
 
+### Integration tests
+
+Unit tests live in each module and test that module on its own. Integration tests live in `modules/application/src/test`, the module that depends on every other one, and drive Gephi through its controllers (`ProjectController`, `ImportController`, `FilterController`...) obtained from `Lookup`.
+
+An integration test should fail for a reason no single module's tests can see, for example:
+
+- a service registered in one module not being found or picked, like the importer matching a file extension;
+- data produced by one module being consumed by another, like a statistics column used for an appearance partition and a filter, or a layout's positions written by an exporter;
+- controllers running work in the background, like layouts, statistics or filters;
+- several modules' models persisted together in a `.gephi` project.
+
+Algorithm results, parser edge cases and a single exporter's output belong to the module's unit tests.
+
+The tests run headless, with a user directory under `target/test-userdir`, after the application cluster is assembled. `mvn verify` runs them, so CI does too. To run them alone once the other modules are installed:
+
+```bash
+mvn -pl modules/application verify
+```
+
+New tests extend `AbstractIntegrationTest`, which provides the controllers, fixture loading and an import helper, and closes the current project after each test.
+
 ## API changelog
 
 Every public API/SPI change is recorded in `src/main/javadoc/overview.html`, under the `<h2>API Changes</h2>` section. This file is the source used to compile release notes, so new entries must follow its existing formatting convention exactly:
