@@ -42,6 +42,7 @@
 
 package org.gephi.desktop.project;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -221,6 +222,10 @@ public class ProjectControllerUIImpl implements ProjectListener {
     }
 
     private void updateTitleBar(Project project) {
+        if (GraphicsEnvironment.isHeadless()) {
+            //No main window to update, e.g. when the project API is driven from tests
+            return;
+        }
         //Modifying Title bar
         SwingUtilities.invokeLater(() -> {
             JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
@@ -871,8 +876,16 @@ public class ProjectControllerUIImpl implements ProjectListener {
             .replaceAll("( [0-9]{12})$", "");
     }
 
+    /**
+     * Returns the file the projects list is persisted to, or <code>null</code> when no user directory is configured,
+     * e.g. when the project API is driven from tests.
+     */
     private File getProjectsFile() {
-        File folder = new File(Places.getUserDirectory(), PROJECTS_FOLDER);
+        File userDirectory = Places.getUserDirectory();
+        if (userDirectory == null) {
+            return null;
+        }
+        File folder = new File(userDirectory, PROJECTS_FOLDER);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -882,7 +895,7 @@ public class ProjectControllerUIImpl implements ProjectListener {
     public void loadProjects() {
         if(NbPreferences.forModule(Installer.class).getBoolean(PROJECTS_PERSISTENCE_ENABLED, DEFAULT_PROJECTS_PERSISTENCE_ENABLED)) {
             File file = getProjectsFile();
-            if (file.exists()) {
+            if (file != null && file.exists()) {
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                 try {
                     pc.getProjects().loadProjects(file);
@@ -896,6 +909,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
     public void saveProjects() {
         if(NbPreferences.forModule(Installer.class).getBoolean(PROJECTS_PERSISTENCE_ENABLED, DEFAULT_PROJECTS_PERSISTENCE_ENABLED)) {
             File file = getProjectsFile();
+            if (file == null) {
+                return;
+            }
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             try {
                 pc.getProjects().saveProjects(file);
