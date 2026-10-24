@@ -1,15 +1,10 @@
 package org.gephi.integration;
 
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.layout.api.LayoutController;
-import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
 import org.gephi.project.api.Workspace;
@@ -23,7 +18,6 @@ import org.junit.rules.TemporaryFolder;
  */
 public class ImportLayoutExportPipelineTest extends AbstractIntegrationTest {
 
-    private static final long LAYOUT_TIMEOUT_MS = 30_000;
     private static final float POSITION_EPS = 0.01f;
 
     @Rule
@@ -63,30 +57,6 @@ public class ImportLayoutExportPipelineTest extends AbstractIntegrationTest {
             Assert.assertEquals(node.x(), copy.x(), POSITION_EPS);
             Assert.assertEquals(node.y(), copy.y(), POSITION_EPS);
             Assert.assertEquals(node.getAttribute("group"), copy.getAttribute("group"));
-        }
-    }
-
-    /**
-     * Runs the selected layout and waits for it to finish. The layout model's running event is used because
-     * {@link LayoutController#canStop()} stays false until the layout thread has actually started.
-     */
-    private void runLayout(int iterations) throws InterruptedException {
-        LayoutModel model = layoutController.getModel();
-        CountDownLatch finished = new CountDownLatch(1);
-        PropertyChangeListener listener = evt -> {
-            if (LayoutModel.RUNNING.equals(evt.getPropertyName()) && Boolean.FALSE.equals(evt.getNewValue())) {
-                finished.countDown();
-            }
-        };
-        model.addPropertyChangeListener(listener);
-        try {
-            layoutController.executeLayout(iterations);
-            if (!finished.await(LAYOUT_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
-                layoutController.stopLayout();
-                Assert.fail("Layout did not finish within " + LAYOUT_TIMEOUT_MS + " ms");
-            }
-        } finally {
-            model.removePropertyChangeListener(listener);
         }
     }
 
