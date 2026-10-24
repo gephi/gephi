@@ -705,11 +705,9 @@ public class VizEngine<R extends RenderingTarget, I> {
     }
 
     private List<? extends WorldData> runWorldUpdated() {
-        // Cleared first, so a failed world update doesn't fail every following frame
-        final Future<VizEngineModel> worldUpdate = allUpdatersCompletableFuture;
-        allUpdatersCompletableFuture = null;
         try {
-            VizEngineModel modelUsedByUpdaters = worldUpdate.get();
+            VizEngineModel modelUsedByUpdaters = allUpdatersCompletableFuture.get();
+            allUpdatersCompletableFuture = null;
 
             return renderersPipeline.stream().map(
                 r -> r.worldUpdated(modelUsedByUpdaters, renderingTarget, mvpFloats)
