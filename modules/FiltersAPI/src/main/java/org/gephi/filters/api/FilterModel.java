@@ -96,6 +96,18 @@ public interface FilterModel {
      */
     boolean isSelecting();
 
+    /**
+     * Returns <code>true</code> while a result is being computed and isn't
+     * visible yet, i.e. after {@link FilterController#filterVisible(Query)},
+     * {@link FilterController#selectVisible(Query)}, a change of the current
+     * query's parameters or an automatic refresh, until the result is applied.
+     * A change event is fired when this goes back to <code>false</code>.
+     *
+     * @return <code>true</code> if a filter or selection result is pending,
+     * <code>false</code> otherwise
+     */
+    boolean isRunning();
+
     boolean isAutoRefresh();
 
     Workspace getWorkspace();

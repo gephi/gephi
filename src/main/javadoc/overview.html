@@ -37,6 +37,7 @@
         <h4>Layout API</h4>
         <ul>
             <li>The <code>LayoutController</code> has a new <code>executeLayout(Layout transformation)</code> method to facilitate one-off, synchronous layout execution. This is useful for transformations like rotation or scaling.</li>
+            <li><code>LayoutModel.isRunning()</code> and <code>LayoutController.canStop()</code> now return <code>true</code> as soon as <code>executeLayout()</code> returns, until the layout finishes. Previously they could return <code>false</code> until the layout thread had started. The <code>RUNNING</code> event with a <code>true</code> value is now fired before the layout is submitted, so it always precedes the event with a <code>false</code> value.</li>
         </ul>
         <h4>Tools API</h4>
         <ul>
@@ -71,10 +72,15 @@
         <ul>
             <li>Added a <code>fatalError(Throwable)</code> default method to <code>LongTaskListener</code>. It is called when a task terminates with an uncaught exception, instead of <code>taskFinished()</code>, so that a single listener receives both outcomes. The default implementation does nothing, therefore existing listeners are unaffected.</li>
             <li><code>LongTaskErrorHandler</code> and <code>LongTaskExecutor.setDefaultErrorHandler()</code> are deprecated in favor of <code>LongTaskListener.fatalError(Throwable)</code>. They remain fully functional and are still invoked, in addition to the listener.</li>
+            <li>A task submitted to a background <code>LongTaskExecutor</code> now counts as running from <code>execute()</code> on: <code>isRunning()</code> returns <code>true</code> until the task completes, including while it waits for its thread to start, and <code>cancel()</code> reaches such a task.</li>
         </ul>
         <h4>Statistics API</h4>
         <ul>
             <li>Added a <code>getValue(Statistics)</code> default method to <code>StatisticsUI</code>, superseding the no-argument <code>getValue()</code> which is now deprecated. Implementations of <code>StatisticsUI</code> are singletons shared by every workspace, so a result computed from state stashed by <code>setup(Statistics)</code> is unsafe when the same statistics class runs concurrently in more than one workspace. The default implementation of <code>getValue(Statistics)</code> falls back to the deprecated <code>getValue()</code>, so existing implementations keep compiling and working unchanged until migrated.</li>
+        </ul>
+        <h4>Filters API</h4>
+        <ul>
+            <li>Added <code>isRunning()</code> to <code>FilterModel</code>. Filtering and selection results are computed in the background, so it returns <code>true</code> from <code>FilterController.filterVisible()</code> or <code>selectVisible()</code>, a change of the current query's parameters or an automatic refresh, until the result is applied. A change event is fired when it goes back to <code>false</code>, so callers can wait for a filter's result.</li>
         </ul>
         <h3>0.10.0</h3>
         <h4>Project API</h4>

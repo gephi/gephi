@@ -44,6 +44,7 @@ package org.gephi.filters;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.api.PropertyExecutor.Callback;
 import org.gephi.filters.api.Query;
@@ -71,6 +72,9 @@ public class FilterThread extends Thread {
     private final boolean filtering;
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
     private volatile boolean running = true;
+    // Number of queries set with setRootQuery() and number processed when the last one completed
+    private final AtomicLong requested = new AtomicLong();
+    private volatile long processed;
 
     public FilterThread(FilterModelImpl model, AbstractQueryImpl initialQuery) {
         super("Filter Thread - " + model.getWorkspace().toString());
@@ -95,52 +99,63 @@ public class FilterThread extends Thread {
     public void run() {
 
         while (running) {
-            AbstractQueryImpl q;
-            synchronized (this.lock) {
-                while ((q = rootQuery.getAndSet(null)) == null && running) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
+            // Read before taking the query, so a query set in between is processed again
+            long generation = requested.get();
+            AbstractQueryImpl q = rootQuery.getAndSet(null);
+            if (q == null) {
+                // Outside the lock, as it notifies listeners
+                markProcessed(generation);
+                synchronized (this.lock) {
+                    // setRootQuery() notifies under the lock, so a query set after this check wakes us up
+                    if (rootQuery.get() == null && running) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                     }
                 }
+                if (!running) {
+                    return;
+                }
+                continue;
             }
             if (!running) {
                 return;
             }
-            Query modifiedQuery = null;
-            for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
-                PropertyModifier pm = itr.next();
-                itr.remove();
-                pm.callback.setValue(pm.value);
-                modifiedQuery = pm.query;
-            }
-            if (modifiedQuery != null) {
-                model.updateParameters(modifiedQuery);
-            }
+            try {
+                Query modifiedQuery = null;
+                for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
+                    PropertyModifier pm = itr.next();
+                    itr.remove();
+                    pm.callback.setValue(pm.value);
+                    modifiedQuery = pm.query;
+                }
+                if (modifiedQuery != null) {
+                    model.updateParameters(modifiedQuery);
+                }
 
-            //Progress
-            ProgressTicket progressTicket = null;
-            ProgressTicketProvider progressTicketProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
-            if (progressTicketProvider != null) {
-                String msg = NbBundle.getMessage(FilterThread.class, "FilterThread.progress.taskName", q.getName());
-                progressTicket = progressTicketProvider.createTicket(msg, null);
-                Progress.start(progressTicket);
-            }
+                //Progress
+                ProgressTicket progressTicket = null;
+                ProgressTicketProvider progressTicketProvider =
+                    Lookup.getDefault().lookup(ProgressTicketProvider.class);
+                if (progressTicketProvider != null) {
+                    String msg =
+                        NbBundle.getMessage(FilterThread.class, "FilterThread.progress.taskName", q.getName());
+                    progressTicket = progressTicketProvider.createTicket(msg, null);
+                    Progress.start(progressTicket);
+                }
 
-            if (filtering) {
-                filter(q);
-            } else {
-                select(q);
-            }
+                if (filtering) {
+                    filter(q);
+                } else {
+                    select(q);
+                }
 
-            Progress.finish(progressTicket);
-            /*try {
-            //System.out.println("filter query " + q.getName());
-            Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            }*/
+                Progress.finish(progressTicket);
+            } finally {
+                markProcessed(generation);
+            }
         }
         //clear map
         Query q = null;
@@ -195,9 +210,28 @@ public class FilterThread extends Thread {
     }
 
     public void setRootQuery(AbstractQueryImpl rootQuery) {
+        // Before setting the query, so the thread can't process it and still look idle
+        requested.incrementAndGet();
         this.rootQuery.set(rootQuery);
         synchronized (this.lock) {
             lock.notify();
+        }
+    }
+
+    /**
+     * Returns <code>true</code> while a query set with {@link #setRootQuery(AbstractQueryImpl)} hasn't been
+     * processed yet.
+     */
+    public boolean isBusy() {
+        return running && isAlive() && processed < requested.get();
+    }
+
+    private void markProcessed(long generation) {
+        if (processed != generation) {
+            processed = generation;
+            if (!isBusy()) {
+                model.fireChangeEvent();
+            }
         }
     }
 

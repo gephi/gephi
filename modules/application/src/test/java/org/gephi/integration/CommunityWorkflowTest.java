@@ -2,15 +2,12 @@ package org.gephi.integration;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.PartitionElementColorTransformer;
 import org.gephi.appearance.plugin.palette.PaletteManager;
-import org.gephi.filters.api.Query;
 import org.gephi.filters.plugin.partition.PartitionBuilder;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
@@ -18,24 +15,17 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
-import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.plugin.Modularity;
-import org.gephi.statistics.spi.Statistics;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.openide.util.Lookup;
 
 /**
  * Detects communities, colors and filters by them, then exports the visible graph: each step consumes what the
  * previous module produced.
  */
 public class CommunityWorkflowTest extends AbstractIntegrationTest {
-
-    private static final long TIMEOUT_MS = 30_000;
-
-    private final StatisticsController statisticsController = Lookup.getDefault().lookup(StatisticsController.class);
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -74,7 +64,7 @@ public class CommunityWorkflowTest extends AbstractIntegrationTest {
             new PartitionBuilder.NodePartitionFilter(appearanceModel, appearanceModel.getNodePartition(communities));
         communityFilter.unselectAll();
         communityFilter.addPart(graph.getNode("a0").getAttribute(Modularity.MODULARITY_CLASS));
-        filterVisible(graphModel, filterController.createQuery(communityFilter));
+        filterVisible(filterController.createQuery(communityFilter));
 
         Graph visible = graphModel.getGraphVisible();
         Assert.assertEquals(6, visible.getNodeCount());
@@ -94,30 +84,6 @@ public class CommunityWorkflowTest extends AbstractIntegrationTest {
         for (Node node : exported.getNodes()) {
             Assert.assertEquals("a", node.getAttribute("group"));
             Assert.assertEquals("Color of " + node.getId(), colorA, node.getColor());
-        }
-    }
-
-    /**
-     * Runs <code>statistics</code> in the background like the UI does and waits for it to finish.
-     */
-    private void runStatistics(Statistics statistics) throws InterruptedException {
-        CountDownLatch finished = new CountDownLatch(1);
-        statisticsController.execute(statistics, task -> finished.countDown());
-        Assert.assertTrue("Statistics did not finish within " + TIMEOUT_MS + " ms",
-            finished.await(TIMEOUT_MS, TimeUnit.MILLISECONDS));
-    }
-
-    /**
-     * Filters the visible graph like the UI does and waits for the filter thread to publish the result. The visible
-     * view only leaves the main view once the result is set.
-     */
-    private void filterVisible(GraphModel graphModel, Query query) throws InterruptedException {
-        filterController.filterVisible(query);
-        long deadline = System.currentTimeMillis() + TIMEOUT_MS;
-        while (graphModel.getVisibleView().isMainView()) {
-            Assert.assertTrue("Filter did not finish within " + TIMEOUT_MS + " ms",
-                System.currentTimeMillis() < deadline);
-            Thread.sleep(10);
         }
     }
 }

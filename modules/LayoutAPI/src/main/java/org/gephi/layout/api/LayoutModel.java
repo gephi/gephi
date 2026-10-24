@@ -95,7 +95,10 @@ public interface LayoutModel {
 
     /**
      * Returns <code>true</code> if a layout is currently running, <code>false</code>
-     * otherwise.
+     * otherwise. A layout started with {@link LayoutController#executeLayout()} counts as
+     * running as soon as that method returns, until it finishes or is stopped. Wait for
+     * this to become <code>false</code>, or for the <code>RUNNING</code> event with a
+     * <code>false</code> value, to know when a layout has finished.
      */
     boolean isRunning();
 
