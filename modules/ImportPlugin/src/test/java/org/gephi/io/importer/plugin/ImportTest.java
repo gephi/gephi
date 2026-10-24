@@ -450,7 +450,7 @@ public class ImportTest {
 
     @Test
     public void testImportGraphMLSingleIsolatedNode() {
-        // gephi/gephi-toolkit-demos#8: a GraphML file with a single isolated node imported as 0 nodes
+        // A GraphML file with a single isolated node used to import as 0 nodes
         Container singleNode = importController.importFile(Utils.getReader("singlenode.graphml"), new ImporterGraphML());
         importController.process(singleNode, defaultProcessor, workspace);
 

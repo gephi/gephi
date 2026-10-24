@@ -64,8 +64,7 @@ public class FilteringTest extends AbstractIntegrationTest {
 
     @Test
     public void testExportToLabelVisible() {
-        // gephi/gephi-toolkit-demos#5: exportToLabelVisible(query) should show the labels of the nodes matching the
-        // query and hide the others
+        // exportToLabelVisible(query) should show the labels of the nodes matching the query and hide the others
         Project project = projectController.newProject();
         Graph graph = GraphGenerator.build(project.getCurrentWorkspace()).generateTinyGraph().getGraph();
         Node isolated = graph.getModel().factory().newNode("isolated");
