@@ -102,7 +102,7 @@ This runs on the JDK running Maven, as this build has no JRE of its own.
 
 Before a final release, run them against the bundles the release workflow built from the release branch, with their JRE, on each operating system available. So far they have only been tried on macOS.
 
-1. Check out the commit the bundles were built from and run `mvn -T 4 install -P skipTests`. The driver module must have the same version as the bundle: built from another version, it doesn't load, Gephi shows a dialog saying some modules couldn't be installed, and the suite fails after two minutes saying it never started, with the module errors.
+1. Check out the commit the bundles were built from and run `mvn -T 4 install -P skipTests`, so that the driver module drives the same code as the bundle. A driver from a newer version doesn't load: Gephi shows a dialog saying some modules couldn't be installed, and the suite fails after two minutes saying it never started, with the module errors.
 2. Download the bundle, linked from the README's development builds, and unpack it: copy `Gephi.app` out of the `.dmg`, or extract the `.tar.gz`.
 3. Point the tests to it:
 
@@ -112,11 +112,12 @@ mvn -pl modules/ReleaseTests verify -P release-tests -Dgephi.dist=/path/to/Gephi
 
 #### Reading the results
 
-A failed run lists the failed steps and the violations, each with its thread dump. Each suite writes its files to `modules/ReleaseTests/target/release-tests/<suite>/out`:
+A failed run lists the failed steps and the violations, with their thread dumps. Each suite writes its files to `modules/ReleaseTests/target/release-tests/<suite>/out`:
 
-- `results.json`: the steps and their durations, the violations, the slowdowns and metrics like the longest wait for the Event Dispatch Thread. A slowdown is a wait past 2 seconds; it doesn't fail the suite, but comes with a thread dump.
-- `dumps/`: the thread dumps taken at each slowdown and violation. `hang-threads-<pid>.txt` is the dump taken before killing a Gephi that didn't exit.
-- `recording.jfr`: a flight recording of the whole run, to open in JDK Mission Control.
+- `results.json`: the steps and their durations, the violations, the slowdowns and metrics like the longest wait for the Event Dispatch Thread. A slowdown is a wait past 2 seconds; it doesn't fail the suite.
+- `dumps/`: the thread dumps taken while a wait was past a limit, and at a deadlock. A wait that ended between two checks and a logged error come without one.
+- `hang-threads-<pid>.txt`: the thread dump taken before killing a Gephi that didn't exit.
+- `recording.jfr`: a flight recording of the whole run, to open in JDK Mission Control. It's missing when the driver had to halt a Gephi that wouldn't exit.
 - `console.log` and `messages.log`: Gephi's output and log.
 - The files the suite created, like the screenshot, the exported image and the saved project.
 

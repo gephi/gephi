@@ -25,7 +25,8 @@ import org.openide.util.Lookup;
  *     <li>no threads are deadlocked.</li>
  * </ul>
  * A wait past the soft limit is a slowdown, past the hard limit a violation, both reported with a thread dump while
- * the wait lasts. A wait that crosses a limit and ends between two checks is reported when it ends, without a dump.
+ * the wait lasts. A probe that crosses a limit and completes between two checks is reported when it does, without a
+ * dump. Frames and world updates are only counted at each check, so their waits are measured from check to check.
  */
 final class Monitor {
 
@@ -49,6 +50,7 @@ final class Monitor {
     private long lastWorldUpdateCount;
     private long framesDrawn;
     private long worldUpdatesReceived;
+    private long lastRenderingCheck;
     private boolean deadlockReported;
 
     Monitor(Results results) {
@@ -99,6 +101,9 @@ final class Monitor {
             } catch (InterruptedException ex) {
                 return;
             }
+            if (thread != Thread.currentThread()) {
+                return;
+            }
             try {
                 // Each check reads the time again, as a thread dump written by the previous one takes a while
                 probeEdt();
@@ -144,10 +149,12 @@ final class Monitor {
 
     private void checkRendering() {
         long now = nowMs();
+        long lastCheck = lastRenderingCheck;
+        lastRenderingCheck = now;
         if (!expectRendering) {
             engine = null;
-            frames.end(now);
-            worldUpdates.end(now);
+            frames.end(lastCheck);
+            worldUpdates.end(lastCheck);
             return;
         }
         VizEngine<?, ?> current = currentEngine();
@@ -158,7 +165,7 @@ final class Monitor {
             engine = current;
             lastFrameCount = frameCount;
             lastWorldUpdateCount = worldUpdateCount;
-            frames.start(now);
+            frames.progress(lastCheck, now);
             worldUpdates.restart(now);
             return;
         }
@@ -166,12 +173,12 @@ final class Monitor {
         if (drawing) {
             framesDrawn += frameCount - lastFrameCount;
             lastFrameCount = frameCount;
-            frames.start(now);
+            frames.progress(lastCheck, now);
         }
         if (worldUpdateCount != lastWorldUpdateCount) {
             worldUpdatesReceived += worldUpdateCount - lastWorldUpdateCount;
             lastWorldUpdateCount = worldUpdateCount;
-            worldUpdates.start(now);
+            worldUpdates.progress(lastCheck, now);
         } else if (!drawing) {
             // Without frames, missing world updates are the frames' failure, so only time spent drawing counts
             worldUpdates.restart(now);
@@ -234,6 +241,17 @@ final class Monitor {
          */
         void start(long now) {
             end(now);
+            synchronized (this) {
+                since = now;
+            }
+        }
+
+        /**
+         * Ends the current wait at <code>lastCheck</code>, the last time it was seen going on, as the progress seen
+         * at <code>now</code> may have been made any time since. Starts a new wait.
+         */
+        void progress(long lastCheck, long now) {
+            end(lastCheck);
             synchronized (this) {
                 since = now;
             }

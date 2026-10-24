@@ -77,14 +77,13 @@ final class GephiRun {
         // Gephi mustn't outlive these tests, if they're interrupted
         Thread killer = new Thread(() -> kill(process));
         Runtime.getRuntime().addShutdownHook(killer);
-        File resultsFile = new File(outDir, "results.json");
         long startNs = System.nanoTime();
         boolean exited = false;
         boolean started = false;
         try {
             while (!exited) {
                 exited = process.waitFor(1, TimeUnit.SECONDS);
-                started = started || resultsFile.isFile();
+                started = started || hasStarted(outDir);
                 long elapsedNs = System.nanoTime() - startNs;
                 if (!exited && (elapsedNs > timeout.toNanos() || !started && elapsedNs > STARTUP_TIMEOUT.toNanos())) {
                     dumpHang(process, outDir);
@@ -94,7 +93,14 @@ final class GephiRun {
                 }
             }
         } finally {
-            Runtime.getRuntime().removeShutdownHook(killer);
+            if (process.isAlive()) {
+                kill(process);
+            }
+            try {
+                Runtime.getRuntime().removeShutdownHook(killer);
+            } catch (IllegalStateException ex) {
+                // The JVM is shutting down, the hook kills Gephi
+            }
         }
 
         File log = new File(userdir, "var/log/messages.log");
@@ -102,7 +108,20 @@ final class GephiRun {
             Files.copy(log.toPath(), new File(outDir, "messages.log").toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         return new Result(suite, timeout, outDir, exited ? process.exitValue() : -1, !exited,
-            started || resultsFile.isFile(), readResults(outDir));
+            started || hasStarted(outDir), readResults(outDir));
+    }
+
+    /**
+     * Whether the driver started the suite. The results file alone doesn't tell, as errors logged while Gephi starts
+     * are written to it before.
+     */
+    private static boolean hasStarted(File outDir) {
+        try {
+            JsonObject results = readResults(outDir);
+            return results != null && results.has("started") && results.get("started").getAsBoolean();
+        } catch (IOException | RuntimeException ex) {
+            return false;
+        }
     }
 
     /**
@@ -185,9 +204,9 @@ final class GephiRun {
         for (ProcessHandle handle : processes) {
             String pid = String.valueOf(handle.pid());
             File dump = new File(outDir, "hang-threads-" + pid + ".txt");
-            if (run(dump, jcmd, pid, "Thread.print", "-l") == 0) {
+            if (exec(dump, jcmd, pid, "Thread.print", "-l") == 0) {
                 dumped = true;
-                run(new File(outDir, "hang-jfr-dump.txt"), jcmd, pid, "JFR.dump", "name=1",
+                exec(new File(outDir, "hang-jfr-dump.txt"), jcmd, pid, "JFR.dump", "name=1",
                     "filename=" + new File(outDir, "recording.jfr").getAbsolutePath());
             } else {
                 dump.delete();
@@ -196,7 +215,7 @@ final class GephiRun {
         if (!dumped && !isWindows()) {
             for (ProcessHandle handle : processes) {
                 if (handle.info().command().map(command -> command.endsWith("java")).orElse(false)) {
-                    run(new File(outDir, "hang-kill.txt"), "kill", "-3", String.valueOf(handle.pid()));
+                    exec(new File(outDir, "hang-kill.txt"), "kill", "-3", String.valueOf(handle.pid()));
                 }
             }
         }
@@ -207,7 +226,7 @@ final class GephiRun {
         process.destroyForcibly();
     }
 
-    private static int run(File output, String... command) throws InterruptedException {
+    private static int exec(File output, String... command) throws InterruptedException {
         try {
             Process process = new ProcessBuilder(command).redirectErrorStream(true).redirectOutput(output).start();
             if (!process.waitFor(30, TimeUnit.SECONDS)) {
@@ -298,6 +317,7 @@ final class GephiRun {
 
         /**
          * Appends what <code>messages.log</code> says about the driver module, like why it couldn't be installed.
+         * When Gephi couldn't start at all, the reason is in <code>console.log</code>.
          */
         private void appendModuleMessages(StringBuilder message) {
             File log = new File(outDir, "messages.log");
@@ -307,6 +327,7 @@ final class GephiRun {
             } catch (IOException | UncheckedIOException ex) {
                 message.append("Can't read ").append(log).append(": ").append(ex).append('\n');
             }
+            message.append("See also console.log\n");
         }
 
         private void appendResults(StringBuilder message) {

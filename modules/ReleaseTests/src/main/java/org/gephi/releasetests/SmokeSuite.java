@@ -17,8 +17,8 @@ import org.gephi.statistics.plugin.Modularity;
 
 /**
  * A short pass over the main features with the Overview showing: the look and feel, then import, layout, statistics,
- * filter, screenshot and export, and the project saved and reopened. It checks the release tests themselves work, and that none of these
- * fails, logs an error or blocks Gephi.
+ * filter, screenshot and export, and the project saved and reopened. It checks the release tests themselves work,
+ * and that none of these fails, logs an error or blocks Gephi.
  */
 final class SmokeSuite implements Suite {
 

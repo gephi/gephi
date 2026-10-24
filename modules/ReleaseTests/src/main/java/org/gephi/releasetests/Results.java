@@ -35,6 +35,7 @@ final class Results {
     private final Map<String, Number> metrics = new LinkedHashMap<>();
     private String runningStep;
     private String error;
+    private boolean started;
     private boolean finished;
     private int fileCount;
 
@@ -79,9 +80,11 @@ final class Results {
     }
 
     /**
-     * Writes the results once a first time, telling the supervisor the driver started.
+     * Tells the supervisor the driver started. The results may have been written before, for errors logged while
+     * Gephi starts.
      */
     synchronized void started() {
+        started = true;
         write();
     }
 
@@ -127,6 +130,7 @@ final class Results {
     private void write() {
         JsonObject json = new JsonObject();
         json.addProperty("suite", suite);
+        json.addProperty("started", started);
         json.addProperty("finished", finished);
         json.addProperty("passed", passed());
         if (runningStep != null) {

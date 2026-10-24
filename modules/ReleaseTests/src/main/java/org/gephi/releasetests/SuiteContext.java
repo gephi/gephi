@@ -157,8 +157,9 @@ final class SuiteContext {
      * Takes a screenshot of the Overview, as from its screenshot button.
      */
     BufferedImage overviewScreenshot(String name) throws Exception {
-        VizController vizController = (VizController) Lookup.getDefault().lookup(VisualizationController.class);
-        File written = vizController.getScreenshotController().takeScreenshot(1, false, file(name))
+        VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
+        check(controller instanceof VizController, "No Overview to take a screenshot of");
+        File written = ((VizController) controller).getScreenshotController().takeScreenshot(1, false, file(name))
             .get(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
         return ImageIO.read(written);
     }
