@@ -98,9 +98,10 @@ public class FilterThreadTest {
         Assert.assertNull(filterModel.getCurrentResult());
 
         filter.permits.release();
-        await().atMost(10, TimeUnit.SECONDS).until(() -> !filterModel.isRunning());
+        // The thread stops running before it fires the event, so the event is awaited first
+        await().atMost(10, TimeUnit.SECONDS).until(idleEvent::get);
+        Assert.assertFalse(filterModel.isRunning());
         Assert.assertNotNull("The result is applied once not running", filterModel.getCurrentResult());
-        Assert.assertTrue("A change event is fired once not running", idleEvent.get());
 
         stop(filterThread);
     }
