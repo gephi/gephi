@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
@@ -85,6 +86,8 @@ public class LayoutModelImpl implements LayoutModel, Model {
     private final Workspace workspace;
     //Util
     private final LongTaskExecutor executor;
+    // Layout runs submitted to the executor and not completed yet
+    private final AtomicInteger submittedLayouts = new AtomicInteger();
     private Layout selectedLayout;
     private LayoutBuilder selectedBuilder;
 
@@ -97,7 +100,12 @@ public class LayoutModelImpl implements LayoutModel, Model {
         executor.setLongTaskListener(new LongTaskListener() {
             @Override
             public void taskFinished(LongTask task) {
-                setRunning(false);
+                layoutCompleted();
+            }
+
+            @Override
+            public void fatalError(Throwable t) {
+                layoutCompleted();
             }
         });
         executor.setDefaultErrorHandler(new LongTaskErrorHandler() {
@@ -163,6 +171,33 @@ public class LayoutModelImpl implements LayoutModel, Model {
 
     protected void setRunning(boolean running) {
         firePropertyChangeEvent(RUNNING, !running, running);
+    }
+
+    /**
+     * Submits a layout run to the executor. The running=true event is fired before the submission, so a short run
+     * can't fire running=false first.
+     */
+    void submit(LongTask task, Runnable run) {
+        submittedLayouts.incrementAndGet();
+        try {
+            setRunning(true);
+            executor.execute(task, run);
+        } catch (RuntimeException e) {
+            // Not submitted, so it will never complete
+            layoutCompleted();
+            throw e;
+        }
+    }
+
+    /**
+     * Called when a layout run completes, successfully or not, which happens exactly once per submitted run. The
+     * running=false event is only fired once no other run is pending. When a run is submitted while another one
+     * completes, the events of both can interleave, which is why listeners should read {@link #isRunning()}.
+     */
+    private void layoutCompleted() {
+        if (submittedLayouts.decrementAndGet() == 0) {
+            setRunning(false);
+        }
     }
 
     @Override

@@ -37,7 +37,7 @@
         <h4>Layout API</h4>
         <ul>
             <li>The <code>LayoutController</code> has a new <code>executeLayout(Layout transformation)</code> method to facilitate one-off, synchronous layout execution. This is useful for transformations like rotation or scaling.</li>
-            <li><code>LayoutModel.isRunning()</code> and <code>LayoutController.canStop()</code> now return <code>true</code> as soon as <code>executeLayout()</code> returns, until the layout finishes. Previously they could return <code>false</code> until the layout thread had started. The <code>RUNNING</code> event with a <code>true</code> value is now fired before the layout is submitted, so it always precedes the event with a <code>false</code> value.</li>
+            <li><code>LayoutModel.isRunning()</code> and <code>LayoutController.canStop()</code> now return <code>true</code> as soon as <code>executeLayout()</code> returns, until the layout finishes. Previously they could return <code>false</code> until the layout thread had started. The <code>RUNNING</code> event with a <code>true</code> value is now fired before the layout is submitted, so it always precedes the event with a <code>false</code> value. The event with a <code>false</code> value is now also fired when a layout fails, and only once no other layout run is pending.</li>
         </ul>
         <h4>Tools API</h4>
         <ul>
