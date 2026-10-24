@@ -169,6 +169,28 @@ public class AsynchronousTest {
     }
 
     @Test
+    public void testCancelBeforeTaskStartsSkipsCancelledFuture() throws Exception {
+        LongTask queuedTask = Mockito.mock(LongTask.class);
+        Mockito.when(queuedTask.cancel()).thenReturn(true);
+        AtomicInteger finished = new AtomicInteger();
+        executor.setLongTaskListener(task -> {
+            if (finished.incrementAndGet() == 1) {
+                executor.cancel();
+            }
+        });
+        CountDownLatch release = new CountDownLatch(1);
+        executor.execute(null, () -> awaitUninterruptibly(release));
+        // Cancelled before it starts, so it never runs nor completes
+        executor.execute(longTask, callable).cancel(false);
+        executor.execute(queuedTask, () -> {
+        });
+        release.countDown();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(() -> finished.get() == 2);
+        Mockito.verify(longTask, Mockito.never()).cancel();
+        Mockito.verify(queuedTask).cancel();
+    }
+
+    @Test
     public void testNotRunningOnceQueuedFutureCancelled() throws Exception {
         CountDownLatch release = new CountDownLatch(1);
         executor.execute(null, () -> awaitUninterruptibly(release));

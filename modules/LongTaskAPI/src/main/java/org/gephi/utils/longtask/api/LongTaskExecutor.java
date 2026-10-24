@@ -245,7 +245,11 @@ public final class LongTaskExecutor {
         if (inBackground) {
             if (executor != null) {
                 // A task submitted but not started yet is cancelled too, as it already counts as running
-                RunningLongTask rlt = currentTask != null ? currentTask : pendingTasks.peek();
+                RunningLongTask rlt = currentTask;
+                if (rlt == null) {
+                    removeCancelledTasks();
+                    rlt = pendingTasks.peek();
+                }
                 if (rlt != null) {
                     boolean res = rlt.cancel();
                     if (interruptCancel && !res) {
@@ -278,9 +282,16 @@ public final class LongTaskExecutor {
         if (currentTask != null) {
             return true;
         }
-        // A task whose future was cancelled before its thread started it never runs nor completes
-        pendingTasks.removeIf(t -> t.future != null && t.future.isCancelled());
+        removeCancelledTasks();
         return !pendingTasks.isEmpty();
+    }
+
+    /**
+     * Forgets the pending tasks whose future was cancelled before their thread started them, as they never run
+     * nor complete.
+     */
+    private void removeCancelledTasks() {
+        pendingTasks.removeIf(t -> t.future != null && t.future.isCancelled());
     }
 
     /**
@@ -394,14 +405,18 @@ public final class LongTaskExecutor {
 
         @Override
         public V call() {
-            if (finishClaimed.get()) {
-                // Already completed by the cancel timer before its thread started it
-                return null;
+            // Atomic with finished(), so a task completed by the cancel timer as its thread starts it can't
+            // stay current forever
+            synchronized (LongTaskExecutor.this) {
+                if (finishClaimed.get()) {
+                    // Already completed by the cancel timer before its thread started it
+                    return null;
+                }
+                currentTask = this;
             }
             if (task != null && progress != null) {
                 progress.start();
             }
-            currentTask = this;
             V result = null;
             try {
                 if (runnable != null) {
