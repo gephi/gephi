@@ -48,6 +48,7 @@
             <li>A completely new visualization engine has been integrated, and therefore the Visualization API has been rewritten from scratch as well.</li>
             <li>The API follows our convention with one <code>VisualizationModel</code> per workspace, and a <code>VisualizationController</code> as the entry point.</li>
             <li>All settings in the UI can now be controlled via the controller/model.</li>
+            <li>Addition of <code>getFrameCount()</code>, <code>getLastWorldUpdate()</code> and <code>isUpdating()</code> in <code>VizEngine</code> to monitor rendering from any thread. Frames keep being drawn from the previous world data while world updaters wait, for example for the graph lock, so a <code>WorldUpdateInfo</code> sequence that stops while the frame count advances reveals it.</li>
         </ul>
         <h4>Preview API</h4>
         <ul>

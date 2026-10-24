@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -40,6 +41,8 @@ import org.gephi.viz.engine.status.GraphSelection;
 import org.gephi.viz.engine.structure.GraphIndex;
 import org.gephi.viz.engine.util.TimeUtils;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
+import org.gephi.viz.engine.util.structure.EdgesCallback;
+import org.gephi.viz.engine.util.structure.NodesCallback;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector2f;
@@ -119,6 +122,11 @@ public class VizEngine<R extends RenderingTarget, I> {
     //{@link #setFrameTimingsEnabled(boolean)}.
     private volatile boolean frameTimingsEnabled = false;
     private volatile FrameTimings lastFrameTimings = FrameTimings.EMPTY;
+
+    //Progress of frames and world updates, read by external monitors to tell
+    //whether the renderers still draw and still receive world updates.
+    private final AtomicLong frameCount = new AtomicLong();
+    private volatile WorldUpdateInfo lastWorldUpdate = WorldUpdateInfo.NONE;
 
     public VizEngine(R renderingTarget) {
         this.engineModel = createEmptyModel();
@@ -574,9 +582,13 @@ public class VizEngine<R extends RenderingTarget, I> {
         List<? extends WorldData> worldData =
             worldUpdatersExecutionMode.isConcurrent() ? checkConcurrentWorldUpdateIsDone()
                 : runWorldUpdatersSynchronous(this.engineModel);
+        WorldUpdateInfo worldUpdate = null;
         if (worldData.isEmpty() || !updating) {
             // No world update was done this frame, use last one
             worldData = currentWorldData;
+        } else {
+            // Counted before the next world update is scheduled and refills the callbacks
+            worldUpdate = countWorldUpdate();
         }
         final long worldUpdateNs = timed ? System.nanoTime() - worldUpdateStartNs : 0L;
 
@@ -617,14 +629,50 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Commit model used for rendering this frame
         currentWorldData = worldData;
+        if (worldUpdate != null) {
+            lastWorldUpdate = worldUpdate;
+        }
 
         renderingTarget.frameEnd();
+        frameCount.incrementAndGet();
 
         if (timed) {
             final long totalNs = System.nanoTime() - frameStartNs;
             lastFrameTimings = new FrameTimings(
                 totalNs, worldUpdateNs, renderNs, Map.copyOf(perCategoryNs));
         }
+    }
+
+    private WorldUpdateInfo countWorldUpdate() {
+        int nodeCount = 0;
+        int edgeCount = 0;
+        for (ElementsCallback<?> callback : updatersElementsCallbacks) {
+            if (callback instanceof NodesCallback nodesCallback) {
+                nodeCount = nodesCallback.getCount();
+            } else if (callback instanceof EdgesCallback edgesCallback) {
+                edgeCount = edgesCallback.getCount();
+            }
+        }
+        return new WorldUpdateInfo(lastWorldUpdate.sequence() + 1, nodeCount, edgeCount);
+    }
+
+    /**
+     * Returns the number of {@link #display()} calls completed since this
+     * engine was created. Frames are drawn from the last world data while a
+     * world update is pending, so compare with {@link #getLastWorldUpdate()}
+     * to tell whether world updates still arrive. Safe to call from any thread.
+     */
+    public long getFrameCount() {
+        return frameCount.get();
+    }
+
+    /**
+     * Returns the world update last committed for drawing, or
+     * {@link WorldUpdateInfo#NONE} before the first one. Updates completed
+     * while updating is paused are not committed. Safe to call from any thread.
+     */
+    public WorldUpdateInfo getLastWorldUpdate() {
+        return lastWorldUpdate;
     }
 
     /**
@@ -840,6 +888,15 @@ public class VizEngine<R extends RenderingTarget, I> {
 
     public void resumeUpdating() {
         updating = true;
+    }
+
+    /**
+     * Whether world updates run: {@code false} after {@link #pauseUpdating()}
+     * until {@link #resumeUpdating()}. While paused, frames are drawn from the
+     * last world data.
+     */
+    public boolean isUpdating() {
+        return updating;
     }
 
     public Vector2f screenCoordinatesToWorldCoordinates(int x, int y) {
