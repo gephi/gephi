@@ -1,6 +1,7 @@
 package org.gephi.desktop.attributes;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Project;
@@ -68,5 +69,35 @@ public class AttributesUIControllerImplTest {
         });
 
         Assert.assertArrayEquals(new Node[] {node}, model.getSelectedNodes());
+    }
+
+    @Test
+    public void testClosingProjectDoesNotClearSelectionOfNextProject() throws Exception {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Node node = Mockito.mock(Node.class);
+        CountDownLatch blockEdt = new CountDownLatch(1);
+        CountDownLatch edtBlocked = new CountDownLatch(1);
+
+        SwingUtilities.invokeLater(() -> {
+            edtBlocked.countDown();
+            try {
+                blockEdt.await();
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        Assert.assertTrue(edtBlocked.await(10, TimeUnit.SECONDS));
+
+        // Closing the project defers work to the EDT, which stays blocked until the next project has a selection.
+        pc.closeCurrentProject();
+        Project next = pc.newProject();
+        AttributesUIModelImpl nextModel = next.getCurrentWorkspace().getLookup().lookup(AttributesUIModelImpl.class);
+        nextModel.setSelectedNodes(new Node[] {node});
+
+        blockEdt.countDown();
+        SwingUtilities.invokeAndWait(() -> {
+        });
+
+        Assert.assertArrayEquals(new Node[] {node}, nextModel.getSelectedNodes());
     }
 }
