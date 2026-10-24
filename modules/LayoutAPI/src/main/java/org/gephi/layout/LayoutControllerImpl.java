@@ -138,8 +138,7 @@ public class LayoutControllerImpl implements LayoutController, Controller<Layout
         LayoutModelImpl model = getModel();
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout());
-            model.getExecutor().execute(layoutRun, layoutRun);
-            model.setRunning(true);
+            model.submit(layoutRun, layoutRun);
         }
     }
 
@@ -157,8 +156,7 @@ public class LayoutControllerImpl implements LayoutController, Controller<Layout
         LayoutModelImpl model = getModel();
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout(), numIterations);
-            model.getExecutor().execute(layoutRun, layoutRun);
-            model.setRunning(true);
+            model.submit(layoutRun, layoutRun);
         }
     }
 
