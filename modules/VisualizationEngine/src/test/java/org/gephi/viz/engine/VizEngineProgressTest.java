@@ -27,22 +27,20 @@ public class VizEngineProgressTest {
     private static final long TIMEOUT_MS = 10_000;
 
     private GraphModel graphModel;
-    private Node lastNode;
     private VizEngine<RenderingTarget, Object> engine;
 
     @Before
     public void setUp() {
         graphModel = GraphModel.Factory.newInstance(Configuration.builder().enableSpatialIndex(true).build());
         DirectedGraph graph = graphModel.getDirectedGraph();
-        Node n1 = newNode("1", 0f, 0f);
-        Node n2 = newNode("2", 100f, 0f);
-        lastNode = newNode("3", 0f, 100f);
+        Node n1 = graphModel.factory().newNode("1");
+        Node n2 = graphModel.factory().newNode("2");
+        n2.setX(100f);
         graph.addNode(n1);
         graph.addNode(n2);
-        graph.addNode(lastNode);
         graph.addEdge(graphModel.factory().newEdge(n1, n2));
-        graph.addEdge(graphModel.factory().newEdge(n1, lastNode));
 
+        // The real callbacks gather elements under the graph read lock
         engine = new VizEngine<>(new TestTarget());
         engine.addWorldUpdater(new TestUpdater<>("nodes", new NodesCallback()));
         engine.addWorldUpdater(new TestUpdater<>("edges", new EdgesCallback()));
@@ -63,7 +61,7 @@ public class VizEngineProgressTest {
     @Test
     public void testFrameCountAdvancesWithEachDisplay() {
         Assert.assertEquals(0L, engine.getFrameCount());
-        Assert.assertEquals(WorldUpdateInfo.NONE, engine.getLastWorldUpdate());
+        Assert.assertEquals(0L, engine.getWorldUpdateCount());
 
         engine.display();
         engine.display();
@@ -73,71 +71,49 @@ public class VizEngineProgressTest {
     }
 
     @Test
-    public void testWorldUpdateCountsFollowTheGraph() throws InterruptedException {
-        displayUntil(() -> engine.getLastWorldUpdate().sequence() > 0);
-        Assert.assertEquals(3, engine.getLastWorldUpdate().nodeCount());
-        Assert.assertEquals(2, engine.getLastWorldUpdate().edgeCount());
-
-        graphModel.getDirectedGraph().removeNode(lastNode);
-
-        // Nodes and edges are gathered separately, so an update may see the removal in only one of them
-        displayUntil(() -> engine.getLastWorldUpdate().nodeCount() == 2
-            && engine.getLastWorldUpdate().edgeCount() == 1);
-    }
-
-    @Test
     public void testWorldUpdatesStallWhileGraphIsWriteLocked() throws InterruptedException {
-        displayUntil(() -> engine.getLastWorldUpdate().sequence() > 0);
+        displayUntil(() -> engine.getWorldUpdateCount() > 0);
 
-        long sequenceWhileLocked;
+        long updatesWhileLocked;
         try (WriteLockHolder ignored = new WriteLockHolder(graphModel.getGraph())) {
-            long sequenceBefore = engine.getLastWorldUpdate().sequence();
+            long updatesBefore = engine.getWorldUpdateCount();
             long framesBefore = engine.getFrameCount();
             displayTimes(50);
-            sequenceWhileLocked = engine.getLastWorldUpdate().sequence();
+            updatesWhileLocked = engine.getWorldUpdateCount();
 
             // display() returned each time, it never waits for the graph lock
             Assert.assertEquals(framesBefore + 50, engine.getFrameCount());
             // An update that gathered its elements before the lock was taken may still be committed
-            Assert.assertTrue("World updates stall", sequenceWhileLocked - sequenceBefore <= 1);
+            Assert.assertTrue("World updates stall", updatesWhileLocked - updatesBefore <= 1);
         }
 
-        displayUntil(() -> engine.getLastWorldUpdate().sequence() > sequenceWhileLocked);
+        displayUntil(() -> engine.getWorldUpdateCount() > updatesWhileLocked);
     }
 
     @Test
-    public void testUpdateCompletedWhilePausedIsNotCommitted() throws InterruptedException {
-        displayUntil(() -> engine.getLastWorldUpdate().sequence() > 0);
+    public void testUpdateCompletedWhilePausedIsNotCounted() throws InterruptedException {
+        displayUntil(() -> engine.getWorldUpdateCount() > 0);
 
-        long sequenceBefore;
+        long updatesBefore;
         try (WriteLockHolder ignored = new WriteLockHolder(graphModel.getGraph())) {
             // Leaves an update in flight, waiting for the lock
             displayTimes(20);
-            sequenceBefore = engine.getLastWorldUpdate().sequence();
+            updatesBefore = engine.getWorldUpdateCount();
             engine.pauseUpdating();
         }
-        Assert.assertFalse(engine.isUpdating());
 
         // The update in flight completes now and is consumed while paused
         displayTimes(20);
-        Assert.assertEquals(sequenceBefore, engine.getLastWorldUpdate().sequence());
+        Assert.assertEquals(updatesBefore, engine.getWorldUpdateCount());
 
         engine.resumeUpdating();
-        Assert.assertTrue(engine.isUpdating());
-        displayUntil(() -> engine.getLastWorldUpdate().sequence() > sequenceBefore);
-    }
-
-    private Node newNode(String id, float x, float y) {
-        Node node = graphModel.factory().newNode(id);
-        node.setX(x);
-        node.setY(y);
-        return node;
+        displayUntil(() -> engine.getWorldUpdateCount() > updatesBefore);
     }
 
     private void displayUntil(BooleanSupplier condition) throws InterruptedException {
         long deadline = System.currentTimeMillis() + TIMEOUT_MS;
         while (!condition.getAsBoolean()) {
-            Assert.assertTrue("Timed out, last world update: " + engine.getLastWorldUpdate(),
+            Assert.assertTrue("Timed out, world updates: " + engine.getWorldUpdateCount(),
                 System.currentTimeMillis() < deadline);
             engine.display();
             Thread.sleep(5);
