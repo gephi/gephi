@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/gephi/releasetests/Bundle.properties
+OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Name: Release Tests
