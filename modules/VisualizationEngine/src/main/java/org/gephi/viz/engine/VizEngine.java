@@ -705,9 +705,11 @@ public class VizEngine<R extends RenderingTarget, I> {
     }
 
     private List<? extends WorldData> runWorldUpdated() {
+        // Cleared first, so a failed world update doesn't fail every following frame
+        final Future<VizEngineModel> worldUpdate = allUpdatersCompletableFuture;
+        allUpdatersCompletableFuture = null;
         try {
-            VizEngineModel modelUsedByUpdaters = allUpdatersCompletableFuture.get();
-            allUpdatersCompletableFuture = null;
+            VizEngineModel modelUsedByUpdaters = worldUpdate.get();
 
             return renderersPipeline.stream().map(
                 r -> r.worldUpdated(modelUsedByUpdaters, renderingTarget, mvpFloats)
@@ -731,7 +733,11 @@ public class VizEngine<R extends RenderingTarget, I> {
             // Associate local model to the future
             allUpdatersCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // Process input events
-                processInputEvents(model);
+                try {
+                    processInputEvents(model);
+                } catch (Throwable t) {
+                    Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.SEVERE, null, t);
+                }
 
                 // Run all elements callbacks first
                 CompletableFuture.allOf(updatersElementsCallbacks.stream()
