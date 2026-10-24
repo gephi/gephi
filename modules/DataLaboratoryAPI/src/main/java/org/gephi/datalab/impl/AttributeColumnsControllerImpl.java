@@ -232,7 +232,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (value == null) {
                     row.removeAttribute(targetColumn);
                 } else {
-                    row.setAttribute(targetColumn, copyIfDynamic(value));
+                    row.setAttribute(targetColumn, AttributeUtils.copy(value));
                 }
             }
         }
@@ -432,7 +432,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (canChangeColumnData(column)) {
                     for (Element otherRow : otherRows) {
                         Object value = row.getAttribute(column);
-                        setAttributeValue(copyIfDynamic(value), otherRow, column);
+                        setAttributeValue(AttributeUtils.copy(value), otherRow, column);
                     }
                 }
             }
@@ -761,16 +761,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     /**
      * **********Private methods : ***********
      */
-    /**
-     * Returns a copy of a dynamic value (time map or time set), or the value itself otherwise.
-     */
-    private static Object copyIfDynamic(Object value) {
-        if (value != null && AttributeUtils.isDynamicType(value.getClass())) {
-            return AttributeUtils.copy(value);
-        }
-        return value;
-    }
-
     /**
      * Used for iterating through all nodes of the graph
      *
