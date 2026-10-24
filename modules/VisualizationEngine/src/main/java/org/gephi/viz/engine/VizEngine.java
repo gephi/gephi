@@ -763,7 +763,11 @@ public class VizEngine<R extends RenderingTarget, I> {
             // Associate local model to the future
             allUpdatersCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // Process input events
-                processInputEvents(model);
+                try {
+                    processInputEvents(model);
+                } catch (Throwable t) {
+                    Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.SEVERE, null, t);
+                }
 
                 // Run all elements callbacks first
                 CompletableFuture.allOf(updatersElementsCallbacks.stream()
