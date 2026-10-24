@@ -111,7 +111,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (value == null) {
                     row.removeAttribute(column);
                 } else {
-                    row.setAttribute(column, value);
+                    row.setAttribute(column, AttributeUtils.copy(value));
                 }
 
                 return true;
@@ -432,7 +432,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (canChangeColumnData(column)) {
                     for (Element otherRow : otherRows) {
                         Object value = row.getAttribute(column);
-                        setAttributeValue(AttributeUtils.copy(value), otherRow, column);
+                        setAttributeValue(value, otherRow, column);
                     }
                 }
             }

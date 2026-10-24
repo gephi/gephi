@@ -290,7 +290,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
                             if (value == null) {
                                 newEdge.removeAttribute(column);
                             } else {
-                                newEdge.setAttribute(column, edge.getAttribute(column));
+                                newEdge.setAttribute(column, AttributeUtils.copy(value));
                             }
                         }
                     }

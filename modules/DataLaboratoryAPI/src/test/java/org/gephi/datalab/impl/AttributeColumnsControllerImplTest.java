@@ -1,5 +1,6 @@
 package org.gephi.datalab.impl;
 
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -64,6 +65,33 @@ public class AttributeColumnsControllerImplTest {
         graphModel.getGraph().addNode(other);
         controller.copyNodeDataToOtherNodes(node, new Node[] {other}, new Column[] {column});
         other.setAttribute(column, 2.0, SECOND);
+
+        IntervalDoubleMap original = (IntervalDoubleMap) node.getAttribute(column);
+        Assert.assertEquals(1, original.size());
+        Assert.assertEquals(1.0, original.getDouble(FIRST), 0.0);
+    }
+
+    @Test
+    public void testCopyStaticArrayValueToOtherNode() {
+        Column tags = table.addColumn("tags", String[].class);
+        String[] value = {"a", "b"};
+        node.setAttribute(tags, value);
+        Node other = graphModel.factory().newNode("2");
+        graphModel.getGraph().addNode(other);
+        controller.copyNodeDataToOtherNodes(node, new Node[] {other}, new Column[] {tags});
+
+        String[] copy = (String[]) other.getAttribute(tags);
+        Assert.assertArrayEquals(value, copy);
+        Assert.assertNotSame(node.getAttribute(tags), copy);
+    }
+
+    @Test
+    public void testMergeRowsValuesWithDynamicValue() {
+        Node merged = graphModel.factory().newNode("2");
+        graphModel.getGraph().addNode(merged);
+        controller.mergeRowsValues(new Column[] {column}, new AttributeRowsMergeStrategy[] {null},
+            new Node[] {node}, node, merged);
+        merged.setAttribute(column, 2.0, SECOND);
 
         IntervalDoubleMap original = (IntervalDoubleMap) node.getAttribute(column);
         Assert.assertEquals(1, original.size());

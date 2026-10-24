@@ -1,6 +1,8 @@
 package org.gephi.datalab.impl;
 
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
@@ -50,5 +52,42 @@ public class GraphElementsControllerImplTest {
         for (Interval interval : original.toKeysArray()) {
             Assert.assertTrue(bounds.getLow() <= interval.getLow() && interval.getHigh() <= bounds.getHigh());
         }
+    }
+
+    @Test
+    public void testDuplicateNodeWithTimeSet() {
+        Node node = graphModel.factory().newNode("1");
+        graphModel.getGraph().addNode(node);
+        node.addInterval(FIRST);
+
+        Node copy = new GraphElementsControllerImpl().duplicateNode(node);
+        copy.addInterval(SECOND);
+
+        Assert.assertEquals(1, node.getIntervals().length);
+        Assert.assertEquals(FIRST, node.getIntervals()[0]);
+    }
+
+    @Test
+    public void testMergeNodesKeepingMergedNodesWithDynamicEdgeValue() {
+        Column column = graphModel.getEdgeTable().addColumn("price", IntervalDoubleMap.class);
+        Node first = graphModel.factory().newNode("1");
+        Node second = graphModel.factory().newNode("2");
+        Node other = graphModel.factory().newNode("3");
+        graphModel.getGraph().addNode(first);
+        graphModel.getGraph().addNode(second);
+        graphModel.getGraph().addNode(other);
+        Edge edge = graphModel.factory().newEdge(first, other, true);
+        graphModel.getGraph().addEdge(edge);
+        edge.setAttribute(column, 1.0, FIRST);
+
+        Node merged = new GraphElementsControllerImpl().mergeNodes(graphModel.getGraph(), new Node[] {first, second},
+            first, new Column[0], new AttributeRowsMergeStrategy[0], false);
+        Edge newEdge = graphModel.getGraph().getEdge(merged, other);
+        Assert.assertNotNull(newEdge);
+        newEdge.setAttribute(column, 2.0, SECOND);
+
+        IntervalDoubleMap original = (IntervalDoubleMap) edge.getAttribute(column);
+        Assert.assertEquals(1, original.size());
+        Assert.assertEquals(1.0, original.getDouble(FIRST), 0.0);
     }
 }
