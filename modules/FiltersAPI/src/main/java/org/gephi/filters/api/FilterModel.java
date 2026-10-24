@@ -106,7 +106,9 @@ public interface FilterModel {
      * @return <code>true</code> if a filter or selection result is pending,
      * <code>false</code> otherwise
      */
-    boolean isRunning();
+    default boolean isRunning() {
+        return false;
+    }
 
     boolean isAutoRefresh();
 

@@ -99,15 +99,19 @@ public class FilterThread extends Thread {
     public void run() {
 
         while (running) {
-            // Read before taking the query, so a query set in between is processed again
-            long generation = requested.get();
-            AbstractQueryImpl q = rootQuery.getAndSet(null);
+            long generation;
+            AbstractQueryImpl q;
+            // setRootQuery() updates both under the lock, so the query taken is the one of this generation
+            synchronized (this.lock) {
+                generation = requested.get();
+                q = rootQuery.getAndSet(null);
+            }
             if (q == null) {
                 // Outside the lock, as it notifies listeners
                 markProcessed(generation);
                 synchronized (this.lock) {
-                    // setRootQuery() notifies under the lock, so a query set after this check wakes us up
-                    if (rootQuery.get() == null && running) {
+                    // A query set after the generation was read is a newer generation, waiting would lose it
+                    if (requested.get() == generation && running) {
                         try {
                             lock.wait();
                         } catch (InterruptedException ex) {
@@ -210,10 +214,9 @@ public class FilterThread extends Thread {
     }
 
     public void setRootQuery(AbstractQueryImpl rootQuery) {
-        // Before setting the query, so the thread can't process it and still look idle
-        requested.incrementAndGet();
-        this.rootQuery.set(rootQuery);
         synchronized (this.lock) {
+            requested.incrementAndGet();
+            this.rootQuery.set(rootQuery);
             lock.notify();
         }
     }
@@ -229,7 +232,8 @@ public class FilterThread extends Thread {
     private void markProcessed(long generation) {
         if (processed != generation) {
             processed = generation;
-            if (!isBusy()) {
+            // A stopped thread no longer matters to the model, which fired its own event when it was replaced
+            if (running && !isBusy()) {
                 model.fireChangeEvent();
             }
         }

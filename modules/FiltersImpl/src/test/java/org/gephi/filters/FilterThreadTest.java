@@ -6,16 +6,11 @@ import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
-import org.gephi.filters.spi.FilterProperty;
-import org.gephi.filters.spi.NodeFilter;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -144,40 +139,5 @@ public class FilterThreadTest {
         filterThread.setRunning(false);
         filterThread.join(10_000);
         assertFalse(filterThread.isAlive());
-    }
-
-    /**
-     * Keeps every node, but each computation waits for a permit.
-     */
-    private static class BlockingFilter implements NodeFilter {
-
-        final Semaphore permits = new Semaphore(0);
-        final AtomicInteger inits = new AtomicInteger();
-
-        @Override
-        public String getName() {
-            return "Blocking";
-        }
-
-        @Override
-        public FilterProperty[] getProperties() {
-            return new FilterProperty[0];
-        }
-
-        @Override
-        public boolean init(Graph graph) {
-            inits.incrementAndGet();
-            permits.acquireUninterruptibly();
-            return true;
-        }
-
-        @Override
-        public boolean evaluate(Graph graph, Node node) {
-            return true;
-        }
-
-        @Override
-        public void finish() {
-        }
     }
 }
