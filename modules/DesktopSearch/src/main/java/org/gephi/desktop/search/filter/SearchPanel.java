@@ -8,6 +8,9 @@ public class SearchPanel extends javax.swing.JPanel {
 
     public SearchPanel() {
         initComponents();
+        searchInLabel.setLabelFor(typeCombo);
+        searchField.getAccessibleContext().setAccessibleName(
+            org.openide.util.NbBundle.getMessage(SearchPanel.class, "SearchPanel.searchField.accessibleName"));
 
         // Combo
         DefaultComboBoxModel<SearchCategory> comboBoxModel = new DefaultComboBoxModel<>();

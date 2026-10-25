@@ -86,6 +86,8 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
      */
     public GeneralCreateColumnFromRegexUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        regexLabel.setLabelFor(regexTextField);
         regexTextField.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

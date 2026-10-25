@@ -87,6 +87,11 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
     public WizardVisualPanel1CSV(ImporterSpreadsheetCSV importer, WizardPanel1CSV wizard1) {
         super(importer);
         initComponents();
+        filePathLabel.setLabelFor(pathTextField);
+        separatorLabel.setLabelFor(separatorComboBox);
+        modeLabel.setLabelFor(modeComboBox);
+        charsetLabel.setLabelFor(charsetComboBox);
+        previewLabel.setLabelFor(previewTable);
         this.wizard1 = wizard1;
         this.importer = importer;
 

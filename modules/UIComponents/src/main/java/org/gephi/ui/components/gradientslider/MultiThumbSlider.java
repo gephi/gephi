@@ -44,6 +44,9 @@ package org.gephi.ui.components.gradientslider;
 
 import java.util.List;
 import java.util.Vector;
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -95,7 +98,7 @@ import org.openide.util.Exceptions;
  * minimum thumb is, say, .2f, and the maximum thumb is .5f.
  */
 //Author Jeremy Wood
-public abstract class MultiThumbSlider extends JComponent {
+public abstract class MultiThumbSlider extends JComponent implements Accessible {
 
     /**
      * The property that is changed when <code>setSelectedThumb()</code> is called.
@@ -247,6 +250,19 @@ public abstract class MultiThumbSlider extends JComponent {
                 Exceptions.printStackTrace(t);
             }
         }
+    }
+
+    @Override
+    public AccessibleContext getAccessibleContext() {
+        if (accessibleContext == null) {
+            accessibleContext = new AccessibleJComponent() {
+                @Override
+                public AccessibleRole getAccessibleRole() {
+                    return AccessibleRole.SLIDER;
+                }
+            };
+        }
+        return accessibleContext;
     }
 
     /**

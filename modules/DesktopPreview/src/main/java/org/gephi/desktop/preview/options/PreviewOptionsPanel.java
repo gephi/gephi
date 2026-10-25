@@ -77,6 +77,7 @@ final class PreviewOptionsPanel extends JPanel {
     PreviewOptionsPanel(PreviewOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
+        labelDefaultPreset.setLabelFor(defaultPresetCombobox);
     }
 
     private void initComponents() {

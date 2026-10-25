@@ -105,6 +105,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
         initComponents();
+        layoutCombobox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.layoutCombobox.accessibleName"));
         layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
     }
@@ -500,7 +502,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         presetsButton.setIcon(ImageUtilities.loadImageIcon("DesktopLayout/preset.svg", false)); // NOI18N
         presetsButton.setText(
             org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
-        presetsButton.setFocusable(false);
+        presetsButton.setRequestFocusEnabled(false);
         presetsButton.setIconTextGap(4);
         layoutToolbar.add(presetsButton);
 

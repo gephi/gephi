@@ -119,4 +119,15 @@ public class GEXFTest {
         Assert.assertEquals(new TimestampDoubleMap(new double[] {2007}, new double[] {2}),
             edge.getValue("weight"));
     }
+
+    @Test
+    public void testEmptyEdgeEndpoint() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("gexf/emptyedgeendpoint.gexf"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        Utils.assertSameEdges(Utils.toEdgesArray(container), "n0 -> n1");
+    }
 }

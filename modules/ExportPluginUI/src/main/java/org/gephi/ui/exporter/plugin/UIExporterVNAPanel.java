@@ -188,9 +188,6 @@ public class UIExporterVNAPanel extends javax.swing.JPanel {
                         .addComponent(normalizeLabel))
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        exportAttributesCheckBox.getAccessibleContext().setAccessibleName("\n"); // NOI18N
-        exportAttributesCheckBox.getAccessibleContext().setAccessibleDescription("");
     }// </editor-fold>//GEN-END:initComponents
 
     private void exportAttributesCheckBoxActionPerformed(

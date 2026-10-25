@@ -62,6 +62,7 @@ public class ListContainsPanel extends javax.swing.JPanel implements ActionListe
 
     public ListContainsPanel() {
         initComponents();
+        labelPattern.setLabelFor(textField);
 
         okButton.addActionListener(this);
     }

@@ -87,6 +87,10 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
     public CustomBoundsDialog() {
         initComponents();
+        labelMinDate.setLabelFor(minTextField);
+        labelMaxDate.setLabelFor(maxTextField);
+        labelStartDate.setLabelFor(startTextField);
+        labelEndDate.setLabelFor(endTextField);
 
         resetDefaultsDate.addActionListener(new ActionListener() {
 

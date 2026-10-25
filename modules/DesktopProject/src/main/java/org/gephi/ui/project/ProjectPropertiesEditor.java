@@ -76,6 +76,11 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
      */
     public ProjectPropertiesEditor() {
         initComponents();
+        labelName.setLabelFor(nameTextField);
+        labelTitle.setLabelFor(titleTextField);
+        labelAuthor.setLabelFor(authorTextField);
+        labelKeywords.setLabelFor(keywordsTextField);
+        labelDescription.setLabelFor(descriptionTextArea);
     }
 
     public static ValidationPanel createValidationPanel(ProjectPropertiesEditor innerPanel) {

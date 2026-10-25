@@ -145,7 +145,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         private String pattern = "";
         private boolean useRegex;
-        private Pattern regex;
+        private Pattern regex = Pattern.compile(pattern);
 
         public EqualStringFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"),

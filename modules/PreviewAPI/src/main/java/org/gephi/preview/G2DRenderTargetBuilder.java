@@ -215,7 +215,7 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
             g2.translate(trans.x, trans.y);
 
             //Draw target
-            previewController.render(target);
+            previewController.render(target, m.getWorkspace());
         }
 
         public Vector getTranslate() {

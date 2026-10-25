@@ -237,7 +237,11 @@ public class Modularity implements Statistics, LongTask {
     }
 
     private Community updateBestCommunity(CommunityStructure theStructure, int node_id, double currentResolution) {
-        double best = 0.;
+        // A node moves only to a community strictly better than the one it is in. On a tie the
+        // move gains nothing, and nodes can then keep swapping between tied communities so the
+        // pass never ends (#1630).
+        double best = Math.max(0.,
+            q(node_id, theStructure.nodeCommunities[node_id], theStructure, currentResolution));
         Community bestCommunity = null;
         Set<Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
         for (Community com : iter) {

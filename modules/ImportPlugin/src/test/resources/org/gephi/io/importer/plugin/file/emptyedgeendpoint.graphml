@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <graph edgedefault="directed">
+        <node id="n0"/>
+        <node id="n1"/>
+        <edge id="e0" source="n0" target="n1"/>
+        <edge id="e1" source="n0" target=""/>
+        <edge id="e2" source="" target="n1"/>
+    </graph>
+</graphml>

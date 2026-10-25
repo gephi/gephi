@@ -46,11 +46,15 @@ import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.BorderFactory;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
+import org.openide.windows.WindowManager;
+import org.openide.windows.WindowSystemEvent;
+import org.openide.windows.WindowSystemListener;
 
 /**
  * @author Mathieu Bastian
@@ -58,6 +62,7 @@ import org.openide.util.Lookup;
 public class BannerComponent extends javax.swing.JPanel {
 
     private final transient PerspectiveController perspectiveController;
+    private transient JToggleButton[] perspectiveButtons;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JPanel mainPanel;
@@ -91,7 +96,7 @@ public class BannerComponent extends javax.swing.JPanel {
     }
 
     private void addGroupTabs() {
-        JToggleButton[] buttons = new JToggleButton[perspectiveController.getPerspectives().length];
+        perspectiveButtons = new JToggleButton[perspectiveController.getPerspectives().length];
         int i = 0;
 
         //Add tabs
@@ -104,11 +109,38 @@ public class BannerComponent extends javax.swing.JPanel {
             toggleButton.addActionListener(e -> perspectiveController.selectPerspective(perspective));
             perspectivesButtonGroup.add(toggleButton);
             buttonsPanel.add(toggleButton);
-            buttons[i++] = toggleButton;
+            perspectiveButtons[i++] = toggleButton;
         }
 
         //Set currently selected button
-        perspectivesButtonGroup.setSelected(buttons[getSelectedPerspectiveIndex()].getModel(), true);
+        selectCurrentPerspectiveButton();
+
+        //The perspective can also be switched without the buttons (keyboard shortcuts), so follow the window system
+        WindowManager.getDefault().addWindowSystemListener(new WindowSystemListener() {
+            @Override
+            public void beforeLoad(WindowSystemEvent event) {
+            }
+
+            @Override
+            public void afterLoad(WindowSystemEvent event) {
+                SwingUtilities.invokeLater(BannerComponent.this::selectCurrentPerspectiveButton);
+            }
+
+            @Override
+            public void beforeSave(WindowSystemEvent event) {
+            }
+
+            @Override
+            public void afterSave(WindowSystemEvent event) {
+            }
+        });
+    }
+
+    private void selectCurrentPerspectiveButton() {
+        int index = getSelectedPerspectiveIndex();
+        if (index >= 0) {
+            perspectivesButtonGroup.setSelected(perspectiveButtons[index].getModel(), true);
+        }
     }
 
     public int getSelectedPerspectiveIndex() {

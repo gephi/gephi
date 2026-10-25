@@ -867,12 +867,15 @@ public class ImporterGEXF implements FileImporter, LongTask {
             edge.setSource(nodeSource);
             edge.setTarget(nodeTarget);
         } catch (Exception e) {
+            String edgeId = id.isEmpty() ? "?" : id;
             if (source.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgesource"),
-                    Issue.Level.SEVERE));
+                report.logIssue(
+                    new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgesource", edgeId),
+                        Issue.Level.SEVERE));
             } else if (target.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetarget"),
-                    Issue.Level.SEVERE));
+                report.logIssue(
+                    new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetarget", edgeId),
+                        Issue.Level.SEVERE));
             } else {
                 report.logIssue(new Issue(e.getMessage(), Issue.Level.SEVERE));
             }

@@ -79,6 +79,8 @@ public class AddColumnUI extends javax.swing.JPanel {
      */
     public AddColumnUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        typeLabel.setLabelFor(typeComboBox);
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

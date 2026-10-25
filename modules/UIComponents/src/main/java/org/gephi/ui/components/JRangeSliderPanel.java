@@ -56,6 +56,7 @@ import java.math.RoundingMode;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.utils.NumberUtils;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
@@ -81,6 +82,12 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         initComponents();
         ((JRangeSlider) rangeSlider).setUpperValue(1000);
         rangeSlider.setOpaque(false);
+        rangeSlider.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.rangeSlider.accessibleName"));
+        lowerBoundTextField.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.lowerBoundTextField.accessibleName"));
+        upperBoundTextField.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.upperBoundTextField.accessibleName"));
         lowerBoundTextField.setOpaque(false);
         lowerBoundTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         upperBoundTextField.setOpaque(false);

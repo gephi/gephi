@@ -138,7 +138,7 @@ public class SelectionPropertiesToolbar extends javax.swing.JPanel implements Vi
             org.openide.util.NbBundle.getMessage(SelectionPropertiesToolbar.class,
                 "SelectionBar.configureLink.text")); // NOI18N
         configureLink.setDefaultCapable(false);
-        configureLink.setFocusable(false);
+        configureLink.setRequestFocusEnabled(false);
         configureLink.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;

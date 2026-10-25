@@ -78,6 +78,8 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         this.dataTableTopComponent = dataTableTopComponent;
         this.graphModel = graphModel;
         initComponents();
+        timeFormatLabel.setLabelFor(timeFormatComboBox);
+        timeZoneLabel.setLabelFor(timeZoneComboBox);
 
         for (TimeFormat tf : TimeFormat.values()) {
             timeFormatComboBox.addItem(new TimeFormatWrapper(tf));

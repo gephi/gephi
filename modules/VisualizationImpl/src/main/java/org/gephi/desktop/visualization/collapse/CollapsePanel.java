@@ -64,6 +64,7 @@ public class CollapsePanel extends javax.swing.JPanel {
      */
     public CollapsePanel() {
         initComponents();
+        extendButton.getAccessibleContext().setAccessibleName(extendButton.getToolTipText());
     }
 
     public void init(JComponent topBar, final JComponent extendedPanel, boolean extended) {
@@ -122,7 +123,7 @@ public class CollapsePanel extends javax.swing.JPanel {
         extendButton.setAlignmentY(0.0F);
         extendButton.setBorderPainted(false);
         extendButton.setContentAreaFilled(false);
-        extendButton.setFocusable(false);
+        extendButton.setRequestFocusEnabled(false);
         buttonPanel.add(extendButton);
 
         add(buttonPanel, java.awt.BorderLayout.EAST);

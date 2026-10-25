@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" version="1.3">
+  <graph defaultedgetype="undirected">
+    <attributes class="node">
+      <attribute id="group" title="group" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="a0" label="a0">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="100.000" y="0.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="a1" label="a1">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="50.000" y="86.603" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="a2" label="a2">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="-50.000" y="86.603" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="a3" label="a3">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="-100.000" y="0.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="a4" label="a4">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="-50.000" y="-86.603" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="a5" label="a5">
+        <attvalues><attvalue for="group" value="a"/></attvalues>
+        <viz:position x="50.000" y="-86.603" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b0" label="b0">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="86.603" y="50.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b1" label="b1">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="0.000" y="100.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b2" label="b2">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="-86.603" y="50.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b3" label="b3">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="-86.603" y="-50.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b4" label="b4">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="-0.000" y="-100.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+      <node id="b5" label="b5">
+        <attvalues><attvalue for="group" value="b"/></attvalues>
+        <viz:position x="86.603" y="-50.000" z="0.0"/>
+        <viz:size value="1.0"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="a0" target="a1"/>
+      <edge id="1" source="a0" target="a2"/>
+      <edge id="2" source="a0" target="a3"/>
+      <edge id="3" source="a0" target="a4"/>
+      <edge id="4" source="a0" target="a5"/>
+      <edge id="5" source="a1" target="a2"/>
+      <edge id="6" source="a1" target="a3"/>
+      <edge id="7" source="a1" target="a4"/>
+      <edge id="8" source="a1" target="a5"/>
+      <edge id="9" source="a2" target="a3"/>
+      <edge id="10" source="a2" target="a4"/>
+      <edge id="11" source="a2" target="a5"/>
+      <edge id="12" source="a3" target="a4"/>
+      <edge id="13" source="a3" target="a5"/>
+      <edge id="14" source="a4" target="a5"/>
+      <edge id="15" source="b0" target="b1"/>
+      <edge id="16" source="b0" target="b2"/>
+      <edge id="17" source="b0" target="b3"/>
+      <edge id="18" source="b0" target="b4"/>
+      <edge id="19" source="b0" target="b5"/>
+      <edge id="20" source="b1" target="b2"/>
+      <edge id="21" source="b1" target="b3"/>
+      <edge id="22" source="b1" target="b4"/>
+      <edge id="23" source="b1" target="b5"/>
+      <edge id="24" source="b2" target="b3"/>
+      <edge id="25" source="b2" target="b4"/>
+      <edge id="26" source="b2" target="b5"/>
+      <edge id="27" source="b3" target="b4"/>
+      <edge id="28" source="b3" target="b5"/>
+      <edge id="29" source="b4" target="b5"/>
+      <edge id="30" source="a0" target="b0"/>
+    </edges>
+  </graph>
+</gexf>

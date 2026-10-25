@@ -61,6 +61,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
 
     public UniqueSizeTransformerPanel() {
         initComponents();
+        jLabel1.setLabelFor(sizeSpinner);
     }
 
     public void setup(SimpleFunction function) {

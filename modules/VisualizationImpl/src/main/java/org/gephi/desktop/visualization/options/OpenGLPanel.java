@@ -74,6 +74,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
     OpenGLPanel(OpenGLOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
+        labelAntialiasing.setLabelFor(antialisaingCombobox);
 
         antialisaingCombobox.addActionListener(new ActionListener() {
 

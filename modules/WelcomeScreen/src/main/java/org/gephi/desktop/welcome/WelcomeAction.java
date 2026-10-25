@@ -42,6 +42,7 @@
 
 package org.gephi.desktop.welcome;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
@@ -57,6 +58,14 @@ public final class WelcomeAction implements ActionListener {
             @Override
             public void run() {
                 WelcomeTopComponent component = WelcomeTopComponent.getInstance();
+                if (component.isShowing()) {
+                    Window window = SwingUtilities.getWindowAncestor(component);
+                    if (window != null) {
+                        window.toFront();
+                        window.requestFocus();
+                        return;
+                    }
+                }
                 JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
                     component.getName(), false);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

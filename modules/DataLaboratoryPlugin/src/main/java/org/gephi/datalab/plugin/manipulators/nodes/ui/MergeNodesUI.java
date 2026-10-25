@@ -153,7 +153,9 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
             }
             strategyComboBox.refresh();
 
-            settingsPanel.add(new JLabel(columns[i].getTitle() + ": "), "wrap");
+            JLabel columnLabel = new JLabel(columns[i].getTitle() + ": ");
+            columnLabel.setLabelFor(strategyComboBox);
+            settingsPanel.add(columnLabel, "wrap");
 
             settingsPanel.add(infoLabel, "split 3");
             settingsPanel.add(strategiesConfigurationButtons[i]);
@@ -191,6 +193,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         selectedRowLabel.setText(getMessage("MergeNodesUI.selectedRowText"));
         settingsPanel.add(selectedRowLabel, "wrap");
         nodesComboBox = new JComboBox();
+        selectedRowLabel.setLabelFor(nodesComboBox);
 
         //Prepare selected node combo box with nodes data:
         nodes = manipulator.getNodes();
