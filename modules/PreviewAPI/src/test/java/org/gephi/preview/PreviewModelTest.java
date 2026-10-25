@@ -2,12 +2,20 @@ package org.gephi.preview;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.utils.MockBuilderA;
 import org.gephi.preview.utils.MockBuilderB;
+import org.gephi.preview.utils.MockItem;
 import org.gephi.preview.utils.MockRendererA;
 import org.gephi.preview.utils.MockRendererB;
 import org.gephi.preview.utils.Utils;
@@ -25,6 +33,95 @@ public class PreviewModelTest {
         Assert.assertEquals(0, previewModel.getItems(MockBuilderA.SOURCE_1).length);
         Assert.assertNull(previewModel.getItem(MockBuilderA.TYPE, MockBuilderA.SOURCE_1));
         Assert.assertEquals(0, previewModel.getItemTypes().length);
+    }
+
+    @Test
+    public void testBuildAndLoadDropsItemsWithoutTheirNode() {
+        MockServices.setServices(NodeItemBuilder.class, EdgeItemBuilder.class, NodeLabelItemBuilder.class,
+            EdgeLabelItemBuilder.class);
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph();
+        Graph graph = generator.getGraph();
+        Renderer renderer = new MockRendererA() {
+            @Override
+            public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
+                return true;
+            }
+        };
+        PreviewModelImpl previewModel = Utils.getPreviewModel(generator.getWorkspace());
+
+        NodeItemBuilder.missing = null;
+        previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+        Assert.assertEquals(2, previewModel.getItems(Item.NODE).length);
+        Assert.assertEquals(1, previewModel.getItems(Item.EDGE).length);
+        Assert.assertEquals(2, previewModel.getItems(Item.NODE_LABEL).length);
+        Assert.assertEquals(1, previewModel.getItems(Item.EDGE_LABEL).length);
+
+        // A node added after the nodes were read, but before the edges and labels were
+        NodeItemBuilder.missing = graph.getNode(GraphGenerator.SECOND_NODE);
+        previewModel.clear();
+        previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+        Assert.assertEquals(1, previewModel.getItems(Item.NODE).length);
+        Assert.assertEquals(0, previewModel.getItems(Item.EDGE).length);
+        Assert.assertEquals(1, previewModel.getItems(Item.NODE_LABEL).length);
+        Assert.assertEquals(0, previewModel.getItems(Item.EDGE_LABEL).length);
+    }
+
+    public static class NodeItemBuilder implements ItemBuilder {
+
+        static volatile Node missing;
+
+        @Override
+        public Item[] getItems(Graph graph) {
+            return Arrays.stream(graph.getNodes().toArray()).filter(n -> n != missing)
+                .map(n -> new MockItem(n, Item.NODE, new HashMap<>())).toArray(Item[]::new);
+        }
+
+        @Override
+        public String getType() {
+            return Item.NODE;
+        }
+    }
+
+    public static class EdgeItemBuilder implements ItemBuilder {
+
+        @Override
+        public Item[] getItems(Graph graph) {
+            return Arrays.stream(graph.getEdges().toArray())
+                .map(e -> new MockItem(e, Item.EDGE, new HashMap<>())).toArray(Item[]::new);
+        }
+
+        @Override
+        public String getType() {
+            return Item.EDGE;
+        }
+    }
+
+    public static class NodeLabelItemBuilder implements ItemBuilder {
+
+        @Override
+        public Item[] getItems(Graph graph) {
+            return Arrays.stream(graph.getNodes().toArray())
+                .map(n -> new MockItem(n, Item.NODE_LABEL, new HashMap<>())).toArray(Item[]::new);
+        }
+
+        @Override
+        public String getType() {
+            return Item.NODE_LABEL;
+        }
+    }
+
+    public static class EdgeLabelItemBuilder implements ItemBuilder {
+
+        @Override
+        public Item[] getItems(Graph graph) {
+            return Arrays.stream(graph.getEdges().toArray())
+                .map(e -> new MockItem(e, Item.EDGE_LABEL, new HashMap<>())).toArray(Item[]::new);
+        }
+
+        @Override
+        public String getType() {
+            return Item.EDGE_LABEL;
+        }
     }
 
     @Test

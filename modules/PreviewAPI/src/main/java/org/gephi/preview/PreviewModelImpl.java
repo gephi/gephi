@@ -61,7 +61,9 @@ import java.util.stream.Stream;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.ManagedRenderer;
@@ -254,7 +256,31 @@ public class PreviewModelImpl implements PreviewModel, Model {
                     LinkedHashMap::new
                 )
             ));
+        removeOrphanItems(groupedItems);
         itemMaps.putAll(groupedItems);
+    }
+
+    /**
+     * The builders read the graph one after the other, so a node added or removed in between leaves edge and label
+     * items whose node or edge wasn't built, which the renderers expect to find. These items are dropped.
+     */
+    private static void removeOrphanItems(Map<String, Map<Object, Item>> items) {
+        Map<Object, Item> nodes = items.get(Item.NODE);
+        Map<Object, Item> edges = items.get(Item.EDGE);
+        if (nodes != null) {
+            if (edges != null) {
+                edges.keySet().removeIf(source -> source instanceof Edge edge
+                    && !(nodes.containsKey(edge.getSource()) && nodes.containsKey(edge.getTarget())));
+            }
+            Map<Object, Item> nodeLabels = items.get(Item.NODE_LABEL);
+            if (nodeLabels != null) {
+                nodeLabels.keySet().removeIf(source -> source instanceof Node && !nodes.containsKey(source));
+            }
+        }
+        Map<Object, Item> edgeLabels = items.get(Item.EDGE_LABEL);
+        if (edges != null && edgeLabels != null) {
+            edgeLabels.keySet().removeIf(source -> source instanceof Edge && !edges.containsKey(source));
+        }
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
