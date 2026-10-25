@@ -132,12 +132,15 @@ public class Combine implements Runnable {
         }
         float outputScale = maxAbsCoord > 0 ? (layout.getLayoutSize() / 2f) / maxAbsCoord : 1f;
         Graph graph = layout.getGraph();
-        for (org.gephi.graph.api.Node n : graph.getNodes()) {
-            if (n.getLayoutData() != null && n.getLayoutData() instanceof OpenOrdLayoutData) {
-                OpenOrdLayoutData layoutData = n.getLayoutData();
-                Node node = positions[layoutData.nodeId];
-                n.setX(node.x * outputScale);
-                n.setY(node.y * outputScale);
+        // Null once the layout ended: the workers of a stopped layout still finish one more iteration
+        if (graph != null) {
+            for (org.gephi.graph.api.Node n : graph.getNodes()) {
+                if (n.getLayoutData() != null && n.getLayoutData() instanceof OpenOrdLayoutData) {
+                    OpenOrdLayoutData layoutData = n.getLayoutData();
+                    Node node = positions[layoutData.nodeId];
+                    n.setX(node.x * outputScale);
+                    n.setY(node.y * outputScale);
+                }
             }
         }
 

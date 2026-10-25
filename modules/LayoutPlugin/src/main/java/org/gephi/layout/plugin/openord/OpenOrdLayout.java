@@ -269,6 +269,7 @@ public class OpenOrdLayout implements Layout, LongTask {
     public void endAlgo() {
         running = false;
         combine = null;
+        graph = null;
     }
 
     private float normalizeWeight(float weight, float highestSimilarity) {
