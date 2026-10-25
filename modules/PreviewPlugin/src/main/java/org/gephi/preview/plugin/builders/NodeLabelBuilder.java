@@ -70,24 +70,29 @@ public class NodeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         VisualizationModel vizModel = vizController != null ? vizController.getModel(workspace) : null;
         GraphView graphView = graph.getView();
 
-        return graph.getNodes().stream().map(
-            n -> {
-                TextProperties textData = n.getTextProperties();
-                if (textData != null && textData.isVisible()) {
-                    NodeLabelItem labelItem = new NodeLabelItem(n);
-                    String label = vizModel != null ? vizModel.getNodeLabel(n, graphView) : n.getLabel();
-                    labelItem.setData(NodeLabelItem.LABEL, label);
+        graph.readLock();
+        try {
+            return graph.getNodes().stream().map(
+                n -> {
+                    TextProperties textData = n.getTextProperties();
+                    if (textData != null && textData.isVisible()) {
+                        NodeLabelItem labelItem = new NodeLabelItem(n);
+                        String label = vizModel != null ? vizModel.getNodeLabel(n, graphView) : n.getLabel();
+                        labelItem.setData(NodeLabelItem.LABEL, label);
 
-                    if (label != null && !label.isEmpty()) {
-                        labelItem.setData(NodeLabelItem.COLOR, textData.getColor());
-                        labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
-                        labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
-                        return labelItem;
+                        if (label != null && !label.isEmpty()) {
+                            labelItem.setData(NodeLabelItem.COLOR, textData.getColor());
+                            labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
+                            labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
+                            return labelItem;
+                        }
                     }
+                    return null;
                 }
-                return null;
-            }
-        ).filter(Objects::nonNull).toArray(NodeLabelItem[]::new);
+            ).filter(Objects::nonNull).toArray(NodeLabelItem[]::new);
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override
