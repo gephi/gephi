@@ -56,12 +56,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.ManagedRenderer;
@@ -224,10 +227,13 @@ public class PreviewModelImpl implements PreviewModel, Model {
     }
 
     protected void buildAndLoadItems(Renderer[] renderers, Graph graph) {
-        Map<String, Map<Object, Item>> groupedItems = Lookup.getDefault()
+        List<? extends ItemBuilder> builders = Lookup.getDefault()
             .lookupAll(ItemBuilder.class)
-            .parallelStream()
+            .stream()
             .filter(b -> isItemBuilderNeeded(b, getProperties(), renderers))
+            .toList();
+        Map<String, Map<Object, Item>> groupedItems = builders
+            .parallelStream()
             .flatMap(b -> {
                 try {
                     Item[] items = b.getItems(graph);
@@ -254,7 +260,46 @@ public class PreviewModelImpl implements PreviewModel, Model {
                     LinkedHashMap::new
                 )
             ));
+        removeOrphanItems(groupedItems, builders.stream().map(ItemBuilder::getType).collect(Collectors.toSet()));
         itemMaps.putAll(groupedItems);
+    }
+
+    /**
+     * The builders run concurrently, each reading the graph under its own lock, so a node added or removed meanwhile
+     * leaves edge and label items whose node or edge wasn't built, which the renderers expect to find. These items
+     * are dropped. A type with no items is missing from <code>items</code>, so <code>builtTypes</code> tells it from
+     * a type no builder was asked to build.
+     */
+    private static void removeOrphanItems(Map<String, Map<Object, Item>> items, Set<String> builtTypes) {
+        Map<Object, Item> nodes = builtItems(items, builtTypes, Item.NODE);
+        Map<Object, Item> edges = builtItems(items, builtTypes, Item.EDGE);
+        if (nodes != null) {
+            if (edges != null) {
+                removeSources(edges, source -> source instanceof Edge edge
+                    && !(nodes.containsKey(edge.getSource()) && nodes.containsKey(edge.getTarget())));
+            }
+            Map<Object, Item> nodeLabels = builtItems(items, builtTypes, Item.NODE_LABEL);
+            if (nodeLabels != null) {
+                removeSources(nodeLabels, source -> source instanceof Node && !nodes.containsKey(source));
+            }
+        }
+        Map<Object, Item> edgeLabels = builtItems(items, builtTypes, Item.EDGE_LABEL);
+        if (edges != null && edgeLabels != null) {
+            removeSources(edgeLabels, source -> source instanceof Edge && !edges.containsKey(source));
+        }
+    }
+
+    private static Map<Object, Item> builtItems(Map<String, Map<Object, Item>> items, Set<String> builtTypes,
+                                                String type) {
+        return builtTypes.contains(type) ? items.getOrDefault(type, new HashMap<>()) : null;
+    }
+
+    /**
+     * Removes the items whose source matches <code>orphan</code>. The lookups are done in parallel, as there is one
+     * per edge and the maps aren't modified meanwhile, then the few orphans are removed.
+     */
+    private static void removeSources(Map<Object, Item> items, Predicate<Object> orphan) {
+        items.keySet().parallelStream().filter(orphan).toList().forEach(items::remove);
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
