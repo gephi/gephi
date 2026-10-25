@@ -534,17 +534,19 @@ public class Modularity implements Statistics, LongTask {
 
                 ////////
                 //Remove Node Connection to this community
-                Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
-                if (neighEdgesTo == null) {
-                    nodeConnectionsWeight[neighbor].put(to, e.weight);
-                } else {
-                    nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
-                }
-                Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
-                if (neighCountEdgesTo == null) {
-                    nodeConnectionsCount[neighbor].put(to, 1);
-                } else {
-                    nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
+                if (node != neighbor) {
+                    Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
+                    if (neighEdgesTo == null) {
+                        nodeConnectionsWeight[neighbor].put(to, e.weight);
+                    } else {
+                        nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
+                    }
+                    Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
+                    if (neighCountEdgesTo == null) {
+                        nodeConnectionsCount[neighbor].put(to, 1);
+                    } else {
+                        nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
+                    }
                 }
 
                 ///////////////////
@@ -610,14 +612,16 @@ public class Modularity implements Statistics, LongTask {
 
                 ////////
                 //Remove Node Connection to this community
-                Float edgesTo = nodeConnectionsWeight[neighbor].get(community);
-                Integer countEdgesTo = nodeConnectionsCount[neighbor].get(community);
-                if (countEdgesTo - 1 == 0) {
-                    nodeConnectionsWeight[neighbor].remove(community);
-                    nodeConnectionsCount[neighbor].remove(community);
-                } else {
-                    nodeConnectionsWeight[neighbor].put(community, edgesTo - e.weight);
-                    nodeConnectionsCount[neighbor].put(community, countEdgesTo - 1);
+                if (node != neighbor) {
+                    Float edgesTo = nodeConnectionsWeight[neighbor].get(community);
+                    Integer countEdgesTo = nodeConnectionsCount[neighbor].get(community);
+                    if (countEdgesTo - 1 == 0) {
+                        nodeConnectionsWeight[neighbor].remove(community);
+                        nodeConnectionsCount[neighbor].remove(community);
+                    } else {
+                        nodeConnectionsWeight[neighbor].put(community, edgesTo - e.weight);
+                        nodeConnectionsCount[neighbor].put(community, countEdgesTo - 1);
+                    }
                 }
 
                 ///////////////////
@@ -714,8 +718,12 @@ public class Modularity implements Statistics, LongTask {
                 Community com = nodeCommunities[i];
                 communities.add(com);
                 for (ModEdge e : newTopology[i]) {
-                    nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
-                    nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
+                    // A node's self-loop moves with it, so it only adds to its community's internal weight
+                    // and is no link from the node to a community. Counting it as one over-valued staying.
+                    if (e.target != i) {
+                        nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
+                        nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
+                    }
                     com.connectionsWeight.put(nodeCommunities[e.target], e.weight);
                     com.connectionsCount.put(nodeCommunities[e.target], 1);
                 }

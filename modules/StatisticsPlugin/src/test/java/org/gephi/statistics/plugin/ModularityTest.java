@@ -418,4 +418,30 @@ public class ModularityTest extends TestCase {
             assertEquals(3.0, theStructure.nodeCommunities[i].weightSum, 0.0);
         }
     }
+
+    /**
+     * The first level groups {0, 2}, {1, 4} and {3, 5}. On the next one {0, 2} joins {3, 5}, and {3, 5}
+     * must then leave for {1, 4}. Counting its self-loop (edge 3-5) as a link to {0, 2} kept it there.
+     */
+    @Test
+    public void testSelfLoopDoesNotCountAsLinkToOwnCommunity() {
+        int[][] edges = {{0, 2, 2}, {0, 3, 7}, {1, 3, 3}, {1, 4, 1}, {3, 4, 1}, {3, 5, 9}};
+        GraphModel graphModel = GraphModel.Factory.newInstance();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        Node[] nodes = new Node[6];
+        for (int i = 0; i < nodes.length; i++) {
+            nodes[i] = graphModel.factory().newNode(String.valueOf(i));
+            graph.addNode(nodes[i]);
+        }
+        for (int[] e : edges) {
+            graph.addEdge(graphModel.factory().newEdge(nodes[e[0]], nodes[e[1]], 0, e[2], false));
+        }
+
+        Modularity mod = new Modularity();
+        mod.execute(graph);
+
+        Object community = nodes[3].getAttribute(Modularity.MODULARITY_CLASS);
+        assertEquals(community, nodes[1].getAttribute(Modularity.MODULARITY_CLASS));
+        Assert.assertNotEquals(community, nodes[0].getAttribute(Modularity.MODULARITY_CLASS));
+    }
 }
