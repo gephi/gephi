@@ -118,9 +118,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             public void close(Workspace workspace) {
                 FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (m != null) {
-                    if (m.getCurrentResult() != null && m.getGraphModel() != null) {
-                        m.getGraphModel().destroyView(m.getCurrentResult());
-                        m.setCurrentResult(null);
+                    GraphView previousResult = m.setCurrentResult(null);
+                    if (previousResult != null && m.getGraphModel() != null) {
+                        m.getGraphModel().destroyView(previousResult);
                     }
                     m.destroy();
                 }
@@ -272,9 +272,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             filterThread.start();
         } else {
             model.getGraphModel().setVisibleView(null);
-            if (model.getCurrentResult() != null) {
-                model.getGraphModel().destroyView(model.getCurrentResult());
-                model.setCurrentResult(null);
+            GraphView previousResult = model.setCurrentResult(null);
+            if (previousResult != null) {
+                model.getGraphModel().destroyView(previousResult);
             }
         }
         fireIfStoppedWhileRunning(model, currentThread);
@@ -317,9 +317,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         }
 
         model.getGraphModel().setVisibleView(null);
-        if (model.getCurrentResult() != null) {
-            model.getGraphModel().destroyView(model.getCurrentResult());
-            model.setCurrentResult(null);
+        GraphView previousResult = model.setCurrentResult(null);
+        if (previousResult != null) {
+            model.getGraphModel().destroyView(previousResult);
         }
 
         if (query != null) {
