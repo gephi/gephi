@@ -15,7 +15,8 @@ final class Driver implements Runnable {
     static final long EXIT_TIMEOUT_MS = 60_000;
 
     private static final Map<String, Supplier<Suite>> SUITES = Map.of(
-        "smoke", SmokeSuite::new);
+        "smoke", SmokeSuite::new,
+        "soak", SoakSuite::new);
 
     @Override
     public void run() {
