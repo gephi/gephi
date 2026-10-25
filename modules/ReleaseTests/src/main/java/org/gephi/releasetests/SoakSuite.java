@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.imageio.ImageIO;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.plugin.PartitionElementColorTransformer;
 import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
 import org.gephi.filters.api.Query;
@@ -59,7 +60,7 @@ final class SoakSuite implements Suite {
         Workspace other = c.step("duplicate workspace", () -> {
             Workspace duplicate = c.projectController.duplicateWorkspace(workspace);
             // The statistics and filters run on the current workspace
-            SuiteContext.onEdt(() -> c.projectController.openWorkspace(workspace));
+            c.projectController.openWorkspace(workspace);
             SuiteContext.check(c.projectController.getCurrentWorkspace() == workspace,
                 "The workspace isn't the current one");
             return duplicate;
@@ -139,6 +140,7 @@ final class SoakSuite implements Suite {
         private final Node[] nodes;
         private final AtomicReference<Throwable> failure = new AtomicReference<>();
         private final AtomicLong operations = new AtomicLong();
+        private final AtomicLong rounds = new AtomicLong();
         private volatile boolean running;
 
         Load(SuiteContext c, Workspace workspace, Workspace other) {
@@ -169,13 +171,18 @@ final class SoakSuite implements Suite {
             running = false;
             for (Thread thread : threads) {
                 thread.join(SuiteContext.TIMEOUT.toMillis() * 2);
-                SuiteContext.check(!thread.isAlive(), thread.getName() + " didn't end");
+                if (thread.isAlive()) {
+                    throw new AssertionError(thread.getName() + " didn't end, see " + c.threadDump("soak"));
+                }
             }
             c.metric("soakOperations", operations.get());
+            c.metric("soakRounds", rounds.get());
             Throwable t = failure.get();
             if (t != null) {
                 throw new AssertionError("The load failed: " + t, t);
             }
+            SuiteContext.check(rounds.get() >= 2,
+                "The features ran " + rounds.get() + " times in " + duration.toSeconds() + " s");
         }
 
         /**
@@ -279,6 +286,10 @@ final class SoakSuite implements Suite {
             GraphModel graphModel = c.graphController.getGraphModel(workspace);
             Column block = graphModel.getNodeTable().getColumn(BLOCK);
             Column score = graphModel.getNodeTable().getColumn(SCORE);
+            Partition blocks = appearanceModel.getNodePartition(block);
+            for (int i = 0; i < BLOCKS; i++) {
+                blocks.setColor("b" + i, Color.getHSBColor(i / (float) BLOCKS, 0.7f, 0.9f));
+            }
             int round = 0;
             while (running) {
                 appearance.transform(appearanceModel.getNodeFunction(block, PartitionElementColorTransformer.class));
@@ -303,10 +314,11 @@ final class SoakSuite implements Suite {
                 c.exportController.exportFile(png);
                 SuiteContext.checkNotBlank(ImageIO.read(png), "The PNG export");
 
-                SuiteContext.onEdt(() -> c.projectController.openWorkspace(other));
+                c.projectController.openWorkspace(other);
                 Thread.sleep(2_000);
-                SuiteContext.onEdt(() -> c.projectController.openWorkspace(workspace));
+                c.projectController.openWorkspace(workspace);
                 round++;
+                rounds.incrementAndGet();
                 operations.incrementAndGet();
             }
         }

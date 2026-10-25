@@ -153,6 +153,13 @@ final class SuiteContext {
     }
 
     /**
+     * Writes a thread dump and returns the name of its file, to give with a failure.
+     */
+    String threadDump(String reason) {
+        return ThreadDumps.write(results, reason);
+    }
+
+    /**
      * Records a number in the results.
      */
     void metric(String name, Number value) {
@@ -183,13 +190,17 @@ final class SuiteContext {
 
     /**
      * Takes a screenshot of the Overview, as from its screenshot button, once it has drawn the graph, which a new graph or
-     * workspace only does a moment after it's shown.
+     * workspace only does a moment after it's shown. It waits for two world updates from now on.
      */
     BufferedImage overviewScreenshot(String name) throws Exception {
         VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
         check(controller instanceof VizController, "No Overview to take a screenshot of");
-        await("Overview first frame with the graph", () -> ((VizController) controller).getEngine()
-            .map(engine -> engine.getFrameCount() > 0 && engine.getWorldUpdateCount() > 1).orElse(false));
+        // Frames and world updates are counted for good, so it's the ones from now on that show the current graph
+        long updatesBefore = ((VizController) controller).getEngine().map(engine -> engine.getWorldUpdateCount())
+            .orElse(0L);
+        await("Overview frame with the graph", () -> ((VizController) controller).getEngine()
+            .map(engine -> engine.getFrameCount() > 0 && engine.getWorldUpdateCount() >= updatesBefore + 2)
+            .orElse(false));
         File written = ((VizController) controller).getScreenshotController().takeScreenshot(1, false, file(name))
             .get(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
         return ImageIO.read(written);
@@ -223,7 +234,7 @@ final class SuiteContext {
         await(() -> lock.getReadLockCount() == 0 && !lock.isWriteLocked() && lock.getQueueLength() == 0,
             () -> "The graph lock is still held after " + TIMEOUT.toSeconds() + " s, with " + lock.getReadLockCount()
                 + " read holds, write locked: " + lock.isWriteLocked() + ", " + lock.getQueueLength()
-                + " threads waiting", 5);
+                + " threads waiting, see " + threadDump("lock"), 5);
     }
 
     static void check(boolean condition, String message) {
@@ -263,7 +274,9 @@ final class SuiteContext {
         throws InterruptedException {
         long deadline = System.nanoTime() + TIMEOUT.toNanos();
         while (!done.getAsBoolean()) {
-            check(System.nanoTime() < deadline, failure.get());
+            if (System.nanoTime() >= deadline) {
+                throw new AssertionError(failure.get());
+            }
             Thread.sleep(pollMs);
         }
     }
