@@ -67,6 +67,7 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -79,7 +80,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"}, position = 10)
 @ActionID(category = "Window", id = "org.gephi.desktop.appearance.AppearanceTopComponent")
-@ActionReference(path = "Menu/Window", position = 1100)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 1100),
+    @ActionReference(path = "Shortcuts", name = "DS-A")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_AppearanceAction",
     preferredID = "AppearanceTopComponent")
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
@@ -125,7 +129,17 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         toolbar = new AppearanceToolbar(controller);
 
         initComponents();
+        rankingLocalScaleButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.rankingLocalScaleButton.accessibleName")); // NOI18N
+        rankingLocalScaleButton.getAccessibleContext().setAccessibleDescription(rankingLocalScaleButton.getToolTipText());
+        partitionLocalScaleButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.accessibleName")); // NOI18N
+        partitionLocalScaleButton.getAccessibleContext().setAccessibleDescription(partitionLocalScaleButton.getToolTipText());
+        transformNullValuesButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.transformNullValuesButton.accessibleName")); // NOI18N
+        transformNullValuesButton.getAccessibleContext().setAccessibleDescription(transformNullValuesButton.getToolTipText());
+        enableAutoButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.accessibleName")); // NOI18N
+        enableAutoButton.getAccessibleContext().setAccessibleDescription(enableAutoButton.getToolTipText());
         initControls();
+        attibuteBox.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.attributeBox.accessibleName"));
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
@@ -598,21 +612,21 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         rankingLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/funnel.svg", false)); // NOI18N
         rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
-        rankingLocalScaleButton.setFocusable(false);
+        rankingLocalScaleButton.setRequestFocusEnabled(false);
         controlToolbar.add(rankingLocalScaleButton);
 
         partitionLocalScaleButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/funnel.svg", false)); // NOI18N
         partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
-        partitionLocalScaleButton.setFocusable(false);
+        partitionLocalScaleButton.setRequestFocusEnabled(false);
         controlToolbar.add(partitionLocalScaleButton);
 
         transformNullValuesButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/transformNull.svg", false)); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class,
                 "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
-        transformNullValuesButton.setFocusable(false);
+        transformNullValuesButton.setRequestFocusEnabled(false);
         controlToolbar.add(transformNullValuesButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
@@ -620,7 +634,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         splineButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
         splineButton.setFocusPainted(false);
-        splineButton.setFocusable(false);
+        splineButton.setRequestFocusEnabled(false);
         splineButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         splineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         controlToolbar.add(splineButton);
@@ -656,7 +670,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.stopAutoApplyButton.text")); // NOI18N
         stopAutoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class,
             "AppearanceTopComponent.stopAutoApplyButton.toolTipText")); // NOI18N
-        stopAutoApplyButton.setFocusable(false);
+        stopAutoApplyButton.setRequestFocusEnabled(false);
         stopAutoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         stopAutoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
         stopAutoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -674,7 +688,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         enableAutoButton.setIcon(ImageUtilities.loadImageIcon("DesktopAppearance/chain.svg", false)); // NOI18N
         enableAutoButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.toolTipText")); // NOI18N
-        enableAutoButton.setFocusable(false);
+        enableAutoButton.setRequestFocusEnabled(false);
         enableAutoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         enableAutoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         autoApplyToolbar.add(Box.createHorizontalGlue());
@@ -692,7 +706,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
         autoApplyButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.toolTipText")); // NOI18N
-        autoApplyButton.setFocusable(false);
+        autoApplyButton.setRequestFocusEnabled(false);
         autoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         autoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
         autoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

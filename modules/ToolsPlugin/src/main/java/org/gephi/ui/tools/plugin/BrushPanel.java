@@ -67,6 +67,8 @@ public class BrushPanel extends javax.swing.JPanel {
      */
     public BrushPanel() {
         initComponents();
+        labelIntensity.setLabelFor(intensitySpinner);
+        labelDiffusion.setLabelFor(diffusionCombobox);
 
         DefaultComboBoxModel diffusionComboModel = new DefaultComboBoxModel(DiffusionMethods.DiffusionMethod.values());
         diffusionCombobox.setModel(diffusionComboModel);

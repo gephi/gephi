@@ -65,6 +65,7 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
      */
     public JoinWithSeparatorUI() {
         initComponents();
+        separatorLabel.setLabelFor(separatorText);
     }
 
     @Override

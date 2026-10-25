@@ -97,7 +97,9 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
 
             @Override
             public void disable() {
-                closeWindow();
+                // The selection of the closed workspace is already reset by unselect(). Resetting the current
+                // model here would run later, and clear the selection of a project opened in the meantime.
+                runAction(AttributesUIControllerImpl.this::closeTopComponent);
             }
         });
     }
@@ -188,12 +190,16 @@ public class AttributesUIControllerImpl implements AttributesUIController, Contr
     public void closeWindow() {
         runAction(() -> {
             resetSelection();
-            AttributesTopComponent topComponent = findInstance();
-            if (topComponent != null) {
-                topComponent.getEditPanel().disableEdit();
-                topComponent.close();
-            }
+            closeTopComponent();
         });
+    }
+
+    private void closeTopComponent() {
+        AttributesTopComponent topComponent = findInstance();
+        if (topComponent != null) {
+            topComponent.getEditPanel().disableEdit();
+            topComponent.close();
+        }
     }
 
     @Override

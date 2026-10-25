@@ -97,6 +97,9 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
      */
     public UIExporterSpreadsheetPanel() {
         initComponents();
+        tableLabel.setLabelFor(tableComboBox);
+        separatorLabel.setLabelFor(separatorComboBox);
+        decimalSeparatorLabel.setLabelFor(decimalSeparatorComboBox);
 
         separators.add(new SeparatorWrapper((','), getMessage("UIExporterSpreadsheetPanel.comma")));
         separators.add(new SeparatorWrapper((';'), getMessage("UIExporterSpreadsheetPanel.semicolon")));

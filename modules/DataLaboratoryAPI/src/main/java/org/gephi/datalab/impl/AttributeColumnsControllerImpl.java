@@ -111,7 +111,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (value == null) {
                     row.removeAttribute(column);
                 } else {
-                    row.setAttribute(column, value);
+                    row.setAttribute(column, AttributeUtils.copy(value));
                 }
 
                 return true;
@@ -232,7 +232,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (value == null) {
                     row.removeAttribute(targetColumn);
                 } else {
-                    row.setAttribute(targetColumn, value);
+                    row.setAttribute(targetColumn, AttributeUtils.copy(value));
                 }
             }
         }

@@ -80,7 +80,7 @@ public class QueryNode extends AbstractNode {
     private boolean isSelected() {
         FilterController fc = Lookup.getDefault().lookup(FilterController.class);
         FilterModel fm = fc.getModel();
-        return (fm.isFiltering() || fm.isSelecting()) && fc.getModel().getCurrentQuery() == query;
+        return fm != null && (fm.isFiltering() || fm.isSelecting()) && fm.getCurrentQuery() == query;
         //return FiltersTopComponent.findInstance().getUiModel().getSelectedRoot() == query;
     }
 

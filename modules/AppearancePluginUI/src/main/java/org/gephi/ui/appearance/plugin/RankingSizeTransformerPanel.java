@@ -53,6 +53,8 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private RankingSizeTransformer sizeTransformer;
+    private javax.swing.JLabel labelMaxSize;
+    private javax.swing.JLabel labelMinSize;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
 
@@ -62,6 +64,8 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
     public RankingSizeTransformerPanel() {
         initComponents();
+        labelMinSize.setLabelFor(minSize);
+        labelMaxSize.setLabelFor(maxSize);
     }
 
     public void setup(RankingFunction function) {
@@ -96,10 +100,10 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JLabel labelMinSize = new javax.swing.JLabel();
+        labelMinSize = new javax.swing.JLabel();
         minSize = new javax.swing.JSpinner();
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        javax.swing.JLabel labelMaxSize = new javax.swing.JLabel();
+        labelMaxSize = new javax.swing.JLabel();
         maxSize = new javax.swing.JSpinner();
 
         setPreferredSize(new java.awt.Dimension(225, 114));

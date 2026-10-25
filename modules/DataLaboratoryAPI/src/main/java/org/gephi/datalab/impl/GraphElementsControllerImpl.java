@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -289,7 +290,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
                             if (value == null) {
                                 newEdge.removeAttribute(column);
                             } else {
-                                newEdge.setAttribute(column, edge.getAttribute(column));
+                                newEdge.setAttribute(column, AttributeUtils.copy(value));
                             }
                         }
                     }
@@ -440,7 +441,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         //Copy attributes:
         for (Column column : nodeTable) {
             if (!column.isReadOnly()) {
-                copy.setAttribute(column, node.getAttribute(column));
+                copy.setAttribute(column, AttributeUtils.copy(node.getAttribute(column)));
             }
         }
 

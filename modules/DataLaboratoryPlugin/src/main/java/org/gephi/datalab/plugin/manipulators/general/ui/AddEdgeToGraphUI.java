@@ -84,6 +84,9 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
      */
     public AddEdgeToGraphUI() {
         initComponents();
+        sourceNodeLabel.setLabelFor(sourceNodesComboBox);
+        targetNodeLabel.setLabelFor(targetNodesComboBox);
+        edgeTypeLabel.setLabelFor(edgeTypeComboBox);
     }
 
     @Override

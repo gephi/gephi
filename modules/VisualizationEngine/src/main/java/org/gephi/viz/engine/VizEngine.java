@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -119,6 +120,11 @@ public class VizEngine<R extends RenderingTarget, I> {
     //{@link #setFrameTimingsEnabled(boolean)}.
     private volatile boolean frameTimingsEnabled = false;
     private volatile FrameTimings lastFrameTimings = FrameTimings.EMPTY;
+
+    //Progress of frames and world updates, read by external monitors to tell
+    //whether the renderers still draw and still receive world updates.
+    private final AtomicLong frameCount = new AtomicLong();
+    private final AtomicLong worldUpdateCount = new AtomicLong();
 
     public VizEngine(R renderingTarget) {
         this.engineModel = createEmptyModel();
@@ -574,9 +580,11 @@ public class VizEngine<R extends RenderingTarget, I> {
         List<? extends WorldData> worldData =
             worldUpdatersExecutionMode.isConcurrent() ? checkConcurrentWorldUpdateIsDone()
                 : runWorldUpdatersSynchronous(this.engineModel);
+        boolean worldUpdated = true;
         if (worldData.isEmpty() || !updating) {
             // No world update was done this frame, use last one
             worldData = currentWorldData;
+            worldUpdated = false;
         }
         final long worldUpdateNs = timed ? System.nanoTime() - worldUpdateStartNs : 0L;
 
@@ -617,14 +625,38 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Commit model used for rendering this frame
         currentWorldData = worldData;
+        if (worldUpdated) {
+            worldUpdateCount.incrementAndGet();
+        }
 
         renderingTarget.frameEnd();
+        frameCount.incrementAndGet();
 
         if (timed) {
             final long totalNs = System.nanoTime() - frameStartNs;
             lastFrameTimings = new FrameTimings(
                 totalNs, worldUpdateNs, renderNs, Map.copyOf(perCategoryNs));
         }
+    }
+
+    /**
+     * Returns the number of {@link #display()} calls completed since this
+     * engine was created. Safe to call from any thread.
+     */
+    public long getFrameCount() {
+        return frameCount.get();
+    }
+
+    /**
+     * Returns the number of world updates committed for drawing since this
+     * engine was created. Frames are drawn from the last world data while a
+     * world update is pending, so this count stops while
+     * {@link #getFrameCount()} advances when world updaters are stuck, for
+     * example waiting for the graph lock. Updates completed while updating is
+     * paused aren't committed. Safe to call from any thread.
+     */
+    public long getWorldUpdateCount() {
+        return worldUpdateCount.get();
     }
 
     /**
@@ -731,7 +763,11 @@ public class VizEngine<R extends RenderingTarget, I> {
             // Associate local model to the future
             allUpdatersCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // Process input events
-                processInputEvents(model);
+                try {
+                    processInputEvents(model);
+                } catch (Throwable t) {
+                    Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.SEVERE, null, t);
+                }
 
                 // Run all elements callbacks first
                 CompletableFuture.allOf(updatersElementsCallbacks.stream()

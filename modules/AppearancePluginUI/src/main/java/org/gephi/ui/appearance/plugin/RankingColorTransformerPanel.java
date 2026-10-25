@@ -80,11 +80,14 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
     public RankingColorTransformerPanel() {
         initComponents();
+        colorSwatchButton.setToolTipText(NbBundle.getMessage(RankingColorTransformerPanel.class, "RankingColorTransformerPanel.colorSwatchButton.toolTipText")); // NOI18N
+        colorSwatchButton.getAccessibleContext().setAccessibleName(colorSwatchButton.getToolTipText());
         this.recentPalettes = new RecentPalettes();
 
         //Init slider
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
+        labelColor.setLabelFor(gradientSlider);
 
         //Color Swatch
         colorSwatchButton.addActionListener(new ActionListener() {
@@ -255,7 +258,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         colorSwatchButton.setIcon(
             ImageUtilities.loadImageIcon("AppearancePluginUI/color-swatch.svg", false)); // NOI18N
-        colorSwatchButton.setFocusable(false);
+        colorSwatchButton.setRequestFocusEnabled(false);
         colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         colorSwatchButton.setIconTextGap(0);
         colorSwatchButton.setMargin(new java.awt.Insets(0, 0, 0, 0));

@@ -120,6 +120,15 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         controller.addListener(this);
         setup(controller.getModel());
 
+        //Accessible names
+        columnsButton.setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.columnsButton.toolTipText"));
+        columnsButton.getAccessibleContext().setAccessibleName(columnsButton.getToolTipText());
+        settingsButton.setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settingsButton.toolTipText"));
+        settingsButton.getAccessibleContext().setAccessibleName(settingsButton.getToolTipText());
+        playButton.getAccessibleContext().setAccessibleName(playButton.getToolTipText());
+        disableButon.getAccessibleContext().setAccessibleName(disableButon.getToolTipText());
+        closeButton.getAccessibleContext().setAccessibleName(closeButton.getToolTipText());
+
         //Close button
         closeButton.addActionListener(new ActionListener() {
 
@@ -454,7 +463,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             .getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.text")); // NOI18N
         enableTimelineButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.toolTipText")); // NOI18N
-        enableTimelineButton.setFocusable(false);
+        enableTimelineButton.setRequestFocusEnabled(false);
         enableTimelineButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         enableTimelineButton.setMargin(new java.awt.Insets(4, 6, 4, 6));
         toolbarEnable.add(enableTimelineButton);
@@ -486,7 +495,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         playButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
         playButton.setDisabledIcon(ImageUtilities.loadImageIcon("DesktopTimeline/disabled.svg", false)); // NOI18N
-        playButton.setFocusable(false);
         playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         playButton.setRequestFocusEnabled(false);
         playButton.setSelectedIcon(ImageUtilities.loadImageIcon("DesktopTimeline/enabled.svg", false)); // NOI18N
@@ -505,20 +513,20 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         disableButon.setIcon(ImageUtilities.loadImageIcon("DesktopTimeline/cross.svg", false)); // NOI18N
         disableButon.setToolTipText(org.openide.util.NbBundle
             .getMessage(TimelineTopComponent.class, "TimelineTopComponent.disableButon.toolTipText")); // NOI18N
-        disableButon.setFocusable(false);
+        disableButon.setRequestFocusEnabled(false);
         disableButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         disableButon.setIconTextGap(0);
         disableButon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         innerToolbar.add(disableButon);
 
         columnsButton.setIcon(ImageUtilities.loadImageIcon("DesktopTimeline/chart.svg", false)); // NOI18N
-        columnsButton.setFocusable(false);
+        columnsButton.setRequestFocusEnabled(false);
         columnsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         columnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         innerToolbar.add(columnsButton);
 
         settingsButton.setIcon(ImageUtilities.loadImageIcon("DesktopTimeline/settings.svg", false)); // NOI18N
-        settingsButton.setFocusable(false);
+        settingsButton.setRequestFocusEnabled(false);
         settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         settingsButton.setIconTextGap(0);
         settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

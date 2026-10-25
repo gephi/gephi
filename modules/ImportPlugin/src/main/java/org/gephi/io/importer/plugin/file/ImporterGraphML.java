@@ -93,6 +93,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     private static final String ATTRIBUTE_TYPE = "attr.type";
     private static final String ATTRIBUTE_DEFAULT = "default";
     private static final String ATTRIBUTE_FOR = "for";
+    private static final String ATTRIBUTE_YFILES_TYPE = "yfiles.type";
     private static final String ATTVALUE = "data";
     private static final String ATTVALUE_FOR = "key";
     private static final String DESC = "desc";
@@ -175,6 +176,14 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     }
                 }
             }
+        } catch (XMLStreamException e) {
+            Location location = e.getLocation();
+            if (location != null) {
+                throw new RuntimeException("Invalid XML at line " + location.getLineNumber() + ", column " +
+                    location.getColumnNumber() + ": " + e.getMessage() +
+                    " (control characters such as ESC are not allowed in XML and must be removed from the file)", e);
+            }
+            throw new RuntimeException(e);
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
@@ -441,10 +450,15 @@ public class ImporterGraphML implements FileImporter, LongTask {
             edge = container.factory().newEdgeDraft();
         }
 
-        NodeDraft nodeSource = container.getNode(source);
-        NodeDraft nodeTarget = container.getNode(target);
-        edge.setSource(nodeSource);
-        edge.setTarget(nodeTarget);
+        boolean validEndpoints = true;
+        if (source.isEmpty() || target.isEmpty()) {
+            validEndpoints = false;
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_edgeendpoint",
+                id.isEmpty() ? "?" : id, source, target), Issue.Level.SEVERE));
+        } else {
+            edge.setSource(container.getNode(source));
+            edge.setTarget(container.getNode(target));
+        }
         if (type != null && !type.isEmpty()) {
             //Edge labels not retained on graphml export https://github.com/gephi/gephi/issues/1516
             edge.setType(type);
@@ -487,7 +501,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     break;
             }
         }
-        container.addEdge(edge);
+        if (validEndpoints) {
+            container.addEdge(edge);
+        }
     }
 
     private void readEdgeAttValue(XMLStreamReader reader, EdgeDraft edge) throws Exception {
@@ -609,6 +625,10 @@ public class ImporterGraphML implements FileImporter, LongTask {
             title = id;
         }
 
+        if (reader.getAttributeValue(null, ATTRIBUTE_YFILES_TYPE) != null) {
+            return;
+        }
+
         boolean property = false;
         if (!id.isEmpty()) {
             //Properties
@@ -654,6 +674,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     new Issue(
                         NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_graphattributes", title),
                         Issue.Level.WARNING));
+            } else if (forStr.equalsIgnoreCase("graphml") || forStr.equalsIgnoreCase("port")) {
+                return;
             } else if (forStr.isEmpty() || !(forStr.equalsIgnoreCase("node") || forStr.equalsIgnoreCase("edge") ||
                 forStr.equalsIgnoreCase("all"))) {
                 report.logIssue(

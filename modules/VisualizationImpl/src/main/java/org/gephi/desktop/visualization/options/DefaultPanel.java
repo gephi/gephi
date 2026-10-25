@@ -127,6 +127,15 @@ final class DefaultPanel extends javax.swing.JPanel {
     DefaultPanel(DefaultOptionsPanelController panelController) {
         this.controller = panelController;
         initComponents();
+        labelNodeScale.setLabelFor(nodeScaleSlider);
+        labelEdgeColor.setLabelFor(edgeColorCombo);
+        labelEdgeScale.setLabelFor(edgeScaleSlider);
+        labelNodeLabelColor.setLabelFor(nodeLabelColorCombo);
+        labelNodeLabelSize.setLabelFor(nodeLabelSizeCombo);
+        labelNodeLabelScale.setLabelFor(nodeLabelScaleSlider);
+        labelEdgeLabelColor.setLabelFor(edgeLabelColorCombo);
+        labelEdgeLabelSize.setLabelFor(edgeLabelSizeCombo);
+        labelEdgeLabelScale.setLabelFor(edgeLabelScaleSlider);
 
         nodeFontButton.addActionListener(e -> {
             Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), nodeFont);

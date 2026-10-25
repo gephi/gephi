@@ -223,6 +223,7 @@ public class ManageColumnEstimatorsUI extends javax.swing.JPanel implements Mani
             this.column = column;
             this.comboBox = new JComboBox();
             this.label = new JLabel(column.getTitle());
+            this.label.setLabelFor(comboBox);
 
             initAvailableEstimators();
             Estimator currentEstimator = column.getEstimator();

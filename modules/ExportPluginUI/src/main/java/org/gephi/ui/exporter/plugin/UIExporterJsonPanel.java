@@ -66,6 +66,7 @@ public class UIExporterJsonPanel extends javax.swing.JPanel {
 
     public UIExporterJsonPanel() {
         initComponents();
+        labelFormat.setLabelFor(formatCombo);
 
         // Init format combo
         DefaultComboBoxModel<ExporterJson.Format> comboBoxModel =

@@ -39,6 +39,7 @@ public class EdgeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         //Show labels buttons
         showLabelsButton = new JToggleButton();
         showLabelsButton.setToolTipText(NbBundle.getMessage(EdgeLabelGroup.class, "VizToolbar.Edges.showLabels"));
+        showLabelsButton.getAccessibleContext().setAccessibleName(showLabelsButton.getToolTipText());
         showLabelsButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/showEdgeLabels.svg", false));
         showLabelsButton.addActionListener(e -> vizController.setShowEdgeLabels(showLabelsButton.isSelected()));
 
@@ -47,6 +48,7 @@ public class EdgeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         attributesButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/configureLabels.svg", false));
         attributesButton
             .setToolTipText(NbBundle.getMessage(EdgeLabelGroup.class, "VizToolbar.Labels.attributes"));
+        attributesButton.getAccessibleContext().setAccessibleName(attributesButton.getToolTipText());
         attributesButton.addActionListener(e -> {
             VisualizationModel model = vizController.getModel();
             LabelAttributesPanel panel = new LabelAttributesPanel(model, true);
@@ -72,6 +74,7 @@ public class EdgeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelColorModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelColorMode.svg", false));
         labelColorModeButton
             .setToolTipText(NbBundle.getMessage(EdgeLabelGroup.class, "VizToolbar.Labels.colorMode"));
+        labelColorModeButton.getAccessibleContext().setAccessibleName(labelColorModeButton.getToolTipText());
 
         // Size Mode
         labelSizeModeButton = new JPopupButton();
@@ -86,10 +89,12 @@ public class EdgeLabelGroup implements CollapseGroup, VisualizationPropertyChang
         labelSizeModeButton.setIcon(ImageUtilities.loadImageIcon("VisualizationImpl/labelSizeMode.svg", false));
         labelSizeModeButton
             .setToolTipText(NbBundle.getMessage(EdgeLabelGroup.class, "VizToolbar.Labels.sizeMode"));
+        labelSizeModeButton.getAccessibleContext().setAccessibleName(labelSizeModeButton.getToolTipText());
 
         //Font size - maps [1, 100] to [EDGE_LABEL_SCALE_MIN, EDGE_LABEL_SCALE_MAX]
         fontSizeSlider = new JSlider(1, 100, 1);
         fontSizeSlider.setToolTipText(NbBundle.getMessage(EdgeLabelGroup.class, "VizToolbar.Labels.fontScale"));
+        fontSizeSlider.getAccessibleContext().setAccessibleName(fontSizeSlider.getToolTipText());
         fontSizeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

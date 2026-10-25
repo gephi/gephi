@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.awaitility.Awaitility;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.hamcrest.core.Is;
@@ -74,8 +75,8 @@ public class AsynchronousTest {
         executor.setLongTaskListener(listener);
         Mockito.doThrow(exception).when(callable).call();
         executor.execute(longTask, callable, "", errorHandler);
-        // The callbacks are awaited directly: isRunning() is already false between the
-        // submission and the moment the pool thread picks the task up
+        // The callbacks are awaited directly: the listener's fatalError() is called after
+        // the task is completed, so isRunning() can already be false at that point
         Mockito.verify(errorHandler, Mockito.timeout(30000)).fatalError(exception);
         // The listener's fatalError() complements the error handler, it doesn't replace it
         Mockito.verify(listener, Mockito.timeout(30000)).fatalError(exception);
@@ -124,6 +125,89 @@ public class AsynchronousTest {
         future.get();
         Mockito.verify(longTask).cancel();
         Mockito.verify(listener).taskFinished(Mockito.any());
+    }
+
+    @Test
+    public void testRunningBeforeTaskStarts() throws Exception {
+        AtomicInteger finished = new AtomicInteger();
+        AtomicBoolean runningWhileQueued = new AtomicBoolean();
+        // The listener runs on the executor's thread, so the second task can't have started
+        // when it's notified of the first one
+        executor.setLongTaskListener(task -> {
+            if (finished.incrementAndGet() == 1) {
+                runningWhileQueued.set(executor.isRunning());
+            }
+        });
+        CountDownLatch secondSubmitted = new CountDownLatch(1);
+        executor.execute(null, () -> awaitUninterruptibly(secondSubmitted));
+        executor.execute(null, () -> {
+        });
+        secondSubmitted.countDown();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(() -> finished.get() == 2);
+        Assert.assertTrue("A submitted task which hasn't started yet counts as running", runningWhileQueued.get());
+        Assert.assertFalse(executor.isRunning());
+    }
+
+    @Test
+    public void testCancelBeforeTaskStarts() throws Exception {
+        LongTask queuedTask = Mockito.mock(LongTask.class);
+        Mockito.when(queuedTask.cancel()).thenReturn(true);
+        AtomicInteger finished = new AtomicInteger();
+        executor.setLongTaskListener(task -> {
+            if (finished.incrementAndGet() == 1) {
+                // The second task is submitted but not started, see testRunningBeforeTaskStarts()
+                executor.cancel();
+            }
+        });
+        CountDownLatch secondSubmitted = new CountDownLatch(1);
+        executor.execute(null, () -> awaitUninterruptibly(secondSubmitted));
+        executor.execute(queuedTask, () -> {
+        });
+        secondSubmitted.countDown();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(() -> finished.get() == 2);
+        Mockito.verify(queuedTask).cancel();
+    }
+
+    @Test
+    public void testCancelBeforeTaskStartsSkipsCancelledFuture() throws Exception {
+        LongTask queuedTask = Mockito.mock(LongTask.class);
+        Mockito.when(queuedTask.cancel()).thenReturn(true);
+        AtomicInteger finished = new AtomicInteger();
+        executor.setLongTaskListener(task -> {
+            if (finished.incrementAndGet() == 1) {
+                executor.cancel();
+            }
+        });
+        CountDownLatch release = new CountDownLatch(1);
+        executor.execute(null, () -> awaitUninterruptibly(release));
+        // Cancelled before it starts, so it never runs nor completes
+        executor.execute(longTask, callable).cancel(false);
+        executor.execute(queuedTask, () -> {
+        });
+        release.countDown();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(() -> finished.get() == 2);
+        Mockito.verify(longTask, Mockito.never()).cancel();
+        Mockito.verify(queuedTask).cancel();
+    }
+
+    @Test
+    public void testNotRunningOnceQueuedFutureCancelled() throws Exception {
+        CountDownLatch release = new CountDownLatch(1);
+        executor.execute(null, () -> awaitUninterruptibly(release));
+        Future<Integer> queued = executor.execute(null, callable);
+        // Cancelled before its thread started it, so it never runs
+        queued.cancel(false);
+        release.countDown();
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(executor::isRunning, t -> !t);
+        Mockito.verify(callable, Mockito.never()).call();
+    }
+
+    private static void awaitUninterruptibly(CountDownLatch latch) {
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

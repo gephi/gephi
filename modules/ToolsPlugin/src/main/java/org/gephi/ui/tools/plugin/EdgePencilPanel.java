@@ -70,6 +70,8 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     public EdgePencilPanel() {
         isDirected = true;
         initComponents();
+        labelType.setLabelFor(typeComboBox);
+        labelWeight.setLabelFor(weightSpinner);
         typeComboBox.setModel(new DefaultComboBoxModel(new String[] {
             NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.type.directed"),
             NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.type.undirected")

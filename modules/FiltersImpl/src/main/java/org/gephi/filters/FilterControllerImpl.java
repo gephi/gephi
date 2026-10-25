@@ -277,6 +277,17 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                 model.setCurrentResult(null);
             }
         }
+        fireIfStoppedWhileRunning(model, currentThread);
+    }
+
+    /**
+     * A stopped filter thread doesn't fire the event telling the model is no longer running, so this does it when
+     * no new thread took over.
+     */
+    private static void fireIfStoppedWhileRunning(FilterModelImpl model, FilterThread stoppedThread) {
+        if (stoppedThread != null && !model.isRunning()) {
+            model.fireChangeEvent();
+        }
     }
 
     @Override
@@ -322,6 +333,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                 visController.resetSelection();
             }
         }
+        fireIfStoppedWhileRunning(model, currentThread);
     }
 
     @Override

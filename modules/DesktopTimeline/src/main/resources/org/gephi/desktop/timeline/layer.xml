@@ -19,4 +19,9 @@
             </file>
         </folder>
     </folder>
+    <folder name="Shortcuts">
+        <file name="DS-M.shadow">
+            <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-timeline-TimelineWindowAction.instance"/>
+        </file>
+    </folder>
 </filesystem>

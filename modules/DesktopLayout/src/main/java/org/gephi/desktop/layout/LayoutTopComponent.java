@@ -53,6 +53,7 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -64,7 +65,10 @@ import org.openide.windows.TopComponent;
     persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.layout.LayoutTopComponent")
-@ActionReference(path = "Menu/Window", position = 700)
+@ActionReferences({
+    @ActionReference(path = "Menu/Window", position = 700),
+    @ActionReference(path = "Shortcuts", name = "DS-L")
+})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_LayoutTopComponent",
     preferredID = "LayoutTopComponent")
 public final class LayoutTopComponent extends TopComponent {

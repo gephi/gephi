@@ -42,10 +42,12 @@
 
 package org.gephi.utils.longtask.api;
 
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -77,6 +79,9 @@ public final class LongTaskExecutor {
     private boolean interruptCancel;
     private ThreadPoolExecutor executor;
     private volatile RunningLongTask currentTask;
+    // Background tasks submitted and not completed yet, in submission order. A task is added
+    // before its thread starts it, so the executor counts as running from execute() on.
+    private final Queue<RunningLongTask> pendingTasks = new ConcurrentLinkedQueue<>();
     private Timer cancelTimer;
     private LongTaskListener listener;
     private LongTaskErrorHandler defaultErrorHandler;
@@ -217,9 +222,16 @@ public final class LongTaskExecutor {
             this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                 new NamedThreadFactory());
         }
-        Future<V> result = executor.submit(runningLongtask);
-        runningLongtask.future = result;
-        return result;
+        // Added before the submission, the task may complete before submit() returns
+        pendingTasks.add(runningLongtask);
+        try {
+            Future<V> result = executor.submit(runningLongtask);
+            runningLongtask.future = result;
+            return result;
+        } catch (RuntimeException e) {
+            pendingTasks.remove(runningLongtask);
+            throw e;
+        }
     }
 
     /**
@@ -232,7 +244,12 @@ public final class LongTaskExecutor {
     public synchronized void cancel() {
         if (inBackground) {
             if (executor != null) {
+                // A task submitted but not started yet is cancelled too, as it already counts as running
                 RunningLongTask rlt = currentTask;
+                if (rlt == null) {
+                    removeCancelledTasks();
+                    rlt = pendingTasks.peek();
+                }
                 if (rlt != null) {
                     boolean res = rlt.cancel();
                     if (interruptCancel && !res) {
@@ -254,13 +271,27 @@ public final class LongTaskExecutor {
     }
 
     /**
-     * Returns <code>true</code> if the executor is executing a task.
+     * Returns <code>true</code> if the executor has a task which hasn't completed yet. For a background
+     * executor this includes a task which is submitted but whose thread hasn't started it yet, so this
+     * returns <code>true</code> as soon as <code>execute()</code> returns.
      *
-     * @return <code>true</code> if a task is running, <code>false</code>
+     * @return <code>true</code> if a task is running or waiting to run, <code>false</code>
      * otherwise
      */
     public boolean isRunning() {
-        return currentTask != null;
+        if (currentTask != null) {
+            return true;
+        }
+        removeCancelledTasks();
+        return !pendingTasks.isEmpty();
+    }
+
+    /**
+     * Forgets the pending tasks whose future was cancelled before their thread started them, as they never run
+     * nor complete.
+     */
+    private void removeCancelledTasks() {
+        pendingTasks.removeIf(t -> t.future != null && t.future.isCancelled());
     }
 
     /**
@@ -316,6 +347,7 @@ public final class LongTaskExecutor {
             if (currentTask == runningLongTask) {
                 currentTask = null;
             }
+            pendingTasks.remove(runningLongTask);
             if (notifyListener && listener != null) {
                 listenerToNotify = listener;
             }
@@ -339,7 +371,7 @@ public final class LongTaskExecutor {
         private final Callable<V> callable;
         private final LongTaskErrorHandler errorHandler;
         private final AtomicBoolean finishClaimed = new AtomicBoolean();
-        private Future<V> future;
+        private volatile Future<V> future;
         private ProgressTicket progress;
 
         public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
@@ -373,10 +405,18 @@ public final class LongTaskExecutor {
 
         @Override
         public V call() {
+            // Atomic with finished(), so a task completed by the cancel timer as its thread starts it can't
+            // stay current forever
+            synchronized (LongTaskExecutor.this) {
+                if (finishClaimed.get()) {
+                    // Already completed by the cancel timer before its thread started it
+                    return null;
+                }
+                currentTask = this;
+            }
             if (task != null && progress != null) {
                 progress.start();
             }
-            currentTask = this;
             V result = null;
             try {
                 if (runnable != null) {

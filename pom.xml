@@ -142,7 +142,7 @@
         <netbeans.version>RELEASE290</netbeans.version>
         
         <!-- GraphStore version -->
-        <graphstore.version>0.8.8</graphstore.version>
+        <graphstore.version>0.8.10</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -249,7 +249,7 @@
 
         <gephi.maven-site-plugin.version>3.12.1</gephi.maven-site-plugin.version>
 
-        <gephi.maven-source-plugin.version>3.3.1</gephi.maven-source-plugin.version>
+        <gephi.maven-source-plugin.version>3.4.0</gephi.maven-source-plugin.version>
 
         <gephi.maven-surefire-plugin.version>3.6.0</gephi.maven-surefire-plugin.version>
 
@@ -1243,9 +1243,10 @@
                             <autoPublish>false</autoPublish>
                             <deploymentName>${project.version}</deploymentName>
                             <ignorePublishedComponents>true</ignorePublishedComponents>
-                            <!-- Internal demo module only, never publish it to Maven Central -->
+                            <!-- Internal modules, never publish them to Maven Central -->
                             <excludeArtifacts>
                                 <excludeArtifact>viz-engine-demo</excludeArtifact>
+                                <excludeArtifact>release-tests</excludeArtifact>
                             </excludeArtifacts>
                         </configuration>
                     </plugin>
@@ -1436,6 +1437,7 @@
         <module>modules/PreviewExportUI</module>
         <module>modules/PreviewPlugin</module>
         <module>modules/ProjectAPI</module>
+        <module>modules/ReleaseTests</module>
         <module>modules/SettingsUpgrader</module>
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
