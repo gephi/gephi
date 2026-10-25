@@ -369,4 +369,38 @@ public class ModularityTest extends TestCase {
             }
         }
     }
+
+    /**
+     * Regression test for #1630: after the first level, a node with a self-loop stayed linked to the
+     * communities it had left and moved back and forth between two empty ones forever. The weights
+     * leave no ties, so this happens whatever the community order. Edge 18-19 only adds total weight.
+     */
+    @Test
+    public void testModularityTerminatesWithSelfLoopsAfterFirstLevel() throws InterruptedException {
+        int[][] edges = {{0, 3, 100}, {1, 5, 125}, {1, 12, 121}, {2, 13, 100}, {2, 7, 130}, {3, 14, 100},
+            {4, 2, 100}, {5, 10, 100}, {5, 0, 130}, {6, 3, 130}, {6, 16, 100}, {7, 4, 100}, {8, 0, 100},
+            {9, 17, 100}, {9, 12, 100}, {10, 8, 100}, {10, 16, 120}, {11, 9, 120}, {11, 15, 130},
+            {12, 10, 125}, {13, 7, 100}, {13, 17, 100}, {14, 5, 100}, {14, 8, 130}, {15, 7, 100},
+            {15, 4, 100}, {16, 1, 100}, {16, 14, 100}, {17, 7, 100}, {17, 11, 100}, {18, 19, 10000}};
+        GraphModel graphModel = GraphModel.Factory.newInstance();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        Node[] nodes = new Node[20];
+        for (int i = 0; i < nodes.length; i++) {
+            nodes[i] = graphModel.factory().newNode(String.valueOf(i));
+            graph.addNode(nodes[i]);
+        }
+        for (int[] e : edges) {
+            graph.addEdge(graphModel.factory().newEdge(nodes[e[0]], nodes[e[1]], 0, e[2], false));
+        }
+
+        Modularity mod = new Modularity();
+        Thread run = new Thread(() -> mod.execute(graph));
+        run.setDaemon(true);
+        run.start();
+        run.join(10_000);
+        if (run.isAlive()) {
+            mod.cancel();
+            fail("Modularity did not terminate");
+        }
+    }
 }
