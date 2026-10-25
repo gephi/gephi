@@ -558,6 +558,13 @@ public class Modularity implements Statistics, LongTask {
                     adjCom.connectionsCount.put(to, cEdgesto + 1);
                 }
 
+                // A self-loop was already counted once above, as removeNodeFromItsCommunity does.
+                // Counting it twice left the node linked to communities it had left, even empty ones,
+                // and it could keep moving between two of them forever (#1630).
+                if (node == neighbor) {
+                    continue;
+                }
+
                 Float nodeEdgesTo = nodeConnectionsWeight[node].get(adjCom);
                 if (nodeEdgesTo == null) {
                     nodeConnectionsWeight[node].put(adjCom, e.weight);
