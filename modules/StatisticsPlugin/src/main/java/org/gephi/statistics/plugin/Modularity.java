@@ -451,7 +451,6 @@ public class Modularity implements Statistics, LongTask {
                 nodeConnectionsWeight[index] = new HashMap<>();
                 nodeConnectionsCount[index] = new HashMap<>();
                 weights[index] = 0;
-                nodeCommunities[index].seed(index);
                 Community hidden = new Community(structure);
                 hidden.nodes.add(index);
                 invMap.put(index, hidden);
@@ -518,6 +517,12 @@ public class Modularity implements Statistics, LongTask {
                 }
             }
             graphWeightSum /= 2.0;
+
+            // Seed once the weights are complete, as zoomOut does. Seeding earlier left every community's
+            // weightSum short of its node's weight (#3322).
+            for (int i = 0; i < N; i++) {
+                nodeCommunities[i].seed(i);
+            }
         }
 
         private void addNodeTo(int node, Community to) {

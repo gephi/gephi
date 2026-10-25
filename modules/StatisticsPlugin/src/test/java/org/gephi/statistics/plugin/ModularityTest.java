@@ -403,4 +403,19 @@ public class ModularityTest extends TestCase {
             fail("Modularity did not terminate");
         }
     }
+
+    /**
+     * Regression test for #3322: each first-level community must start with the weight of its node.
+     */
+    @Test
+    public void testFirstLevelCommunitiesStartWithTheirNodeWeight() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(4);
+        Modularity mod = new Modularity();
+
+        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(graphModel.getUndirectedGraph());
+
+        for (int i = 0; i < theStructure.N; i++) {
+            assertEquals(3.0, theStructure.nodeCommunities[i].weightSum, 0.0);
+        }
+    }
 }
