@@ -226,10 +226,13 @@ public class PreviewModelImpl implements PreviewModel, Model {
     }
 
     protected void buildAndLoadItems(Renderer[] renderers, Graph graph) {
-        Map<String, Map<Object, Item>> groupedItems = Lookup.getDefault()
+        List<? extends ItemBuilder> builders = Lookup.getDefault()
             .lookupAll(ItemBuilder.class)
-            .parallelStream()
+            .stream()
             .filter(b -> isItemBuilderNeeded(b, getProperties(), renderers))
+            .toList();
+        Map<String, Map<Object, Item>> groupedItems = builders
+            .parallelStream()
             .flatMap(b -> {
                 try {
                     Item[] items = b.getItems(graph);
@@ -256,31 +259,38 @@ public class PreviewModelImpl implements PreviewModel, Model {
                     LinkedHashMap::new
                 )
             ));
-        removeOrphanItems(groupedItems);
+        removeOrphanItems(groupedItems, builders.stream().map(ItemBuilder::getType).collect(Collectors.toSet()));
         itemMaps.putAll(groupedItems);
     }
 
     /**
-     * The builders read the graph one after the other, so a node added or removed in between leaves edge and label
-     * items whose node or edge wasn't built, which the renderers expect to find. These items are dropped.
+     * The builders run concurrently, each reading the graph under its own lock, so a node added or removed meanwhile
+     * leaves edge and label items whose node or edge wasn't built, which the renderers expect to find. These items
+     * are dropped. A type with no items is missing from <code>items</code>, so <code>builtTypes</code> tells it from
+     * a type no builder was asked to build.
      */
-    private static void removeOrphanItems(Map<String, Map<Object, Item>> items) {
-        Map<Object, Item> nodes = items.get(Item.NODE);
-        Map<Object, Item> edges = items.get(Item.EDGE);
+    private static void removeOrphanItems(Map<String, Map<Object, Item>> items, Set<String> builtTypes) {
+        Map<Object, Item> nodes = builtItems(items, builtTypes, Item.NODE);
+        Map<Object, Item> edges = builtItems(items, builtTypes, Item.EDGE);
         if (nodes != null) {
             if (edges != null) {
                 edges.keySet().removeIf(source -> source instanceof Edge edge
                     && !(nodes.containsKey(edge.getSource()) && nodes.containsKey(edge.getTarget())));
             }
-            Map<Object, Item> nodeLabels = items.get(Item.NODE_LABEL);
+            Map<Object, Item> nodeLabels = builtItems(items, builtTypes, Item.NODE_LABEL);
             if (nodeLabels != null) {
                 nodeLabels.keySet().removeIf(source -> source instanceof Node && !nodes.containsKey(source));
             }
         }
-        Map<Object, Item> edgeLabels = items.get(Item.EDGE_LABEL);
+        Map<Object, Item> edgeLabels = builtItems(items, builtTypes, Item.EDGE_LABEL);
         if (edges != null && edgeLabels != null) {
             edgeLabels.keySet().removeIf(source -> source instanceof Edge && !edges.containsKey(source));
         }
+    }
+
+    private static Map<Object, Item> builtItems(Map<String, Map<Object, Item>> items, Set<String> builtTypes,
+                                                String type) {
+        return builtTypes.contains(type) ? items.getOrDefault(type, new HashMap<>()) : null;
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {

@@ -49,30 +49,55 @@ public class PreviewModelTest {
         };
         PreviewModelImpl previewModel = Utils.getPreviewModel(generator.getWorkspace());
 
-        NodeItemBuilder.missing = null;
-        previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
-        Assert.assertEquals(2, previewModel.getItems(Item.NODE).length);
-        Assert.assertEquals(1, previewModel.getItems(Item.EDGE).length);
-        Assert.assertEquals(2, previewModel.getItems(Item.NODE_LABEL).length);
-        Assert.assertEquals(1, previewModel.getItems(Item.EDGE_LABEL).length);
+        try {
+            previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+            Assert.assertEquals(2, previewModel.getItems(Item.NODE).length);
+            Assert.assertEquals(1, previewModel.getItems(Item.EDGE).length);
+            Assert.assertEquals(2, previewModel.getItems(Item.NODE_LABEL).length);
+            Assert.assertEquals(1, previewModel.getItems(Item.EDGE_LABEL).length);
 
-        // A node added after the nodes were read, but before the edges and labels were
-        NodeItemBuilder.missing = graph.getNode(GraphGenerator.SECOND_NODE);
-        previewModel.clear();
-        previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
-        Assert.assertEquals(1, previewModel.getItems(Item.NODE).length);
-        Assert.assertEquals(0, previewModel.getItems(Item.EDGE).length);
-        Assert.assertEquals(1, previewModel.getItems(Item.NODE_LABEL).length);
-        Assert.assertEquals(0, previewModel.getItems(Item.EDGE_LABEL).length);
+            // A node added after the nodes were read, but before the edges and labels were
+            NodeItemBuilder.missing = graph.getNode(GraphGenerator.SECOND_NODE);
+            previewModel.clear();
+            previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+            Assert.assertEquals(1, previewModel.getItems(Item.NODE).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE).length);
+            Assert.assertEquals(1, previewModel.getItems(Item.NODE_LABEL).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE_LABEL).length);
+
+            // The same when there were no nodes at all, so no node items
+            NodeItemBuilder.noNodes = true;
+            previewModel.clear();
+            previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+            Assert.assertEquals(0, previewModel.getItems(Item.NODE).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.NODE_LABEL).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE_LABEL).length);
+
+            // An edge added after the edges were read, but before the edge labels were
+            NodeItemBuilder.noNodes = false;
+            NodeItemBuilder.missing = null;
+            EdgeItemBuilder.noEdges = true;
+            previewModel.clear();
+            previewModel.buildAndLoadItems(new Renderer[] {renderer}, graph);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE).length);
+            Assert.assertEquals(0, previewModel.getItems(Item.EDGE_LABEL).length);
+            Assert.assertEquals(2, previewModel.getItems(Item.NODE_LABEL).length);
+        } finally {
+            NodeItemBuilder.missing = null;
+            NodeItemBuilder.noNodes = false;
+            EdgeItemBuilder.noEdges = false;
+        }
     }
 
     public static class NodeItemBuilder implements ItemBuilder {
 
         static volatile Node missing;
+        static volatile boolean noNodes;
 
         @Override
         public Item[] getItems(Graph graph) {
-            return Arrays.stream(graph.getNodes().toArray()).filter(n -> n != missing)
+            return Arrays.stream(graph.getNodes().toArray()).filter(n -> n != missing && !noNodes)
                 .map(n -> new MockItem(n, Item.NODE, new HashMap<>())).toArray(Item[]::new);
         }
 
@@ -84,9 +109,11 @@ public class PreviewModelTest {
 
     public static class EdgeItemBuilder implements ItemBuilder {
 
+        static volatile boolean noEdges;
+
         @Override
         public Item[] getItems(Graph graph) {
-            return Arrays.stream(graph.getEdges().toArray())
+            return Arrays.stream(graph.getEdges().toArray()).filter(e -> !noEdges)
                 .map(e -> new MockItem(e, Item.EDGE, new HashMap<>())).toArray(Item[]::new);
         }
 
