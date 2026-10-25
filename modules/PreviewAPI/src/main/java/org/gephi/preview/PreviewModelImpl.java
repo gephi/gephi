@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.stream.XMLStreamException;
@@ -274,23 +275,31 @@ public class PreviewModelImpl implements PreviewModel, Model {
         Map<Object, Item> edges = builtItems(items, builtTypes, Item.EDGE);
         if (nodes != null) {
             if (edges != null) {
-                edges.keySet().removeIf(source -> source instanceof Edge edge
+                removeSources(edges, source -> source instanceof Edge edge
                     && !(nodes.containsKey(edge.getSource()) && nodes.containsKey(edge.getTarget())));
             }
             Map<Object, Item> nodeLabels = builtItems(items, builtTypes, Item.NODE_LABEL);
             if (nodeLabels != null) {
-                nodeLabels.keySet().removeIf(source -> source instanceof Node && !nodes.containsKey(source));
+                removeSources(nodeLabels, source -> source instanceof Node && !nodes.containsKey(source));
             }
         }
         Map<Object, Item> edgeLabels = builtItems(items, builtTypes, Item.EDGE_LABEL);
         if (edges != null && edgeLabels != null) {
-            edgeLabels.keySet().removeIf(source -> source instanceof Edge && !edges.containsKey(source));
+            removeSources(edgeLabels, source -> source instanceof Edge && !edges.containsKey(source));
         }
     }
 
     private static Map<Object, Item> builtItems(Map<String, Map<Object, Item>> items, Set<String> builtTypes,
                                                 String type) {
         return builtTypes.contains(type) ? items.getOrDefault(type, new HashMap<>()) : null;
+    }
+
+    /**
+     * Removes the items whose source matches <code>orphan</code>. The lookups are done in parallel, as there is one
+     * per edge and the maps aren't modified meanwhile, then the few orphans are removed.
+     */
+    private static void removeSources(Map<Object, Item> items, Predicate<Object> orphan) {
+        items.keySet().parallelStream().filter(orphan).toList().forEach(items::remove);
     }
 
     private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
