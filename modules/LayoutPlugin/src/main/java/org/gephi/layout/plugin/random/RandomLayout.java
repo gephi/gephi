@@ -81,6 +81,8 @@ public class RandomLayout extends AbstractLayout implements Layout {
         graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             for (Node n : graph.getNodes()) {
                 if (!n.isFixed()) {
                     n.setX((float) (-size / 2 + size * random.nextDouble()));

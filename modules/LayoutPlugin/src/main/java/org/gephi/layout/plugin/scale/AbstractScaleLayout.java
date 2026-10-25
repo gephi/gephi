@@ -76,6 +76,8 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
         Graph graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             float xMean = 0, yMean = 0;
             for (Node n : graph.getNodes()) {
                 xMean += n.x();

@@ -109,6 +109,8 @@ public class ForceAtlas2 implements Layout {
 
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
@@ -153,6 +155,8 @@ public class ForceAtlas2 implements Layout {
         graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();

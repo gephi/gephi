@@ -93,6 +93,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            this.graph = graphModel.getGraphVisible();
             // Reset Layout Data
             for (Node n : graph.getNodes()) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {

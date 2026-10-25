@@ -116,6 +116,8 @@ public class OpenOrdLayout implements Layout, LongTask {
         graph = graphModel.getUndirectedGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getUndirectedGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             int numNodes = graph.getNodeCount();

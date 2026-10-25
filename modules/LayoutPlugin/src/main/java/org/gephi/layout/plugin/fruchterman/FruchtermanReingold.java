@@ -89,6 +89,8 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            this.graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 

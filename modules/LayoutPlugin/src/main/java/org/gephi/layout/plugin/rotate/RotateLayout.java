@@ -76,6 +76,8 @@ public class RotateLayout extends AbstractLayout {
         Graph graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             float sin = (float) Math.sin(-getAngle() * Math.PI / 180f);
             float cos = (float) Math.cos(-getAngle() * Math.PI / 180f);
             float px = 0f;

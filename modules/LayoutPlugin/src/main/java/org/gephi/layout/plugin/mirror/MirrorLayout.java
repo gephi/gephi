@@ -41,6 +41,8 @@ public class MirrorLayout extends AbstractLayout {
         Graph graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
+            // The visible view may have been replaced, and destroyed, while waiting for the lock
+            graph = graphModel.getGraphVisible();
             float xMean = 0.f, yMean = 0.f;
             for (Node n : graph.getNodes()) {
                 if (yAxis) {
