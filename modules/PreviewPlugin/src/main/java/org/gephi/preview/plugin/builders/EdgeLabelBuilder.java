@@ -70,24 +70,29 @@ public class EdgeLabelBuilder extends AbstractLabelBuilder implements ItemBuilde
         VisualizationModel vizModel = vizController != null ? vizController.getModel(workspace) : null;
         GraphView graphView = graph.getView();
 
-        return graph.getEdges().stream().map(
-            e -> {
-                TextProperties textData = e.getTextProperties();
-                if (textData != null && textData.isVisible()) {
-                    EdgeLabelItem labelItem = new EdgeLabelItem(e);
-                    String label = vizModel != null ? vizModel.getEdgeLabel(e, graphView) : e.getLabel();
-                    labelItem.setData(EdgeLabelItem.LABEL, label);
+        graph.readLock();
+        try {
+            return graph.getEdges().stream().map(
+                e -> {
+                    TextProperties textData = e.getTextProperties();
+                    if (textData != null && textData.isVisible()) {
+                        EdgeLabelItem labelItem = new EdgeLabelItem(e);
+                        String label = vizModel != null ? vizModel.getEdgeLabel(e, graphView) : e.getLabel();
+                        labelItem.setData(EdgeLabelItem.LABEL, label);
 
-                    if (label != null && !label.isEmpty()) {
-                        labelItem.setData(EdgeLabelItem.COLOR, textData.getColor());
-                        labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
-                        labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
-                        return labelItem;
+                        if (label != null && !label.isEmpty()) {
+                            labelItem.setData(EdgeLabelItem.COLOR, textData.getColor());
+                            labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
+                            labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
+                            return labelItem;
+                        }
                     }
+                    return null;
                 }
-                return null;
-            }
-        ).filter(Objects::nonNull).toArray(EdgeLabelItem[]::new);
+            ).filter(Objects::nonNull).toArray(EdgeLabelItem[]::new);
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override
