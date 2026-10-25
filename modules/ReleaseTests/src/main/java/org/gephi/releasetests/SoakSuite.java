@@ -25,7 +25,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
 import org.gephi.project.api.Workspace;
 import org.gephi.statistics.plugin.Degree;
-import org.gephi.statistics.plugin.GraphDistance;
+import org.gephi.statistics.plugin.Modularity;
 import org.openide.util.Lookup;
 
 /**
@@ -286,7 +286,7 @@ final class SoakSuite implements Suite {
 
                 c.runStatistics(new Degree());
                 if (round % 2 == 0) {
-                    c.runStatistics(new GraphDistance());
+                    c.runStatistics(new Modularity());
                 }
 
                 DegreeRangeBuilder.DegreeRangeFilter filter = new DegreeRangeBuilder.DegreeRangeFilter();
