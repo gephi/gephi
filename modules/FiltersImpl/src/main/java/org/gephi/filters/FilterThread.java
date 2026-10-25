@@ -202,7 +202,10 @@ public class FilterThread extends Thread {
                 visController.selectEdges(result.getEdges().toArray());
             }
             GraphView view = result.getView();
-            model.setCurrentResult(view);
+            GraphView previousResult = model.setCurrentResult(view);
+            if (previousResult != null) {
+                graphModel.destroyView(previousResult);
+            }
         } else {
             //destroy view
             graphModel.destroyView(result.getView());
