@@ -180,10 +180,10 @@ public class FilterThread extends Thread {
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
-            if (model.getCurrentResult() != null) {
-                graphModel.destroyView(model.getCurrentResult());
+            GraphView previousResult = model.setCurrentResult(view);
+            if (previousResult != null) {
+                graphModel.destroyView(previousResult);
             }
-            model.setCurrentResult(view);
         } else {
             //destroy view
             graphModel.destroyView(result.getView());

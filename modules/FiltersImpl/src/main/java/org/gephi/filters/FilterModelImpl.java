@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterLibrary;
@@ -75,7 +76,7 @@ public class FilterModelImpl implements FilterModel, Model {
     private Query currentQuery;
     private boolean filtering;
     private boolean selecting;
-    private GraphView currentResult;
+    private final AtomicReference<GraphView> currentResult;
     private boolean autoRefresh;
     //Listeners
     private final List<ChangeListener> listeners;
@@ -85,6 +86,7 @@ public class FilterModelImpl implements FilterModel, Model {
         filterLibraryImpl = new FilterLibraryImpl(workspace);
         queries = new LinkedList<>();
         listeners = new CopyOnWriteArrayList<>();
+        currentResult = new AtomicReference<>();
         autoRefresh = true;
 
         graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
@@ -233,7 +235,7 @@ public class FilterModelImpl implements FilterModel, Model {
         fireChangeEvent();
         if (!autoRefresh) {
             autoRefreshor.setEnable(false);
-        } else if (autoRefresh && currentResult != null) {
+        } else if (autoRefresh && currentResult.get() != null) {
             autoRefreshor.setEnable(true);
         }
     }
@@ -294,12 +296,16 @@ public class FilterModelImpl implements FilterModel, Model {
     }
 
     public GraphView getCurrentResult() {
-        return currentResult;
+        return currentResult.get();
     }
 
-    public void setCurrentResult(GraphView currentResult) {
-        if (this.currentResult != currentResult) {
-            this.currentResult = currentResult;
+    /**
+     * Sets the current result and returns the previous one. The swap is atomic, so each previous result is returned
+     * to a single caller.
+     */
+    public GraphView setCurrentResult(GraphView currentResult) {
+        GraphView previousResult = this.currentResult.getAndSet(currentResult);
+        if (previousResult != currentResult) {
             fireChangeEvent();
         }
         if (currentResult != null && autoRefresh) {
@@ -307,6 +313,7 @@ public class FilterModelImpl implements FilterModel, Model {
         } else if (currentResult == null && autoRefresh) {
             autoRefreshor.setEnable(false);
         }
+        return previousResult;
     }
 
     public GraphModel getGraphModel() {
@@ -323,7 +330,7 @@ public class FilterModelImpl implements FilterModel, Model {
             filterThread.setRunning(false);
         }
         autoRefreshor.setRunning(false);
-        currentResult = null;
+        currentResult.set(null);
         listeners.clear();
         for (Query q : queries) {
             destroyQuery(q);

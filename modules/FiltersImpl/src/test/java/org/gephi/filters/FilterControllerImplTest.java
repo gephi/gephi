@@ -6,7 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.Query;
+import org.gephi.filters.plugin.graph.KCoreBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.project.api.ProjectController;
 import org.junit.After;
 import org.junit.Assert;
@@ -84,6 +90,45 @@ public class FilterControllerImplTest {
         // The thread stops running before it fires the event, so the event is awaited first
         await().atMost(10, TimeUnit.SECONDS).until(idleEvent::get);
         Assert.assertFalse(filterModel.isRunning());
+    }
+
+    /**
+     * Clearing the filter as soon as a refreshed result is visible destroys each result once.
+     */
+    @Test
+    public void testClearWhenRefreshedResultVisible() throws Exception {
+        Query query = filterController.createQuery(Lookup.getDefault().lookup(KCoreBuilder.class));
+        filterController.add(query);
+        FilterProperty property = query.getFilter().getProperties()[0];
+        GraphModel graphModel = filterModel.getGraphModel();
+        AtomicReference<Throwable> failure = new AtomicReference<>();
+
+        for (int i = 0; i < 50; i++) {
+            GraphView view = graphModel.getVisibleView();
+            filterController.filterVisible(query);
+            Thread filterThread = filterModel.getFilterThread();
+            filterThread.setUncaughtExceptionHandler((thread, ex) -> failure.compareAndSet(null, ex));
+            view = awaitVisibleViewReplaced(graphModel, view);
+            property.setValue(1);
+            awaitVisibleViewReplaced(graphModel, view);
+            filterController.filterVisible(null);
+            filterThread.join(10_000);
+            if (failure.get() != null) {
+                throw new AssertionError("The filter thread threw", failure.get());
+            }
+        }
+    }
+
+    private static GraphView awaitVisibleViewReplaced(GraphModel graphModel, GraphView view) {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+        GraphView visibleView;
+        while ((visibleView = graphModel.getVisibleView()) == view) {
+            if (System.nanoTime() > deadline) {
+                throw new AssertionError("The visible view wasn't replaced");
+            }
+            Thread.onSpinWait();
+        }
+        return visibleView;
     }
 
     private BlockingFilter blockingFilter() {
