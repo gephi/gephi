@@ -136,6 +136,8 @@ final class AppearancePanel extends JPanel {
             AppearancePreferences.DEFAULT_NODE_RANKING_SIZE_MIN, 0.01f, null, 0.5f));
         nodeMaxSizeSpinner = new JSpinner(new SpinnerNumberModel(
             AppearancePreferences.DEFAULT_NODE_RANKING_SIZE_MAX, 0.5f, null, 0.5f));
+        nodeMinSizeLabel.setLabelFor(nodeMinSizeSpinner);
+        nodeMaxSizeLabel.setLabelFor(nodeMaxSizeSpinner);
 
         // --- Label size ---
         labelSizeSeparator = new JXTitledSeparator();
@@ -151,6 +153,8 @@ final class AppearancePanel extends JPanel {
             AppearancePreferences.DEFAULT_LABEL_RANKING_SIZE_MIN, 0.01f, null, 0.5f));
         labelMaxSizeSpinner = new JSpinner(new SpinnerNumberModel(
             AppearancePreferences.DEFAULT_LABEL_RANKING_SIZE_MAX, 0.5f, null, 0.5f));
+        labelMinSizeLabel.setLabelFor(labelMinSizeSpinner);
+        labelMaxSizeLabel.setLabelFor(labelMaxSizeSpinner);
 
         // --- Element (node/edge) color ---
         elementColorSeparator = new JXTitledSeparator();
@@ -161,6 +165,8 @@ final class AppearancePanel extends JPanel {
         elementColorGradientPanel = new JPanel(new BorderLayout());
         elementColorGradientPanel.setOpaque(false);
         elementColorGradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
+        elementColorGradientSlider.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearancePanel.class, "AppearancePanel.elementColorTitle.title"));
         elementColorGradientPanel.add(elementColorGradientSlider, BorderLayout.CENTER);
 
         // --- Label color ---
@@ -172,6 +178,8 @@ final class AppearancePanel extends JPanel {
         labelColorGradientPanel = new JPanel(new BorderLayout());
         labelColorGradientPanel.setOpaque(false);
         labelColorGradientSlider = new GradientSlider(GradientSlider.HORIZONTAL);
+        labelColorGradientSlider.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(AppearancePanel.class, "AppearancePanel.labelColorTitle.title"));
         labelColorGradientPanel.add(labelColorGradientSlider, BorderLayout.CENTER);
 
         // --- Interpolation ---

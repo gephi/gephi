@@ -259,7 +259,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
         restoreOrderButton.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.restoreOrderButton.text")); // NOI18N
-        restoreOrderButton.setFocusable(false);
+        restoreOrderButton.setRequestFocusEnabled(false);
         restoreOrderButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         restoreOrderButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         restoreOrderButton.addActionListener(new java.awt.event.ActionListener() {
@@ -274,7 +274,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         selectAllButton.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box.svg", false)); // NOI18N
         selectAllButton.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.selectAllButton.text")); // NOI18N
-        selectAllButton.setFocusable(false);
+        selectAllButton.setRequestFocusEnabled(false);
         selectAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -287,7 +287,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         unselectAllButon.setIcon(ImageUtilities.loadImageIcon("DesktopPreview/ui-check-box-uncheck.svg", false)); // NOI18N
         unselectAllButon.setText(org.openide.util.NbBundle
             .getMessage(RendererManager.class, "RendererManager.unselectAllButon.text")); // NOI18N
-        unselectAllButon.setFocusable(false);
+        unselectAllButon.setRequestFocusEnabled(false);
         unselectAllButon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         unselectAllButon.addActionListener(new java.awt.event.ActionListener() {
             @Override

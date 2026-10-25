@@ -33,7 +33,7 @@
         <Property name="maximum" type="int" value="1000"/>
         <Property name="minimum" type="int" value="1"/>
         <Property name="value" type="int" value="1"/>
-        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="requestFocusEnabled" type="boolean" value="false"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -56,7 +56,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/desktop/visualization/selection/Bundle.properties" key="MouseSelectionPopupPanel.proportionnalZoomCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
-        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="requestFocusEnabled" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
       </Properties>
       <Constraints>

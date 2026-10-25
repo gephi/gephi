@@ -57,6 +57,9 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.impl.ImportContainerImpl;
+import org.gephi.io.importer.plugin.file.ImporterGEXF;
+import org.gephi.io.importer.plugin.file.ImporterGraphML;
+import org.gephi.io.importer.plugin.file.Utils;
 import org.gephi.io.processor.plugin.MergeProcessor;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -443,5 +446,40 @@ public class ImportTest {
         buildMergeWeightsTestGraph(true);
         setEdgesMergeStrategy(EdgeMergeStrategy.NO_MERGE);
         checkWeightsNotMerged(true);
+    }
+
+    @Test
+    public void testImportGraphMLSingleIsolatedNode() {
+        // A GraphML file with a single isolated node used to import as 0 nodes
+        Container singleNode = importController.importFile(Utils.getReader("singlenode.graphml"), new ImporterGraphML());
+        importController.process(singleNode, defaultProcessor, workspace);
+
+        Graph graph = graphController.getGraphModel(workspace).getGraph();
+        Assert.assertEquals(1, graph.getNodeCount());
+        Assert.assertEquals(0, graph.getEdgeCount());
+    }
+
+    @Test
+    public void testMergeTimeSlices() {
+        Container[] slices = new Container[3];
+        for (int i = 0; i < 3; i++) {
+            slices[i] = importController.importFile(Utils.getReader("gexf/timeframe" + (i + 1) + ".gexf"),
+                new ImporterGEXF());
+        }
+        // No target workspace, the slices need a timestamp based one which the processor creates
+        Workspace slicesWorkspace = importController.process(slices, mergeProcessor, null)[0];
+
+        Graph graph = graphController.getGraphModel(slicesWorkspace).getGraph();
+        Assert.assertEquals(4, graph.getNodeCount());
+        Assert.assertEquals(4, graph.getEdgeCount());
+
+        Assert.assertArrayEquals(new double[] {2007, 2008, 2009}, graph.getNode("1").getTimestamps(), 0);
+        Assert.assertArrayEquals(new double[] {2008, 2009}, graph.getNode("4").getTimestamps(), 0);
+        Assert.assertArrayEquals(new double[] {2007, 2008}, graph.getEdge("x1").getTimestamps(), 0);
+
+        Assert.assertEquals(12, graph.getNode("1").getAttribute("price", 2007));
+        Assert.assertEquals(8, graph.getNode("4").getAttribute("price", 2008));
+        Assert.assertEquals(1, graph.getEdge("x1").getWeight(2007), 0);
+        Assert.assertEquals(4, graph.getEdge("x1").getWeight(2008), 0);
     }
 }

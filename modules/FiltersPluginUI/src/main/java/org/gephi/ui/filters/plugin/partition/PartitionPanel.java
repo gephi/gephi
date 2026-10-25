@@ -89,6 +89,8 @@ public class PartitionPanel extends javax.swing.JPanel {
 
     public PartitionPanel() {
         initComponents();
+        list.getAccessibleContext().setAccessibleName(
+            NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.list.accessibleName"));
         setMinimumSize(new Dimension(50, 90));
 
         //List renderer

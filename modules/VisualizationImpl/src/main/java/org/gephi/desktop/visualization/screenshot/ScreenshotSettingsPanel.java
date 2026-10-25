@@ -87,6 +87,8 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     public ScreenshotSettingsPanel(ScreenshotControllerImpl screenshotController) {
         controller = screenshotController;
         initComponents();
+        labelScaleFactor.setLabelFor(scaleFactorCombo);
+        labelCustomScaleFactor.setLabelFor(customScaleFactorSpinner);
 
         autoSaveCheckBox.addChangeListener(new ChangeListener() {
 

@@ -13,6 +13,9 @@ public class WorkspacePropertiesEditor extends javax.swing.JPanel {
      */
     public WorkspacePropertiesEditor() {
         initComponents();
+        labelName.setLabelFor(nameTextField);
+        labelTitle.setLabelFor(titleTextField);
+        labelDescription.setLabelFor(descriptionTextArea);
     }
 
     public static ValidationPanel createValidationPanel(WorkspacePropertiesEditor innerPanel) {

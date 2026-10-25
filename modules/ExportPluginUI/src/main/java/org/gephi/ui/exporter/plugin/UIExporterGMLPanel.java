@@ -72,6 +72,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
      */
     public UIExporterGMLPanel() {
         initComponents();
+        spacesLabel.setLabelFor(spacesTextField);
     }
 
     public static ValidationPanel createValidationPanel(UIExporterGMLPanel innerPanel) {
@@ -221,10 +222,6 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
                             javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(21, 21, 21))
         );
-
-        exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleName("\n"); // NOI18N
-        exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
-        spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
 
     private void exportNotRecognizedCheckBoxActionPerformed(

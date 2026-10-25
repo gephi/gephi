@@ -79,7 +79,7 @@ public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper 
     private void setValueToAllElements(Object object) {
         this.value = object;
         for (Element row : rows) {
-            row.setAttribute(column, value);
+            row.setAttribute(column, AttributeUtils.copy(value));
         }
     }
 

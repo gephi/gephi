@@ -82,6 +82,10 @@ public class WizardVisualPanel1Excel extends AbstractWizardVisualPanel1 {
     public WizardVisualPanel1Excel(ImporterSpreadsheetExcel importer, WizardPanel1Excel wizard1) {
         super(importer);
         initComponents();
+        filePathLabel.setLabelFor(pathTextField);
+        separatorLabel.setLabelFor(sheetComboBox);
+        modeLabel.setLabelFor(modeComboBox);
+        previewLabel.setLabelFor(previewTable);
         this.wizard1 = wizard1;
         this.importer = importer;
 

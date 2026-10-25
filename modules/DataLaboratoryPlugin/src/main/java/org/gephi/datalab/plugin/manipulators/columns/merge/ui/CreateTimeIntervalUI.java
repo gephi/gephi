@@ -105,6 +105,13 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
      */
     public CreateTimeIntervalUI() {
         initComponents();
+        startColumnLabel.setLabelFor(startColumnComboBox);
+        endColumnLabel.setLabelFor(endColumnComboBox);
+        dateDefaultStartLabel.setLabelFor(defaultStartDatePicker.getEditor());
+        dateDefaultEndLabel.setLabelFor(defaultEndDatePicker.getEditor());
+        dateFormatLabel.setLabelFor(dateFormatComboBox);
+        defaultStartNumberLabel.setLabelFor(defaultStartNumberText);
+        defaultEndNumberLabel.setLabelFor(defaultEndNumberText);
 
         defaultStartDatePicker.setFormats("yyyy-MM-dd");
         defaultEndDatePicker.setFormats("yyyy-MM-dd");

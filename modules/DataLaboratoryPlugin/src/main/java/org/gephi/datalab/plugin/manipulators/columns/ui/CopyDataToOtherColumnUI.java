@@ -75,6 +75,7 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
      */
     public CopyDataToOtherColumnUI() {
         initComponents();
+        descriptionLabel.setLabelFor(columnsComboBox);
     }
 
     @Override

@@ -77,6 +77,8 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
      */
     public JoinWithSeparatorUI() {
         initComponents();
+        titleLabel.setLabelFor(titleTextField);
+        separatorLabel.setLabelFor(separatorText);
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

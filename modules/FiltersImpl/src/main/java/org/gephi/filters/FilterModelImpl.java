@@ -71,7 +71,7 @@ public class FilterModelImpl implements FilterModel, Model {
     private final GraphModel graphModel;
     private final Workspace workspace;
     private final FilterAutoRefreshor autoRefreshor;
-    private FilterThread filterThread;
+    private volatile FilterThread filterThread;
     private Query currentQuery;
     private boolean filtering;
     private boolean selecting;
@@ -190,6 +190,12 @@ public class FilterModelImpl implements FilterModel, Model {
     @Override
     public boolean isSelecting() {
         return currentQuery != null && selecting;
+    }
+
+    @Override
+    public boolean isRunning() {
+        FilterThread thread = filterThread;
+        return thread != null && thread.isBusy();
     }
 
     /**
@@ -352,7 +358,7 @@ public class FilterModelImpl implements FilterModel, Model {
         listeners.remove(listener);
     }
 
-    private void fireChangeEvent() {
+    void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
         for (ChangeListener l : listeners) {
             l.stateChanged(evt);

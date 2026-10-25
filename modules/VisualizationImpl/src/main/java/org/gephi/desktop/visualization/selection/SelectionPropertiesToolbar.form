@@ -44,7 +44,7 @@
           <Color blue="ff" green="33" red="0" type="rgb"/>
         </Property>
         <Property name="defaultCapable" type="boolean" value="false"/>
-        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="requestFocusEnabled" type="boolean" value="false"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="10" style="0"/>
         </Property>

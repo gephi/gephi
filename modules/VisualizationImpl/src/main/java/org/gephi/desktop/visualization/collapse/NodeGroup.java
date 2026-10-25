@@ -30,6 +30,7 @@ public class NodeGroup implements CollapseGroup, VisualizationPropertyChangeList
         // centred (slider=50) at the default value (geometric mean of MIN and MAX).
         nodeScaleSlider = new JSlider(0, 100, 0);
         nodeScaleSlider.setToolTipText(NbBundle.getMessage(NodeGroup.class, "VizToolbar.Nodes.nodeScale"));
+        nodeScaleSlider.getAccessibleContext().setAccessibleName(nodeScaleSlider.getToolTipText());
         nodeScaleSlider.addChangeListener(e -> {
             float scale = VizConfig.NODE_SCALE_MIN *
                 (float) Math.pow((double) VizConfig.NODE_SCALE_MAX / VizConfig.NODE_SCALE_MIN,
