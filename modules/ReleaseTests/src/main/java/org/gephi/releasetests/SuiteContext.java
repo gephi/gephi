@@ -120,6 +120,16 @@ final class SuiteContext {
      * from the Layout panel.
      */
     void runLayout(Class<? extends LayoutBuilder> builderType, Duration duration) throws Exception {
+        startLayout(builderType);
+        Thread.sleep(duration.toMillis());
+        stopLayout();
+    }
+
+    /**
+     * Starts the registered layout of type <code>builderType</code> as from the Layout panel, and returns while it
+     * runs.
+     */
+    void startLayout(Class<? extends LayoutBuilder> builderType) throws Exception {
         LayoutBuilder builder = Lookup.getDefault().lookupAll(LayoutBuilder.class).stream()
             .filter(builderType::isInstance)
             .findFirst()
@@ -129,9 +139,21 @@ final class SuiteContext {
             layoutController.setLayout(layout);
             layoutController.executeLayout();
         });
-        Thread.sleep(duration.toMillis());
+    }
+
+    /**
+     * Stops the layout as from the Layout panel and waits for it to end.
+     */
+    void stopLayout() throws Exception {
         onEdt(layoutController::stopLayout);
         await("Layout", () -> !layoutController.getModel().isRunning());
+    }
+
+    /**
+     * Records a number in the results.
+     */
+    void metric(String name, Number value) {
+        results.metric(name, value);
     }
 
     /**
@@ -140,8 +162,11 @@ final class SuiteContext {
     void runStatistics(Statistics statistics) throws Exception {
         CountDownLatch finished = new CountDownLatch(1);
         onEdt(() -> statisticsController.execute(statistics, task -> finished.countDown()));
-        check(finished.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS),
-            statistics.getClass().getSimpleName() + " didn't finish within " + TIMEOUT.toSeconds() + " s");
+        if (!finished.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)) {
+            String dump = ThreadDumps.write(results, "statistics");
+            throw new AssertionError(statistics.getClass().getSimpleName() + " didn't finish within "
+                + TIMEOUT.toSeconds() + " s, see " + dump);
+        }
     }
 
     /**
@@ -154,11 +179,14 @@ final class SuiteContext {
     }
 
     /**
-     * Takes a screenshot of the Overview, as from its screenshot button.
+     * Takes a screenshot of the Overview, as from its screenshot button, once it has drawn the graph, which a new graph or
+     * workspace only does a moment after it's shown.
      */
     BufferedImage overviewScreenshot(String name) throws Exception {
         VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
         check(controller instanceof VizController, "No Overview to take a screenshot of");
+        await("Overview first frame with the graph", () -> ((VizController) controller).getEngine()
+            .map(engine -> engine.getFrameCount() > 0 && engine.getWorldUpdateCount() > 1).orElse(false));
         File written = ((VizController) controller).getScreenshotController().takeScreenshot(1, false, file(name))
             .get(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
         return ImageIO.read(written);
