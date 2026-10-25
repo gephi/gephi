@@ -56,9 +56,6 @@ final class SoakSuite implements Suite {
 
         c.step("layout", () -> c.startLayout(ForceAtlas2Builder.class));
 
-        // The first run of Degree adds columns while the load adds nodes, which can deadlock inside the graph
-        // library, so the columns are there before the load starts
-        c.step("degree", () -> c.runStatistics(new Degree()));
         Workspace other = c.step("duplicate workspace", () -> {
             Workspace duplicate = c.projectController.duplicateWorkspace(workspace);
             // The statistics and filters run on the current workspace
@@ -72,6 +69,7 @@ final class SoakSuite implements Suite {
 
         c.step("end state", () -> {
             c.stopLayout();
+            c.checkLocksReleased(graph);
             SuiteContext.check(graph.getNodeCount() == nodeCount && graph.getEdgeCount() == edgeCount,
                 "The graph has " + graph.getNodeCount() + " nodes and " + graph.getEdgeCount() + " edges instead of "
                     + nodeCount + " and " + edgeCount + " once the load is done");

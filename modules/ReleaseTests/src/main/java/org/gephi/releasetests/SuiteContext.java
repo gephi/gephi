@@ -14,11 +14,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
@@ -210,6 +213,19 @@ final class SuiteContext {
         check(different * 1000 >= total, what + " is blank, " + different + " of " + total + " pixels differ");
     }
 
+    /**
+     * Fails unless the graph lock is free at some point within {@link #TIMEOUT}: no thread holding it, none waiting.
+     * The Overview and the monitor hold it for moments, so it is looked at until it's seen free. A hold that is never
+     * released, like one left by an iteration that was neither finished nor broken, is what this finds.
+     */
+    void checkLocksReleased(Graph graph) throws InterruptedException {
+        GraphLock lock = graph.getLock();
+        await(() -> lock.getReadLockCount() == 0 && !lock.isWriteLocked() && lock.getQueueLength() == 0,
+            () -> "The graph lock is still held after " + TIMEOUT.toSeconds() + " s, with " + lock.getReadLockCount()
+                + " read holds, write locked: " + lock.isWriteLocked() + ", " + lock.getQueueLength()
+                + " threads waiting", 5);
+    }
+
     static void check(boolean condition, String message) {
         if (!condition) {
             throw new AssertionError(message);
@@ -240,10 +256,15 @@ final class SuiteContext {
     }
 
     static void await(String what, BooleanSupplier done) throws InterruptedException {
+        await(done, () -> what + " didn't finish within " + TIMEOUT.toSeconds() + " s", 50);
+    }
+
+    private static void await(BooleanSupplier done, Supplier<String> failure, long pollMs)
+        throws InterruptedException {
         long deadline = System.nanoTime() + TIMEOUT.toNanos();
         while (!done.getAsBoolean()) {
-            check(System.nanoTime() < deadline, what + " didn't finish within " + TIMEOUT.toSeconds() + " s");
-            Thread.sleep(50);
+            check(System.nanoTime() < deadline, failure.get());
+            Thread.sleep(pollMs);
         }
     }
 
