@@ -77,6 +77,50 @@ mvn -pl modules/application verify
 
 New tests extend `AbstractIntegrationTest`, which provides the controllers, fixture loading and an import helper, and closes the current project after each test.
 
+### Release tests
+
+Release tests run the built application, with its launcher, module system and user interface, before a release. They live in `modules/ReleaseTests`, which isn't shipped:
+
+- The module itself is a driver. When Gephi starts with the `gephi.releasetests.suite` system property, it runs that suite once the main window shows, then exits with status 0 if it passed and 1 otherwise. Meanwhile it checks every second that the Event Dispatch Thread responds, that a new reader gets the graph read lock, that the Overview keeps drawing, and that no threads are deadlocked. A wait past 10 seconds, a deadlock, a failed step or a log record at `SEVERE` or above fails the suite.
+- Its tests, named `*IT`, install the driver into a fresh user directory, start Gephi and wait for it to exit. A run that hangs gets a thread dump and is killed.
+
+`SmokeIT` runs a short pass over the main features: import, layout, statistics, filter, screenshot and export, and a project saved and reopened.
+
+They need a display and aren't part of `mvn verify`. Gephi's window opens while they run: keep it visible, as a hidden window may draw fewer frames, and leave the machine alone until they finish.
+
+#### Against a development build
+
+After a full `mvn install`, which assembles the application in `modules/application/target/gephi`:
+
+```bash
+mvn -pl modules/ReleaseTests verify -P release-tests
+```
+
+This runs on the JDK running Maven, as this build has no JRE of its own.
+
+#### Against a release bundle
+
+Before a final release, run them against the bundles the release workflow built from the release branch, with their JRE, on each operating system available. So far they have only been tried on macOS.
+
+1. Check out the commit the bundles were built from and run `mvn -T 4 install -P skipTests`, so that the driver module drives the same code as the bundle. A driver from a newer version doesn't load: Gephi shows a dialog saying some modules couldn't be installed, and the suite fails after two minutes saying it never started, with the module errors.
+2. Download the bundle, linked from the README's development builds, and unpack it: copy `Gephi.app` out of the `.dmg`, or extract the `.tar.gz`.
+3. Point the tests to it:
+
+```bash
+mvn -pl modules/ReleaseTests verify -P release-tests -Dgephi.dist=/path/to/Gephi.app
+```
+
+#### Reading the results
+
+A failed run lists the failed steps and the violations, with their thread dumps. Each suite writes its files to `modules/ReleaseTests/target/release-tests/<suite>/out`:
+
+- `results.json`: the steps and their durations, the violations, the slowdowns and metrics like the longest wait for the Event Dispatch Thread. A slowdown is a wait past 2 seconds; it doesn't fail the suite.
+- `dumps/`: the thread dumps taken while a wait was past a limit, and at a deadlock. A wait that ended between two checks and a logged error come without one.
+- `hang-threads-<pid>.txt`: the thread dump taken before killing a Gephi that didn't exit.
+- `recording.jfr`: a flight recording of the whole run, to open in JDK Mission Control. It's missing when the driver had to halt a Gephi that wouldn't exit.
+- `console.log` and `messages.log`: Gephi's output and log.
+- The files the suite created, like the screenshot, the exported image and the saved project.
+
 ## API changelog
 
 Every public API/SPI change is recorded in `src/main/javadoc/overview.html`, under the `<h2>API Changes</h2>` section. This file is the source used to compile release notes, so new entries must follow its existing formatting convention exactly:
@@ -117,8 +161,9 @@ Opening a PR on GitHub auto-populates it from [`.github/pull_request_template.md
 
 Releasing Gephi is almost entirely automated through GitHub Actions. The only manual steps are:
 
-1. Change the version in the `pom.xml` files, including moving from a snapshot version to a non-snapshot version when creating a final release.
-2. Create the release on GitHub.
+1. Before a final release, run the [release tests](#release-tests) against the release branch's latest development build, on each operating system available.
+2. Change the version in the `pom.xml` files, including moving from a snapshot version to a non-snapshot version when creating a final release.
+3. Create the release on GitHub.
 
 Everything else in the release process is automated.
 

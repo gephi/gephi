@@ -30,11 +30,11 @@ Plugins can build on either core modules or UI modules. Gephi’s extensible arc
 
 Gephi is designed to be extensible.
 
-- The codebase is broken down into 66 modules, per the root `pom.xml`'s `<modules>` list (not counting the `application` module itself).
+- The codebase is broken down into 67 modules, per the root `pom.xml`'s `<modules>` list (not counting the `application` module itself).
 - Modules define dependencies between one another.
 - APIs and contracts separate modules.
 - A developer can locate the module responsible for a feature, work within it, and avoid needing to understand the entire codebase.
-- Plugins are nothing other than modules. Adding a plugin effectively adds another module to the software—for example, a 67th module alongside the 66 existing modules.
+- Plugins are nothing other than modules. Adding a plugin effectively adds another module to the software—for example, a 68th module alongside the 67 existing modules.
 
 ### Multithreading
 
@@ -274,14 +274,14 @@ The module’s `pom.xml` is particularly important. It contains configuration su
 
 Most modules follow four naming roles. Using import as the example:
 
-| Module pattern | Role | Count among the 66 modules |
+| Module pattern | Role | Count among the 67 modules |
 |---|---|---:|
 | `ImportAPI` | Defines APIs and SPIs and implements APIs | 17 |
 | `ImportPlugin` | SPI implementations | 11 |
 | `ImportPluginUI` | UI-only SPI implementations | 6 |
 | `DesktopImport` | Remaining UI code | 17 |
 
-Together, 51 of the 66 modules follow this convention.
+Together, 51 of the 67 modules follow this convention.
 
 ### API modules
 
@@ -374,7 +374,7 @@ The repository is organized as follows:
 └── workflows/       # GitHub Actions workflows
 modules/
 ├── application/     # Gephi application module (built last, depends on all others)
-└── ...              # Source code for the other 66 modules
+└── ...              # Source code for the other 67 modules
 src/                  # Extra files, including the macOS launcher
 pom.xml               # Parent POM containing shared configuration
 ```
