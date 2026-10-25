@@ -119,6 +119,24 @@ public class FilterControllerImplTest {
         }
     }
 
+    /**
+     * Refreshing a selection destroys the result it replaces.
+     */
+    @Test
+    public void testSelectRefreshDestroysReplacedResult() {
+        Query query = filterController.createQuery(Lookup.getDefault().lookup(KCoreBuilder.class));
+        filterController.add(query);
+        filterController.selectVisible(query);
+        await().atMost(10, TimeUnit.SECONDS).until(() -> !filterModel.isRunning());
+        GraphView result = filterModel.getCurrentResult();
+
+        query.getFilter().getProperties()[0].setValue(1);
+        await().atMost(10, TimeUnit.SECONDS).until(() -> !filterModel.isRunning());
+
+        Assert.assertNotSame(result, filterModel.getCurrentResult());
+        Assert.assertTrue("Replaced result destroyed", result.isDestroyed());
+    }
+
     private static GraphView awaitVisibleViewReplaced(GraphModel graphModel, GraphView view) {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
         GraphView visibleView;
