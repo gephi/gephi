@@ -44,7 +44,6 @@ package org.gephi.layout.plugin.openord;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import org.gephi.graph.api.Graph;
 import org.openide.util.Exceptions;
 
 /**
@@ -131,16 +130,13 @@ public class Combine implements Runnable {
             maxAbsCoord = Math.max(maxAbsCoord, Math.abs(node.y));
         }
         float outputScale = maxAbsCoord > 0 ? (layout.getLayoutSize() / 2f) / maxAbsCoord : 1f;
-        Graph graph = layout.getGraph();
+        org.gephi.graph.api.Node[] graphNodes = layout.getGraphNodes();
         // Null once the layout ended: the workers of a stopped layout still finish one more iteration
-        if (graph != null) {
-            for (org.gephi.graph.api.Node n : graph.getNodes()) {
-                if (n.getLayoutData() != null && n.getLayoutData() instanceof OpenOrdLayoutData) {
-                    OpenOrdLayoutData layoutData = n.getLayoutData();
-                    Node node = positions[layoutData.nodeId];
-                    n.setX(node.x * outputScale);
-                    n.setY(node.y * outputScale);
-                }
+        if (graphNodes != null) {
+            for (int i = 0; i < graphNodes.length; i++) {
+                Node node = positions[i];
+                graphNodes[i].setX(node.x * outputScale);
+                graphNodes[i].setY(node.y * outputScale);
             }
         }
 

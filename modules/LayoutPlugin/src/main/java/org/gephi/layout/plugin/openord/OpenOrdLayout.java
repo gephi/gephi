@@ -84,7 +84,7 @@ public class OpenOrdLayout implements Layout, LongTask {
     private Combine combine;
     private Control control;
     private CyclicBarrier barrier;
-    private Graph graph;
+    private org.gephi.graph.api.Node[] graphNodes;
     private boolean firstIteration = true;
 
     public OpenOrdLayout(LayoutBuilder builder) {
@@ -113,7 +113,7 @@ public class OpenOrdLayout implements Layout, LongTask {
         }
 
         //Get graph
-        graph = graphModel.getUndirectedGraphVisible();
+        Graph graph = graphModel.getUndirectedGraphVisible();
         graph.readLock();
         try {
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
@@ -126,7 +126,7 @@ public class OpenOrdLayout implements Layout, LongTask {
 
             //Load nodes and edges
             TIntIntHashMap idMap = new TIntIntHashMap(numNodes, 1f);
-            org.gephi.graph.api.Node[] graphNodes = graph.getNodes().toArray();
+            graphNodes = graph.getNodes().toArray();
             for (int i = 0; i < numNodes; i++) {
                 org.gephi.graph.api.Node n = graphNodes[i];
                 nodes[i] = new Node(i);
@@ -269,7 +269,7 @@ public class OpenOrdLayout implements Layout, LongTask {
     public void endAlgo() {
         running = false;
         combine = null;
-        graph = null;
+        graphNodes = null;
     }
 
     private float normalizeWeight(float weight, float highestSimilarity) {
@@ -486,8 +486,8 @@ public class OpenOrdLayout implements Layout, LongTask {
         return workers;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public org.gephi.graph.api.Node[] getGraphNodes() {
+        return graphNodes;
     }
 
     public Control getControl() {
