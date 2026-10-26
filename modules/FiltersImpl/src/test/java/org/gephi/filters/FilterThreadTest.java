@@ -132,7 +132,8 @@ public class FilterThreadTest {
     @Test
     public void testFailingQueryDoesNotStopThread() throws Exception {
         FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
-        //A node to evaluate, so that the filter fails while iterating, holding a read lock
+        //A node to evaluate, so that the filter fails while iterating, holding a read lock. The model's graph is
+        //empty: the workspace created its own before Utils added the tiny graph
         GraphModel graphModel = filterModel.getGraphModel();
         graphModel.getGraph().addNode(graphModel.factory().newNode());
         AtomicBoolean fail = new AtomicBoolean(true);
