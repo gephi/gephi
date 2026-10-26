@@ -54,17 +54,20 @@ public class Combine implements Runnable {
     private final OpenOrdLayout layout;
     private final Object lock = new Object();
     private final Control control;
+    // Those of its own run: a stopped run still combines once more, possibly after the next run started
+    private final Worker[] workers;
+    private final org.gephi.graph.api.Node[] graphNodes;
 
-    public Combine(OpenOrdLayout layout) {
+    public Combine(OpenOrdLayout layout, Worker[] workers, org.gephi.graph.api.Node[] graphNodes) {
         this.layout = layout;
         this.control = layout.getControl();
+        this.workers = workers;
+        this.graphNodes = graphNodes;
     }
 
     @Override
     public void run() {
         //System.out.println("Combine results");
-
-        Worker[] workers = layout.getWorkers();
 
         //Gather positions
         Node[] positions = null;
@@ -119,7 +122,7 @@ public class Combine implements Runnable {
         boolean done = !control.udpateStage(totEnergy);
 
         //Params
-        for (Worker w : layout.getWorkers()) {
+        for (Worker w : workers) {
             control.initWorker(w);
         }
 
@@ -130,19 +133,15 @@ public class Combine implements Runnable {
             maxAbsCoord = Math.max(maxAbsCoord, Math.abs(node.y));
         }
         float outputScale = maxAbsCoord > 0 ? (layout.getLayoutSize() / 2f) / maxAbsCoord : 1f;
-        org.gephi.graph.api.Node[] graphNodes = layout.getGraphNodes();
-        // Null once the layout ended: the workers of a stopped layout still finish one more iteration
-        if (graphNodes != null) {
-            for (int i = 0; i < graphNodes.length; i++) {
-                Node node = positions[i];
-                graphNodes[i].setX(node.x * outputScale);
-                graphNodes[i].setY(node.y * outputScale);
-            }
+        for (int i = 0; i < graphNodes.length; i++) {
+            Node node = positions[i];
+            graphNodes[i].setX(node.x * outputScale);
+            graphNodes[i].setY(node.y * outputScale);
         }
 
         //Finish
         if (!layout.canAlgo() || done) {
-            for (Worker w : layout.getWorkers()) {
+            for (Worker w : workers) {
                 w.setDone(true);
             }
             layout.setRunning(false);
@@ -165,7 +164,7 @@ public class Combine implements Runnable {
 
     public float getTotEnergy() {
         float totEnergy = 0;
-        for (Worker w : layout.getWorkers()) {
+        for (Worker w : workers) {
             totEnergy += w.getTotEnergy();
         }
         return totEnergy;

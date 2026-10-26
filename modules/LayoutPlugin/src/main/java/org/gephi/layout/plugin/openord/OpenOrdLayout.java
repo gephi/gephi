@@ -84,7 +84,6 @@ public class OpenOrdLayout implements Layout, LongTask {
     private Combine combine;
     private Control control;
     private CyclicBarrier barrier;
-    private org.gephi.graph.api.Node[] graphNodes;
     private boolean firstIteration = true;
 
     public OpenOrdLayout(LayoutBuilder builder) {
@@ -126,15 +125,13 @@ public class OpenOrdLayout implements Layout, LongTask {
 
             //Load nodes and edges
             TIntIntHashMap idMap = new TIntIntHashMap(numNodes, 1f);
-            graphNodes = graph.getNodes().toArray();
+            org.gephi.graph.api.Node[] graphNodes = graph.getNodes().toArray();
             for (int i = 0; i < numNodes; i++) {
                 org.gephi.graph.api.Node n = graphNodes[i];
                 nodes[i] = new Node(i);
                 nodes[i].x = n.x();
                 nodes[i].y = n.y();
                 nodes[i].fixed = n.isFixed();
-                OpenOrdLayoutData layoutData = new OpenOrdLayoutData(i);
-                n.setLayoutData(layoutData);
                 idMap.put(n.getStoreId(), i);
             }
             float highestSimilarity = Float.NEGATIVE_INFINITY;
@@ -195,7 +192,8 @@ public class OpenOrdLayout implements Layout, LongTask {
 
             //Init control and workers
             control = new Control();
-            combine = new Combine(this);
+            workers = new Worker[numThreads];
+            combine = new Combine(this, workers, graphNodes);
             barrier = new CyclicBarrier(numThreads, combine);
             control.setEdgeCut(edgeCut);
             control.setRealParm(realTime);
@@ -204,7 +202,6 @@ public class OpenOrdLayout implements Layout, LongTask {
             control.setNumNodes(numNodes);
             control.setHighestSimilarity(highestSimilarity);
 
-            workers = new Worker[numThreads];
             for (int i = 0; i < numThreads; ++i) {
                 workers[i] = new Worker(i, numThreads, barrier);
                 workers[i].setRandom(new Random(randSeed));
@@ -269,7 +266,6 @@ public class OpenOrdLayout implements Layout, LongTask {
     public void endAlgo() {
         running = false;
         combine = null;
-        graphNodes = null;
     }
 
     private float normalizeWeight(float weight, float highestSimilarity) {
@@ -484,10 +480,6 @@ public class OpenOrdLayout implements Layout, LongTask {
 
     public Worker[] getWorkers() {
         return workers;
-    }
-
-    public org.gephi.graph.api.Node[] getGraphNodes() {
-        return graphNodes;
     }
 
     public Control getControl() {
