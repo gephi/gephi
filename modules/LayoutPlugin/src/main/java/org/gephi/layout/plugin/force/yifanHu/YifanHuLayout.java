@@ -81,6 +81,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private double energy0;
     private double energy;
     private Graph graph;
+    private boolean ranOnce;
 
     public YifanHuLayout(LayoutBuilder layoutBuilder, Displacement displacement) {
         super(layoutBuilder);
@@ -128,8 +129,17 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
         setStepRatio((float) 0.95);
         setRelativeStrength((float) 0.2);
-        if (graph != null) {
-            setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * getAverageEdgeLength(graph)));
+        if (ranOnce && graphModel != null) {
+            // Locked before the fetch, so that the view can't be destroyed in between
+            Graph mainGraph = graphModel.getGraph();
+            float averageEdgeLength;
+            mainGraph.readLock();
+            try {
+                averageEdgeLength = getAverageEdgeLength(graphModel.getGraphVisible());
+            } finally {
+                mainGraph.readUnlock();
+            }
+            setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * averageEdgeLength));
         } else {
             setOptimalDistance(100.0f);
         }
@@ -230,6 +240,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graphModel == null) {
             return;
         }
+        ranOnce = true;
         graph = graphModel.getGraphVisible();
         graph.readLock();
         try {
@@ -247,6 +258,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     @Override
     public void endAlgo() {
+        if (graph == null) {
+            return;
+        }
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
@@ -255,6 +269,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         } finally {
             graph.readUnlockAll();
         }
+        graph = null;
     }
 
     @Override
