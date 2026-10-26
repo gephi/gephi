@@ -195,6 +195,10 @@ public class PreviewControllerImpl implements PreviewController, Controller<Prev
                 //Pre process renderers
                 Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
             }
+        } catch (Throwable t) {
+            //A failed refresh draws nothing rather than a half-built preview
+            previewModel.clear();
+            throw t;
         } finally {
             //Destroy view
             if (reducedView != null) {
