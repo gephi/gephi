@@ -426,6 +426,20 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                     }
 
                     graphView.readLock();
+                    //A view destroyed while waiting for the lock may no longer follow the graph, the model's
+                    //current result replaced it
+                    while (fixedResult == null && graphView.getView().isDestroyed()) {
+                        GraphView current = model.getCurrentResult();
+                        if (current == graphView.getView()) {
+                            break;
+                        }
+                        graphView.readUnlock();
+                        if (current == null) {
+                            return;
+                        }
+                        graphView = model.getGraphModel().getGraph(current);
+                        graphView.readLock();
+                    }
                     try {
                         graph.writeLock();
                         try {
