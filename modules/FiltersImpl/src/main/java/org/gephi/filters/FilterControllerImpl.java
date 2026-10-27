@@ -340,6 +340,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     public void exportToColumn(String title, Query query) {
         FilterModelImpl model = getModel();
         Graph result;
+        GraphView processedView = null;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
             if (view == null) {
@@ -350,6 +351,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
             result = processor.process((AbstractQueryImpl) query, graphModel);
+            processedView = result.getView();
         }
         Column nodeCol = result.getModel().getNodeTable().getColumn("filter_" + title);
         if (nodeCol == null) {
@@ -373,6 +375,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } finally {
             result.writeUnlock();
             result.readUnlockAll();
+            if (processedView != null && !processedView.isMainView() && !processedView.isDestroyed()) {
+                model.getGraphModel().destroyView(processedView);
+            }
         }
         //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
@@ -465,6 +470,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                     //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
                 } finally {
                     Progress.finish(ticket);
+                    if (fixedResult != null && !fixedResult.getView().isMainView()
+                        && !fixedResult.getView().isDestroyed()) {
+                        model.getGraphModel().destroyView(fixedResult.getView());
+                    }
                 }
             }
         }, "Export filter to workspace").start();
@@ -474,6 +483,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     public void exportToLabelVisible(Query query) {
         FilterModelImpl model = getModel();
         Graph result;
+        GraphView processedView = null;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
             if (view == null) {
@@ -483,6 +493,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } else {
             FilterProcessor processor = new FilterProcessor();
             result = processor.process((AbstractQueryImpl) query, model.getGraphModel());
+            processedView = result.getView();
         }
         Graph fullGraph = model.getGraphModel().getGraph();
 
@@ -499,6 +510,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } finally {
             fullGraph.writeUnlock();
             fullGraph.readUnlockAll();
+            if (processedView != null && !processedView.isMainView() && !processedView.isDestroyed()) {
+                model.getGraphModel().destroyView(processedView);
+            }
         }
     }
 

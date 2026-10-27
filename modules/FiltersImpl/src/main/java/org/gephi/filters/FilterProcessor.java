@@ -68,9 +68,9 @@ public class FilterProcessor {
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
         Graph graph = graphModel.getGraph();
 
+        List<GraphView> views = new ArrayList<>();
         graph.writeLock();
         try {
-            List<GraphView> views = new ArrayList<>();
             query = simplifyQuery(query);
             AbstractQueryImpl[] tree = getTree(query, true);
             for (int i = 0; i < tree.length; i++) {
@@ -142,6 +142,14 @@ public class FilterProcessor {
             }
 
             return finalResult;
+        } catch (Throwable t) {
+            //Still under the write lock, as a filter that failed while iterating may hold read locks
+            for (GraphView v : views) {
+                if (!v.isDestroyed()) {
+                    graphModel.destroyView(v);
+                }
+            }
+            throw t;
         } finally {
             graph.writeUnlock();
             graph.readUnlockAll();

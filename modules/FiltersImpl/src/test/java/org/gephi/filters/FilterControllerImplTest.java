@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.plugin.graph.KCoreBuilder;
@@ -18,6 +21,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 public class FilterControllerImplTest {
@@ -102,20 +106,42 @@ public class FilterControllerImplTest {
         FilterProperty property = query.getFilter().getProperties()[0];
         GraphModel graphModel = filterModel.getGraphModel();
         AtomicReference<Throwable> failure = new AtomicReference<>();
-
-        for (int i = 0; i < 50; i++) {
-            GraphView view = graphModel.getVisibleView();
-            filterController.filterVisible(query);
-            Thread filterThread = filterModel.getFilterThread();
-            filterThread.setUncaughtExceptionHandler((thread, ex) -> failure.compareAndSet(null, ex));
-            view = awaitVisibleViewReplaced(graphModel, view);
-            property.setValue(1);
-            awaitVisibleViewReplaced(graphModel, view);
-            filterController.filterVisible(null);
-            filterThread.join(10_000);
-            if (failure.get() != null) {
-                throw new AssertionError("The filter thread threw", failure.get());
+        // The filter thread logs the exceptions of a query through Exceptions.printStackTrace and carries on
+        Logger logger = Logger.getLogger(Exceptions.class.getName());
+        Handler handler = new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                if (record.getThrown() != null) {
+                    failure.compareAndSet(null, record.getThrown());
+                }
             }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        logger.addHandler(handler);
+        try {
+            for (int i = 0; i < 50; i++) {
+                GraphView view = graphModel.getVisibleView();
+                filterController.filterVisible(query);
+                Thread filterThread = filterModel.getFilterThread();
+                filterThread.setUncaughtExceptionHandler((thread, ex) -> failure.compareAndSet(null, ex));
+                view = awaitVisibleViewReplaced(graphModel, view);
+                property.setValue(1);
+                awaitVisibleViewReplaced(graphModel, view);
+                filterController.filterVisible(null);
+                filterThread.join(10_000);
+                if (failure.get() != null) {
+                    throw new AssertionError("The filter thread threw", failure.get());
+                }
+            }
+        } finally {
+            logger.removeHandler(handler);
         }
     }
 

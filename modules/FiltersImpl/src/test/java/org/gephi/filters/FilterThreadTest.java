@@ -11,6 +11,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -124,6 +127,39 @@ public class FilterThreadTest {
 
         stop(filterThread);
         Assert.assertFalse("Not running once stopped", filterModel.isRunning());
+    }
+
+    @Test
+    public void testFailingQueryDoesNotStopThread() throws Exception {
+        FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
+        //A node to evaluate, so that the filter fails while iterating, holding a read lock. The model's graph is
+        //empty: the workspace created its own before Utils added the tiny graph
+        GraphModel graphModel = filterModel.getGraphModel();
+        graphModel.getGraph().addNode(graphModel.factory().newNode());
+        AtomicBoolean fail = new AtomicBoolean(true);
+        AtomicReference<Graph> failedGraph = new AtomicReference<>();
+        BlockingFilter filter = new BlockingFilter() {
+            @Override
+            public boolean evaluate(Graph graph, Node node) {
+                if (fail.get()) {
+                    failedGraph.set(graph);
+                    throw new IllegalStateException("Failing filter");
+                }
+                return true;
+            }
+        };
+        filter.permits.release(2);
+        FilterThread filterThread = startFilterThread(filterModel, filter);
+
+        await().atMost(10, TimeUnit.SECONDS).until(() -> !filterModel.isRunning());
+        Assert.assertNull(filterModel.getCurrentResult());
+        Assert.assertTrue("The view of the failed pass is destroyed", failedGraph.get().getView().isDestroyed());
+
+        fail.set(false);
+        filterThread.setRootQuery((AbstractQueryImpl) filterModel.getCurrentQuery());
+        await().atMost(10, TimeUnit.SECONDS).until(() -> filterModel.getCurrentResult() != null);
+
+        stop(filterThread);
     }
 
     private static FilterThread startFilterThread(FilterModelImpl filterModel, BlockingFilter filter) {

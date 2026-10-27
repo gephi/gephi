@@ -127,6 +127,7 @@ public class FilterThread extends Thread {
             if (!running) {
                 return;
             }
+            ProgressTicket progressTicket = null;
             try {
                 Query modifiedQuery = null;
                 for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
@@ -140,7 +141,6 @@ public class FilterThread extends Thread {
                 }
 
                 //Progress
-                ProgressTicket progressTicket = null;
                 ProgressTicketProvider progressTicketProvider =
                     Lookup.getDefault().lookup(ProgressTicketProvider.class);
                 if (progressTicketProvider != null) {
@@ -155,9 +155,11 @@ public class FilterThread extends Thread {
                 } else {
                     select(q);
                 }
-
-                Progress.finish(progressTicket);
+            } catch (Exception e) {
+                //Logged, so that a failing query doesn't stop the thread
+                Exceptions.printStackTrace(e);
             } finally {
+                Progress.finish(progressTicket);
                 markProcessed(generation);
             }
         }
