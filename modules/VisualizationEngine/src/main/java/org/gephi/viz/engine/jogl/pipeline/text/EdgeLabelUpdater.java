@@ -5,6 +5,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.util.NumberUtils;
 import org.gephi.viz.engine.util.structure.EdgesCallback;
 
 public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
@@ -51,12 +52,14 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
         final boolean hideNonSelectedLabels = options.isHideNonSelectedEdgeLabels();
         final float zoom = options.getZoom();
 
-        // Self-loop thickness parameters
+        // Self-loop thickness parameters, same as AbstractEdgeData.createWorldData
         final float edgeScale = options.getEdgeScale();
-        final float edgeRescaleMin = options.getEdgeRescaleMin();
-        final float edgeRescaleMax = options.getEdgeRescaleMax();
-        final float minWeight = edgesCallback.getMinWeight();
-        final float maxWeight = edgesCallback.getMaxWeight();
+        final boolean edgeWeightEnabled = options.isEdgeWeightEnabled();
+        final boolean rescaleWeight = edgeWeightEnabled && options.isEdgeRescaleWeightEnabled();
+        final float edgeRescaleMin = rescaleWeight ? options.getEdgeRescaleMin() : 1f;
+        final float edgeRescaleMax = rescaleWeight ? options.getEdgeRescaleMax() : 1f;
+        final float minWeight = edgeWeightEnabled ? edgesCallback.getMinWeight() : 0f;
+        final float maxWeight = edgeWeightEnabled ? edgesCallback.getMaxWeight() : 1f;
 
         // No labels to show
         if (hideNonSelectedLabels && !someSelection) {
@@ -146,8 +149,8 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
 
             if (edge.isSelfLoop()) {
                 // Self-loop: position label at the upper-right of the loop circle (45 degrees)
-                final float weight = edgeWeights[i];
-                final float thickness = edgeThickness(edgeScale * edgeRescaleMin, edgeScale * edgeRescaleMax,
+                final float weight = edgeWeightEnabled ? edgeWeights[i] : 1f;
+                final float thickness = edgeThickness(edgeScale, edgeRescaleMin, edgeRescaleMax,
                     weight, minWeight, maxWeight);
                 final float strokeWidth = thickness * STROKE_MULTIPLIER;
                 final float loopRadius = sourceSize * 0.5f + strokeWidth * 0.33f;
@@ -214,19 +217,20 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
     }
 
     /**
-     * Computes edge thickness matching the GLSL edge_thickness function.
+     * Computes edge thickness matching the uniforms set by EdgeCircleSelfLoop*.useProgram and the GLSL
+     * edge_thickness function.
      */
-    private float edgeThickness(float edgeScaleMin, float edgeScaleMax, float weight,
+    private float edgeThickness(float edgeScale, float edgeRescaleMin, float edgeRescaleMax, float weight,
                                 float minWeight, float maxWeight) {
-        if (Math.abs(edgeScaleMin - edgeScaleMax) < 1e-3f) {
-            return edgeScaleMin;
+        if (NumberUtils.equalsEpsilon(minWeight, maxWeight, 1e-3f)) {
+            return weight * edgeScale;
         }
-        float weightDivisor = maxWeight - minWeight;
-        if (Math.abs(weightDivisor) < 1e-3f) {
-            weightDivisor = 1f;
+        final float edgeScaleMin = edgeRescaleMin * edgeScale;
+        final float edgeScaleMax = edgeRescaleMax * edgeScale;
+        if (edgeScaleMin == edgeScaleMax) {
+            return weight * edgeScaleMin;
         }
-        float t = (weight - minWeight) / weightDivisor;
-        t = Math.max(0f, Math.min(1f, t)); // clamp to [0, 1]
+        final float t = (weight - minWeight) / (maxWeight - minWeight);
         return edgeScaleMin + (edgeScaleMax - edgeScaleMin) * t;
     }
 
