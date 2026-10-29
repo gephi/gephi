@@ -46,6 +46,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.appearance.api.Function;
 import org.openide.util.Lookup;
 
@@ -58,6 +60,7 @@ public class AutoAppyTransformer implements Runnable {
     private final Function function;
     private final AppearanceUIController controller;
     private ScheduledExecutorService executor;
+    private volatile boolean failing;
 
     public AutoAppyTransformer(Function function) {
         this.controller = Lookup.getDefault().lookup(AppearanceUIController.class);
@@ -65,6 +68,7 @@ public class AutoAppyTransformer implements Runnable {
     }
 
     public void start() {
+        failing = false;
         executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Appearance Auto Transformer"));
         executor.scheduleWithFixedDelay(this, 0, getDelayInMs(), TimeUnit.MILLISECONDS);
     }
@@ -78,7 +82,19 @@ public class AutoAppyTransformer implements Runnable {
 
     @Override
     public void run() {
-        controller.transform(function);
+        try {
+            controller.transform(function);
+            failing = false;
+        } catch (Exception e) {
+            // Only the first failure of a streak is reported, as the task runs twice a second
+            Logger logger = Logger.getLogger(AutoAppyTransformer.class.getName());
+            if (!failing) {
+                failing = true;
+                logger.log(Level.SEVERE, "Error while auto-applying appearance's function", e);
+            } else {
+                logger.log(Level.FINE, "Auto-apply still failing", e);
+            }
+        }
     }
 
     public boolean isRunning() {
