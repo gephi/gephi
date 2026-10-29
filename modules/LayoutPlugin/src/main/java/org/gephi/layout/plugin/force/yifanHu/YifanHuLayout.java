@@ -230,9 +230,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            graph = graphModel.getGraphVisible();
             energy = Float.POSITIVE_INFINITY;
             for (Node n : graph.getNodes()) {
                 n.setLayoutData(new ForceVector());
@@ -241,7 +241,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             setConverged(false);
             setStep(initialStep);
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -259,9 +259,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
             for (Node n : nodes) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVector)) {
@@ -320,7 +320,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             }
             postAlgo();
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 

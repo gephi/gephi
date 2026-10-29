@@ -105,10 +105,9 @@ public class ForceAtlas2 implements Layout {
         speed = 1.;
         speedEfficiency = 1.;
 
-        graph = graphModel.getGraphVisible();
-
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
@@ -128,7 +127,7 @@ public class ForceAtlas2 implements Layout {
             pool = Executors.newFixedThreadPool(threadCount);
             currentThreadCount = threadCount;
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -150,9 +149,9 @@ public class ForceAtlas2 implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
@@ -373,7 +372,7 @@ public class ForceAtlas2 implements Layout {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
