@@ -291,6 +291,10 @@ public class ForceAtlas2 implements Layout {
                         Math.sqrt(Math.pow(nLayout.old_dx + nLayout.dx, 2) + Math.pow(nLayout.old_dy + nLayout.dy, 2));
                 }
             }
+            // Nothing moves, and 0 / 0 would make the speed NaN for good
+            if (totalSwinging == 0 && totalEffectiveTraction == 0) {
+                return;
+            }
             // We want that swingingMovement < tolerance * convergenceMovement
 
             // Optimize jitter tolerance
