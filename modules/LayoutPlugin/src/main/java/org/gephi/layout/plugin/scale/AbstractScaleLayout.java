@@ -73,9 +73,9 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
 
     @Override
     public void goAlgo() {
-        Graph graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             float xMean = 0, yMean = 0;
             for (Node n : graph.getNodes()) {
                 xMean += n.x();
@@ -94,7 +94,7 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
             }
             setConverged(true);
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
