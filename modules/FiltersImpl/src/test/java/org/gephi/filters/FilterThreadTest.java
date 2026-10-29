@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;
@@ -132,10 +131,7 @@ public class FilterThreadTest {
     @Test
     public void testFailingQueryDoesNotStopThread() throws Exception {
         FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
-        //A node to evaluate, so that the filter fails while iterating, holding a read lock. The model's graph is
-        //empty: the workspace created its own before Utils added the tiny graph
-        GraphModel graphModel = filterModel.getGraphModel();
-        graphModel.getGraph().addNode(graphModel.factory().newNode());
+        //The tiny graph has nodes, so the filter fails while iterating, holding a read lock
         AtomicBoolean fail = new AtomicBoolean(true);
         AtomicReference<Graph> failedGraph = new AtomicReference<>();
         BlockingFilter filter = new BlockingFilter() {
