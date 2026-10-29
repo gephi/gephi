@@ -81,6 +81,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private double energy0;
     private double energy;
     private Graph graph;
+    private boolean ranOnce;
 
     public YifanHuLayout(LayoutBuilder layoutBuilder, Displacement displacement) {
         super(layoutBuilder);
@@ -128,7 +129,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
         setStepRatio((float) 0.95);
         setRelativeStrength((float) 0.2);
-        if (graph != null) {
+        if (ranOnce) {
             float averageEdgeLength;
             graphModel.getGraph().readLock();
             try {
@@ -237,6 +238,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graphModel == null) {
             return;
         }
+        ranOnce = true;
         graphModel.getGraph().readLock();
         try {
             graph = graphModel.getGraphVisible();
@@ -254,6 +256,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     @Override
     public void endAlgo() {
+        if (graph == null) {
+            return;
+        }
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
@@ -262,6 +267,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         } finally {
             graph.readUnlockAll();
         }
+        graph = null;
     }
 
     @Override

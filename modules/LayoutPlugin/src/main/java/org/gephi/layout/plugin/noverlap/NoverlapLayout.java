@@ -266,6 +266,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         } finally {
             graph.readUnlockAll();
         }
+        graph = null;
     }
 
     @Override

@@ -264,9 +264,13 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
     @Override
     public void endAlgo() {
+        if (graph == null) {
+            return;
+        }
         for (Node n : graph.getNodes()) {
             n.setLayoutData(null);
         }
+        graph = null;
     }
 
     @Override
