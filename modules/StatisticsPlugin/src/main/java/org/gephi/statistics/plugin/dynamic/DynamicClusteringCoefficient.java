@@ -211,8 +211,8 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
         //Average
         double avg = clusteringCoefficientStat.getAverageClusteringCoefficient();
-        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getLow());
-        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getHigh());
+        graphModel.getGraph().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getLow());
+        graphModel.getGraph().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getHigh());
 
         averages.put(interval.getLow(), avg);
         averages.put(interval.getHigh(), avg);

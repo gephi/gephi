@@ -236,8 +236,8 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         averages.put(interval.getLow(), avg);
         averages.put(interval.getHigh(), avg);
 
-        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getLow());
-        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getHigh());
+        graphModel.getGraph().setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getLow());
+        graphModel.getGraph().setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getHigh());
     }
 
     @Override
