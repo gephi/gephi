@@ -120,7 +120,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         try {
             Graph graph = function.getGraph();
             boolean ignoreNull = !function.getModel().isTransformNullValues();
-            values = function.isValid() ? partition.getSortedValues(function.getGraph()) : Collections.EMPTY_LIST;
+            values = function.isValid() ? partition.getSortedValues(graph) : Collections.EMPTY_LIST;
 
             int valuesSize = 0;
             int nullElements = 0;
@@ -134,7 +134,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                     valuesSize++;
                 } else {
                     // Will be used firther for the percentage calculation
-                    nullElements = function.getPartition().count(null, function.getGraph());
+                    nullElements = function.getPartition().count(null, graph);
                 }
             }
 

@@ -49,6 +49,7 @@ import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
@@ -75,30 +76,28 @@ public class AppearanceControllerImpl implements AppearanceController, Controlle
 
     @Override
     public void transform(Function function) {
-        if (!function.isValid()) {
-            return;
-        }
-        GraphModel graphModel = function.getGraph().getModel();
+        GraphModel graphModel = function.getModel().getGraphModel();
+        GraphLock lock = graphModel.getGraph().getLock();
+        int holds = lock.getReadHoldCount();
         // Under the lock, a filter can't destroy the visible view iterated here and used by a local scale
-        graphModel.getGraph().readLock();
-        Graph graph = graphModel.getGraphVisible();
-        ElementIterable<? extends Element> iterable;
-        if (function.getElementClass().equals(Node.class)) {
-            iterable = graph.getNodes();
-        } else {
-            iterable = graph.getEdges();
-        }
+        lock.readLock();
         try {
-            function.transformAll(iterable);
-        } catch (Exception e) {
-            iterable.doBreak();
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            } else {
-                throw new RuntimeException(e);
+            if (!function.isValid()) {
+                return;
             }
+            Graph graph = graphModel.getGraphVisible();
+            ElementIterable<? extends Element> iterable;
+            if (function.getElementClass().equals(Node.class)) {
+                iterable = graph.getNodes();
+            } else {
+                iterable = graph.getEdges();
+            }
+            function.transformAll(iterable);
         } finally {
-            graphModel.getGraph().readUnlock();
+            // Also releases the iterator's hold when the transform stopped while iterating
+            while (lock.getReadHoldCount() > holds) {
+                lock.readUnlock();
+            }
         }
     }
 
