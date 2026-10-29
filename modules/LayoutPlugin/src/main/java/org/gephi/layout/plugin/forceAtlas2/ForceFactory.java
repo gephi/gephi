@@ -50,23 +50,23 @@ import org.gephi.graph.api.Node;
  *
  * @author Mathieu Jacomy
  */
-public class ForceFactory {
+public final class ForceFactory {
 
-    public static ForceFactory builder = new ForceFactory();
+    static final ForceFactory INSTANCE = new ForceFactory();
 
     private ForceFactory() {
     }
 
     public RepulsionForce buildRepulsion(boolean adjustBySize, double coefficient) {
         if (adjustBySize) {
-            return new linRepulsion_antiCollision(coefficient);
+            return new LinearRepulsionAntiCollision(coefficient);
         } else {
-            return new linRepulsion(coefficient);
+            return new LinearRepulsion(coefficient);
         }
     }
 
     public RepulsionForce getStrongGravity(double coefficient) {
-        return new strongGravity(coefficient);
+        return new StrongGravity(coefficient);
     }
 
     public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize,
@@ -74,41 +74,41 @@ public class ForceFactory {
         if (adjustBySize) {
             if (logAttraction) {
                 if (distributedAttraction) {
-                    return new logAttraction_degreeDistributed_antiCollision(coefficient);
+                    return new LogAttractionDegreeDistributedAntiCollision(coefficient);
                 } else {
-                    return new logAttraction_antiCollision(coefficient);
+                    return new LogAttractionAntiCollision(coefficient);
                 }
             } else {
                 if (distributedAttraction) {
-                    return new linAttraction_degreeDistributed_antiCollision(coefficient);
+                    return new LinearAttractionDegreeDistributedAntiCollision(coefficient);
                 } else {
-                    return new linAttraction_antiCollision(coefficient);
+                    return new LinearAttractionAntiCollision(coefficient);
                 }
             }
         } else {
             if (logAttraction) {
                 if (distributedAttraction) {
-                    return new logAttraction_degreeDistributed(coefficient);
+                    return new LogAttractionDegreeDistributed(coefficient);
                 } else {
-                    return new logAttraction(coefficient);
+                    return new LogAttraction(coefficient);
                 }
             } else {
                 if (distributedAttraction) {
-                    return new linAttraction_massDistributed(coefficient);
+                    return new LinearAttractionMassDistributed(coefficient);
                 } else {
-                    return new linAttraction(coefficient);
+                    return new LinearAttraction(coefficient);
                 }
             }
         }
     }
 
-    public abstract class AttractionForce {
+    public static abstract class AttractionForce {
 
         public abstract void apply(Node n1, Node n2,
                                    double e); // Model for node-node attraction (e is for edge weight if needed)
     }
 
-    public abstract class RepulsionForce {
+    public static abstract class RepulsionForce {
 
         public abstract void apply(Node n1, Node n2);           // Model for node-node repulsion
 
@@ -120,11 +120,11 @@ public class ForceFactory {
     /*
      * Repulsion force: Linear
      */
-    private class linRepulsion extends RepulsionForce {
+    private static class LinearRepulsion extends RepulsionForce {
 
         private final double coefficient;
 
-        public linRepulsion(double c) {
+        private LinearRepulsion(double c) {
             coefficient = c;
         }
 
@@ -136,7 +136,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -157,7 +157,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x() - r.getMassCenterX();
             double yDist = n.y() - r.getMassCenterY();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -175,7 +175,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -190,11 +190,11 @@ public class ForceFactory {
     /*
      * Repulsion force: Strong Gravity (as a Repulsion Force because it is easier)
      */
-    private class linRepulsion_antiCollision extends RepulsionForce {
+    private static class LinearRepulsionAntiCollision extends RepulsionForce {
 
         private final double coefficient;
 
-        public linRepulsion_antiCollision(double c) {
+        private LinearRepulsionAntiCollision(double c) {
             coefficient = c;
         }
 
@@ -206,7 +206,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = Math.hypot(xDist, yDist) - n1.size() - n2.size();
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -236,7 +236,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x() - r.getMassCenterX();
             double yDist = n.y() - r.getMassCenterY();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -259,7 +259,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -271,11 +271,11 @@ public class ForceFactory {
         }
     }
 
-    private class strongGravity extends RepulsionForce {
+    private static class StrongGravity extends RepulsionForce {
 
         private final double coefficient;
 
-        public strongGravity(double c) {
+        private StrongGravity(double c) {
             coefficient = c;
         }
 
@@ -296,7 +296,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n.x();
             double yDist = n.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -311,11 +311,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear
      */
-    private class linAttraction extends AttractionForce {
+    private static class LinearAttraction extends AttractionForce {
 
         private final double coefficient;
 
-        public linAttraction(double c) {
+        private LinearAttraction(double c) {
             coefficient = c;
         }
 
@@ -342,11 +342,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear, distributed by mass (typically, degree)
      */
-    private class linAttraction_massDistributed extends AttractionForce {
+    private static class LinearAttractionMassDistributed extends AttractionForce {
 
         private final double coefficient;
 
-        public linAttraction_massDistributed(double c) {
+        private LinearAttractionMassDistributed(double c) {
             coefficient = c;
         }
 
@@ -373,11 +373,11 @@ public class ForceFactory {
     /*
      * Attraction force: Logarithmic
      */
-    private class logAttraction extends AttractionForce {
+    private static class LogAttraction extends AttractionForce {
 
         private final double coefficient;
 
-        public logAttraction(double c) {
+        private LogAttraction(double c) {
             coefficient = c;
         }
 
@@ -389,7 +389,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            double distance = Math.hypot(xDist, yDist);
 
             if (distance > 0) {
 
@@ -408,11 +408,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear, distributed by Degree
      */
-    private class logAttraction_degreeDistributed extends AttractionForce {
+    private static class LogAttractionDegreeDistributed extends AttractionForce {
 
         private final double coefficient;
 
-        public logAttraction_degreeDistributed(double c) {
+        private LogAttractionDegreeDistributed(double c) {
             coefficient = c;
         }
 
@@ -443,11 +443,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear, with Anti-Collision
      */
-    private class linAttraction_antiCollision extends AttractionForce {
+    private static class LinearAttractionAntiCollision extends AttractionForce {
 
         private final double coefficient;
 
-        public linAttraction_antiCollision(double c) {
+        private LinearAttractionAntiCollision(double c) {
             coefficient = c;
         }
 
@@ -459,7 +459,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = Math.hypot(xDist, yDist) - n1.size() - n2.size();
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -477,11 +477,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear, distributed by Degree, with Anti-Collision
      */
-    private class linAttraction_degreeDistributed_antiCollision extends AttractionForce {
+    private static class LinearAttractionDegreeDistributedAntiCollision extends AttractionForce {
 
         private final double coefficient;
 
-        public linAttraction_degreeDistributed_antiCollision(double c) {
+        private LinearAttractionDegreeDistributedAntiCollision(double c) {
             coefficient = c;
         }
 
@@ -493,7 +493,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = Math.hypot(xDist, yDist) - n1.size() - n2.size();
 
             if (distance > 0) {
                 // NB: factor = force / distance
@@ -511,11 +511,11 @@ public class ForceFactory {
     /*
      * Attraction force: Logarithmic, with Anti-Collision
      */
-    private class logAttraction_antiCollision extends AttractionForce {
+    private static class LogAttractionAntiCollision extends AttractionForce {
 
         private final double coefficient;
 
-        public logAttraction_antiCollision(double c) {
+        private LogAttractionAntiCollision(double c) {
             coefficient = c;
         }
 
@@ -527,7 +527,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = Math.hypot(xDist, yDist) - n1.size() - n2.size();
 
             if (distance > 0) {
 
@@ -546,11 +546,11 @@ public class ForceFactory {
     /*
      * Attraction force: Linear, distributed by Degree, with Anti-Collision
      */
-    private class logAttraction_degreeDistributed_antiCollision extends AttractionForce {
+    private static class LogAttractionDegreeDistributedAntiCollision extends AttractionForce {
 
         private final double coefficient;
 
-        public logAttraction_degreeDistributed_antiCollision(double c) {
+        private LogAttractionDegreeDistributedAntiCollision(double c) {
             coefficient = c;
         }
 
@@ -562,7 +562,7 @@ public class ForceFactory {
             // Get the distance
             double xDist = n1.x() - n2.x();
             double yDist = n1.y() - n2.y();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist) - n1.size() - n2.size();
+            double distance = Math.hypot(xDist, yDist) - n1.size() - n2.size();
 
             if (distance > 0) {
 
