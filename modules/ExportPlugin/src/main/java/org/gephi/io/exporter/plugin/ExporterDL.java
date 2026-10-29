@@ -175,7 +175,6 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                         if (!labelUsed.contains(node.getLabel() + "_" + i)) {
                             idToLabel.put(node.getId(), node.getLabel() + "_" + i);
                             labelUsed.add(node.getLabel() + "_" + i);
-                            nodeIterable.doBreak();
                             break;
                         }
                     }
