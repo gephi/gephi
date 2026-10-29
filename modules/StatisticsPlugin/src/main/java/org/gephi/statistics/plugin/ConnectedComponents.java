@@ -304,11 +304,14 @@ public class ConnectedComponents implements Statistics, LongTask {
         low_index[id] = count;
         count++;
         S.addFirst(f);
-        EdgeIterable edgeIter = graph.getOutEdges(f);
-        for (Edge e : edgeIter) {
+        // Snapshotted into an array instead of iterated live: a live EdgeIterable holds the
+        // graph's read lock open until it is fully drained, which the recursive call below
+        // would otherwise keep pending for as long as the whole DFS subtree below f takes,
+        // nesting one held read lock per recursion level and overflowing the read-write
+        // lock's hold count on a long enough DFS chain.
+        for (Edge e : graph.getOutEdges(f).toArray()) {
 
             if (isCanceled) {
-                edgeIter.doBreak();
                 return components;
             }
             Node u = graph.getOpposite(f, e);
