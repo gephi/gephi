@@ -79,6 +79,8 @@ public class AppearanceControllerImpl implements AppearanceController, Controlle
             return;
         }
         GraphModel graphModel = function.getGraph().getModel();
+        // Under the lock, a filter can't destroy the visible view iterated here and used by a local scale
+        graphModel.getGraph().readLock();
         Graph graph = graphModel.getGraphVisible();
         ElementIterable<? extends Element> iterable;
         if (function.getElementClass().equals(Node.class)) {
@@ -95,6 +97,8 @@ public class AppearanceControllerImpl implements AppearanceController, Controlle
             } else {
                 throw new RuntimeException(e);
             }
+        } finally {
+            graphModel.getGraph().readUnlock();
         }
     }
 

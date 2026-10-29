@@ -129,8 +129,14 @@ public class Modularity implements Statistics, LongTask {
 
     @Override
     public void execute(GraphModel graphModel) {
-        Graph graph = graphModel.getUndirectedGraphVisible();
-        execute(graph);
+        // Fetched under the lock, the visible view can't be destroyed by a filter before it's used
+        Graph mainGraph = graphModel.getGraph();
+        mainGraph.readLock();
+        try {
+            execute(graphModel.getUndirectedGraphVisible());
+        } finally {
+            mainGraph.readUnlock();
+        }
     }
 
     public void execute(Graph graph) {

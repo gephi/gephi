@@ -114,10 +114,11 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
         Partition partition = function.getPartition();
-        Graph graph = function.getGraph();
+        Graph mainGraph = function.getModel().getGraphModel().getGraph();
 
-        graph.readLock();
+        mainGraph.readLock();
         try {
+            Graph graph = function.getGraph();
             boolean ignoreNull = !function.getModel().isTransformNullValues();
             values = function.isValid() ? partition.getSortedValues(function.getGraph()) : Collections.EMPTY_LIST;
 
@@ -192,7 +193,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
         } finally {
-            graph.readUnlock();
+            mainGraph.readUnlock();
         }
     }
 

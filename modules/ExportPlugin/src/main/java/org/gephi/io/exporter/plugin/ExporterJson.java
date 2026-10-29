@@ -58,10 +58,10 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
-        graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
         Progress.start(progress);
-        graph.readLock();
+        graphModel.getGraph().readLock();
+        graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
         //Is it a dynamic graph?
         exportDynamic = exportDynamic && graphModel.isDynamic();
@@ -76,7 +76,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
         } catch (Exception e) {
             Logger.getLogger(ExporterJson.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progress);
         }
 

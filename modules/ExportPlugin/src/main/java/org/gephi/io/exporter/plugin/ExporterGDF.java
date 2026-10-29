@@ -98,16 +98,15 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
+        graphModel.getGraph().readLock();
         Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        graph.readLock();
 
         try {
             exportData(graph, graphModel);
         } catch (Exception e) {
             Logger.getLogger(ExporterGDF.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 
