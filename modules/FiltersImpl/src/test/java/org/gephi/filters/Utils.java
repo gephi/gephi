@@ -1,25 +1,18 @@
 package org.gephi.filters;
 
 import org.gephi.graph.GraphGenerator;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.project.impl.WorkspaceImpl;
 
 public class Utils {
 
     public static FilterModelImpl newFilterModel() {
         WorkspaceImpl workspace = new WorkspaceImpl(null, 0);
-        FilterModelImpl model = new FilterModelImpl(workspace);
-        workspace.add(model);
-        return model;
+        return workspace.getLookup().lookup(FilterModelImpl.class);
     }
 
     public static FilterModelImpl newFilterModelWithGraph() {
         WorkspaceImpl workspace = new WorkspaceImpl(null, 0);
-        GraphModel graphModel = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph().getModel();
-        workspace.add(graphModel);
-
-        FilterModelImpl model = new FilterModelImpl(workspace);
-        workspace.add(model);
-        return model;
+        GraphGenerator.build(workspace).generateTinyGraph().addIntNodeColumn();
+        return workspace.getLookup().lookup(FilterModelImpl.class);
     }
 }

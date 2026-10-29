@@ -133,61 +133,77 @@ public class PreviewControllerImpl implements PreviewController, Controller<Prev
         }
 
         //Graph
-        Graph graph = graphModel.getGraphVisible();
-        if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
-            float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
-            GraphView reducedView = graphModel.copyView(graph.getView());
-            graph = graphModel.getGraph(reducedView);
-            Node[] nodes = graph.getNodes().toArray();
-            for (int i = 0; i < nodes.length; i++) {
-                float r = (float) i / (float) nodes.length;
-                if (r > visibilityRatio) {
-                    graph.removeNode(nodes[i]);
-                }
+        float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+        GraphView reducedView = null;
+        if (visibilityRatio < 1f) {
+            //The lock keeps a filter from destroying the visible view before it's copied
+            Graph mainGraph = graphModel.getGraph();
+            mainGraph.writeLock();
+            try {
+                reducedView = graphModel.copyView(graphModel.getVisibleView());
+            } finally {
+                mainGraph.writeUnlock();
             }
         }
-
-        Renderer[] renderers;
-        if (!mousePressed) {
-            renderers = previewModel.getManagedEnabledRenderers();
-        } else {
-            ArrayList<Renderer> renderersList = new ArrayList<>();
-            for (Renderer renderer : previewModel.getManagedEnabledRenderers()) {
-                //Only mouse responsive renderers will be called while mouse is pressed
-                if (renderer instanceof MouseResponsiveRenderer) {
-                    renderersList.add(renderer);
+        try {
+            Graph graph = graphModel.getGraphVisible();
+            if (reducedView != null) {
+                graph = graphModel.getGraph(reducedView);
+                Node[] nodes = graph.getNodes().toArray();
+                for (int i = 0; i < nodes.length; i++) {
+                    float r = (float) i / (float) nodes.length;
+                    if (r > visibilityRatio) {
+                        graph.removeNode(nodes[i]);
+                    }
                 }
             }
 
-            renderers = renderersList.toArray(new Renderer[0]);
-        }
+            Renderer[] renderers;
+            if (!mousePressed) {
+                renderers = previewModel.getManagedEnabledRenderers();
+            } else {
+                ArrayList<Renderer> renderersList = new ArrayList<>();
+                for (Renderer renderer : previewModel.getManagedEnabledRenderers()) {
+                    //Only mouse responsive renderers will be called while mouse is pressed
+                    if (renderer instanceof MouseResponsiveRenderer) {
+                        renderersList.add(renderer);
+                    }
+                }
 
-        if (renderers == null) {
-            renderers = getRegisteredRenderers();
-        }
+                renderers = renderersList.toArray(new Renderer[0]);
+            }
 
-        //Build items
-        boolean globalCanvasSize = previewModel.isGlobalCanvasSize() && !graph.getView().isMainView();
-        previewModel.buildAndLoadItems(renderers, globalCanvasSize ? graph.getModel().getGraph() : graph);
+            if (renderers == null) {
+                renderers = getRegisteredRenderers();
+            }
 
-        //Pre process renderers
-        Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
-
-        //Canvas size
-        previewModel.updateCanvasSize(renderers);
-
-        if (globalCanvasSize) {
-            // Clear and rebuild with just the filtered graph
-            previewModel.clear();
-            previewModel.buildAndLoadItems(renderers, graph);
+            //Build items
+            boolean globalCanvasSize = previewModel.isGlobalCanvasSize() && !graph.getView().isMainView();
+            previewModel.buildAndLoadItems(renderers, globalCanvasSize ? graph.getModel().getGraph() : graph);
 
             //Pre process renderers
             Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
-        }
 
-        //Destroy view
-        if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
-            graphModel.destroyView(graph.getView());
+            //Canvas size
+            previewModel.updateCanvasSize(renderers);
+
+            if (globalCanvasSize) {
+                // Clear and rebuild with just the filtered graph
+                previewModel.clear();
+                previewModel.buildAndLoadItems(renderers, graph);
+
+                //Pre process renderers
+                Arrays.stream(renderers).forEachOrdered(r -> r.preProcess(previewModel));
+            }
+        } catch (Throwable t) {
+            //A failed refresh draws nothing rather than a half-built preview
+            previewModel.clear();
+            throw t;
+        } finally {
+            //Destroy view
+            if (reducedView != null) {
+                graphModel.destroyView(reducedView);
+            }
         }
     }
 

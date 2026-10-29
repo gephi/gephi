@@ -119,9 +119,9 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        this.graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            this.graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
@@ -250,7 +250,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 

@@ -72,7 +72,6 @@ public class ForceAtlas2 implements Layout {
     private final ForceAtlas2Builder layoutBuilder;
     double outboundAttCompensation = 1;
     private GraphModel graphModel;
-    private Graph graph;
     private double edgeWeightInfluence;
     private double jitterTolerance;
     private double scalingRatio;
@@ -105,10 +104,9 @@ public class ForceAtlas2 implements Layout {
         speed = 1.;
         speedEfficiency = 1.;
 
-        graph = graphModel.getGraphVisible();
-
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
@@ -128,7 +126,7 @@ public class ForceAtlas2 implements Layout {
             pool = Executors.newFixedThreadPool(threadCount);
             currentThreadCount = threadCount;
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -150,9 +148,9 @@ public class ForceAtlas2 implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
@@ -377,7 +375,7 @@ public class ForceAtlas2 implements Layout {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -388,6 +386,7 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void endAlgo() {
+        Graph graph = graphModel.getGraph();
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
@@ -397,7 +396,6 @@ public class ForceAtlas2 implements Layout {
         } finally {
             graph.readUnlockAll();
         }
-        graph = null;
     }
 
     @Override
