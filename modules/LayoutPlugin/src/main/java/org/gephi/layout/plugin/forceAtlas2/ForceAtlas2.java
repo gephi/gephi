@@ -72,7 +72,6 @@ public class ForceAtlas2 implements Layout {
     private final ForceAtlas2Builder layoutBuilder;
     double outboundAttCompensation = 1;
     private GraphModel graphModel;
-    private Graph graph;
     private double edgeWeightInfluence;
     private double jitterTolerance;
     private double scalingRatio;
@@ -107,7 +106,7 @@ public class ForceAtlas2 implements Layout {
 
         graphModel.getGraph().readLock();
         try {
-            graph = graphModel.getGraphVisible();
+            Graph graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
@@ -151,7 +150,7 @@ public class ForceAtlas2 implements Layout {
         }
         graphModel.getGraph().readLock();
         try {
-            graph = graphModel.getGraphVisible();
+            Graph graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
@@ -383,6 +382,7 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void endAlgo() {
+        Graph graph = graphModel.getGraph();
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {

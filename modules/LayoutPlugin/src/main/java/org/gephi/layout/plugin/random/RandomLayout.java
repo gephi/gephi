@@ -60,7 +60,6 @@ import org.openide.util.NbBundle;
 public class RandomLayout extends AbstractLayout implements Layout {
 
     private Random random;
-    private Graph graph;
     private boolean converged;
     private double size;
     private long seed;
@@ -80,7 +79,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
     public void goAlgo() {
         graphModel.getGraph().readLock();
         try {
-            graph = graphModel.getGraphVisible();
+            Graph graph = graphModel.getGraphVisible();
             for (Node n : graph.getNodes()) {
                 if (!n.isFixed()) {
                     n.setX((float) (-size / 2 + size * random.nextDouble()));
@@ -100,7 +99,6 @@ public class RandomLayout extends AbstractLayout implements Layout {
 
     @Override
     public void endAlgo() {
-        graph = null;
     }
 
     @Override
