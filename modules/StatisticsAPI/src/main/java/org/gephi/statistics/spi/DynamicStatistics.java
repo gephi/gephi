@@ -76,6 +76,10 @@ public interface DynamicStatistics extends Statistics {
     /**
      * Iteration of the dynamic statistics algorithm on a new interval. The
      * graph window is a snapshot of the graph at the current <code>interval</code>.
+     * <p>
+     * The <code>window</code> view is only valid during this call: it is cleared
+     * and refilled for the next interval and destroyed when the process ends, so
+     * implementations shouldn't keep it or destroy it.
      *
      * @param window   a snapshot of the graph at the current interval
      * @param interval the interval of the current snapshot

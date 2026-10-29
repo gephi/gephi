@@ -152,83 +152,110 @@ public class StatisticsControllerImpl implements StatisticsController, Controlle
     private void executeDynamic(DynamicStatistics statistics, DynamicLongTask dynamicLongTask,
                                 StatisticsModelImpl model) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel graphModel = graphController.getGraphModel();
+        GraphModel graphModel = graphController.getGraphModel(model.getWorkspace());
 
         double window = statistics.getWindow();
         double tick = statistics.getTick();
 
-        GraphView currentView = graphModel.getVisibleView();
-        Interval bounds = statistics.getBounds();
-        if (bounds == null) {
-            if (currentView.isMainView()) {
-                bounds = graphModel.getTimeBounds();
-            } else {
-                bounds = currentView.getTimeInterval();
+        //A filter may destroy the visible view between two windows, so a filtered graph is read from a private copy
+        Graph mainGraph = graphModel.getGraph();
+        GraphView currentView;
+        mainGraph.writeLock();
+        try {
+            currentView = graphModel.getVisibleView();
+            if (!currentView.isMainView()) {
+                currentView = graphModel.copyView(currentView);
             }
-            statistics.setBounds(bounds);
+        } finally {
+            mainGraph.writeUnlock();
         }
-
-        if (dynamicLongTask != null) {
-            //Count
-            int c = (int) ((bounds.getHigh() - window - bounds.getLow()) / tick);
-            dynamicLongTask.start(c);
-        }
-
-        //Init
-        statistics.execute(graphModel);
-
-        //Loop
-        for (double low = bounds.getLow(); low <= bounds.getHigh() - window; low += tick) {
-            double high = low + window;
-
-            Graph graph = graphModel.getGraphVisible();
-
-            graph.writeLock();
-            try {
-                GraphView view = graphModel.createView();
-                Subgraph g = graphModel.getGraph(view);
-
-                TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
-                if (Double.isInfinite(nodeIndex.getMinTimestamp()) && Double.isInfinite(nodeIndex.getMaxTimestamp())) {
-                    for (Node node : graph.getNodes()) {
-                        g.addNode(node);
-                    }
+        GraphView view = null;
+        try {
+            Interval bounds = statistics.getBounds();
+            if (bounds == null) {
+                if (currentView.isMainView()) {
+                    bounds = graphModel.getTimeBounds();
                 } else {
-                    for (Node node : nodeIndex.get(new Interval(low, high))) {
-                        g.addNode(node);
-                    }
+                    bounds = currentView.getTimeInterval();
                 }
+                statistics.setBounds(bounds);
+            }
 
-                TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
-                if (Double.isInfinite(edgeIndex.getMinTimestamp()) && Double.isInfinite(edgeIndex.getMaxTimestamp())) {
-                    for (Edge edge : graph.getEdges()) {
-                        if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
-                            g.addEdge(edge);
+            if (dynamicLongTask != null) {
+                //Count
+                int c = (int) ((bounds.getHigh() - window - bounds.getLow()) / tick);
+                dynamicLongTask.start(c);
+            }
+
+            //Init
+            statistics.execute(graphModel);
+
+            //A single view, refilled for each window
+            view = graphModel.createView();
+            Subgraph g = graphModel.getGraph(view);
+            Graph graph = graphModel.getGraph(currentView);
+
+            //Loop
+            for (double low = bounds.getLow(); low <= bounds.getHigh() - window; low += tick) {
+                double high = low + window;
+
+                graph.writeLock();
+                try {
+                    g.clear();
+
+                    TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
+                    if (Double.isInfinite(nodeIndex.getMinTimestamp()) &&
+                        Double.isInfinite(nodeIndex.getMaxTimestamp())) {
+                        for (Node node : graph.getNodes()) {
+                            g.addNode(node);
+                        }
+                    } else {
+                        for (Node node : nodeIndex.get(new Interval(low, high))) {
+                            g.addNode(node);
                         }
                     }
-                } else {
-                    for (Edge edge : edgeIndex.get(new Interval(low, high))) {
-                        if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
-                            g.addEdge(edge);
+
+                    TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
+                    if (Double.isInfinite(edgeIndex.getMinTimestamp()) &&
+                        Double.isInfinite(edgeIndex.getMaxTimestamp())) {
+                        for (Edge edge : graph.getEdges()) {
+                            if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                                g.addEdge(edge);
+                            }
+                        }
+                    } else {
+                        for (Edge edge : edgeIndex.get(new Interval(low, high))) {
+                            if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                                g.addEdge(edge);
+                            }
                         }
                     }
+
+                    statistics.loop(g.getView(), new Interval(low, high));
+                } finally {
+                    graph.writeUnlock();
+                    graph.readUnlockAll();
                 }
 
-                statistics.loop(g.getView(), new Interval(low, high));
-            } finally {
-                graph.writeUnlock();
-                graph.readUnlockAll();
+                //Cancelled?
+                if (dynamicLongTask != null && dynamicLongTask.isCancelled()) {
+                    return;
+                } else if (dynamicLongTask != null) {
+                    dynamicLongTask.progress();
+                }
             }
-
-            //Cancelled?
-            if (dynamicLongTask != null && dynamicLongTask.isCancelled()) {
-                return;
-            } else if (dynamicLongTask != null) {
-                dynamicLongTask.progress();
+            statistics.end();
+            model.addReport(statistics);
+        } finally {
+            //Destroying takes the write lock, which a read lock left held would make throw
+            mainGraph.readUnlockAll();
+            if (view != null && !view.isDestroyed()) {
+                graphModel.destroyView(view);
+            }
+            if (!currentView.isMainView() && !currentView.isDestroyed()) {
+                graphModel.destroyView(currentView);
             }
         }
-        statistics.end();
-        model.addReport(statistics);
     }
 
     @Override
