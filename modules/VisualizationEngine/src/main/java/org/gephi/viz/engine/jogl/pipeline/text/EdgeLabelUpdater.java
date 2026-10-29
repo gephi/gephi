@@ -1,7 +1,6 @@
 package org.gephi.viz.engine.jogl.pipeline.text;
 
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphView;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.pipeline.PipelineCategory;
@@ -20,7 +19,6 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
     @Override
     public void updateWorld(VizEngineModel model) {
         final GraphRenderingOptions options = model.getRenderingOptions();
-        final GraphView view = model.getGraphModel().getVisibleView();
 
         if (!options.isShowEdgeLabels()) {
             labelData.dispose();
@@ -39,6 +37,7 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
 
         // Get edges array
         final Edge[] edges = edgesCallback.getEdgesArray();
+        final float[] edgeWeights = edgesCallback.getEdgeWeightsArray();
         final int maxIndex = edgesCallback.getMaxIndex();
 
         // Rendering parameters
@@ -147,7 +146,7 @@ public class EdgeLabelUpdater extends AbstractLabelUpdater<Edge> {
 
             if (edge.isSelfLoop()) {
                 // Self-loop: position label at the upper-right of the loop circle (45 degrees)
-                final float weight = (float) edge.getWeight(view);
+                final float weight = edgeWeights[i];
                 final float thickness = edgeThickness(edgeScale * edgeRescaleMin, edgeScale * edgeRescaleMax,
                     weight, minWeight, maxWeight);
                 final float strokeWidth = thickness * STROKE_MULTIPLIER;
