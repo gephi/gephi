@@ -109,9 +109,9 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
         Progress.start(progressTicket);
         graphModel.getGraph().readLock();
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
             exportData(graph);
         } catch (Exception e) {
             Logger.getLogger(ExporterSpreadsheet.class.getName()).log(Level.SEVERE, null, e);

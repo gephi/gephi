@@ -114,11 +114,11 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         GraphModel graphModel = graphController.getGraphModel(workspace);
         // Fetched under the lock, the visible view can't be destroyed by a filter before it's exported
         graphModel.getGraph().readLock();
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        Progress.start(progressTicket, graph.getNodeCount());
-
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            Progress.start(progressTicket, graph.getNodeCount());
+
             //use labels only if every node has label:
             boolean useLabels = true;
             NodeIterable nodeIterable = graph.getNodes();
