@@ -23,4 +23,8 @@ public abstract class RankingSizeTransformer<E extends Element> implements Ranki
     public void setMinSize(float minSize) {
         this.minSize = minSize;
     }
+
+    public boolean isNode() {
+        return true;
+    }
 }
