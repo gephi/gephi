@@ -129,7 +129,14 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         setStepRatio((float) 0.95);
         setRelativeStrength((float) 0.2);
         if (graph != null) {
-            setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * getAverageEdgeLength(graph)));
+            float averageEdgeLength;
+            graphModel.getGraph().readLock();
+            try {
+                averageEdgeLength = getAverageEdgeLength(graphModel.getGraphVisible());
+            } finally {
+                graphModel.getGraph().readUnlock();
+            }
+            setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * averageEdgeLength));
         } else {
             setOptimalDistance(100.0f);
         }
