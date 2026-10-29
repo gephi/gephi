@@ -91,15 +91,15 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
             exportData(graph);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 
@@ -160,7 +160,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                 for (int j = 0; j < nodes.length; j++) {
                     Node m = nodes[j];
                     EdgeIterable edges = graph.getEdges(n, m);
-                    writeEdge(edges, j < nodes.length - 1);
+                    writeEdge(graph, edges, j < nodes.length - 1);
                 }
                 Progress.progress(progressTicket);
                 writer.append(EOL);
@@ -170,12 +170,12 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
         Progress.finish(progressTicket);
     }
 
-    private void writeEdge(EdgeIterable edges, boolean writeSeparator) throws IOException {
+    private void writeEdge(Graph graph, EdgeIterable edges, boolean writeSeparator) throws IOException {
         float weight = 0;
         boolean anyEdge = false;
         for (Edge edge : edges) {
             anyEdge = true;
-            weight += edge.getWeight();
+            weight += edge.getWeight(graph.getView());
         }
 
         if (anyEdge) {

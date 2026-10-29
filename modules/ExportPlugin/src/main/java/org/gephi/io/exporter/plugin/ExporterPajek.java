@@ -140,16 +140,16 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
-        graph.readLock();
+        graphModel.getGraph().readLock();
 
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
             exportData(graph);
         } catch (Exception e) {
             Logger.getLogger(ExporterPajek.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 
@@ -195,7 +195,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
             writer.append(idx.get(edge.getSource().getId().toString()) + " ");
             writer.append(Integer.toString(idx.get(edge.getTarget().getId().toString())));
             if (exportEdgeWeight) {
-                writer.append(" " + edge.getWeight());
+                writer.append(" " + edge.getWeight(graph.getView()));
             }
             writer.append("\n");
 
