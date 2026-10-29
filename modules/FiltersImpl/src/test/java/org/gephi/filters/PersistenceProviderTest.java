@@ -1,5 +1,6 @@
 package org.gephi.filters;
 
+import javax.xml.stream.XMLStreamReader;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
 import org.gephi.filters.plugin.graph.EgoBuilder;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
@@ -8,6 +9,8 @@ import org.gephi.filters.plugin.operator.INTERSECTIONBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.Workspace;
 import org.gephi.project.io.utils.GephiFormat;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -70,7 +73,15 @@ public class PersistenceProviderTest {
 
         FilterQueryImpl query = new FilterQueryImpl(null, filter);
         filterModel.addFirst(query);
-        GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
+        FilterModelPersistenceProvider provider = new FilterModelPersistenceProvider() {
+            @Override
+            public void readXML(XMLStreamReader reader, Workspace workspace) {
+                //A project restores the graph and its columns before the filters
+                workspace.getLookup().lookup(GraphModel.class).getNodeTable().addColumn("country", String.class);
+                super.readXML(reader, workspace);
+            }
+        };
+        GephiFormat.testXMLPersistenceProvider(provider, filterModel.getWorkspace());
     }
 
     @Test
