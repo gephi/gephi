@@ -77,7 +77,7 @@ public final class LongTaskExecutor {
      * traversals whose recursion depth follows the longest path in the graph) for which the
      * default stack is not always enough to avoid a StackOverflowError.
      */
-    private static final long WORKER_STACK_SIZE = 512L * 1024 * 1024;
+    private static final long WORKER_STACK_SIZE = 128L * 1024 * 1024;
 
     private final boolean inBackground;
     private final long interruptDelay;
