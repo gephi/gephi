@@ -61,17 +61,17 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
         Progress.start(progress);
         graphModel.getGraph().readLock();
-        graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        //Is it a dynamic graph?
-        exportDynamic = exportDynamic && graphModel.isDynamic();
-
-        //Calculate min & max
-        normalization = NormalizationHelper.build(normalize, graph);
-
-        Progress.switchToDeterminate(progress, graph.getNodeCount() + graph.getEdgeCount());
-
         try {
+            graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            //Is it a dynamic graph?
+            exportDynamic = exportDynamic && graphModel.isDynamic();
+
+            //Calculate min & max
+            normalization = NormalizationHelper.build(normalize, graph);
+
+            Progress.switchToDeterminate(progress, graph.getNodeCount() + graph.getEdgeCount());
+
             exportData();
         } catch (Exception e) {
             Logger.getLogger(ExporterJson.class.getName()).log(Level.SEVERE, null, e);

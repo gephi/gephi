@@ -99,9 +99,9 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
         graphModel.getGraph().readLock();
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
             exportData(graph, graphModel);
         } catch (Exception e) {
             Logger.getLogger(ExporterGDF.class.getName()).log(Level.SEVERE, null, e);

@@ -111,11 +111,11 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getGraphModel(workspace);
         graphModel.getGraph().readLock();
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        Progress.start(progressTicket, graph.getNodeCount() + graph.getEdgeCount());
-
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            Progress.start(progressTicket, graph.getNodeCount() + graph.getEdgeCount());
+
             normalization = NormalizationHelper.build(normalize, graph);
             exportData(graph);
         } catch (IOException e) {

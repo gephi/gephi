@@ -105,9 +105,9 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
         graphModel.getGraph().readLock();
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
             exportData(createDocument(), graph);
         } catch (Exception e) {
             Logger.getLogger(ExporterGraphML.class.getName()).log(Level.SEVERE, null, e);
