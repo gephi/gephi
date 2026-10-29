@@ -57,7 +57,7 @@ public class StatisticsControllerImplTest {
                 windows.add(window);
                 nodeCounts.add(graphModel.getGraph(window).getNodeCount());
                 if (!filteredView.isDestroyed()) {
-                    //As a filter pass replacing its result between two windows does
+                    //Simulates a filter pass replacing its result, and destroying the previous one, between two windows
                     graphModel.destroyView(filteredView);
                 }
             }
