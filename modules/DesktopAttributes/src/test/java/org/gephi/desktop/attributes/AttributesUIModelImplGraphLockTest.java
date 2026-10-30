@@ -1,15 +1,12 @@
 package org.gephi.desktop.attributes;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -21,8 +18,7 @@ import org.openide.util.Lookup;
 
 /**
  * The eligible columns are read on the EDT and must not depend on the graph lock: a long running reader plus a
- * queued writer would otherwise block every new reader, including the EDT. The dynamic flag they depend on is cached
- * and refreshed off the EDT through {@link AttributesUIModelImpl#refreshDynamic()}.
+ * queued writer would otherwise block every new reader, including the EDT.
  */
 public class AttributesUIModelImplGraphLockTest {
 
@@ -84,7 +80,6 @@ public class AttributesUIModelImplGraphLockTest {
             }
             Assert.assertEquals(Thread.State.WAITING, writer.getState());
 
-            // Reading graphModel.isDynamic() here would take a read lock queued behind the writer
             Future<Integer> nodeCols = executor.submit(() -> model.getEligibleNodeColumns().size());
             Future<Integer> edgeCols = executor.submit(() -> model.getEligibleEdgeColumns().size());
             Future<Integer> cols = executor.submit(() -> model.getEligibleColumns().size());
@@ -97,42 +92,5 @@ public class AttributesUIModelImplGraphLockTest {
             writer.join(TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS));
             executor.shutdownNow();
         }
-    }
-
-    @Test
-    public void testRefreshDynamicUpdatesEligibleColumns() {
-        Column inDegree = graphModel.defaultColumns().inDegree();
-        Column outDegree = graphModel.defaultColumns().outDegree();
-        Column nodeTimeSet = graphModel.defaultColumns().nodeTimeSet();
-
-        // Cached default: not dynamic
-        List<Column> initial = model.getEligibleNodeColumns();
-        Assert.assertTrue(initial.contains(inDegree));
-        Assert.assertTrue(initial.contains(outDegree));
-        Assert.assertFalse(initial.contains(nodeTimeSet));
-        Assert.assertFalse(model.refreshDynamic());
-
-        // An undirected edge makes the graph not directed, which is read live
-        Graph graph = graphModel.getGraph();
-        Node n1 = graphModel.factory().newNode("n1");
-        Node n2 = graphModel.factory().newNode("n2");
-        graph.addNode(n1);
-        graph.addNode(n2);
-        graph.addEdge(graphModel.factory().newEdge(n1, n2, 0, 1.0, false));
-        Assert.assertFalse(graphModel.isDirected());
-
-        List<Column> undirected = model.getEligibleNodeColumns();
-        Assert.assertFalse(undirected.contains(inDegree));
-        Assert.assertFalse(undirected.contains(outDegree));
-        Assert.assertTrue(undirected.contains(graphModel.defaultColumns().degree()));
-        Assert.assertFalse(model.refreshDynamic());
-
-        // A timestamp makes the graph dynamic, which the columns only follow once refreshed
-        n1.addTimestamp(1.0);
-        Assert.assertTrue(graphModel.isDynamic());
-        Assert.assertFalse(model.getEligibleNodeColumns().contains(nodeTimeSet));
-        Assert.assertTrue(model.refreshDynamic());
-        Assert.assertTrue(model.getEligibleNodeColumns().contains(nodeTimeSet));
-        Assert.assertFalse(model.refreshDynamic());
     }
 }

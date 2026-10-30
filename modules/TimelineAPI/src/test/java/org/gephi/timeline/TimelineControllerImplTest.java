@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
@@ -122,7 +121,7 @@ public class TimelineControllerImplTest {
 
     /**
      * The EDT-facing accessors must not wait for the graph lock: a reader holding the lock and a queued writer
-     * block every new reader (the old getGraphModel().getTimeBounds() calls would have blocked here).
+     * block every new reader.
      */
     @Test
     public void testAccessorsDoNotBlockOnContendedGraphLock() throws Exception {
@@ -135,7 +134,6 @@ public class TimelineControllerImplTest {
         TimelineControllerImpl controller =
             (TimelineControllerImpl) Lookup.getDefault().lookup(TimelineController.class);
         TimelineModelImpl model = controller.getModel();
-        model.refreshTimeBounds();
 
         ExecutorService executor = Executors.newSingleThreadExecutor(r -> daemon(r, "edt-like"));
         try (ContendedLock ignored = new ContendedLock(graph)) {
@@ -155,71 +153,6 @@ public class TimelineControllerImplTest {
         }
     }
 
-    @Test
-    public void testPollPublishesNewBounds() {
-        GraphModel graphModel = GraphGenerator.build(workspace).getGraphModel();
-        TimelineControllerImpl controller =
-            (TimelineControllerImpl) Lookup.getDefault().lookup(TimelineController.class);
-        TimelineModelImpl model = new TimelineModelImpl(workspace);
-        GraphObserverThread observer = new GraphObserverThread(controller, model);
-        Assert.assertFalse(model.hasValidBounds());
-
-        Graph graph = graphModel.getGraph();
-        Node n1 = graphModel.factory().newNode("1");
-        n1.addInterval(new Interval(0.0, 10.0));
-        graph.addNode(n1);
-        observer.poll();
-        Assert.assertTrue(model.hasValidBounds());
-        Assert.assertEquals(0.0, model.getMin(), 0.0);
-        Assert.assertEquals(10.0, model.getMax(), 0.0);
-
-        Node n2 = graphModel.factory().newNode("2");
-        n2.addInterval(new Interval(-5.0, 20.0));
-        graph.addNode(n2);
-        observer.poll();
-        Assert.assertEquals(-5.0, model.getMin(), 0.0);
-        Assert.assertEquals(20.0, model.getMax(), 0.0);
-
-        //A poll over unchanged bounds keeps them
-        observer.poll();
-        Assert.assertEquals(-5.0, model.getMin(), 0.0);
-        Assert.assertEquals(20.0, model.getMax(), 0.0);
-    }
-
-    /**
-     * A stopped observer that was waiting for the graph lock must not publish its result afterwards.
-     */
-    @Test
-    public void testStoppedObserverDoesNotPublishBounds() throws Exception {
-        GraphModel graphModel = GraphGenerator.build(workspace).getGraphModel();
-        TimelineControllerImpl controller =
-            (TimelineControllerImpl) Lookup.getDefault().lookup(TimelineController.class);
-        TimelineModelImpl model = new TimelineModelImpl(workspace);
-        GraphObserverThread observer = new GraphObserverThread(controller, model);
-
-        Graph graph = graphModel.getGraph();
-        Node n1 = graphModel.factory().newNode("1");
-        n1.addInterval(new Interval(0.0, 10.0));
-        graph.addNode(n1);
-
-        ExecutorService executor = Executors.newSingleThreadExecutor(r -> daemon(r, "observer-poll"));
-        try (ContendedLock ignored = new ContendedLock(graph)) {
-            Future<?> future = executor.submit(observer::poll);
-            try {
-                future.get(200, TimeUnit.MILLISECONDS);
-                Assert.fail("poll should wait for the graph lock");
-            } catch (TimeoutException expected) {
-                //Blocked behind the queued writer
-            }
-            observer.stopThread();
-            ignored.release();
-            future.get(5, TimeUnit.SECONDS);
-        } finally {
-            executor.shutdownNow();
-        }
-        Assert.assertFalse(model.hasValidBounds());
-    }
-
     private static Thread daemon(Runnable runnable, String name) {
         Thread thread = new Thread(runnable, name);
         thread.setDaemon(true);
@@ -228,7 +161,7 @@ public class TimelineControllerImplTest {
 
     /**
      * Holds the graph read lock on one thread and queues a writer behind it on another, so that any new reader
-     * blocks until {@link #release()} or {@link #close()}.
+     * blocks until {@link #close()}.
      */
     private static class ContendedLock implements AutoCloseable {
 
@@ -263,13 +196,9 @@ public class TimelineControllerImplTest {
             }
         }
 
-        void release() {
-            releaseReader.countDown();
-        }
-
         @Override
         public void close() throws InterruptedException {
-            release();
+            releaseReader.countDown();
             reader.join(5000);
             writer.join(5000);
         }

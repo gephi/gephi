@@ -33,7 +33,6 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
     private boolean includeProperties = AttributesPreferences.isIncludeProperties();
     private Node[] selectedNodes = null;
     private Edge[] selectedEdges = null;
-    private volatile boolean dynamic = false;
 
     public AttributesUIModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -61,19 +60,6 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
         return graphModel;
     }
 
-    /**
-     * Refreshes the cached dynamic flag used to list the eligible columns. The graph model needs the graph read lock
-     * to answer, so this may wait for it and must never be called from the EDT.
-     *
-     * @return true if the flag changed
-     */
-    boolean refreshDynamic() {
-        boolean newDynamic = graphModel.isDynamic();
-        boolean changed = newDynamic != dynamic;
-        dynamic = newDynamic;
-        return changed;
-    }
-
     public List<Column> getEligibleColumns() {
         if (selectedEdges != null) {
             return getEligibleEdgeColumns();
@@ -84,14 +70,13 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
     public List<Column> getEligibleNodeColumns() {
         Table nodeTable = graphModel.getNodeTable();
         final boolean directed = graphModel.isDirected();
-        final boolean dynamic = this.dynamic;
         final Column nodeTimesetCol = graphModel.defaultColumns().nodeTimeSet();
         final Column nodeDegreeCol = graphModel.defaultColumns().degree();
         final Column inDegreeCol = graphModel.defaultColumns().inDegree();
         final Column outDegreeCol = graphModel.defaultColumns().outDegree();
         List<Column> cols = StreamSupport.stream(nodeTable.spliterator(), false)
             .filter(column -> {
-                if (column == nodeTimesetCol && dynamic) {
+                if (column == nodeTimesetCol && graphModel.isDynamic()) {
                     return true;
                 }
                 if (column == nodeDegreeCol) {
@@ -112,10 +97,9 @@ public class AttributesUIModelImpl implements AttributesUIModel, Model, Workspac
     public List<Column> getEligibleEdgeColumns() {
         Table edgeTable = graphModel.getEdgeTable();
         final Column edgeTimesetCol = graphModel.defaultColumns().edgeTimeSet();
-        final boolean dynamic = this.dynamic;
         return StreamSupport.stream(edgeTable.spliterator(), false)
             .filter(column -> {
-                if (column == edgeTimesetCol && dynamic) {
+                if (column == edgeTimesetCol && graphModel.isDynamic()) {
                     return true;
                 }
                 return !column.isProperty();

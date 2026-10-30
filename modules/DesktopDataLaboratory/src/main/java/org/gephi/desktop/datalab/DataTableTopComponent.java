@@ -86,7 +86,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.io.exporter.plugin.ExporterSpreadsheet;
@@ -634,8 +633,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         try {
             Node[] nodes = null;
             Edge[] edges = null;
-            Interval timeBounds;
-            boolean multipleEdgeTypes = false;
             String[] edgeTypeLabels = new String[0];
 
             //Held for the whole snapshot, so only this acquisition can wait: the reads below re-enter the lock
@@ -657,19 +654,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     nodes = graph.getNodes().toArray();
                 } else {
                     edges = graph.getEdges().toArray();
-                    multipleEdgeTypes = gm.getEdgeTypeCount() > 1;
-                    if (multipleEdgeTypes) {
-                        edgeTypeLabels = readEdgeTypeLabels(gm);
-                    }
+                    edgeTypeLabels = readEdgeTypeLabels(gm);
                 }
-                timeBounds = gm.getTimeBounds();
             } finally {
                 lockedGraph.readUnlock();
             }
 
-            final TableSnapshot snapshot =
-                new TableSnapshot(closeEpoch, table, gm, dtm, nodes, edges, timeBounds, multipleEdgeTypes,
-                    edgeTypeLabels);
+            final TableSnapshot snapshot = new TableSnapshot(closeEpoch, table, gm, dtm, nodes, edges, edgeTypeLabels);
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
@@ -730,8 +721,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 final Column[] cols = nodeAvailableColumnsModel.getAvailableColumns();
 
                 //Model
-                nodeTable.refreshModel(snapshot.nodes, cols, snapshot.graphModel, snapshot.dataTablesModel,
-                    snapshot.timeBounds, snapshot.multipleEdgeTypes);
+                nodeTable.refreshModel(snapshot.nodes, cols, snapshot.graphModel, snapshot.dataTablesModel);
 
                 busylabel.setBusy(false);
                 nodeTable.scrollToFirstElementSelected();
@@ -744,8 +734,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                 //Model
                 edgeTable.setEdgeTypeLabels(snapshot.edgeTypeLabels);
-                edgeTable.refreshModel(snapshot.edges, cols, snapshot.graphModel, snapshot.dataTablesModel,
-                    snapshot.timeBounds, snapshot.multipleEdgeTypes);
+                edgeTable.refreshModel(snapshot.edges, cols, snapshot.graphModel, snapshot.dataTablesModel);
 
                 busylabel.setBusy(false);
                 edgeTable.scrollToFirstElementSelected();
@@ -1755,21 +1744,16 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         private final DataTablesModel dataTablesModel;
         private final Node[] nodes;
         private final Edge[] edges;
-        private final Interval timeBounds;
-        private final boolean multipleEdgeTypes;
         private final String[] edgeTypeLabels;
 
         TableSnapshot(int closeEpoch, DisplayTable table, GraphModel graphModel, DataTablesModel dataTablesModel,
-                      Node[] nodes, Edge[] edges, Interval timeBounds, boolean multipleEdgeTypes,
-                      String[] edgeTypeLabels) {
+                      Node[] nodes, Edge[] edges, String[] edgeTypeLabels) {
             this.closeEpoch = closeEpoch;
             this.table = table;
             this.graphModel = graphModel;
             this.dataTablesModel = dataTablesModel;
             this.nodes = nodes;
             this.edges = edges;
-            this.timeBounds = timeBounds;
-            this.multipleEdgeTypes = multipleEdgeTypes;
             this.edgeTypeLabels = edgeTypeLabels;
         }
     }

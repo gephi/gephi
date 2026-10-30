@@ -10,7 +10,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import org.gephi.desktop.attributes.edit.EditPanel;
 import org.gephi.desktop.attributes.selection.SelectionPanel;
 import org.gephi.graph.api.Column;
@@ -21,7 +20,6 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.attributes//Attributes//EN",
@@ -41,7 +39,6 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
 
     private static final String SELECTION_CARD = "selection";
     private static final String EDIT_CARD = "edit";
-    private static final RequestProcessor RP = new RequestProcessor("AttributesTopComponent");
 
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
@@ -50,11 +47,9 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
     private final JButton columnsButton;
 
     private final AttributesUIControllerImpl controller;
-    // The model's dynamic flag needs the graph read lock, so it is refreshed here instead of on the EDT
-    private final RequestProcessor.Task dynamicTask = RP.create(this::refreshDynamic);
 
     // Model
-    private volatile AttributesUIModelImpl model;
+    private AttributesUIModelImpl model;
 
     public AttributesTopComponent() {
         controller = Lookup.getDefault().lookup(AttributesUIControllerImpl.class);
@@ -135,19 +130,7 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         if (model.isEditMode()) {
             editPanel.refreshSelected(model);
         } else {
-            dynamicTask.schedule(0);
             selectionPanel.refreshSelectedNodes(model);
-        }
-    }
-
-    private void refreshDynamic() {
-        AttributesUIModelImpl dynamicModel = model;
-        if (dynamicModel != null && dynamicModel.refreshDynamic()) {
-            SwingUtilities.invokeLater(() -> {
-                if (model == dynamicModel && !dynamicModel.isEditMode() && dynamicModel.getSelectedNodes() != null) {
-                    selectionPanel.refreshSelectedNodes(dynamicModel);
-                }
-            });
         }
     }
 
@@ -164,7 +147,6 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
             cardLayout.show(cardPanel, SELECTION_CARD);
         }
         columnsButton.setEnabled(true);
-        dynamicTask.schedule(0);
     }
 
     private void unsetup() {
@@ -182,7 +164,6 @@ public final class AttributesTopComponent extends TopComponent implements Attrib
         if (model == null) {
             return;
         }
-        dynamicTask.schedule(0);
         List<Column> columns = model.getEligibleColumns();
 
         JPopupMenu popup = new JPopupMenu();
