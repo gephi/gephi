@@ -94,7 +94,9 @@ import org.gephi.branding.desktop.reporter.ReportController;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.branding.desktop.reporter.SentryScrubber;
 import org.netbeans.api.options.OptionsDisplayer;
+import org.openide.modules.ModuleInfo;
 import org.openide.modules.ModuleInstall;
+import org.openide.modules.Modules;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
@@ -474,7 +476,18 @@ public class Installer extends ModuleInstall {
             BufferedReader reader = null;
             try {
                 String gephiVersion = System.getProperty("netbeans.productversion");
-                if (gephiVersion.contains("SNAPSHOT")) {
+                boolean devBuild = gephiVersion.contains("SNAPSHOT");
+
+                // netbeans.productversion comes from the branding bundle, which a stale copy in the user
+                // directory can override. Use the running module's own version instead. Snapshot builds
+                // have a dated implementation version (e.g. 0.11.4-20261030), releases don't.
+                ModuleInfo module = Modules.getDefault().ownerOf(Installer.class);
+                if (module != null && module.getSpecificationVersion() != null) {
+                    gephiVersion = module.getSpecificationVersion().toString();
+                    String implementation = module.getImplementationVersion();
+                    devBuild |= implementation != null && implementation.contains("-");
+                }
+                if (devBuild) {
                     return;
                 }
 
