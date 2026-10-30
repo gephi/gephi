@@ -15,6 +15,7 @@ public class EdgeWorldData implements WorldData {
     private final float nodeScale;
     private final float edgeScale;
     private final float lightenNonSelectedFactor;
+    private final boolean hasSelfLoop;
     private final OpenGLOptions openGLOptions;
 
     public EdgeWorldData(float[] backgroundColor,
@@ -27,6 +28,7 @@ public class EdgeWorldData implements WorldData {
                          float nodeScale,
                          float edgeScale,
                          float lightenNonSelectedFactor,
+                         boolean hasSelfLoop,
                          OpenGLOptions openGLOptions) {
         this.backgroundColor = backgroundColor;
         this.someSelection = someSelection;
@@ -38,6 +40,7 @@ public class EdgeWorldData implements WorldData {
         this.nodeScale = nodeScale;
         this.edgeScale = edgeScale;
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
+        this.hasSelfLoop = hasSelfLoop;
         this.openGLOptions = openGLOptions;
     }
 
@@ -79,6 +82,10 @@ public class EdgeWorldData implements WorldData {
 
     public boolean isEdgeSelectionColor() {
         return edgeSelectionColor;
+    }
+
+    public boolean hasSelfLoop() {
+        return hasSelfLoop;
     }
 
     public OpenGLOptions getOpenGLOptions() {

@@ -1,6 +1,8 @@
 package org.gephi.viz.engine;
 
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
@@ -28,6 +30,7 @@ public class VizEngineProgressTest {
 
     private GraphModel graphModel;
     private VizEngine<RenderingTarget, Object> engine;
+    private TestRenderer renderer;
 
     @Before
     public void setUp() {
@@ -44,7 +47,8 @@ public class VizEngineProgressTest {
         engine = new VizEngine<>(new TestTarget());
         engine.addWorldUpdater(new TestUpdater<>("nodes", new NodesCallback()));
         engine.addWorldUpdater(new TestUpdater<>("edges", new EdgesCallback()));
-        engine.addRenderer(new TestRenderer());
+        renderer = new TestRenderer();
+        engine.addRenderer(renderer);
         engine.setGraphModel(graphModel, null, null);
         engine.reshape(800, 600);
         engine.initPipeline();
@@ -108,6 +112,27 @@ public class VizEngineProgressTest {
 
         engine.resumeUpdating();
         displayUntil(() -> engine.getWorldUpdateCount() > updatesBefore);
+    }
+
+    @Test
+    public void testSwitchedGraphIsDrawnWhileOldGraphIsWriteLocked() throws InterruptedException {
+        displayUntil(() -> renderer.lastDrawn == graphModel);
+
+        GraphModel otherGraphModel =
+            GraphModel.Factory.newInstance(Configuration.builder().enableSpatialIndex(true).build());
+        otherGraphModel.getGraph().addNode(otherGraphModel.factory().newNode("other"));
+
+        try (WriteLockHolder ignored = new WriteLockHolder(graphModel.getGraph())) {
+            // Leaves an update in flight, waiting for the lock
+            displayTimes(20);
+
+            engine.unsetGraphModel(graphModel);
+            engine.setGraphModel(otherGraphModel, null, null);
+            renderer.drawnSinceReset.clear();
+
+            displayUntil(() -> renderer.lastDrawn == otherGraphModel);
+            Assert.assertFalse("Old graph drawn after the switch", renderer.drawnSinceReset.contains(graphModel));
+        }
     }
 
     private void displayUntil(BooleanSupplier condition) throws InterruptedException {
@@ -215,21 +240,37 @@ public class VizEngineProgressTest {
         }
     }
 
-    private static class TestRenderer implements Renderer<RenderingTarget, WorldData> {
+    private static class TestWorldData implements WorldData {
+
+        private final GraphModel graphModel;
+
+        TestWorldData(GraphModel graphModel) {
+            this.graphModel = graphModel;
+        }
+    }
+
+    /**
+     * Records the graph model each frame was drawn from. Frames are drawn on the test thread, in display().
+     */
+    private static class TestRenderer implements Renderer<RenderingTarget, TestWorldData> {
+
+        private final Set<GraphModel> drawnSinceReset = new HashSet<>();
+        private GraphModel lastDrawn;
 
         @Override
-        public WorldData worldUpdated(VizEngineModel model, RenderingTarget target, float[] mvpFloats) {
-            return new WorldData() {
-            };
+        public TestWorldData worldUpdated(VizEngineModel model, RenderingTarget target, float[] mvpFloats) {
+            return new TestWorldData(model.getGraphModel());
         }
 
         @Override
-        public void render(WorldData data, RenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
+        public void render(TestWorldData data, RenderingTarget target, RenderingLayer layer, float[] mvpFloats) {
+            drawnSinceReset.add(data.graphModel);
+            lastDrawn = data.graphModel;
         }
 
         @Override
         public EnumSet<RenderingLayer> getLayers() {
-            return EnumSet.noneOf(RenderingLayer.class);
+            return EnumSet.of(RenderingLayer.MIDDLE1);
         }
 
         @Override

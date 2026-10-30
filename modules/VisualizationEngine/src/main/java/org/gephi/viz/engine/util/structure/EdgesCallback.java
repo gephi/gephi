@@ -45,11 +45,11 @@ public class EdgesCallback implements ElementsCallback<Edge> {
     private boolean hasSelfLoop = false;
 
     @Override
-    public void run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries) {
+    public boolean run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries) {
         if (!renderingOptions.isShowEdges()) {
-            return;
+            return true;
         }
-        graphIndex.getVisibleEdges(this, renderingOptions, viewBoundaries);
+        return graphIndex.getVisibleEdges(this, renderingOptions, viewBoundaries);
     }
 
     @Override

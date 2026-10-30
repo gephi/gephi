@@ -23,11 +23,21 @@ public interface GraphIndex {
 
     Rect2D getGraphBoundaries();
 
-    void getVisibleNodes(ElementsCallback<Node> callback, GraphRenderingOptions graphRenderingOptions,
-                         Rect2D viewBoundaries);
+    /**
+     * Passes the visible nodes in the view boundaries to the callback, under the graph read lock.
+     *
+     * @return false when a graph writer kept the lock and the callback wasn't called
+     */
+    boolean getVisibleNodes(ElementsCallback<Node> callback, GraphRenderingOptions graphRenderingOptions,
+                            Rect2D viewBoundaries);
 
-    void getVisibleEdges(ElementsCallback<Edge> callback, GraphRenderingOptions graphRenderingOptions,
-                         Rect2D viewBoundaries);
+    /**
+     * Passes the visible edges in the view boundaries to the callback, under the graph read lock.
+     *
+     * @return false when a graph writer kept the lock and the callback wasn't called
+     */
+    boolean getVisibleEdges(ElementsCallback<Edge> callback, GraphRenderingOptions graphRenderingOptions,
+                            Rect2D viewBoundaries);
 
     NodeIterable getNodesUnderPosition(float x, float y);
 
