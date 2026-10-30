@@ -1073,15 +1073,6 @@
                     <requiresRestart>true</requiresRestart>
                     <licenseName>CDDL 1.0 and GNU GPL v3</licenseName>
                     <licenseFile>../../COPYING.txt</licenseFile>
-                    
-                    <!-- Installer settings -->
-                    <templateFile>src/main/app-resources/template.xml</templateFile>
-                    <userSettings>
-                        <nbi.icon.file>${basedir}/src/main/app-resources/gephi48.png</nbi.icon.file>
-                    </userSettings>
-                    <installDirName>${brandingToken}</installDirName>
-                    <installerOsSolaris>false</installerOsSolaris>
-                    <installerOsMacosx>false</installerOsMacosx>
                 </configuration>
                 <executions>
                     <!-- Disable default-branding as it's only needed for the branding module -->
