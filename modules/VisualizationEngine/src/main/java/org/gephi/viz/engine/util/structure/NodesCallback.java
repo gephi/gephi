@@ -40,11 +40,11 @@ public class NodesCallback implements ElementsCallback<Node> {
     private float maxY = Float.NEGATIVE_INFINITY;
 
     @Override
-    public void run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries) {
+    public boolean run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries) {
         if (!renderingOptions.isShowNodes()) {
-            return;
+            return true;
         }
-        graphIndex.getVisibleNodes(this, renderingOptions, viewBoundaries);
+        return graphIndex.getVisibleNodes(this, renderingOptions, viewBoundaries);
     }
 
     @Override

@@ -108,6 +108,7 @@ public class VizEngine<R extends RenderingTarget, I> {
     //Model, can't be null
     private volatile VizEngineModel engineModel;
     private List<? extends WorldData> currentWorldData = Collections.emptyList();
+    private VizEngineModel currentWorldDataModel;
 
     //Settings:
     private boolean darkLaf = DEFAULT_DARK_LAF;
@@ -552,15 +553,16 @@ public class VizEngine<R extends RenderingTarget, I> {
         }, updatersThreadPool);
     }
 
-    private CompletableFuture<Void> buildCallbackFuture(final ElementsCallback<?> callback,
-                                                        final GraphIndex graphIndex,
-                                                        final GraphRenderingOptions renderingOptions,
-                                                        final Rect2D boundaries) {
-        return CompletableFuture.runAsync(() -> {
+    private CompletableFuture<Boolean> buildCallbackFuture(final ElementsCallback<?> callback,
+                                                           final GraphIndex graphIndex,
+                                                           final GraphRenderingOptions renderingOptions,
+                                                           final Rect2D boundaries) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                callback.run(graphIndex, renderingOptions, boundaries);
+                return callback.run(graphIndex, renderingOptions, boundaries);
             } catch (Throwable t) {
                 Logger.getLogger(VizEngine.class.getSimpleName()).log(Level.SEVERE, null, t);
+                return true;
             }
         }, updatersThreadPool);
     }
@@ -577,13 +579,14 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         // Get world data (might be empty if no world update was done this frame)
         final long worldUpdateStartNs = timed ? System.nanoTime() : 0L;
+        final VizEngineModel model = this.engineModel;
         List<? extends WorldData> worldData =
-            worldUpdatersExecutionMode.isConcurrent() ? checkConcurrentWorldUpdateIsDone()
-                : runWorldUpdatersSynchronous(this.engineModel);
+            worldUpdatersExecutionMode.isConcurrent() ? checkConcurrentWorldUpdateIsDone(model)
+                : runWorldUpdatersSynchronous(model);
         boolean worldUpdated = true;
         if (worldData.isEmpty() || !updating) {
-            // No world update was done this frame, use last one
-            worldData = currentWorldData;
+            // No world update was done this frame, use last one unless it shows a graph model that was replaced
+            worldData = currentWorldDataModel == model ? currentWorldData : Collections.emptyList();
             worldUpdated = false;
         }
         final long worldUpdateNs = timed ? System.nanoTime() - worldUpdateStartNs : 0L;
@@ -623,8 +626,9 @@ public class VizEngine<R extends RenderingTarget, I> {
             scheduleNextConcurrentWorldUpdateIfDone(this.engineModel);
         }
 
-        // Commit model used for rendering this frame
+        // Commit model used for rendering this frame, and forget a replaced graph model
         currentWorldData = worldData;
+        currentWorldDataModel = worldData.isEmpty() ? null : model;
         if (worldUpdated) {
             worldUpdateCount.incrementAndGet();
         }
@@ -650,10 +654,10 @@ public class VizEngine<R extends RenderingTarget, I> {
     /**
      * Returns the number of world updates committed for drawing since this
      * engine was created. Frames are drawn from the last world data while a
-     * world update is pending, so this count stops while
-     * {@link #getFrameCount()} advances when world updaters are stuck, for
-     * example waiting for the graph lock. Updates completed while updating is
-     * paused aren't committed. Safe to call from any thread.
+     * world update is pending or skipped, so this count stops while
+     * {@link #getFrameCount()} advances when world updaters are stuck, or
+     * skipped because a graph writer keeps the lock. Updates completed while
+     * updating is paused aren't committed. Safe to call from any thread.
      */
     public long getWorldUpdateCount() {
         return worldUpdateCount.get();
@@ -708,7 +712,10 @@ public class VizEngine<R extends RenderingTarget, I> {
 
         Rect2D viewBoundaries = getViewBoundaries();
         for (ElementsCallback<?> callback : updatersElementsCallbacks) {
-            callback.run(model.getGraphIndex(), model.getRenderingOptions(), viewBoundaries);
+            if (!callback.run(model.getGraphIndex(), model.getRenderingOptions(), viewBoundaries)) {
+                // A graph writer kept the lock, keep drawing the last world data
+                return Collections.emptyList();
+            }
         }
         for (WorldUpdater<R, ?> worldUpdater : updatersPipeline) {
             worldUpdater.updateWorld(model);
@@ -720,26 +727,31 @@ public class VizEngine<R extends RenderingTarget, I> {
         ).collect(Collectors.toList());
     }
 
-    private List<? extends WorldData> checkConcurrentWorldUpdateIsDone() {
+    private List<? extends WorldData> checkConcurrentWorldUpdateIsDone(VizEngineModel model) {
         if (allUpdatersCompletableFuture != null) {
             if (worldUpdatersExecutionMode.isSynchronous()) {
-                return runWorldUpdated();
+                return runWorldUpdated(model);
             } else {
                 //Notify renderers if next concurrent asynchronous world data update is done:
                 final boolean worldUpdateDone =
                     allUpdatersCompletableFuture.isDone();
                 if (worldUpdateDone) {
-                    return runWorldUpdated();
+                    return runWorldUpdated(model);
                 }
             }
         }
         return Collections.emptyList();
     }
 
-    private List<? extends WorldData> runWorldUpdated() {
+    private List<? extends WorldData> runWorldUpdated(VizEngineModel model) {
         try {
             VizEngineModel modelUsedByUpdaters = allUpdatersCompletableFuture.get();
             allUpdatersCompletableFuture = null;
+
+            // Null when the update was skipped, or the graph model was replaced since the update started
+            if (modelUsedByUpdaters != model) {
+                return Collections.emptyList();
+            }
 
             return renderersPipeline.stream().map(
                 r -> r.worldUpdated(modelUsedByUpdaters, renderingTarget, mvpFloats)
@@ -770,10 +782,15 @@ public class VizEngine<R extends RenderingTarget, I> {
                 }
 
                 // Run all elements callbacks first
-                CompletableFuture.allOf(updatersElementsCallbacks.stream()
+                final List<CompletableFuture<Boolean>> callbackFutures = updatersElementsCallbacks.stream()
                     .map(c -> buildCallbackFuture(c, model.getGraphIndex(),
                         model.getRenderingOptions(), getViewBoundaries()))
-                    .toArray(CompletableFuture[]::new)).join();
+                    .toList();
+                CompletableFuture.allOf(callbackFutures.toArray(CompletableFuture[]::new)).join();
+                if (!callbackFutures.stream().allMatch(CompletableFuture::join)) {
+                    // A graph writer kept the lock, keep drawing the last world data rather than a partial update
+                    return null;
+                }
 
                 // Run all world updaters
                 CompletableFuture.allOf(updatersPipeline.stream()

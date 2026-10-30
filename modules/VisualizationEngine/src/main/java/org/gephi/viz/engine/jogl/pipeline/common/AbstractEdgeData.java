@@ -482,6 +482,7 @@ public abstract class AbstractEdgeData extends AbstractSelectionData {
             model.getRenderingOptions().getEdgeScale(),
             model.getRenderingOptions().isLightenNonSelected() ?
                 model.getRenderingOptions().getLightenNonSelectedFactor() : 0f,
+            edgesCallback.hasSelfLoop(),
             engine.getOpenGLOptions()
         );
     }

@@ -50,7 +50,8 @@ public class ArrayDrawEdgeData extends AbstractEdgeData {
 
     public void drawArrays(GL3ES3 gl, RenderingLayer layer, EdgeWorldData data, float[] mvpFloats) {
         refreshTime();
-        if (edgesCallback.hasSelfLoop()) {
+        // The callback may already hold elements of an update that wasn't committed
+        if (data.hasSelfLoop()) {
             drawSelfLoop(gl, data, layer, mvpFloats);
         }
         drawUndirected(gl, data, layer, mvpFloats);

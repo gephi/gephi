@@ -1,12 +1,17 @@
 package org.gephi.viz.engine.util.actions;
 
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Rect2D;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.status.GraphSelection;
+import org.gephi.viz.engine.structure.GraphIndex;
+import org.gephi.viz.engine.structure.GraphIndexImpl;
 import org.joml.Vector2f;
 
 /**
@@ -20,25 +25,29 @@ public class InputActionsProcessor {
         this.engine = engine;
     }
 
-    public void selectNodesWithinRadius(VizEngineModel model, float x, float y, float radius) {
+    /**
+     * @return false when a graph writer kept the lock and the selection wasn't changed
+     */
+    public boolean selectNodesWithinRadius(VizEngineModel model, float x, float y, float radius) {
         final float nodeScale = model.getRenderingOptions().getNodeScale();
-        final NodeIterable iterable = model.getGraphIndex().getNodesInsideCircle(x, y, radius, nodeScale);
-        selectNodes(model, iterable);
+        return selectNodes(model, graphIndex -> graphIndex.getNodesInsideCircle(x, y, radius, nodeScale));
     }
 
-    public void selectNodesAndEdgesOnRectangle(VizEngineModel model, final Rect2D rectangle) {
+    /**
+     * @return false when a graph writer kept the lock and the selection wasn't changed
+     */
+    public boolean selectNodesAndEdgesOnRectangle(VizEngineModel model, final Rect2D rectangle) {
         final float nodeScale = model.getRenderingOptions().getNodeScale();
-        final NodeIterable iterable = model.getGraphIndex().getNodesInsideRectangle(rectangle, nodeScale);
-
-        selectNodes(model, iterable);
+        return selectNodes(model, graphIndex -> graphIndex.getNodesInsideRectangle(rectangle, nodeScale));
     }
 
-    public void selectNodesAndEdgesUnderPosition(VizEngineModel model, Vector2f worldCoords) {
+    /**
+     * @return false when a graph writer kept the lock and the selection wasn't changed
+     */
+    public boolean selectNodesAndEdgesUnderPosition(VizEngineModel model, Vector2f worldCoords) {
         final float nodeScale = model.getRenderingOptions().getNodeScale();
-        final NodeIterable iterable =
-            model.getGraphIndex().getNodesUnderPosition(worldCoords.x, worldCoords.y, nodeScale);
-
-        selectNodes(model, iterable);
+        return selectNodes(model,
+            graphIndex -> graphIndex.getNodesUnderPosition(worldCoords.x, worldCoords.y, nodeScale));
     }
 
     public void clearSelection(VizEngineModel model) {
@@ -46,13 +55,28 @@ public class InputActionsProcessor {
         model.getGraphSelection().clearSelectedEdges();
     }
 
-    private void selectNodes(VizEngineModel model, final NodeIterable nodesIterable) {
+    private boolean selectNodes(VizEngineModel model, Function<GraphIndex, NodeIterable> nodesQuery) {
         final GraphRenderingOptions renderingOptions = model.getRenderingOptions();
         final Graph graph = model.getGraphModel().getGraphVisible();
         final GraphSelection selection = model.getGraphSelection();
 
-        selection.setSelectedNodes(graph, nodesIterable, renderingOptions.isAutoSelectNeighbours(),
-            renderingOptions.isShowEdges());
+        // Selecting runs in the world update, which mustn't wait for a graph writer
+        final GraphLock lock = graph.getLock();
+        try {
+            if (!lock.tryReadLock(GraphIndexImpl.READ_LOCK_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                return false;
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        try {
+            selection.setSelectedNodes(graph, nodesQuery.apply(model.getGraphIndex()),
+                renderingOptions.isAutoSelectNeighbours(), renderingOptions.isShowEdges());
+        } finally {
+            lock.readUnlock();
+        }
+        return true;
     }
 
     public void processCameraMoveEvent(int xDiff, int yDiff) {
