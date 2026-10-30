@@ -478,9 +478,8 @@ public class Installer extends ModuleInstall {
                 String gephiVersion = System.getProperty("netbeans.productversion");
                 boolean devBuild = gephiVersion.contains("SNAPSHOT");
 
-                // netbeans.productversion comes from the branding bundle, which a stale copy in the user
-                // directory can override. Use the running module's own version instead. Snapshot builds
-                // have a dated implementation version (e.g. 0.11.4-20261030), releases don't.
+                // netbeans.productversion can be stale (#3311), use the module version. Snapshots have a dated
+                // implementation version (0.11.4-20261030)
                 ModuleInfo module = Modules.getDefault().ownerOf(Installer.class);
                 if (module != null && module.getSpecificationVersion() != null) {
                     gephiVersion = module.getSpecificationVersion().toString();
