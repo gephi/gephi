@@ -143,6 +143,11 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.14
+
       - name: Install MacOS requirements
         run: brew install gnupg@1.4 create-dmg
         if: runner.os == 'macOS'
