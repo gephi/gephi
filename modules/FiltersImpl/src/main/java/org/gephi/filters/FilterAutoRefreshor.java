@@ -56,7 +56,7 @@ public class FilterAutoRefreshor extends Thread {
     private static final int TIMER = 1000;
     private final GraphModel graphModel;
     private final FilterModelImpl filterModel;
-    // Destroyed by this thread instead of the caller of setEnable, as destroying waits for the graph's write lock
+    // Destroyed by this thread, as it waits for the graph's write lock
     private final Queue<GraphObserver> disabledObservers = new ConcurrentLinkedQueue<>();
     private volatile GraphObserver observer;
     private volatile boolean running = true;

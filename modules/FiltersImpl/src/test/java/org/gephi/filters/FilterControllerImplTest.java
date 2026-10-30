@@ -166,7 +166,7 @@ public class FilterControllerImplTest {
     }
 
     /**
-     * Clearing the filter doesn't wait for a reader of the graph, such as a statistic, before returning.
+     * Clearing the filter doesn't wait for a reader of the graph.
      */
     @Test
     public void testClearDoesNotWaitForReader() throws Exception {

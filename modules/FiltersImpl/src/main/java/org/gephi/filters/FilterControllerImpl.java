@@ -285,8 +285,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     }
 
     /**
-     * Destroys a result that is no longer visible on another thread, as destroying waits for the graph's write
-     * lock, which a long reader such as a statistic holds until it completes.
+     * Destroys the view on another thread, as it waits for the graph's write lock.
      */
     private void destroyLater(GraphModel graphModel, GraphView previousResult) {
         if (previousResult != null) {
