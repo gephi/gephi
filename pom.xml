@@ -259,7 +259,7 @@
         
         <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
-        <gephi.central-publishing-maven-plugin.version>0.10.0</gephi.central-publishing-maven-plugin.version>
+        <gephi.central-publishing-maven-plugin.version>0.12.0</gephi.central-publishing-maven-plugin.version>
         
         <gephi.scm-publish-plugin.version>3.2.1</gephi.scm-publish-plugin.version>
         
