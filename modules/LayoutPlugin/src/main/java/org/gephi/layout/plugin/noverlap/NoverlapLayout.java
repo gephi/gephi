@@ -90,9 +90,9 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     @Override
     public void goAlgo() {
         setConverged(true);
-        this.graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            this.graph = graphModel.getGraphVisible();
             // Reset Layout Data
             for (Node n : graph.getNodes()) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {
@@ -252,7 +252,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -266,6 +266,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         } finally {
             graph.readUnlockAll();
         }
+        graph = null;
     }
 
     @Override

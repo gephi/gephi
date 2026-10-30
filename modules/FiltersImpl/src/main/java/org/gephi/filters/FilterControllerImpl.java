@@ -46,6 +46,8 @@ import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.gephi.filters.FilterThread.PropertyModifier;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
@@ -90,6 +92,11 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = PropertyExecutor.class)})
 public class FilterControllerImpl implements FilterController, PropertyExecutor, Controller<FilterModelImpl> {
 
+    private final ExecutorService viewDestroyer = Executors.newSingleThreadExecutor(r -> {
+        Thread thread = new Thread(r, "Filter View Destroyer");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public FilterControllerImpl() {
         //Register range editor
@@ -118,9 +125,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             public void close(Workspace workspace) {
                 FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (m != null) {
-                    if (m.getCurrentResult() != null && m.getGraphModel() != null) {
-                        m.getGraphModel().destroyView(m.getCurrentResult());
-                        m.setCurrentResult(null);
+                    GraphView previousResult = m.setCurrentResult(null);
+                    if (previousResult != null && m.getGraphModel() != null) {
+                        m.getGraphModel().destroyView(previousResult);
                     }
                     m.destroy();
                 }
@@ -272,10 +279,27 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             filterThread.start();
         } else {
             model.getGraphModel().setVisibleView(null);
-            if (model.getCurrentResult() != null) {
-                model.getGraphModel().destroyView(model.getCurrentResult());
-                model.setCurrentResult(null);
-            }
+            destroyLater(model.getGraphModel(), model.setCurrentResult(null));
+        }
+        fireIfStoppedWhileRunning(model, currentThread);
+    }
+
+    /**
+     * Destroys the view on another thread, as it waits for the graph's write lock.
+     */
+    private void destroyLater(GraphModel graphModel, GraphView previousResult) {
+        if (previousResult != null) {
+            viewDestroyer.execute(() -> graphModel.destroyView(previousResult));
+        }
+    }
+
+    /**
+     * A stopped filter thread doesn't fire the event telling the model is no longer running, so this does it when
+     * no new thread took over.
+     */
+    private static void fireIfStoppedWhileRunning(FilterModelImpl model, FilterThread stoppedThread) {
+        if (stoppedThread != null && !model.isRunning()) {
+            model.fireChangeEvent();
         }
     }
 
@@ -306,10 +330,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         }
 
         model.getGraphModel().setVisibleView(null);
-        if (model.getCurrentResult() != null) {
-            model.getGraphModel().destroyView(model.getCurrentResult());
-            model.setCurrentResult(null);
-        }
+        destroyLater(model.getGraphModel(), model.setCurrentResult(null));
 
         if (query != null) {
             FilterThread filterThread = new FilterThread(model, (AbstractQueryImpl) query);
@@ -322,12 +343,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                 visController.resetSelection();
             }
         }
+        fireIfStoppedWhileRunning(model, currentThread);
     }
 
     @Override
     public void exportToColumn(String title, Query query) {
         FilterModelImpl model = getModel();
         Graph result;
+        GraphView processedView = null;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
             if (view == null) {
@@ -338,6 +361,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
             result = processor.process((AbstractQueryImpl) query, graphModel);
+            processedView = result.getView();
         }
         Column nodeCol = result.getModel().getNodeTable().getColumn("filter_" + title);
         if (nodeCol == null) {
@@ -361,6 +385,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } finally {
             result.writeUnlock();
             result.readUnlockAll();
+            if (processedView != null && !processedView.isMainView() && !processedView.isDestroyed()) {
+                model.getGraphModel().destroyView(processedView);
+            }
         }
         //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
@@ -414,6 +441,20 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                     }
 
                     graphView.readLock();
+                    //A view destroyed while waiting for the lock may no longer follow the graph, the model's
+                    //current result replaced it
+                    while (fixedResult == null && graphView.getView().isDestroyed()) {
+                        GraphView current = model.getCurrentResult();
+                        if (current == graphView.getView()) {
+                            break;
+                        }
+                        graphView.readUnlock();
+                        if (current == null) {
+                            return;
+                        }
+                        graphView = model.getGraphModel().getGraph(current);
+                        graphView.readLock();
+                    }
                     try {
                         graph.writeLock();
                         try {
@@ -439,6 +480,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
                     //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
                 } finally {
                     Progress.finish(ticket);
+                    if (fixedResult != null && !fixedResult.getView().isMainView()
+                        && !fixedResult.getView().isDestroyed()) {
+                        model.getGraphModel().destroyView(fixedResult.getView());
+                    }
                 }
             }
         }, "Export filter to workspace").start();
@@ -448,6 +493,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
     public void exportToLabelVisible(Query query) {
         FilterModelImpl model = getModel();
         Graph result;
+        GraphView processedView = null;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
             if (view == null) {
@@ -457,6 +503,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } else {
             FilterProcessor processor = new FilterProcessor();
             result = processor.process((AbstractQueryImpl) query, model.getGraphModel());
+            processedView = result.getView();
         }
         Graph fullGraph = model.getGraphModel().getGraph();
 
@@ -473,6 +520,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         } finally {
             fullGraph.writeUnlock();
             fullGraph.readUnlockAll();
+            if (processedView != null && !processedView.isMainView() && !processedView.isDestroyed()) {
+                model.getGraphModel().destroyView(processedView);
+            }
         }
     }
 

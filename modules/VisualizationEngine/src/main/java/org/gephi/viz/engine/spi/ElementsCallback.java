@@ -9,7 +9,12 @@ import org.gephi.viz.engine.structure.GraphIndex;
 
 public interface ElementsCallback<T> extends Consumer<T> {
 
-    void run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries);
+    /**
+     * Gathers the elements from the graph index.
+     *
+     * @return false when a graph writer kept the lock and the elements weren't gathered, which skips the world update
+     */
+    boolean run(GraphIndex graphIndex, GraphRenderingOptions renderingOptions, Rect2D viewBoundaries);
 
     /**
      * Called when going to start receiving elements

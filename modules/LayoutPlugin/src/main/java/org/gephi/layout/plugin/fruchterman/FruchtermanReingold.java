@@ -86,9 +86,9 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        this.graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            this.graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 
@@ -171,12 +171,15 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
     @Override
     public void endAlgo() {
+        if (graph == null) {
+            return;
+        }
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
@@ -185,6 +188,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
         } finally {
             graph.readUnlockAll();
         }
+        graph = null;
     }
 
     @Override

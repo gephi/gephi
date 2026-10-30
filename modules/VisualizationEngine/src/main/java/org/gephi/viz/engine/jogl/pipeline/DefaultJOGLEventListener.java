@@ -31,7 +31,9 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
     public static final double KEY_ZOOM_STEP = 3;
     private boolean mouseRightButtonPressed = false;
     private boolean mouseLeftButtonPressed = false;
+    // Selections to apply, kept until the graph lock lets them through
     private MouseEvent lastMovedPosition = null;
+    private Rect2D pendingRectangle = null;
     private VizEngineModel model;
 
     public DefaultJOGLEventListener(VizEngine<JOGLRenderingTarget, NEWTEvent> engine) {
@@ -41,19 +43,26 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
     @Override
     public void frameStart(VizEngineModel model) {
-        lastMovedPosition = null;
         this.model = model;
+        // Before the other listeners process their events, so a click doesn't act on a selection left behind
+        applyPendingSelection(model);
     }
 
     @Override
     public void frameEnd(VizEngineModel model) {
+        applyPendingSelection(model);
+        this.model = null;
+    }
+
+    private void applyPendingSelection(VizEngineModel model) {
+        boolean applied = true;
         if (lastMovedPosition != null) {
             //TODO: move to independent selection input listener
             final Vector2f worldCoords =
                 engine.screenCoordinatesToWorldCoordinates(lastMovedPosition.getX(), lastMovedPosition.getY());
 
             if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SINGLE_NODE_SELECTION) {
-                inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+                applied = inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
             } else if (
                 model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.SIMPLE_MOUSE_SELECTION ||
                     model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.MULTI_NODE_SELECTION) {
@@ -61,13 +70,27 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
 
                 if (diameter <= 1) {
                     // Diameter is disabled
-                    inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
+                    applied = inputActionsProcessor.selectNodesAndEdgesUnderPosition(model, worldCoords);
                 } else {
-                    inputActionsProcessor.selectNodesWithinRadius(model, worldCoords.x, worldCoords.y, diameter);
+                    applied =
+                        inputActionsProcessor.selectNodesWithinRadius(model, worldCoords.x, worldCoords.y, diameter);
                 }
             }
+            if (applied) {
+                lastMovedPosition = null;
+            }
         }
-        this.model = null;
+        if (pendingRectangle != null) {
+            if (inputActionsProcessor.selectNodesAndEdgesOnRectangle(model, pendingRectangle)) {
+                pendingRectangle = null;
+            } else {
+                applied = false;
+            }
+        }
+        if (!applied) {
+            // A graph writer keeps the lock, clear the selection rather than let a click act on stale nodes
+            inputActionsProcessor.clearSelection(model);
+        }
     }
 
     @Override
@@ -178,6 +201,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                 leftClick) {
                 return true;
             } else if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+                pendingRectangle = null;
                 inputActionsProcessor.clearSelection(model);
                 return true;
             }
@@ -191,6 +215,7 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
             mouseLeftButtonPressed = true;
 
             if (model.getGraphSelection().getMode() == GraphSelection.GraphSelectionMode.RECTANGLE_SELECTION) {
+                pendingRectangle = null;
                 inputActionsProcessor.clearSelection(model);
                 model.getGraphSelection()
                     .startRectangleSelection(engine.screenCoordinatesToWorldCoordinates(e.getX(), e.getY()));
@@ -264,13 +289,13 @@ public class DefaultJOGLEventListener implements InputListener<JOGLRenderingTarg
                     final Vector2f currentPosition = model.getGraphSelection().getRectangleCurrentPosition();
 
                     if (initialPosition != null && currentPosition != null) {
-                        final Rect2D rectangle = new Rect2D(
+                        // Selected at the end of the frame
+                        pendingRectangle = new Rect2D(
                             Math.min(initialPosition.x, currentPosition.x),
                             Math.min(initialPosition.y, currentPosition.y),
                             Math.max(initialPosition.x, currentPosition.x),
                             Math.max(initialPosition.y, currentPosition.y)
                         );
-                        inputActionsProcessor.selectNodesAndEdgesOnRectangle(model, rectangle);
                     }
                     return true;
                 } else if (

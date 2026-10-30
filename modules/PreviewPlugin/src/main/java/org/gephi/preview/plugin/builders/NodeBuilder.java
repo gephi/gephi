@@ -56,17 +56,22 @@ public class NodeBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-        return graph.getNodes().stream().map(
-            n -> {
-                NodeItem nodeItem = new NodeItem(n);
-                nodeItem.setData(NodeItem.X, n.x());
-                nodeItem.setData(NodeItem.Y, -n.y());
-                nodeItem.setData(NodeItem.Z, n.z());
-                nodeItem.setData(NodeItem.SIZE, n.size() * 2f);
-                nodeItem.setData(NodeItem.COLOR, n.getColor());
-                return nodeItem;
-            }
-        ).toArray(NodeItem[]::new);
+        graph.readLock();
+        try {
+            return graph.getNodes().stream().map(
+                n -> {
+                    NodeItem nodeItem = new NodeItem(n);
+                    nodeItem.setData(NodeItem.X, n.x());
+                    nodeItem.setData(NodeItem.Y, -n.y());
+                    nodeItem.setData(NodeItem.Z, n.z());
+                    nodeItem.setData(NodeItem.SIZE, n.size() * 2f);
+                    nodeItem.setData(NodeItem.COLOR, n.getColor());
+                    return nodeItem;
+                }
+            ).toArray(NodeItem[]::new);
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override

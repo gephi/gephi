@@ -143,6 +143,11 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.14
+
       - name: Install MacOS requirements
         run: brew install gnupg@1.4 create-dmg
         if: runner.os == 'macOS'
@@ -212,6 +217,8 @@ jobs:
             deploy -P deployment,sign-artifacts,${{ matrix.task }}
         working-directory: modules/application
         env:
+          # Keep Git Bash on Windows from rewriting GNUPGHOME to D:/... when it starts java.exe
+          MSYS2_ENV_CONV_EXCL: GNUPGHOME
           OSSRH_USER: ${{ secrets.OSSRH_TOKEN_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_TOKEN_PASSWD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -374,11 +381,10 @@ jobs:
 
   update-site:
     # In snapshot mode bundle directly publishes binaries, so update-site can
-    # run right after. In release mode wait for publish-central to succeed so
-    # we don't push the autoupdate XML before the bundle is at least validated
-    # by Central. The bundle still needs to be manually published in the UI to
-    # actually become live, so the autoupdate site may briefly point to
-    # not-yet-published files until that step is completed.
+    # run right after. In release mode the bundle is only validated by
+    # publish-central and still needs to be published manually in the UI. The
+    # autoupdate XML links to the NBMs on repo1.maven.org, so the job waits
+    # (step below) until they are downloadable before pushing it.
     needs: [ build-base, bundle, publish-central ]
     if: |
       always() &&
@@ -399,6 +405,37 @@ jobs:
         with:
           name: autoupdate-output
           path: modules/application/target/autoupdate_site
+
+      # Releases only: block until the manual "Publish" click in the Central
+      # Portal has landed every Gephi NBM referenced by updates.xml. Bounded by
+      # the 6h hosted-runner job limit; re-run this job if that's exceeded.
+      - name: Wait for artifacts on Maven Central
+        if: needs.build-base.outputs.is_release == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          URLS=$(grep -o 'distribution="https://repo1.maven.org/maven2/org/gephi/[^"]*"' \
+            modules/application/target/autoupdate_site/updates.xml | cut -d'"' -f2 | sort -u || true)
+          if [[ -z "$URLS" ]]; then
+            echo "No org/gephi modules found in updates.xml" >&2
+            exit 1
+          fi
+          echo "Waiting for $(echo "$URLS" | wc -l) modules to appear on Maven Central"
+          while true; do
+            MISSING=""
+            for url in $URLS; do
+              if ! curl -fsI -o /dev/null "$url"; then
+                MISSING="$url"
+                break
+              fi
+            done
+            if [[ -z "$MISSING" ]]; then
+              echo "All modules are available on Maven Central."
+              break
+            fi
+            echo "Not yet published: $MISSING"
+            sleep 60
+          done
 
       - name: Configure Git user
         run: |

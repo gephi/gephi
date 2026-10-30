@@ -178,14 +178,16 @@ public class PreviewUIControllerImpl implements PreviewUIController, Controller<
                 model.setRefreshing(true);
                 fireEvent(REFRESHING, true);
 
-                previewController.getModel().getProperties()
-                    .putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
-                previewController.refreshPreview();
+                try {
+                    previewController.getModel().getProperties()
+                        .putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
+                    previewController.refreshPreview();
 
-                fireEvent(REFRESHED, model);
-
-                model.setRefreshing(false);
-                fireEvent(REFRESHING, false);
+                    fireEvent(REFRESHED, model);
+                } finally {
+                    model.setRefreshing(false);
+                    fireEvent(REFRESHING, false);
+                }
             }, "Refresh Preview");
             refreshThread.start();
         }

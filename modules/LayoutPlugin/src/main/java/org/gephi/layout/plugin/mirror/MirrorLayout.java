@@ -38,9 +38,9 @@ public class MirrorLayout extends AbstractLayout {
 
     @Override
     public void goAlgo() {
-        Graph graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             float xMean = 0.f, yMean = 0.f;
             for (Node n : graph.getNodes()) {
                 if (yAxis) {
@@ -66,7 +66,7 @@ public class MirrorLayout extends AbstractLayout {
             }
             setConverged(true);
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 

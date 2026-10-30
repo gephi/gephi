@@ -112,13 +112,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        graph.readLock();
-
-        Progress.start(progressTicket, graph.getNodeCount());
-
+        // Fetched under the lock, the visible view can't be destroyed by a filter before it's exported
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            Progress.start(progressTicket, graph.getNodeCount());
+
             //use labels only if every node has label:
             boolean useLabels = true;
             NodeIterable nodeIterable = graph.getNodes();
@@ -140,7 +140,7 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         } catch (Exception e) {
             Logger.getLogger(ExporterDL.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
             Progress.finish(progressTicket);
         }
 
@@ -175,7 +175,6 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                         if (!labelUsed.contains(node.getLabel() + "_" + i)) {
                             idToLabel.put(node.getId(), node.getLabel() + "_" + i);
                             labelUsed.add(node.getLabel() + "_" + i);
-                            nodeIterable.doBreak();
                             break;
                         }
                     }

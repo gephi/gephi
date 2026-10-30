@@ -73,9 +73,9 @@ public class RotateLayout extends AbstractLayout {
 
     @Override
     public void goAlgo() {
-        Graph graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             float sin = (float) Math.sin(-getAngle() * Math.PI / 180f);
             float cos = (float) Math.cos(-getAngle() * Math.PI / 180f);
             float px = 0f;
@@ -90,7 +90,7 @@ public class RotateLayout extends AbstractLayout {
             }
             setConverged(true);
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 

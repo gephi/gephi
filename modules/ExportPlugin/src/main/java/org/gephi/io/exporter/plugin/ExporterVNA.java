@@ -96,19 +96,18 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        graph.readLock();
-
-        //nodes are counted twice, because they are printed in exportNodeData and exportNodeProperties
-        Progress.start(progressTicket, graph.getNodeCount() * 2 + graph.getEdgeCount());
-
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            //nodes are counted twice, because they are printed in exportNodeData and exportNodeProperties
+            Progress.start(progressTicket, graph.getNodeCount() * 2 + graph.getEdgeCount());
+
             exportData(graph);
         } catch (Exception e) {
             Logger.getLogger(ExporterVNA.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 

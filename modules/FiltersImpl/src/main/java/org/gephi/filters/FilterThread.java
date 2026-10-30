@@ -44,6 +44,7 @@ package org.gephi.filters;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.api.PropertyExecutor.Callback;
 import org.gephi.filters.api.Query;
@@ -71,6 +72,9 @@ public class FilterThread extends Thread {
     private final boolean filtering;
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
     private volatile boolean running = true;
+    // Number of queries set with setRootQuery() and number processed when the last one completed
+    private final AtomicLong requested = new AtomicLong();
+    private volatile long processed;
 
     public FilterThread(FilterModelImpl model, AbstractQueryImpl initialQuery) {
         super("Filter Thread - " + model.getWorkspace().toString());
@@ -95,52 +99,69 @@ public class FilterThread extends Thread {
     public void run() {
 
         while (running) {
+            long generation;
             AbstractQueryImpl q;
+            // setRootQuery() updates both under the lock, so the query taken is the one of this generation
             synchronized (this.lock) {
-                while ((q = rootQuery.getAndSet(null)) == null && running) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
+                generation = requested.get();
+                q = rootQuery.getAndSet(null);
+            }
+            if (q == null) {
+                // Outside the lock, as it notifies listeners
+                markProcessed(generation);
+                synchronized (this.lock) {
+                    // A query set after the generation was read is a newer generation, waiting would lose it
+                    if (requested.get() == generation && running) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                     }
                 }
+                if (!running) {
+                    return;
+                }
+                continue;
             }
             if (!running) {
                 return;
             }
-            Query modifiedQuery = null;
-            for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
-                PropertyModifier pm = itr.next();
-                itr.remove();
-                pm.callback.setValue(pm.value);
-                modifiedQuery = pm.query;
-            }
-            if (modifiedQuery != null) {
-                model.updateParameters(modifiedQuery);
-            }
-
-            //Progress
             ProgressTicket progressTicket = null;
-            ProgressTicketProvider progressTicketProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
-            if (progressTicketProvider != null) {
-                String msg = NbBundle.getMessage(FilterThread.class, "FilterThread.progress.taskName", q.getName());
-                progressTicket = progressTicketProvider.createTicket(msg, null);
-                Progress.start(progressTicket);
-            }
+            try {
+                Query modifiedQuery = null;
+                for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
+                    PropertyModifier pm = itr.next();
+                    itr.remove();
+                    pm.callback.setValue(pm.value);
+                    modifiedQuery = pm.query;
+                }
+                if (modifiedQuery != null) {
+                    model.updateParameters(modifiedQuery);
+                }
 
-            if (filtering) {
-                filter(q);
-            } else {
-                select(q);
-            }
+                //Progress
+                ProgressTicketProvider progressTicketProvider =
+                    Lookup.getDefault().lookup(ProgressTicketProvider.class);
+                if (progressTicketProvider != null) {
+                    String msg =
+                        NbBundle.getMessage(FilterThread.class, "FilterThread.progress.taskName", q.getName());
+                    progressTicket = progressTicketProvider.createTicket(msg, null);
+                    Progress.start(progressTicket);
+                }
 
-            Progress.finish(progressTicket);
-            /*try {
-            //System.out.println("filter query " + q.getName());
-            Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            }*/
+                if (filtering) {
+                    filter(q);
+                } else {
+                    select(q);
+                }
+            } catch (Exception e) {
+                //Logged, so that a failing query doesn't stop the thread
+                Exceptions.printStackTrace(e);
+            } finally {
+                Progress.finish(progressTicket);
+                markProcessed(generation);
+            }
         }
         //clear map
         Query q = null;
@@ -161,10 +182,10 @@ public class FilterThread extends Thread {
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
-            if (model.getCurrentResult() != null) {
-                graphModel.destroyView(model.getCurrentResult());
+            GraphView previousResult = model.setCurrentResult(view);
+            if (previousResult != null) {
+                graphModel.destroyView(previousResult);
             }
-            model.setCurrentResult(view);
         } else {
             //destroy view
             graphModel.destroyView(result.getView());
@@ -183,7 +204,10 @@ public class FilterThread extends Thread {
                 visController.selectEdges(result.getEdges().toArray());
             }
             GraphView view = result.getView();
-            model.setCurrentResult(view);
+            GraphView previousResult = model.setCurrentResult(view);
+            if (previousResult != null) {
+                graphModel.destroyView(previousResult);
+            }
         } else {
             //destroy view
             graphModel.destroyView(result.getView());
@@ -195,9 +219,28 @@ public class FilterThread extends Thread {
     }
 
     public void setRootQuery(AbstractQueryImpl rootQuery) {
-        this.rootQuery.set(rootQuery);
         synchronized (this.lock) {
+            requested.incrementAndGet();
+            this.rootQuery.set(rootQuery);
             lock.notify();
+        }
+    }
+
+    /**
+     * Returns <code>true</code> while a query set with {@link #setRootQuery(AbstractQueryImpl)} hasn't been
+     * processed yet.
+     */
+    public boolean isBusy() {
+        return running && isAlive() && processed < requested.get();
+    }
+
+    private void markProcessed(long generation) {
+        if (processed != generation) {
+            processed = generation;
+            // A stopped thread no longer matters to the model, which fired its own event when it was replaced
+            if (running && !isBusy()) {
+                model.fireChangeEvent();
+            }
         }
     }
 

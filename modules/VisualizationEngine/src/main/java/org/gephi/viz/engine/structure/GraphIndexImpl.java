@@ -1,8 +1,10 @@
 package org.gephi.viz.engine.structure;
 
+import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
@@ -21,6 +23,11 @@ import org.joml.Intersectionf;
  * @author Eduardo Ramos
  */
 public class GraphIndexImpl implements GraphIndex {
+
+    /**
+     * How long reading the graph for a world update waits for a writer before the update is skipped.
+     */
+    public static final long READ_LOCK_TIMEOUT_MS = 100;
 
     private final GraphModel graphModel;
     private final GraphSelectionImpl graphSelection;
@@ -45,10 +52,12 @@ public class GraphIndexImpl implements GraphIndex {
     }
 
     @Override
-    public void getVisibleNodes(ElementsCallback<Node> callback, GraphRenderingOptions graphRenderingOptions,
-                                Rect2D viewBoundaries) {
+    public boolean getVisibleNodes(ElementsCallback<Node> callback, GraphRenderingOptions graphRenderingOptions,
+                                   Rect2D viewBoundaries) {
         final Graph graph = graphModel.getGraph();
-        graph.readLock();
+        if (!tryReadLock(graph.getLock())) {
+            return false;
+        }
         try {
             final Graph visibleGraph = getVisibleGraph();
             callback.start(visibleGraph, graphRenderingOptions, graphSelection);
@@ -66,13 +75,16 @@ public class GraphIndexImpl implements GraphIndex {
         } finally {
             graph.readUnlock();
         }
+        return true;
     }
 
     @Override
-    public void getVisibleEdges(ElementsCallback<Edge> callback, GraphRenderingOptions graphRenderingOptions,
-                                Rect2D viewBoundaries) {
+    public boolean getVisibleEdges(ElementsCallback<Edge> callback, GraphRenderingOptions graphRenderingOptions,
+                                   Rect2D viewBoundaries) {
         final Graph graph = graphModel.getGraph();
-        graph.readLock();
+        if (!tryReadLock(graph.getLock())) {
+            return false;
+        }
         try {
             final Graph visibleGraph = getVisibleGraph();
             callback.start(visibleGraph, graphRenderingOptions, graphSelection);
@@ -88,6 +100,16 @@ public class GraphIndexImpl implements GraphIndex {
             callback.end(visibleGraph);
         } finally {
             graph.readUnlock();
+        }
+        return true;
+    }
+
+    private static boolean tryReadLock(GraphLock lock) {
+        try {
+            return lock.tryReadLock(READ_LOCK_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return false;
         }
     }
 

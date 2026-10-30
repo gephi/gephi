@@ -129,8 +129,14 @@ public class Modularity implements Statistics, LongTask {
 
     @Override
     public void execute(GraphModel graphModel) {
-        Graph graph = graphModel.getUndirectedGraphVisible();
-        execute(graph);
+        // Fetched under the lock, the visible view can't be destroyed by a filter before it's used
+        Graph mainGraph = graphModel.getGraph();
+        mainGraph.readLock();
+        try {
+            execute(graphModel.getUndirectedGraphVisible());
+        } finally {
+            mainGraph.readUnlock();
+        }
     }
 
     public void execute(Graph graph) {
@@ -451,7 +457,6 @@ public class Modularity implements Statistics, LongTask {
                 nodeConnectionsWeight[index] = new HashMap<>();
                 nodeConnectionsCount[index] = new HashMap<>();
                 weights[index] = 0;
-                nodeCommunities[index].seed(index);
                 Community hidden = new Community(structure);
                 hidden.nodes.add(index);
                 invMap.put(index, hidden);
@@ -518,6 +523,12 @@ public class Modularity implements Statistics, LongTask {
                 }
             }
             graphWeightSum /= 2.0;
+
+            // Seed once the weights are complete, as zoomOut does. Seeding earlier left every community's
+            // weightSum short of its node's weight (#3322).
+            for (int i = 0; i < N; i++) {
+                nodeCommunities[i].seed(i);
+            }
         }
 
         private void addNodeTo(int node, Community to) {
@@ -529,17 +540,19 @@ public class Modularity implements Statistics, LongTask {
 
                 ////////
                 //Remove Node Connection to this community
-                Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
-                if (neighEdgesTo == null) {
-                    nodeConnectionsWeight[neighbor].put(to, e.weight);
-                } else {
-                    nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
-                }
-                Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
-                if (neighCountEdgesTo == null) {
-                    nodeConnectionsCount[neighbor].put(to, 1);
-                } else {
-                    nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
+                if (node != neighbor) {
+                    Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
+                    if (neighEdgesTo == null) {
+                        nodeConnectionsWeight[neighbor].put(to, e.weight);
+                    } else {
+                        nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
+                    }
+                    Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
+                    if (neighCountEdgesTo == null) {
+                        nodeConnectionsCount[neighbor].put(to, 1);
+                    } else {
+                        nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
+                    }
                 }
 
                 ///////////////////
@@ -556,6 +569,13 @@ public class Modularity implements Statistics, LongTask {
                     adjCom.connectionsCount.put(to, 1);
                 } else {
                     adjCom.connectionsCount.put(to, cEdgesto + 1);
+                }
+
+                // A self-loop was already counted once above, as removeNodeFromItsCommunity does.
+                // Counting it twice left the node linked to communities it had left, even empty ones,
+                // and it could keep moving between two of them forever (#1630).
+                if (node == neighbor) {
+                    continue;
                 }
 
                 Float nodeEdgesTo = nodeConnectionsWeight[node].get(adjCom);
@@ -598,14 +618,16 @@ public class Modularity implements Statistics, LongTask {
 
                 ////////
                 //Remove Node Connection to this community
-                Float edgesTo = nodeConnectionsWeight[neighbor].get(community);
-                Integer countEdgesTo = nodeConnectionsCount[neighbor].get(community);
-                if (countEdgesTo - 1 == 0) {
-                    nodeConnectionsWeight[neighbor].remove(community);
-                    nodeConnectionsCount[neighbor].remove(community);
-                } else {
-                    nodeConnectionsWeight[neighbor].put(community, edgesTo - e.weight);
-                    nodeConnectionsCount[neighbor].put(community, countEdgesTo - 1);
+                if (node != neighbor) {
+                    Float edgesTo = nodeConnectionsWeight[neighbor].get(community);
+                    Integer countEdgesTo = nodeConnectionsCount[neighbor].get(community);
+                    if (countEdgesTo - 1 == 0) {
+                        nodeConnectionsWeight[neighbor].remove(community);
+                        nodeConnectionsCount[neighbor].remove(community);
+                    } else {
+                        nodeConnectionsWeight[neighbor].put(community, edgesTo - e.weight);
+                        nodeConnectionsCount[neighbor].put(community, countEdgesTo - 1);
+                    }
                 }
 
                 ///////////////////
@@ -702,8 +724,12 @@ public class Modularity implements Statistics, LongTask {
                 Community com = nodeCommunities[i];
                 communities.add(com);
                 for (ModEdge e : newTopology[i]) {
-                    nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
-                    nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
+                    // A node's self-loop moves with it, so it only adds to its community's internal weight
+                    // and is no link from the node to a community. Counting it as one over-valued staying.
+                    if (e.target != i) {
+                        nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
+                        nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
+                    }
                     com.connectionsWeight.put(nodeCommunities[e.target], e.weight);
                     com.connectionsCount.put(nodeCommunities[e.target], 1);
                 }

@@ -323,7 +323,7 @@ public class TimelineControllerImpl implements TimelineController, Controller<Ti
 
                 @Override
                 public void run() {
-                    Graph graph = currentModel.getGraphModel().getGraphVisible();
+                    Graph graph = currentModel.getGraphModel().getGraph();
                     TimelineChart chart = TimelineChartImpl.of(graph, column);
                     currentModel.setChart(chart);
 

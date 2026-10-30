@@ -135,14 +135,15 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
         Partition partition = loadedFunction.getPartition();
-        Graph graph = loadedFunction.getGraph();
+        Graph mainGraph = loadedFunction.getModel().getGraphModel().getGraph();
         final boolean loadedIgnoreNull = !loadedFunction.getModel().isTransformNullValues();
         final Collection<Object> loadedValues;
         final int size;
         final List<Object[]> rows = new ArrayList<>();
 
-        graph.readLock();
+        mainGraph.readLock();
         try {
+            Graph graph = loadedFunction.getGraph();
             boolean valid = loadedFunction.isValid();
             loadedValues = valid ? partition.getSortedValues(graph) : Collections.EMPTY_LIST;
             size = valid ? partition.size(graph) : 0;
@@ -166,7 +167,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
         } finally {
-            graph.readUnlock();
+            mainGraph.readUnlock();
         }
 
         SwingUtilities.invokeLater(() -> applyValues(loadedFunction, loadedValues, size, loadedIgnoreNull, rows));

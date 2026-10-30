@@ -42,6 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.filters;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
 import org.openide.util.Exceptions;
@@ -54,6 +56,8 @@ public class FilterAutoRefreshor extends Thread {
     private static final int TIMER = 1000;
     private final GraphModel graphModel;
     private final FilterModelImpl filterModel;
+    // Destroyed by this thread, as it waits for the graph's write lock
+    private final Queue<GraphObserver> disabledObservers = new ConcurrentLinkedQueue<>();
     private volatile GraphObserver observer;
     private volatile boolean running = true;
 
@@ -69,6 +73,7 @@ public class FilterAutoRefreshor extends Thread {
     public void run() {
         while (running) {
             try {
+                destroyDisabledObservers();
                 GraphObserver currentObserver = observer;
                 if (currentObserver != null && currentObserver.hasGraphChanged()) {
                     manualRefresh();
@@ -85,8 +90,8 @@ public class FilterAutoRefreshor extends Thread {
             if (observer == null) {
                 observer = graphModel.createGraphObserver(graphModel.getGraph(), false);
             }
-        } else if (observer != null && !observer.isDestroyed()) {
-            observer.destroy();
+        } else if (observer != null) {
+            disabledObservers.add(observer);
             observer = null;
         }
     }
@@ -94,9 +99,19 @@ public class FilterAutoRefreshor extends Thread {
     public synchronized void setRunning(boolean running) {
         this.running = running;
         if (!running) {
+            destroyDisabledObservers();
             if (observer != null && !observer.isDestroyed()) {
                 observer.destroy();
                 observer = null;
+            }
+        }
+    }
+
+    private void destroyDisabledObservers() {
+        GraphObserver disabled;
+        while ((disabled = disabledObservers.poll()) != null) {
+            if (!disabled.isDestroyed()) {
+                disabled.destroy();
             }
         }
     }

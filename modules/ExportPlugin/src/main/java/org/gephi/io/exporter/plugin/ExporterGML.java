@@ -110,19 +110,18 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getGraphModel(workspace);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
-
-        Progress.start(progressTicket, graph.getNodeCount() + graph.getEdgeCount());
-
-        graph.readLock();
-
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+            Progress.start(progressTicket, graph.getNodeCount() + graph.getEdgeCount());
+
             normalization = NormalizationHelper.build(normalize, graph);
             exportData(graph);
         } catch (IOException e) {
             Logger.getLogger(ExporterGML.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 

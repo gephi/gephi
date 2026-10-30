@@ -72,7 +72,6 @@ public class ForceAtlas2 implements Layout {
     private final ForceAtlas2Builder layoutBuilder;
     double outboundAttCompensation = 1;
     private GraphModel graphModel;
-    private Graph graph;
     private double edgeWeightInfluence;
     private double jitterTolerance;
     private double scalingRatio;
@@ -105,10 +104,9 @@ public class ForceAtlas2 implements Layout {
         speed = 1.;
         speedEfficiency = 1.;
 
-        graph = graphModel.getGraphVisible();
-
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
@@ -128,7 +126,7 @@ public class ForceAtlas2 implements Layout {
             pool = Executors.newFixedThreadPool(threadCount);
             currentThreadCount = threadCount;
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -150,9 +148,9 @@ public class ForceAtlas2 implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getGraphVisible();
-        graph.readLock();
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = graphModel.getGraphVisible();
             boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
             Interval interval = graph.getView().getTimeInterval();
             Node[] nodes = graph.getNodes().toArray();
@@ -291,6 +289,10 @@ public class ForceAtlas2 implements Layout {
                         Math.sqrt(Math.pow(nLayout.old_dx + nLayout.dx, 2) + Math.pow(nLayout.old_dy + nLayout.dy, 2));
                 }
             }
+            // Nothing moves, and 0 / 0 would make the speed NaN for good
+            if (totalSwinging == 0 && totalEffectiveTraction == 0) {
+                return;
+            }
             // We want that swingingMovement < tolerance * convergenceMovement
 
             // Optimize jitter tolerance
@@ -373,7 +375,7 @@ public class ForceAtlas2 implements Layout {
                 }
             }
         } finally {
-            graph.readUnlockAll();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 
@@ -384,6 +386,7 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void endAlgo() {
+        Graph graph = graphModel.getGraph();
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {

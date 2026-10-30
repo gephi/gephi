@@ -106,17 +106,17 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
         Progress.start(progressTicket);
-        graph.readLock();
-
+        graphModel.getGraph().readLock();
         try {
+            Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
             exportData(graph);
         } catch (Exception e) {
             Logger.getLogger(ExporterSpreadsheet.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            graph.readUnlock();
+            graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
         }
 
