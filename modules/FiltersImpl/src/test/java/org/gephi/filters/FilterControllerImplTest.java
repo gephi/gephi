@@ -4,6 +4,7 @@ import static org.awaitility.Awaitility.await;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,6 +15,7 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.plugin.graph.KCoreBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.project.api.ProjectController;
@@ -161,6 +163,48 @@ public class FilterControllerImplTest {
 
         Assert.assertNotSame(result, filterModel.getCurrentResult());
         Assert.assertTrue("Replaced result destroyed", result.isDestroyed());
+    }
+
+    /**
+     * Clearing the filter doesn't wait for a reader of the graph, such as a statistic, before returning.
+     */
+    @Test
+    public void testClearDoesNotWaitForReader() throws Exception {
+        Query query = filterController.createQuery(Lookup.getDefault().lookup(KCoreBuilder.class));
+        filterController.add(query);
+        filterController.filterVisible(query);
+        await().atMost(10, TimeUnit.SECONDS)
+            .until(() -> filterModel.getCurrentResult() != null && !filterModel.isRunning());
+        GraphView result = filterModel.getCurrentResult();
+        GraphModel graphModel = filterModel.getGraphModel();
+
+        CountDownLatch locked = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        AtomicBoolean unlocked = new AtomicBoolean();
+        Thread reader = new Thread(() -> {
+            Graph graph = graphModel.getGraph(result);
+            graph.readLock();
+            try {
+                locked.countDown();
+                release.await(10, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            } finally {
+                unlocked.set(true);
+                graph.readUnlock();
+            }
+        });
+        reader.start();
+        locked.await();
+        try {
+            filterController.filterVisible(null);
+
+            Assert.assertFalse("Returned while the reader holds the lock", unlocked.get());
+            Assert.assertTrue(graphModel.getVisibleView().isMainView());
+        } finally {
+            release.countDown();
+        }
+        await().atMost(10, TimeUnit.SECONDS).until(result::isDestroyed);
     }
 
     private static GraphView awaitVisibleViewReplaced(GraphModel graphModel, GraphView view) {

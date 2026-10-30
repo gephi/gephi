@@ -46,6 +46,8 @@ import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.gephi.filters.FilterThread.PropertyModifier;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
@@ -90,6 +92,11 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = PropertyExecutor.class)})
 public class FilterControllerImpl implements FilterController, PropertyExecutor, Controller<FilterModelImpl> {
 
+    private final ExecutorService viewDestroyer = Executors.newSingleThreadExecutor(r -> {
+        Thread thread = new Thread(r, "Filter View Destroyer");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public FilterControllerImpl() {
         //Register range editor
@@ -272,12 +279,19 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
             filterThread.start();
         } else {
             model.getGraphModel().setVisibleView(null);
-            GraphView previousResult = model.setCurrentResult(null);
-            if (previousResult != null) {
-                model.getGraphModel().destroyView(previousResult);
-            }
+            destroyLater(model.getGraphModel(), model.setCurrentResult(null));
         }
         fireIfStoppedWhileRunning(model, currentThread);
+    }
+
+    /**
+     * Destroys a result that is no longer visible on another thread, as destroying waits for the graph's write
+     * lock, which a long reader such as a statistic holds until it completes.
+     */
+    private void destroyLater(GraphModel graphModel, GraphView previousResult) {
+        if (previousResult != null) {
+            viewDestroyer.execute(() -> graphModel.destroyView(previousResult));
+        }
     }
 
     /**
@@ -317,10 +331,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor,
         }
 
         model.getGraphModel().setVisibleView(null);
-        GraphView previousResult = model.setCurrentResult(null);
-        if (previousResult != null) {
-            model.getGraphModel().destroyView(previousResult);
-        }
+        destroyLater(model.getGraphModel(), model.setCurrentResult(null));
 
         if (query != null) {
             FilterThread filterThread = new FilterThread(model, (AbstractQueryImpl) query);
