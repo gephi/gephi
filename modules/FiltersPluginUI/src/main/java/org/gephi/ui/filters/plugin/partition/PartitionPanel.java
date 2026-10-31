@@ -71,12 +71,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Graph;
+import org.gephi.ui.components.BusyUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -87,6 +89,8 @@ import org.openide.util.RequestProcessor;
 public class PartitionPanel extends javax.swing.JPanel {
 
     private static final RequestProcessor RP = new RequestProcessor("PartitionPanel", 1);
+    // A load that takes longer than this shows a spinner, so that quick loads do not flash it
+    private static final int BUSY_DELAY_MS = 250;
     private final RequestProcessor.Task refreshTask = RP.create(this::load);
     private final RequestProcessor.Task selectAllTask = RP.create(this::selectAllParts);
     private final AtomicReference<Request> request = new AtomicReference<>();
@@ -95,6 +99,8 @@ public class PartitionPanel extends javax.swing.JPanel {
     private volatile PartitionFilter filter;
     private JPopupMenu popupMenu;
     private JMenuItem flattenItem;
+    private BusyUtils.BusyLabel busyLabel;
+    private Timer busyTimer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList list;
@@ -102,6 +108,10 @@ public class PartitionPanel extends javax.swing.JPanel {
 
     public PartitionPanel() {
         initComponents();
+        busyLabel = BusyUtils.createCenteredBusyLabel(jScrollPane1,
+            NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.busy.text"), list);
+        busyTimer = new Timer(BUSY_DELAY_MS, e -> busyLabel.setBusy(true));
+        busyTimer.setRepeats(false);
         list.getAccessibleContext().setAccessibleName(
             NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.list.accessibleName"));
         setMinimumSize(new Dimension(50, 90));
@@ -206,7 +216,17 @@ public class PartitionPanel extends javax.swing.JPanel {
     private void refresh(Partition partition, PartitionFilter filter) {
         boolean flatten = filter.isFlattenList() && filter.getColumn().isArray();
         request.set(new Request(++requestId, partition, filter, filter.getGraph(), flatten));
+        startBusy();
         refreshTask.schedule(0);
+    }
+
+    private void startBusy() {
+        busyTimer.restart();
+    }
+
+    private void stopBusy() {
+        busyTimer.stop();
+        busyLabel.setBusy(false);
     }
 
     //Partition values and counts can take the graph lock (columns without index, edge types), keep them off the EDT
@@ -239,6 +259,11 @@ public class PartitionPanel extends javax.swing.JPanel {
             }
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
+            SwingUtilities.invokeLater(() -> {
+                if (r.id == requestId) {
+                    stopBusy();
+                }
+            });
             return;
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -248,6 +273,7 @@ public class PartitionPanel extends javax.swing.JPanel {
                 if (r.id != requestId) {
                     return;
                 }
+                stopBusy();
                 final DefaultListModel model = new DefaultListModel();
                 Set<Object> currentParts = r.filter.getParts();
 
@@ -277,6 +303,11 @@ public class PartitionPanel extends javax.swing.JPanel {
             }
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
+            SwingUtilities.invokeLater(() -> {
+                if (f == filter) {
+                    stopBusy();
+                }
+            });
             return;
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -309,6 +340,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectAllRequested = true;
+                startBusy();
                 selectAllTask.schedule(0);
             }
         });
