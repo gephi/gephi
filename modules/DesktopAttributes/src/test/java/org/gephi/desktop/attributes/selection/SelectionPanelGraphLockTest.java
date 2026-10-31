@@ -1,12 +1,18 @@
-package org.gephi.desktop.attributes;
+package org.gephi.desktop.attributes.selection;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JLabel;
+import org.gephi.desktop.attributes.AttributesUIModelImpl;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -17,10 +23,10 @@ import org.junit.Test;
 import org.openide.util.Lookup;
 
 /**
- * The eligible columns are read on the EDT and must not depend on the graph lock: a long running reader plus a
- * queued writer would otherwise block every new reader, including the EDT.
+ * The degrees of a filtered view need the graph read lock. The selection panel runs on the EDT and must not wait for
+ * it: a long running reader plus a queued writer would otherwise block every new reader.
  */
-public class AttributesUIModelImplGraphLockTest {
+public class SelectionPanelGraphLockTest {
 
     private static final long TIMEOUT_SECONDS = 5;
 
@@ -34,8 +40,18 @@ public class AttributesUIModelImplGraphLockTest {
         Workspace workspace = project.getCurrentWorkspace();
         graphModel = GraphModel.Factory.newInstance();
         workspace.add(graphModel);
+
+        Graph graph = graphModel.getGraph();
+        Node n1 = graphModel.factory().newNode("n1");
+        Node n2 = graphModel.factory().newNode("n2");
+        graph.addNode(n1);
+        graph.addNode(n2);
+        graph.addEdge(graphModel.factory().newEdge(n1, n2, 0, 1.0, true));
+        graphModel.setVisibleView(graphModel.createView());
+
         model = new AttributesUIModelImpl(workspace);
-        Assert.assertSame(graphModel, model.getGraphModel());
+        model.setColumnHidden(graphModel.defaultColumns().degree(), false);
+        model.setSelectedNodes(new Node[] {n1});
     }
 
     @After
@@ -44,7 +60,14 @@ public class AttributesUIModelImplGraphLockTest {
     }
 
     @Test
-    public void testEligibleColumnsDoNotBlockOnQueuedWriter() throws Exception {
+    public void testDegreesAreShownWhenTheLockIsFree() {
+        SelectionPanel panel = new SelectionPanel();
+        panel.refreshSelectedNodes(model);
+        Assert.assertTrue(labelTexts(panel).contains("0"));
+    }
+
+    @Test
+    public void testDegreesDoNotBlockOnQueuedWriter() throws Exception {
         Graph graph = graphModel.getGraph();
         CountDownLatch readerLocked = new CountDownLatch(1);
         CountDownLatch releaseReader = new CountDownLatch(1);
@@ -80,17 +103,27 @@ public class AttributesUIModelImplGraphLockTest {
             }
             Assert.assertEquals(Thread.State.WAITING, writer.getState());
 
-            Future<Integer> nodeCols = executor.submit(() -> model.getEligibleNodeColumns().size());
-            Future<Integer> edgeCols = executor.submit(() -> model.getEligibleEdgeColumns().size());
-            Future<Integer> cols = executor.submit(() -> model.getEligibleColumns().size());
-            Assert.assertTrue(nodeCols.get(TIMEOUT_SECONDS, TimeUnit.SECONDS) > 0);
-            Assert.assertNotNull(edgeCols.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
-            Assert.assertTrue(cols.get(TIMEOUT_SECONDS, TimeUnit.SECONDS) > 0);
+            SelectionPanel panel = new SelectionPanel();
+            executor.submit(() -> panel.refreshSelectedNodes(model)).get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            Assert.assertTrue(labelTexts(panel).contains("..."));
         } finally {
             releaseReader.countDown();
             reader.join(TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS));
             writer.join(TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS));
             executor.shutdownNow();
         }
+    }
+
+    private static List<String> labelTexts(Container container) {
+        List<String> texts = new ArrayList<>();
+        for (Component component : container.getComponents()) {
+            if (component instanceof JLabel label) {
+                texts.add(label.getText());
+            }
+            if (component instanceof Container child) {
+                texts.addAll(labelTexts(child));
+            }
+        }
+        return texts;
     }
 }

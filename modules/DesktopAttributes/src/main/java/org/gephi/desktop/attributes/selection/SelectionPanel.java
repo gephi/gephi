@@ -10,11 +10,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import java.lang.ref.WeakReference;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.TimeUnit;
+import java.util.function.IntSupplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -23,43 +22,29 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.desktop.attributes.AttributesUIModelImpl;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeFormat;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 
 public class SelectionPanel extends JPanel {
 
     private static final int CIRCLE_SIZE = 14;
     private static final int MAX_VALUE_LENGTH = 100;
-    private static final int DEGREE = 0;
-    private static final int IN_DEGREE = 1;
-    private static final int OUT_DEGREE = 2;
-    private static final String DEGREE_PLACEHOLDER = "...";
-    private static final RequestProcessor RP = new RequestProcessor("SelectionPanel", 1);
+    private static final String DEGREE_UNAVAILABLE = "...";
 
     private final JPanel headerPanel;
     private final JLabel headerLabel;
     private final JPanel attributesPanel;
     private final JLabel noSelectionLabel;
-    // Degrees need the graph read lock, so they are loaded off the EDT. Everything but the request is EDT-only.
-    private final RequestProcessor.Task degreeTask = RP.create(this::loadDegrees);
-    private final AtomicReference<DegreeRequest> degreeRequest = new AtomicReference<>();
-    private final JLabel[] degreeLabels = new JLabel[3];
-    private final String[] degreeTexts = new String[3];
-    private WeakReference<Node> degreeNode = new WeakReference<>(null);
-    private int generation;
 
     public SelectionPanel() {
         setLayout(new BorderLayout());
@@ -99,7 +84,6 @@ public class SelectionPanel extends JPanel {
         }
 
         Node node = nodes[nodes.length - 1];
-        resetDegrees(node);
         Color nodeColor = node.getColor();
         String label = node.getLabel();
         if (label == null) {
@@ -116,7 +100,7 @@ public class SelectionPanel extends JPanel {
         GraphModel graphModel = model.getGraphModel();
         TimeFormat timeFormat = graphModel.getTimeFormat();
         ZoneId timeZone = graphModel.getTimeZone();
-        GraphView view = graphModel.getVisibleView();
+        Graph graph = graphModel.getGraphVisible();
         Column degreeColumn = graphModel.defaultColumns().degree();
         Column inDegreeColumn = graphModel.defaultColumns().inDegree();
         Column outDegreeColumn = graphModel.defaultColumns().outDegree();
@@ -137,20 +121,21 @@ public class SelectionPanel extends JPanel {
         } else {
             String nullColumnLabel = NbBundle.getMessage(SelectionPanel.class, "SelectionPanel.nullColumn");
             int row = 0;
-            boolean degreeRows = false;
             for (Column column : selectedColumns) {
                 String columnName = column.getTitle();
                 String valueStr = null;
                 Object value = null;
-                int degreeKind = -1;
                 if (column == degreeColumn) {
-                    degreeKind = DEGREE;
+                    valueStr = degreeText(graph, () -> graph.getDegree(node));
+                    value = valueStr;
                 } else if (column == inDegreeColumn) {
-                    degreeKind = IN_DEGREE;
+                    valueStr = degreeText(graph, () -> ((DirectedGraph) graph).getInDegree(node));
+                    value = valueStr;
                 } else if (column == outDegreeColumn) {
-                    degreeKind = OUT_DEGREE;
+                    valueStr = degreeText(graph, () -> ((DirectedGraph) graph).getOutDegree(node));
+                    value = valueStr;
                 } else {
-                    value = node.getAttribute(column, view);
+                    value = node.getAttribute(column, graph.getView());
                     if (value == null && !showNullColumns) {
                         continue;
                     }
@@ -160,18 +145,7 @@ public class SelectionPanel extends JPanel {
                 }
 
                 Icon icon = getTypeIcon(column);
-                if (degreeKind >= 0) {
-                    degreeLabels[degreeKind] =
-                        addAttributeRow(row++, icon, columnName, degreeTexts[degreeKind], false);
-                    degreeRows = true;
-                } else {
-                    addAttributeRow(row++, icon, columnName, valueStr, value == null);
-                }
-            }
-
-            if (degreeRows) {
-                degreeRequest.set(new DegreeRequest(generation, graphModel, node));
-                degreeTask.schedule(0);
+                addAttributeRow(row++, icon, columnName, valueStr, value == null);
             }
 
             GridBagConstraints filler = new GridBagConstraints();
@@ -185,7 +159,28 @@ public class SelectionPanel extends JPanel {
         repaint();
     }
 
-    private JLabel addAttributeRow(int row, Icon icon, String name, String value, boolean isNull) {
+    /**
+     * Degrees need the graph read lock for a filtered view, which the EDT must not wait for: while a writer is queued
+     * behind a long reader they are shown as unavailable instead.
+     */
+    private static String degreeText(Graph graph, IntSupplier degree) {
+        GraphLock lock = graph.getLock();
+        try {
+            if (!lock.tryReadLock(0, TimeUnit.MILLISECONDS)) {
+                return DEGREE_UNAVAILABLE;
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return DEGREE_UNAVAILABLE;
+        }
+        try {
+            return String.valueOf(degree.getAsInt());
+        } finally {
+            lock.readUnlock();
+        }
+    }
+
+    private void addAttributeRow(int row, Icon icon, String name, String value, boolean isNull) {
         GridBagConstraints gbc;
 
         JLabel iconLabel = new JLabel(icon);
@@ -228,7 +223,6 @@ public class SelectionPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.insets = new Insets(4, 0, 4, 10);
         attributesPanel.add(valueLabel, gbc);
-        return valueLabel;
     }
 
     private Icon getTypeIcon(Column column) {
@@ -245,7 +239,6 @@ public class SelectionPanel extends JPanel {
     }
 
     private void emptySelection() {
-        resetDegrees(null);
         headerPanel.setVisible(false);
         attributesPanel.removeAll();
 
@@ -259,49 +252,6 @@ public class SelectionPanel extends JPanel {
 
         revalidate();
         repaint();
-    }
-
-    private void resetDegrees(Node node) {
-        generation++;
-        degreeRequest.set(null);
-        Arrays.fill(degreeLabels, null);
-        // The texts of the same node stay until its degrees are loaded, which avoids flickering while hovering it
-        if (degreeNode.get() != node) {
-            degreeNode = new WeakReference<>(node);
-            Arrays.fill(degreeTexts, DEGREE_PLACEHOLDER);
-        }
-    }
-
-    private void loadDegrees() {
-        DegreeRequest request = degreeRequest.getAndSet(null);
-        if (request == null) {
-            return;
-        }
-        String[] texts = new String[degreeTexts.length];
-        try {
-            Graph graph = request.graphModel.getGraphVisible();
-            texts[DEGREE] = String.valueOf(graph.getDegree(request.node));
-            if (graph instanceof DirectedGraph directedGraph) {
-                texts[IN_DEGREE] = String.valueOf(directedGraph.getInDegree(request.node));
-                texts[OUT_DEGREE] = String.valueOf(directedGraph.getOutDegree(request.node));
-            }
-        } catch (RuntimeException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        SwingUtilities.invokeLater(() -> showDegrees(request.generation, texts));
-    }
-
-    private void showDegrees(int requestGeneration, String[] texts) {
-        if (requestGeneration != generation) {
-            return;
-        }
-        for (int kind = 0; kind < texts.length; kind++) {
-            if (degreeLabels[kind] != null) {
-                degreeTexts[kind] = texts[kind] != null ? texts[kind] :
-                    NbBundle.getMessage(SelectionPanel.class, "SelectionPanel.nullColumn");
-                degreeLabels[kind].setText(degreeTexts[kind]);
-            }
-        }
     }
 
     private static String escapeHtml(String text) {
@@ -337,18 +287,6 @@ public class SelectionPanel extends JPanel {
         @Override
         public int getIconHeight() {
             return size;
-        }
-    }
-
-    private static class DegreeRequest {
-        private final int generation;
-        private final GraphModel graphModel;
-        private final Node node;
-
-        DegreeRequest(int generation, GraphModel graphModel, Node node) {
-            this.generation = generation;
-            this.graphModel = graphModel;
-            this.node = node;
         }
     }
 }
