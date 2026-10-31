@@ -64,6 +64,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -77,6 +78,7 @@ import org.gephi.appearance.plugin.palette.PaletteManager;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Graph;
 import org.gephi.ui.appearance.plugin.palette.PaletteGeneratorPanel;
+import org.gephi.ui.components.BusyUtils;
 import org.gephi.ui.components.PaletteIcon;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
@@ -93,6 +95,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     private static final int PALETTE_DISPLAY_LIMIT = 15;
     private static final RequestProcessor RP = new RequestProcessor("PartitionColorTransformerPanel");
+    // A load that takes longer than this shows a spinner, so that quick loads do not flash it
+    private static final int BUSY_DELAY_MS = 250;
     private final PalettePopupButton palettePopupButton;
     private final RequestProcessor.Task setupTask = RP.create(this::loadValues);
     private volatile PartitionFunction setupFunction;
@@ -100,6 +104,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     private Collection<Object> values = Collections.emptyList();
     private int partitionSize;
     private boolean ignoreNull;
+    private BusyUtils.BusyLabel busyLabel;
+    private Timer busyTimer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backPanel;
     private javax.swing.JScrollPane centerScrollPane;
@@ -108,6 +114,11 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     public PartitionColorTransformerPanel() {
         initComponents();
+        busyLabel = BusyUtils.createCenteredBusyLabel(centerScrollPane,
+            NbBundle.getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.busy.text"),
+            table);
+        busyTimer = new Timer(BUSY_DELAY_MS, e -> busyLabel.setBusy(true));
+        busyTimer.setRepeats(false);
         table.getAccessibleContext().setAccessibleName(NbBundle.getMessage(PartitionColorTransformerPanel.class,
             "PartitionColorTransformerPanel.table.accessibleName"));
         palettePopupButton = new PalettePopupButton();
@@ -119,15 +130,23 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     public void setup(PartitionFunction function) {
         setupFunction = function;
+        busyTimer.restart();
         setupTask.schedule(0);
     }
 
     // Off the EDT as it's using a graph lock under the hood
     private void loadValues() {
+        final PartitionFunction loadedFunction = setupFunction;
         try {
-            readValues(setupFunction);
+            readValues(loadedFunction);
         } catch (RuntimeException ex) {
             Exceptions.printStackTrace(ex);
+            SwingUtilities.invokeLater(() -> {
+                if (loadedFunction == setupFunction) {
+                    busyTimer.stop();
+                    busyLabel.setBusy(false);
+                }
+            });
         }
     }
 
@@ -178,6 +197,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         if (loadedFunction != setupFunction) {
             return;
         }
+        busyTimer.stop();
+        busyLabel.setBusy(false);
         function = loadedFunction;
         values = loadedValues;
         partitionSize = size;
