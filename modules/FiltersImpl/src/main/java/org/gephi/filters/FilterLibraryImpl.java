@@ -132,8 +132,9 @@ public class FilterLibraryImpl implements FilterLibrary {
         content.remove(mask);
     }
 
+    // Synchronized as the lookup rebuilds the shared map and can now run on several worker threads
     @Override
-    public FilterBuilder getBuilder(Filter filter) {
+    public synchronized FilterBuilder getBuilder(Filter filter) {
         buildBuildersMap();
         if (buildersMap.get(filter.getClass()) != null) {
             return buildersMap.get(filter.getClass());

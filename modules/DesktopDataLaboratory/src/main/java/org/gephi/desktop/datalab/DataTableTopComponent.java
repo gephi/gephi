@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -107,6 +108,7 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 import org.openide.windows.TopComponent;
 import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
@@ -147,7 +149,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     //Data
     private final ProjectController pc;
     private final GraphController gc;
-    private boolean visibleOnly = true;
+    private volatile boolean visibleOnly = true;
     private boolean useSparklines = false;
     private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
@@ -175,6 +177,15 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private final Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<>(DisplayTable.class);
     //Refresh executor
     private volatile RefreshOnceHelperThread refreshOnceHelperThread;
+    //Table snapshots read the graph, which can take its lock for minutes: only a worker waits for it, never the EDT
+    private static final RequestProcessor TABLE_REFRESH_PROCESSOR =
+        new RequestProcessor("DataLaboratoryTableRefresh", 1);
+    //Observers creation waits for the graph write lock: kept apart so that it and the snapshots cannot gate each other
+    private static final RequestProcessor WORKSPACE_ACTIVATION_PROCESSOR =
+        new RequestProcessor("DataLaboratoryWorkspaceActivation", 1);
+    private final RequestProcessor.Task tableRefreshTask = TABLE_REFRESH_PROCESSOR.create(this::buildTableSnapshot);
+    private final AtomicInteger tableCloseEpoch = new AtomicInteger();
+    private volatile DisplayTable requestedTable;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
     private javax.swing.JButton availableColumnsButton;
@@ -280,9 +291,22 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         if (dataTablesObservers == null) {
             workspace.add(dataTablesObservers = new DataTablesObservers(workspace));
         }
-        dataTablesObservers.initialize();
+        //Creating the graph observer needs the graph write lock, so this thread (maybe the EDT) must not wait for it
+        final DataTablesObservers observers = dataTablesObservers;
+        WORKSPACE_ACTIVATION_PROCESSOR.post(new Runnable() {
 
-        refreshAllOnce();
+            @Override
+            public void run() {
+                try {
+                    observers.initialize();
+                } finally {
+                    //Once the observers exist, so that no change goes unnoticed, and only if still the active workspace
+                    if (dataTablesObservers == observers) {
+                        refreshAllOnce();
+                    }
+                }
+            }
+        });
     }
 
     private void deactivateAll() {
@@ -550,59 +574,20 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private void initNodesView() {
-        Runnable initNodesRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    if (dataTablesModel == null) {
-                        return;
-                    }
-
-                    String busyMsg = NbBundle
-                        .getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.busyMessage");
-                    BusyUtils.BusyLabel busylabel =
-                        BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getTable());
-                    busylabel.setBusy(true);
-
-                    //Attributes columns
-                    nodeAvailableColumnsModel.syncronizeTableColumns();
-                    final Column[] cols = nodeAvailableColumnsModel.getAvailableColumns();
-
-                    refreshAvailableColumnsButton(nodeAvailableColumnsModel,
-                        Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable());
-
-                    //Nodes from graph
-                    Graph graph;
-                    if (visibleOnly) {
-                        graph = graphModel.getGraphVisible();
-                    } else {
-                        graph = graphModel.getGraph();
-                    }
-                    if (graph == null) {
-                        tableScrollPane.setViewportView(null);
-                        return;
-                    }
-
-                    //Model
-                    nodeTable.refreshModel(graph.getNodes().toArray(), cols, graphModel, dataTablesModel);
-
-                    busylabel.setBusy(false);
-                    nodeTable.scrollToFirstElementSelected();
-                } catch (Exception e) {
-                    Exceptions.printStackTrace(e);
-                    JLabel errorLabel = new JLabel(
-                        NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"),
-                        SwingConstants.CENTER);
-                    tableScrollPane.setViewportView(errorLabel);
-                }
-            }
-        };
-        SwingUtilities.invokeLater(initNodesRunnable);
+        requestTableRefresh(DisplayTable.NODE);
     }
 
     private void initEdgesView() {
-        Runnable initEdgesRunnable = new Runnable() {
+        requestTableRefresh(DisplayTable.EDGE);
+    }
+
+    /**
+     * Never blocks, so any thread can call it: the table keeps showing its previous content until a worker, which
+     * may wait for the graph lock, delivers the new snapshot.
+     */
+    private void requestTableRefresh(final DisplayTable table) {
+        //The available columns must be in sync before the column manipulators are refreshed after this
+        SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -611,46 +596,173 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                         return;
                     }
 
-                    String busyMsg = NbBundle
-                        .getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.busyMessage");
-                    BusyUtils.BusyLabel busylabel =
-                        BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTable());
-                    busylabel.setBusy(true);
-
                     //Attributes columns
-                    edgeAvailableColumnsModel.syncronizeTableColumns();
-                    final Column[] cols = edgeAvailableColumnsModel.getAvailableColumns();
-
-                    refreshAvailableColumnsButton(edgeAvailableColumnsModel,
-                        Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable());
-
-                    //Edges from graph
-                    Graph graph;
-                    if (visibleOnly) {
-                        graph = graphModel.getGraphVisible();
+                    if (table == DisplayTable.NODE) {
+                        nodeAvailableColumnsModel.syncronizeTableColumns();
+                        refreshAvailableColumnsButton(nodeAvailableColumnsModel,
+                            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable());
                     } else {
-                        graph = graphModel.getGraph();
+                        edgeAvailableColumnsModel.syncronizeTableColumns();
+                        refreshAvailableColumnsButton(edgeAvailableColumnsModel,
+                            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable());
                     }
-                    if (graph == null) {
-                        tableScrollPane.setViewportView(null);
-                        return;
-                    }
-
-                    //Model
-                    edgeTable.refreshModel(graph.getEdges().toArray(), cols, graphModel, dataTablesModel);
-
-                    busylabel.setBusy(false);
-                    edgeTable.scrollToFirstElementSelected();
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
-                    JLabel errorLabel = new JLabel(
-                        NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"),
-                        SwingConstants.CENTER);
-                    tableScrollPane.setViewportView(errorLabel);
+                    showTableError();
                 }
             }
-        };
-        SwingUtilities.invokeLater(initEdgesRunnable);
+        });
+
+        requestedTable = table;
+        tableRefreshTask.schedule(0);
+    }
+
+    /**
+     * Worker side of {@link #requestTableRefresh}: reads everything the table needs from the graph and hands an
+     * immutable snapshot to the EDT.
+     */
+    private void buildTableSnapshot() {
+        final int closeEpoch = tableCloseEpoch.get();
+        final DisplayTable table = requestedTable;
+        final GraphModel gm = graphModel;
+        final DataTablesModel dtm = dataTablesModel;
+        if (table == null || gm == null || dtm == null) {
+            return;
+        }
+
+        try {
+            Node[] nodes = null;
+            Edge[] edges = null;
+            String[] edgeTypeLabels = new String[0];
+
+            //Held for the whole snapshot, so only this acquisition can wait: the reads below re-enter the lock
+            Graph lockedGraph = gm.getGraph();
+            lockedGraph.readLock();
+            try {
+                Graph graph;
+                if (visibleOnly) {
+                    graph = gm.getGraphVisible();
+                } else {
+                    graph = gm.getGraph();
+                }
+                if (graph == null) {
+                    hideTable();
+                    return;
+                }
+
+                if (table == DisplayTable.NODE) {
+                    nodes = graph.getNodes().toArray();
+                } else {
+                    edges = graph.getEdges().toArray();
+                    edgeTypeLabels = readEdgeTypeLabels(gm);
+                }
+            } finally {
+                lockedGraph.readUnlock();
+            }
+
+            final TableSnapshot snapshot = new TableSnapshot(closeEpoch, table, gm, dtm, nodes, edges, edgeTypeLabels);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    applyTableSnapshot(snapshot);
+                }
+            });
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!isTableRequestStale(closeEpoch, table, gm, dtm)) {
+                        showTableError();
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Edge type labels indexed by type id (null for the default type and for unused ids), as the Kind column shows
+     * them.
+     */
+    private String[] readEdgeTypeLabels(GraphModel gm) {
+        int[] types = gm.getEdgeTypes();
+        int length = 0;
+        for (int type : types) {
+            length = Math.max(length, type + 1);
+        }
+
+        String[] labels = new String[length];
+        for (int type : types) {
+            Object label = gm.getEdgeTypeLabel(type);
+            labels[type] = label != null ? label.toString() : null;
+        }
+        return labels;
+    }
+
+    /**
+     * EDT side: applies a snapshot unless it was superseded or the workspace or displayed table changed meanwhile.
+     */
+    private void applyTableSnapshot(TableSnapshot snapshot) {
+        if (isTableRequestStale(snapshot.closeEpoch, snapshot.table, snapshot.graphModel, snapshot.dataTablesModel)) {
+            return;
+        }
+
+        BusyUtils.BusyLabel busylabel = null;
+        try {
+            String busyMsg = NbBundle
+                .getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.busyMessage");
+            if (snapshot.table == DisplayTable.NODE) {
+                busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getTable());
+                busylabel.setBusy(true);
+
+                //Attributes columns
+                final Column[] cols = nodeAvailableColumnsModel.getAvailableColumns();
+
+                //Model
+                nodeTable.refreshModel(snapshot.nodes, cols, snapshot.graphModel, snapshot.dataTablesModel);
+
+                busylabel.setBusy(false);
+                nodeTable.scrollToFirstElementSelected();
+            } else {
+                busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTable());
+                busylabel.setBusy(true);
+
+                //Attributes columns
+                final Column[] cols = edgeAvailableColumnsModel.getAvailableColumns();
+
+                //Model
+                edgeTable.setEdgeTypeLabels(snapshot.edgeTypeLabels);
+                edgeTable.refreshModel(snapshot.edges, cols, snapshot.graphModel, snapshot.dataTablesModel);
+
+                busylabel.setBusy(false);
+                edgeTable.scrollToFirstElementSelected();
+            }
+
+            //These depend on the refreshed model
+            refreshFilterColumns();
+            refreshAppliedFilter();
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+            if (busylabel != null) {
+                busylabel.setBusy(false);//Stops its animation, the error replaces it in the viewport
+            }
+            showTableError();
+        }
+    }
+
+    private boolean isTableRequestStale(int closeEpoch, DisplayTable table, GraphModel gm, DataTablesModel dtm) {
+        //A newer request for the same table is already scheduled and overwrites this one, so it is not stale for that
+        return closeEpoch != tableCloseEpoch.get() || table != displayTable || gm != graphModel ||
+            dtm != dataTablesModel;
+    }
+
+    private void showTableError() {
+        JLabel errorLabel = new JLabel(
+            NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"),
+            SwingConstants.CENTER);
+        tableScrollPane.setViewportView(errorLabel);
     }
 
     private void refreshFilterColumns() {
@@ -775,9 +887,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             });
             initEdgesView();
         }
-
-        refreshFilterColumns();
-        refreshAppliedFilter();
     }
 
     private void selectDisplayTable(DisplayTable newDisplayTable) {
@@ -1592,6 +1701,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
     @Override
     public void componentClosed() {
+        //Drop the pending and in-flight snapshots, opening the component requests a fresh one
+        tableCloseEpoch.incrementAndGet();
+        tableRefreshTask.cancel();
     }
 
     @Override
@@ -1618,6 +1730,32 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
     private enum DisplayTable {
         NODE, EDGE
+    }
+
+    /**
+     * Immutable copy of what a table needs from the graph, read off the EDT. The nodes or the edges are set,
+     * depending on the table.
+     */
+    private static final class TableSnapshot {
+
+        private final int closeEpoch;
+        private final DisplayTable table;
+        private final GraphModel graphModel;
+        private final DataTablesModel dataTablesModel;
+        private final Node[] nodes;
+        private final Edge[] edges;
+        private final String[] edgeTypeLabels;
+
+        TableSnapshot(int closeEpoch, DisplayTable table, GraphModel graphModel, DataTablesModel dataTablesModel,
+                      Node[] nodes, Edge[] edges, String[] edgeTypeLabels) {
+            this.closeEpoch = closeEpoch;
+            this.table = table;
+            this.graphModel = graphModel;
+            this.dataTablesModel = dataTablesModel;
+            this.nodes = nodes;
+            this.edges = edges;
+            this.edgeTypeLabels = edgeTypeLabels;
+        }
     }
 
     /**

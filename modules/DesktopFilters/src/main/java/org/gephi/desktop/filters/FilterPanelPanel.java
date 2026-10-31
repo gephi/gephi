@@ -56,15 +56,19 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * @author Mathieu Bastian
  */
 public class FilterPanelPanel extends JPanel implements ChangeListener {
 
+    private static final RequestProcessor RP = new RequestProcessor("FilterPanelPanel", 1);
     private final String settingsString;
+    private final RequestProcessor.Task builderTask = RP.create(this::resolveBuilder);
     private Query selectedQuery;
     private FilterUIModel uiModel;
+    private volatile Query pendingQuery;
 
     public FilterPanelPanel() {
         super(new BorderLayout());
@@ -114,19 +118,15 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
                 //UI update
                 removeAll();
                 setBorder(null);
+                pendingQuery = null;
                 if (query != null) {
-                    FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                    FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(query.getFilter());
-                    try {
-                        JPanel panel = builder.getPanel(query.getFilter());
-                        if (panel != null) {
-                            add(panel, BorderLayout.CENTER);
-                            panel.setOpaque(false);
-                            setBorder(javax.swing.BorderFactory
-                                .createTitledBorder(query.getFilter().getName() + " " + settingsString));
-                        }
-                    } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while setting query", e);
+                    FilterBuilder builder = query.getBuilder();
+                    if (builder != null) {
+                        showPanel(query, builder);
+                    } else {
+                        //The library lookup can wait for the graph lock, so it stays off the EDT
+                        pendingQuery = query;
+                        builderTask.schedule(0);
                     }
                 }
 
@@ -135,5 +135,46 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
             }
         });
 
+    }
+
+    private void resolveBuilder() {
+        final Query query = pendingQuery;
+        if (query == null) {
+            return;
+        }
+        final FilterBuilder builder;
+        try {
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            builder = filterController.getModel().getLibrary().getBuilder(query.getFilter());
+        } catch (Exception e) {
+            Logger.getLogger("").log(Level.SEVERE, "Error while setting query", e);
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (pendingQuery == query) {
+                    pendingQuery = null;
+                    showPanel(query, builder);
+                    revalidate();
+                    repaint();
+                }
+            }
+        });
+    }
+
+    private void showPanel(Query query, FilterBuilder builder) {
+        try {
+            JPanel panel = builder.getPanel(query.getFilter());
+            if (panel != null) {
+                add(panel, BorderLayout.CENTER);
+                panel.setOpaque(false);
+                setBorder(javax.swing.BorderFactory
+                    .createTitledBorder(query.getFilter().getName() + " " + settingsString));
+            }
+        } catch (Exception e) {
+            Logger.getLogger("").log(Level.SEVERE, "Error while setting query", e);
+        }
     }
 }

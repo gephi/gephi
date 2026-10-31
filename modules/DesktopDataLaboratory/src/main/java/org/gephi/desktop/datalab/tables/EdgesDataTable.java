@@ -49,6 +49,7 @@ import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
@@ -57,8 +58,10 @@ import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.desktop.attributes.api.AttributesUIController;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * @author Eduardo Ramos
@@ -82,6 +85,9 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
                 }
             }
         };
+    private static final RequestProcessor EDGE_TYPE_PROCESSOR = new RequestProcessor("DataLaboratoryEdgeType", 1);
+    //Labels by type id, read by a worker so that painting never takes the graph lock
+    private volatile String[] edgeTypeLabels = new String[0];
     private final PropertyDataColumn<Edge> KIND_COLUMN =
         new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.kind.column.text")) {
 
@@ -92,22 +98,35 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
+                String[] labels = edgeTypeLabels;
+                int type = edge.getType();
+                return type >= 0 && type < labels.length ? labels[type] : null;
             }
 
             @Override
             public void setValueFor(Edge element, Object value) {
                 final String strValue = value != null ? value.toString() : null;
 
-                if (strValue != null && !strValue.trim().isEmpty()) {
+                //Both type changes take the graph write lock, which waits for every reader: never on the EDT
+                EDGE_TYPE_PROCESSOR.post(new Runnable() {
 
-                    int edgeType = element.getTable().getGraph().getModel().addEdgeType(strValue);
-                    element.setType(edgeType);
-                } else {
-                    // Type 0 is a special type for "no type defined"
-                    element.setType(0);
-                }
+                    @Override
+                    public void run() {
+                        try {
+                            if (strValue != null && !strValue.trim().isEmpty()) {
 
+                                int edgeType = element.getTable().getGraph().getModel().addEdgeType(strValue);
+                                element.setType(edgeType);
+                            } else {
+                                // Type 0 is a special type for "no type defined"
+                                element.setType(0);
+                            }
+                        } catch (Exception e) {
+                            Exceptions.printStackTrace(e);
+                        }
+                        Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
+                    }
+                });
             }
 
             @Override
@@ -217,5 +236,9 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
     public void setShowEdgesNodesLabels(boolean showEdgesNodesLabels) {
         this.showEdgesNodesLabels = showEdgesNodesLabels;
+    }
+
+    public void setEdgeTypeLabels(String[] edgeTypeLabels) {
+        this.edgeTypeLabels = edgeTypeLabels;
     }
 }

@@ -68,6 +68,7 @@ public class DataTablesObservers {
     private GraphObserver graphObserver;
     private TableObserver nodesTableObserver;
     private TableObserver edgesTableObserver;
+    private boolean destroyed;
 
     public DataTablesObservers(Workspace workspace) {
         this.workspace = workspace;
@@ -76,7 +77,7 @@ public class DataTablesObservers {
     }
 
     public synchronized void initialize() {
-        if (graphObserver != null) {
+        if (destroyed || graphObserver != null) {//A late initialize on a closed workspace must leave nothing behind
             return;
         }
 
@@ -95,6 +96,7 @@ public class DataTablesObservers {
     }
 
     public synchronized void destroy() {
+        destroyed = true;
         if (graphObserver != null) {
             graphObserver.destroy();
             graphObserver = null;

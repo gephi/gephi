@@ -12,6 +12,8 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.IntSupplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -26,6 +28,7 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeFormat;
@@ -36,6 +39,7 @@ public class SelectionPanel extends JPanel {
 
     private static final int CIRCLE_SIZE = 14;
     private static final int MAX_VALUE_LENGTH = 100;
+    private static final String DEGREE_UNAVAILABLE = "...";
 
     private final JPanel headerPanel;
     private final JLabel headerLabel;
@@ -122,14 +126,14 @@ public class SelectionPanel extends JPanel {
                 String valueStr = null;
                 Object value = null;
                 if (column == degreeColumn) {
-                    value = graph.getDegree(node);
-                    valueStr = String.valueOf(value);
+                    valueStr = degreeText(graph, () -> graph.getDegree(node));
+                    value = valueStr;
                 } else if (column == inDegreeColumn) {
-                    value = ((DirectedGraph) graph).getInDegree(node);
-                    valueStr = String.valueOf(value);
+                    valueStr = degreeText(graph, () -> ((DirectedGraph) graph).getInDegree(node));
+                    value = valueStr;
                 } else if (column == outDegreeColumn) {
-                    value = ((DirectedGraph) graph).getOutDegree(node);
-                    valueStr = String.valueOf(value);
+                    valueStr = degreeText(graph, () -> ((DirectedGraph) graph).getOutDegree(node));
+                    value = valueStr;
                 } else {
                     value = node.getAttribute(column, graph.getView());
                     if (value == null && !showNullColumns) {
@@ -153,6 +157,27 @@ public class SelectionPanel extends JPanel {
 
         revalidate();
         repaint();
+    }
+
+    /**
+     * Degrees need the graph read lock for a filtered view, which the EDT must not wait for: while a writer is queued
+     * behind a long reader they are shown as unavailable instead.
+     */
+    private static String degreeText(Graph graph, IntSupplier degree) {
+        GraphLock lock = graph.getLock();
+        try {
+            if (!lock.tryReadLock(0, TimeUnit.MILLISECONDS)) {
+                return DEGREE_UNAVAILABLE;
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return DEGREE_UNAVAILABLE;
+        }
+        try {
+            return String.valueOf(degree.getAsInt());
+        } finally {
+            lock.readUnlock();
+        }
     }
 
     private void addAttributeRow(int row, Icon icon, String name, String value, boolean isNull) {
