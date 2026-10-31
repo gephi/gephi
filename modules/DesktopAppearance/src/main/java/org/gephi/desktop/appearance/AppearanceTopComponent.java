@@ -93,6 +93,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     //Const
     private static final RequestProcessor RP = new RequestProcessor("AppearanceTopComponent");
+    // Kept apart from RP so that the function list does not wait behind a long transform
+    private static final RequestProcessor APPLY_RP = new RequestProcessor("AppearanceTopComponentApply", 1);
     private final String NO_SELECTION =
         NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     private transient final AppearanceToolbar toolbar;
@@ -108,6 +110,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private final transient AtomicInteger comboGeneration = new AtomicInteger();
     // Model to list the functions of, captured on the calling thread; null when the selected transformer has no list
     private transient volatile AppearanceUIModel comboModel;
+    // Function whose transform is running, read and written on the EDT only
+    private transient Function applyingFunction;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JComboBox attibuteBox;
@@ -392,7 +396,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         stopAutoApplyButton.setVisible(false);
                         enableAutoButton.setSelected(false);
                         applyButton.setVisible(true);
-                        applyButton.setEnabled(true);
+                        applyButton.setEnabled(model.getSelectedFunction() != applyingFunction);
                     }
                     rankingLocalScaleButton.setSelected(model.isRankingLocalScale());
                     partitionLocalScaleButton.setSelected(model.isPartitionLocalScale());
@@ -407,6 +411,44 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 enableAutoButton.setEnabled(false);
             }
         });
+    }
+
+    // The transform runs off the EDT as it holds the graph read lock while iterating the whole graph
+    private void apply() {
+        final AppearanceUIModel applyModel = model;
+        final Function function = applyModel != null ? applyModel.getSelectedFunction() : null;
+        if (function == null || function == applyingFunction) {
+            return;
+        }
+        applyModel.saveTransformerProperties();
+        applyingFunction = function;
+        applyButton.setEnabled(false);
+        APPLY_RP.post(() -> {
+            boolean transformed = false;
+            try {
+                controller.getAppearanceController().transform(function);
+                transformed = true;
+            } catch (RuntimeException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                final boolean applied = transformed;
+                SwingUtilities.invokeLater(() -> applyDone(applyModel, function, applied));
+            }
+        });
+    }
+
+    private void applyDone(AppearanceUIModel applyModel, Function function, boolean applied) {
+        if (applyingFunction == function) {
+            applyingFunction = null;
+        }
+        refreshControls();
+        // The transformer panel may show another function by now
+        if (applied && applyModel == model && function == applyModel.getSelectedFunction()) {
+            TransformerUI ui = applyModel.getSelectedTransformerUI();
+            if (ui != null) {
+                ui.onApply(function);
+            }
+        }
     }
 
     private void initControls() {
@@ -465,7 +507,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         applyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.transform(model.getSelectedFunction());
+                apply();
             }
         });
         autoApplyButton.addActionListener(new ActionListener() {
