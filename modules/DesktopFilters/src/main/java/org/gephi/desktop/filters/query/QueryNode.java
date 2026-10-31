@@ -55,14 +55,17 @@ import org.gephi.filters.spi.FilterProperty;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * @author Mathieu Bastian
  */
 public class QueryNode extends AbstractNode {
 
+    private static final RequestProcessor DUPLICATE_PROCESSOR = new RequestProcessor("QueryNodeDuplicate", 1);
     private final Query query;
 
     public QueryNode(Query query) {
@@ -195,7 +198,15 @@ public class QueryNode extends AbstractNode {
             while (ancestor.getParent() != null) {
                 ancestor = ancestor.getParent();
             }
-            duplicateQuery(filterController, null, ancestor);
+            final Query root = ancestor;
+            // The builder lookup and the filters initialisation can wait for the graph lock
+            DUPLICATE_PROCESSOR.post(() -> {
+                try {
+                    duplicateQuery(filterController, null, root);
+                } catch (RuntimeException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            });
         }
 
         private void duplicateQuery(FilterController filterController, Query parent, Query child) {

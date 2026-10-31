@@ -43,6 +43,7 @@
 package org.gephi.appearance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,10 +118,11 @@ public class AppearanceModelImpl implements AppearanceModel, Model {
         edgeWeightRanking = new EdgeWeightRankingImpl();
         edgeTypePartition = new EdgeTypePartitionImpl(graphModel.defaultColumns().edgeType(),
             graphModel.getConfiguration().getEdgeLabelType());
-        nodeAttributeRankings = new WeakHashMap<>();
-        edgeAttributeRankings = new WeakHashMap<>();
-        nodeAttributePartitions = new WeakHashMap<>();
-        edgeAttributePartitions = new WeakHashMap<>();
+        // Functions are listed from the EDT and from workers: map operations are atomic, none waits for the graph lock
+        nodeAttributeRankings = Collections.synchronizedMap(new WeakHashMap<>());
+        edgeAttributeRankings = Collections.synchronizedMap(new WeakHashMap<>());
+        nodeAttributePartitions = Collections.synchronizedMap(new WeakHashMap<>());
+        edgeAttributePartitions = Collections.synchronizedMap(new WeakHashMap<>());
 
         // Static functions
         nodeStaticFunctions = getNodeSimpleFunctions();

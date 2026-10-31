@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.filters;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -82,7 +82,7 @@ public class FilterLibraryImpl implements FilterLibrary {
             content.add(catBuilder);
         }
 
-        buildersMap = new ConcurrentHashMap<>();
+        buildersMap = new HashMap<>();
     }
 
     private void buildBuildersMap() {
@@ -132,8 +132,9 @@ public class FilterLibraryImpl implements FilterLibrary {
         content.remove(mask);
     }
 
+    // Synchronized as the lookup rebuilds the shared map and can now run on several worker threads
     @Override
-    public FilterBuilder getBuilder(Filter filter) {
+    public synchronized FilterBuilder getBuilder(Filter filter) {
         buildBuildersMap();
         if (buildersMap.get(filter.getClass()) != null) {
             return buildersMap.get(filter.getClass());
