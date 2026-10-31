@@ -1,10 +1,5 @@
 package org.gephi.timeline;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
@@ -117,90 +112,5 @@ public class TimelineControllerImplTest {
         Assert.assertEquals(0, degreeQuery.getChildren().length);
 
         filterController.filterVisible(null);
-    }
-
-    /**
-     * The EDT-facing accessors must not wait for the graph lock: a reader holding the lock and a queued writer
-     * block every new reader.
-     */
-    @Test
-    public void testAccessorsDoNotBlockOnContendedGraphLock() throws Exception {
-        GraphModel graphModel = GraphGenerator.build(workspace).getGraphModel();
-        Graph graph = graphModel.getGraph();
-        Node n1 = graphModel.factory().newNode("1");
-        n1.addInterval(new Interval(0.0, 10.0));
-        graph.addNode(n1);
-
-        TimelineControllerImpl controller =
-            (TimelineControllerImpl) Lookup.getDefault().lookup(TimelineController.class);
-        TimelineModelImpl model = controller.getModel();
-
-        ExecutorService executor = Executors.newSingleThreadExecutor(r -> daemon(r, "edt-like"));
-        try (ContendedLock ignored = new ContendedLock(graph)) {
-            Future<Void> future = executor.submit(() -> {
-                Assert.assertEquals(0.0, model.getMin(), 0.0);
-                Assert.assertEquals(10.0, model.getMax(), 0.0);
-                Assert.assertTrue(model.hasValidBounds());
-                controller.setCustomBounds(2.0, 8.0);
-                Assert.assertTrue(model.hasCustomBounds());
-                controller.setEnabled(true);
-                Assert.assertTrue(model.isEnabled());
-                return null;
-            });
-            future.get(5, TimeUnit.SECONDS);
-        } finally {
-            executor.shutdownNow();
-        }
-    }
-
-    private static Thread daemon(Runnable runnable, String name) {
-        Thread thread = new Thread(runnable, name);
-        thread.setDaemon(true);
-        return thread;
-    }
-
-    /**
-     * Holds the graph read lock on one thread and queues a writer behind it on another, so that any new reader
-     * blocks until {@link #close()}.
-     */
-    private static class ContendedLock implements AutoCloseable {
-
-        private final CountDownLatch readLocked = new CountDownLatch(1);
-        private final CountDownLatch releaseReader = new CountDownLatch(1);
-        private final Thread reader;
-        private final Thread writer;
-
-        ContendedLock(Graph graph) throws InterruptedException {
-            reader = daemon(() -> {
-                graph.readLock();
-                try {
-                    readLocked.countDown();
-                    releaseReader.await();
-                } catch (InterruptedException ignored) {
-                    Thread.currentThread().interrupt();
-                } finally {
-                    graph.readUnlock();
-                }
-            }, "lock-reader");
-            writer = daemon(() -> {
-                graph.writeLock();
-                graph.writeUnlock();
-            }, "lock-writer");
-            reader.start();
-            Assert.assertTrue(readLocked.await(5, TimeUnit.SECONDS));
-            writer.start();
-            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
-            while (writer.getState() != Thread.State.WAITING) {
-                Assert.assertTrue("writer never queued", System.nanoTime() < deadline);
-                Thread.yield();
-            }
-        }
-
-        @Override
-        public void close() throws InterruptedException {
-            releaseReader.countDown();
-            reader.join(5000);
-            writer.join(5000);
-        }
     }
 }

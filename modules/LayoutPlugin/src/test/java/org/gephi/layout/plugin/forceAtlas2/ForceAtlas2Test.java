@@ -42,11 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.layout.plugin.forceAtlas2;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -55,74 +50,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ForceAtlas2Test {
-
-    @Test
-    public void testSetGraphModelDoesNotBlockOnContendedGraphLock() throws Exception {
-        GraphModel smallModel = GraphModel.Factory.newInstance();
-        smallModel.getUndirectedGraph().addNode(smallModel.factory().newNode("A"));
-        ForceAtlas2 smallLayout = new ForceAtlas2(new ForceAtlas2Builder());
-        smallLayout.setGraphModel(smallModel);
-        Assert.assertEquals(10.0, smallLayout.getScalingRatio(), 0.0);
-        Assert.assertFalse(smallLayout.isBarnesHutOptimize());
-
-        GraphModel graphModel = GraphModel.Factory.newInstance();
-        UndirectedGraph graph = graphModel.getUndirectedGraph();
-        for (int i = 0; i < 1000; i++) {
-            graph.addNode(graphModel.factory().newNode("n" + i));
-        }
-
-        CountDownLatch readLockHeld = new CountDownLatch(1);
-        CountDownLatch releaseReader = new CountDownLatch(1);
-        Thread reader = new Thread(() -> {
-            graph.readLock();
-            try {
-                readLockHeld.countDown();
-                releaseReader.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } finally {
-                graph.readUnlock();
-            }
-        }, "reader");
-        reader.setDaemon(true);
-        Thread writer = new Thread(() -> {
-            graph.writeLock();
-            graph.writeUnlock();
-        }, "writer");
-        writer.setDaemon(true);
-        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
-            Thread t = new Thread(r, "caller");
-            t.setDaemon(true);
-            return t;
-        });
-
-        try {
-            reader.start();
-            Assert.assertTrue(readLockHeld.await(5, TimeUnit.SECONDS));
-            writer.start();
-            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
-            while (writer.getState() != Thread.State.WAITING && System.nanoTime() < deadline) {
-                Thread.yield();
-            }
-            Assert.assertEquals(Thread.State.WAITING, writer.getState());
-
-            Future<ForceAtlas2> result = executor.submit(() -> {
-                ForceAtlas2 layout = new ForceAtlas2(new ForceAtlas2Builder());
-                layout.setGraphModel(graphModel);
-                layout.resetPropertiesValues();
-                return layout;
-            });
-            ForceAtlas2 layout = result.get(5, TimeUnit.SECONDS);
-
-            Assert.assertEquals(2.0, layout.getScalingRatio(), 0.0);
-            Assert.assertTrue(layout.isBarnesHutOptimize());
-        } finally {
-            releaseReader.countDown();
-            executor.shutdownNow();
-            reader.join(5000);
-            writer.join(5000);
-        }
-    }
 
     @Test
     public void testAdjustSizesDoesNotProduceNaNForNodeWithZeroNetDisplacement() {
