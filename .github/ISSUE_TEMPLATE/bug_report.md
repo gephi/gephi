@@ -30,7 +30,7 @@ assignees: ''
 
 ## Your Environment
 
-* Version used: Gephi 0.11.3
+* Version used: Gephi 0.11.4
 * Operating System: 
 
 <!--- Or preferably, include a copy of your messages.log file in your user directory (see https://docs.gephi.org/desktop/User_Manual/Troubleshooting#where-are-user-files) -->

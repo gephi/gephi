@@ -16,7 +16,8 @@ We monitor security vulnerabilities in the dependencies we use, as well as withi
 
 | Version | Supported          |
 |---------|--------------------|
-| 0.11.3  | :white_check_mark: |
+| 0.11.4  | :white_check_mark: |
+| 0.11.3  | :x:                |
 | 0.11.2  | :x:                |
 | 0.11.1  | :x:                |
 | 0.10.1  | :x:                |
