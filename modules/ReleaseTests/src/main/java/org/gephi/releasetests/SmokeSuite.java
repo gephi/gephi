@@ -40,6 +40,7 @@ final class SmokeSuite implements Suite {
         c.step("statistics", () -> {
             c.runStatistics(new Degree());
             c.runStatistics(new Modularity());
+            c.checkLocksReleased(graphModel.getGraph());
         });
 
         c.step("filter", () -> {
@@ -55,6 +56,7 @@ final class SmokeSuite implements Suite {
             SuiteContext.onEdt(() -> c.filterController.remove(query));
             SuiteContext.check(graphModel.getGraphVisible().getNodeCount() == nodeCount,
                 "Nodes are still hidden once the filter is removed");
+            c.checkLocksReleased(graphModel.getGraph());
         });
 
         c.step("overview screenshot",
@@ -64,6 +66,7 @@ final class SmokeSuite implements Suite {
             File png = c.file("export.png");
             c.exportController.exportFile(png);
             SuiteContext.checkNotBlank(ImageIO.read(png), "The PNG export");
+            c.checkLocksReleased(graphModel.getGraph());
         });
 
         c.step("save and reopen", () -> {

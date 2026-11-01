@@ -86,6 +86,8 @@ Release tests run the built application, with its launcher, module system and us
 
 `SmokeIT` runs a short pass over the main features: import, layout, statistics, filter, screenshot and export, and a project saved and reopened.
 
+`SoakIT` runs for about 90 seconds: threads write to and read the graph while ForceAtlas 2 runs, and another thread runs statistics, a filter, a screenshot, an export and a workspace switch over and over.
+
 They need a display and aren't part of `mvn verify`. Gephi's window opens while they run: keep it visible, as a hidden window may draw fewer frames, and leave the machine alone until they finish.
 
 #### Against a development build

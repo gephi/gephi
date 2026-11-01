@@ -14,11 +14,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphLock;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
@@ -120,6 +123,16 @@ final class SuiteContext {
      * from the Layout panel.
      */
     void runLayout(Class<? extends LayoutBuilder> builderType, Duration duration) throws Exception {
+        startLayout(builderType);
+        Thread.sleep(duration.toMillis());
+        stopLayout();
+    }
+
+    /**
+     * Starts the registered layout of type <code>builderType</code> as from the Layout panel, and returns while it
+     * runs.
+     */
+    void startLayout(Class<? extends LayoutBuilder> builderType) throws Exception {
         LayoutBuilder builder = Lookup.getDefault().lookupAll(LayoutBuilder.class).stream()
             .filter(builderType::isInstance)
             .findFirst()
@@ -129,9 +142,28 @@ final class SuiteContext {
             layoutController.setLayout(layout);
             layoutController.executeLayout();
         });
-        Thread.sleep(duration.toMillis());
+    }
+
+    /**
+     * Stops the layout as from the Layout panel and waits for it to end.
+     */
+    void stopLayout() throws Exception {
         onEdt(layoutController::stopLayout);
         await("Layout", () -> !layoutController.getModel().isRunning());
+    }
+
+    /**
+     * Writes a thread dump and returns the name of its file, to give with a failure.
+     */
+    String threadDump(String reason) {
+        return ThreadDumps.write(results, reason);
+    }
+
+    /**
+     * Records a number in the results.
+     */
+    void metric(String name, Number value) {
+        results.metric(name, value);
     }
 
     /**
@@ -140,8 +172,11 @@ final class SuiteContext {
     void runStatistics(Statistics statistics) throws Exception {
         CountDownLatch finished = new CountDownLatch(1);
         onEdt(() -> statisticsController.execute(statistics, task -> finished.countDown()));
-        check(finished.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS),
-            statistics.getClass().getSimpleName() + " didn't finish within " + TIMEOUT.toSeconds() + " s");
+        if (!finished.await(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)) {
+            String dump = ThreadDumps.write(results, "statistics");
+            throw new AssertionError(statistics.getClass().getSimpleName() + " didn't finish within "
+                + TIMEOUT.toSeconds() + " s, see " + dump);
+        }
     }
 
     /**
@@ -154,11 +189,18 @@ final class SuiteContext {
     }
 
     /**
-     * Takes a screenshot of the Overview, as from its screenshot button.
+     * Takes a screenshot of the Overview, as from its screenshot button, once it has drawn the graph, which a new graph or
+     * workspace only does a moment after it's shown. It waits for two world updates from now on.
      */
     BufferedImage overviewScreenshot(String name) throws Exception {
         VisualizationController controller = Lookup.getDefault().lookup(VisualizationController.class);
         check(controller instanceof VizController, "No Overview to take a screenshot of");
+        // Frames and world updates are counted for good, so it's the ones from now on that show the current graph
+        long updatesBefore = ((VizController) controller).getEngine().map(engine -> engine.getWorldUpdateCount())
+            .orElse(0L);
+        await("Overview frame with the graph", () -> ((VizController) controller).getEngine()
+            .map(engine -> engine.getFrameCount() > 0 && engine.getWorldUpdateCount() >= updatesBefore + 2)
+            .orElse(false));
         File written = ((VizController) controller).getScreenshotController().takeScreenshot(1, false, file(name))
             .get(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
         return ImageIO.read(written);
@@ -180,6 +222,19 @@ final class SuiteContext {
         }
         long total = (long) image.getWidth() * image.getHeight();
         check(different * 1000 >= total, what + " is blank, " + different + " of " + total + " pixels differ");
+    }
+
+    /**
+     * Fails unless the graph lock is free at some point within {@link #TIMEOUT}: no thread holding it, none waiting.
+     * The Overview and the monitor hold it for moments, so it is looked at until it's seen free. A hold that is never
+     * released, like one left by an iteration that was neither finished nor broken, is what this finds.
+     */
+    void checkLocksReleased(Graph graph) throws InterruptedException {
+        GraphLock lock = graph.getLock();
+        await(() -> lock.getReadLockCount() == 0 && !lock.isWriteLocked() && lock.getQueueLength() == 0,
+            () -> "The graph lock is still held after " + TIMEOUT.toSeconds() + " s, with " + lock.getReadLockCount()
+                + " read holds, write locked: " + lock.isWriteLocked() + ", " + lock.getQueueLength()
+                + " threads waiting, see " + threadDump("lock"), 5);
     }
 
     static void check(boolean condition, String message) {
@@ -212,10 +267,17 @@ final class SuiteContext {
     }
 
     static void await(String what, BooleanSupplier done) throws InterruptedException {
+        await(done, () -> what + " didn't finish within " + TIMEOUT.toSeconds() + " s", 50);
+    }
+
+    private static void await(BooleanSupplier done, Supplier<String> failure, long pollMs)
+        throws InterruptedException {
         long deadline = System.nanoTime() + TIMEOUT.toNanos();
         while (!done.getAsBoolean()) {
-            check(System.nanoTime() < deadline, what + " didn't finish within " + TIMEOUT.toSeconds() + " s");
-            Thread.sleep(50);
+            if (System.nanoTime() >= deadline) {
+                throw new AssertionError(failure.get());
+            }
+            Thread.sleep(pollMs);
         }
     }
 
