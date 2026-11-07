@@ -73,6 +73,39 @@ public class DynamicStatisticsTest extends TestCase {
         assertSeries(graphModel, DynamicNbEdges.NB_EDGES, new int[] {1, 1, 0, 0});
     }
 
+    @Test
+    public void testClusteringCoefficientReportWithoutTriangles() {
+        GraphModel graphModel = GraphModel.Factory.newInstance();
+        DirectedGraph graph = graphModel.getDirectedGraph();
+        Node center = graphModel.factory().newNode("1");
+        Node n2 = graphModel.factory().newNode("2");
+        Node n3 = graphModel.factory().newNode("3");
+        graph.addNode(center);
+        graph.addNode(n2);
+        graph.addNode(n3);
+        graph.addEdge(graphModel.factory().newEdge(center, n2));
+        graph.addEdge(graphModel.factory().newEdge(center, n3));
+
+        DynamicClusteringCoefficient statistics = new DynamicClusteringCoefficient();
+        statistics.setBounds(new Interval(0, 3));
+        statistics.execute(graphModel);
+        GraphView window = graphModel.createView();
+        Subgraph windowGraph = graphModel.getGraph(window);
+        for (Node node : graph.getNodes().toArray()) {
+            windowGraph.addNode(node);
+        }
+        for (Edge edge : graph.getEdges().toArray()) {
+            windowGraph.addEdge(edge);
+        }
+        statistics.loop(window, new Interval(0, 1));
+        statistics.loop(window, new Interval(1, 2));
+        statistics.end();
+        graphModel.destroyView(window);
+
+        //A star has no triangle, every coefficient is 0 and so is the chart range
+        Assert.assertTrue(statistics.getReport().contains("<IMG"));
+    }
+
     private static GraphModel filteredGraphModel() {
         GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph graph = graphModel.getDirectedGraph();
