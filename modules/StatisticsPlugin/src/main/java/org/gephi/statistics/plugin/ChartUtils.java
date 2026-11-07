@@ -83,11 +83,16 @@ public abstract class ChartUtils {
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         if (normalized) {
             domainAxis.setRange(-0.05, 1.05);
-        } else {
+        } else if (dSeries.getItemCount() > 0) {
             domainAxis.setRange(dSeries.getMinX() - 1, dSeries.getMaxX() + 1);
         }
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setRange(-0.1 * Math.sqrt(dSeries.getMaxY()), dSeries.getMaxY() + 0.1 * Math.sqrt(dSeries.getMaxY()));
+        //A series that is empty or only zeros would give an empty range, which jfreechart rejects
+        double maxY = dSeries.getItemCount() > 0 ? dSeries.getMaxY() : 0.0;
+        if (!(maxY > 0.0)) {
+            maxY = 1.0;
+        }
+        rangeAxis.setRange(-0.1 * Math.sqrt(maxY), maxY + 0.1 * Math.sqrt(maxY));
     }
 
     public static String renderChart(JFreeChart chart, String fileName) {

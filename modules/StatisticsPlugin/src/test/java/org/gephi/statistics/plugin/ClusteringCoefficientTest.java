@@ -7,6 +7,7 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import junit.framework.TestCase;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -490,6 +491,37 @@ public class ClusteringCoefficientTest extends TestCase {
 
         ClusteringCoefficient cc = new ClusteringCoefficient();
         cc.execute(graphModel);
+    }
+
+    @Test
+    public void testTrianglesColumnReplace() {
+        GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(3);
+
+        graphModel.getNodeTable().addColumn("Triangles", String.class);
+
+        ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
+        cc.execute(graphModel);
+
+        Column triangles = graphModel.getNodeTable().getColumn("Triangles");
+        assertEquals(Integer.class, triangles.getTypeClass());
+        for (Node node : graphModel.getGraph().getNodes()) {
+            assertEquals(1, node.getAttribute(triangles));
+        }
+    }
+
+    @Test
+    public void testColumnReplaceDirected() {
+        GraphModel graphModel = GraphGenerator.generateCompleteDirectedGraph(3);
+
+        graphModel.getNodeTable().addColumn(ClusteringCoefficient.CLUSTERING_COEFF, String.class);
+
+        ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(true);
+        cc.execute(graphModel);
+
+        Column clustering = graphModel.getNodeTable().getColumn(ClusteringCoefficient.CLUSTERING_COEFF);
+        assertEquals(Double.class, clustering.getTypeClass());
     }
 
     @Test

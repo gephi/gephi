@@ -273,6 +273,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         Column triCount = null;
         if (!isDirected) {
+            ColumnUtils.cleanUpColumns(nodeTable, new String[] {"Triangles"}, Integer.class);
             triCount = nodeTable.getColumn("Triangles");
             if (triCount == null) {
                 triCount = nodeTable.addColumn("Triangles", "Number of triangles", Integer.class, 0);
@@ -688,10 +689,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             return null;
         }
         Table nodeTable = graphModel.getNodeTable();
-        Column clusteringCol = nodeTable.getColumn("clustering");
+        ColumnUtils.cleanUpColumns(nodeTable, new String[] {CLUSTERING_COEFF}, Double.class);
+        Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
 
         if (clusteringCol == null) {
-            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", Double.class, new Double(0));
+            clusteringCol =
+                nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, new Double(0));
         }
 
         return clusteringCol;
