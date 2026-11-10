@@ -63,12 +63,11 @@ public class Region {
     private double size;
 
     public Region(Node[] nodes) {
-        this.nodes = new ArrayList<>();
-        this.nodes.addAll(Arrays.asList(nodes));
+        this.nodes = new ArrayList<>(Arrays.asList(nodes));
         updateMassAndGeometry();
     }
 
-    public Region(ArrayList<Node> nodes) {
+    public Region(List<Node> nodes) {
         this.nodes = new ArrayList<>(nodes);
         updateMassAndGeometry();
     }
@@ -89,10 +88,9 @@ public class Region {
             massCenterY = massSumY / mass;
 
             // Compute size
-            size = Double.MIN_VALUE;
+            size = 0d;
             for (Node n : nodes) {
-                double distance = Math.sqrt(
-                    (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
+                double distance = Math.hypot(n.x() - massCenterX, n.y() - massCenterY);
                 size = Math.max(size, 2 * distance);
             }
         }
@@ -100,73 +98,73 @@ public class Region {
 
     public synchronized void buildSubRegions() {
         if (nodes.size() > 1) {
-            ArrayList<Node> leftNodes = new ArrayList<>();
-            ArrayList<Node> rightNodes = new ArrayList<>();
+            List<Node> leftNodes = new ArrayList<>();
+            List<Node> rightNodes = new ArrayList<>();
             for (Node n : nodes) {
-                ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? (leftNodes) : (rightNodes);
+                List<Node> nodesColumn = n.x() < massCenterX ? leftNodes : rightNodes;
                 nodesColumn.add(n);
             }
 
-            ArrayList<Node> topleftNodes = new ArrayList<>();
-            ArrayList<Node> bottomleftNodes = new ArrayList<>();
+            List<Node> topLeftNodes = new ArrayList<>();
+            List<Node> bottomLeftNodes = new ArrayList<>();
             for (Node n : leftNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes);
+                List<Node> nodesLine = n.y() < massCenterY ? topLeftNodes : bottomLeftNodes;
                 nodesLine.add(n);
             }
 
-            ArrayList<Node> bottomrightNodes = new ArrayList<>();
-            ArrayList<Node> toprightNodes = new ArrayList<>();
+            List<Node> bottomRightNodes = new ArrayList<>();
+            List<Node> topRightNodes = new ArrayList<>();
             for (Node n : rightNodes) {
-                ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes);
+                List<Node> nodesLine = n.y() < massCenterY ? topRightNodes : bottomRightNodes;
                 nodesLine.add(n);
             }
 
-            if (topleftNodes.size() > 0) {
-                if (topleftNodes.size() < nodes.size()) {
-                    Region subregion = new Region(topleftNodes);
+            if (!topLeftNodes.isEmpty()) {
+                if (topLeftNodes.size() < nodes.size()) {
+                    Region subregion = new Region(topLeftNodes);
                     subregions.add(subregion);
                 } else {
-                    for (Node n : topleftNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<>();
+                    for (Node n : topLeftNodes) {
+                        List<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (bottomleftNodes.size() > 0) {
-                if (bottomleftNodes.size() < nodes.size()) {
-                    Region subregion = new Region(bottomleftNodes);
+            if (!bottomLeftNodes.isEmpty()) {
+                if (bottomLeftNodes.size() < nodes.size()) {
+                    Region subregion = new Region(bottomLeftNodes);
                     subregions.add(subregion);
                 } else {
-                    for (Node n : bottomleftNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<>();
+                    for (Node n : bottomLeftNodes) {
+                        List<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (bottomrightNodes.size() > 0) {
-                if (bottomrightNodes.size() < nodes.size()) {
-                    Region subregion = new Region(bottomrightNodes);
+            if (!bottomRightNodes.isEmpty()) {
+                if (bottomRightNodes.size() < nodes.size()) {
+                    Region subregion = new Region(bottomRightNodes);
                     subregions.add(subregion);
                 } else {
-                    for (Node n : bottomrightNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<>();
+                    for (Node n : bottomRightNodes) {
+                        List<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
                     }
                 }
             }
-            if (toprightNodes.size() > 0) {
-                if (toprightNodes.size() < nodes.size()) {
-                    Region subregion = new Region(toprightNodes);
+            if (!topRightNodes.isEmpty()) {
+                if (topRightNodes.size() < nodes.size()) {
+                    Region subregion = new Region(topRightNodes);
                     subregions.add(subregion);
                 } else {
-                    for (Node n : toprightNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<>();
+                    for (Node n : topRightNodes) {
+                        List<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
@@ -180,18 +178,17 @@ public class Region {
         }
     }
 
-    public void applyForce(Node n, RepulsionForce Force, double theta) {
+    public void applyForce(Node node, RepulsionForce repulsionForce, double theta) {
         if (nodes.size() < 2) {
             Node regionNode = nodes.get(0);
-            Force.apply(n, regionNode);
+            repulsionForce.apply(node, regionNode);
         } else {
-            double distance = Math.sqrt(
-                (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
+            double distance = Math.hypot(node.x() - massCenterX, node.y() - massCenterY);
             if (distance * theta > size) {
-                Force.apply(n, this);
+                repulsionForce.apply(node, this);
             } else {
                 for (Region subregion : subregions) {
-                    subregion.applyForce(n, Force, theta);
+                    subregion.applyForce(node, repulsionForce, theta);
                 }
             }
         }
