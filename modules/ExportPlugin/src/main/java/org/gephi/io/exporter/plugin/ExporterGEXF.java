@@ -286,7 +286,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
         for (Column col : table) {
             if (exportAttributes && !col.isProperty()) {
-                if (exportDynamic && col.isDynamic()) {
+                if (exportDynamic && col.isDynamicAttribute()) {
                     dynamicCols.add(col);
                 } else {
                     staticCols.add(col);
@@ -320,10 +320,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             if (col.isArray()) {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
                     "list" + col.getTypeClass().getComponentType().getSimpleName().toLowerCase());
-            } else if (col.isDynamic()) {
+            } else if (col.isDynamicAttribute()) {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
                     AttributeUtils.getStaticType((Class<? extends TimeMap>) col.getTypeClass()).getSimpleName()
                         .toLowerCase());
+            } else if (col.isDynamic()) {
+                // A TimestampSet or IntervalSet column holds no value per time, and GEXF has no
+                // type for a set of times, so it is written as its text representation
+                xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "string");
             } else {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getTypeClass().getSimpleName().toLowerCase());
             }
@@ -405,6 +409,15 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 xmlWriter.writeEmptyElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
+            }
+        } else if (!column.isDynamicAttribute()) {
+            // TimestampSet or IntervalSet column, written as text in the graph's time format
+            Object val = element.getAttribute(column);
+            if (val != null || includeNullAttValues) {
+                xmlWriter.writeEmptyElement(ATTVALUE);
+                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                xmlWriter.writeAttribute(ATTVALUE_VALUE, sanitize(
+                    AttributeUtils.print(val, graph.getModel().getTimeFormat(), graph.getModel().getTimeZone())));
             }
         } else if (exportDynamic) {
             Interval visibleInterval = graph.getView().getTimeInterval();
