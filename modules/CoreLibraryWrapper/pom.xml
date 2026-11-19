@@ -21,7 +21,7 @@
         <gephi.commons-compress.version>1.28.0</gephi.commons-compress.version>
         <gephi.commons-csv.version>1.14.1</gephi.commons-csv.version>
         <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
-        <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
+        <gephi.jfreechart.version>1.5.6</gephi.jfreechart.version>
         <gephi.pdfbox.version>3.0.8</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
         <gephi.gson.version>2.14.0</gephi.gson.version>
