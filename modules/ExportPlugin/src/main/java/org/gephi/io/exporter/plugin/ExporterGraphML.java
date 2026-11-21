@@ -44,6 +44,8 @@
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,6 +71,7 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.XmlUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -97,6 +100,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private final boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
     private NormalizationHelper normalization;
+    private boolean strippedInvalidCharacters = false;
 
     @Override
     public boolean execute() {
@@ -106,7 +110,14 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         try {
             Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
+            strippedInvalidCharacters = false;
             exportData(createDocument(), graph);
+
+            if (strippedInvalidCharacters) {
+                Logger.getLogger(ExporterGraphML.class.getName()).log(Level.WARNING,
+                    "Some ids, labels or attribute values contained characters not allowed in XML "
+                        + "(e.g. control characters) and were removed from the exported file.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -294,8 +305,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createAttribute(Document document, Column column) {
         Element attributeE = document.createElement("key");
-        attributeE.setAttribute("id", column.getId());
-        attributeE.setAttribute("attr.name", column.getTitle());
+        attributeE.setAttribute("id", sanitize(column.getId()));
+        attributeE.setAttribute("attr.name", sanitize(column.getTitle()));
         if (column.getTypeClass().equals(Integer.class)
             || column.getTypeClass().equals(Short.class)
             || column.getTypeClass().equals(Byte.class)) {
@@ -314,8 +325,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createNodeAttvalue(Document document, Column column, Graph graph, Node n) throws Exception {
         Object val = n.getAttribute(column, graph.getView());
         if (val != null) {
-            String value = val.toString();
-            String id = column.getId();
+            String value = sanitize(val.toString());
+            String id = sanitize(column.getId());
 
             Element attvalueE = document.createElement("data");
             attvalueE.setAttribute("key", id);
@@ -328,8 +339,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdgeAttvalue(Document document, Column column, Graph graph, Edge e) throws Exception {
         Object val = e.getAttribute(column, graph.getView());
         if (val != null) {
-            String value = val.toString();
-            String id = column.getId();
+            String value = sanitize(val.toString());
+            String id = sanitize(column.getId());
 
             Element attvalueE = document.createElement("data");
             attvalueE.setAttribute("key", id);
@@ -353,7 +364,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createNode(Document document, Graph graph, Node n) throws Exception {
         Element nodeE = document.createElement("node");
-        nodeE.setAttribute("id", n.getId().toString());
+        nodeE.setAttribute("id", sanitize(n.getId().toString()));
 
         //Label
         if (n.getLabel() != null && !n.getLabel().isEmpty()) {
@@ -420,9 +431,9 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdge(Document document, Edge e, Graph graph) throws Exception {
         Element edgeE = document.createElement("edge");
 
-        edgeE.setAttribute("id", e.getId().toString());
-        edgeE.setAttribute("source", e.getSource().getId().toString());
-        edgeE.setAttribute("target", e.getTarget().getId().toString());
+        edgeE.setAttribute("id", sanitize(e.getId().toString()));
+        edgeE.setAttribute("source", sanitize(e.getSource().getId().toString()));
+        edgeE.setAttribute("target", sanitize(e.getTarget().getId().toString()));
 
         //Label
         if (e.getLabel() != null && !e.getLabel().isEmpty()) {
@@ -442,7 +453,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
         if (e.getTypeLabel() != null) {
             //Edge labels not retained on graphml export https://github.com/gephi/gephi/issues/1516
-            String typeLabel = e.getTypeLabel().toString().trim();
+            String typeLabel = sanitize(e.getTypeLabel().toString()).trim();
             if (!typeLabel.isEmpty()) {
                 edgeE.setAttribute("label", typeLabel);
             }
@@ -528,7 +539,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createNodeLabel(Document document, Node n) throws Exception {
         Element labelE = document.createElement("data");
         labelE.setAttribute("key", "label");
-        labelE.setTextContent(n.getLabel());
+        labelE.setTextContent(sanitize(n.getLabel()));
 
         return labelE;
     }
@@ -550,9 +561,17 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdgeLabel(Document document, Edge e) throws Exception {
         Element labelE = document.createElement("data");
         labelE.setAttribute("key", "edgelabel");
-        labelE.setTextContent(e.getLabel());
+        labelE.setTextContent(sanitize(e.getLabel()));
 
         return labelE;
+    }
+
+    private String sanitize(String str) {
+        String result = XmlUtils.stripInvalidXmlChars(str);
+        if (result != str) {
+            strippedInvalidCharacters = true;
+        }
+        return result;
     }
 
     @Override
