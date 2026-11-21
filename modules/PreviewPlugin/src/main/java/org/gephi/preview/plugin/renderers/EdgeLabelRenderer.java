@@ -446,6 +446,7 @@ public class EdgeLabelRenderer implements Renderer {
         PDFont pdFont = target.getPDFont(font);
 
         try {
+            label = PDFUtils.removeUnsupportedCharacters(pdFont, label);
             float textHeight = PDFUtils.getTextHeight(pdFont, fontSize);
             float textWidth = PDFUtils.getTextWidth(pdFont, fontSize, label);
 

@@ -106,4 +106,26 @@ public class PDFUtils {
         return pdFont.getStringWidth(text) / 1000 * fontSize;
     }
 
+    public static String removeUnsupportedCharacters(PDFont pdFont, String text) throws IOException {
+        StringBuilder sb = new StringBuilder(text.length());
+        int offset = 0;
+        while (offset < text.length()) {
+            int codePoint = text.codePointAt(offset);
+            if (canEncode(pdFont, codePoint)) {
+                sb.appendCodePoint(codePoint);
+            }
+            offset += Character.charCount(codePoint);
+        }
+        return sb.toString();
+    }
+
+    private static boolean canEncode(PDFont pdFont, int codePoint) throws IOException {
+        try {
+            pdFont.encode(new String(Character.toChars(codePoint)));
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
 }
