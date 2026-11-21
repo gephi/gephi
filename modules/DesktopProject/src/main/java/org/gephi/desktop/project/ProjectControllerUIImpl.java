@@ -61,7 +61,6 @@ import org.gephi.graph.api.Configuration;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.lib.validation.DialogDescriptorWithValidation;
-import org.gephi.project.api.EmptyProjectFileException;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
@@ -129,13 +128,9 @@ public class ProjectControllerUIImpl implements ProjectListener {
         longTaskExecutor.setDefaultErrorHandler(t -> {
             unlockProjectActions();
 
-            if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
-                NotifyDescriptor.Message msg =
-                    new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-            }
-
-            if (!(t instanceof LegacyGephiFormatException || t instanceof EmptyProjectFileException)) {
+            //The project controller has already shown format failures to the user through error()
+            if (!(t instanceof LegacyGephiFormatException
+                || t instanceof GephiFormatException gephiFormatException && !gephiFormatException.isUnexpected())) {
                 Exceptions.printStackTrace(t);
             }
         });
