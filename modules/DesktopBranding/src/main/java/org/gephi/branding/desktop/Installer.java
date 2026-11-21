@@ -487,7 +487,6 @@ public class Installer extends ModuleInstall {
         boolean doCheck =
             NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
-            HttpURLConnection connection = null;
             try {
                 String gephiVersion = System.getProperty("netbeans.productversion");
                 boolean devBuild = gephiVersion.contains("SNAPSHOT");
@@ -504,21 +503,8 @@ public class Installer extends ModuleInstall {
                     return;
                 }
 
-                // GitHub redirects to the tag of the latest release, which is read without following the redirect
-                connection = (HttpURLConnection) new URL(LATEST_GEPHI_RELEASE_URL).openConnection();
-                connection.setInstanceFollowRedirects(false);
-                connection.setRequestMethod("HEAD");
-                connection.setRequestProperty("User-Agent", "");
-                connection.setConnectTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
-                connection.setReadTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
-                // Throws on network errors, which getHeaderField() would silently turn into null
-                int responseCode = connection.getResponseCode();
-                String latest = versionFromReleaseUrl(connection.getHeaderField("Location"));
-
-                if (latest == null) {
-                    Logger.getLogger("").warning(
-                        "Unexpected response while checking latest Gephi version: HTTP " + responseCode);
-                } else if (isNewVersion(latest, gephiVersion)) {
+                String latest = fetchLatestVersion();
+                if (latest != null && isNewVersion(latest, gephiVersion)) {
                     //Show update dialog
                     JCheckBox checkbox =
                         new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"),
@@ -538,11 +524,35 @@ public class Installer extends ModuleInstall {
             } catch (Exception ex) {
                 // No throwable attached, so the crash reporter ignores it
                 Logger.getLogger("").warning("Error while checking latest Gephi version: " + ex);
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
             }
+        }
+    }
+
+    /**
+     * Fetches the version of the latest Gephi release. GitHub redirects to the tag of the latest release, which is read
+     * without following the redirect.
+     *
+     * @return the latest version, or <code>null</code> if the response isn't a redirect to a release tag
+     * @throws IOException if GitHub can't be reached
+     */
+    protected static String fetchLatestVersion() throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(LATEST_GEPHI_RELEASE_URL).openConnection();
+        try {
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("HEAD");
+            connection.setRequestProperty("User-Agent", "");
+            connection.setConnectTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
+            connection.setReadTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
+            // Throws on network errors, which getHeaderField() would silently turn into null
+            int responseCode = connection.getResponseCode();
+            String latest = versionFromReleaseUrl(connection.getHeaderField("Location"));
+            if (latest == null) {
+                Logger.getLogger("").warning(
+                    "Unexpected response while checking latest Gephi version: HTTP " + responseCode);
+            }
+            return latest;
+        } finally {
+            connection.disconnect();
         }
     }
 
