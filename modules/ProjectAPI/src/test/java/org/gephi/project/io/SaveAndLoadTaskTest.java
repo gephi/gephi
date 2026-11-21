@@ -1,6 +1,7 @@
 package org.gephi.project.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,7 +20,6 @@ import org.gephi.project.io.utils.MockXMLPersistenceProviderFailWrite;
 import org.gephi.project.io.utils.Utils;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -251,14 +251,14 @@ public class SaveAndLoadTaskTest {
         Assert.assertTrue(new SaveTask(project, file).run());
         byte[] original = Files.readAllBytes(file.toPath());
 
-        //A file can't be moved out of a read-only folder, while the destination can still be deleted
+        //The system temp file can't be moved while it's open on Windows, nor out of a read-only folder on POSIX, while
+        //the destination can still be deleted
         File systemTempFolder = tempFolder.newFolder("systemTemp");
         File systemTempFile = new File(systemTempFolder, "resave.gephi_temp");
         Assert.assertTrue(systemTempFile.createNewFile());
-        Assert.assertTrue(systemTempFolder.setWritable(false));
+        FileInputStream heldOpen = new FileInputStream(systemTempFile);
+        systemTempFolder.setWritable(false);
         try {
-            Assume.assumeFalse("Read-only folders aren't enforced here", Files.isWritable(systemTempFolder.toPath()));
-
             GephiFormatException exception = null;
             try {
                 new RefusingSiblingSaveTask(project, file, systemTempFile).run();
@@ -273,7 +273,8 @@ public class SaveAndLoadTaskTest {
             Assert.assertTrue("The error should point at the recoverable file, was: " + exception.getMessage(),
                 exception.getMessage().contains(systemTempFile.getAbsolutePath()));
         } finally {
-            Assert.assertTrue(systemTempFolder.setWritable(true));
+            heldOpen.close();
+            systemTempFolder.setWritable(true);
         }
     }
 
