@@ -62,6 +62,7 @@ import org.openide.util.NbPreferences;
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private static final String PLATFORM_LOGGER_PREFIX = "org.netbeans.";
+    private static final String PLATFORM_API_LOGGER_PREFIX = "org.openide.";
     private static final String PROXY_AUTO_CONFIG_LOGGER = "org.netbeans.core.network.proxy.ProxyAutoConfig";
     private static final String SHELL_FOLDER_LOGGER_PREFIX = "sun.awt.shell.";
 
@@ -93,10 +94,12 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
     }
 
     /**
-     * NetBeans Platform code reports problems it has already recovered from
-     * through java.util.logging below WARNING and then carries on with a
-     * fallback: an unreachable autoupdate catalog, an unreadable window-system
-     * config file, a cache file it could not delete. Those records are not
+     * NetBeans Platform code, which logs under org.netbeans and, in the
+     * platform's API modules, under org.openide, reports problems it has
+     * already recovered from through java.util.logging below WARNING and then
+     * carries on with a fallback: an unreachable autoupdate catalog, an
+     * unreadable window-system config file, a cache file it could not delete,
+     * a .nbattrs attribute file it could not replace. Those records are not
      * crashes and must not become crash reports. A platform record at WARNING
      * or above is still reported, because the platform does use WARNING for
      * problems worth a maintainer's attention, such as a TopComponent whose
@@ -117,7 +120,9 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         if (PROXY_AUTO_CONFIG_LOGGER.equals(loggerName) || loggerName.startsWith(SHELL_FOLDER_LOGGER_PREFIX)) {
             return level <= Level.WARNING.intValue();
         }
-        return loggerName.startsWith(PLATFORM_LOGGER_PREFIX) && level < Level.WARNING.intValue();
+        boolean platformLogger = loggerName.startsWith(PLATFORM_LOGGER_PREFIX)
+            || loggerName.startsWith(PLATFORM_API_LOGGER_PREFIX);
+        return platformLogger && level < Level.WARNING.intValue();
     }
 
     @Override
