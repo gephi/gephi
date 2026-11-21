@@ -175,7 +175,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Edge edge) {
             Object srcValue = partition.getValue(edge.getSource(), graph);
             Object destValue = partition.getValue(edge.getTarget(), graph);
-            return parts.contains(srcValue) && parts.contains(destValue) && !Objects.equals(srcValue, destValue);
+            return parts.contains(srcValue) && parts.contains(destValue) && Objects.equals(srcValue, destValue);
         }
     }
 }
