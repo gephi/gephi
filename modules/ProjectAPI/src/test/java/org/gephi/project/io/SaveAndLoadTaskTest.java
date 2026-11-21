@@ -89,7 +89,7 @@ public class SaveAndLoadTaskTest {
         File file = new File(tempFolder.getRoot(), "failed.gephi");
         Assert.assertFalse(file.exists());
 
-        assertSaveFails(workspace.getProject(), file);
+        Assert.assertTrue(assertSaveFails(workspace.getProject(), file).isUnexpected());
 
         Assert.assertFalse("A failed first save must not leave a file behind", file.exists());
         assertNoTempFile();
@@ -179,6 +179,7 @@ public class SaveAndLoadTaskTest {
         Assert.assertTrue("The error should point at the recoverable file, was: " + message,
             message.contains(tempFile.getAbsolutePath()));
         Assert.assertTrue("The move failure should be kept as cause", exception.getCause() instanceof IOException);
+        Assert.assertFalse(exception.isUnexpected());
 
         //The kept file is a complete project which can be loaded back
         Assert.assertNotNull(new LoadTask(tempFile).execute(null));
@@ -289,6 +290,7 @@ public class SaveAndLoadTaskTest {
         Assert.assertTrue(exception.getCause() instanceof FileNotFoundException);
         Assert.assertEquals(NbBundle.getMessage(SaveTask.class, "SaveTask.folderNotWritable", folder.getAbsolutePath(),
             exception.getCause().getLocalizedMessage()), exception.getMessage());
+        Assert.assertFalse(exception.isUnexpected());
         Assert.assertFalse(folder.exists());
     }
 

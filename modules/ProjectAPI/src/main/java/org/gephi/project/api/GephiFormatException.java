@@ -68,6 +68,17 @@ public class GephiFormatException extends RuntimeException {
         this.message = message;
     }
 
+    /**
+     * Returns whether this exception wraps a failure Gephi didn't anticipate, i.e. it was created with
+     * {@link #GephiFormatException(Class, Throwable)}. An exception created with a message instead explains a known
+     * condition to the user, such as a destination folder which can't be written to, rather than a defect.
+     *
+     * @return <code>true</code> if this exception wraps an unexpected failure
+     */
+    public boolean isUnexpected() {
+        return cause != null;
+    }
+
     @Override
     public String getMessage() {
         if (this.cause == null) {
