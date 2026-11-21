@@ -63,6 +63,7 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
 
     private static final String PLATFORM_LOGGER_PREFIX = "org.netbeans.";
     private static final String PROXY_AUTO_CONFIG_LOGGER = "org.netbeans.core.network.proxy.ProxyAutoConfig";
+    private static final String SHELL_FOLDER_LOGGER_PREFIX = "sun.awt.shell.";
 
     private Report currentReport;
     private final ReportController reportController = new ReportController();
@@ -100,19 +101,23 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
      * or above is still reported, because the platform does use WARNING for
      * problems worth a maintainer's attention, such as a TopComponent whose
      * settings file cannot be deserialized (PersistenceManager, line 591).
-     * ProxyAutoConfig is the one exception: it never logs above WARNING and
-     * every failure there ends with a working, possibly no-op, PAC evaluator.
+     * Two sources are filtered up to and including WARNING. ProxyAutoConfig
+     * never logs above WARNING and every failure there ends with a working,
+     * possibly no-op, PAC evaluator. The JDK's Windows shell folder code
+     * (sun.awt.shell) logs at WARNING when it cannot resolve a Places Bar
+     * entry or the Documents folder, then leaves that folder out and the file
+     * chooser still opens.
      */
     static boolean isHandledPlatformDiagnostic(LogRecord record) {
         String loggerName = record.getLoggerName();
-        if (loggerName == null || !loggerName.startsWith(PLATFORM_LOGGER_PREFIX)) {
+        if (loggerName == null) {
             return false;
         }
         int level = record.getLevel().intValue();
-        if (PROXY_AUTO_CONFIG_LOGGER.equals(loggerName)) {
+        if (PROXY_AUTO_CONFIG_LOGGER.equals(loggerName) || loggerName.startsWith(SHELL_FOLDER_LOGGER_PREFIX)) {
             return level <= Level.WARNING.intValue();
         }
-        return level < Level.WARNING.intValue();
+        return loggerName.startsWith(PLATFORM_LOGGER_PREFIX) && level < Level.WARNING.intValue();
     }
 
     @Override
