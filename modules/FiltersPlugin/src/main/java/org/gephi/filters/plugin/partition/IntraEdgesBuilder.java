@@ -136,7 +136,8 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public IntraEdgesFilter getFilter(Workspace workspace) {
-            return new IntraEdgesFilter(partition);
+            AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
+            return new IntraEdgesFilter(am, partition);
         }
 
         @Override
@@ -157,6 +158,20 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         public IntraEdgesFilter(Partition partition) {
             super(partition);
+        }
+
+        public IntraEdgesFilter(AppearanceModel appearanceModel, Partition partition) {
+            super(appearanceModel, partition);
+        }
+
+        @Override
+        public void setColumn(Column column) {
+            // Persistence provider doesn't grab the correct builder when using category builder
+            // This method assigns the proper partition based on the column parameter
+            if (appearanceModel != null && (partition == null || partition.getColumn() != column)) {
+                appearanceModel.getNodeFunctions();
+                this.partition = appearanceModel.getNodePartition(column);
+            }
         }
 
         @Override
