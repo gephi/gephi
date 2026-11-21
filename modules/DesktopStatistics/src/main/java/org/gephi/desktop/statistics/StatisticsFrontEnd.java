@@ -195,9 +195,12 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         StatisticsControllerUI controllerUI = Lookup.getDefault().lookup(StatisticsControllerUI.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
-        currentStatistics = builder.getStatistics();
-        if (currentStatistics != null) {
-            if (currentStatistics instanceof DynamicStatistics && !graphModel.isDynamic()) {
+        //Keep the instance in a local, refreshModel() resets currentStatistics whenever the model changes,
+        //which can happen while the modal settings dialog is open
+        final Statistics statistics = builder.getStatistics();
+        currentStatistics = statistics;
+        if (statistics != null) {
+            if (statistics instanceof DynamicStatistics && !graphModel.isDynamic()) {
                 DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(
                     NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.notDynamicGraph"),
                     NotifyDescriptor.WARNING_MESSAGE));
@@ -215,32 +218,32 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 }
             };
             JPanel settingsPanel = statisticsUI.getSettingsPanel();
-            if (currentStatistics instanceof DynamicStatistics) {
+            if (statistics instanceof DynamicStatistics) {
                 DynamicSettingsPanel dynamicPanel = new DynamicSettingsPanel();
-                statisticsUI.setup(currentStatistics);
-                dynamicPanel.setup((DynamicStatistics) currentStatistics);
+                statisticsUI.setup(statistics);
+                dynamicPanel.setup((DynamicStatistics) statistics);
 
                 JPanel dynamicSettingsPanel = DynamicSettingsPanel.createCounpoundPanel(dynamicPanel, settingsPanel);
                 final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(dynamicSettingsPanel, NbBundle
                     .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
                         builder.getName()));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    dynamicPanel.unsetup((DynamicStatistics) currentStatistics);
+                    dynamicPanel.unsetup((DynamicStatistics) statistics);
                     statisticsUI.unsetup();
-                    controllerUI.execute(currentStatistics, listener);
+                    controllerUI.execute(statistics, listener);
                 }
             } else if (settingsPanel != null) {
-                statisticsUI.setup(currentStatistics);
+                statisticsUI.setup(statistics);
                 final DialogDescriptor dd = DialogDescriptorWithValidation.dialog(settingsPanel, NbBundle
                     .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
                         builder.getName()));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     statisticsUI.unsetup();
-                    controllerUI.execute(currentStatistics, listener);
+                    controllerUI.execute(statistics, listener);
                 }
             } else {
-                statisticsUI.setup(currentStatistics);
-                controllerUI.execute(currentStatistics, listener);
+                statisticsUI.setup(statistics);
+                controllerUI.execute(statistics, listener);
             }
         }
     }
