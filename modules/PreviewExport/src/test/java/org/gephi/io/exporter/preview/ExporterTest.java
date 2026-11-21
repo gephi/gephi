@@ -199,6 +199,9 @@ public class ExporterTest {
         Node node = graphModel.factory().newNode("id\u0001\uD83D\uDE00");
         node.setLabel("Node\u0001\uFFFE\uD83D\uDE00");
         graphModel.getDirectedGraph().addNode(node);
+        Node whitespaceNode = graphModel.factory().newNode("tab\tid");
+        whitespaceNode.setLabel("Line\r\nBreak\rEnd");
+        graphModel.getDirectedGraph().addNode(whitespaceNode);
         for (Edge edge : graphModel.getDirectedGraph().getEdges()) {
             edge.setLabel("Edge\u000B");
         }
@@ -222,5 +225,10 @@ public class ExporterTest {
         Assert.assertFalse(svg.contains("\u0001"));
         Assert.assertFalse(svg.contains("\u000B"));
         Assert.assertFalse(svg.contains("\uFFFE"));
+        // Batik's pretty-printer rejects single-digit character references such as &#9;
+        Assert.assertTrue(svg.contains("id_tab id"));
+        Assert.assertTrue(svg.contains("Line Break End"));
+        Assert.assertFalse(svg.contains("&#9;"));
+        Assert.assertFalse(svg.contains("&#13;"));
     }
 }

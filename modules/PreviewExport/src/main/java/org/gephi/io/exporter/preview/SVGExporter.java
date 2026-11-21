@@ -108,7 +108,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
             controller.render(target, workspace);
 
             Document document = target.getDocument();
-            stripInvalidXmlChars(document.getDocumentElement());
+            sanitize(document.getDocumentElement());
 
             // creates SVG-to-SVG transcoder
             SVGTranscoder t = new SVGTranscoder();
@@ -135,20 +135,28 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         return !cancel;
     }
 
-    private static void stripInvalidXmlChars(Node node) {
+    private static void sanitize(Node node) {
         String value = node.getNodeValue();
-        String stripped = XmlUtils.stripInvalidXmlChars(value);
-        if (stripped != value) {
-            node.setNodeValue(stripped);
+        String sanitized = XmlUtils.stripInvalidXmlChars(value);
+        if (sanitized != null) {
+            // Same end-of-line and attribute-value normalization an XML parser applies, so the JDK serializer
+            // doesn't turn tabs and line breaks into character references; Batik can't parse &#9;
+            sanitized = sanitized.replace("\r\n", "\n").replace('\r', '\n');
+            if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+                sanitized = sanitized.replace('\t', ' ').replace('\n', ' ');
+            }
+            if (!sanitized.equals(value)) {
+                node.setNodeValue(sanitized);
+            }
         }
         NamedNodeMap attributes = node.getAttributes();
         if (attributes != null) {
             for (int i = 0; i < attributes.getLength(); i++) {
-                stripInvalidXmlChars(attributes.item(i));
+                sanitize(attributes.item(i));
             }
         }
         for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-            stripInvalidXmlChars(child);
+            sanitize(child);
         }
     }
 
