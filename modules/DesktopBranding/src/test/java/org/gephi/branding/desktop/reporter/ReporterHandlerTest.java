@@ -100,6 +100,18 @@ public class ReporterHandlerTest {
     }
 
     @Test
+    public void testShellFolderWarningsAreNotReported() {
+        //Win32ShellFolderManager2 logs an unresolvable Places Bar entry or Documents
+        //folder at WARNING, then leaves it out of the file chooser
+        Assert.assertTrue(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("sun.awt.shell.Win32ShellFolderManager2", Level.WARNING)));
+        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("sun.awt.shell.Win32ShellFolderManager2", Level.SEVERE)));
+        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("sun.awt.X11.XToolkit", Level.WARNING)));
+    }
+
+    @Test
     public void testGephiErrorsAreStillReported() {
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
             logRecord("org.gephi.desktop.project.ProjectControllerUIImpl", Level.WARNING)));
