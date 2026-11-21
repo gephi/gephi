@@ -54,6 +54,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
@@ -475,6 +478,40 @@ public class SpreadsheetTest {
         importController.process(container, new DefaultProcessor(), null);
 
         checkNodesSpreadsheet();
+    }
+
+    @Test
+    public void testExcelWithEmptyStyledRow() throws IOException {
+        File file = File.createTempFile(testName.getMethodName(), ".xlsx");
+        file.deleteOnExit();
+        try (XSSFWorkbook workbook = new XSSFWorkbook(); FileOutputStream out = new FileOutputStream(file)) {
+            Sheet sheet = workbook.createSheet();
+            String[][] rows = {{"source", "target", "weight"}, {"a", "b", "1"}, {}, {"b", "c", "2"}};
+            for (int i = 0; i < rows.length; i++) {
+                Row row = sheet.createRow(i);
+                for (int j = 0; j < rows[i].length; j++) {
+                    row.createCell(j).setCellValue(rows[i][j]);
+                }
+            }
+            sheet.getRow(2).setRowStyle(workbook.createCellStyle());
+            workbook.write(out);
+        }
+
+        ImporterSpreadsheetExcel importer = new ImporterSpreadsheetExcel();
+
+        importer.setFile(file);
+
+        Assert.assertEquals(Mode.EDGES_TABLE, importer.getMode());
+        Assert.assertEquals(Set.of("source", "target", "weight"), importer.getColumnsClasses().keySet());
+
+        Container container = importController.importFile(
+            file, importer
+        );
+        Assert.assertNotNull(container);
+
+        importController.process(container, new DefaultProcessor(), null);
+
+        Assert.assertEquals(2, graphController.getGraphModel().getGraph().getEdgeCount());
     }
 
     @Test

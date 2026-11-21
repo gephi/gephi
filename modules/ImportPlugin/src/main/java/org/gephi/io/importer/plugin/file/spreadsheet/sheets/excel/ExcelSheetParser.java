@@ -85,9 +85,9 @@ public class ExcelSheetParser implements SheetParser {
             rowsToScan = 25;
         }
 
-        for (int i = sheet.getFirstRowNum(), j = 0; i < sheet.getLastRowNum() && j < rowsToScan; i++, j++) {
+        for (int i = sheet.getFirstRowNum(), j = 0; i <= sheet.getLastRowNum() && j < rowsToScan; i++, j++) {
             Row row = sheet.getRow(i);
-            if (row != null) {
+            if (row != null && row.getFirstCellNum() >= 0) {
                 rowsFirstIndex = Math.min(rowsFirstIndex, row.getFirstCellNum());
                 rowsLastIndex = Math.max(rowsLastIndex, row.getLastCellNum() - 1);
             }
