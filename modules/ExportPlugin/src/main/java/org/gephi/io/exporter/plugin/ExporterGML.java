@@ -45,8 +45,6 @@ package org.gephi.io.exporter.plugin;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -119,7 +117,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             normalization = NormalizationHelper.build(normalize, graph);
             exportData(graph);
         } catch (IOException e) {
-            Logger.getLogger(ExporterGML.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);

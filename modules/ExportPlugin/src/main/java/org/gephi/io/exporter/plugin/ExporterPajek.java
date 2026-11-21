@@ -44,8 +44,6 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -147,7 +145,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
             Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
             exportData(graph);
         } catch (Exception e) {
-            Logger.getLogger(ExporterPajek.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);

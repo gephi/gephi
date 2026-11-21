@@ -49,11 +49,12 @@ import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -69,18 +70,10 @@ import org.openide.util.lookup.ServiceProvider;
 public class DesktopExportController implements ExportControllerUI {
 
     private final LongTaskExecutor executor;
-    private final LongTaskErrorHandler errorHandler;
     private final ExportController controller;
 
     public DesktopExportController() {
         controller = Lookup.getDefault().lookup(ExportController.class);
-        errorHandler = new LongTaskErrorHandler() {
-
-            @Override
-            public void fatalError(Throwable t) {
-                Exceptions.printStackTrace(t);
-            }
-        };
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
 
@@ -89,7 +82,7 @@ public class DesktopExportController implements ExportControllerUI {
         checkExporter(exporter);
 
         MultipleWorkspacesExporter task = new MultipleWorkspacesExporter(exporter, folder, extension);
-        executor.execute(task, task);
+        executor.execute(task, task, "", t -> handleError(task.currentFileName, t));
     }
 
     @Override
@@ -117,7 +110,41 @@ public class DesktopExportController implements ExportControllerUI {
                     throw new RuntimeException(ex);
                 }
             }
-        }, taskmsg, errorHandler);
+        }, taskmsg, t -> handleError(fileObject.getNameExt(), t));
+    }
+
+    private static void handleError(String fileName, Throwable t) {
+        IOException ioException = findIOException(t);
+        if (ioException != null) {
+            // The file couldn't be written (no permission, disk full, file locked), which isn't a bug to report
+            String reason = ioException.getLocalizedMessage() != null ? ioException.getLocalizedMessage() :
+                ioException.toString();
+            String message =
+                NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.error.io", fileName,
+                    reason);
+            DialogDisplayer.getDefault()
+                .notifyLater(new NotifyDescriptor.Message(message, NotifyDescriptor.ERROR_MESSAGE));
+        } else {
+            // The localized message is the summary of the exception dialog, which keeps its Report button. It
+            // goes to the crash report too, so it doesn't name the file.
+            String message =
+                NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.error.unexpected");
+            Exceptions.printStackTrace(Exceptions.attachLocalizedMessage(t, message));
+        }
+    }
+
+    private static IOException findIOException(Throwable t) {
+        Throwable current = t;
+        while (current != null) {
+            if (current instanceof IOException) {
+                return (IOException) current;
+            }
+            if (current.getCause() == current) {
+                break;
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     @Override
@@ -138,6 +165,7 @@ public class DesktopExportController implements ExportControllerUI {
         private final String extension;
         private boolean cancel = false;
         private ProgressTicket progressTicket;
+        private volatile String currentFileName;
 
         public MultipleWorkspacesExporter(Exporter exporter, FileObject folder, String extension) {
             this.exporter = exporter;
@@ -159,6 +187,7 @@ public class DesktopExportController implements ExportControllerUI {
                     try {
                         FileObject file;
                         String workspaceName = workspace.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
+                        currentFileName = workspaceName + "." + extension;
                         if (folder.getFileObject(workspaceName, extension) == null) {
                             file = folder.createData(workspaceName, extension);
                         } else {

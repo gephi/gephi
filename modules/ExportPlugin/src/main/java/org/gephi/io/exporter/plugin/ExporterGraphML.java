@@ -44,8 +44,6 @@
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -110,7 +108,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
             exportData(createDocument(), graph);
         } catch (Exception e) {
-            Logger.getLogger(ExporterGraphML.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
