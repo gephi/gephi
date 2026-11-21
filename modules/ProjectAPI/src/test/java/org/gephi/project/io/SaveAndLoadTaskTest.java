@@ -1,9 +1,14 @@
 package org.gephi.project.io;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.impl.ProjectImpl;
@@ -20,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.netbeans.junit.MockServices;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 public class SaveAndLoadTaskTest {
 
@@ -178,6 +184,114 @@ public class SaveAndLoadTaskTest {
         Assert.assertNotNull(new LoadTask(tempFile).execute(null));
     }
 
+    /**
+     * Regression test: creating the temporary file next to the destination can be refused although the folder exists
+     * (e.g. a cloud-sync placeholder or an antivirus), the project is then written to the system temp folder instead.
+     */
+    @Test
+    public void testRefusedSiblingTempFileFallsBackToSystemTemp() throws Exception {
+        MockServices.setServices(MockXMLPersistenceProvider.class);
+
+        WorkspaceImpl workspace = Utils.newWorkspace();
+        File file = new File(tempFolder.getRoot(), "fallback.gephi");
+        RefusingSiblingSaveTask saveTask = new RefusingSiblingSaveTask(workspace.getProject(), file, null);
+        Assert.assertTrue(saveTask.run());
+
+        Assert.assertEquals(1, saveTask.written.size());
+        Assert.assertFalse("The system temp file must have been moved", saveTask.written.get(0).exists());
+        Assert.assertTrue(file.length() > 0);
+        assertNoTempFile();
+        Assert.assertNotNull(new LoadTask(file).execute(null));
+
+        RefusingSiblingSaveTask resaveTask = new RefusingSiblingSaveTask(workspace.getProject(), file, null);
+        Assert.assertTrue(resaveTask.run());
+        Assert.assertFalse("The system temp file must have been moved", resaveTask.written.get(0).exists());
+        assertNoTempFile();
+        Assert.assertNotNull(new LoadTask(file).execute(null));
+    }
+
+    @Test
+    public void testRefusedSiblingTempFileKeepsSystemTempFileWhenMoveFails() throws Exception {
+        WorkspaceImpl workspace = Utils.newWorkspace();
+        File destination = tempFolder.newFolder("destination.gephi");
+        Assert.assertTrue(new File(destination, "child.txt").createNewFile());
+        RefusingSiblingSaveTask saveTask = new RefusingSiblingSaveTask(workspace.getProject(), destination, null);
+
+        GephiFormatException exception = null;
+        try {
+            saveTask.run();
+            Assert.fail("Expected the save to fail");
+        } catch (GephiFormatException ex) {
+            exception = ex;
+        }
+
+        Assert.assertEquals(1, saveTask.written.size());
+        File tempFile = saveTask.written.get(0);
+        try {
+            Assert.assertTrue("The system temp file must be kept when the move fails", tempFile.length() > 0);
+            Assert.assertTrue("The error should point at the recoverable file, was: " + exception.getMessage(),
+                exception.getMessage().contains(tempFile.getAbsolutePath()));
+            Assert.assertNotNull(new LoadTask(tempFile).execute(null));
+        } finally {
+            Files.deleteIfExists(tempFile.toPath());
+        }
+    }
+
+    /**
+     * Regression test: a move that isn't atomic deletes the destination before moving the file, which on the fallback
+     * path happens in a folder that just refused a new file. A failing move must leave the previous file intact.
+     */
+    @Test
+    public void testRefusedSiblingTempFileKeepsOriginalWhenMoveFails() throws Exception {
+        MockServices.setServices(MockXMLPersistenceProvider.class);
+
+        WorkspaceImpl workspace = Utils.newWorkspace();
+        ProjectImpl project = workspace.getProject();
+        File file = new File(tempFolder.getRoot(), "resave.gephi");
+        Assert.assertTrue(new SaveTask(project, file).run());
+        byte[] original = Files.readAllBytes(file.toPath());
+
+        //The system temp file can't be moved while it's open on Windows, nor out of a read-only folder on POSIX, while
+        //the destination can still be deleted
+        File systemTempFolder = tempFolder.newFolder("systemTemp");
+        File systemTempFile = new File(systemTempFolder, "resave.gephi_temp");
+        Assert.assertTrue(systemTempFile.createNewFile());
+        FileInputStream heldOpen = new FileInputStream(systemTempFile);
+        systemTempFolder.setWritable(false);
+        try {
+            GephiFormatException exception = null;
+            try {
+                new RefusingSiblingSaveTask(project, file, systemTempFile).run();
+                Assert.fail("Expected the save to fail");
+            } catch (GephiFormatException ex) {
+                exception = ex;
+            }
+
+            Assert.assertArrayEquals("A failed move must leave the previous file untouched", original,
+                Files.readAllBytes(file.toPath()));
+            Assert.assertTrue("The system temp file must be kept when the move fails", systemTempFile.length() > 0);
+            Assert.assertTrue("The error should point at the recoverable file, was: " + exception.getMessage(),
+                exception.getMessage().contains(systemTempFile.getAbsolutePath()));
+        } finally {
+            heldOpen.close();
+            systemTempFolder.setWritable(true);
+        }
+    }
+
+    @Test
+    public void testMissingFolderIsReported() {
+        WorkspaceImpl workspace = Utils.newWorkspace();
+        File folder = new File(tempFolder.getRoot(), "missing");
+        File file = new File(folder, "project.gephi");
+
+        GephiFormatException exception = assertSaveFails(workspace.getProject(), file);
+
+        Assert.assertTrue(exception.getCause() instanceof FileNotFoundException);
+        Assert.assertEquals(NbBundle.getMessage(SaveTask.class, "SaveTask.folderNotWritable", folder.getAbsolutePath(),
+            exception.getCause().getLocalizedMessage()), exception.getMessage());
+        Assert.assertFalse(folder.exists());
+    }
+
     @Test
     public void testCancelResaveKeepsExistingFileIntact() throws Exception {
         MockServices.setServices(MockXMLPersistenceProvider.class);
@@ -244,12 +358,14 @@ public class SaveAndLoadTaskTest {
         Assert.assertNull(result);
     }
 
-    private void assertSaveFails(ProjectImpl project, File file) {
+    private GephiFormatException assertSaveFails(ProjectImpl project, File file) {
         try {
             new SaveTask(project, file).run();
-            Assert.fail("Expected the save to fail");
         } catch (GephiFormatException expected) {
+            return expected;
         }
+        Assert.fail("Expected the save to fail");
+        return null;
     }
 
     private File findTempFile() {
@@ -302,5 +418,35 @@ public class SaveAndLoadTaskTest {
         Assert.assertEquals("Test", readProject.getWorkspace(workspaceId).getWorkspaceMetadata().getTitle());
 
         return readProject;
+    }
+
+    /**
+     * Save task that can't create its temporary file next to the destination, as if the file system refused it.
+     */
+    private static class RefusingSiblingSaveTask extends SaveTask {
+
+        private final File folder;
+        private final File systemTempFile;
+        private final List<File> written = new ArrayList<>();
+
+        RefusingSiblingSaveTask(ProjectImpl project, File file, File systemTempFile) {
+            super(project, file);
+            this.folder = file.getParentFile();
+            this.systemTempFile = systemTempFile;
+        }
+
+        @Override
+        FileOutputStream newOutputStream(File writeFile) throws FileNotFoundException {
+            if (writeFile.getParentFile().equals(folder)) {
+                throw new FileNotFoundException(writeFile + " (The system cannot find the file specified)");
+            }
+            written.add(writeFile);
+            return super.newOutputStream(writeFile);
+        }
+
+        @Override
+        File newSystemTempFile() throws IOException {
+            return systemTempFile != null ? systemTempFile : super.newSystemTempFile();
+        }
     }
 }
