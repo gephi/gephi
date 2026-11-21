@@ -14,10 +14,6 @@
 
     <name>ExportPlugin</name>
 
-    <properties>
-        <gephi.woodstox.version>7.2.2</gephi.woodstox.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -68,15 +64,6 @@
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
             <version>2.10.0</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Used in tests to exercise the same strict XMLStreamWriter (Woodstox) that the desktop app
-             resolves at runtime (via ImportPlugin's Apache POI dependency), since the JDK's bundled
-             StAX implementation does not validate characters the way Woodstox does. -->
-        <dependency>
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId>
-            <version>${gephi.woodstox.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
