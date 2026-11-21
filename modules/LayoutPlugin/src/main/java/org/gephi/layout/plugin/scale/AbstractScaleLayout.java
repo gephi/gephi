@@ -68,6 +68,7 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
         setConverged(false);
     }
 
@@ -76,7 +77,7 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
         graphModel.getGraph().readLock();
         try {
             Graph graph = graphModel.getGraphVisible();
-            float xMean = 0, yMean = 0;
+            double xMean = 0, yMean = 0;
             for (Node n : graph.getNodes()) {
                 xMean += n.x();
                 yMean += n.y();
@@ -86,10 +87,14 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
 
             for (Node n : graph.getNodes()) {
                 if (!n.isFixed()) {
-                    float dx = (n.x() - xMean) * getScale();
-                    float dy = (n.y() - yMean) * getScale();
+                    double dx = (n.x() - xMean) * getScale();
+                    double dy = (n.y() - yMean) * getScale();
+                    float x = (float) (xMean + dx);
+                    float y = (float) (yMean + dy);
 
-                    n.setPosition(xMean + dx, yMean + dy);
+                    if (Float.isFinite(x) && Float.isFinite(y)) {
+                        n.setPosition(x, y);
+                    }
                 }
             }
             setConverged(true);

@@ -82,6 +82,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
     }
 
     @Override
@@ -146,8 +147,8 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
             // gravity
             for (Node n : nodes) {
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
-                float d = (float) Math.sqrt(n.x() * n.x() + n.y() * n.y());
-                float gf = 0.01f * k * (float) gravity * d;
+                double d = Math.sqrt((double) n.x() * n.x() + (double) n.y() * n.y());
+                double gf = 0.01 * k * gravity * d;
                 layoutData.dx -= gf * n.x() / d;
                 layoutData.dy -= gf * n.y() / d;
             }
@@ -164,7 +165,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 float xDist = layoutData.dx;
                 float yDist = layoutData.dy;
                 float dist = (float) Math.sqrt(layoutData.dx * layoutData.dx + layoutData.dy * layoutData.dy);
-                if (dist > 0 && !n.isFixed()) {
+                if (dist > 0 && !Float.isInfinite(dist) && !n.isFixed()) {
                     float limitedDist = Math.min(maxDisplace * ((float) speed / SPEED_DIVISOR), dist);
                     n.setX(n.x() + xDist / dist * limitedDist);
                     n.setY(n.y() + yDist / dist * limitedDist);

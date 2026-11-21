@@ -101,9 +101,28 @@ public abstract class AbstractLayout implements Layout {
         Random random = new Random(seed);
         nodesIterable = graph.getNodes();
         for (Node node : nodesIterable) {
-            node.setX((float) ((0.01 + random.nextDouble()) * 1000) - 500);
-            node.setY((float) ((0.01 + random.nextDouble()) * 1000) - 500);
+            setRandomPosition(node, random);
         }
+    }
+
+    /**
+     * Gives a random position to nodes whose x or y is not finite, so that a single such node does not make the
+     * forces or the mean of every other node non-finite.
+     *
+     * @param graphModel the graph model
+     */
+    protected static void ensureFiniteLayoutNodePositions(GraphModel graphModel) {
+        Random random = new Random();
+        for (Node node : graphModel.getGraph().getNodes()) {
+            if (!Float.isFinite(node.x()) || !Float.isFinite(node.y())) {
+                setRandomPosition(node, random);
+            }
+        }
+    }
+
+    private static void setRandomPosition(Node node, Random random) {
+        node.setX((float) ((0.01 + random.nextDouble()) * 1000) - 500);
+        node.setY((float) ((0.01 + random.nextDouble()) * 1000) - 500);
     }
 
     @Override
