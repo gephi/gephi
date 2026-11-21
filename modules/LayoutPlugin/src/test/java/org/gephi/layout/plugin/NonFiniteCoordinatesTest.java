@@ -46,7 +46,10 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas.ForceAtlas;
+import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
 import org.gephi.layout.plugin.fruchterman.FruchtermanReingoldBuilder;
+import org.gephi.layout.plugin.labelAdjust.LabelAdjustBuilder;
+import org.gephi.layout.plugin.rotate.Rotate;
 import org.gephi.layout.plugin.scale.Contract;
 import org.gephi.layout.spi.Layout;
 import org.junit.Assert;
@@ -106,6 +109,76 @@ public class NonFiniteCoordinatesTest {
         assertFinite(nodes);
     }
 
+    @Test
+    public void testForceAtlas2WithHugeCoordinate() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, 3e38f});
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testForceAtlas2WithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testRotateWithInfiniteCoordinate() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f},
+            new float[] {Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY});
+        runLayout(new Rotate().buildLayout());
+        Assert.assertEquals(0f, nodes[0].x(), 1e-3f);
+        Assert.assertEquals(-10f, nodes[0].y(), 1e-3f);
+        Assert.assertEquals(0f, nodes[1].x(), 1e-3f);
+        Assert.assertEquals(10f, nodes[1].y(), 1e-3f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testForceAtlas2WithNodesFartherApartThanFloatMax() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, 2e38f},
+            new float[] {0f, -2e38f});
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithHugeCoordinate() {
+        // Enough nodes for two quadtree columns, so that an uncapped cell count overflows int
+        float[][] positions = new float[61][];
+        positions[0] = new float[] {10f, 0f};
+        positions[1] = new float[] {-10f, 0f};
+        for (int i = 2; i < 60; i++) {
+            positions[i] = new float[] {100f * i, 0f};
+        }
+        positions[60] = new float[] {0f, 1e30f};
+        Node[] nodes = createGraph(positions);
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithNodeFarBelow() {
+        // The quadtree gets several rows and the overlapping nodes are in the top one
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, -400f});
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
+    }
+
     private Node[] createGraphWithInfiniteNode() {
         return createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, Float.POSITIVE_INFINITY});
     }
@@ -139,6 +212,26 @@ public class NonFiniteCoordinatesTest {
         }
     }
 
+    private void runLabelAdjust(Node[] nodes) {
+        for (Node node : nodes) {
+            node.setSize(10f);
+            node.getTextProperties().setDimensions(30f, 10f);
+        }
+        Layout layout = new LabelAdjustBuilder().buildLayout();
+        layout.setGraphModel(graphModel);
+        layout.resetPropertiesValues();
+        layout.initAlgo();
+        try {
+            // Checked before goAlgo, so that a non-finite position fails here rather than in the quadtree allocation
+            assertFinite(nodes);
+            for (int i = 0; i < ITERATIONS && layout.canAlgo(); i++) {
+                layout.goAlgo();
+            }
+        } finally {
+            layout.endAlgo();
+        }
+    }
+
     private static void assertFinite(Node... nodes) {
         for (Node node : nodes) {
             Assert.assertTrue("Node " + node.getId() + " x should be finite", Float.isFinite(node.x()));
@@ -148,5 +241,9 @@ public class NonFiniteCoordinatesTest {
 
     private static void assertMoved(Node node, float x, float y) {
         Assert.assertTrue("Node " + node.getId() + " should have moved", node.x() != x || node.y() != y);
+    }
+
+    private static void assertPushedApart(Node n1, Node n2) {
+        Assert.assertTrue("Overlapping nodes should be pushed apart", ForceVectorUtils.distance(n1, n2) > 20f);
     }
 }

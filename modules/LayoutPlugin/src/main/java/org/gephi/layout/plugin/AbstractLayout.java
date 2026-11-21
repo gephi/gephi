@@ -111,7 +111,7 @@ public abstract class AbstractLayout implements Layout {
      *
      * @param graphModel the graph model
      */
-    protected static void ensureFiniteLayoutNodePositions(GraphModel graphModel) {
+    public static void ensureFiniteLayoutNodePositions(GraphModel graphModel) {
         Random random = new Random();
         for (Node node : graphModel.getGraph().getNodes()) {
             if (!Float.isFinite(node.x()) || !Float.isFinite(node.y())) {

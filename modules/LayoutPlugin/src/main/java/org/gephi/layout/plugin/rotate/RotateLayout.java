@@ -68,6 +68,7 @@ public class RotateLayout extends AbstractLayout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
         setConverged(false);
     }
 
