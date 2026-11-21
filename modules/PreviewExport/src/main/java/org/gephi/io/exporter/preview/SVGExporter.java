@@ -42,7 +42,15 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.io.exporter.preview;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
@@ -54,11 +62,15 @@ import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.XmlUtils;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Class exporting the preview graph as an SVG image.
@@ -95,12 +107,16 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         try {
             controller.render(target, workspace);
 
+            Document document = target.getDocument();
+            sanitize(document.getDocumentElement());
+
             // creates SVG-to-SVG transcoder
             SVGTranscoder t = new SVGTranscoder();
             t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
-            // sets transcoder input and output
-            TranscoderInput input = new TranscoderInput(target.getDocument());
+            // Batik's DOM serializer rejects surrogate chars (emoji etc.), so the JDK serializes
+            // the document and Batik only pretty-prints it
+            TranscoderInput input = new TranscoderInput(new StringReader(serialize(document)));
 
             // performs transcoding
             try {
@@ -117,6 +133,44 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         Progress.finish(progress);
 
         return !cancel;
+    }
+
+    private static void sanitize(Node node) {
+        String value = node.getNodeValue();
+        String sanitized = XmlUtils.stripInvalidXmlChars(value);
+        if (sanitized != null) {
+            // Same end-of-line and attribute-value normalization an XML parser applies, so the JDK serializer
+            // doesn't turn tabs and line breaks into character references; Batik can't parse &#9;
+            sanitized = sanitized.replace("\r\n", "\n").replace('\r', '\n');
+            if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+                sanitized = sanitized.replace('\t', ' ').replace('\n', ' ');
+            }
+            if (!sanitized.equals(value)) {
+                node.setNodeValue(sanitized);
+            }
+        }
+        NamedNodeMap attributes = node.getAttributes();
+        if (attributes != null) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+                sanitize(attributes.item(i));
+            }
+        }
+        for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+            sanitize(child);
+        }
+    }
+
+    private static String serialize(Document document) throws TransformerException {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        DocumentType doctype = document.getDoctype();
+        if (doctype != null) {
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
+        }
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(document), new StreamResult(writer));
+        return writer.toString();
     }
 
     @Override
