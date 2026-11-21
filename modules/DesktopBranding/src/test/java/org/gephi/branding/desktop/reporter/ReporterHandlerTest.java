@@ -81,6 +81,17 @@ public class ReporterHandlerTest {
     }
 
     @Test
+    public void testPlatformApiDiagnosticsAreNotReported() {
+        //The platform's API modules log under org.openide. DefaultAttributes.saveTable()
+        //logs every failed delete or rename of a .nbattrs file at INFO on FileSystem's
+        //logger and retries; at worst the attributes it meant to save are lost
+        Assert.assertTrue(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("org.openide.filesystems.FileSystem", Level.INFO)));
+        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("org.openide.filesystems.FileSystem", Level.WARNING)));
+    }
+
+    @Test
     public void testPlatformErrorsAreStillReported() {
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
             logRecord("org.netbeans.core.windows.persistence.WindowManagerParser", Level.SEVERE)));
@@ -113,6 +124,8 @@ public class ReporterHandlerTest {
 
     @Test
     public void testGephiErrorsAreStillReported() {
+        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
+            logRecord("org.gephi.desktop.project.ProjectControllerUIImpl", Level.INFO)));
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
             logRecord("org.gephi.desktop.project.ProjectControllerUIImpl", Level.WARNING)));
         Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
