@@ -49,18 +49,19 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.AWTEventListener;
 import java.awt.event.ContainerEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+import org.openide.modules.OnStart;
 
 /**
- * Shows the bundled {@link ColorPicker} dialog with its hex field constrained to six hexadecimal
- * digits.
+ * Constrains the hex field of every bundled {@link ColorPicker} to six hexadecimal digits, whoever
+ * opens it.
  * <p>
  * The picker reacts to every edit of the hex field by rewriting that same field with the canonical
  * form of the color, from inside the field's own document notification. Swing forbids that, so any
@@ -68,8 +69,14 @@ import javax.swing.text.DocumentFilter;
  * event dispatch thread instead of applying the color. Constraining the field so it can only ever
  * hold the canonical form leaves the picker with nothing to rewrite, which removes the reentrant
  * write altogether.
+ * <p>
+ * The constraint is applied application-wide from startup rather than per dialog, because
+ * third-party components such as the color chooser swatches open the picker directly through
+ * {@link ColorPicker#showDialog}.
  */
 public final class ColorPickerUtils {
+
+    private static final AtomicBoolean HEX_FIELD_GUARD_INSTALLED = new AtomicBoolean();
 
     private ColorPickerUtils() {
     }
@@ -83,28 +90,35 @@ public final class ColorPickerUtils {
      * @return the color the user chose, or null if the dialog was cancelled
      */
     public static Color showDialog(Window owner, Color originalColor, boolean includeOpacity) {
-        AWTEventListener listener = event -> {
+        installHexFieldGuard();
+        return ColorPicker.showDialog(owner, originalColor, includeOpacity);
+    }
+
+    private static void installHexFieldGuard() {
+        if (!HEX_FIELD_GUARD_INSTALLED.compareAndSet(false, true)) {
+            return;
+        }
+        //The picker builds its hex field in its constructor, so the field can be reached as soon as
+        //the picker gets added to a container, which happens before the picker is displayable.
+        //This listener sees every component added anywhere, so it must stay cheap for anything
+        //that is not a picker.
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
             if (event instanceof ContainerEvent && event.getID() == ContainerEvent.COMPONENT_ADDED) {
                 Component child = ((ContainerEvent) event).getChild();
                 if (child instanceof ColorPicker) {
                     constrainHexField((ColorPicker) child);
                 }
             }
-        };
-        //The picker is created inside ColorPicker.showDialog(), so its hex field can only be
-        //reached when it gets added to the dialog, which happens before the dialog is displayable.
-        Toolkit.getDefaultToolkit().addAWTEventListener(listener, AWTEvent.CONTAINER_EVENT_MASK);
-        try {
-            return ColorPicker.showDialog(owner, originalColor, includeOpacity);
-        } finally {
-            Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
-        }
+        }, AWTEvent.CONTAINER_EVENT_MASK);
     }
 
     private static void constrainHexField(ColorPicker picker) {
         JTextField hexField = findHexField(picker.getExpertControls());
         if (hexField != null) {
-            ((AbstractDocument) hexField.getDocument()).setDocumentFilter(new HexDocumentFilter());
+            AbstractDocument document = (AbstractDocument) hexField.getDocument();
+            if (!(document.getDocumentFilter() instanceof HexDocumentFilter)) {
+                document.setDocumentFilter(new HexDocumentFilter());
+            }
         }
     }
 
@@ -135,6 +149,18 @@ public final class ColorPickerUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Installs the hex field guard when the application starts, before any picker can be opened.
+     */
+    @OnStart
+    public static final class HexFieldGuardInstaller implements Runnable {
+
+        @Override
+        public void run() {
+            installHexFieldGuard();
+        }
     }
 
     static final class HexDocumentFilter extends DocumentFilter {
