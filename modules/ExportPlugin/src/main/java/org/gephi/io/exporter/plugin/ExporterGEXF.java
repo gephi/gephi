@@ -214,7 +214,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         + "(e.g. control characters) and were removed from the exported file.");
             }
         } catch (Exception e) {
-            Logger.getLogger(ExporterGEXF.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progress);

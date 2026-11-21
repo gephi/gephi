@@ -45,8 +45,6 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -104,7 +102,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             exportData(graph, graphModel);
         } catch (Exception e) {
-            Logger.getLogger(ExporterGDF.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);

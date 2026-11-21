@@ -46,8 +46,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -138,7 +136,7 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                 }
             }
         } catch (Exception e) {
-            Logger.getLogger(ExporterDL.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlockAll();
             Progress.finish(progressTicket);

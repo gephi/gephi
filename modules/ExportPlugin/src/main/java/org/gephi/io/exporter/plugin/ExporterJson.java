@@ -74,7 +74,7 @@ public class ExporterJson implements GraphExporter, CharacterExporter, LongTask 
 
             exportData();
         } catch (Exception e) {
-            Logger.getLogger(ExporterJson.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progress);

@@ -44,8 +44,6 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Edge;
@@ -105,7 +103,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
             exportData(graph);
         } catch (Exception e) {
-            Logger.getLogger(ExporterVNA.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);

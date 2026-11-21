@@ -59,7 +59,6 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -119,7 +118,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
             }
             doc.save(stream);
         } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+            throw new RuntimeException(ex);
         } finally {
             Progress.finish(progress);
 

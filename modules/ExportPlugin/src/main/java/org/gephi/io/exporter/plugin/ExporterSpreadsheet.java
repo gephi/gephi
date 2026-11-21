@@ -52,8 +52,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -114,7 +112,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
             exportData(graph);
         } catch (Exception e) {
-            Logger.getLogger(ExporterSpreadsheet.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException(e);
         } finally {
             graphModel.getGraph().readUnlock();
             Progress.finish(progressTicket);
