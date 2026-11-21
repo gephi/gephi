@@ -45,6 +45,7 @@ package org.gephi.project.io;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -118,7 +119,7 @@ public class SaveTask implements LongTask {
         //Always write to a temporary sibling file and only move it over the destination once the
         //content is fully written. This guarantees the destination file is never truncated or left
         //empty if the save is interrupted (crash, cancel, disk full, cloud-sync locking, ...).
-        final File writeFile = new File(file.getParent(), file.getName() + "_temp" + System.currentTimeMillis());
+        File writeFile = new File(file.getParent(), file.getName() + "_temp" + System.currentTimeMillis());
         boolean moveFailed = false;
         try {
             FileOutputStream outputStream = null;
@@ -128,7 +129,22 @@ public class SaveTask implements LongTask {
             try {
                 //Stream
                 int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 3);
-                outputStream = new FileOutputStream(writeFile);
+                try {
+                    outputStream = newOutputStream(writeFile);
+                } catch (FileNotFoundException siblingEx) {
+                    File folder = file.getAbsoluteFile().getParentFile();
+                    if (!folder.isDirectory() || !Files.isWritable(folder.toPath())) {
+                        GephiFormatException folderEx = new GephiFormatException(
+                            NbBundle.getMessage(SaveTask.class, "SaveTask.folderNotWritable", folder.getAbsolutePath(),
+                                siblingEx.getLocalizedMessage()));
+                        folderEx.initCause(siblingEx);
+                        throw folderEx;
+                    }
+                    //Creating a new file next to the destination can be refused even though the folder is writable
+                    //(cloud-sync placeholder, antivirus, ...), the system temp folder is then used instead
+                    writeFile = Files.createTempFile(file.getName() + "_temp", null).toFile();
+                    outputStream = newOutputStream(writeFile);
+                }
                 zipOut = new ZipOutputStream(outputStream);
                 zipOut.setLevel(zipLevel);
                 bos = new BufferedOutputStream(zipOut);
@@ -235,6 +251,10 @@ public class SaveTask implements LongTask {
         }
 
         return !cancel;
+    }
+
+    FileOutputStream newOutputStream(File writeFile) throws FileNotFoundException {
+        return new FileOutputStream(writeFile);
     }
 
     private void writeProject(OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
