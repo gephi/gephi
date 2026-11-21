@@ -44,6 +44,7 @@ package org.gephi.branding.desktop.reporter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -62,7 +63,7 @@ import org.openide.util.NbPreferences;
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private static final String PLATFORM_LOGGER_PREFIX = "org.netbeans.";
-    private static final String PLATFORM_API_LOGGER_PREFIX = "org.openide.";
+    private static final String FILESYSTEM_LOGGER = "org.openide.filesystems.FileSystem";
     private static final String PROXY_AUTO_CONFIG_LOGGER = "org.netbeans.core.network.proxy.ProxyAutoConfig";
     private static final String SHELL_FOLDER_LOGGER_PREFIX = "sun.awt.shell.";
 
@@ -94,16 +95,23 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
     }
 
     /**
-     * NetBeans Platform code, which logs under org.netbeans and, in the
-     * platform's API modules, under org.openide, reports problems it has
-     * already recovered from through java.util.logging below WARNING and then
-     * carries on with a fallback: an unreachable autoupdate catalog, an
-     * unreadable window-system config file, a cache file it could not delete,
-     * a .nbattrs attribute file it could not replace. Those records are not
+     * NetBeans Platform code reports problems it has already recovered from
+     * through java.util.logging below WARNING and then carries on with a
+     * fallback: an unreachable autoupdate catalog, an unreadable window-system
+     * config file, a cache file it could not delete. Those records are not
      * crashes and must not become crash reports. A platform record at WARNING
      * or above is still reported, because the platform does use WARNING for
      * problems worth a maintainer's attention, such as a TopComponent whose
      * settings file cannot be deserialized (PersistenceManager, line 591).
+     * This rule covers loggers under org.netbeans only. The platform's API
+     * modules, under org.openide, also log at INFO exceptions thrown by Gephi
+     * code, such as a wizard panel failing in storeSettings (WizardDescriptor)
+     * or a service provider whose constructor throws (MetaInfServicesLookup),
+     * so they stay reported. The one exception is an IOException below WARNING
+     * on org.openide.filesystems.FileSystem, which is how DefaultAttributes
+     * logs a .nbattrs file it could not delete or replace before retrying.
+     * Requiring the IOException keeps that logger's other INFO record with a
+     * throwable, a missing localizing bundle key, reported.
      * Two sources are filtered up to and including WARNING. ProxyAutoConfig
      * never logs above WARNING and every failure there ends with a working,
      * possibly no-op, PAC evaluator. The JDK's Windows shell folder code
@@ -120,9 +128,10 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         if (PROXY_AUTO_CONFIG_LOGGER.equals(loggerName) || loggerName.startsWith(SHELL_FOLDER_LOGGER_PREFIX)) {
             return level <= Level.WARNING.intValue();
         }
-        boolean platformLogger = loggerName.startsWith(PLATFORM_LOGGER_PREFIX)
-            || loggerName.startsWith(PLATFORM_API_LOGGER_PREFIX);
-        return platformLogger && level < Level.WARNING.intValue();
+        if (FILESYSTEM_LOGGER.equals(loggerName)) {
+            return level < Level.WARNING.intValue() && record.getThrown() instanceof IOException;
+        }
+        return loggerName.startsWith(PLATFORM_LOGGER_PREFIX) && level < Level.WARNING.intValue();
     }
 
     @Override

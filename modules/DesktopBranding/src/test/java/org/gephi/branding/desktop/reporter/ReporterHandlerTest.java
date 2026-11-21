@@ -43,6 +43,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.branding.desktop.reporter;
 
 import java.io.IOException;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.junit.Assert;
@@ -58,10 +59,20 @@ public class ReporterHandlerTest {
     };
 
     private static LogRecord logRecord(String loggerName, Level level) {
+        return logRecord(loggerName, level, new IOException("boom"));
+    }
+
+    private static LogRecord logRecord(String loggerName, Level level, Throwable thrown) {
         LogRecord record = new LogRecord(level, null);
         record.setLoggerName(loggerName);
-        record.setThrown(new IOException("boom"));
+        record.setThrown(thrown);
         return record;
+    }
+
+    private static boolean isReported(LogRecord record) {
+        ReporterHandler handler = new CountingOutOfMemoryHandler();
+        handler.publish(record);
+        return handler.getCurrentReport() != null;
     }
 
     @Test
@@ -81,14 +92,24 @@ public class ReporterHandlerTest {
     }
 
     @Test
-    public void testPlatformApiDiagnosticsAreNotReported() {
-        //The platform's API modules log under org.openide. DefaultAttributes.saveTable()
-        //logs every failed delete or rename of a .nbattrs file at INFO on FileSystem's
-        //logger and retries; at worst the attributes it meant to save are lost
-        Assert.assertTrue(ReporterHandler.isHandledPlatformDiagnostic(
-            logRecord("org.openide.filesystems.FileSystem", Level.INFO)));
-        Assert.assertFalse(ReporterHandler.isHandledPlatformDiagnostic(
-            logRecord("org.openide.filesystems.FileSystem", Level.WARNING)));
+    public void testFileSystemIOExceptionsAreNotReported() {
+        //DefaultAttributes.saveTable() logs every failed delete or rename of a .nbattrs
+        //file at INFO on FileSystem's logger and retries
+        Assert.assertFalse(isReported(logRecord("org.openide.filesystems.FileSystem", Level.INFO)));
+        Assert.assertTrue(isReported(logRecord("org.openide.filesystems.FileSystem", Level.WARNING)));
+        //The logger's other INFO record with a throwable is a missing localizing bundle key
+        Assert.assertTrue(isReported(logRecord("org.openide.filesystems.FileSystem", Level.INFO,
+            new MissingResourceException("boom", "Bundle", "key"))));
+    }
+
+    @Test
+    public void testPlatformApiRecordsOfGephiErrorsAreStillReported() {
+        //WizardDescriptor logs at INFO what a panel's storeSettings() throws when the
+        //wizard is closed or cancelled
+        Assert.assertTrue(isReported(logRecord("org.openide.WizardDescriptor", Level.INFO,
+            new NullPointerException())));
+        //MetaInfServicesLookup logs at INFO a @ServiceProvider whose constructor throws
+        Assert.assertTrue(isReported(logRecord("org.openide.util.lookup.MetaInfServicesLookup", Level.INFO)));
     }
 
     @Test
