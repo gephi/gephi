@@ -1,0 +1,625 @@
+# Accessibility Conformance Report rows (ITI VPAT 2.5Rev, WCAG edition) for the Gephi desktop application.
+#
+# Each release: rerun the measurements, regenerate, and review every row whose facts changed, and the summary.
+# Remarks are templates: {name} is a fact computed by generate.py from summary.json (see facts() there); {{ and }}
+# are literal braces. American spelling, as in WCAG and the ITI template.
+#
+# basis:  measured   numbers come from the audit agent run inside the released application
+#         inventory  the agent or scan_strings.py collects the evidence, a person judges it
+#         reasoning  follows from what Gephi is (no audio, no sign-in, WCAG2ICT reading)
+# manual: screen reader checks (data/checklist.toml); while any is unanswered the row stays provisional.
+# windows_keyboard: the row waits for the Windows kit's real key presses.
+
+[report]
+product = "Gephi"
+title = "Gephi Accessibility Conformance Report"
+edition = "WCAG Edition (Based on VPAT® Version 2.5Rev)"
+description = """Gephi is an open-source desktop application to visualize, explore and analyze networks (graphs), for Windows, \
+macOS and Linux. It is a Java Swing application built on the Apache NetBeans Platform and ships its own Java \
+runtime. The graph view is drawn with OpenGL."""
+contact = "contact@gephi.org, or https://github.com/gephi/gephi/issues"
+summary_intro = "Main known barriers, by user group (details in the tables below):"
+summary = [
+    """Screen reader users: the settings of layouts and of the Preview can't be used, because their property sheets \
+are read as internal code instead of setting names and values (1.3.1, 4.1.2); Data Laboratory table cells are \
+read without their column headers (1.3.1); nothing is announced while a layout runs or when it stops (4.1.3); \
+the graph drawing (nodes and edges) isn't exposed, but the Data Laboratory tables list the same data (1.1.1). \
+Menus, most buttons, check boxes and dialogs are read correctly.""",
+    """Keyboard users: editing the graph in the graph view (selecting, moving, painting, sizing, adding nodes and \
+edges), the Data Laboratory column actions and zooming or panning the preview need a mouse (2.1.1); on \
+Windows, global shortcuts don't work while the graph view has focus, until Tab moves focus out of it (2.1.1). \
+Menus, shortcuts for every perspective and panel, and Tab within each panel reach the rest.""",
+    """Low-vision users: the focus ring and control borders have low contrast (1.4.11, 2.4.7); tooltips disappear \
+after {tooltip_dismiss_s} seconds (1.4.13); text is enlarged only with a launch option, and some labels are \
+cut off at 200% (1.4.4); a few texts of the Welcome window and an error message are below the minimum contrast \
+(1.4.3).""",
+]
+notes = [
+    """Scope: the Gephi desktop application, version {version}. The gephi.org website, the online documentation, \
+Gephi Lite (a separate web application) and third-party plugins are not covered.""",
+    """Platforms and assistive technology: measured on {platform}. Linux was not tested; Gephi uses the same Java \
+interface there, and Linux screen readers reach Java applications only through the separately installed Java \
+ATK Wrapper. Screen reader testing used {screen_reader}; JAWS and VoiceOver were not tested. Contrast, target \
+size and 200% text measurements come from macOS; Windows uses the same theme. Keyboard checks of the graph \
+view used real key presses on Windows and simulated ones on macOS.""",
+    """Screen readers on Windows reach Gephi through the Java Access Bridge included in Gephi's Java runtime. It must \
+be enabled once for each user; NVDA may do this itself, otherwise run "jabswitch -enable" from the bin folder of \
+Gephi's Java runtime ({jabswitch_dir} for this version) and restart Gephi.""",
+    """WCAG is applied to this non-web software as described in the W3C Working Group Note \"Guidance on Applying \
+WCAG 2 to Non-Web Information and Communications Technologies (WCAG2ICT)\". Criteria that WCAG2ICT reads as \
+applying to sets of software programs (2.4.1, 2.4.5, 3.2.3, 3.2.4, 3.2.6) are Not Applicable to a single \
+program.""",
+]
+evaluation_methods = [
+    """Automated inspection of the released Gephi {version} on {platform} (bundled Java runtime {java}; default {laf} \
+theme), on {date}, with an automated test tool running inside Gephi. It read what screen readers receive (the \
+Java Accessibility API tree) for the main window in each perspective (Overview, Data Laboratory, Preview) and \
+{dialog_count} dialogs ({dialogs}); pressed Tab and Shift+Tab through every panel and those dialogs; compared \
+each control with and without focus; measured text, theme and icon colors and control sizes; read the menus \
+and global shortcuts; ran a layout and a statistic; checked keyboard operation of the graph view, the Data \
+Laboratory menus, the filter library and the color swatches; and repeated the inspection with text at 200% \
+(the --fontsize 28 launch option).""",
+    """Not inspected: other dialogs, notably statistics settings (e.g. Modularity), the spreadsheet import wizard, \
+the color picker, the Open file dialog, the Data Laboratory editing dialogs and plugin dialogs.""",
+    """Static checks: the English interface text of {version} (instructions relying on position, shape, color, sound \
+or pointer gestures) and the source code of the graph tools.""",
+    """Manual testing: {manual_status}""",
+    """Review of Gephi's public issue tracker.""",
+]
+
+# Plain descriptions of controls that have no accessible name, keyed "Class@Panel" or "Class@Dialog title"
+[names]
+"JEditorPane@Layout" = "the description area of the Layout panel"
+"JButton@Layout" = "the icon button next to the Layout panel's description area"
+"TreeView$ExplorerTree@Filters" = "the filter library and query trees of the Filters panel"
+"JHTMLEditorPane@HTML Report" = "the text of the statistics report"
+"JTextPane@Search/Replace" = "the \"Search match result\" area of the Search/Replace dialog (its label is not linked to it)"
+"QuickSearch$SearchTextField@Options" = "the search field of the Options dialog"
+"JTextPane@About" = "the text areas of the About dialog"
+"JPanel@Context" = "the content of the Context panel"
+"JSqueezeBoxPanel@Statistics" = "the content of the Statistics panel"
+"ColorChooser@Appearance" = "the color swatch of the Appearance panel"
+
+# How dialogs are called in the remarks, by window title
+[dialogs]
+"HTML Report" = "statistics report"
+"Add column - Settings" = "Add column"
+
+[[row]]
+id = "1.1.1"
+name = "Non-text Content"
+level = "A"
+conformance = "Partially Supports"
+basis = "measured"
+manual = ["S2", "S10"]
+remarks = """Icon-only buttons, including the graph tools, have accessible names. Controls without a name: in the \
+Overview, {overview_unnamed}; in dialogs, {dialogs_unnamed}. Keyboard focus also stops on a few elements without \
+a name: {unnamed_tab_stops}. The graph view is exposed as a canvas named "{canvas_name}" with a description of its \
+keys, but its nodes and edges are not exposed to assistive technology; the Data Laboratory tables list the same \
+nodes, edges and attributes as text."""
+
+[[row]]
+id = "1.2.1"
+name = "Audio-only and Video-only (Prerecorded)"
+level = "A"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi contains no prerecorded audio or video."""
+
+[[row]]
+id = "1.2.2"
+name = "Captions (Prerecorded)"
+level = "A"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi contains no prerecorded video with audio."""
+
+[[row]]
+id = "1.2.3"
+name = "Audio Description or Media Alternative (Prerecorded)"
+level = "A"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi contains no prerecorded video."""
+
+[[row]]
+id = "1.3.1"
+name = "Info and Relationships"
+level = "A"
+conformance = "Partially Supports"
+basis = "measured"
+manual = ["S4", "S5"]
+remarks = """Form fields are named or linked to their visible labels. Tables expose their column headers through the \
+accessibility API (e.g. the Data Laboratory table: {datalab_headers}), but see the screen reader results \
+below. In property sheets (Layout, Preview Settings), rows are exposed as internal code (e.g. \
+\"{property_group_cell}\") instead of the setting's name{tabs_note}. The read-only text areas listed under \
+1.1.1 have no name."""
+
+[[row]]
+id = "1.3.2"
+name = "Meaningful Sequence"
+level = "A"
+conformance = "Supports"
+basis = "inventory"
+remarks = """The keyboard order follows the visual layout of each panel and dialog, top to bottom and left to right (e.g. \
+Appearance panel: {appearance_order}). Reading order was not checked separately."""
+
+[[row]]
+id = "1.3.3"
+name = "Sensory Characteristics"
+level = "A"
+conformance = "Supports"
+basis = "inventory"
+remarks = """No instruction relies only on shape, color, size, visual location, orientation or sound: the {string_files} \
+English string files of {version} were scanned for such wording; the matches found refer to values (e.g. \
+\"lower bound\") rather than to where something is."""
+
+[[row]]
+id = "1.4.1"
+name = "Use of Color"
+level = "A"
+conformance = "Supports"
+basis = "inventory"
+remarks = """In the graph view, node and edge colors can show attribute values chosen by the user (Appearance, Partition). \
+The same values are available as text in the Data Laboratory columns, and the Appearance partition list names \
+each value next to its color. Error messages combine color with an icon and text."""
+
+[[row]]
+id = "1.4.2"
+name = "Audio Control"
+level = "A"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi plays no audio."""
+
+[[row]]
+id = "2.1.1"
+name = "Keyboard"
+level = "A"
+conformance = "Partially Supports"
+basis = "measured"
+windows_keyboard = true
+remarks = """Operable from the keyboard: the menus; the global shortcuts (Ctrl+1, Ctrl+2 and Ctrl+3 switch between the \
+Overview, Data Laboratory and Preview perspectives; Ctrl+Shift+letter opens each panel, e.g. Ctrl+Shift+L the \
+Layout panel; Cmd instead of Ctrl on macOS); Tab and the arrow keys within each panel and dialog; zooming (+, \
+−), panning (arrow keys) and centering (Home) the graph view{kb_works_extra}. Mouse only: the graph tools \
+that act on nodes in the graph view (selecting, moving, painting, sizing, adding nodes and edges); zooming and \
+panning the preview{kb_mouse_extra}; {not_focusable_n} buttons that can't take focus ({not_focusable}). \
+{graph_keys} The {menus_without_mnemonic} menu has no Alt+letter mnemonic on Windows and Linux."""
+
+[[row]]
+id = "2.1.2"
+name = "No Keyboard Trap"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+windows_keyboard = true
+remarks = """No keyboard trap was found: in all panels and the {dialog_count} dialogs inspected, Tab moves focus on. \
+Tables, property sheets and text areas ({tab_consumers}) use Tab themselves; Ctrl+Tab, the standard way out of \
+Java tables and text areas, or a panel shortcut leaves them. Panels are switched with Ctrl+Tab or the \
+Ctrl+Shift+letter shortcuts listed in the Window menu. {graph_exit}."""
+
+[[row]]
+id = "2.1.4"
+name = "Character Key Shortcuts"
+level = "A"
+scope = "2.1 and 2.2"
+conformance = "Supports"
+basis = "measured"
+remarks = """All global shortcuts ({shortcuts_n}) use a modifier key; no single-character shortcut applies to the whole \
+window{character_keys_note}. The graph view's +, − and arrow keys act only while the graph view has focus."""
+
+[[row]]
+id = "2.2.1"
+name = "Timing Adjustable"
+level = "A"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """Gephi sets no time limits on reading or on user actions."""
+
+[[row]]
+id = "2.2.2"
+name = "Pause, Stop, Hide"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """Layouts animate the graph only after the user presses Run, and the same button (then named Stop) stops them \
+(measured with ForceAtlas 2). Timeline playback is started and paused by the user. Nothing else moves or \
+updates on its own."""
+
+[[row]]
+id = "2.3.1"
+name = "Three Flashes or Below Threshold"
+level = "A"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """Gephi has no flashing content."""
+
+[[row]]
+id = "2.4.1"
+name = "Bypass Blocks"
+level = "A"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to sets of software programs; Gephi is a single program."""
+
+[[row]]
+id = "2.4.2"
+name = "Page Titled"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """The main window title names the product, version and project (\"{main_title}\"), and each of the \
+{dialog_count} dialogs inspected has a title ({titles})."""
+
+[[row]]
+id = "2.4.3"
+name = "Focus Order"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """Focus moves into a panel when it is opened with its shortcut, and into each dialog when it opens. Within a \
+panel or dialog, Tab follows the visual layout and cycles; panels are switched with Ctrl+Tab or their \
+shortcuts, as is usual for NetBeans Platform applications. Focus reaching controls scrolled out of view is \
+reported under 2.4.11, and keys that don't leave the graph view under 2.1.1."""
+
+[[row]]
+id = "2.4.4"
+name = "Link Purpose (In Context)"
+level = "A"
+conformance = "Supports"
+basis = "inventory"
+remarks = """Each link's text describes where it leads or what it does ({links})."""
+
+[[row]]
+id = "2.5.1"
+name = "Pointer Gestures"
+level = "A"
+scope = "2.1 and 2.2"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """No function needs a multipoint or path-based gesture. Trackpad pinch zoom in the graph view has single-pointer \
+alternatives (mouse wheel, the zoom buttons) and keyboard ones."""
+
+[[row]]
+id = "2.5.2"
+name = "Pointer Cancellation"
+level = "A"
+scope = "2.1 and 2.2"
+conformance = "Partially Supports"
+basis = "inventory"
+remarks = """Buttons and other controls act on release. In the graph view, the Painter, Brush and Sizer tools act while the \
+mouse button is pressed (their descriptions say \"by pressing mouse left button\"), and Gephi has no undo for \
+these changes."""
+
+[[row]]
+id = "2.5.3"
+name = "Label in Name"
+level = "A"
+scope = "2.1 and 2.2"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Controls with visible text include it in their accessible name, except two in {label_not_in_name_where} (from \
+the NetBeans Platform): {label_not_in_name}. Speech input users saying the visible label won't reach them."""
+
+[[row]]
+id = "2.5.4"
+name = "Motion Actuation"
+level = "A"
+scope = "2.1 and 2.2"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """No function is operated by device motion."""
+
+[[row]]
+id = "3.1.1"
+name = "Language of Page"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """The interface language is chosen in Tools > Language, and the application exposes it to assistive technology \
+(measured locale: {locale})."""
+
+[[row]]
+id = "3.2.1"
+name = "On Focus"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """Moving focus never changes the context: tabbing through all panels and the {dialog_count} dialogs inspected \
+opened {windows_opened_by_tab} windows and switched no perspective."""
+
+[[row]]
+id = "3.2.2"
+name = "On Input"
+level = "A"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """Changing a setting doesn't change the context: choosing a layout shows its properties in the same panel, and \
+perspectives change only when the user selects one."""
+
+[[row]]
+id = "3.2.6"
+name = "Consistent Help"
+level = "A"
+scope = "2.2 only"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to sets of software programs. The Help menu is in the same place in every \
+perspective."""
+
+[[row]]
+id = "3.3.1"
+name = "Error Identification"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """Errors are described in text: import problems are listed in the import report (e.g. \"{import_issue}\"), and \
+invalid input in dialogs is shown next to an error icon (e.g. \"Column title can't be empty\" in Add column)."""
+
+[[row]]
+id = "3.3.2"
+name = "Labels or Instructions"
+level = "A"
+conformance = "Supports"
+basis = "measured"
+remarks = """Input fields have visible labels linked to them. The search field of the Options dialog (from the NetBeans \
+Platform) uses a search icon as its label. The unnamed text areas listed under 1.1.1 are read-only, not input \
+fields."""
+
+[[row]]
+id = "3.3.7"
+name = "Redundant Entry"
+level = "A"
+scope = "2.2 only"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """No process asks for information the user already entered in the same process."""
+
+[[row]]
+id = "4.1.1"
+name = "Parsing"
+level = "A"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """For WCAG 2.0 and 2.1, the September 2023 errata indicate this criterion is always supported. WCAG 2.2: \
+obsolete and removed, so it does not apply."""
+
+[[row]]
+id = "4.1.2"
+name = "Name, Role, Value"
+level = "A"
+conformance = "Partially Supports"
+basis = "measured"
+manual = ["S1", "S2", "S5", "S6"]
+remarks = """Standard controls expose their role, name and state through the Java Accessibility API, which the bundled Java \
+runtime passes to screen readers: {bridge}. Gaps: the unnamed controls listed under 1.1.1; property sheet rows \
+exposed as internal code{tabs_note}; the graph view's nodes and edges are not exposed."""
+
+[[row]]
+id = "1.2.4"
+name = "Captions (Live)"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi contains no live audio."""
+
+[[row]]
+id = "1.2.5"
+name = "Audio Description (Prerecorded)"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi contains no prerecorded video."""
+
+[[row]]
+id = "1.3.4"
+name = "Orientation"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """Gephi's windows are not restricted to a display orientation."""
+
+[[row]]
+id = "1.3.5"
+name = "Identify Input Purpose"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi has no fields that collect information about the user."""
+
+[[row]]
+id = "1.4.3"
+name = "Contrast (Minimum)"
+level = "AA"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Normal-size text needs 4.5:1 and large text 3:1. The theme's text colors pass (body text {label_contrast}:1, \
+table selection {selection_contrast}:1, tooltips {tooltip_contrast}:1). Below 4.5:1: {text_contrast_failures}; \
+and the theme's placeholder text ({placeholder_colors}, {placeholder_contrast}:1), which isn't exempt. \
+Disabled controls are exempt. Colors in the graph view and Preview are chosen by the user. Only the default \
+(light) theme was evaluated."""
+
+[[row]]
+id = "1.4.4"
+name = "Resize text"
+level = "AA"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Gephi has no in-application text size setting. The --fontsize launch option enlarges the interface text; it \
+can be added to a desktop shortcut without administrator rights, or set for all users in etc/gephi.conf. At \
+--fontsize 28 (200%) most text doubles, but some stays small: {small_200}. Text cut off at 200%: \
+{clipped_200}. Operating system display scaling and screen magnifiers were not tested."""
+
+[[row]]
+id = "1.4.5"
+name = "Images of Text"
+level = "AA"
+conformance = "Supports"
+basis = "inventory"
+remarks = """Interface text is drawn as text; icons contain no text other than the Gephi logo."""
+
+[[row]]
+id = "1.4.10"
+name = "Reflow"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Partially Supports"
+basis = "reasoning"
+remarks = """Not tested at narrow window sizes. Gephi's main window places side panels around the graph view; panels scroll \
+vertically when their content doesn't fit, but some content needs horizontal room (at 200% text size, labels \
+and property names are cut off, see 1.4.4). The graph view, data tables and toolbars need two-dimensional \
+layout, which WCAG2ICT excepts."""
+
+[[row]]
+id = "1.4.11"
+name = "Non-text Contrast"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Does Not Support"
+basis = "measured"
+remarks = """The keyboard focus indicator and several state and boundary colors of the default theme are below 3:1: \
+{nontext_failures}. In practice, gaining focus barely changes how a control looks (median contrast \
+{focus_change_median}:1 between its focused and unfocused colors). {icons}."""
+
+[[row]]
+id = "1.4.12"
+name = "Text Spacing"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to content in markup languages that let users override text spacing; the \
+Swing interface has no such mechanism."""
+
+[[row]]
+id = "1.4.13"
+name = "Content on Hover or Focus"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Does Not Support"
+basis = "measured"
+remarks = """Tooltips disappear after {tooltip_dismiss_s} seconds even while the pointer stays on the control \
+(the Java default, measured), so they are not persistent."""
+
+[[row]]
+id = "2.4.5"
+name = "Multiple Ways"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to sets of software programs."""
+
+[[row]]
+id = "2.4.6"
+name = "Headings and Labels"
+level = "AA"
+conformance = "Supports"
+basis = "inventory"
+remarks = """Panel titles ({panels}), dialog titles and field labels describe their topic or purpose."""
+
+[[row]]
+id = "2.4.7"
+name = "Focus Visible"
+level = "AA"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Most controls show a focus ring when focused, though a faint one (see 1.4.11). No visible change on focus: \
+{focus_not_visible}; the graph view shows no focus indicator."""
+
+[[row]]
+id = "2.4.11"
+name = "Focus Not Obscured (Minimum)"
+level = "AA"
+scope = "2.2 only"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Panels don't overlap in the default layout, and a minimized panel that slides over the others has focus while \
+it is open. But Tab reaches controls that are entirely out of view, and the panel doesn't scroll to them \
+(measured in a 1440 by 900 pixel window): {focus_hidden}."""
+
+[[row]]
+id = "2.5.7"
+name = "Dragging Movements"
+level = "AA"
+scope = "2.2 only"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Moving nodes (Drag nodes tool), resizing them (Sizer tool), rectangle selection and editing spline curves need \
+dragging, without a single-pointer alternative. Panning the graph view has keyboard and button alternatives, \
+and {filter_enter}."""
+
+[[row]]
+id = "2.5.8"
+name = "Target Size (Minimum)"
+level = "AA"
+scope = "2.2 only"
+conformance = "Partially Supports"
+basis = "measured"
+remarks = """Most targets are at least 24 by 24 pixels or spaced enough. Too small and too close to another target: \
+{targets_fail}."""
+
+[[row]]
+id = "3.1.2"
+name = "Language of Parts"
+level = "AA"
+conformance = "Supports"
+basis = "reasoning"
+remarks = """The interface uses the single language the user chose; graph data is shown as entered."""
+
+[[row]]
+id = "3.2.3"
+name = "Consistent Navigation"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to sets of software programs."""
+
+[[row]]
+id = "3.2.4"
+name = "Consistent Identification"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Following WCAG2ICT, this applies to sets of software programs."""
+
+[[row]]
+id = "3.3.3"
+name = "Error Suggestion"
+level = "AA"
+conformance = "Supports"
+basis = "measured"
+remarks = """Error messages say what to change when it is known (e.g. \"Column title can't be empty\"), and the import \
+report explains what Gephi did with problem data (e.g. \"{import_issue}\")."""
+
+[[row]]
+id = "3.3.4"
+name = "Error Prevention (Legal, Financial, Data)"
+level = "AA"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi makes no legal commitments or financial transactions; projects are local files rather than a data \
+storage system."""
+
+[[row]]
+id = "3.3.8"
+name = "Accessible Authentication (Minimum)"
+level = "AA"
+scope = "2.2 only"
+conformance = "Not Applicable"
+basis = "reasoning"
+remarks = """Gephi has no sign-in."""
+
+[[row]]
+id = "4.1.3"
+name = "Status Messages"
+level = "AA"
+scope = "2.1 and 2.2"
+conformance = "Does Not Support"
+basis = "measured"
+manual = ["S9"]
+remarks = """Results that need attention open in a dialog that takes focus (import report, statistics report). Progress and \
+completion of long tasks are only shown visually: running a layout fired {layout_status_events} accessibility \
+events on the status bar or a progress indicator."""

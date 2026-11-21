@@ -1,0 +1,134 @@
+# Manual session: only what a screen reader itself says, which the audit agent can't hear. About 20 minutes on
+# Windows with NVDA (free), written for someone who has never used NVDA. Keyboard operation, focus, contrast and
+# the rest are measured by the agent (measure.sh and the Windows kit). Each check lists the report rows it
+# confirms. Results come back through the filled checklist.md and import_manual.py.
+
+[session]
+setup = """
+1. Do this after the kit's automated run (measure-windows.ps1) has finished.
+
+2. Install NVDA: download it from https://www.nvaccess.org/download/ and run the file. In the window that opens,
+   tick "I agree", then choose "Continue running" (it runs NVDA without installing it; "Install NVDA on this
+   computer" is fine too). NVDA starts talking right away: that's normal. Turn your speakers on.
+
+3. NVDA's welcome window: keep "Desktop" keyboard layout, press OK. If it asks about usage data, answer No.
+
+4. The NVDA key is Insert (on laptops without Insert, it may be the Caps Lock key if you ticked that option).
+   Three keys are enough for this session:
+   - Ctrl (alone): stop the current speech.
+   - Insert+Tab: say again where the focus is.
+   - Insert+Q then Enter: quit NVDA at the end.
+
+5. Open the Speech Viewer, which shows as text everything NVDA says: press Insert+N (the NVDA menu opens),
+   then T (Tools), then S (Speech viewer). A small window appears with the spoken text. Leave it open, and move
+   it aside so it doesn't cover Gephi.
+
+6. Start Gephi {version}. Open the sample graph with the mouse: Window > Welcome, click "Les Miserables.gexf",
+   then OK in the Import report.
+
+7. Check that NVDA talks about Gephi: press Ctrl+Shift+L (it opens the Layout panel). NVDA should say something
+   like "Layout" or a control name. If NVDA stays silent about everything in Gephi, the Java Access Bridge is off:
+   quit Gephi, open the folder C:\\Program Files\\Gephi-{version}\\jre-x64, then the folder inside it, then bin.
+   Click the address bar of that window, type cmd and press Enter. In the black window, type
+   jabswitch -enable and press Enter. Close it, restart Gephi and try again.
+
+8. How to fill this file: after "Result:" write pass (everything as expected), partial (some of it) or fail
+   (nothing or wrong). After "Note:" copy what NVDA said when it wasn't as expected; the Speech Viewer text
+   can be selected and copied. When a step doesn't work from the keyboard, use the mouse to get past it: this
+   session is about what NVDA says, not about the keyboard (that is already measured).
+
+9. At the end, click in the Speech Viewer text, press Ctrl+A then Ctrl+C, paste it into Notepad and save it as
+   nvda-speech.txt next to this checklist.
+"""
+
+[parts]
+B = "Screen reader checks with NVDA (about 20 minutes)"
+
+[[check]]
+id = "S1"
+part = "B"
+title = "Menus"
+steps = """
+1. Click once on Gephi's title bar so Gephi is in front.
+2. Press F10: the first menu (File) is selected. NVDA should say "File".
+3. Press Down arrow to open it, then Down arrow a few times to move through its items.
+4. Press Right arrow until you reach the Window menu, and move down through a few of its items.
+5. Press Esc twice to close the menus.
+"""
+expect = "NVDA reads the name of each menu and item, and the shortcut of items that have one (e.g. \"Graph Ctrl+Shift+G\"). Menus not being read was the 2014 complaint in gephi/gephi#937."
+rows = ["4.1.2"]
+
+[[check]]
+id = "S10"
+part = "B"
+title = "Graph view"
+steps = """
+1. Press Ctrl+Shift+G.
+2. Listen, or look at the last lines of the Speech Viewer.
+"""
+expect = "NVDA says \"Graph view\" (possibly with its description)."
+rows = ["1.1.1"]
+
+[[check]]
+id = "S2"
+part = "B"
+title = "Graph view toolbar"
+steps = """
+1. Click once on the arrow-shaped tool at the top of the vertical toolbar on the left of the graph.
+2. Press Tab several times (Shift+Tab goes back): focus moves through the toolbar buttons, then the buttons at
+   the bottom of the graph view.
+3. For a few buttons, note what NVDA says.
+4. On a tool of the left toolbar (e.g. "Drag nodes"), press Space to select it, then Insert+Tab.
+"""
+expect = "Each button is read with a meaningful name (e.g. \"Drag nodes toggle button\"), and the selected tool is read as pressed or selected."
+rows = ["1.1.1", "4.1.2"]
+
+[[check]]
+id = "S4"
+part = "B"
+title = "Data table"
+steps = """
+1. Press Ctrl+2 (Data Laboratory).
+2. Click on any cell of the Nodes table, e.g. a name in the Label column.
+3. Move with the arrow keys: Right and Left between columns, Down and Up between rows.
+"""
+expect = "Each cell is read with its value, and with its column name (e.g. \"Label, Myriel\"), at least when you move to another column."
+rows = ["1.3.1"]
+
+[[check]]
+id = "S5"
+part = "B"
+title = "Property sheet"
+steps = """
+1. Press Ctrl+3 (Preview), then Ctrl+Shift+R (Preview Settings panel).
+2. Click on the first row of the properties list (a group title such as "Nodes").
+3. Press Down arrow slowly through 10 to 15 rows.
+"""
+expect = "Each property is read with its name and its value (e.g. \"Border Width 1.0\"). Note exactly how the group title rows (Nodes, Node Labels, Edges...) are read: the agent found them exposed as \"org.openide.nodes.Sheet$Set[...]\"; if NVDA says that, write it down."
+rows = ["1.3.1", "4.1.2"]
+
+[[check]]
+id = "S6"
+part = "B"
+title = "States"
+steps = """
+1. Still in Preview Settings, go with the arrows to a yes/no property (e.g. "Show Labels" under Node Labels) and
+   press Space to change it. Press Space again to put it back.
+2. Press Ctrl+1 (Overview). In the toolbar at the bottom of the graph view, click the "Show Node Labels" button
+   (a T icon), then press Space twice.
+"""
+expect = "After each change, NVDA reads the new state (checked / not checked, or pressed / not pressed)."
+rows = ["4.1.2"]
+
+[[check]]
+id = "S9"
+part = "B"
+title = "Status"
+steps = """
+1. Press Ctrl+Shift+L (Layout panel).
+2. Click the layout chooser ("---Choose a layout") and choose ForceAtlas 2.
+3. Click Run (or Tab to it and press Space), then don't touch anything for 5 seconds.
+4. Click Stop.
+"""
+expect = "Result: pass if NVDA announced on its own that the layout started or stopped, fail if it said nothing. After Note:, write what it said, or \"nothing\"."
+rows = ["4.1.3"]

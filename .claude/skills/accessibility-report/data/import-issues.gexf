@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" version="1.3">
+  <graph defaultedgetype="undirected">
+    <attributes class="node">
+      <attribute id="0" title="age" type="integer"/>
+    </attributes>
+    <nodes>
+      <node id="a" label="Alice"><attvalues><attvalue for="0" value="thirty"/></attvalues></node>
+      <node id="b" label="Bob"/>
+      <node id="b" label="Bob again"/>
+    </nodes>
+    <edges>
+      <edge id="0" source="a" target="b"/>
+      <edge id="1" source="a" target="missing"/>
+      <edge id="2" source="b" target="b" weight="abc"/>
+    </edges>
+  </graph>
+</gexf>
