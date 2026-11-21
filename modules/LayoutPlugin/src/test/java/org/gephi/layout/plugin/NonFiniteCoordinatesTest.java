@@ -67,10 +67,11 @@ public class NonFiniteCoordinatesTest {
 
     @Test
     public void testForceAtlasWithInfiniteCoordinate() {
-        Node[] nodes =
-            createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, Float.POSITIVE_INFINITY});
+        Node[] nodes = createGraphWithInfiniteNode();
         runLayout(new ForceAtlas().buildLayout());
-        assertFinite(nodes[0], nodes[1]);
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
     }
 
     @Test
@@ -81,10 +82,32 @@ public class NonFiniteCoordinatesTest {
     }
 
     @Test
+    public void testFruchtermanReingoldWithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        runLayout(new FruchtermanReingoldBuilder().buildLayout());
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
+    }
+
+    @Test
     public void testContractWithHugeCoordinates() {
         Node[] nodes = createGraph(new float[] {3e38f, 0f}, new float[] {3e38f, 10f}, new float[] {0f, 0f});
         runLayout(new Contract().buildLayout());
         assertFinite(nodes);
+    }
+
+    @Test
+    public void testContractWithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        runLayout(new Contract().buildLayout());
+        Assert.assertEquals("Distance between finite nodes should be scaled by 0.8", 16f,
+            ForceVectorUtils.distance(nodes[0], nodes[1]), 1e-3f);
+        assertFinite(nodes);
+    }
+
+    private Node[] createGraphWithInfiniteNode() {
+        return createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, Float.POSITIVE_INFINITY});
     }
 
     private Node[] createGraph(float[]... positions) {
@@ -121,5 +144,9 @@ public class NonFiniteCoordinatesTest {
             Assert.assertTrue("Node " + node.getId() + " x should be finite", Float.isFinite(node.x()));
             Assert.assertTrue("Node " + node.getId() + " y should be finite", Float.isFinite(node.y()));
         }
+    }
+
+    private static void assertMoved(Node node, float x, float y) {
+        Assert.assertTrue("Node " + node.getId() + " should have moved", node.x() != x || node.y() != y);
     }
 }

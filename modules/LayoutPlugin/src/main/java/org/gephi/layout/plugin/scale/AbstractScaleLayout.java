@@ -68,6 +68,7 @@ public abstract class AbstractScaleLayout extends AbstractLayout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
         setConverged(false);
     }
 

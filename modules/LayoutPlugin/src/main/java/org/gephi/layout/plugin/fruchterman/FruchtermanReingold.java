@@ -82,6 +82,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
     }
 
     @Override

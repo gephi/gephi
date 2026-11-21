@@ -103,6 +103,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     @Override
     public void initAlgo() {
         ensureSafeLayoutNodePositions(graphModel, initialisationSeed);
+        ensureFiniteLayoutNodePositions(graphModel);
     }
 
     public void setInitialisationSeed(long initialisationSeed) {
