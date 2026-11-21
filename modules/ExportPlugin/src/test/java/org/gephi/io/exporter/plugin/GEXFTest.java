@@ -1,15 +1,24 @@
 package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashSet;
+import java.util.Set;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.Workspace;
 import org.junit.Assert;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class GEXFTest {
 
@@ -71,6 +80,37 @@ public class GEXFTest {
     }
 
     @Test
+    public void testInvalidXmlCharsAreStrippedFromIds() throws Exception {
+        GraphGenerator graphGenerator = GraphGenerator.build();
+        GraphModel graphModel = graphGenerator.getGraphModel();
+        Graph graph = graphModel.getGraph();
+
+        graphModel.getNodeTable().addColumn("col\u0001umn", String.class);
+        Node source = graphModel.factory().newNode("n\u00011");
+        Node target = graphModel.factory().newNode("n2");
+        graph.addNode(source);
+        graph.addNode(target);
+        source.setAttribute("col\u0001umn", "value");
+        int type = graphModel.addEdgeType("kind\u0001x");
+        graph.addEdge(graphModel.factory().newEdge("e\u00011", source, target, type, 1.0, true));
+
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .parse(new InputSource(new StringReader(Utils.toString(createExporter(graphGenerator)))));
+
+        Set<String> nodeIds = getAttributeValues(document.getElementsByTagName("node"), "id");
+        Assert.assertEquals(Set.of("n1", "n2"), nodeIds);
+        Element edgeE = (Element) document.getElementsByTagName("edge").item(0);
+        Assert.assertEquals("e1", edgeE.getAttribute("id"));
+        Assert.assertEquals("kindx", edgeE.getAttribute("kind"));
+        Assert.assertTrue(nodeIds.contains(edgeE.getAttribute("source")));
+        Assert.assertTrue(nodeIds.contains(edgeE.getAttribute("target")));
+
+        Set<String> attributeIds = getAttributeValues(document.getElementsByTagName("attribute"), "id");
+        Assert.assertEquals(Set.of("column"), attributeIds);
+        Assert.assertEquals(attributeIds, getAttributeValues(document.getElementsByTagName("attvalue"), "for"));
+    }
+
+    @Test
     public void testTimestampSetColumn() throws IOException {
         // A regular attribute column of type TimestampSet, as opposed to the 'timeset' property
         GraphGenerator graphGenerator = GraphGenerator.build(timestampConfiguration()).generateTinyGraph().addTimestampSetColumn();
@@ -90,6 +130,14 @@ public class GEXFTest {
         Assert.assertTrue(str.contains("<attribute id=\"events\" title=\"events\" type=\"string\""));
         Assert.assertTrue(str.contains("<attvalue for=\"events\" value=\"&lt;[3.0]>\""));
         Assert.assertTrue(str.contains("</gexf>"));
+    }
+
+    private static Set<String> getAttributeValues(NodeList elements, String attribute) {
+        Set<String> values = new HashSet<>();
+        for (int i = 0; i < elements.getLength(); i++) {
+            values.add(((Element) elements.item(i)).getAttribute(attribute));
+        }
+        return values;
     }
 
     private static Configuration timestampConfiguration() {

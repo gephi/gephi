@@ -210,7 +210,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             if (strippedInvalidCharacters) {
                 Logger.getLogger(ExporterGEXF.class.getName()).log(Level.WARNING,
-                    "Some labels or attribute values contained characters not allowed in XML "
+                    "Some ids, labels or attribute values contained characters not allowed in XML "
                         + "(e.g. control characters) and were removed from the exported file.");
             }
         } catch (Exception e) {
@@ -314,7 +314,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         for (Column col : cols) {
 
             xmlWriter.writeStartElement(ATTRIBUTE);
-            xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
+            xmlWriter.writeAttribute(ATTRIBUTE_ID, sanitize(col.getId()));
             xmlWriter.writeAttribute(ATTRIBUTE_TITLE, sanitize(col.getTitle()));
 
             if (col.isArray()) {
@@ -358,7 +358,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         for (Node node : nodeIterable) {
             xmlWriter.writeStartElement(NODE);
 
-            String id = node.getId().toString();
+            String id = sanitize(node.getId().toString());
             xmlWriter.writeAttribute(NODE_ID, id);
             if (node.getLabel() != null && !node.getLabel().isEmpty()) {
                 xmlWriter.writeAttribute(NODE_LABEL, sanitize(node.getLabel()));
@@ -403,11 +403,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     private void writeAttValue(XMLStreamWriter xmlWriter, Graph graph, Column column, Element element)
         throws Exception {
+        String columnId = sanitize(column.getId());
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
             if (val != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
-                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                xmlWriter.writeAttribute(ATTVALUE_FOR, columnId);
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(val, column));
             }
         } else if (!column.isDynamicAttribute()) {
@@ -415,7 +416,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             Object val = element.getAttribute(column);
             if (val != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
-                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                xmlWriter.writeAttribute(ATTVALUE_FOR, columnId);
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, sanitize(
                     AttributeUtils.print(val, graph.getModel().getTimeFormat(), graph.getModel().getTimeZone())));
             }
@@ -433,7 +434,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                             final Object value = timeMap.get(interval, defaultValue);
                             if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
-                                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                                xmlWriter.writeAttribute(ATTVALUE_FOR, columnId);
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
                                 if (!Double.isInfinite(interval.getLow())) {
                                     String intervalLow =
@@ -458,7 +459,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                             final Object value = timeMap.get(timestamp, defaultValue);
                             if (value != null || includeNullAttValues) {
                                 xmlWriter.writeEmptyElement(ATTVALUE);
-                                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                                xmlWriter.writeAttribute(ATTVALUE_FOR, columnId);
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
                                 xmlWriter.writeAttribute(TIMESTAMP,
                                     AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
@@ -471,7 +472,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             Object value = element.getAttribute(column, graph.getView());
             if (value != null || includeNullAttValues) {
                 xmlWriter.writeEmptyElement(ATTVALUE);
-                xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
+                xmlWriter.writeAttribute(ATTVALUE_FOR, columnId);
                 xmlWriter.writeAttribute(ATTVALUE_VALUE, getValue(value, column));
             }
         }
@@ -602,10 +603,10 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         for (Edge edge : edgeIterable) {
             xmlWriter.writeStartElement(EDGE);
 
-            xmlWriter.writeAttribute(EDGE_ID, edge.getId().toString());
+            xmlWriter.writeAttribute(EDGE_ID, sanitize(edge.getId().toString()));
 
-            xmlWriter.writeAttribute(EDGE_SOURCE, edge.getSource().getId().toString());
-            xmlWriter.writeAttribute(EDGE_TARGET, edge.getTarget().getId().toString());
+            xmlWriter.writeAttribute(EDGE_SOURCE, sanitize(edge.getSource().getId().toString()));
+            xmlWriter.writeAttribute(EDGE_TARGET, sanitize(edge.getTarget().getId().toString()));
 
             if (graph.isMixed()) {
                 if (edge.isDirected()) {
@@ -621,7 +622,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
 
             if (edge.getType() != 0) {
-                xmlWriter.writeAttribute(EDGE_KIND, edge.getTypeLabel().toString());
+                xmlWriter.writeAttribute(EDGE_KIND, sanitize(edge.getTypeLabel().toString()));
             }
 
             if (!edge.hasDynamicWeight()) {
