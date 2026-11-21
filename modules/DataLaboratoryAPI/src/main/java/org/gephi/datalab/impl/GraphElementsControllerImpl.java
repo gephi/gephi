@@ -275,7 +275,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
                         newEdgeSource = edge.getSource();
                     }
                 }
-                if (graph.getEdge(newEdgeSource, newEdgeTarget) != null) {
+                if (graph.getEdge(newEdgeSource, newEdgeTarget, edge.getType()) != null) {
                     //This edge already exists
                     continue;
                 }
