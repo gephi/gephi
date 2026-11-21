@@ -3,6 +3,7 @@ package org.gephi.datalab.impl;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
@@ -89,5 +90,27 @@ public class GraphElementsControllerImplTest {
         IntervalDoubleMap original = (IntervalDoubleMap) edge.getAttribute(column);
         Assert.assertEquals(1, original.size());
         Assert.assertEquals(1.0, original.getDouble(FIRST), 0.0);
+    }
+
+    @Test
+    public void testMergeNodesKeepsOneEdgePerType() {
+        Graph graph = graphModel.getGraph();
+        Node first = graphModel.factory().newNode("1");
+        Node second = graphModel.factory().newNode("2");
+        Node other = graphModel.factory().newNode("3");
+        graph.addNode(first);
+        graph.addNode(second);
+        graph.addNode(other);
+        int knows = graphModel.addEdgeType("knows");
+        int likes = graphModel.addEdgeType("likes");
+        graph.addEdge(graphModel.factory().newEdge(first, other, knows, true));
+        graph.addEdge(graphModel.factory().newEdge(first, other, likes, true));
+        graph.addEdge(graphModel.factory().newEdge(second, other, knows, true));
+
+        Node merged = new GraphElementsControllerImpl().mergeNodes(graph, new Node[] {first, second}, first,
+            new Column[0], new AttributeRowsMergeStrategy[0], false);
+
+        Assert.assertEquals(1, graph.getEdges(merged, other, knows).toCollection().size());
+        Assert.assertEquals(1, graph.getEdges(merged, other, likes).toCollection().size());
     }
 }
