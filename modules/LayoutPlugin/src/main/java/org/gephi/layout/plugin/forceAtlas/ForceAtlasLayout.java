@@ -205,7 +205,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
                 float nx = n.x();
                 float ny = n.y();
-                double d = 0.0001 + Math.sqrt(nx * nx + ny * ny);
+                double d = 0.0001 + Math.sqrt((double) nx * nx + (double) ny * ny);
                 double gf = 0.0001 * getGravity() * d;
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 layoutData.dx -= gf * nx / d;
@@ -229,13 +229,14 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
             for (Node n : nodes) {
                 ForceVectorNodeLayoutData nLayout = n.getLayoutData();
                 if (!n.isFixed()) {
-                    double d = 0.0001 + Math.sqrt(nLayout.dx * nLayout.dx + nLayout.dy * nLayout.dy);
+                    double d = 0.0001 + Math.sqrt((double) nLayout.dx * nLayout.dx + (double) nLayout.dy * nLayout.dy);
                     float ratio;
                     if (isFreezeBalance()) {
+                        double ddx = (double) nLayout.old_dx - nLayout.dx;
+                        double ddy = (double) nLayout.old_dy - nLayout.dy;
                         nLayout.freeze = (float) (getFreezeInertia() * nLayout.freeze +
-                            (1 - getFreezeInertia()) * 0.1 * getFreezeStrength() * (Math.sqrt(Math.sqrt(
-                                (nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) +
-                                    (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy)))));
+                            (1 - getFreezeInertia()) * 0.1 * getFreezeStrength() *
+                                (Math.sqrt(Math.sqrt(ddx * ddx + ddy * ddy))));
                         ratio = (float) Math.min((d / (d * (1f + nLayout.freeze))), getMaxDisplacement() / d);
                     } else {
                         ratio = (float) Math.min(1, getMaxDisplacement() / d);
@@ -245,8 +246,14 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     float x = n.x() + nLayout.dx;
                     float y = n.y() + nLayout.dy;
 
-                    n.setX(x);
-                    n.setY(y);
+                    if (Float.isFinite(x) && Float.isFinite(y)) {
+                        n.setX(x);
+                        n.setY(y);
+                    } else {
+                        nLayout.dx = 0;
+                        nLayout.dy = 0;
+                        nLayout.freeze = 0;
+                    }
                 }
             }
         } finally {
