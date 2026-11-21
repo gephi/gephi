@@ -15,6 +15,10 @@
 
     <name>ProjectAPI</name>
 
+    <properties>
+        <gephi.woodstox.version>7.2.2</gephi.woodstox.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -42,6 +46,14 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- The desktop app's XMLOutputFactory resolves to Woodstox (bundled by ImportPlugin), which rejects
+             characters XML 1.0 doesn't allow instead of writing them like the JDK's implementation -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>${gephi.woodstox.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

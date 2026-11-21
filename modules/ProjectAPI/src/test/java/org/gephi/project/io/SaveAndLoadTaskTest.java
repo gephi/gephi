@@ -1,18 +1,27 @@
 package org.gephi.project.io;
 
+import com.ctc.wstx.stax.WstxOutputFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import javax.xml.stream.XMLOutputFactory;
 import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.WorkspaceImpl;
+import org.gephi.project.impl.WorkspaceInformationImpl;
 import org.gephi.project.io.utils.MockBytesPersistenceProviderFailWrite;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailRead;
@@ -350,6 +359,16 @@ public class SaveAndLoadTaskTest {
     }
 
     @Test
+    public void testInvalidXmlCharsAreStrippedWithWoodstox() throws Exception {
+        assertInvalidXmlCharsAreStripped(WstxOutputFactory.class);
+    }
+
+    @Test
+    public void testInvalidXmlCharsAreStrippedWithJdkWriter() throws Exception {
+        assertInvalidXmlCharsAreStripped(XMLOutputFactory.newDefaultFactory().getClass());
+    }
+
+    @Test
     public void testDuplicateTaskCancelReturnsNull() {
         MockServices.setServices(MockXMLPersistenceProvider.class);
 
@@ -358,6 +377,47 @@ public class SaveAndLoadTaskTest {
         task.cancel();
         WorkspaceImpl result = task.run();
         Assert.assertNull(result);
+    }
+
+    private void assertInvalidXmlCharsAreStripped(Class<? extends XMLOutputFactory> outputFactory) throws Exception {
+        String previousFactory = System.getProperty(XMLOutputFactory.class.getName());
+        System.setProperty(XMLOutputFactory.class.getName(), outputFactory.getName());
+        try {
+            ProjectImpl project = new ProjectImpl("My\u0001Project");
+            WorkspaceImpl workspace = project.newWorkspace();
+            project.setCurrentWorkspace(workspace);
+            workspace.getLookup().lookup(WorkspaceInformationImpl.class).setName("Work\u0001space");
+            ProjectMetaData metaData = project.getProjectMetadata();
+            metaData.setTitle("Ti\u0001tle");
+            metaData.setKeywords("Key\u0001words");
+            metaData.setDescription("De\u0001scription");
+            metaData.setAuthor("Au\u0001thor");
+
+            File file = new File(tempFolder.getRoot(), "invalid.gephi");
+            Assert.assertTrue(new SaveTask(project, file).run());
+            try (ZipFile zip = new ZipFile(file)) {
+                for (ZipEntry entry : Collections.list(zip.entries())) {
+                    try (InputStream is = zip.getInputStream(entry)) {
+                        Assert.assertFalse(entry.getName() + " must not contain U+0001",
+                            new String(is.readAllBytes(), StandardCharsets.UTF_8).contains("\u0001"));
+                    }
+                }
+            }
+
+            ProjectImpl readProject = new LoadTask(file).execute(null);
+            Assert.assertEquals("MyProject", readProject.getName());
+            Assert.assertEquals("Workspace", readProject.getWorkspace(workspace.getId()).getName());
+            Assert.assertEquals("Title", readProject.getProjectMetadata().getTitle());
+            Assert.assertEquals("Keywords", readProject.getProjectMetadata().getKeywords());
+            Assert.assertEquals("Description", readProject.getProjectMetadata().getDescription());
+            Assert.assertEquals("Author", readProject.getProjectMetadata().getAuthor());
+        } finally {
+            if (previousFactory != null) {
+                System.setProperty(XMLOutputFactory.class.getName(), previousFactory);
+            } else {
+                System.clearProperty(XMLOutputFactory.class.getName());
+            }
+        }
     }
 
     private GephiFormatException assertSaveFails(ProjectImpl project, File file) {
