@@ -49,21 +49,20 @@ import io.sentry.Session;
 import io.sentry.cache.EnvelopeCache;
 import java.awt.Color;
 import java.awt.Desktop;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -114,9 +113,25 @@ public class Installer extends ModuleInstall {
 
     private static final String POST_URL =
         "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.us.sentry.io/85815";
-    private static final String LATEST_GEPHI_VERSION_URL =
-        "https://raw.githubusercontent.com/gephi/gephi/gh-pages/latest";
+    private static final String LATEST_GEPHI_RELEASE_URL = "https://github.com/gephi/gephi/releases/latest";
+    private static final int LATEST_GEPHI_RELEASE_TIMEOUT_MS = 10_000;
     private static final String ABNORMAL_EXIT_MECHANISM = "unclean_exit";
+
+    /**
+     * Extracts the version from a release tag URL, such as
+     * <code>https://github.com/gephi/gephi/releases/tag/v0.11.4</code>.
+     *
+     * Only digits and dots are accepted, as the version ends up in the HTML of the update dialog.
+     *
+     * @return the version, without the <code>v</code> prefix, or <code>null</code> if the URL isn't a release tag URL
+     */
+    protected static String versionFromReleaseUrl(String location) {
+        if (location == null) {
+            return null;
+        }
+        Matcher matcher = Pattern.compile("/tag/v?([0-9]{1,4}(?:\\.[0-9]{1,4}){0,2})$").matcher(location);
+        return matcher.find() ? matcher.group(1) : null;
+    }
 
     protected static boolean isNewVersion(String latest, String current) {
         String gephiVersionTst = current.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z -]", "");
@@ -472,8 +487,7 @@ public class Installer extends ModuleInstall {
         boolean doCheck =
             NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
-            InputStream stream = null;
-            BufferedReader reader = null;
+            HttpURLConnection connection = null;
             try {
                 String gephiVersion = System.getProperty("netbeans.productversion");
                 boolean devBuild = gephiVersion.contains("SNAPSHOT");
@@ -490,16 +504,21 @@ public class Installer extends ModuleInstall {
                     return;
                 }
 
-                URL url = new URL(LATEST_GEPHI_VERSION_URL);
-                URLConnection connection = url.openConnection();
+                // GitHub redirects to the tag of the latest release, which is read without following the redirect
+                connection = (HttpURLConnection) new URL(LATEST_GEPHI_RELEASE_URL).openConnection();
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestMethod("HEAD");
                 connection.setRequestProperty("User-Agent", "");
-                connection.connect();
-                stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
+                connection.setConnectTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
+                connection.setReadTimeout(LATEST_GEPHI_RELEASE_TIMEOUT_MS);
+                // Throws on network errors, which getHeaderField() would silently turn into null
+                int responseCode = connection.getResponseCode();
+                String latest = versionFromReleaseUrl(connection.getHeaderField("Location"));
 
-                String latest = reader.readLine();
-
-                if (isNewVersion(latest, gephiVersion)) {
+                if (latest == null) {
+                    Logger.getLogger("").warning(
+                        "Unexpected response while checking latest Gephi version: HTTP " + responseCode);
+                } else if (isNewVersion(latest, gephiVersion)) {
                     //Show update dialog
                     JCheckBox checkbox =
                         new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"),
@@ -517,17 +536,11 @@ public class Installer extends ModuleInstall {
                     }
                 }
             } catch (Exception ex) {
-                Logger.getLogger("").warning("Error while checking latest Gephi version");
+                // No throwable attached, so the crash reporter ignores it
+                Logger.getLogger("").warning("Error while checking latest Gephi version: " + ex);
             } finally {
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                    if (stream != null) {
-                        stream.close();
-                    }
-                } catch (IOException e) {
-
+                if (connection != null) {
+                    connection.disconnect();
                 }
             }
         }
