@@ -135,7 +135,8 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
         @Override
         public InterEdgesFilter getFilter(Workspace workspace) {
-            return new InterEdgesFilter(partition);
+            AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
+            return new InterEdgesFilter(am, partition);
         }
 
         @Override
@@ -156,6 +157,20 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
         public InterEdgesFilter(Partition partition) {
             super(partition);
+        }
+
+        public InterEdgesFilter(AppearanceModel appearanceModel, Partition partition) {
+            super(appearanceModel, partition);
+        }
+
+        @Override
+        public void setColumn(Column column) {
+            // Persistence provider doesn't grab the correct builder when using category builder
+            // This method assigns the proper partition based on the column parameter
+            if (appearanceModel != null && (partition == null || partition.getColumn() != column)) {
+                appearanceModel.getNodeFunctions();
+                this.partition = appearanceModel.getNodePartition(column);
+            }
         }
 
         @Override
