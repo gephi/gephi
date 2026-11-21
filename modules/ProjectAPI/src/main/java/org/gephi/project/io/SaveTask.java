@@ -116,10 +116,11 @@ public class SaveTask implements LongTask {
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
 
-        //Always write to a temporary sibling file and only move it over the destination once the
-        //content is fully written. This guarantees the destination file is never truncated or left
-        //empty if the save is interrupted (crash, cancel, disk full, cloud-sync locking, ...).
+        //Always write to a temporary file, next to the destination when possible, and only move it over the
+        //destination once the content is fully written. This guarantees the destination file is never truncated
+        //or left empty if the save is interrupted (crash, cancel, disk full, cloud-sync locking, ...).
         File writeFile = new File(file.getParent(), file.getName() + "_temp" + System.currentTimeMillis());
+        boolean systemTemp = false;
         boolean moveFailed = false;
         try {
             FileOutputStream outputStream = null;
@@ -142,7 +143,8 @@ public class SaveTask implements LongTask {
                     }
                     //Creating a new file next to the destination can be refused even though the folder is writable
                     //(cloud-sync placeholder, antivirus, ...), the system temp folder is then used instead
-                    writeFile = Files.createTempFile(file.getName() + "_temp", null).toFile();
+                    writeFile = newSystemTempFile();
+                    systemTemp = true;
                     outputStream = newOutputStream(writeFile);
                 }
                 zipOut = new ZipOutputStream(outputStream);
@@ -216,7 +218,17 @@ public class SaveTask implements LongTask {
             //Rename file
             if (!cancel) {
                 try {
-                    Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    if (!systemTemp) {
+                        Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } else if (file.exists()) {
+                        //A move that isn't atomic deletes the destination before moving, in a folder that already
+                        //refused a new file. The previous file is therefore replaced atomically or left untouched,
+                        //which across volumes means the move fails and the temporary file is kept.
+                        Files.move(writeFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE,
+                            StandardCopyOption.REPLACE_EXISTING);
+                    } else {
+                        Files.move(writeFile.toPath(), file.toPath());
+                    }
                 } catch (IOException moveEx) {
                     //The project is entirely written, the temporary file is the only copy of it left and is
                     //therefore preserved so the user can recover it manually
@@ -255,6 +267,10 @@ public class SaveTask implements LongTask {
 
     FileOutputStream newOutputStream(File writeFile) throws FileNotFoundException {
         return new FileOutputStream(writeFile);
+    }
+
+    File newSystemTempFile() throws IOException {
+        return Files.createTempFile(file.getName() + "_temp", null).toFile();
     }
 
     private void writeProject(OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
