@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -188,5 +189,38 @@ public class ExporterTest {
             // NaN is not a valid number, should not be found in path d, or text x/y
             Assert.assertFalse(line.contains("NaN"));
         }
+    }
+
+    @Test
+    public void testSVGExporterLabelsWithInvalidXmlChars() {
+        // GEPHI-5QK: control characters and emoji in labels or ids made Batik fail with "IO:Invalid character"
+        GraphGenerator generator = GraphGenerator.build().generateTinyGraph().addRandomPositions();
+        GraphModel graphModel = generator.getGraphModel();
+        Node node = graphModel.factory().newNode("id\u0001\uD83D\uDE00");
+        node.setLabel("Node\u0001\uFFFE\uD83D\uDE00");
+        graphModel.getDirectedGraph().addNode(node);
+        for (Edge edge : graphModel.getDirectedGraph().getEdges()) {
+            edge.setLabel("Edge\u000B");
+        }
+
+        Workspace workspace = generator.getWorkspace();
+        PreviewProperties props =
+            Lookup.getDefault().lookup(PreviewController.class).getModel(workspace).getProperties();
+        props.putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
+        props.putValue(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
+
+        SVGExporter svgExporter = new SVGExporter();
+        svgExporter.setWorkspace(workspace);
+        StringWriter writer = new StringWriter();
+        svgExporter.setWriter(writer);
+        svgExporter.execute();
+
+        String svg = writer.toString();
+        Assert.assertTrue(svg.contains("id_id\uD83D\uDE00") || svg.contains("id_id&#128512;"));
+        Assert.assertTrue(svg.contains("Node\uD83D\uDE00") || svg.contains("Node&#128512;"));
+        Assert.assertTrue(svg.contains("Edge"));
+        Assert.assertFalse(svg.contains("\u0001"));
+        Assert.assertFalse(svg.contains("\u000B"));
+        Assert.assertFalse(svg.contains("\uFFFE"));
     }
 }
