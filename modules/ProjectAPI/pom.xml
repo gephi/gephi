@@ -44,6 +44,13 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Brings in Woodstox, the StAX implementation the application uses at runtime. Unlike the JDK's,
+             it rejects characters XML 1.0 doesn't allow instead of writing them out -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-library-wrapper</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

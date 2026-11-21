@@ -91,7 +91,7 @@ public class SaveTask implements LongTask {
     public static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws XMLStreamException {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-        return outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
+        return new Xml10FilterStreamWriter(outputFactory.createXMLStreamWriter(outputStream, "UTF-8"));
     }
 
     private static String getFileExtension(File file) {

@@ -25,6 +25,7 @@
         <gephi.pdfbox.version>3.0.8</gephi.pdfbox.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
         <gephi.gson.version>2.14.0</gephi.gson.version>
+        <gephi.woodstox.version>7.2.2</gephi.woodstox.version>
     </properties>
 
     <dependencies>
@@ -77,6 +78,13 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.26.1</version>
+        </dependency>
+        <!-- StAX implementation for the whole application: XMLInputFactory/XMLOutputFactory.newInstance()
+             resolve to it through the service loader (project files, GEXF, GraphML, Apache POI) -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>${gephi.woodstox.version}</version>
         </dependency>
     </dependencies>
 
