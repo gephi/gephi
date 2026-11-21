@@ -84,6 +84,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
     @Override
     public void initAlgo() {
+        ensureFiniteLayoutNodePositions(graphModel);
         setConverged(false);
     }
 

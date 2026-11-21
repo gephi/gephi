@@ -46,7 +46,10 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas.ForceAtlas;
+import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2Builder;
 import org.gephi.layout.plugin.fruchterman.FruchtermanReingoldBuilder;
+import org.gephi.layout.plugin.labelAdjust.LabelAdjustBuilder;
+import org.gephi.layout.plugin.rotate.Rotate;
 import org.gephi.layout.plugin.scale.Contract;
 import org.gephi.layout.spi.Layout;
 import org.junit.Assert;
@@ -103,6 +106,59 @@ public class NonFiniteCoordinatesTest {
         runLayout(new Contract().buildLayout());
         Assert.assertEquals("Distance between finite nodes should be scaled by 0.8", 16f,
             ForceVectorUtils.distance(nodes[0], nodes[1]), 1e-3f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testForceAtlas2WithHugeCoordinate() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, 3e38f});
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testForceAtlas2WithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testRotateWithInfiniteCoordinate() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f},
+            new float[] {Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY});
+        runLayout(new Rotate().buildLayout());
+        Assert.assertEquals(0f, nodes[0].x(), 1e-3f);
+        Assert.assertEquals(-10f, nodes[0].y(), 1e-3f);
+        Assert.assertEquals(0f, nodes[1].x(), 1e-3f);
+        Assert.assertEquals(10f, nodes[1].y(), 1e-3f);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithInfiniteCoordinate() {
+        Node[] nodes = createGraphWithInfiniteNode();
+        for (Node node : nodes) {
+            node.setSize(10f);
+            node.getTextProperties().setDimensions(30f, 10f);
+        }
+        Layout layout = new LabelAdjustBuilder().buildLayout();
+        layout.setGraphModel(graphModel);
+        layout.resetPropertiesValues();
+        layout.initAlgo();
+        try {
+            // Checked before goAlgo, which would size its quadtree from the infinite bounds and run out of memory
+            assertFinite(nodes);
+            for (int i = 0; i < ITERATIONS && layout.canAlgo(); i++) {
+                layout.goAlgo();
+            }
+        } finally {
+            layout.endAlgo();
+        }
+        Assert.assertTrue("Overlapping finite nodes should be pushed apart",
+            ForceVectorUtils.distance(nodes[0], nodes[1]) > 20f);
         assertFinite(nodes);
     }
 

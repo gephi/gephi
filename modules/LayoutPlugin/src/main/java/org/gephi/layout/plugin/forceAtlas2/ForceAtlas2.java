@@ -100,6 +100,7 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void initAlgo() {
         AbstractLayout.ensureSafeLayoutNodePositions(graphModel, initialisationSeed);
+        AbstractLayout.ensureFiniteLayoutNodePositions(graphModel);
 
         speed = 1.;
         speedEfficiency = 1.;
@@ -346,11 +347,16 @@ public class ForceAtlas2 implements Layout {
                         double df = Math.sqrt(Math.pow(nLayout.dx, 2) + Math.pow(nLayout.dy, 2));
                         factor = df == 0 ? 0 : Math.min(factor * df, 10.) / df;
 
-                        double x = n.x() + nLayout.dx * factor;
-                        double y = n.y() + nLayout.dy * factor;
+                        float x = (float) (n.x() + nLayout.dx * factor);
+                        float y = (float) (n.y() + nLayout.dy * factor);
 
-                        n.setX((float) x);
-                        n.setY((float) y);
+                        if (Float.isFinite(x) && Float.isFinite(y)) {
+                            n.setX(x);
+                            n.setY(y);
+                        } else {
+                            nLayout.dx = 0;
+                            nLayout.dy = 0;
+                        }
                     }
                 }
             } else {
@@ -366,11 +372,16 @@ public class ForceAtlas2 implements Layout {
                         //double factor = speed / (1f + Math.sqrt(speed * swinging));
                         double factor = speed / (1f + Math.sqrt(speed * swinging));
 
-                        double x = n.x() + nLayout.dx * factor;
-                        double y = n.y() + nLayout.dy * factor;
+                        float x = (float) (n.x() + nLayout.dx * factor);
+                        float y = (float) (n.y() + nLayout.dy * factor);
 
-                        n.setX((float) x);
-                        n.setY((float) y);
+                        if (Float.isFinite(x) && Float.isFinite(y)) {
+                            n.setX(x);
+                            n.setY(y);
+                        } else {
+                            nLayout.dx = 0;
+                            nLayout.dy = 0;
+                        }
                     }
                 }
             }
