@@ -345,12 +345,13 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         private final int ROWS;
 
         public QuadTree(int numberNodes, float aspectRatio) {
+            // Never more rows or columns than nodes, so extreme bounds can't make the grid huge or empty
             if (aspectRatio > 0) {
                 COLUMNS = (int) Math.ceil(numberNodes / 50f);
-                ROWS = (int) Math.ceil(COLUMNS / aspectRatio);
+                ROWS = Math.max(1, Math.min(numberNodes, (int) Math.ceil(COLUMNS / aspectRatio)));
             } else {
                 ROWS = (int) Math.ceil(numberNodes / 50f);
-                COLUMNS = (int) Math.ceil(ROWS / aspectRatio);
+                COLUMNS = Math.max(1, Math.min(numberNodes, (int) Math.ceil(ROWS / aspectRatio)));
             }
             quads = new QuadNode[COLUMNS * ROWS];
             for (int row = 0; row < ROWS; row++) {
@@ -375,21 +376,26 @@ public class LabelAdjust extends AbstractLayout implements Layout {
             float nymax = Math.max(y + h / 2, y + radius);
 
             // Get the rectangle as boxes
-            int minXbox = (int) Math.floor((COLUMNS - 1) * (nxmin - xmin) / (xmax - xmin));
-            int maxXbox = (int) Math.floor((COLUMNS - 1) * (nxmax - xmin) / (xmax - xmin));
-            int minYbox = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (nymax - ymin)) / (ymax - ymin)));
-            int maxYbox = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (nymin - ymin)) / (ymax - ymin)));
-            for (int col = minXbox; col <= maxXbox && col < COLUMNS && col >= 0; col++) {
-                for (int row = minYbox; row <= maxYbox && row < ROWS && row >= 0; row++) {
+            int minXbox = toBox((COLUMNS - 1) * (nxmin - xmin) / (xmax - xmin), COLUMNS);
+            int maxXbox = toBox((COLUMNS - 1) * (nxmax - xmin) / (xmax - xmin), COLUMNS);
+            int minYbox = toBox((ROWS - 1) * (((ymax - ymin) - (nymax - ymin)) / (ymax - ymin)), ROWS);
+            int maxYbox = toBox((ROWS - 1) * (((ymax - ymin) - (nymin - ymin)) / (ymax - ymin)), ROWS);
+            for (int col = minXbox; col <= maxXbox; col++) {
+                for (int row = minYbox; row <= maxYbox; row++) {
                     quads[row * COLUMNS + col].add(node);
                 }
             }
 
             //Get the node center
-            int centerX = (int) Math.floor((COLUMNS - 1) * (x - xmin) / (xmax - xmin));
-            int centerY = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (y - ymin)) / (ymax - ymin)));
+            int centerX = toBox((COLUMNS - 1) * (x - xmin) / (xmax - xmin), COLUMNS);
+            int centerY = toBox((ROWS - 1) * (((ymax - ymin) - (y - ymin)) / (ymax - ymin)), ROWS);
             LabelAdjustLayoutData layoutData = node.getLayoutData();
             layoutData.labelAdjustQuadNode = quads[centerY * COLUMNS + centerX].index;
+        }
+
+        // The rectangle uses the node size as radius while the bounds use half of it, so it can stick out of the grid
+        private int toBox(float position, int boxes) {
+            return Math.max(0, Math.min(boxes - 1, (int) Math.floor(position)));
         }
 
         public List<Node> get(int row, int col) {

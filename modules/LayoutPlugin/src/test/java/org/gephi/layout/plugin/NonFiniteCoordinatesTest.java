@@ -138,28 +138,45 @@ public class NonFiniteCoordinatesTest {
     }
 
     @Test
+    public void testForceAtlas2WithNodesFartherApartThanFloatMax() {
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, 2e38f},
+            new float[] {0f, -2e38f});
+        runLayout(new ForceAtlas2Builder().buildLayout());
+        assertMoved(nodes[0], 10f, 0f);
+        assertMoved(nodes[1], -10f, 0f);
+        assertFinite(nodes);
+    }
+
+    @Test
     public void testLabelAdjustWithInfiniteCoordinate() {
         Node[] nodes = createGraphWithInfiniteNode();
-        for (Node node : nodes) {
-            node.setSize(10f);
-            node.getTextProperties().setDimensions(30f, 10f);
-        }
-        Layout layout = new LabelAdjustBuilder().buildLayout();
-        layout.setGraphModel(graphModel);
-        layout.resetPropertiesValues();
-        layout.initAlgo();
-        try {
-            // Checked before goAlgo, which would size its quadtree from the infinite bounds and run out of memory
-            assertFinite(nodes);
-            for (int i = 0; i < ITERATIONS && layout.canAlgo(); i++) {
-                layout.goAlgo();
-            }
-        } finally {
-            layout.endAlgo();
-        }
-        Assert.assertTrue("Overlapping finite nodes should be pushed apart",
-            ForceVectorUtils.distance(nodes[0], nodes[1]) > 20f);
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
         assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithHugeCoordinate() {
+        // Enough nodes for two quadtree columns, so that an uncapped cell count overflows int
+        float[][] positions = new float[61][];
+        positions[0] = new float[] {10f, 0f};
+        positions[1] = new float[] {-10f, 0f};
+        for (int i = 2; i < 60; i++) {
+            positions[i] = new float[] {100f * i, 0f};
+        }
+        positions[60] = new float[] {0f, 1e30f};
+        Node[] nodes = createGraph(positions);
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
+        assertFinite(nodes);
+    }
+
+    @Test
+    public void testLabelAdjustWithNodeFarBelow() {
+        // The quadtree gets several rows and the overlapping nodes are in the top one
+        Node[] nodes = createGraph(new float[] {10f, 0f}, new float[] {-10f, 0f}, new float[] {0f, -400f});
+        runLabelAdjust(nodes);
+        assertPushedApart(nodes[0], nodes[1]);
     }
 
     private Node[] createGraphWithInfiniteNode() {
@@ -195,6 +212,26 @@ public class NonFiniteCoordinatesTest {
         }
     }
 
+    private void runLabelAdjust(Node[] nodes) {
+        for (Node node : nodes) {
+            node.setSize(10f);
+            node.getTextProperties().setDimensions(30f, 10f);
+        }
+        Layout layout = new LabelAdjustBuilder().buildLayout();
+        layout.setGraphModel(graphModel);
+        layout.resetPropertiesValues();
+        layout.initAlgo();
+        try {
+            // Checked before goAlgo, so that a non-finite position fails here rather than in the quadtree allocation
+            assertFinite(nodes);
+            for (int i = 0; i < ITERATIONS && layout.canAlgo(); i++) {
+                layout.goAlgo();
+            }
+        } finally {
+            layout.endAlgo();
+        }
+    }
+
     private static void assertFinite(Node... nodes) {
         for (Node node : nodes) {
             Assert.assertTrue("Node " + node.getId() + " x should be finite", Float.isFinite(node.x()));
@@ -204,5 +241,9 @@ public class NonFiniteCoordinatesTest {
 
     private static void assertMoved(Node node, float x, float y) {
         Assert.assertTrue("Node " + node.getId() + " should have moved", node.x() != x || node.y() != y);
+    }
+
+    private static void assertPushedApart(Node n1, Node n2) {
+        Assert.assertTrue("Overlapping nodes should be pushed apart", ForceVectorUtils.distance(n1, n2) > 20f);
     }
 }

@@ -281,6 +281,11 @@ public class ForceAtlas2 implements Layout {
             double totalEffectiveTraction = 0d;  // Hom much useful movement
             for (Node n : nodes) {
                 ForceAtlas2LayoutData nLayout = n.getLayoutData();
+                // Nodes more than Float.MAX_VALUE apart get NaN forces, which would make the speed NaN for good
+                if (!Double.isFinite(nLayout.dx) || !Double.isFinite(nLayout.dy)) {
+                    nLayout.dx = 0;
+                    nLayout.dy = 0;
+                }
                 if (!n.isFixed()) {
                     double swinging =
                         Math.sqrt(Math.pow(nLayout.old_dx - nLayout.dx, 2) + Math.pow(nLayout.old_dy - nLayout.dy, 2));
