@@ -21,7 +21,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineModel;
 import org.gephi.viz.engine.jogl.JOGLRenderingTarget;
-import org.gephi.viz.engine.jogl.models.mesh.NodeDiskVertexMeshGenerator;
+import org.gephi.viz.engine.jogl.models.mesh.NodeQuadVertexMeshGenerator;
 import org.gephi.viz.engine.jogl.models.nodedisk.CommonNodeDiskModel;
 import org.gephi.viz.engine.jogl.models.nodedisk.NodeDiskModelNoSelection;
 import org.gephi.viz.engine.jogl.models.nodedisk.NodeDiskModelSelectionSelected;
@@ -45,10 +45,6 @@ import org.gephi.viz.engine.util.structure.NodesCallback;
  */
 public abstract class AbstractNodeData extends AbstractSelectionData {
 
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_64 = 128;
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_32 = 16;
-    protected static final int OBSERVED_SIZE_LOD_THRESHOLD_16 = 2;
-
     // NOTE: Why secondary buffers and VAOs?
     // Sadly, we cannot use glDrawArraysInstancedBaseInstance in MacOS and it will be never available
 
@@ -64,16 +60,9 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
     protected final NodeDiskModelSelectionSelected diskModelSelectionSelected;
     protected final NodeDiskModelSelectionUnselected diskModelSelectionUnselected;
 
-    protected final Mesh circleMesh64 = NodeDiskVertexMeshGenerator.generateFilledCircle(64);
-    protected final Mesh circleMesh32 = NodeDiskVertexMeshGenerator.generateFilledCircle(32);
-    protected final Mesh circleMesh16 = NodeDiskVertexMeshGenerator.generateFilledCircle(16);
-    protected final Mesh circleMesh8 = NodeDiskVertexMeshGenerator.generateFilledCircle(8);
+    protected final Mesh quadMesh = NodeQuadVertexMeshGenerator.generate();
 
 
-    protected final int firstVertex64;
-    protected final int firstVertex32;
-    protected final int firstVertex16;
-    protected final int firstVertex8;
     protected final boolean instancedRendering;
     protected final boolean indirectCommands;
 
@@ -103,10 +92,6 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
         diskModelSelectionUnselected = new NodeDiskModelSelectionUnselected();
 
 
-        firstVertex64 = 0;
-        firstVertex32 = circleMesh64.vertexCount;
-        firstVertex16 = circleMesh64.vertexCount + circleMesh32.vertexCount;
-        firstVertex8 = circleMesh64.vertexCount + circleMesh32.vertexCount + circleMesh16.vertexCount;
     }
 
     public void init(GL3ES3 gl) {
@@ -129,24 +114,8 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     protected void initCirclesGLVertexBuffer(GL gl, final int bufferName) {
 
-        final float[] circleVertexData = new float[
-            circleMesh64.vertexData.length
-                + circleMesh32.vertexData.length
-                + circleMesh16.vertexData.length
-                + circleMesh8.vertexData.length
-            ];
 
-        int offset = 0;
-        System.arraycopy(circleMesh64.vertexData, 0, circleVertexData, offset, circleMesh64.vertexData.length);
-        offset += circleMesh64.vertexData.length;
-        System.arraycopy(circleMesh32.vertexData, 0, circleVertexData, offset, circleMesh32.vertexData.length);
-        offset += circleMesh32.vertexData.length;
-        System.arraycopy(circleMesh16.vertexData, 0, circleVertexData, offset, circleMesh16.vertexData.length);
-        offset += circleMesh16.vertexData.length;
-        System.arraycopy(circleMesh8.vertexData, 0, circleVertexData, offset, circleMesh8.vertexData.length);
-
-
-        final FloatBuffer circleVertexBuffer = GLBuffers.newDirectFloatBuffer(circleVertexData);
+        final FloatBuffer circleVertexBuffer = GLBuffers.newDirectFloatBuffer(quadMesh.vertexData);
         vertexGLBuffer = new GLBufferMutable(bufferName, GL_BUFFER_TYPE_ARRAY);
         vertexGLBuffer.bind(gl);
         vertexGLBuffer.init(gl, circleVertexBuffer, GL_BUFFER_USAGE_STATIC_DRAW);
@@ -388,28 +357,10 @@ public abstract class AbstractNodeData extends AbstractSelectionData {
 
     protected void fillNodeCommandData(final Node node, final int index, final int instanceId) {
         //Indirect Draw:
-        //Choose LOD:
-        final float observedSize = node.size() * currentNodeScale * currentZoom;
 
-        final int circleVertexCount;
-        final int firstVertex;
-        if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_64) {
-            circleVertexCount = circleMesh64.vertexCount;
-            firstVertex = firstVertex64;
-        } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_32) {
-            circleVertexCount = circleMesh32.vertexCount;
-            firstVertex = firstVertex32;
-        } else if (observedSize > OBSERVED_SIZE_LOD_THRESHOLD_16) {
-            circleVertexCount = circleMesh16.vertexCount;
-            firstVertex = firstVertex16;
-        } else {
-            circleVertexCount = circleMesh8.vertexCount;
-            firstVertex = firstVertex8;
-        }
-
-        commandsBufferBatch[index] = circleVertexCount;//vertex count
+        commandsBufferBatch[index] = 6;//vertex count
         commandsBufferBatch[index + 1] = 1;//instance count
-        commandsBufferBatch[index + 2] = firstVertex;//first vertex
+        commandsBufferBatch[index + 2] = 0;//first vertex
         commandsBufferBatch[index + 3] = instanceId;//base instance
     }
 
