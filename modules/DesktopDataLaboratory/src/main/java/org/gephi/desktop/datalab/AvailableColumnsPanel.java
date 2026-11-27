@@ -71,6 +71,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
     private AvailableColumnsValidator validator;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JLabel countLabel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane scroll;
     // End of variables declaration//GEN-END:variables
@@ -118,6 +119,8 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
                 cb.setEnabled(enabled);
             }
         }
+        countLabel.setText(NbBundle.getMessage(AvailableColumnsPanel.class, "AvailableColumnsPanel.countLabel.text",
+            availableColumnsModel.getAvailableColumnsCount(), AvailableColumnsModel.MAX_AVAILABLE_COLUMNS));
         if (validator != null) {
 //            validator.event();
         }
@@ -136,6 +139,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
         scroll = new javax.swing.JScrollPane();
         contentPanel = new javax.swing.JPanel();
         descriptionLabel = new javax.swing.JLabel();
+        countLabel = new javax.swing.JLabel();
 
         contentPanel.setLayout(new java.awt.GridLayout());
         scroll.setViewportView(contentPanel);
@@ -152,6 +156,8 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING,
                             javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
+                        .addComponent(countLabel, javax.swing.GroupLayout.Alignment.LEADING,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                         .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING,
                             javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
                     .addContainerGap())
@@ -161,6 +167,8 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(countLabel)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 238,
                         javax.swing.GroupLayout.PREFERRED_SIZE)
