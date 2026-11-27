@@ -57,7 +57,7 @@ import org.gephi.graph.api.Table;
  */
 public class AvailableColumnsModel {
 
-    private static final int MAX_AVAILABLE_COLUMNS = 20;
+    public static final int MAX_AVAILABLE_COLUMNS = 50;
     private final Set<Column> availableColumns = new HashSet<>();
     private final Set<Column> allKnownColumns = new HashSet<>();
     private final Table table;

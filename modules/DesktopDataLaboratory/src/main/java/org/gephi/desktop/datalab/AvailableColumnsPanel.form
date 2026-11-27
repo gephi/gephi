@@ -20,6 +20,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="descriptionLabel" alignment="0" pref="341" max="32767" attributes="0"/>
+                  <Component id="countLabel" alignment="0" pref="341" max="32767" attributes="0"/>
                   <Component id="scroll" alignment="0" pref="341" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -31,6 +32,8 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="descriptionLabel" pref="29" max="32767" attributes="0"/>
+              <EmptySpace type="related" max="-2" attributes="0"/>
+              <Component id="countLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="scroll" min="-2" pref="238" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -58,6 +61,8 @@
           <ResourceString bundle="org/gephi/desktop/datalab/Bundle.properties" key="AvailableColumnsPanel.descriptionLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="countLabel">
     </Component>
   </SubComponents>
 </Form>
